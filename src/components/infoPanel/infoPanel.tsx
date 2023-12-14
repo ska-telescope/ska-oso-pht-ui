@@ -39,12 +39,10 @@ export default function InfoPanel({
 
   const getIcon = () => {
     if (additional) {
-      return <MoreVertIcon onClick={handleExpandClick} />
+      return <MoreVertIcon onClick={handleExpandClick} />;
     }
-    return sensCalc ? (
-      <CalculateIcon onClick={handleCalcClick} />
-    ) : null;
-  }
+    return sensCalc ? <CalculateIcon onClick={handleCalcClick} /> : null;
+  };
 
   return (
     <Card variant="outlined" sx={{ maxWidth }}>

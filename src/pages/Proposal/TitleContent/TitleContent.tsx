@@ -285,7 +285,7 @@ export default function TitleContent() {
           </Typography>
         </Grid>
       </Grid>
-      
+
       <Grid
         p={2}
         container

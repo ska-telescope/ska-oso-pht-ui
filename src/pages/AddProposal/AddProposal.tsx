@@ -11,8 +11,8 @@ export default function AddProposal() {
 
   const createProposal = () => {
     // TODO : We need to call putProposal here.
-  
-      navigate('/proposal');
+
+    navigate('/proposal');
   };
 
   return (

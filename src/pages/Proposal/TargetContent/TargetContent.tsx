@@ -5,14 +5,12 @@ import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 
-const TITLE = [
-  "No specific Target", "List of Targets", "Target Mosaic"
-];
+const TITLE = ['No specific Target', 'List of Targets', 'Target Mosaic'];
 
 const TOOLTIP = [
-  "We are just going to look up",
-  "A list of target will be entered and/or imported from file",
-  "Using a tool to create a mosaic of targets"
+  'We are just going to look up',
+  'A list of target will be entered and/or imported from file',
+  'Using a tool to create a mosaic of targets'
 ];
 
 export default function TargetContent() {
@@ -25,26 +23,33 @@ export default function TargetContent() {
   ]);
 
   const handleClick = (index: number) => {
-    const updatedSelectedCards = selectedCards.map((card) => ({ ...card, isSelected: (card.index === index) }));
+    const updatedSelectedCards = selectedCards.map(card => ({
+      ...card,
+      isSelected: card.index === index
+    }));
     setSelectedCards(updatedSelectedCards);
   };
 
-  const setCardBG = (isSelected: boolean) => isSelected ? theme.palette.secondary.main : theme.palette.primary.main;
-  const setCardFG = (isSelected: boolean) => isSelected ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
+  const setCardBG = (isSelected: boolean) =>
+    isSelected ? theme.palette.secondary.main : theme.palette.primary.main;
+  const setCardFG = (isSelected: boolean) =>
+    isSelected ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
 
   function targetCard(occ: number) {
     return (
       <Grid item>
         <Card
           style={{
-                color: setCardFG(selectedCards[occ].isSelected),
-                backgroundColor: setCardBG(selectedCards[occ].isSelected)
-              }}
+            color: setCardFG(selectedCards[occ].isSelected),
+            backgroundColor: setCardBG(selectedCards[occ].isSelected)
+          }}
         >
           <CardActionArea onClick={() => handleClick(occ)}>
-            <CardContent>                  
+            <CardContent>
               <Tooltip title={TOOLTIP[occ]} arrow>
-                <Typography variant="h6" component="div">{TITLE[occ]}</Typography>
+                <Typography variant="h6" component="div">
+                  {TITLE[occ]}
+                </Typography>
               </Tooltip>
             </CardContent>
           </CardActionArea>

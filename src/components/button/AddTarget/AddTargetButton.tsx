@@ -11,12 +11,12 @@ export default function AddTargetButton() {
 
   return (
     <Button
-      ariaDescription={`${title  }Button`}
+      ariaDescription={`${title}Button`}
       color={ButtonColorTypes.Secondary}
       icon={<AddIcon />}
       label={title}
       onClick={ClickFunction}
-      testId={`${title  }Button`}
+      testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
     />
   );

@@ -6,7 +6,7 @@ import { EXISTING_PROPOSALS, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 
-  // TODO -  We can call the getProposals from here
+// TODO -  We can call the getProposals from here
 
 export default function PHT() {
   const navigate = useNavigate();
