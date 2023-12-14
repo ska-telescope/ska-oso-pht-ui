@@ -1,0 +1,12 @@
+node_modules
+coverage
+**/*.css
+**/*.scss
+**/*.ttf
+webpack.config.js
+build
+dist
+**/*.py
+**/*.svg
+**/*.html
+jest.config.js
