@@ -87,6 +87,11 @@ module.exports = () => {
             singleton: true,
             requiredVersion: deps['react-router-dom']
           },
+          'jquery': {
+            eager: true,
+            singleton: true,
+            requiredVersion: deps['jquery']
+          },
           // i18n
           i18next: {
             eager: true,
