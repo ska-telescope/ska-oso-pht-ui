@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-
+import AladinLiteComponent from '../../../components/aladin/aladin'
 export default function DataContent() {
   const [theTitle, setTheTitle] = React.useState('');
 
@@ -15,11 +15,11 @@ export default function DataContent() {
       <Grid item>
         <TextEntry label="Pipeline" testId="titleId" value={theTitle} setValue={setTheTitle} />
       </Grid>
+     
       <Grid item>
-        <Typography variant="h6" m={2}>
-          SRC Net
-        </Typography>
-      </Grid>
+      <AladinLiteComponent />
+    </Grid>
+      
     </Grid>
   );
 }
