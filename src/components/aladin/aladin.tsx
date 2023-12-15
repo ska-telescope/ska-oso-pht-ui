@@ -53,8 +53,8 @@ const AladinLiteComponent = () => {
 
   return (
     <div>
-      <h1>Trifid interactive map</h1>
-      <div id="aladin-lite-div" style={{ width: '700px', height: '400px' }}></div>
+      <h1>Interactive Sky Map</h1>
+      <div id="aladin-lite-div" style={{ width: '400px', height: '300px' }}></div>
       <input id="DSS" type="radio" name="survey" value="P/DSS2/color" defaultChecked /><label htmlFor="DSS">DSS color</label>
       <input id="DSS-blue" type="radio" name="survey" value="P/DSS2/blue" /><label htmlFor="DSS-blue">DSS blue</label>
       <input id="2MASS" type="radio" name="survey" value="P/2MASS/color" /><label htmlFor="2MASS">2MASS</label>

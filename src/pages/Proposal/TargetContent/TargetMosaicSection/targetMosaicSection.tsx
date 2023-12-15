@@ -1,7 +1,15 @@
 'use client';
 
 import React from 'react';
+import AladinLiteComponent from '../../../../components/aladin/aladin'
+import { Grid, Typography } from '@mui/material';
 
 export default function TargetMosaicSection() {
-  return <h3>Target Mosaic Content</h3>;
+  return (
+    <div>
+  <Grid item>
+  <AladinLiteComponent />
+</Grid>
+</div>
+  );
 }

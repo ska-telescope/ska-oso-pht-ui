@@ -16,9 +16,7 @@ export default function DataContent() {
         <TextEntry label="Pipeline" testId="titleId" value={theTitle} setValue={setTheTitle} />
       </Grid>
      
-      <Grid item>
-      <AladinLiteComponent />
-    </Grid>
+      
       
     </Grid>
   );

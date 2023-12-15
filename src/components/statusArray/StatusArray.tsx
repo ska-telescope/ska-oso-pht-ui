@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Divider } from '@mui/material';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 import { PAGES } from '../../utils/constants';
 
@@ -8,6 +8,19 @@ interface StatusArrayProps {
 }
 
 export default function StatusArray({ setPage }: StatusArrayProps) {
+  const generateDivider = (index: number) => {
+    if (index < PAGES.length - 1) {
+      return (
+        <React.Fragment>
+          <Grid item sx={{ width: '50px' }}>
+            <Divider sx={{ width: 'calc(100% + 16px)', marginLeft: '-8px' ,  borderBottom: '2px solid #000'}} />
+          </Grid>
+        </React.Fragment>
+      );
+    }
+    return null;
+  };
+
   return (
     <Grid
       sx={{ bgcolor: 'transparent' }}
@@ -16,31 +29,14 @@ export default function StatusArray({ setPage }: StatusArrayProps) {
       alignItems="center"
       justifyContent="space-evenly"
     >
-      <Grid item />
-      <Grid item>
-        <StatusWrapper level={PAGES[0].status} page={0} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[1].status} page={1} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[2].status} page={2} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[3].status} page={3} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[4].status} page={4} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[5].status} page={5} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[6].status} page={6} setPage={setPage} />
-      </Grid>
-      <Grid item>
-        <StatusWrapper level={PAGES[7].status} page={7} setPage={setPage} />
-      </Grid>
+      {PAGES.map((page, index) => (
+        <React.Fragment key={index}>
+          <Grid item>
+            <StatusWrapper level={page.status} page={index} setPage={setPage} />
+          </Grid>
+          {generateDivider(index)}
+        </React.Fragment>
+      ))}
     </Grid>
   );
 }
