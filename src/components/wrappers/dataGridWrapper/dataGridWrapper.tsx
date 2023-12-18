@@ -10,7 +10,7 @@ interface DataGridWrapperProps {
   extendedColumns: any;
   height: number;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  rowClick: Function;
+  rowClick?: Function;
 }
 
 export default function DataGridWrapper({
