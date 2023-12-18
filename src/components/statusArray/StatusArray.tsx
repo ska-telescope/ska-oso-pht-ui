@@ -13,7 +13,7 @@ export default function StatusArray({ setPage }: StatusArrayProps) {
       return (
         <React.Fragment>
           <Grid item sx={{ width: '50px' }}>
-            <Divider sx={{ width: 'calc(100% + 16px)', marginLeft: '-8px' ,  borderBottom: '2px solid #000'}} />
+            <Divider sx={{ width: 'calc(100% + 16px)', marginLeft: '-8px' ,  borderBottom: '2px solid grey'}} />
           </Grid>
         </React.Fragment>
       );
