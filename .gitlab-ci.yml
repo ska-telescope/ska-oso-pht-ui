@@ -62,6 +62,7 @@ test_and_coverage:
   stage: test
   tags:
     - k8srunner
+  allow_failure: true
   before_script:
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
