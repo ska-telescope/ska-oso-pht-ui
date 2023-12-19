@@ -187,7 +187,7 @@ export default function PHT() {
   const filteredData = EXISTING_PROPOSALS.filter((item) =>
     ['title', 'pi', 'id'].some((field) =>
     item[field].toLowerCase().includes(searchTerm.toLowerCase())
-)
+    ) && (searchType === '' ||  item.status.toLowerCase() === searchType.toLowerCase())
   );
 
   return (
@@ -209,7 +209,7 @@ export default function PHT() {
         </Grid>
         <Grid item xs={2}>
           <DropDown
-            options={SEARCH_TYPE_OPTIONS}
+            options={[{ label: 'All Status Types', value: '' }, ...SEARCH_TYPE_OPTIONS]}
             testId="{tt}"
             value={searchType}
             setValue={setSearchType}

@@ -58,9 +58,12 @@ export const PAGES = [
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Option 1', value: '1' },
-  { label: 'Option 2', value: '2' },
-  { label: 'Option 3', value: '3' }
+  { label: 'Created', value: 'created' },
+  { label: 'Draft', value: 'draft' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Accepted', value: 'accepted' },
+  { label: 'Withdrawn', value: 'withdrawn' },
+  { label: 'Rejected', value: 'rejected' }
 ];
 
 export const TEAM = [
