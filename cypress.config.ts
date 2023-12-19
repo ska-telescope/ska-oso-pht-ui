@@ -3,7 +3,14 @@
 import { defineConfig } from 'cypress';
 
 export default defineConfig({
+  "fixturesFolder": "tests/cypress/fixtures",
+  "screenshotsFolder": "tests/cypress/screenshots",
+  "videosFolder": "tests/cypress/videos",
+  "downloadsFolder": "tests/cypress/downloads",
+
   component: {
+    "supportFile": "tests/cypress/support/component.js",
+    "indexHtmlFile" : "tests/cypress/support/component-index.html",
     devServer: {
       framework: 'react',
       bundler: 'webpack'
@@ -16,6 +23,8 @@ export default defineConfig({
   },
 
   e2e: {
+    "supportFile": "tests/cypress/support/e2e.js",
+    "specPattern": "tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
       on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
