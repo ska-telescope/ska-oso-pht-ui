@@ -36,7 +36,7 @@ function App() {
         <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />
         <Header
           testId="headerId"
-          title="ska Proposal Handling Tool"
+          title="Proposal Handling Tool"
           toolTip={toolTip}
           selectTelescope={false}
         />

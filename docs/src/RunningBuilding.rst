@@ -7,7 +7,7 @@ From the project directory, you can run any of the following:
 
 - `> yarn dev`
 
-  Runs the app in the development mode at [http://localhost:8090](http://localhost:8090). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
+  Runs the app in the development mode at [http://localhost:8100](http://localhost:8100). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
 
 - `> yarn skao:update`
 
@@ -43,11 +43,11 @@ There are two ways that this can be done as below:
  docker-compose up -d
 ```
 
-2. build the docker file in the root directory and run the container exposing port 8090.
+2. build the docker file in the root directory and run the container exposing port 8100.
 
 ```
  docker build -t ska-oso-pht-ui .
- docker run -p 8090:8090 ska-oso-pht-ui
+ docker run -p 8100:8100 ska-oso-pht-ui
 ```
 
-The project will then be accessible at the url http://localhost:8090/
+The project will then be accessible at the url http://localhost:8100/
