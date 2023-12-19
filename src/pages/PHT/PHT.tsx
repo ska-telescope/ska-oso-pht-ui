@@ -2,12 +2,37 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, FormControlLabel, IconButton } from '@mui/material';
 import { DropDown, SearchEntry } from '@ska-telescope/ska-gui-components';
-import { EditRounded, FileCopyRounded, DownloadRounded, DeleteRounded } from '@mui/icons-material';
+import { EditRounded, FileCopyRounded, DownloadRounded, DeleteRounded, VisibilityRounded } from '@mui/icons-material';
 import { grey } from '@mui/material/colors';
 import { EXISTING_PROPOSALS, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 // import { event } from 'cypress/types/jquery';
+
+const MatView = ({ id }) => {
+  const navigate = useNavigate();
+  const handleViewClick = () => {
+    // eslint-disable-next-line no-console
+    console.log('::: in handleViewClick', id);
+    // to do: implement view proposal once API endpoint ready
+    navigate('/proposal');
+  };
+
+  return (
+    <FormControlLabel
+      label=''
+      control={(
+        <IconButton
+          color="secondary"
+          aria-label="view"
+          onClick={handleViewClick}
+        >
+          <VisibilityRounded style={{ color: grey[500] }} />
+        </IconButton>
+      )}
+    />
+  );
+};
 
 const MatEdit = ({ id }) => {
   const handleEditClick = () => {
@@ -102,13 +127,15 @@ const MatDelete = ({ id }) => {
 };
 
 export default function PHT() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
+  /* 
   const ClickFunction = () => {
     navigate('/proposal');
-  };
+  }; 
+  */
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -127,6 +154,12 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: (params) => (
         <>
+          <div
+            className="d-flex justify-content-between align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <MatView id={params.id} />
+          </div>
           <div
             className="d-flex justify-content-between align-items-center"
             style={{ cursor: "pointer" }}

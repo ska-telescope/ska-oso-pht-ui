@@ -179,7 +179,7 @@ export default function TitleContent() {
             title={(
               <Typography variant="h6" component="div">
                 <Tooltip title={PROPOSAL.description} arrow>
-                  {PROPOSAL.title}
+                  <Typography>{PROPOSAL.title}</Typography>
                 </Tooltip>
               </Typography>
             )}
@@ -224,7 +224,7 @@ export default function TitleContent() {
             title={(
               <Typography variant="h6" component="div">
                 <Tooltip title={PROPOSAL.description} arrow>
-                  {PROPOSAL.title}
+                  <Typography>{PROPOSAL.title}</Typography>
                 </Tooltip>
               </Typography>
             )}
