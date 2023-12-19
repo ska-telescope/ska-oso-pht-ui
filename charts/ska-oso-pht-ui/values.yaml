@@ -1,0 +1,10 @@
+image:
+  imagePullPolicy: IfNotPresent
+  container: registry.gitlab.com/ska-telescope/oso/ska-oso-pht-ui/ska-oso-pht-ui
+  version: 1.0.0
+
+labels:
+  app: ska-oso-pht-ui
+
+ingress:
+  prependByNamespace: true
