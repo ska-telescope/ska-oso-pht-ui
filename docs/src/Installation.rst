@@ -54,9 +54,9 @@ The following steps and commands is to create a new release for the portal.
 
 1. Create a new branch from ``main`` branch.
 2. Run one of ``make bump-major-release``, ``make bump-minor-release``, or ``make bump-patch-release``
-3. Update the ``charts/ska-react-webapp-skeleton/values.yaml`` file, the `image.version` should be updated.
+3. Update the ``charts/ska-oso-pht-ui/values.yaml`` file, the `image.version` should be updated.
 4. Make sure the following files have the new version:
-   * ``charts/ska-react-webapp-skeleton/Chart.yaml``
+   * ``charts/ska-oso-pht-ui/Chart.yaml``
    * ``package.json``
    * ``.release``
 5. Run ``make git-create-tag``

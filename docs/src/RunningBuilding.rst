@@ -46,8 +46,8 @@ There are two ways that this can be done as below:
 2. build the docker file in the root directory and run the container exposing port 8090.
 
 ```
- docker build -t ska-react-webapp-skeleton .
- docker run -p 8090:8090 ska-react-webapp-skeleton
+ docker build -t ska-oso-pht-ui .
+ docker run -p 8090:8090 ska-oso-pht-ui
 ```
 
 The project will then be accessible at the url http://localhost:8090/

@@ -1,4 +1,4 @@
-Welcome to ska-react-webapp-skeleton's documentation
+Welcome to ska-oso-pht-ui's documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This repository is intended to act as a skeleton for any SKA developer looking to make a React based web application.

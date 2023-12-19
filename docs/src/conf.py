@@ -1,14 +1,14 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'ska-react-webapp-skeleton'
+project = 'ska-oso-pht-ui'
 copyright = '2023, SKAO'
 author = 'SKAO, (Trevor A Swain)'
 
 # The short X.Y version
-version = '0.2.2'
+version = '0.0.1'
 # The full version, including alpha/beta/rc tags
-release = '0.2.2'
+release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 
@@ -44,7 +44,7 @@ html_static_path = []
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
-htmlhelp_basename = 'ska-react-webapp-skeleton'
+htmlhelp_basename = 'ska-oso-pht-ui'
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -52,22 +52,22 @@ latex_elements = {
 }
 
 latex_documents = [
-    (master_doc, 'ska-react-webapp-skeleton.tex', 'ska-react-webapp-skeleton Documentation',
+    (master_doc, 'ska-oso-pht-ui.tex', 'ska-oso-pht-ui Documentation',
      'SKAO, (Trevor A Swain)', 'manual'),
 ]
 
 # -- Options for manual page output ------------------------------------------
 
 man_pages = [
-    (master_doc, 'ska-react-webapp-skeleton', 'ska-react-webapp-skeleton Documentation',
+    (master_doc, 'ska-oso-pht-ui', 'ska-oso-pht-ui Documentation',
      [author], 1)
 ]
 
 # -- Options for Texinfo output ----------------------------------------------
 
 texinfo_documents = [
-    (master_doc, 'ska-react-webapp-skeleton', 'ska-react-webapp-skeleton Documentation',
-     author, 'ska-react-webapp-skeleton', 'SKA Portal',
+    (master_doc, 'ska-oso-pht-ui', 'ska-oso-pht-ui Documentation',
+     author, 'ska-oso-pht-ui', 'SKA Portal',
      'Miscellaneous'),
 ]
 
