@@ -31,13 +31,13 @@ export default function PHT() {
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
-      renderCell: (params) => (
+      renderCell: () => (
         <>
-          <ViewProposalButton id={params.id} />
-          <EditProposalButton id={params.id} />
-          <CloneProposalButton id={params.id} />
-          <DownloadProposalButton id={params.id} />
-          <DeleteProposalButton id={params.id} />
+          <ViewProposalButton />
+          <EditProposalButton />
+          <CloneProposalButton />
+          <DownloadProposalButton />
+          <DeleteProposalButton />
         </>
         )
     }

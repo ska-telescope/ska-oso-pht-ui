@@ -1,32 +1,22 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FormControlLabel, IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { DeleteRounded } from '@mui/icons-material';
-import { grey } from '@mui/material/colors';
 
-export default function DeleteProposalButton (id) {
-    const navigate = useNavigate();
+export default function DeleteProposalButton () {
     
     const clickFunction = () => {
-      // eslint-disable-next-line no-console
-      console.log('::: in clickFunction', id);
-      // TODO - implement delete proposal once API endpoint ready
-      // navigate('/proposal');
+      // TODO : Need to add content
     };
   
     return (
-      <FormControlLabel
-        label=''
-        control={(
-          <IconButton
-            color="secondary"
-            aria-label="clone"
-            onClick={clickFunction}
-            style={{ cursor: "pointer" }}
-          >
-            <DeleteRounded style={{ color: grey[500] }} />
-          </IconButton>
-        )}
-      />
+      <Tooltip title="Delete Proposal" arrow>
+        <IconButton
+          aria-label="delete"
+          onClick={clickFunction}
+          style={{ cursor: "pointer" }}
+        >
+          <DeleteRounded />
+        </IconButton>
+      </Tooltip>
     );
   }
