@@ -15,7 +15,7 @@ const MatView = ({ id }) => {
     // eslint-disable-next-line no-console
     console.log('::: in handleViewClick', id);
     // to do: implement view proposal once API endpoint ready
-    navigate('/proposal');
+    // navigate('/proposal');
   };
 
   return (
@@ -131,26 +131,20 @@ export default function PHT() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
-  /* 
-  const ClickFunction = () => {
-    navigate('/proposal');
-  }; 
-  */
-
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
 
   const COLUMNS = [
-    { field: 'id', headerName: 'SKAO ID', width: 200 },
-    { field: 'title', headerName: 'Title', width: 200 },
+    { field: 'id', headerName: 'SKAO ID', width: 150 },
+    { field: 'title', headerName: 'Title', width: 250 },
     { field: 'pi', headerName: 'PI', width: 200 },
-    { field: 'status', headerName: 'Status', width: 200 },
+    { field: 'status', headerName: 'Status', width: 150 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 200 },
     {
       field: "actions",
       headerName: "Actions",
       sortable: false,
-      width: 400,
+      width: 250,
       disableClickEventBubbling: true,
       renderCell: (params) => (
         <>
@@ -190,6 +184,12 @@ export default function PHT() {
   ];
   const extendedColumns = [...COLUMNS];
 
+  const filteredData = EXISTING_PROPOSALS.filter((item) =>
+    ['title', 'pi', 'id'].some((field) =>
+    item[field].toLowerCase().includes(searchTerm.toLowerCase())
+)
+  );
+
   return (
     <>
       <Grid p={1} container direction="column" alignItems="center" justifyContent="space-around">
@@ -216,7 +216,7 @@ export default function PHT() {
             label="All Status Types"
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={4} mt={-1}>
           <SearchEntry
             label="Search"
             testId="searchId"
@@ -228,10 +228,9 @@ export default function PHT() {
 
       <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
         <DataGridWrapper
-          rows={EXISTING_PROPOSALS}
+          rows={filteredData}
           extendedColumns={extendedColumns}
           height={500}
-          // rowClick={ClickFunction}
         />
       </Grid>
     </>
