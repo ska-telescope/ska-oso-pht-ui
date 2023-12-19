@@ -37,3 +37,4 @@ cypress/screenshots
 package-lock.json
 
 PrivateRules.mak
+node_modules

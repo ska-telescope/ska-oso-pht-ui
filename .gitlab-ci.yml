@@ -1,5 +1,5 @@
 default:
-  image: node:20.2.0-alpine3.18
+  image: node:21-slim
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -13,6 +13,18 @@ stages:
   - pages
   - deploy
   - publish
+
+cache:
+  - key:
+      files:
+        - yarn.lock
+      prefix: $CI_COMMIT_REF_SLUG
+    fallback_keys:
+      - cache-$CI_COMMIT_REF_SLUG
+      - cache-default
+    paths:
+      - node_modules/
+      - vendor/
 
 #Install basic dependencies using yarn
 install_dependencies:
@@ -34,10 +46,6 @@ code_analysis:
   stage: lint
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
     - mkdir -p build/reports
   script:
@@ -50,14 +58,10 @@ code_analysis:
 
 # run the test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
   stage: test
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
@@ -74,21 +78,11 @@ test_and_coverage:
       - build/
 
 test-counts:
-  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
   stage: scan
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/tests
-    - yarn install --immutable
   script:
-    - yarn test:cypress:component:ci
-    - yarn start &
-    - yarn test:cypress:e2e:ci
     - yarn merge-reports
   artifacts:
     paths:
@@ -120,32 +114,10 @@ build:
   stage: build
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   script:
     - npm config set registry https://registry.npmjs.org/
     - yarn install
     - yarn build
-
-# export the report
-pages:
-  stage: pages
-  tags:
-    - k8srunner
-  dependencies:
-    - test_and_coverage
-    - list_dependencies
-    - code_quality
-  script:
-    - mv public/* .
-    - cp -r build/* public
-    - cp -r .public/* public
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
 
 include:
   - template: Code-Quality.gitlab-ci.yml
@@ -167,6 +139,14 @@ include:
     # .post step finalisers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+
+k8s-test:
+  script:
+    - echo "There are no e2e tests targeting deployment here yet!"
+    - echo "Deleting the deployment as it's unnecessary"
+    - make k8s-uninstall-chart
+    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - make k8s-delete-namespace
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
