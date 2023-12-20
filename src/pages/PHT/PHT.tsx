@@ -45,7 +45,7 @@ export default function PHT() {
   const extendedColumns = [...COLUMNS];
 
   const filteredData = EXISTING_PROPOSALS.filter((item) =>
-    ['title', 'pi', 'id'].some((field) =>
+    ['title'].some((field) =>
     item[field].toLowerCase().includes(searchTerm.toLowerCase())
     ) && (searchType === '' ||  item.status.toLowerCase() === searchType.toLowerCase())
   );
