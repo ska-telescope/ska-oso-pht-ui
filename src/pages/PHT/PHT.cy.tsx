@@ -32,7 +32,6 @@ describe('search functionality', () => {
       </Router>
     );
   });
-  // search input tests
   it('returns 2 results when searching for "Milky Way"', () => {
     cy.get('[data-testid="searchId"]').type('Milky Way{enter}');
     cy.get('[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
@@ -54,3 +53,20 @@ describe('search functionality', () => {
     .should('have.length', 0)
   })
  })
+
+ describe('filtering by proposal type', () => {
+  beforeEach(() => {
+    cy.mount(
+      <Router location='/' navigator={undefined}>
+        <PHT />
+      </Router>
+    );
+  });
+  it('filters by proposal type "Draft"', () => {
+    cy.get('[data-testid="proposalType"] input').select('Draft');
+    cy.get('[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('have.length', 1)
+    .should('contain', 'Draft');
+  });
+});

@@ -71,7 +71,7 @@ export default function PHT() {
         <Grid item xs={2}>
           <DropDown
             options={[{ label: 'All Status Types', value: '' }, ...SEARCH_TYPE_OPTIONS]}
-            testId="{tt}"
+            testId="proposalType"
             value={searchType}
             setValue={setSearchType}
             label="All Status Types"
