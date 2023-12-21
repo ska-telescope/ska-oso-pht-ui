@@ -20,11 +20,12 @@ export default function PHT() {
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
 
   const COLUMNS = [
-    { field: 'id', headerName: 'SKAO ID', width: 150 },
-    { field: 'title', headerName: 'Title', width: 250 },
+    { field: 'id', headerName: 'Proposal ID', width: 200 },
+    { field: 'cycle', headerName: 'Cycle', width: 200 },
+    { field: 'title', headerName: 'Title', width: 300 },
     { field: 'pi', headerName: 'PI', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'lastUpdated', headerName: 'Last Updated', width: 200 },
+    { field: 'lastUpdated', headerName: 'Last Updated', width: 250 },
     {
       field: "actions",
       headerName: "Actions",
@@ -52,7 +53,7 @@ export default function PHT() {
 
   return (
     <>
-      <Grid p={1} container direction="column" alignItems="center" justifyContent="space-around">
+      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
 
