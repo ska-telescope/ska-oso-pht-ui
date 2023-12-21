@@ -35,22 +35,22 @@ describe('search functionality', () => {
   // search input tests
   it('returns 2 results when searching for "Milky Way"', () => {
     cy.get('[data-testid="searchId"]').type('Milky Way{enter}');
-    cy.get('[data-testid="dataGridId"] div[role="row"]')
+    cy.get('[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
     .should('contain', 'Milky Way')
-    .should('have.length', 2)
+    .should('have.length', 2);
   })
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
     cy.get('[data-testid="searchId"]').type('{enter}');
-    cy.get('[data-testid="dataGridId"] div[role="rowgroup"]:not(:first-child) [role="row"]')
-    // .children().get('[role="row"]')
+    cy.get('[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
     .should('have.length', EXISTING_PROPOSALS.length);
   })
-  /*
   it('returns 0 results when searching for "xxx"', () => {
     cy.get('[data-testid="searchId"]').type('xxx Way{enter}');
-    cy.get('[data-testid="dataGridId"]')
-    .children().should('have.length', 0)
+    cy.get('[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('have.length', 0)
   })
-  */
  })
