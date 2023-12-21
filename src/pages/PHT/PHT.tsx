@@ -88,6 +88,7 @@ export default function PHT() {
 
       <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
         <DataGridWrapper
+          testId="dataGridId"
           rows={filteredData}
           extendedColumns={extendedColumns}
           height={500}
