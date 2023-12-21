@@ -157,7 +157,11 @@ export default function TitleContent() {
         <Card
           style={{
             color: setCardFG(theProposal, PROPOSAL),
-            backgroundColor: setCardBG(theProposal, PROPOSAL)
+            backgroundColor: setCardBG(theProposal, PROPOSAL),
+            minWidth: 300,
+            minHeight: 200,
+            display:"flex" ,
+            justifyContent:"center"
           }}
           onClick={() => clickProposal(PROPOSAL)}
           variant="outlined"
@@ -177,7 +181,7 @@ export default function TitleContent() {
               </Avatar>
             )}
             title={(
-              <Typography variant="h6" component="div">
+              <Typography variant="h6" component="div" maxWidth={200}>
                 <Tooltip title={PROPOSAL.description} arrow>
                   <Typography>{PROPOSAL.title}</Typography>
                 </Tooltip>
@@ -252,23 +256,36 @@ export default function TitleContent() {
         pl={2}
         container
         direction="row"
-        justifyContent="space-around"
+        justifyContent="center"
         alignItems="center"
         spacing={2}
       >
+        <Grid item xs={2}>
+          <Typography variant="body2">Title</Typography>
+        </Grid>
         <Grid item xs={3}>
           <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={5}>
           <Typography variant="body2">
-            This title should be used to allow for the identification of this proposal in a list of
-            proposals
+            This title should be used to allow for the
+            <br />
+            {' '}
+            identification of this proposal in a list of proposals
           </Typography>
         </Grid>
       </Grid>
 
-      <Grid pl={2} container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item xs={3}>
+      <Grid 
+        pl={2} 
+        container 
+        direction="row" 
+        justifyContent="center" 
+        alignItems="center" 
+        sx={{mt: 4, mb: 4}} 
+        spacing={2}
+      >
+        <Grid item xs={2}>
           <Typography variant="body2">Proposal Type</Typography>
         </Grid>
         <Grid item xs={8}>
@@ -290,9 +307,9 @@ export default function TitleContent() {
         p={2}
         container
         direction="row"
-        justifyContent="space-evenly"
+        justifyContent="center"
         alignItems="baseline"
-        spacing={2}
+        spacing={4}
       >
         {Projects.map((proposalType: any) => ProposalType(proposalType))}
       </Grid>
@@ -302,7 +319,7 @@ export default function TitleContent() {
           p={2}
           container
           direction="row"
-          justifyContent="space-evenly"
+          justifyContent="center"
           alignItems="baseline"
           spacing={2}
         >
