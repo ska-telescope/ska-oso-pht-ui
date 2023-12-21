@@ -5,7 +5,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Van Loo Cheng',
     status: 'Submitted',
-    lastUpdated: '21/11/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -14,7 +14,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Van Loo Cheng',
     status: 'Submitted',
-    lastUpdated: '21/11/2023',
+    lastUpdated: '2023-12-20 00:00:15',
     actions: null
   },
   {
@@ -23,7 +23,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Keeper Sung',
     status: 'Accepted',
-    lastUpdated: '1/11/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -32,7 +32,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Precious Luthan',
     status: 'Draft',
-    lastUpdated: '21/12/2022',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -41,7 +41,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Ma James Nuka',
     status: 'Withdrawn',
-    lastUpdated: '21/01/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   }
 ];
@@ -58,7 +58,6 @@ export const PAGES = [
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Created', value: 'created' },
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
   { label: 'Accepted', value: 'accepted' },
