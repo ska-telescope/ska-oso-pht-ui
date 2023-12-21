@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import { Avatar, Card, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
+import { Avatar, Card, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 
@@ -133,9 +133,11 @@ export default function TitleContent() {
     description: ''
   };
 
-  const [theTitle, setTheTitle] = React.useState('');
+  const [theTitle, setTheTitle] = React.useState('default');
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
+  const [helperText, sethelperText] = React.useState('');
+  const [error, setError] = React.useState(false);
 
   function clickProposal(PROPOSAL: any) {
     setTheProposal(PROPOSAL);
@@ -144,7 +146,19 @@ export default function TitleContent() {
     setTheSubProposal(PROPOSAL);
   }
 
-  const validateTheTitle = (e: string) => setTheTitle(e.substring(0, MAX_TITLE_LENGTH));
+  const validateTheTitle = (e) => {
+    // specify the pattern for allowed characters
+    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
+    // check if the input matches the pattern
+    if (pattern.test(e)) {
+      // if it does, update the title
+      setTheTitle(e.substring(0, MAX_TITLE_LENGTH));
+    } else {
+      // if it doesn't, show an error message
+      setError(true);
+      sethelperText("Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.");
+    }
+  };
 
   const setCardBG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
@@ -263,10 +277,21 @@ export default function TitleContent() {
         <Grid item xs={2}>
           <Typography variant="body2">Title</Typography>
         </Grid>
-        <Grid item xs={3}>
-          <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} />
+        <Grid item xs={4}>
+          {/* TODO: use TextEntry instead of TextField (TextField showing user input as NaN, was unable to fix it for now) */}
+          {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
+          <TextField
+            required
+            id="titleId"
+            label="Title"
+            variant="standard"
+            fullWidth
+            onChange={validateTheTitle}
+            error={error}
+            helperText={helperText}
+          />
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <Typography variant="body2">
             This title should be used to allow for the
             <br />
