@@ -9,10 +9,14 @@ import CloneProposalButton from '../../components/button/cloneProposal/cloneProp
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
 import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
-// import { event } from 'cypress/types/jquery';
 
 export default function PHT() {
-  // const navigate = useNavigate();
+  /*
+  TODO: remove colouring of selected row for better visibility
+  using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
+  */
+
+
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
