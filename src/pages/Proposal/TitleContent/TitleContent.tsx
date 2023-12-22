@@ -40,13 +40,22 @@ export default function TitleContent() {
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
   const [theProposalTemp, setTheProposalTemp] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
+  const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptyProposal);
+  const [subProposalChange, setSubProposalChange] = React.useState(false);
   const [helperText, sethelperText] = React.useState('');
   const [error, setError] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleDialogResponse = (response) => {
     if (response === 'continue') {
-      setTheProposal(theProposalTemp);
+      if (!subProposalChange) {
+        // set proposal and reset sub-proposal
+        setTheProposal(theProposalTemp);
+        setTheSubProposal(emptyProposal);
+      } else {
+        // set sub-proposal
+        setTheSubProposal(theSubProposalTemp);
+      }
     } 
   };
 
@@ -56,13 +65,25 @@ export default function TitleContent() {
       setTheProposal(PROPOSAL);
     } else if (theProposal !== PROPOSAL) {
       // changing proposal type
+      setSubProposalChange(false);
       setOpenDialog(true);
+      // keep track of clicked proposal
       setTheProposalTemp(PROPOSAL);
     } 
   }
 
   function clickSubProposal(PROPOSAL: any) {
-    setTheSubProposal(PROPOSAL);
+    // setTheSubProposal(PROPOSAL);
+    if (theSubProposal.title === '') {
+      // 1st time selecting the sub-proposal
+      setTheSubProposal(PROPOSAL);
+    } else if (theSubProposal !== PROPOSAL) {
+      // changing sub-proposal type
+      setSubProposalChange(true);
+      setOpenDialog(true);
+      // keep track of clicked sub-proposal
+      setTheSubProposalTemp(PROPOSAL);
+    } 
   }
 
   const validateTheTitle = (e) => {
@@ -150,29 +171,30 @@ export default function TitleContent() {
           onClick={() => clickSubProposal(PROPOSAL)}
           variant="outlined"
         >
-          <CardHeader
-            avatar={(
-              <Avatar
-                variant="rounded"
-                style={{
+          <CardActionArea>
+            <CardHeader
+              avatar={(
+                <Avatar
+                  variant="rounded"
+                  style={{
                   color: setCardBG(theSubProposal, PROPOSAL),
                   backgroundColor: setCardFG(theSubProposal, PROPOSAL)
                 }}
-              >
-                <Typography variant="body2" component="div">
-                  {PROPOSAL.code}
+                >
+                  <Typography variant="body2" component="div">
+                    {PROPOSAL.code}
+                  </Typography>
+                </Avatar>
+            )}
+              title={(
+                <Typography variant="h6" component="div">
+                  <Tooltip title={PROPOSAL.description} arrow>
+                    <Typography>{PROPOSAL.title}</Typography>
+                  </Tooltip>
                 </Typography>
-              </Avatar>
             )}
-            title={(
-              <Typography variant="h6" component="div">
-                <Tooltip title={PROPOSAL.description} arrow>
-                  <Typography>{PROPOSAL.title}</Typography>
-                </Tooltip>
-              </Typography>
-            )}
-          />
-          {/* <CardContent>
+            />
+            {/* <CardContent>
             <Typography variant="caption" component="div">
               {PROPOSAL.description.split('\n').map((c: string) => {
                 return (
@@ -184,6 +206,7 @@ export default function TitleContent() {
               })}
             </Typography>
             </CardContent> */}
+          </CardActionArea>
         </Card>
       </Grid>
     );
