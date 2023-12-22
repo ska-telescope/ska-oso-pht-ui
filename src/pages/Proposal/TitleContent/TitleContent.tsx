@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import { Avatar, Button, Card, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
+import { Avatar, Button, Card, CardActionArea, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
@@ -103,35 +103,37 @@ export default function TitleContent() {
           onClick={() => clickProposal(PROPOSAL)}
           variant="outlined"
         >
-          <CardHeader
-            avatar={(
-              <Avatar
-                variant="rounded"
-                style={{
+          <CardActionArea>
+            <CardHeader
+              avatar={(
+                <Avatar
+                  variant="rounded"
+                  style={{
                   color: setCardBG(theProposal, PROPOSAL),
                   backgroundColor: setCardFG(theProposal, PROPOSAL)
                 }}
-              >
-                <Typography variant="body2" component="div">
-                  {PROPOSAL.code}
+                >
+                  <Typography variant="body2" component="div">
+                    {PROPOSAL.code}
+                  </Typography>
+                </Avatar>
+            )}
+              title={(
+                <Typography variant="h6" component="div" maxWidth={200}>
+                  <Tooltip title={PROPOSAL.description} arrow>
+                    <Typography>{PROPOSAL.title}</Typography>
+                  </Tooltip>
                 </Typography>
-              </Avatar>
             )}
-            title={(
-              <Typography variant="h6" component="div" maxWidth={200}>
-                <Tooltip title={PROPOSAL.description} arrow>
-                  <Typography>{PROPOSAL.title}</Typography>
-                </Tooltip>
-              </Typography>
-            )}
-          />
-          {/* <CardContent>
+            />
+            {/* <CardContent>
             <Tooltip title={PROPOSAL.description} arrow>
               <Typography variant="caption" component="div">
                 {PROPOSAL.description}
               </Typography>
             </Tooltip>
           </CardContent> */}
+          </CardActionArea>
         </Card>
       </Grid>
     );
