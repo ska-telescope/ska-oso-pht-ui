@@ -7,7 +7,14 @@ import React from 'react';
 import { Avatar, Card, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { Projects, MAX_TITLE_LENGTH } from '../../../utils/constants';
+
 
 export default function TitleContent() {
   const theme = useTheme();
@@ -41,8 +48,17 @@ export default function TitleContent() {
   const [error, setError] = React.useState(false);
 
   function clickProposal(PROPOSAL: any) {
-    setTheProposal(PROPOSAL);
+    console.log("Proposal change", theProposal, PROPOSAL);
+  if (theProposal.title === '') {
+    console.log("first time selecting proposal");
+  } else if (theProposal !== PROPOSAL) {
+    console.log("changing proposal type");
+  } else {
+    console.log("same proposal selected");
   }
+  setTheProposal(PROPOSAL);
+  }
+  
   function clickSubProposal(PROPOSAL: any) {
     setTheSubProposal(PROPOSAL);
   }
