@@ -48,17 +48,21 @@ export default function TitleContent() {
   const [error, setError] = React.useState(false);
 
   function clickProposal(PROPOSAL: any) {
+    // eslint-disable-next-line no-console
     console.log("Proposal change", theProposal, PROPOSAL);
   if (theProposal.title === '') {
+    // eslint-disable-next-line no-console
     console.log("first time selecting proposal");
   } else if (theProposal !== PROPOSAL) {
+    // eslint-disable-next-line no-console
     console.log("changing proposal type");
   } else {
+    // eslint-disable-next-line no-console
     console.log("same proposal selected");
   }
   setTheProposal(PROPOSAL);
   }
-  
+
   function clickSubProposal(PROPOSAL: any) {
     setTheSubProposal(PROPOSAL);
   }
