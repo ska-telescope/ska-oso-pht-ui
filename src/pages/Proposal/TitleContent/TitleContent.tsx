@@ -68,12 +68,17 @@ export default function TitleContent() {
   }
 
   const validateTheTitle = (e) => {
+
+    console.log('[validateTheTitle] e = ', e)
+    console.log('[validateTheTitle] e = ', e.target.value)
+    const title = e.target.value
+
     // specify the pattern for allowed characters
     const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
     // check if the input matches the pattern
-    if (pattern.test(e)) {
+    if (pattern.test(title)) {
       // if it does, update the title
-      setTheTitle(e.substring(0, MAX_TITLE_LENGTH));
+      setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
     } else {
       // if it doesn't, show an error message
       setError(true);
