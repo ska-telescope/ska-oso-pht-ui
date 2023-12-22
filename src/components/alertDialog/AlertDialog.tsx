@@ -9,13 +9,15 @@ import { Typography } from '@mui/material';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 
 export default function AlertDialog(props) {
-    const { open, onClose } = props;
+    const { open, onClose, onDialogResponse  } = props;
 
     const handleContinue = () => {
+      onDialogResponse('continue');
       onClose();
     };
   
     const handleCancel = () => {
+      onDialogResponse('cancel');
       onClose();
     };
 
@@ -30,7 +32,7 @@ export default function AlertDialog(props) {
         Change Proposal&apos;s type?
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText id="alert-dialog-description" component="div">
           <Typography variant="body1">You are about to change the type of your proposal.</Typography>
           <Typography variant="body1">Some data specific to the proposal type may be lost.</Typography>
         </DialogContentText>

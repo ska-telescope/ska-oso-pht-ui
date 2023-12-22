@@ -38,33 +38,27 @@ export default function TitleContent() {
 
   const [theTitle, setTheTitle] = React.useState('default');
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
+  const [theProposalTemp, setTheProposalTemp] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
   const [helperText, sethelperText] = React.useState('');
   const [error, setError] = React.useState(false);
-
   const [openDialog, setOpenDialog] = React.useState(false);
-  const handleOpenAlert = () => {
-    setOpenDialog(true);
-  };
-  const handleCloseAlert = () => {
-    setOpenDialog(false);
+
+  const handleDialogResponse = (response) => {
+    if (response === 'continue') {
+      setTheProposal(theProposalTemp);
+    } 
   };
 
   function clickProposal(PROPOSAL: any) {
-    // eslint-disable-next-line no-console
-    console.log("Proposal change", theProposal, PROPOSAL);
-  if (theProposal.title === '') {
-    // eslint-disable-next-line no-console
-    console.log("first time selecting proposal");
-  } else if (theProposal !== PROPOSAL) {
-    // eslint-disable-next-line no-console
-    console.log("changing proposal type");
-    setOpenDialog(true);
-  } else {
-    // eslint-disable-next-line no-console
-    console.log("same proposal selected");
-  }
-  setTheProposal(PROPOSAL);
+    if (theProposal.title === '') {
+      // 1st time selecting a proposal
+      setTheProposal(PROPOSAL);
+    } else if (theProposal !== PROPOSAL) {
+      // changing proposal type
+      setOpenDialog(true);
+      setTheProposalTemp(PROPOSAL);
+    } 
   }
 
   function clickSubProposal(PROPOSAL: any) {
@@ -96,15 +90,9 @@ export default function TitleContent() {
 
   function ProposalType(PROPOSAL: any) {
     return (
-      <>
-        {/* 
-        <Button variant="outlined" onClick={handleOpenAlert} sx={{backgroundColor: 'primary.light'}}>
-          Open alert dialog
-        </Button> 
-        */}
-        <Grid item>
-          <Card
-            style={{
+      <Grid item>
+        <Card
+          style={{
             color: setCardFG(theProposal, PROPOSAL),
             backgroundColor: setCardBG(theProposal, PROPOSAL),
             minWidth: 300,
@@ -112,41 +100,40 @@ export default function TitleContent() {
             display:"flex" ,
             justifyContent:"center"
           }}
-            onClick={() => clickProposal(PROPOSAL)}
-            variant="outlined"
-          >
-            <CardHeader
-              avatar={(
-                <Avatar
-                  variant="rounded"
-                  style={{
+          onClick={() => clickProposal(PROPOSAL)}
+          variant="outlined"
+        >
+          <CardHeader
+            avatar={(
+              <Avatar
+                variant="rounded"
+                style={{
                   color: setCardBG(theProposal, PROPOSAL),
                   backgroundColor: setCardFG(theProposal, PROPOSAL)
                 }}
-                >
-                  <Typography variant="body2" component="div">
-                    {PROPOSAL.code}
-                  </Typography>
-                </Avatar>
-            )}
-              title={(
-                <Typography variant="h6" component="div" maxWidth={200}>
-                  <Tooltip title={PROPOSAL.description} arrow>
-                    <Typography>{PROPOSAL.title}</Typography>
-                  </Tooltip>
+              >
+                <Typography variant="body2" component="div">
+                  {PROPOSAL.code}
                 </Typography>
+              </Avatar>
             )}
-            />
-            {/* <CardContent>
+            title={(
+              <Typography variant="h6" component="div" maxWidth={200}>
+                <Tooltip title={PROPOSAL.description} arrow>
+                  <Typography>{PROPOSAL.title}</Typography>
+                </Tooltip>
+              </Typography>
+            )}
+          />
+          {/* <CardContent>
             <Tooltip title={PROPOSAL.description} arrow>
               <Typography variant="caption" component="div">
                 {PROPOSAL.description}
               </Typography>
             </Tooltip>
           </CardContent> */}
-          </Card>
-        </Grid>
-      </>
+        </Card>
+      </Grid>
     );
   }
 
@@ -290,7 +277,7 @@ export default function TitleContent() {
         </Grid>
       )}
       </Grid>
-      <AlertDialog open={openDialog} onClose={() => setOpenDialog(false)} />
+      <AlertDialog open={openDialog} onClose={() => setOpenDialog(false)} onDialogResponse={handleDialogResponse} />
     </>
   );
 }
