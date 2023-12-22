@@ -5,45 +5,55 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { Typography } from '@mui/material';
+import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 
-export default function AlertDialog() {
-  const [open, setOpen] = React.useState(false);
+export default function AlertDialog(props) {
+    const { open, onClose } = props;
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+    const handleContinue = () => {
+      onClose();
+    };
+  
+    const handleCancel = () => {
+      onClose();
+    };
 
   return (
-    <>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Use Googles location service?
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Dialog
+      open={open}
+      onClose={handleCancel}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        Change Proposal&apos;s type?
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          <Typography variant="body1">You are about to change the type of your proposal.</Typography>
+          <Typography variant="body1">Some data specific to the proposal type may be lost.</Typography>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={handleContinue} 
+          sx={{backgroundColor: 'primary.light'}} 
+          color={ButtonColorTypes.Secondary} 
+          variant={ButtonVariantTypes.Contained}
+        >
+          Continue
+        </Button>
+        <Button
+          onClick={handleCancel} 
+          autoFocus 
+          sx={{backgroundColor: 'primary.light'}} 
+          color={ButtonColorTypes.Secondary} 
+          variant={ButtonVariantTypes.Contained}
+        >
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
