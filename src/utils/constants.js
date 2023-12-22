@@ -349,3 +349,5 @@ export const Projects = [
 ];
 
 export const MAX_TITLE_LENGTH = 50;
+
+export const TITLE_HELPER_TEXT = "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.";

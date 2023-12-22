@@ -8,7 +8,7 @@ import { Avatar, Button, Card, CardActionArea, CardHeader, Grid, TextField, Tool
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
-import { Projects, MAX_TITLE_LENGTH } from '../../../utils/constants';
+import { Projects, MAX_TITLE_LENGTH, TITLE_HELPER_TEXT } from '../../../utils/constants';
 
 
 export default function TitleContent() {
@@ -103,7 +103,7 @@ export default function TitleContent() {
     } else {
       // if input doesn't match the pattern, show an error message
       setError(true);
-      sethelperText("Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.");
+      sethelperText(TITLE_HELPER_TEXT);
     }
   };
 
