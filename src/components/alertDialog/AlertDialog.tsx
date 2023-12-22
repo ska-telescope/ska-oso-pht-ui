@@ -37,15 +37,7 @@ export default function AlertDialog(props) {
           <Typography variant="body1">Some data specific to the proposal type may be lost.</Typography>
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleContinue} 
-          sx={{backgroundColor: 'primary.light'}} 
-          color={ButtonColorTypes.Secondary} 
-          variant={ButtonVariantTypes.Contained}
-        >
-          Continue
-        </Button>
+      <DialogActions sx={{p:'24px'}}>
         <Button
           onClick={handleCancel} 
           autoFocus 
@@ -54,6 +46,14 @@ export default function AlertDialog(props) {
           variant={ButtonVariantTypes.Contained}
         >
           Cancel
+        </Button>
+        <Button
+          onClick={handleContinue} 
+          sx={{backgroundColor: 'secondary.light'}} 
+          color={ButtonColorTypes.Secondary} 
+          variant={ButtonVariantTypes.Contained}
+        >
+          Continue
         </Button>
       </DialogActions>
     </Dialog>

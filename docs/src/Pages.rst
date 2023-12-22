@@ -6,3 +6,4 @@ Pages
    :caption: Pages:
 
    LandingPage
+   TitlePage

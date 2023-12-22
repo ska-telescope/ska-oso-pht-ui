@@ -234,7 +234,6 @@ export default function TitleContent() {
             {/* TODO: use TextEntry instead of TextField (TextField showing user input as NaN, was unable to fix it for now) */}
             {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
             <TextField
-              required
               id="titleId"
               label="Title"
               variant="standard"
