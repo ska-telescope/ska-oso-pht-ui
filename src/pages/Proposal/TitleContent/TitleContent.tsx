@@ -96,8 +96,12 @@ export default function TitleContent() {
       setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
       setError(false);
       sethelperText("");
+    } else if (title.trim() === "") {
+      // if input is empty, clear the error message
+      setError(false);
+      sethelperText("");
     } else {
-      // if it doesn't, show an error message
+      // if input doesn't match the pattern, show an error message
       setError(true);
       sethelperText("Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.");
     }
