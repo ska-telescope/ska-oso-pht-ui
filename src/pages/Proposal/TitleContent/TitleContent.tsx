@@ -111,6 +111,8 @@ export default function TitleContent() {
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
   const setCardFG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
+  const setCardClassName = (in1: any, in2: any) =>
+    in1 && in1 === in2 ? 'active' : 'inactive';
 
 
   function ProposalType(PROPOSAL: any) {
@@ -125,8 +127,10 @@ export default function TitleContent() {
             display:"flex" ,
             justifyContent:"center"
           }}
+          className={setCardClassName(theProposal, PROPOSAL)}
           onClick={() => clickProposal(PROPOSAL)}
           variant="outlined"
+          id={`ProposalType-${PROPOSAL.id}`}
         >
           <CardActionArea>
             <CardHeader
@@ -172,8 +176,10 @@ export default function TitleContent() {
             color: setCardFG(theSubProposal, PROPOSAL),
             backgroundColor: setCardBG(theSubProposal, PROPOSAL)
           }}
+          className={setCardClassName(theSubProposal, PROPOSAL)}
           onClick={() => clickSubProposal(PROPOSAL)}
           variant="outlined"
+          id={`SubProposalType-${PROPOSAL.id}`}
         >
           <CardActionArea>
             <CardHeader
@@ -299,6 +305,7 @@ export default function TitleContent() {
           justifyContent="center"
           alignItems="baseline"
           spacing={2}
+          id="SubProposalContainer"
         >
           {theProposal?.subProjects[0].id > 0 &&
             theProposal?.subProjects?.map((proposalType: any) => ProposalSubType(proposalType))}

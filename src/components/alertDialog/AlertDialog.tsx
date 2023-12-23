@@ -27,6 +27,7 @@ export default function AlertDialog(props) {
       onClose={handleCancel}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      id="alert-dialog-proposal-change"
     >
       <DialogTitle id="alert-dialog-title">
         Change Proposal&apos;s type?
