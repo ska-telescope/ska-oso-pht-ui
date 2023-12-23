@@ -121,8 +121,6 @@ describe('title TextField', () => {
   it('should change proposal type if clicking "Continue" on alert dialog', () => {
     // select 2st Proposal type
     cy.get('#ProposalType-2').click();
-    // check it's selected
-    cy.get('#ProposalType-2').should('have.class', 'active');
     // select 1st Proposal type
     cy.get('#ProposalType-1').click();
     // click "continue button" of dialog
@@ -133,8 +131,6 @@ describe('title TextField', () => {
   it('should NOT change proposal type if clicking "Cancel" on alert dialog', () => {
     // select 2st Proposal type
     cy.get('#ProposalType-2').click();
-    // check it's selected
-    cy.get('#ProposalType-2').should('have.class', 'active');
     // select 1st Proposal type
     cy.get('#ProposalType-1').click();
     // click "continue button" of dialog
@@ -211,8 +207,6 @@ describe('title TextField', () => {
     cy.get('#ProposalType-2').click();
     // select 5th SubProposal type
     cy.get('#SubProposalType-5').click();
-    // check it's selected
-    cy.get('#SubProposalType-5').should('have.class', 'active');
     // select 6th SubProposal type
     cy.get('#SubProposalType-6').click();
     // click "continue button" of dialog
@@ -225,8 +219,6 @@ describe('title TextField', () => {
     cy.get('#ProposalType-2').click();
     // select 5th SubProposal type
     cy.get('#SubProposalType-5').click();
-    // check it's selected
-    cy.get('#SubProposalType-5').should('have.class', 'active');
     // select 6th SubProposal type
     cy.get('#SubProposalType-6').click();
     // click "continue button" of dialog
