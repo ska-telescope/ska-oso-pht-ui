@@ -33,10 +33,19 @@ describe('abstract TextEntry', () => {
     const text = "This is an abstract";
     // Select the textarea and type the text
     cy.get('[data-testid="abstractId"]')
-      .find('textarea').first()
-      .focus()
-      .clear()
-      .type(text)
+    .find('textarea')
+    .first()
+    .focus()
+
+    cy.get('[data-testid="abstractId"]')
+    .find('textarea')
+    .first()
+    .clear()
+
+    cy.get('[data-testid="abstractId"]')
+    .find('textarea')
+    .first()
+    .type(text)
 
     // Get the updated abstract value from the input
     cy.get('[data-testid="abstractId"]')
