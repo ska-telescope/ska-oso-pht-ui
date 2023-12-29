@@ -36,14 +36,14 @@ export default function GeneralContent() {
           <Grid item xs={3}>
             <DropDown
               options={GENERAL.ScienceCategory}
-              testId="{tt}"
+              testId="categoryId"
               value={category}
               setValue={setCategory}
               label="Scientific Category"
             />
             <DropDown
               options={GENERAL.ScienceSubCategory}
-              testId="{tt}"
+              testId="subCategoryId"
               value={subCategory}
               setValue={setSubCategory}
               label="Scientific sub-category"
