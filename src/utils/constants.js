@@ -73,7 +73,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Lagoon',
     Affiliation: 'University of Free Town',
-    'For PhD Thesis?': 'No'
+    PHDThesis: 'No',
+    Status: 'Pending',
+    Actions: null,
+    PI: false
   },
   {
     id: 2,
@@ -82,7 +85,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Ocean',
     Affiliation: 'University of Free Town',
-    'For PhD Thesis?': 'Yes'
+    PHDThesis: 'Yes',
+    Status: 'Accepted',
+    Actions: null,
+    PI: true
   },
   {
     id: 3,
@@ -91,7 +97,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Park',
     Affiliation: 'University of Virginia',
-    'For PhD Thesis?': 'No'
+    PHDThesis: 'No',
+    Status: 'Accepted',
+    Actions: null,
+    PI: false
   }
 ];
 

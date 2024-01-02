@@ -3,10 +3,12 @@ import React from 'react';
 import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
 import { DEFAULT_HELP, TEAM } from '../../../utils/constants';
+import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,10 +31,33 @@ export default function TeamContent() {
   const columns = [
     { field: 'LastName', headerName: 'Last Name', width: 200 },
     { field: 'FirstName', headerName: 'First Name', width: 200 },
-    { field: 'misc', headerName: 'Misc', width: 200 }
+    { field: 'Status', headerName: 'Misc', width: 200 },
+    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 200 },
+    {
+      field: "PI",
+      headerName: "PI",
+      sortable: false,
+      width: 100,
+      disableClickEventBubbling: true,
+      renderCell: () => (
+        <>
+          <StarBorderRounded />
+          <StarRateRounded />
+        </>
+        )
+    },
+    {
+      field: "Actions",
+      headerName: "Actions",
+      sortable: false,
+      width: 100,
+      disableClickEventBubbling: true,
+      renderCell: () => (
+        <DeleteProposalButton />
+        )
+    }
   ];
-
-  const extendedColumns = structuredClone(columns);
+  const extendedColumns = [...columns];
 
   const ClickFunction = () => {
     // TODO
