@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, Typography, SvgIcon } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
@@ -14,6 +14,18 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   tabValue: number;
+}
+
+export function PIStar(props) {
+  const {isPI} = props;
+  if (isPI) {
+    return (
+      <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...props} />
+    );
+  }
+  return (
+    <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...props} />
+  );
 }
 
 export default function TeamContent() {
@@ -39,12 +51,9 @@ export default function TeamContent() {
       sortable: false,
       width: 100,
       disableClickEventBubbling: true,
-      renderCell: () => (
-        <>
-          <StarBorderRounded />
-          <StarRateRounded />
-        </>
-        )
+      renderCell: (params) => (
+        <PIStar isPI={Boolean(params.row.PI)} />
+      )
     },
     {
       field: "Actions",
