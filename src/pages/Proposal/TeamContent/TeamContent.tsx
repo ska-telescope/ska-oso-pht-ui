@@ -16,15 +16,19 @@ interface TabPanelProps {
   tabValue: number;
 }
 
-export function PIStar(props) {
-  const {isPI} = props;
+export function PIStar({isPI, status, ...rest}) {
   if (isPI) {
     return (
-      <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...props} />
+      <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />
+    );
+  } if (status === 'Accepted') {
+    return (
+      <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...rest} />
     );
   }
   return (
-    <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...props} />
+    <>
+    </>
   );
 }
 
@@ -41,10 +45,10 @@ export default function TeamContent() {
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', width: 200 },
-    { field: 'FirstName', headerName: 'First Name', width: 200 },
-    { field: 'Status', headerName: 'Misc', width: 200 },
-    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 200 },
+    { field: 'LastName', headerName: 'Last Name', width: 250 },
+    { field: 'FirstName', headerName: 'First Name', width: 250 },
+    { field: 'Status', headerName: 'Status', width: 150 },
+    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
     {
       field: "PI",
       headerName: "PI",
@@ -52,7 +56,7 @@ export default function TeamContent() {
       width: 100,
       disableClickEventBubbling: true,
       renderCell: (params) => (
-        <PIStar isPI={Boolean(params.row.PI)} />
+        <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
       )
     },
     {
