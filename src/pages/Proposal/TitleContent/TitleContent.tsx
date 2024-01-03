@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -7,6 +8,7 @@ import React from 'react';
 import { Avatar, Card, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 const MAX_TITLE_LENGTH = 50;
 
@@ -108,7 +110,12 @@ const Projects = [
   }
 ];
 
-export default function TitleContent() {
+interface TitleContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const theme = useTheme();
 
   const emptyProposal = {
@@ -136,6 +143,21 @@ export default function TitleContent() {
   const [theTitle, setTheTitle] = React.useState('');
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    let count = 0;
+    if (theTitle?.length > 0) {
+      count++;
+    }
+    if (theSubProposal?.id !== 0) {
+      count++;
+    }
+    setStatus([page, result[count]]);
+  }, [setStatus, theTitle, theSubProposal]);
 
   function clickProposal(PROPOSAL: any) {
     setTheProposal(PROPOSAL);

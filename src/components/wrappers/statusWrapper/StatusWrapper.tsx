@@ -27,7 +27,7 @@ export default function StatusWrapper({ level = 5, page, setPage }: StatusWrappe
       onClick={ClickFunction}
     >
       <StatusIcon testId="statusId" icon level={getLevel()} size={SIZE} />
-      <Typography variant="caption">{PAGES[page].title}</Typography>
+      <Typography variant="caption">{PAGES[page]}</Typography>
     </Grid>
   );
 }

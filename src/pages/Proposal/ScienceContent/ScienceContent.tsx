@@ -14,12 +14,33 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
 import LatexEntry from '../../../components/latexEntry/latexEntry';
 
-import { SCIENCE } from '../../../utils/constants';
+import { SCIENCE, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
-export default function ScienceContent() {
+interface ScienceContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function ScienceContent({ page, setStatus }: ScienceContentProps) {
   const [latex, setLatex] = React.useState(SCIENCE);
   const [isOpen, setIsOpen] = React.useState(false);
   const [pdfUrl, setPdfUrl] = React.useState('');
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const count = 0;
+
+    // TODO : Increment the count for every passing element of the page.
+    // This is then used to take the status from the result array
+    // In the default provided, the count must be 2 for the page to pass.
+
+    // See titleContent page for working example
+
+    setStatus([page, result[count]]);
+  }, [setStatus]);
 
   function openModal() {
     setIsOpen(true);

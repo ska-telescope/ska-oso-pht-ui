@@ -46,15 +46,19 @@ export const EXISTING_PROPOSALS = [
   }
 ];
 
+export const STATUS_OK = 0;
+export const STATUS_ERROR = 1;
+export const STATUS_PARTIAL = 3;
+
 export const PAGES = [
-  { status: 0, title: 'title' },
-  { status: 0, title: 'team' },
-  { status: 1, title: 'general' },
-  { status: 3, title: 'science' },
-  { status: 3, title: 'target' },
-  { status: 5, title: 'Observation' },
-  { status: 5, title: 'Technical' },
-  { status: 5, title: 'Data' }
+  'Title',
+  'Team',
+  'General',
+  'Science',
+  'Target',
+  'Observation',
+  'Technical',
+  'Data'
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
