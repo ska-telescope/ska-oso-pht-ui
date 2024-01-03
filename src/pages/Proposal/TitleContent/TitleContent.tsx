@@ -6,9 +6,10 @@
 import React from 'react';
 import { Avatar, Button, Card, CardActionArea, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+// import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
 import { Projects, MAX_TITLE_LENGTH, TITLE_HELPER_TEXT } from '../../../utils/constants';
+import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
 
 
 export default function TitleContent() {
@@ -237,16 +238,11 @@ export default function TitleContent() {
             <Typography variant="body2">Title</Typography>
           </Grid>
           <Grid item xs={4}>
-            {/* TODO: use TextEntry instead of TextField (TextField showing user input as NaN, was unable to fix it for now) */}
+            {/* TODO: use TextEntry from GUI-components instead (showing user input as NaN, was unable to fix it for now) */}
             {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
-            <TextField
+            <TextEntry
               id="titleId"
               label="Title"
-              variant="standard"
-              fullWidth
-              onChange={validateTheTitle}
-              error={error}
-              helperText={helperText}
             />
           </Grid>
           <Grid item xs={4}>
