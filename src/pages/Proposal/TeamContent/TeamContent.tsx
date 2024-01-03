@@ -128,11 +128,12 @@ export default function TeamContent() {
                   {...a11yProps(0)}
                   sx={{ border: '1px solid grey' }}
                 />
-                <Tab label="Import From File" {...a11yProps(1)} sx={{ border: '1px solid grey' }} />
+                <Tab label="Import From File" {...a11yProps(1)} sx={{ border: '1px solid grey' }} disabled />
                 <Tab
                   label="Search For Member"
                   {...a11yProps(2)}
                   sx={{ border: '1px solid grey' }}
+                  disabled
                 />
               </Tabs>
             </Box>
