@@ -5,7 +5,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Van Loo Cheng',
     status: 'Submitted',
-    lastUpdated: '21/11/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -14,7 +14,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Van Loo Cheng',
     status: 'Submitted',
-    lastUpdated: '21/11/2023',
+    lastUpdated: '2023-12-20 00:00:15',
     actions: null
   },
   {
@@ -23,7 +23,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Keeper Sung',
     status: 'Accepted',
-    lastUpdated: '1/11/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -32,7 +32,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Precious Luthan',
     status: 'Draft',
-    lastUpdated: '21/12/2022',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   },
   {
@@ -41,7 +41,7 @@ export const EXISTING_PROPOSALS = [
     cycle: 'SKA_5000_2023',
     pi: 'Ma James Nuka',
     status: 'Withdrawn',
-    lastUpdated: '21/01/2023',
+    lastUpdated: '2023-12-21 00:00:15',
     actions: null
   }
 ];
@@ -62,7 +62,6 @@ export const PAGES = [
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Created', value: 'created' },
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
   { label: 'Accepted', value: 'accepted' },
@@ -254,3 +253,105 @@ export const TARGETS = {
   },
   'Create Mosaic': null
 };
+
+export const Projects = [
+  {
+    id: 1,
+    title: 'Standard Proposal',
+    code: 'PI',
+    description: 'Standard Observing Proposal',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JTP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Key Science Project',
+    code: 'KSP',
+    description:
+      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    subProjects: [
+      {
+        id: 5,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 6,
+        title: 'Joint SKA proposal',
+        code: 'JTP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 7,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 8,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Director's Discretionary Time Proposal",
+    code: 'DDT',
+    description:
+      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    subProjects: [
+      {
+        id: 9,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 10,
+        title: 'Joint SKA proposal',
+        code: 'JTP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 11,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      }
+    ]
+  }
+];
+
+export const MAX_TITLE_LENGTH = 50;
+
+export const TITLE_HELPER_TEXT = "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.";

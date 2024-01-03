@@ -16,3 +16,4 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    DuringDevelopment
    RunningBuilding
    Testing
+   Pages

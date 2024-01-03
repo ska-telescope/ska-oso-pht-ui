@@ -5,110 +5,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import { Avatar, Card, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
+import { Avatar, Button, Card, CardActionArea, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-
-const MAX_TITLE_LENGTH = 50;
-
-const Projects = [
-  {
-    id: 1,
-    title: 'Standard Proposal',
-    code: 'PI',
-    description: 'Standard Observing Proposal',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JTP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Key Science Project',
-    code: 'KSP',
-    description:
-      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
-    subProjects: [
-      {
-        id: 5,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 6,
-        title: 'Joint SKA proposal',
-        code: 'JTP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 7,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 8,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Director's Discretionary Time Proposal",
-    code: 'DDT',
-    description:
-      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
-    subProjects: [
-      {
-        id: 9,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 10,
-        title: 'Joint SKA proposal',
-        code: 'JTP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 11,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      }
-    ]
-  }
-];
+import AlertDialog from '../../../components/alertDialog/AlertDialog';
+import { Projects, MAX_TITLE_LENGTH, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, TITLE_HELPER_TEXT } from '../../../utils/constants';
 
 interface TitleContentProps {
   page: number;
@@ -140,9 +41,28 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
     description: ''
   };
 
-  const [theTitle, setTheTitle] = React.useState('');
+  const [theTitle, setTheTitle] = React.useState('default');
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
+  const [theProposalTemp, setTheProposalTemp] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
+  const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptyProposal);
+  const [subProposalChange, setSubProposalChange] = React.useState(false);
+  const [helperText, sethelperText] = React.useState('');
+  const [error, setError] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const handleDialogResponse = (response) => {
+    if (response === 'continue') {
+      if (!subProposalChange) {
+        // set proposal and reset sub-proposal
+        setTheProposal(theProposalTemp);
+        setTheSubProposal(emptyProposal);
+      } else {
+        // set sub-proposal
+        setTheSubProposal(theSubProposalTemp);
+      }
+    } 
+  };
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -160,18 +80,60 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   }, [setStatus, theTitle, theSubProposal]);
 
   function clickProposal(PROPOSAL: any) {
-    setTheProposal(PROPOSAL);
-  }
-  function clickSubProposal(PROPOSAL: any) {
-    setTheSubProposal(PROPOSAL);
+    if (theProposal.title === '') {
+      // 1st time selecting a proposal
+      setTheProposal(PROPOSAL);
+    } else if (theProposal !== PROPOSAL) {
+      // changing proposal type
+      setSubProposalChange(false);
+      setOpenDialog(true);
+      // keep track of clicked proposal
+      setTheProposalTemp(PROPOSAL);
+    } 
   }
 
-  const validateTheTitle = (e: string) => setTheTitle(e.substring(0, MAX_TITLE_LENGTH));
+  function clickSubProposal(PROPOSAL: any) {
+    // setTheSubProposal(PROPOSAL);
+    if (theSubProposal.title === '') {
+      // 1st time selecting the sub-proposal
+      setTheSubProposal(PROPOSAL);
+    } else if (theSubProposal !== PROPOSAL) {
+      // changing sub-proposal type
+      setSubProposalChange(true);
+      setOpenDialog(true);
+      // keep track of clicked sub-proposal
+      setTheSubProposalTemp(PROPOSAL);
+    } 
+  }
+
+  const validateTheTitle = (e) => {
+    const title = e.target.value
+    // specify the pattern for allowed characters
+    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
+    // check if the input matches the pattern
+    if (pattern.test(title)) {
+      // if it does, update the title
+      setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
+      setError(false);
+      sethelperText("");
+    } else if (title.trim() === "") {
+      // if input is empty, clear the error message
+      setError(false);
+      sethelperText("");
+    } else {
+      // if input doesn't match the pattern, show an error message
+      setError(true);
+      sethelperText(TITLE_HELPER_TEXT);
+    }
+  };
 
   const setCardBG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
   const setCardFG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
+  const setCardClassName = (in1: any, in2: any) =>
+    in1 && in1 === in2 ? 'active' : 'inactive';
+
 
   function ProposalType(PROPOSAL: any) {
     return (
@@ -179,40 +141,48 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
         <Card
           style={{
             color: setCardFG(theProposal, PROPOSAL),
-            backgroundColor: setCardBG(theProposal, PROPOSAL)
+            backgroundColor: setCardBG(theProposal, PROPOSAL),
+            minWidth: 300,
+            minHeight: 200,
+            display:"flex" ,
+            justifyContent:"center"
           }}
+          className={setCardClassName(theProposal, PROPOSAL)}
           onClick={() => clickProposal(PROPOSAL)}
           variant="outlined"
+          id={`ProposalType-${PROPOSAL.id}`}
         >
-          <CardHeader
-            avatar={(
-              <Avatar
-                variant="rounded"
-                style={{
+          <CardActionArea>
+            <CardHeader
+              avatar={(
+                <Avatar
+                  variant="rounded"
+                  style={{
                   color: setCardBG(theProposal, PROPOSAL),
                   backgroundColor: setCardFG(theProposal, PROPOSAL)
                 }}
-              >
-                <Typography variant="body2" component="div">
-                  {PROPOSAL.code}
+                >
+                  <Typography variant="body2" component="div">
+                    {PROPOSAL.code}
+                  </Typography>
+                </Avatar>
+            )}
+              title={(
+                <Typography variant="h6" component="div" maxWidth={200}>
+                  <Tooltip title={PROPOSAL.description} arrow>
+                    <Typography>{PROPOSAL.title}</Typography>
+                  </Tooltip>
                 </Typography>
-              </Avatar>
             )}
-            title={(
-              <Typography variant="h6" component="div">
-                <Tooltip title={PROPOSAL.description} arrow>
-                  <Typography>{PROPOSAL.title}</Typography>
-                </Tooltip>
-              </Typography>
-            )}
-          />
-          {/* <CardContent>
+            />
+            {/* <CardContent>
             <Tooltip title={PROPOSAL.description} arrow>
               <Typography variant="caption" component="div">
                 {PROPOSAL.description}
               </Typography>
             </Tooltip>
           </CardContent> */}
+          </CardActionArea>
         </Card>
       </Grid>
     );
@@ -226,32 +196,35 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
             color: setCardFG(theSubProposal, PROPOSAL),
             backgroundColor: setCardBG(theSubProposal, PROPOSAL)
           }}
+          className={setCardClassName(theSubProposal, PROPOSAL)}
           onClick={() => clickSubProposal(PROPOSAL)}
           variant="outlined"
+          id={`SubProposalType-${PROPOSAL.id}`}
         >
-          <CardHeader
-            avatar={(
-              <Avatar
-                variant="rounded"
-                style={{
+          <CardActionArea>
+            <CardHeader
+              avatar={(
+                <Avatar
+                  variant="rounded"
+                  style={{
                   color: setCardBG(theSubProposal, PROPOSAL),
                   backgroundColor: setCardFG(theSubProposal, PROPOSAL)
                 }}
-              >
-                <Typography variant="body2" component="div">
-                  {PROPOSAL.code}
+                >
+                  <Typography variant="body2" component="div">
+                    {PROPOSAL.code}
+                  </Typography>
+                </Avatar>
+            )}
+              title={(
+                <Typography variant="h6" component="div">
+                  <Tooltip title={PROPOSAL.description} arrow>
+                    <Typography>{PROPOSAL.title}</Typography>
+                  </Tooltip>
                 </Typography>
-              </Avatar>
             )}
-            title={(
-              <Typography variant="h6" component="div">
-                <Tooltip title={PROPOSAL.description} arrow>
-                  <Typography>{PROPOSAL.title}</Typography>
-                </Tooltip>
-              </Typography>
-            )}
-          />
-          {/* <CardContent>
+            />
+            {/* <CardContent>
             <Typography variant="caption" component="div">
               {PROPOSAL.description.split('\n').map((c: string) => {
                 return (
@@ -263,75 +236,103 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
               })}
             </Typography>
             </CardContent> */}
+          </CardActionArea>
         </Card>
       </Grid>
     );
   }
 
   return (
-    <Grid container direction="column" alignItems="flex-start" justifyContent="space-evenly">
-      <Grid
-        pl={2}
-        container
-        direction="row"
-        justifyContent="space-around"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid item xs={3}>
-          <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} />
+    <>
+      <Grid container direction="column" alignItems="flex-start" justifyContent="space-evenly">
+        <Grid
+          pl={2}
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={2}>
+            <Typography variant="body2">Title</Typography>
+          </Grid>
+          <Grid item xs={4}>
+            {/* TODO: use TextEntry instead of TextField (TextField showing user input as NaN, was unable to fix it for now) */}
+            {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
+            <TextField
+              id="titleId"
+              label="Title"
+              variant="standard"
+              fullWidth
+              onChange={validateTheTitle}
+              error={error}
+              helperText={helperText}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography variant="body2">
+              This title should be used to allow for the
+              <br />
+              {' '}
+              identification of this proposal in a list of proposals
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Typography variant="body2">
-            This title should be used to allow for the identification of this proposal in a list of
-            proposals
-          </Typography>
-        </Grid>
-      </Grid>
 
-      <Grid pl={2} container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item xs={3}>
-          <Typography variant="body2">Proposal Type</Typography>
+        <Grid 
+          pl={2} 
+          container 
+          direction="row" 
+          justifyContent="center" 
+          alignItems="center" 
+          sx={{mt: 4, mb: 4}} 
+          spacing={2}
+        >
+          <Grid item xs={2}>
+            <Typography variant="body2">Proposal Type</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Typography variant="body2">
+              Below are the available Proposal Types that can be used as a basis for a new proposal.
+            </Typography>
+            <Typography variant="body2">
+              A description of the different types is provided as an aid as to the correct type to be
+              selected to allow the proposal to be completed as required
+            </Typography>
+            <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
+              It is possible to be able to change this at a later date, however be aware that this may
+              cause information already entered to be lost.
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Typography variant="body2">
-            Below are the available Proposal Types that can be used as a basis for a new proposal.
-          </Typography>
-          <Typography variant="body2">
-            A description of the different types is provided as an aid as to the correct type to be
-            selected to allow the proposal to be completed as required
-          </Typography>
-          <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-            It is possible to be able to change this at a later date, however be aware that this may
-            cause information already entered to be lost.
-          </Typography>
-        </Grid>
-      </Grid>
 
-      <Grid
-        p={2}
-        container
-        direction="row"
-        justifyContent="space-evenly"
-        alignItems="baseline"
-        spacing={2}
-      >
-        {Projects.map((proposalType: any) => ProposalType(proposalType))}
-      </Grid>
-
-      {theProposal && (
         <Grid
           p={2}
           container
           direction="row"
-          justifyContent="space-evenly"
+          justifyContent="center"
+          alignItems="baseline"
+          spacing={4}
+        >
+          {Projects.map((proposalType: any) => ProposalType(proposalType))}
+        </Grid>
+
+        {theProposal && (
+        <Grid
+          p={2}
+          container
+          direction="row"
+          justifyContent="center"
           alignItems="baseline"
           spacing={2}
+          id="SubProposalContainer"
         >
           {theProposal?.subProjects[0].id > 0 &&
             theProposal?.subProjects?.map((proposalType: any) => ProposalSubType(proposalType))}
         </Grid>
       )}
-    </Grid>
+      </Grid>
+      <AlertDialog open={openDialog} onClose={() => setOpenDialog(false)} onDialogResponse={handleDialogResponse} />
+    </>
   );
 }
