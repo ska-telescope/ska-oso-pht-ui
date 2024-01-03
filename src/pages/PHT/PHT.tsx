@@ -16,7 +16,6 @@ export default function PHT() {
   using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
   */
 
-
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
@@ -49,10 +48,10 @@ export default function PHT() {
   ];
   const extendedColumns = [...COLUMNS];
 
-  const filteredData = EXISTING_PROPOSALS.filter((item) =>
-    ['title'].some((field) =>
-    item[field].toLowerCase().includes(searchTerm.toLowerCase())
-    ) && (searchType === '' ||  item.status.toLowerCase() === searchType.toLowerCase())
+  const filteredData = EXISTING_PROPOSALS.filter(
+    item =>
+      ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
   );
 
   return (
