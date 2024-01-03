@@ -1,17 +1,37 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import { Avatar, Button, Card, CardActionArea, CardHeader, Grid, TextField, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Card,
+  CardActionArea,
+  CardHeader,
+  Grid,
+  TextField,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
-import { Projects, MAX_TITLE_LENGTH, TITLE_HELPER_TEXT } from '../../../utils/constants';
+import {
+  Projects,
+  MAX_TITLE_LENGTH,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL,
+  TITLE_HELPER_TEXT
+} from '../../../utils/constants';
 
+interface TitleContentProps {
+  page: number;
+  setStatus: Function;
+}
 
-export default function TitleContent() {
+export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const theme = useTheme();
 
   const emptyProposal = {
@@ -36,17 +56,32 @@ export default function TitleContent() {
     description: ''
   };
 
-  const [theTitle, setTheTitle] = React.useState('default');
+  const [theTitle, setTheTitle] = React.useState('');
   const [theProposal, setTheProposal] = React.useState(emptyProposal);
   const [theProposalTemp, setTheProposalTemp] = React.useState(emptyProposal);
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
   const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptyProposal);
   const [subProposalChange, setSubProposalChange] = React.useState(false);
-  const [helperText, sethelperText] = React.useState('');
+  const [helperText, setHelperText] = React.useState('');
   const [error, setError] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  const handleDialogResponse = (response) => {
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    let count = 0;
+    if (theTitle?.length > 0) {
+      count++;
+    }
+    if (theSubProposal?.id !== 0) {
+      count++;
+    }
+    setStatus([page, result[count]]);
+  }, [theTitle, theSubProposal]);
+
+  const handleDialogResponse = response => {
     if (response === 'continue') {
       if (!subProposalChange) {
         // set proposal and reset sub-proposal
@@ -56,8 +91,23 @@ export default function TitleContent() {
         // set sub-proposal
         setTheSubProposal(theSubProposalTemp);
       }
-    } 
+    }
   };
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    let count = 0;
+    if (theTitle?.length > 0) {
+      count++;
+    }
+    if (theSubProposal?.id !== 0) {
+      count++;
+    }
+    setStatus([page, result[count]]);
+  }, [theTitle]);
 
   function clickProposal(PROPOSAL: any) {
     if (theProposal.title === '') {
@@ -69,7 +119,7 @@ export default function TitleContent() {
       setOpenDialog(true);
       // keep track of clicked proposal
       setTheProposalTemp(PROPOSAL);
-    } 
+    }
   }
 
   function clickSubProposal(PROPOSAL: any) {
@@ -83,11 +133,11 @@ export default function TitleContent() {
       setOpenDialog(true);
       // keep track of clicked sub-proposal
       setTheSubProposalTemp(PROPOSAL);
-    } 
+    }
   }
 
-  const validateTheTitle = (e) => {
-    const title = e.target.value
+  const validateTheTitle = e => {
+    const title = e.target.value;
     // specify the pattern for allowed characters
     const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
     // check if the input matches the pattern
@@ -95,15 +145,15 @@ export default function TitleContent() {
       // if it does, update the title
       setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
       setError(false);
-      sethelperText("");
-    } else if (title.trim() === "") {
+      setHelperText('');
+    } else if (title.trim() === '') {
       // if input is empty, clear the error message
       setError(false);
-      sethelperText("");
+      setHelperText('');
     } else {
       // if input doesn't match the pattern, show an error message
       setError(true);
-      sethelperText(TITLE_HELPER_TEXT);
+      setHelperText(TITLE_HELPER_TEXT);
     }
   };
 
@@ -111,21 +161,18 @@ export default function TitleContent() {
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
   const setCardFG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
-  const setCardClassName = (in1: any, in2: any) =>
-    in1 && in1 === in2 ? 'active' : 'inactive';
-
+  const setCardClassName = (in1: any, in2: any) => (in1 && in1 === in2 ? 'active' : 'inactive');
 
   function ProposalType(PROPOSAL: any) {
     return (
-      <Grid item>
+      <Grid key={PROPOSAL.id} item>
         <Card
           style={{
             color: setCardFG(theProposal, PROPOSAL),
             backgroundColor: setCardBG(theProposal, PROPOSAL),
-            minWidth: 300,
-            minHeight: 200,
-            display:"flex" ,
-            justifyContent:"center"
+
+            display: 'flex',
+            justifyContent: 'center'
           }}
           className={setCardClassName(theProposal, PROPOSAL)}
           onClick={() => clickProposal(PROPOSAL)}
@@ -138,30 +185,23 @@ export default function TitleContent() {
                 <Avatar
                   variant="rounded"
                   style={{
-                  color: setCardBG(theProposal, PROPOSAL),
-                  backgroundColor: setCardFG(theProposal, PROPOSAL)
-                }}
+                    color: setCardBG(theProposal, PROPOSAL),
+                    backgroundColor: setCardFG(theProposal, PROPOSAL)
+                  }}
                 >
                   <Typography variant="body2" component="div">
                     {PROPOSAL.code}
                   </Typography>
                 </Avatar>
-            )}
+              )}
               title={(
                 <Typography variant="h6" component="div" maxWidth={200}>
                   <Tooltip title={PROPOSAL.description} arrow>
                     <Typography>{PROPOSAL.title}</Typography>
                   </Tooltip>
                 </Typography>
-            )}
+              )}
             />
-            {/* <CardContent>
-            <Tooltip title={PROPOSAL.description} arrow>
-              <Typography variant="caption" component="div">
-                {PROPOSAL.description}
-              </Typography>
-            </Tooltip>
-          </CardContent> */}
           </CardActionArea>
         </Card>
       </Grid>
@@ -170,7 +210,7 @@ export default function TitleContent() {
 
   function ProposalSubType(PROPOSAL: any) {
     return (
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid key={PROPOSAL.id} item xs={12} sm={6} md={3}>
         <Card
           style={{
             color: setCardFG(theSubProposal, PROPOSAL),
@@ -187,35 +227,23 @@ export default function TitleContent() {
                 <Avatar
                   variant="rounded"
                   style={{
-                  color: setCardBG(theSubProposal, PROPOSAL),
-                  backgroundColor: setCardFG(theSubProposal, PROPOSAL)
-                }}
+                    color: setCardBG(theSubProposal, PROPOSAL),
+                    backgroundColor: setCardFG(theSubProposal, PROPOSAL)
+                  }}
                 >
                   <Typography variant="body2" component="div">
                     {PROPOSAL.code}
                   </Typography>
                 </Avatar>
-            )}
+              )}
               title={(
                 <Typography variant="h6" component="div">
                   <Tooltip title={PROPOSAL.description} arrow>
                     <Typography>{PROPOSAL.title}</Typography>
                   </Tooltip>
                 </Typography>
-            )}
+              )}
             />
-            {/* <CardContent>
-            <Typography variant="caption" component="div">
-              {PROPOSAL.description.split('\n').map((c: string) => {
-                return (
-                  // eslint-disable-next-line react/jsx-key
-                  <Typography data-testid={c} variant="caption" component="div">
-                    {c}
-                  </Typography>
-                );
-              })}
-            </Typography>
-            </CardContent> */}
           </CardActionArea>
         </Card>
       </Grid>
@@ -259,13 +287,13 @@ export default function TitleContent() {
           </Grid>
         </Grid>
 
-        <Grid 
-          pl={2} 
-          container 
-          direction="row" 
-          justifyContent="center" 
-          alignItems="center" 
-          sx={{mt: 4, mb: 4}} 
+        <Grid
+          pl={2}
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ mt: 4, mb: 4 }}
           spacing={2}
         >
           <Grid item xs={2}>
@@ -276,12 +304,12 @@ export default function TitleContent() {
               Below are the available Proposal Types that can be used as a basis for a new proposal.
             </Typography>
             <Typography variant="body2">
-              A description of the different types is provided as an aid as to the correct type to be
-              selected to allow the proposal to be completed as required
+              A description of the different types is provided as an aid as to the correct type to
+              be selected to allow the proposal to be completed as required
             </Typography>
             <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-              It is possible to be able to change this at a later date, however be aware that this may
-              cause information already entered to be lost.
+              It is possible to be able to change this at a later date, however be aware that this
+              may cause information already entered to be lost.
             </Typography>
           </Grid>
         </Grid>
@@ -298,21 +326,25 @@ export default function TitleContent() {
         </Grid>
 
         {theProposal && (
-        <Grid
-          p={2}
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="baseline"
-          spacing={2}
-          id="SubProposalContainer"
-        >
-          {theProposal?.subProjects[0].id > 0 &&
-            theProposal?.subProjects?.map((proposalType: any) => ProposalSubType(proposalType))}
-        </Grid>
-      )}
+          <Grid
+            p={2}
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="baseline"
+            spacing={2}
+            id="SubProposalContainer"
+          >
+            {theProposal?.subProjects[0].id > 0 &&
+              theProposal?.subProjects?.map((proposalType: any) => ProposalSubType(proposalType))}
+          </Grid>
+        )}
       </Grid>
-      <AlertDialog open={openDialog} onClose={() => setOpenDialog(false)} onDialogResponse={handleDialogResponse} />
+      <AlertDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onDialogResponse={handleDialogResponse}
+      />
     </>
   );
 }

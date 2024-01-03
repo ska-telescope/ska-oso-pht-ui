@@ -11,7 +11,7 @@ interface DataGridWrapperProps {
   height: number;
   // eslint-disable-next-line @typescript-eslint/ban-types
   rowClick?: Function;
-  testId?: string
+  testId?: string;
 }
 
 export default function DataGridWrapper({

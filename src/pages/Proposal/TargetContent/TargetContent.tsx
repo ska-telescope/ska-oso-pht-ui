@@ -4,6 +4,7 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
+import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../../utils/constants';
 
 const TITLE = ['No specific Target', 'List of Targets', 'Target Mosaic'];
 
@@ -13,7 +14,12 @@ const TOOLTIP = [
   'Using a tool to create a mosaic of targets'
 ];
 
-export default function TargetContent() {
+interface TargetContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function TargetContent({ page, setStatus }: TargetContentProps) {
   const theme = useTheme();
 
   const [selectedCards, setSelectedCards] = React.useState([
@@ -21,6 +27,22 @@ export default function TargetContent() {
     { index: 1, isSelected: false },
     { index: 2, isSelected: false }
   ]);
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const count = 0;
+
+    // TODO : Increment the count for every passing element of the page.
+    // This is then used to take the status from the result array
+    // In the default provided, the count must be 2 for the page to pass.
+
+    // See titleContent page for working example
+
+    setStatus([page, result[count]]);
+  }, [setStatus]);
 
   const handleClick = (index: number) => {
     const updatedSelectedCards = selectedCards.map(card => ({

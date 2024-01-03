@@ -3,8 +3,6 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
-import useTheme from '@mui/material/styles/useTheme';
-import ReactDOM from 'react-dom/client';
 import { TITLE_HELPER_TEXT } from '../../../utils/constants';
 import theme from '../../../services/theme/theme';
 import TitleContent from './TitleContent';
@@ -27,34 +25,36 @@ describe('<TitleContent />', () => {
 describe('title TextField', () => {
   beforeEach(() => {
     cy.mount(
-      <Router location='/' navigator={undefined}>
+      <Router location="/" navigator={undefined}>
         <TitleContent />
       </Router>
     );
   });
   it('title updated with user input', () => {
-    const text = "Milky Way";
+    const text = 'Milky Way';
     // Select the input field and type the text
     cy.get('#titleId').type(text);
     // Get the updated title value from the input
-    cy.get('#titleId').then((titleInput) => {
+    cy.get('#titleId').then(titleInput => {
       const updatedTitle = titleInput.val();
       // Check that the updated title matches the typed text
       expect(updatedTitle).to.equal(text);
     });
   });
   it('title field displays error when incorrect input entered', () => {
-    const incorrectText = "XXX*%$";
+    const incorrectText = 'XXX*%$';
     // Select the input field and type the text
     cy.get('#titleId').type(incorrectText);
     // Get the text displayed in the helper text section
-    cy.get('#titleId-helper-text').invoke('text').then((helperText) => {
-      // Check that helper text matches what's expected
-      expect(helperText).to.equal(TITLE_HELPER_TEXT);
-    });
+    cy.get('#titleId-helper-text')
+      .invoke('text')
+      .then(helperText => {
+        // Check that helper text matches what's expected
+        expect(helperText).to.equal(TITLE_HELPER_TEXT);
+      });
   });
   it('should clear the title helper text when text is cleared', () => {
-    const incorrectText = "XXX*%$";
+    const incorrectText = 'XXX*%$';
     // Type incorrect text into the input field
     cy.get('#titleId').type(incorrectText);
     // Check that the helper text element exists
@@ -65,18 +65,18 @@ describe('title TextField', () => {
     cy.get('#titleId-helper-text').should('not.exist');
   });
   it('should set the title field to incorrect status when incorrect text is entered', () => {
-    const incorrectText = "XXX*%$";
+    const incorrectText = 'XXX*%$';
     // Type incorrect text into the input field
     cy.get('#titleId').type(incorrectText);
     // Check that the input field has an "incorrect" status
     cy.get('#titleId').should('have.attr', 'aria-invalid', 'true');
   });
- })
+});
 
- describe('proposal type selection', () => {
+describe('proposal type selection', () => {
   beforeEach(() => {
     cy.mount(
-      <Router location='/' navigator={undefined}>
+      <Router location="/" navigator={undefined}>
         <TitleContent />
       </Router>
     );
@@ -100,7 +100,8 @@ describe('title TextField', () => {
     cy.get('#ProposalType-2').click();
     // check if alert dialog open
     cy.get('#alert-dialog-proposal-change')
-    .should('exist').should('be.visible');
+      .should('exist')
+      .should('be.visible');
   });
   it('should NOT open alert dialog when selecting same proposal type', () => {
     // select 2st Proposal type
@@ -108,15 +109,13 @@ describe('title TextField', () => {
     // select 2nd Proposal type
     cy.get('#ProposalType-2').click();
     // check if alert dialog not open
-    cy.get('#alert-dialog-proposal-change')
-    .should('not.exist')
+    cy.get('#alert-dialog-proposal-change').should('not.exist');
   });
   it('should NOT open alert dialog on 1st proposal type selection', () => {
     // select 2st Proposal type
     cy.get('#ProposalType-2').click();
     // check if alert dialog not open
-    cy.get('#alert-dialog-proposal-change')
-    .should('not.exist')
+    cy.get('#alert-dialog-proposal-change').should('not.exist');
   });
   it('should change proposal type if clicking "Continue" on alert dialog', () => {
     // select 2st Proposal type
@@ -124,7 +123,9 @@ describe('title TextField', () => {
     // select 1st Proposal type
     cy.get('#ProposalType-1').click();
     // click "continue button" of dialog
-    cy.get('button').contains("Continue").click();
+    cy.get('button')
+      .contains('Continue')
+      .click();
     // check if 1st proposal is selected
     cy.get('#ProposalType-1').should('have.class', 'active');
   });
@@ -134,17 +135,19 @@ describe('title TextField', () => {
     // select 1st Proposal type
     cy.get('#ProposalType-1').click();
     // click "continue button" of dialog
-    cy.get('button').contains("Cancel").click();
+    cy.get('button')
+      .contains('Cancel')
+      .click();
     // check if 1st proposal is NOT selected
     cy.get('#ProposalType-1').should('have.class', 'inactive');
     cy.get('#ProposalType-2').should('have.class', 'active');
   });
- })
+});
 
- describe('sub-proposal type selection', () => {
+describe('sub-proposal type selection', () => {
   beforeEach(() => {
     cy.mount(
-      <Router location='/' navigator={undefined}>
+      <Router location="/" navigator={undefined}>
         <TitleContent />
       </Router>
     );
@@ -153,7 +156,9 @@ describe('title TextField', () => {
     // select 1st Proposal type
     cy.get('#ProposalType-1').click();
     // check if sub-proposal are NOT selected
-    cy.get('#SubProposalContainer > div').children().should('have.class', 'inactive');
+    cy.get('#SubProposalContainer > div')
+      .children()
+      .should('have.class', 'inactive');
   });
   it('sub-proposal selected when sub-proposal clicked', () => {
     // select 1st Proposal type
@@ -180,7 +185,8 @@ describe('title TextField', () => {
     cy.get('#SubProposalType-2').click();
     // check if alert dialog open
     cy.get('#alert-dialog-proposal-change')
-    .should('exist').should('be.visible');
+      .should('exist')
+      .should('be.visible');
   });
   it('should NOT open alert dialog when selecting same sub-proposal type', () => {
     // select 2st Proposal type
@@ -190,8 +196,7 @@ describe('title TextField', () => {
     // select 5th SubProposal type
     cy.get('#SubProposalType-5').click();
     // check if alert dialog not open
-    cy.get('#alert-dialog-proposal-change')
-    .should('not.exist')
+    cy.get('#alert-dialog-proposal-change').should('not.exist');
   });
   it('should NOT open alert dialog on 1st sub-proposal type selection', () => {
     // select 2st Proposal type
@@ -199,8 +204,7 @@ describe('title TextField', () => {
     // select 5th SubProposal type
     cy.get('#SubProposalType-5').click();
     // check if alert dialog not open
-    cy.get('#alert-dialog-proposal-change')
-    .should('not.exist')
+    cy.get('#alert-dialog-proposal-change').should('not.exist');
   });
   it('should change sub-proposal type if clicking "Continue" on alert dialog', () => {
     // select 2st Proposal type
@@ -210,7 +214,9 @@ describe('title TextField', () => {
     // select 6th SubProposal type
     cy.get('#SubProposalType-6').click();
     // click "continue button" of dialog
-    cy.get('button').contains("Continue").click();
+    cy.get('button')
+      .contains('Continue')
+      .click();
     // check if 6th sub-proposal is selected
     cy.get('#SubProposalType-6').should('have.class', 'active');
   });
@@ -222,9 +228,11 @@ describe('title TextField', () => {
     // select 6th SubProposal type
     cy.get('#SubProposalType-6').click();
     // click "continue button" of dialog
-    cy.get('button').contains("Cancel").click();
+    cy.get('button')
+      .contains('Cancel')
+      .click();
     // check if 6th sub-proposal is NOT selected
     cy.get('#SubProposalType-6').should('have.class', 'inactive');
     cy.get('#SubProposalType-5').should('have.class', 'active');
   });
- })
+});

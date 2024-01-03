@@ -11,9 +11,36 @@ import {
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import SensCalcButton from '../../../components/button/SensCalc/SensCalcButton';
-import { OBSERVATION, TARGETS } from '../../../utils/constants';
+import {
+  OBSERVATION,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL,
+  TARGETS
+} from '../../../utils/constants';
 
-export default function ObservationContent() {
+interface ObservationContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function ObservationContent({ page, setStatus }: ObservationContentProps) {
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const count = 0;
+
+    // TODO : Increment the count for every passing element of the page.
+    // This is then used to take the status from the result array
+    // In the default provided, the count must be 2 for the page to pass.
+
+    // See titleContent page for working example
+
+    setStatus([page, result[count]]);
+  }, [setStatus]);
+
   const columnsObservations = [
     { field: 'array', headerName: 'Array', minWidth: 100 },
     { field: 'subarray', headerName: 'Subarray', minWidth: 200 },

@@ -12,9 +12,15 @@ interface PageBannerProps {
   addPage?: number;
   title: string;
   setPage?: Function;
+  proposalState: number[];
 }
 
-export default function PageBanner({ addPage = 0, setPage = null, title }: PageBannerProps) {
+export default function PageBanner({
+  addPage = 0,
+  setPage = null,
+  title,
+  proposalState
+}: PageBannerProps) {
   return (
     <Grid
       p={1}
@@ -41,7 +47,7 @@ export default function PageBanner({ addPage = 0, setPage = null, title }: PageB
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            {addPage !== 0 && <StatusArray setPage={setPage} />}
+            {addPage !== 0 && <StatusArray setPage={setPage} proposalState={proposalState} />}
           </Grid>
           <Grid item>
             <Grid
