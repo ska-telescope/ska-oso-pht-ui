@@ -7,3 +7,4 @@ Pages
 
    LandingPage
    TitlePage
+   GeneralPage
