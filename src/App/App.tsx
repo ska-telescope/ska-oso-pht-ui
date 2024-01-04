@@ -14,6 +14,7 @@ import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
 import Proposal from '../pages/Proposal/Proposal';
 import AddProposal from '../pages/AddProposal/AddProposal';
+import AddObservation from '../pages/AddObservation/AddObservation';
 import theme from '../services/theme/theme';
 
 const HEADER_HEIGHT = 70;
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" element={<PHT />} />
               <Route path="/proposal" element={<Proposal />} />
               <Route path="/addProposal" element={<AddProposal />} />
+              <Route path="/addObservation" element={<AddObservation />} />
             </Routes>
           </Router>
           <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
