@@ -12,7 +12,7 @@ interface PageBannerProps {
   addPage?: number;
   title: string;
   setPage?: Function;
-  proposalState: number[];
+  proposalState?: number[];
 }
 
 export default function PageBanner({
