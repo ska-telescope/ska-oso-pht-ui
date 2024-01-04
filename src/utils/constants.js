@@ -74,6 +74,12 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Rejected', value: 'rejected' }
 ];
 
+export const TEAM_STATUS_TYPE_OPTIONS = {
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
+};
+
 export const TEAM = [
   {
     id: 1,
@@ -82,8 +88,8 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Lagoon',
     Affiliation: 'University of Free Town',
-    PHDThesis: 'No',
-    Status: 'Pending',
+    PHDThesis: false,
+    Status: TEAM_STATUS_TYPE_OPTIONS.pending,
     Actions: null,
     PI: false
   },
@@ -94,8 +100,8 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Ocean',
     Affiliation: 'University of Free Town',
-    PHDThesis: 'Yes',
-    Status: 'Accepted',
+    PHDThesis: true,
+    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
     Actions: null,
     PI: true
   },
@@ -106,8 +112,8 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Park',
     Affiliation: 'University of Virginia',
-    PHDThesis: 'No',
-    Status: 'Accepted',
+    PHDThesis: false,
+    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
     Actions: null,
     PI: false
   }
