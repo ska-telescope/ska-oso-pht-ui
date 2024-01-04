@@ -5,15 +5,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import {
-  Avatar,
-  Card,
-  CardActionArea,
-  CardHeader,
-  Grid,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
@@ -137,7 +129,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   }
 
   const validateTheTitle = e => {
-    const title = e; 
+    const title = e;
     // specify the pattern for allowed characters
     const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
     // check if the input matches the pattern
@@ -342,4 +334,3 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
     </>
   );
 }
-

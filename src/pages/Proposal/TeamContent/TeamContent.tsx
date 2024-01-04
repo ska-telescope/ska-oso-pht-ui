@@ -1,6 +1,15 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, Typography, SvgIcon } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Tab,
+  Tabs,
+  Typography,
+  SvgIcon
+} from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
@@ -22,20 +31,13 @@ interface TabPanelProps {
   tabValue: number;
 }
 
-export function PIStar({isPI, status, ...rest}) {
+export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
-    return (
-      <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />
-    );
-  } if (status === 'Accepted') {
-    return (
-      <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...rest} />
-    );
+    return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
   }
-  return (
-    <>
-    </>
-  );
+  if (status === 'Accepted') {
+    return <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...rest} />;
+  }
 }
 
 interface TeamContentProps {
@@ -79,24 +81,22 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     { field: 'Status', headerName: 'Status', width: 150 },
     { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
     {
-      field: "PI",
-      headerName: "PI",
+      field: 'PI',
+      headerName: 'PI',
       sortable: false,
       width: 100,
       disableClickEventBubbling: true,
-      renderCell: (params) => (
+      renderCell: params => (
         <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
       )
     },
     {
-      field: "Actions",
-      headerName: "Actions",
+      field: 'Actions',
+      headerName: 'Actions',
       sortable: false,
       width: 100,
       disableClickEventBubbling: true,
-      renderCell: () => (
-        <DeleteProposalButton />
-        )
+      renderCell: () => <DeleteProposalButton />
     }
   ];
   const extendedColumns = [...columns];
@@ -157,7 +157,12 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                   {...a11yProps(0)}
                   sx={{ border: '1px solid grey' }}
                 />
-                <Tab label="Import From File" {...a11yProps(1)} sx={{ border: '1px solid grey' }} disabled />
+                <Tab
+                  label="Import From File"
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey' }}
+                  disabled
+                />
                 <Tab
                   label="Search For Member"
                   {...a11yProps(2)}
