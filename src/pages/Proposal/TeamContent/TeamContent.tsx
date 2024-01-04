@@ -6,7 +6,13 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
-import { DEFAULT_HELP, TEAM } from '../../../utils/constants';
+import {
+  DEFAULT_HELP,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL,
+  TEAM
+} from '../../../utils/constants';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -14,13 +20,34 @@ interface TabPanelProps {
   tabValue: number;
 }
 
-export default function TeamContent() {
+interface TeamContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [help] = React.useState(DEFAULT_HELP);
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const count = 0;
+
+    // TODO : Increment the count for every passing element of the page.
+    // This is then used to take the status from the result array
+    // In the default provided, the count must be 2 for the page to pass.
+
+    // See titleContent page for working example
+
+    setStatus([page, result[count]]);
+  }, [setStatus]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

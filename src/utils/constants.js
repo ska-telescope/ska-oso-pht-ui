@@ -1,3 +1,8 @@
+import { env } from '../../env'
+
+export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
+export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === "true";
+
 export const EXISTING_PROPOSALS = [
   {
     id: 'SKA2388',
@@ -46,15 +51,19 @@ export const EXISTING_PROPOSALS = [
   }
 ];
 
+export const STATUS_OK = 0;
+export const STATUS_ERROR = 1;
+export const STATUS_PARTIAL = 3;
+
 export const PAGES = [
-  { status: 0, title: 'title' },
-  { status: 0, title: 'team' },
-  { status: 1, title: 'general' },
-  { status: 3, title: 'science' },
-  { status: 3, title: 'target' },
-  { status: 5, title: 'Observation' },
-  { status: 5, title: 'Technical' },
-  { status: 5, title: 'Data' }
+  'Title',
+  'Team',
+  'General',
+  'Science',
+  'Target',
+  'Observation',
+  'Technical',
+  'Data'
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
@@ -350,4 +359,5 @@ export const Projects = [
 
 export const MAX_TITLE_LENGTH = 50;
 
-export const TITLE_HELPER_TEXT = "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.";
+export const TITLE_HELPER_TEXT =
+  'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.';

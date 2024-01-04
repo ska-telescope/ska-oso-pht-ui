@@ -4,7 +4,7 @@ import { DropDown, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { EXISTING_PROPOSALS, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton'
+import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton';
 import CloneProposalButton from '../../components/button/cloneProposal/cloneProposalButton';
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
@@ -15,7 +15,6 @@ export default function PHT() {
   TODO: remove colouring of selected row for better visibility
   using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
   */
-
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -31,8 +30,8 @@ export default function PHT() {
     { field: 'status', headerName: 'Status', width: 150 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 250 },
     {
-      field: "actions",
-      headerName: "Actions",
+      field: 'actions',
+      headerName: 'Actions',
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
@@ -44,15 +43,15 @@ export default function PHT() {
           <DownloadProposalButton />
           <DeleteProposalButton />
         </>
-        )
+      )
     }
   ];
   const extendedColumns = [...COLUMNS];
 
-  const filteredData = EXISTING_PROPOSALS.filter((item) =>
-    ['title'].some((field) =>
-    item[field].toLowerCase().includes(searchTerm.toLowerCase())
-    ) && (searchType === '' ||  item.status.toLowerCase() === searchType.toLowerCase())
+  const filteredData = EXISTING_PROPOSALS.filter(
+    item =>
+      ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
   );
 
   return (
