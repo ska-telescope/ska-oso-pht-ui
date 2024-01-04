@@ -3,14 +3,13 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
-import { TITLE_HELPER_TEXT } from '../../../utils/constants';
+import { TITLE_ERROR_TEXT } from '../../../utils/constants';
 import theme from '../../../services/theme/theme';
 import TitleContent from './TitleContent';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 describe('<TitleContent />', () => {
-
   const [, setTheProposalState] = React.useState(false);
 
   for (const theTheme of THEME) {
@@ -26,10 +25,11 @@ describe('<TitleContent />', () => {
 });
 
 describe('title TextField', () => {
+  const [, setTheProposalState] = React.useState(false);
   beforeEach(() => {
     cy.mount(
       <Router location="/" navigator={undefined}>
-        <TitleContent />
+        <TitleContent page={0} setStatus={setTheProposalState} />
       </Router>
     );
   });
@@ -53,7 +53,7 @@ describe('title TextField', () => {
       .invoke('text')
       .then(helperText => {
         // Check that helper text matches what's expected
-        expect(helperText).to.equal(TITLE_HELPER_TEXT);
+        expect(helperText).to.equal(TITLE_ERROR_TEXT);
       });
   });
   it('should clear the title helper text when text is cleared', () => {
@@ -77,10 +77,11 @@ describe('title TextField', () => {
 });
 
 describe('proposal type selection', () => {
+  const [, setTheProposalState] = React.useState(false);
   beforeEach(() => {
     cy.mount(
       <Router location="/" navigator={undefined}>
-        <TitleContent />
+        <TitleContent page={0} setStatus={setTheProposalState} />
       </Router>
     );
   });
@@ -148,10 +149,11 @@ describe('proposal type selection', () => {
 });
 
 describe('sub-proposal type selection', () => {
+  const [, setTheProposalState] = React.useState(false);
   beforeEach(() => {
     cy.mount(
       <Router location="/" navigator={undefined}>
-        <TitleContent />
+        <TitleContent page={0} setStatus={setTheProposalState} />
       </Router>
     );
   });

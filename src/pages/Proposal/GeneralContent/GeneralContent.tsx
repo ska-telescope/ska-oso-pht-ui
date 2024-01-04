@@ -40,16 +40,22 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
   const [subCategory, setSubCategory] = React.useState();
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
-    if (abstract?.length > 0) { count++ }
-    if (category && category > 0) { count++ }
-    if (subCategory && subCategory > 0) { count++ }
+    if (abstract?.length > 0) {
+      count++;
+    }
+    if (category && category > 0) {
+      count++;
+    }
+    if (subCategory && subCategory > 0) {
+      count++;
+    }
 
     setStatus([page, result[count]]);
   }, [setStatus, abstract, category, subCategory]);
