@@ -36,14 +36,14 @@ export default function Proposal() {
         setPage={setThePage}
         proposalState={proposalState}
       />
-      {thePage === 0 && <TitleContent page={0} setStatus={setTheProposalState} />}
-      {thePage === 1 && <TeamContent page={1} setStatus={setTheProposalState} />}
-      {thePage === 2 && <GeneralContent page={2} setStatus={setTheProposalState} />}
-      {thePage === 3 && <ScienceContent page={3} setStatus={setTheProposalState} />}
-      {thePage === 4 && <TargetContent page={4} setStatus={setTheProposalState} />}
-      {thePage === 5 && <ObservationContent page={5} setStatus={setTheProposalState} />}
-      {thePage === 6 && <TechnicalContent page={6} setStatus={setTheProposalState} />}
-      {thePage === 7 && <DataContent page={7} setStatus={setTheProposalState} />}
+      {thePage === 0 && <TitleContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 1 && <TeamContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 2 && <GeneralContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 4 && <TargetContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 5 && <ObservationContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 6 && <TechnicalContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 7 && <DataContent page={thePage} setStatus={setTheProposalState} />}
       <PageFooter pageNo={thePage} buttonFunc={setThePage} />
     </>
   );

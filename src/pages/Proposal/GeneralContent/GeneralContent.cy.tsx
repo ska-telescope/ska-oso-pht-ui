@@ -9,12 +9,14 @@ import GeneralContent from './GeneralContent';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 describe('<GeneralContent />', () => {
+  const [, setTheProposalState] = React.useState(false);
+
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <GeneralContent />
+          <GeneralContent page={2} setStatus={setTheProposalState} />
         </ThemeProvider>
       );
     });
@@ -22,10 +24,12 @@ describe('<GeneralContent />', () => {
 });
 
 describe('abstract TextEntry', () => {
+  const [, setTheProposalState] = React.useState(false);
+
   beforeEach(() => {
     cy.mount(
       <Router location='/' navigator={undefined}>
-        <GeneralContent />
+        <GeneralContent page={2} setStatus={setTheProposalState} />
       </Router>
     );
   });

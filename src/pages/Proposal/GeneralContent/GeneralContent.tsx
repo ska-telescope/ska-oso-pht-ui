@@ -11,7 +11,6 @@ import {
 } from '../../../utils/constants';
 
 // TODO : Category & sub-category need the correct content
-// TODO : Update the onFocus functions for dropdowns once the ska-gui-components have been updated
 // TODO : Migrate the help to the parent so it is more dynamic
 
 export const HELP_ABSTRACT = {
@@ -41,7 +40,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
   const [subCategory, setSubCategory] = React.useState();
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
-  React.useEffect(() => {
+    React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
@@ -53,7 +52,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
     if (subCategory && subCategory > 0) { count++ }
 
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [setStatus, abstract, category, subCategory]);
 
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
@@ -86,7 +85,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
               value={category}
               setValue={setCategory}
               label="Scientific Category"
-              // TODO onFocus={() => setHelp(HELP_CATEGORY)}
+              onFocus={() => setHelp(HELP_CATEGORY)}
             />
             <DropDown
               options={GENERAL.ScienceSubCategory}
@@ -94,7 +93,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
               value={subCategory}
               setValue={setSubCategory}
               label="Scientific sub-category"
-              // TODO onFocus={() => setHelp(HELP_SUBCATEGORY)}
+              onFocus={() => setHelp(HELP_SUBCATEGORY)}
             />
           </Grid>
           <Grid item xs={3}>

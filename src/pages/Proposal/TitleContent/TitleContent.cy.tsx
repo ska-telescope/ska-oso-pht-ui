@@ -10,12 +10,15 @@ import TitleContent from './TitleContent';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 describe('<TitleContent />', () => {
+
+  const [, setTheProposalState] = React.useState(false);
+
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <TitleContent />
+          <TitleContent page={0} setStatus={setTheProposalState} />
         </ThemeProvider>
       );
     });
