@@ -11,12 +11,11 @@ import {
   CardActionArea,
   CardHeader,
   Grid,
-  TextField,
   Tooltip,
   Typography
 } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
-// import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
 import {
   Projects,
@@ -26,7 +25,7 @@ import {
   STATUS_PARTIAL,
   TITLE_HELPER_TEXT
 } from '../../../utils/constants';
-import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
+// import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
 
 interface TitleContentProps {
   page: number;
@@ -267,12 +266,16 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
             <Typography variant="body2">Title</Typography>
           </Grid>
           <Grid item xs={4}>
-            {/* TODO: use TextEntry from GUI-components instead (showing user input as NaN, was unable to fix it for now) */}
-            {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
-            <TextEntry
+
+            <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} />
+
+            {/*
+              <TextEntry
               id="titleId"
               label="Title"
-            />
+              />
+            */}
+
           </Grid>
           <Grid item xs={4}>
             <Typography variant="body2">
