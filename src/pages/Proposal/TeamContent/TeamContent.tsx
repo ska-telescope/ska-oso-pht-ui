@@ -51,6 +51,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [email, setEmail] = React.useState('');
   const [help] = React.useState(DEFAULT_HELP);
 
+  // TODO - We can call the getTeam from here?
+
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -72,8 +74,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', width: 250 },
-    { field: 'FirstName', headerName: 'First Name', width: 250 },
+    { field: 'LastName', headerName: 'Last Name', width: 200 },
+    { field: 'FirstName', headerName: 'First Name', width: 200 },
     { field: 'Status', headerName: 'Status', width: 150 },
     { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
     {

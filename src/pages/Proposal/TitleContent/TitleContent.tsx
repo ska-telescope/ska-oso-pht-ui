@@ -23,7 +23,7 @@ import {
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
-  TITLE_HELPER_TEXT
+  TITLE_ERROR_TEXT
 } from '../../../utils/constants';
 // import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
 
@@ -63,8 +63,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
   const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptyProposal);
   const [subProposalChange, setSubProposalChange] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
-  const [error, setError] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
   React.useEffect(() => {
@@ -138,23 +137,20 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   }
 
   const validateTheTitle = e => {
-    const title = e.target.value;
+    const title = e; 
     // specify the pattern for allowed characters
     const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
     // check if the input matches the pattern
     if (pattern.test(title)) {
       // if it does, update the title
       setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
-      setError(false);
-      setHelperText('');
+      setErrorText('');
     } else if (title.trim() === '') {
       // if input is empty, clear the error message
-      setError(false);
-      setHelperText('');
+      setErrorText('');
     } else {
       // if input doesn't match the pattern, show an error message
-      setError(true);
-      setHelperText(TITLE_HELPER_TEXT);
+      setErrorText(TITLE_ERROR_TEXT);
     }
   };
 
@@ -266,16 +262,14 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
             <Typography variant="body2">Title</Typography>
           </Grid>
           <Grid item xs={4}>
-
-            <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} />
-
-            {/*
-              <TextEntry
-              id="titleId"
+            <TextEntry
               label="Title"
-              />
-            */}
-
+              testId="titleId"
+              value={theTitle}
+              setValue={validateTheTitle}
+              disabled={false}
+              errorText={errorText}
+            />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="body2">
@@ -348,3 +342,4 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
     </>
   );
 }
+
