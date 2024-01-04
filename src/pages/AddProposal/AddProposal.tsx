@@ -18,10 +18,10 @@ export default function AddProposal() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
-        <PageBanner title={PAGES[0]} addPage={0} />
+        <PageBanner proposalState={null} title={PAGES[0]} addPage={0} />
       </Grid>
       <Grid item>
-        <TitleContent />
+        <TitleContent page={0} setStatus={null} />
       </Grid>
       <Grid item>
         <PageFooter pageNo={-1} buttonFunc={createProposal} />
