@@ -13,12 +13,33 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
 import LatexEntry from '../../../components/latexEntry/latexEntry';
 
-import { TECHNICAL } from '../../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, TECHNICAL } from '../../../utils/constants';
 
-export default function TechnicalContent() {
+interface TechnicalContentProps {
+  page: number;
+  setStatus: Function;
+}
+
+export default function TechnicalContent({ page, setStatus }: TechnicalContentProps) {
   const [latex, setLatex] = React.useState(TECHNICAL);
   const [isOpen, setIsOpen] = React.useState(false);
   const [pdfUrl, setPdfUrl] = React.useState('');
+
+  React.useEffect(() => {
+    if (typeof setStatus !== 'function') {
+      return;
+    }
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const count = 0;
+
+    // TODO : Increment the count for every passing element of the page.
+    // This is then used to take the status from the result array
+    // In the default provided, the count must be 2 for the page to pass.
+
+    // See titleContent page for working example
+
+    setStatus([page, result[count]]);
+  }, [setStatus]);
 
   function openModal() {
     setIsOpen(true);

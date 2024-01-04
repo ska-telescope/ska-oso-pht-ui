@@ -18,7 +18,7 @@ export default function AddProposal() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
-        <PageBanner title={PAGES[0].title} addPage={0} />
+        <PageBanner title={PAGES[0]} addPage={0} />
       </Grid>
       <Grid item>
         <TitleContent />

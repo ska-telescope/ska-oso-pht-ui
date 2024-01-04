@@ -10,9 +10,9 @@ interface PageFooterProps {
 }
 
 export default function PageFooter({ pageNo, buttonFunc = null }: PageFooterProps) {
-  const nextLabel = () => (pageNo === -1 ? 'Create' : PAGES[pageNo + 1].title);
+  const nextLabel = () => (pageNo === -1 ? 'Create' : PAGES[pageNo + 1]);
 
-  const prevLabel = () => PAGES[pageNo - 1].title;
+  const prevLabel = () => PAGES[pageNo - 1];
 
   return (
     <Paper
