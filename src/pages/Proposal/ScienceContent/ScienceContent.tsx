@@ -54,7 +54,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <Card variant="outlined" sx={{ height: '90vh', width: '90vw' }}>
           <CardHeader
-            action={(
+            action={
               <IconButton
                 aria-label="DUMMY"
                 sx={{ '&:hover': { backgroundColor: 'primary.dark' }, ml: 1 }}
@@ -63,7 +63,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
               >
                 <HighlightOffIcon />
               </IconButton>
-            )}
+            }
             title={<Typography variant="h6">PDF Preview</Typography>}
           />
           <CardContent sx={{ height: '90vh', width: '90vw' }}>

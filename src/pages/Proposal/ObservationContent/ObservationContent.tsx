@@ -92,16 +92,16 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
             <Card variant="outlined">
               <CardHeader
                 action={<SensCalcButton />}
-                title={(
+                title={
                   <Typography variant="h6">
                     Target List related to the selected Observation
                   </Typography>
-                )}
+                }
               />
               <CardContent>
                 <FormControlLabel
                   value="linked"
-                  control={(
+                  control={
                     <Checkbox
                       defaultChecked
                       sx={{
@@ -110,14 +110,14 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                         }
                       }}
                     />
-                  )}
+                  }
                   label="Linked"
                   labelPlacement="end"
                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
                 />
                 <FormControlLabel
                   value="unlinked"
-                  control={(
+                  control={
                     <Checkbox
                       sx={{
                         '&.Mui-checked': {
@@ -125,7 +125,7 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                         }
                       }}
                     />
-                  )}
+                  }
                   label="Unlinked"
                   labelPlacement="end"
                   sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}

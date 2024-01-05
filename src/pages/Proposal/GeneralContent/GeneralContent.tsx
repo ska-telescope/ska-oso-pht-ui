@@ -36,24 +36,37 @@ interface GeneralContentProps {
 
 export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
   const [abstract, setAbstract] = React.useState(GENERAL.Abstract);
-  const [category, setCategory] = React.useState();
-  const [subCategory, setSubCategory] = React.useState();
+  const [category, setCategory] = React.useState(0);
+  const [subCategory, setSubCategory] = React.useState(0);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
-    if (abstract?.length > 0) { count++ }
-    if (category && category > 0) { count++ }
-    if (subCategory && subCategory > 0) { count++ }
+    if (abstract?.length > 0) {
+      count++;
+    }
+    if (category && category > 0) {
+      count++;
+    }
+    if (subCategory && subCategory > 0) {
+      count++;
+    }
 
     setStatus([page, result[count]]);
   }, [setStatus, abstract, category, subCategory]);
 
+  const checkCategory = (e) => {
+    setCategory(e);
+    if (e > 0 && GENERAL.ScienceCategory[e - 1].subCategory)  {
+      setSubCategory(1);  // Ensure a value is initially selected
+    }
+  }
+  
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
@@ -83,18 +96,21 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
               options={GENERAL.ScienceCategory}
               testId="categoryId"
               value={category}
-              setValue={setCategory}
+              setValue={checkCategory}
               label="Scientific Category"
               onFocus={() => setHelp(HELP_CATEGORY)}
             />
-            <DropDown
-              options={GENERAL.ScienceSubCategory}
-              testId="subCategoryId"
-              value={subCategory}
-              setValue={setSubCategory}
-              label="Scientific sub-category"
-              onFocus={() => setHelp(HELP_SUBCATEGORY)}
-            />
+            {category > 0 && (
+              <DropDown
+                options={GENERAL.ScienceCategory[category - 1].subCategory}
+                disabled={GENERAL.ScienceCategory[category - 1].subCategory.length < 2}
+                testId="subCategoryId"
+                value={subCategory}
+                setValue={setSubCategory}
+                label="Scientific sub-category"
+                onFocus={() => setHelp(HELP_SUBCATEGORY)}
+              />
+            )}
           </Grid>
           <Grid item xs={3}>
             <InfoPanel
