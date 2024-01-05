@@ -1,8 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Tab,
+  Tabs,
+  Typography,
+  SvgIcon
+} from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
@@ -13,11 +23,21 @@ import {
   STATUS_PARTIAL,
   TEAM
 } from '../../../utils/constants';
+import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   tabValue: number;
+}
+
+export function PIStar({ isPI, status, ...rest }) {
+  if (isPI) {
+    return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
+  }
+  if (status === 'Accepted') {
+    return <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...rest} />;
+  }
 }
 
 interface TeamContentProps {
@@ -32,6 +52,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [help] = React.useState(DEFAULT_HELP);
+
+  // TODO - We can call the getTeam from here?
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -56,10 +78,28 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const columns = [
     { field: 'LastName', headerName: 'Last Name', width: 200 },
     { field: 'FirstName', headerName: 'First Name', width: 200 },
-    { field: 'misc', headerName: 'Misc', width: 200 }
+    { field: 'Status', headerName: 'Status', width: 150 },
+    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
+    {
+      field: 'PI',
+      headerName: 'PI',
+      sortable: false,
+      width: 100,
+      disableClickEventBubbling: true,
+      renderCell: params => (
+        <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
+      )
+    },
+    {
+      field: 'Actions',
+      headerName: 'Actions',
+      sortable: false,
+      width: 100,
+      disableClickEventBubbling: true,
+      renderCell: () => <DeleteProposalButton />
+    }
   ];
-
-  const extendedColumns = structuredClone(columns);
+  const extendedColumns = [...columns];
 
   const ClickFunction = () => {
     // TODO
@@ -117,11 +157,17 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                   {...a11yProps(0)}
                   sx={{ border: '1px solid grey' }}
                 />
-                <Tab label="Import From File" {...a11yProps(1)} sx={{ border: '1px solid grey' }} />
+                <Tab
+                  label="Import From File"
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey' }}
+                  disabled
+                />
                 <Tab
                   label="Search For Member"
                   {...a11yProps(2)}
                   sx={{ border: '1px solid grey' }}
+                  disabled
                 />
               </Tabs>
             </Box>

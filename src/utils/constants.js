@@ -74,6 +74,12 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Rejected', value: 'rejected' }
 ];
 
+export const TEAM_STATUS_TYPE_OPTIONS = {
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
+};
+
 export const TEAM = [
   {
     id: 1,
@@ -82,7 +88,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Lagoon',
     Affiliation: 'University of Free Town',
-    'For PhD Thesis?': 'No'
+    PHDThesis: false,
+    Status: TEAM_STATUS_TYPE_OPTIONS.pending,
+    Actions: null,
+    PI: false
   },
   {
     id: 2,
@@ -91,7 +100,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Ocean',
     Affiliation: 'University of Free Town',
-    'For PhD Thesis?': 'Yes'
+    PHDThesis: true,
+    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+    Actions: null,
+    PI: true
   },
   {
     id: 3,
@@ -100,7 +112,10 @@ export const TEAM = [
     Email: 'ask.lop@map.com',
     Country: 'Park',
     Affiliation: 'University of Virginia',
-    'For PhD Thesis?': 'No'
+    PHDThesis: false,
+    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+    Actions: null,
+    PI: false
   }
 ];
 
@@ -378,5 +393,5 @@ export const Projects = [
 
 export const MAX_TITLE_LENGTH = 50;
 
-export const TITLE_HELPER_TEXT =
+export const TITLE_ERROR_TEXT =
   'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.';

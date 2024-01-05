@@ -1,12 +1,11 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Typography } from '@mui/material';
-import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import { ButtonColorTypes, ButtonVariantTypes, Button } from '@ska-telescope/ska-gui-components';
 
 export default function AlertDialog(props) {
   const { open, onClose, onDialogResponse } = props;
@@ -42,22 +41,21 @@ export default function AlertDialog(props) {
       </DialogContent>
       <DialogActions sx={{ p: '24px' }}>
         <Button
+          ariaDescription="Cancel Button"
+          color={ButtonColorTypes.Secondary}
+          label="Cancel"
           onClick={handleCancel}
-          autoFocus
-          sx={{ backgroundColor: 'primary.light' }}
-          color={ButtonColorTypes.Secondary}
+          testId="cancelId"
           variant={ButtonVariantTypes.Contained}
-        >
-          Cancel
-        </Button>
+        />
         <Button
-          onClick={handleContinue}
-          sx={{ backgroundColor: 'secondary.light' }}
+          ariaDescription="Continue Button"
           color={ButtonColorTypes.Secondary}
+          label="Continue"
+          onClick={handleContinue}
+          testId="continueId"
           variant={ButtonVariantTypes.Contained}
-        >
-          Continue
-        </Button>
+        />
       </DialogActions>
     </Dialog>
   );

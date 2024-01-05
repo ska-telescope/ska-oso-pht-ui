@@ -5,17 +5,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import React from 'react';
-import {
-  Avatar,
-  Card,
-  CardActionArea,
-  CardHeader,
-  Grid,
-  TextField,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
 import {
   Projects,
@@ -23,8 +15,9 @@ import {
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
-  TITLE_HELPER_TEXT
+  TITLE_ERROR_TEXT
 } from '../../../utils/constants';
+// import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
 
 interface TitleContentProps {
   page: number;
@@ -62,8 +55,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
   const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptyProposal);
   const [subProposalChange, setSubProposalChange] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
-  const [error, setError] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
   React.useEffect(() => {
@@ -137,23 +129,17 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   }
 
   const validateTheTitle = e => {
-    const title = e.target.value;
+    const title = e;
     // specify the pattern for allowed characters
-    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
+    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/]*$/;
     // check if the input matches the pattern
     if (pattern.test(title)) {
       // if it does, update the title
       setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
-      setError(false);
-      setHelperText('');
-    } else if (title.trim() === '') {
-      // if input is empty, clear the error message
-      setError(false);
-      setHelperText('');
+      setErrorText('');
     } else {
       // if input doesn't match the pattern, show an error message
-      setError(true);
-      setHelperText(TITLE_HELPER_TEXT);
+      setErrorText(TITLE_ERROR_TEXT);
     }
   };
 
@@ -265,16 +251,13 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
             <Typography variant="body2">Title</Typography>
           </Grid>
           <Grid item xs={4}>
-            {/* TODO: use TextEntry instead of TextField (TextField showing user input as NaN, was unable to fix it for now) */}
-            {/* <TextEntry label="Title" testId="titleId" value={theTitle} setValue={validateTheTitle} disabled={false} /> */}
-            <TextField
-              id="titleId"
+            <TextEntry
               label="Title"
-              variant="standard"
-              fullWidth
-              onChange={validateTheTitle}
-              error={error}
-              helperText={helperText}
+              testId="titleId"
+              value={theTitle}
+              setValue={validateTheTitle}
+              disabled={false}
+              errorText={errorText}
             />
           </Grid>
           <Grid item xs={4}>
