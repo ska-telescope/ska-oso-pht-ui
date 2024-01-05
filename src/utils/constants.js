@@ -232,10 +232,13 @@ export const OBSERVATION = {
     { label: 'Uniform', value: 1 },
     { label: 'Briggs', value: 2 }
   ],
-  Bandwidth: {
-    MID: [],
-    LOW: []
-  }
+  Bandwidth_LOW: [{ label: 'TO BE DEFINED', value: 0 }],
+  Bandwidth_MID: [{ label: 'TO BE DEFINED', value: 0 }],
+  Tapering: [{ label: 'TO BE DEFINED', value: 0 }],
+  Robust: [{ label: 'TO BE DEFINED', value: 0 }],
+  Specral: [{ label: 'TO BE DEFINED', value: 0 }],
+  Sensitivity: [{ label: 'Sensitivity', value: 0 }],
+  Units: [{ label: 'MHz', value: 0 }]
 };
 
 export const TARGETS = {
