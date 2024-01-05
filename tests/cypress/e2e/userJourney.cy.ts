@@ -1,4 +1,4 @@
-context('REACT SKELETON', () => {
+context('PROPOSAL HANDLING TOOL', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8100/');
   });
