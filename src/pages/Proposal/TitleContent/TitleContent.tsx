@@ -131,7 +131,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const validateTheTitle = e => {
     const title = e;
     // specify the pattern for allowed characters
-    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]+$/;
+    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/$]*$/;
     // check if the input matches the pattern
     if (pattern.test(title)) {
       // if it does, update the title
