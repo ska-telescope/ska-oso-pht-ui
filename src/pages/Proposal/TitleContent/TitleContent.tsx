@@ -137,9 +137,6 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
       // if it does, update the title
       setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
       setErrorText('');
-    } else if (title.trim() === '') {
-      // if input is empty, clear the error message
-      setErrorText('');
     } else {
       // if input doesn't match the pattern, show an error message
       setErrorText(TITLE_ERROR_TEXT);
