@@ -60,13 +60,13 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
     setStatus([page, result[count]]);
   }, [setStatus, abstract, category, subCategory]);
 
-  const checkCategory = (e) => {
+  const checkCategory = e => {
     setCategory(e);
-    if (e > 0 && GENERAL.ScienceCategory[e - 1].subCategory)  {
-      setSubCategory(1);  // Ensure a value is initially selected
+    if (e > 0 && GENERAL.ScienceCategory[e - 1].subCategory) {
+      setSubCategory(1); // Ensure a value is initially selected
     }
-  }
-  
+  };
+
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>

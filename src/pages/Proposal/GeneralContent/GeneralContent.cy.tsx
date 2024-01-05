@@ -2,7 +2,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import { Router } from 'react-router';
 import theme from '../../../services/theme/theme';
 import GeneralContent from './GeneralContent';
 

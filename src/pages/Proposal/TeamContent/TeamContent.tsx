@@ -150,7 +150,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                     <TextEntry label="Email" testId="email" value={email} setValue={setEmail} />
                     <FormControlLabel
                       value="phdThesis"
-                      control={
+                      control={(
                         <Checkbox
                           defaultChecked
                           sx={{
@@ -159,7 +159,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                             }
                           }}
                         />
-                      }
+                      )}
                       label="PhD Thesis"
                       labelPlacement="end"
                       sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
