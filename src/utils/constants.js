@@ -123,23 +123,39 @@ export const GENERAL = {
   Cycle: 'SKA_5000_2023',
   Abstract:
     'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
+
   ScienceCategory: [
-    { label: 'Cosmology', value: 1 },
-    { label: 'Cradle of Life', value: 2 },
-    { label: 'Epoch of Re-ionization', value: 3 },
-    { label: 'Extra Galactic continuum', value: 4 },
-    { label: 'Extra Galactic Spectral line', value: 5 },
-    { label: 'Gravitational Waves', value: 6 },
-    { label: 'High Energy Cosmic Particles', value: 7 },
-    { label: 'HI Galaxy science', value: 8 },
-    { label: 'Magnetism', value: 9 },
-    { label: 'Our Galaxy', value: 10 },
-    { label: 'Pulsars', value: 11 },
+    { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
+    { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
+    {
+      label: 'Epoch of Re-ionization',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 3
+    },
+    {
+      label: 'Extra Galactic continuum',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 4
+    },
+    {
+      label: 'Extra Galactic Spectral line',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 5
+    },
+    { label: 'Gravitational Waves', subCategory: [{ label: 'Not specified', value: 1 }], value: 6 },
+    {
+      label: 'High Energy Cosmic Particles',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 7
+    },
+    { label: 'HI Galaxy science', subCategory: [{ label: 'Not specified', value: 1 }], value: 8 },
+    { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
+    { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
+    { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
     { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
-    { label: 'Transients', value: 13 },
-    { label: 'VLBI', value: 14 }
-  ],
-  ScienceSubCategory: [{ label: 'Not specified', value: 1 }]
+    { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
+    { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+  ]
 };
 
 export const SCIENCE =
@@ -231,10 +247,13 @@ export const OBSERVATION = {
     { label: 'Uniform', value: 1 },
     { label: 'Briggs', value: 2 }
   ],
-  Bandwidth: {
-    MID: [],
-    LOW: []
-  }
+  Bandwidth_LOW: [{ label: 'TO BE DEFINED', value: 0 }],
+  Bandwidth_MID: [{ label: 'TO BE DEFINED', value: 0 }],
+  Tapering: [{ label: 'TO BE DEFINED', value: 0 }],
+  Robust: [{ label: 'TO BE DEFINED', value: 0 }],
+  Specral: [{ label: 'TO BE DEFINED', value: 0 }],
+  Sensitivity: [{ label: 'Sensitivity', value: 0 }],
+  Units: [{ label: 'MHz', value: 0 }]
 };
 
 export const TARGETS = {

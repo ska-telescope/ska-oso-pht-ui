@@ -36,8 +36,8 @@ interface GeneralContentProps {
 
 export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
   const [abstract, setAbstract] = React.useState(GENERAL.Abstract);
-  const [category, setCategory] = React.useState();
-  const [subCategory, setSubCategory] = React.useState();
+  const [category, setCategory] = React.useState(0);
+  const [subCategory, setSubCategory] = React.useState(0);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
   React.useEffect(() => {
@@ -60,6 +60,20 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
     setStatus([page, result[count]]);
   }, [setStatus, abstract, category, subCategory]);
 
+  const checkCategory = e => {
+    setCategory(e);
+    if (e > 0 && GENERAL.ScienceCategory[e - 1].subCategory) {
+      setSubCategory(1); // Ensure a value is initially selected
+    }
+  };
+
+  const getSubCategoryOptions = () => {
+    if (category) {
+      return GENERAL.ScienceCategory[category - 1].subCategory;
+    }
+    return [{ label: '', value: 0 }];
+  };
+
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
@@ -74,33 +88,48 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
       </Grid>
       <Grid item>
         <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
-          <Grid item xs={4}>
-            <TextEntry
-              label="Abstract"
-              testId="abstractId"
-              rows={10}
-              value={abstract}
-              setValue={setAbstract}
-              onFocus={() => setHelp(HELP_ABSTRACT)}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <DropDown
-              options={GENERAL.ScienceCategory}
-              testId="categoryId"
-              value={category}
-              setValue={setCategory}
-              label="Scientific Category"
-              onFocus={() => setHelp(HELP_CATEGORY)}
-            />
-            <DropDown
-              options={GENERAL.ScienceSubCategory}
-              testId="subCategoryId"
-              value={subCategory}
-              setValue={setSubCategory}
-              label="Scientific sub-category"
-              onFocus={() => setHelp(HELP_SUBCATEGORY)}
-            />
+          <Grid item xs={7}>
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justifyContent="space-evenly"
+              spacing={1}
+            >
+              <Grid item xs={12}>
+                <TextEntry
+                  label="Abstract"
+                  testId="abstractId"
+                  rows={10}
+                  value={abstract}
+                  setValue={setAbstract}
+                  onFocus={() => setHelp(HELP_ABSTRACT)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DropDown
+                  options={GENERAL.ScienceCategory}
+                  testId="categoryId"
+                  value={category}
+                  setValue={checkCategory}
+                  label="Scientific Category"
+                  onFocus={() => setHelp(HELP_CATEGORY)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DropDown
+                  options={getSubCategoryOptions()}
+                  disabled={
+                    !category || GENERAL.ScienceCategory[category - 1].subCategory.length < 2
+                  }
+                  testId="subCategoryId"
+                  value={subCategory}
+                  setValue={setSubCategory}
+                  label="Scientific sub-category"
+                  onFocus={() => setHelp(HELP_SUBCATEGORY)}
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={3}>
             <InfoPanel
