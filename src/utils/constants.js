@@ -391,7 +391,17 @@ export const Projects = [
   }
 ];
 
-export const MAX_TITLE_LENGTH = 50;
-
-export const TITLE_ERROR_TEXT =
-  'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.';
+export const TEXT_ENTRY_PARAMS = {
+  TITLE: {
+    MAX_LENGTH: 50,
+    ERROR_TEXT:
+      'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
+    PATTERN: /^[a-zA-Z0-9\s\-_.,!"'/]*$/
+  },
+  EMAIL: {
+    MAX_LENGTH: 25,
+    ERROR_TEXT:
+      'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
+    PATTERN: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  }
+};
