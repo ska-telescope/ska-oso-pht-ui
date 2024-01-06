@@ -13,6 +13,7 @@ import {
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
+import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
@@ -52,6 +53,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [help] = React.useState(DEFAULT_HELP);
+  const [errorText, setErrorText] = React.useState('');
 
   // TODO - We can call the getTeam from here?
 
@@ -171,6 +173,14 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                 />
               </Tabs>
             </Box>
+            <TextEntry
+              label="First Name"
+              testId="firstName"
+              value={firstName}
+              setValue={setFirstName}
+              disabled={false}
+              errorText={errorText}
+            />
             <CustomTabPanel tabValue={value} index={0}>
               <Grid item>
                 <Grid
@@ -186,14 +196,25 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                       testId="firstName"
                       value={firstName}
                       setValue={setFirstName}
+                      disabled={false}
+                      errorText={errorText}
                     />
                     <TextEntry
                       label="Last Name"
                       testId="lastName"
                       value={lastName}
-                      setValue={setLastName}
+                      setValue={(name: string) =>
+                        helpers.validate.validateTextEntry(name, setLastName, setErrorText)}
+                      errorText={errorText}
                     />
-                    <TextEntry label="Email" testId="email" value={email} setValue={setEmail} />
+                    <TextEntry 
+                      label="Email"
+                      testId="email"
+                      value={email} 
+                      setValue={(emailVal: string) =>
+                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorText, 'EMAIL')}
+                      errorText={errorText}
+                    />
                     <FormControlLabel
                       value="phdThesis"
                       control={(

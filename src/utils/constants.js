@@ -392,7 +392,7 @@ export const Projects = [
 ];
 
 export const TEXT_ENTRY_PARAMS = {
-  TITLE: {
+  DEFAULT: {
     MAX_LENGTH: 50,
     ERROR_TEXT:
       'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',

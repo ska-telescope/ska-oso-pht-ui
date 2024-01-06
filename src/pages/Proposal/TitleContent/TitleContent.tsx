@@ -234,7 +234,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
               testId="titleId"
               value={theTitle}
               setValue={(title: string) =>
-                helpers.validate.validateTextEntry(title, setTheTitle, setErrorText, 'TITLE')}
+                helpers.validate.validateTextEntry(title, setTheTitle, setErrorText)}
               disabled={false}
               errorText={errorText}
             />

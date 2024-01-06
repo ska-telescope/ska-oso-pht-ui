@@ -6,9 +6,10 @@ export const helpers = {
       text: string,
       setText: Function,
       setErrorText: Function,
-      textType: string
+      textType?: string
     ): void {
-      // type of text to check (TITLE, EMAIL, etc.)
+
+      textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {
         // handle invalid textType (no match in TEXT_ENTRY_PARAMS)
