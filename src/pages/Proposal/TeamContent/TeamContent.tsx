@@ -142,6 +142,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             extendedColumns={extendedColumns}
             height={400}
             rowClick={ClickFunction}
+            testId='teamTableId'
           />
         </Grid>
         <Grid sx={{ border: '1px solid grey' }} item>
