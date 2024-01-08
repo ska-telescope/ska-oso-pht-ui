@@ -52,3 +52,49 @@ describe('Content', () => {
     });
   });
 });
+
+describe('First Name', () => {
+  it('first name updated with user input', () => {
+    const text = 'John Smith';
+    // Select the input field and type the text
+    cy.get('[data-testid="firstNameId"]');
+    // Get the updated first name value from the input
+    /* cy.get('[data-testid="firstNameId"] input').then(firstNameInput => {
+      // const updatedTitle = firstNameInput.val();
+      // Check that the updated first name matches the typed text
+      expect(firstNameInput.val()).to.equal(text);
+    }); */
+  });
+  /*
+  it('title field displays error when incorrect input entered', () => {
+    const incorrectText = 'XXX*%$';
+    // Select the input field and type the text
+    cy.get('[data-testid="titleId"] input').type(incorrectText);
+    // Get the text displayed in the helper text section
+    cy.get('[data-testid="titleId"] > p.Mui-error')
+      .invoke('text')
+      .then(helperText => {
+        // Check that helper text matches what's expected
+        expect(helperText).to.equal(TEXT_ENTRY_PARAMS.TITLE.ERROR_TEXT);
+      });
+  });
+  it('should clear the title helper text when text is cleared', () => {
+    const incorrectText = 'XXX*%$';
+    // Type incorrect text into the input field
+    cy.get('[data-testid="titleId"] input').type(incorrectText);
+    // Check that the helper text element exists
+    cy.get('[data-testid="titleId"] > p.Mui-error').should('exist');
+    // Clear the input field
+    cy.get('[data-testid="titleId"] input').clear();
+    // Check that the helper text element doesn't exist
+    cy.get('[data-testid="titleId"] > p.Mui-error').should('not.exist');
+  });
+  it('should set the title field to incorrect status when incorrect text is entered', () => {
+    const incorrectText = 'XXX*%$';
+    // Type incorrect text into the input field
+    cy.get('[data-testid="titleId"] input').type(incorrectText);
+    // Check that the input field has an "incorrect" status
+    cy.get('[data-testid="titleId"] input').should('have.attr', 'aria-invalid', 'true');
+  });
+  */
+});

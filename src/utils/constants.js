@@ -401,7 +401,7 @@ export const TEXT_ENTRY_PARAMS = {
   EMAIL: {
     MAX_LENGTH: 25,
     ERROR_TEXT:
-      'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
+      'Invalid input: please enter a valid email address.',
     PATTERN: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   }
 };

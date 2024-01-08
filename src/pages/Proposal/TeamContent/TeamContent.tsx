@@ -53,7 +53,9 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [help] = React.useState(DEFAULT_HELP);
-  const [errorText, setErrorText] = React.useState('');
+  const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
+  const [errorTextLastName, setErrorTextLastName] = React.useState('');
+  const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
   // TODO - We can call the getTeam from here?
 
@@ -176,12 +178,14 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             </Box>
             <TextEntry
               label="First Name"
-              testId="firstName"
+              testId="firstNameId"
               value={firstName}
-              setValue={setFirstName}
+              setValue={(firstNameVal: string) =>
+                helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName, 'DEFAULT')}
               disabled={false}
-              errorText={errorText}
+              errorText={errorTextFirstName}
             />
+            <TeamInviteButton />
             <CustomTabPanel tabValue={value} index={0}>
               <Grid item>
                 <Grid
@@ -194,27 +198,28 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                   <Grid item xs={6}>
                     <TextEntry
                       label="First Name"
-                      testId="firstName"
+                      testId="firstNameId2"
                       value={firstName}
-                      setValue={setFirstName}
+                      setValue={(firstNameVal: string) =>
+                        helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName, 'DEFAULT')}
                       disabled={false}
-                      errorText={errorText}
+                      errorText={errorTextFirstName}
                     />
                     <TextEntry
                       label="Last Name"
                       testId="lastName"
                       value={lastName}
-                      setValue={(name: string) =>
-                        helpers.validate.validateTextEntry(name, setLastName, setErrorText)}
-                      errorText={errorText}
+                      setValue={(lastNameVal: string) =>
+                        helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName, 'DEFAULT')}
+                      errorText={errorTextLastName}
                     />
                     <TextEntry 
                       label="Email"
                       testId="email"
                       value={email} 
                       setValue={(emailVal: string) =>
-                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorText, 'EMAIL')}
-                      errorText={errorText}
+                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+                      errorText={errorTextEmail}
                     />
                     <FormControlLabel
                       value="phdThesis"
