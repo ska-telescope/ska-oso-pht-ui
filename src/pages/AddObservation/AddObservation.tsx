@@ -68,9 +68,9 @@ export const HELP_SPECTRAL = {
   description: 'SPECTRAL DESCRIPTION',
   additional: ''
 };
-export const HELP_SUPPLIED = {
-  title: 'SUPPLIED TITLE',
-  description: 'SUPPLIED DESCRIPTION',
+export const HELP_SENSITIVITY = {
+  title: 'SENSITIVITY TITLE',
+  description: 'SENSITIVITY DESCRIPTION',
   additional: ''
 };
 export const HELP_SENSE_VALUE = {
@@ -87,9 +87,9 @@ export const HELP_UNITS = {
 export default function AddObservation() {
   const navigate = useNavigate();
 
-  const [arrayConfig, setArrayConfig] = React.useState(1);
-  const [subarrayConfig, setSubarrayConfig] = React.useState(1);
-  const [observingBand, setObservingBand] = React.useState(1);
+  const [arrayConfig, setArrayConfig] = React.useState(0);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(0);
+  const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(0);
   const [elevation, setElevation] = React.useState('');
   const [weather, setWeather] = React.useState('');
@@ -99,7 +99,7 @@ export default function AddObservation() {
   const [bandwidth, setBandwidth] = React.useState(0);
   const [robust, setRobust] = React.useState(0);
   const [spectral, setSpectral] = React.useState(0);
-  const [supplied, setSupplied] = React.useState(0);
+  const [sensitivity, setSensitivity] = React.useState(0);
   const [senseValue, setSenseValue] = React.useState();
   const [units1, setUnits1] = React.useState(0);
   const [units2, setUnits2] = React.useState(0);
@@ -203,12 +203,8 @@ export default function AddObservation() {
   );
 
   const bandwidthField = () => {
-    const getOptions = () => {
-      if (arrayConfig && OBSERVATION.array[arrayConfig - 1].bandWidth) {
-        return OBSERVATION.array[arrayConfig - 1].bandWidth;
-      }
-      return [{ label: '', value: 0 }];
-    };
+    const getOptions = () => OBSERVATION.Bandwidth_MID;
+    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
@@ -223,7 +219,8 @@ export default function AddObservation() {
   };
 
   const robustField = () => {
-    const getOptions = () => OBSERVATION.ImageWeighting[imageWeighting].robust;
+    const getOptions = () => OBSERVATION.Robust;
+    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
@@ -238,12 +235,8 @@ export default function AddObservation() {
   };
 
   const spectralField = () => {
-    const getOptions = () => {
-      if (arrayConfig) {
-        return OBSERVATION.array[arrayConfig - 1].spectralAveraging;
-      }
-      return [{ label: '', value: 0 }];
-    };
+    const getOptions = () => OBSERVATION.Specral;
+    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
@@ -257,23 +250,25 @@ export default function AddObservation() {
     );
   };
 
-  const suppliedField = () => {
-    const getOptions = () => OBSERVATION.Supplied;
+  const sensitivityField = () => {
+    const getOptions = () => OBSERVATION.Sensitivity;
+    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
         options={getOptions()}
-        testId="supplied"
-        value={supplied}
-        setValue={setSupplied}
+        testId="sensitivity"
+        value={sensitivity}
+        setValue={setSensitivity}
         label=""
-        onFocus={() => setHelp(HELP_SUPPLIED)}
+        onFocus={() => setHelp(HELP_SENSITIVITY)}
       />
     );
   };
 
   const units1Field = () => {
-    const getOptions = () => OBSERVATION.Supplied[supplied].units;
+    const getOptions = () => OBSERVATION.Units;
+    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
@@ -422,7 +417,7 @@ export default function AddObservation() {
                   {frequencyField()}
                 </Grid>
                 <Grid item xs={4}>
-                  {units2Field()}
+                  {units1Field()}
                 </Grid>
               </Grid>
               {imageWeightingField()}
@@ -436,14 +431,14 @@ export default function AddObservation() {
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Grid item xs={4}>
-                  {suppliedField()}
+                <Grid item xs={3}>
+                  {sensitivityField()}
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={6}>
                   {senseValueField()}
                 </Grid>
                 <Grid item xs={3}>
-                  {units1Field()}
+                  {units2Field()}
                 </Grid>
               </Grid>
               {taperingField()}
