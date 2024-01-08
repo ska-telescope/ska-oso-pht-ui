@@ -398,10 +398,24 @@ export const TEXT_ENTRY_PARAMS = {
       'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
     PATTERN: /^[a-zA-Z0-9\s\-_.,!"'/]*$/
   },
+  EMPTY: {
+    MAX_LENGTH: 50,
+    ERROR_TEXT:
+      'Please do not leave empty',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^.{3,}$/
+  },
   EMAIL: {
     MAX_LENGTH: 25,
     ERROR_TEXT:
       'Invalid input: please enter a valid email address.',
-    PATTERN: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    PATTERN: /^[a-zA-Z0-9\-_.@]*$/
+  },
+  EMAIL_STRICT: {
+    MAX_LENGTH: 25,
+    ERROR_TEXT:
+      'Please enter a valid email address.',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   }
 };

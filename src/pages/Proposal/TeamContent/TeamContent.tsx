@@ -52,10 +52,40 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [phdThesis, setPhdThesid] = React.useState(true);
   const [help] = React.useState(DEFAULT_HELP);
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
   const [errorTextLastName, setErrorTextLastName] = React.useState('');
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
+
+  // to pass form state to TeamInviteButton
+  const formValues = {
+    firstName: {
+      value: firstName,
+      setValue: setErrorTextFirstName,
+      errorText: errorTextFirstName,
+      setErrorText: setErrorTextFirstName
+    },
+    lastName: {
+      value: lastName,
+      setValue: setErrorTextLastName,
+      errorText: errorTextLastName,
+      setErrorText: setErrorTextLastName
+    },
+    email: {
+      value: email,
+      setValue: setEmail,
+      errorText: errorTextEmail,
+      setErrorText: setErrorTextEmail
+    },
+    phdThesis: {
+      phdThesis
+    }
+  }
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhdThesid(event.target.checked);
+  };
 
   // TODO - We can call the getTeam from here?
 
@@ -145,46 +175,51 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
         justifyContent="space-around"
       >
         <Grid item xs={6}>
-          <TextEntry
-            label="First Name"
-            testId="firstName"
-            value={firstName}
-            setValue={setFirstName}
-            disabled={false}
-            errorText={errorText}
-          />
-          <TextEntry
-            label="Last Name"
-            testId="lastName"
-            value={lastName}
-            setValue={(name: string) =>
-                        helpers.validate.validateTextEntry(name, setLastName, setErrorText)}
-            errorText={errorText}
-          />
-          <TextEntry 
-            label="Email"
-            testId="email"
-            value={email} 
-            setValue={(emailVal: string) =>
-                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorText, 'EMAIL')}
-            errorText={errorText}
-          />
-          <FormControlLabel
-            value="phdThesis"
-            control={(
-              <Checkbox
-                defaultChecked
-                sx={{
+          <Box component="form">
+            <TextEntry
+              label="First Name"
+              testId="firstName"
+              value={firstName}
+              setValue={(firstNameVal: string) =>
+              helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName)}
+              disabled={false}
+              errorText={errorTextFirstName}
+            />
+            <TextEntry
+              label="Last Name"
+              testId="lastName"
+              value={lastName}
+              setValue={(lastNameVal: string) =>
+                        helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+              errorText={errorTextLastName}
+            />
+            <TextEntry 
+              label="Email"
+              testId="email"
+              value={email} 
+              setValue={(emailVal: string) =>
+                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+              errorText={errorTextEmail}
+            />
+            <FormControlLabel
+              value="phdThesis"
+              control={(
+                <Checkbox
+                  defaultChecked
+                  sx={{
                             '&.Mui-checked': {
                               color: theme.palette.secondary.main
                             }
                           }}
-              />
+                />
                       )}
-            label="PhD Thesis"
-            labelPlacement="end"
-            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-          />
+              label="PhD Thesis"
+              labelPlacement="end"
+              checked={phdThesis}
+              onChange={handleCheckboxChange}
+              sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+            />
+          </Box>
         </Grid>
         <Grid item xs={4}>
           <InfoPanel
@@ -196,7 +231,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       </Grid>
 
       <Grid item xs={3}>
-        <TeamInviteButton />
+        <TeamInviteButton formValues={formValues} />
       </Grid>
     </Grid>
   )

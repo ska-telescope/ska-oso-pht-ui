@@ -7,7 +7,7 @@ export const helpers = {
       setText: Function,
       setErrorText: Function,
       textType?: string
-    ): void {
+    ): boolean {
 
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
@@ -19,9 +19,10 @@ export const helpers = {
       if (PATTERN.test(text)) {
         setText(text.substring(0, MAX_LENGTH));
         setErrorText('');
-      } else {
-        setErrorText(ERROR_TEXT);
+        return true;
       }
+        setErrorText(ERROR_TEXT);
+        return false;
     }
   }
 };
