@@ -135,6 +135,85 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     };
   }
 
+  const panel1 = () => (
+    <Grid item>
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <Grid item xs={6}>
+          <TextEntry
+            label="First Name"
+            testId="firstName"
+            value={firstName}
+            setValue={setFirstName}
+            disabled={false}
+            errorText={errorText}
+          />
+          <TextEntry
+            label="Last Name"
+            testId="lastName"
+            value={lastName}
+            setValue={(name: string) =>
+                        helpers.validate.validateTextEntry(name, setLastName, setErrorText)}
+            errorText={errorText}
+          />
+          <TextEntry 
+            label="Email"
+            testId="email"
+            value={email} 
+            setValue={(emailVal: string) =>
+                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorText, 'EMAIL')}
+            errorText={errorText}
+          />
+          <FormControlLabel
+            value="phdThesis"
+            control={(
+              <Checkbox
+                defaultChecked
+                sx={{
+                            '&.Mui-checked': {
+                              color: theme.palette.secondary.main
+                            }
+                          }}
+              />
+                      )}
+            label="PhD Thesis"
+            labelPlacement="end"
+            sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <InfoPanel
+            title={help.title}
+            description={help.description}
+            additional={help.additional}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid item xs={3}>
+        <TeamInviteButton />
+      </Grid>
+    </Grid>
+  )
+
+  const panel2 = () => (
+    <Grid item>
+      <p>To be implemented at a later date</p>
+    </Grid>
+  )
+
+  const panel3 = () => (
+    <Grid item>
+      <p>To be implemented at a later date</p>
+    </Grid>
+  )
+
+
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -176,88 +255,9 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                 />
               </Tabs>
             </Box>
-            <TextEntry
-              label="First Name"
-              testId="firstNameId"
-              value={firstName}
-              setValue={(firstNameVal: string) =>
-                helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName, 'DEFAULT')}
-              disabled={false}
-              errorText={errorTextFirstName}
-            />
-            <TeamInviteButton />
-            <CustomTabPanel tabValue={value} index={0}>
-              <Grid item>
-                <Grid
-                  p={1}
-                  container
-                  direction="row"
-                  alignItems="space-evenly"
-                  justifyContent="space-around"
-                >
-                  <Grid item xs={6}>
-                    <TextEntry
-                      label="First Name"
-                      testId="firstNameId2"
-                      value={firstName}
-                      setValue={(firstNameVal: string) =>
-                        helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName, 'DEFAULT')}
-                      disabled={false}
-                      errorText={errorTextFirstName}
-                    />
-                    <TextEntry
-                      label="Last Name"
-                      testId="lastName"
-                      value={lastName}
-                      setValue={(lastNameVal: string) =>
-                        helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName, 'DEFAULT')}
-                      errorText={errorTextLastName}
-                    />
-                    <TextEntry 
-                      label="Email"
-                      testId="email"
-                      value={email} 
-                      setValue={(emailVal: string) =>
-                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
-                      errorText={errorTextEmail}
-                    />
-                    <FormControlLabel
-                      value="phdThesis"
-                      control={(
-                        <Checkbox
-                          defaultChecked
-                          sx={{
-                            '&.Mui-checked': {
-                              color: theme.palette.secondary.main
-                            }
-                          }}
-                        />
-                      )}
-                      label="PhD Thesis"
-                      labelPlacement="end"
-                      sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <InfoPanel
-                      title={help.title}
-                      description={help.description}
-                      additional={help.additional}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <TeamInviteButton />
-                </Grid>
-              </Grid>
-            </CustomTabPanel>
-            <CustomTabPanel tabValue={value} index={1}>
-              <p>To be implemented at a later date</p>
-            </CustomTabPanel>
-            <CustomTabPanel tabValue={value} index={2}>
-              <p>To be implemented at a later date</p>
-            </CustomTabPanel>
+            {value === 0 && panel1()}
+            {value === 1 && panel2()}
+            {value === 2 && panel3()}
           </Box>
         </Grid>
       </Grid>
