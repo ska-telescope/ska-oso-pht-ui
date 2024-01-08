@@ -10,7 +10,6 @@ import {
   STATUS_PARTIAL
 } from '../../../utils/constants';
 
-// TODO : Category & sub-category need the correct content
 // TODO : Migrate the help to the parent so it is more dynamic
 
 export const HELP_ABSTRACT = {
@@ -35,9 +34,9 @@ interface GeneralContentProps {
 }
 
 export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
-  const [abstract, setAbstract] = React.useState(GENERAL.Abstract);
-  const [category, setCategory] = React.useState(0);
-  const [subCategory, setSubCategory] = React.useState(0);
+  const [abstract, setAbstract] = React.useState('');
+  const [category, setCategory] = React.useState(1);
+  const [subCategory, setSubCategory] = React.useState(1);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
   React.useEffect(() => {
@@ -74,71 +73,112 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
     return [{ label: '', value: 0 }];
   };
 
-  return (
-    <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-      <Grid item>
-        <Grid container direction="row" alignItems="center" justifyContent="center">
-          <Typography variant="body1" m={2}>
-            Cycle
-          </Typography>
-          <Typography variant="h6" m={2}>
-            <strong>{GENERAL.Cycle}</strong>
-          </Typography>
-        </Grid>
+  const abstractField = () => (
+    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
+      <Grid mt={2} item xs={2}>
+        <Typography>
+          Abstract
+        </Typography>
       </Grid>
-      <Grid item>
-        <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
-          <Grid item xs={7}>
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="space-evenly"
-              spacing={1}
-            >
-              <Grid item xs={12}>
-                <TextEntry
-                  label="Abstract"
-                  testId="abstractId"
-                  rows={10}
-                  value={abstract}
-                  setValue={setAbstract}
-                  onFocus={() => setHelp(HELP_ABSTRACT)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <DropDown
-                  options={GENERAL.ScienceCategory}
-                  testId="categoryId"
-                  value={category}
-                  setValue={checkCategory}
-                  label="Scientific Category"
-                  onFocus={() => setHelp(HELP_CATEGORY)}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <DropDown
-                  options={getSubCategoryOptions()}
-                  disabled={
+      <Grid item xs={10}>
+        <TextEntry
+          label=""
+          testId="abstractId"
+          rows={10}
+          value={abstract}
+          setValue={setAbstract}
+          onFocus={() => setHelp(HELP_ABSTRACT)}
+          helperText='Please enter your abstract information in here'
+        />
+      </Grid>
+    </Grid>
+  )
+
+  const cycleField = () => (
+    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
+      <Grid item xs={2}>
+        <Typography>
+          Cycle
+        </Typography>
+      </Grid>
+      <Grid item xs={10}>
+        <Typography>
+          <strong>{GENERAL.Cycle}</strong>
+        </Typography>
+      </Grid>
+    </Grid>
+  )
+
+  const categoryField = () => (
+    <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
+      <Grid item xs={4}>
+        <Typography>
+          Scientific Category
+        </Typography>
+      </Grid>
+      <Grid item xs={8}>
+        <DropDown
+          options={GENERAL.ScienceCategory}
+          testId="categoryId"
+          value={category}
+          setValue={checkCategory}
+          label=""
+          onFocus={() => setHelp(HELP_CATEGORY)}
+        />
+      </Grid>
+    </Grid>
+  )
+
+  const subCategoryField = () => (
+    <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
+      <Grid item xs={6}>
+        <Typography>
+          Scientific sub-category
+        </Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <DropDown
+          options={getSubCategoryOptions()}
+          disabled={
                     !category || GENERAL.ScienceCategory[category - 1].subCategory.length < 2
                   }
-                  testId="subCategoryId"
-                  value={subCategory}
-                  setValue={setSubCategory}
-                  label="Scientific sub-category"
-                  onFocus={() => setHelp(HELP_SUBCATEGORY)}
-                />
-              </Grid>
-            </Grid>
+          testId="subCategoryId"
+          value={subCategory}
+          setValue={setSubCategory}
+          label=""
+          onFocus={() => setHelp(HELP_SUBCATEGORY)}
+        />
+      </Grid>
+    </Grid>
+  )
+
+  return (
+    <Grid container direction="row" spacing={1} alignItems="space-evenly" justifyContent="space-around">
+      <Grid item xs={1} />
+      <Grid item xs={8}>
+        {cycleField()}
+        {abstractField()}
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="space-evenly"
+          spacing={1}
+        >
+          <Grid item xs={6}>
+            {categoryField()}
           </Grid>
-          <Grid item xs={3}>
-            <InfoPanel
-              title={help.title}
-              description={help.description}
-              additional={help.additional}
-            />
+          <Grid item xs={6}>
+            {subCategoryField()}
           </Grid>
         </Grid>
+      </Grid>
+      <Grid item xs={3}>
+        <InfoPanel
+          title={help.title}
+          description={help.description}
+          additional={help.additional}
+        />
       </Grid>
     </Grid>
   );

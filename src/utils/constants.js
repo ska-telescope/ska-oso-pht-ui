@@ -152,7 +152,7 @@ export const GENERAL = {
     { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
     { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
     { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
-    { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
+    { label: 'Solar, Heliospheric and Ionospheric Physics', subCategory: [{ label: 'Not specified', value: 1 }], value: 12 },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ]
@@ -220,22 +220,58 @@ export const OBSERVATION = {
         { label: 'AA4 (15-m antennas only)', value: 5 },
         { label: 'Custom', value: 6 }
       ],
+      spectralAveraging: [
+        { label: '1', value: 0 },
+        { label: '2', value: 0 },
+        { label: '3', value: 0 },
+        { label: '4', value: 0 },
+        { label: '6', value: 0 },
+        { label: '8', value: 0 },
+        { label: '12', value: 0 },
+        { label: '24', value: 0 }
+      ],
       band: [
         { label: 'Band 1 (0.35 - 1.05 GHz)', value: 1 },
         { label: 'Band 2 (0.95 - 1.76 GHz)', value: 2 },
         { label: 'Band 5a (4.6 - 8.5 GHz)', value: 3 },
         { label: 'Band 5b (8.3 - 15.4 GHz)', value: 4 }
+      ],
+      bandWidth: [
+        { label: '3.125 MHz', value: 0 },
+        { label: '6.25 MHz', value: 1 },
+        { label: '12.5 Mhz', value: 2 },
+        { label: '25 Mhz', value: 3 },
+        { label: '50 Mhz', value: 4 },
+        { label: '100 Mhz', value: 5 },
+        { label: '200 Mhz', value: 6 }
       ]
     },
     {
       label: 'LOW',
       value: 2,
+      spectralAveraging: [{ label: 'n/a', value: 0 }],
       subarray: [
         { label: 'AA0.5', value: 1 },
         { label: 'AA1', value: 2 },
-        { label: 'AA2', value: 3 }
+        { label: 'AA2', value: 3 },
+        { label: 'AA2 (core only)', value: 4 },
+        { label: 'AA*', value: 5 },
+        { label: 'AA* (core only)', value: 6 },
+        { label: 'AA4', value: 7 },
+        { label: 'AA4  (core only)', value: 8 },
+        { label: 'Custom', value: 9 }
       ],
-      band: null
+      band: null,
+      bandWidth: [
+        { label: '24.4 KHz', value: 0 },
+        { label: '48.8 KHz', value: 1 },
+        { label: '97.7 Khz', value: 2 },
+        { label: '195.3 Khz', value: 3 },
+        { label: '390.6 Khz', value: 4 },
+        { label: '781.3 Khz', value: 5 },
+        { label: '1562.5 Khz', value: 6 },
+        { label: '3125.0 Khz', value: 7 }
+      ]
     }
   ],
   ObservationType: [
@@ -243,17 +279,77 @@ export const OBSERVATION = {
     { label: 'Continuum', value: 1 }
   ],
   ImageWeighting: [
-    { label: 'Natural', value: 0 },
-    { label: 'Uniform', value: 1 },
-    { label: 'Briggs', value: 2 }
+    { 
+      label: 'Natural', 
+      value: 0, 
+      robust: [
+        { label: 'n/a', value: 0 }
+      ] 
+    },
+    { 
+      label: 'Uniform', 
+      value: 1, 
+      robust: [
+        { label: 'n/a', value: 0 }
+      ]
+    },
+    { 
+      label: 'Briggs', 
+      value: 2, 
+      robust: [
+      { label: '-2', value: 0 },
+      { label: '-1', value: 1 },
+      { label: '0', value: 2 },
+      { label: '1', value: 3 },
+      { label: '2', value: 4 }
+    ]
+  }
   ],
-  Bandwidth_LOW: [{ label: 'TO BE DEFINED', value: 0 }],
-  Bandwidth_MID: [{ label: 'TO BE DEFINED', value: 0 }],
-  Tapering: [{ label: 'TO BE DEFINED', value: 0 }],
-  Robust: [{ label: 'TO BE DEFINED', value: 0 }],
-  Specral: [{ label: 'TO BE DEFINED', value: 0 }],
-  Sensitivity: [{ label: 'Sensitivity', value: 0 }],
-  Units: [{ label: 'MHz', value: 0 }]
+  Tapering: [
+    { label: 'No tapering', value: 0 },
+    { label: '0.250"', value: 1 },
+    { label: '1.000"', value: 2 },
+    { label: '4.000"', value: 3 },
+    { label: '16.000"', value: 4 },
+    { label: '64.000"', value: 5 },
+    { label: '256.000"', value: 6 },
+    { label: '1024.000"', value: 7 }
+  ],
+  
+  Supplied: [
+    { 
+      label: 'Integration Time', 
+      value: 0, 
+      units: [
+        { label: 'd', value: 0 },
+        { label: 'h', value: 1 },
+        { label: 'min', value: 2 },
+        { label: 's', value: 3 },
+        { label: 'ms', value: 4 },
+        { label: 'us', value: 5 },
+        { label: 'ns', value: 6 }
+      ]
+    },
+    { 
+      label: 'Sensitivity', 
+      value: 1,
+      units: [
+        { label: 'jy/beam', value: 0 },
+        { label: 'mjy/beam', value: 1 },
+        { label: 'ujy/beam', value: 2 },
+        { label: 'njy/beam', value: 3 },
+        { label: 'K', value: 4 },
+        { label: 'mK', value: 5 },
+        { label: 'uK', value: 6 } 
+      ]
+    }
+  ],
+  Units: [
+    { label: 'Ghz', value: 0 }, 
+    { label: 'Mhz', value: 1 }, 
+    { label: 'Khz', value: 2 }, 
+    { label: 'Hz', value: 3}
+  ]
 };
 
 export const TARGETS = {
