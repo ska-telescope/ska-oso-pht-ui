@@ -152,7 +152,11 @@ export const GENERAL = {
     { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
     { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
     { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
-    { label: 'Solar, Heliospheric and Ionospheric Physics', subCategory: [{ label: 'Not specified', value: 1 }], value: 12 },
+    {
+      label: 'Solar, Heliospheric and Ionospheric Physics',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 12
+    },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ]
@@ -279,31 +283,27 @@ export const OBSERVATION = {
     { label: 'Continuum', value: 1 }
   ],
   ImageWeighting: [
-    { 
-      label: 'Natural', 
-      value: 0, 
-      robust: [
-        { label: 'n/a', value: 0 }
-      ] 
+    {
+      label: 'Natural',
+      value: 0,
+      robust: [{ label: 'n/a', value: 0 }]
     },
-    { 
-      label: 'Uniform', 
-      value: 1, 
+    {
+      label: 'Uniform',
+      value: 1,
+      robust: [{ label: 'n/a', value: 0 }]
+    },
+    {
+      label: 'Briggs',
+      value: 2,
       robust: [
-        { label: 'n/a', value: 0 }
+        { label: '-2', value: 0 },
+        { label: '-1', value: 1 },
+        { label: '0', value: 2 },
+        { label: '1', value: 3 },
+        { label: '2', value: 4 }
       ]
-    },
-    { 
-      label: 'Briggs', 
-      value: 2, 
-      robust: [
-      { label: '-2', value: 0 },
-      { label: '-1', value: 1 },
-      { label: '0', value: 2 },
-      { label: '1', value: 3 },
-      { label: '2', value: 4 }
-    ]
-  }
+    }
   ],
   Tapering: [
     { label: 'No tapering', value: 0 },
@@ -315,11 +315,11 @@ export const OBSERVATION = {
     { label: '256.000"', value: 6 },
     { label: '1024.000"', value: 7 }
   ],
-  
+
   Supplied: [
-    { 
-      label: 'Integration Time', 
-      value: 0, 
+    {
+      label: 'Integration Time',
+      value: 0,
       units: [
         { label: 'd', value: 0 },
         { label: 'h', value: 1 },
@@ -330,8 +330,8 @@ export const OBSERVATION = {
         { label: 'ns', value: 6 }
       ]
     },
-    { 
-      label: 'Sensitivity', 
+    {
+      label: 'Sensitivity',
       value: 1,
       units: [
         { label: 'jy/beam', value: 0 },
@@ -340,15 +340,15 @@ export const OBSERVATION = {
         { label: 'njy/beam', value: 3 },
         { label: 'K', value: 4 },
         { label: 'mK', value: 5 },
-        { label: 'uK', value: 6 } 
+        { label: 'uK', value: 6 }
       ]
     }
   ],
   Units: [
-    { label: 'Ghz', value: 0 }, 
-    { label: 'Mhz', value: 1 }, 
-    { label: 'Khz', value: 2 }, 
-    { label: 'Hz', value: 3}
+    { label: 'Ghz', value: 0 },
+    { label: 'Mhz', value: 1 },
+    { label: 'Khz', value: 2 },
+    { label: 'Hz', value: 3 }
   ]
 };
 

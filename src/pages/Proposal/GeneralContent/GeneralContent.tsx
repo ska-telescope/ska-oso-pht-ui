@@ -76,9 +76,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
   const abstractField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid mt={2} item xs={2}>
-        <Typography>
-          Abstract
-        </Typography>
+        <Typography>Abstract</Typography>
       </Grid>
       <Grid item xs={10}>
         <TextEntry
@@ -88,18 +86,16 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
           value={abstract}
           setValue={setAbstract}
           onFocus={() => setHelp(HELP_ABSTRACT)}
-          helperText='Please enter your abstract information in here'
+          helperText="Please enter your abstract information in here"
         />
       </Grid>
     </Grid>
-  )
+  );
 
   const cycleField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={2}>
-        <Typography>
-          Cycle
-        </Typography>
+        <Typography>Cycle</Typography>
       </Grid>
       <Grid item xs={10}>
         <Typography>
@@ -107,14 +103,12 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
         </Typography>
       </Grid>
     </Grid>
-  )
+  );
 
   const categoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={4}>
-        <Typography>
-          Scientific Category
-        </Typography>
+        <Typography>Scientific Category</Typography>
       </Grid>
       <Grid item xs={8}>
         <DropDown
@@ -127,21 +121,17 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
         />
       </Grid>
     </Grid>
-  )
+  );
 
   const subCategoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={6}>
-        <Typography>
-          Scientific sub-category
-        </Typography>
+        <Typography>Scientific sub-category</Typography>
       </Grid>
       <Grid item xs={6}>
         <DropDown
           options={getSubCategoryOptions()}
-          disabled={
-                    !category || GENERAL.ScienceCategory[category - 1].subCategory.length < 2
-                  }
+          disabled={!category || GENERAL.ScienceCategory[category - 1].subCategory.length < 2}
           testId="subCategoryId"
           value={subCategory}
           setValue={setSubCategory}
@@ -150,10 +140,16 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
         />
       </Grid>
     </Grid>
-  )
+  );
 
   return (
-    <Grid container direction="row" spacing={1} alignItems="space-evenly" justifyContent="space-around">
+    <Grid
+      container
+      direction="row"
+      spacing={1}
+      alignItems="space-evenly"
+      justifyContent="space-around"
+    >
       <Grid item xs={1} />
       <Grid item xs={8}>
         {cycleField()}
@@ -174,11 +170,7 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
         </Grid>
       </Grid>
       <Grid item xs={3}>
-        <InfoPanel
-          title={help.title}
-          description={help.description}
-          additional={help.additional}
-        />
+        <InfoPanel title={help.title} description={help.description} additional={help.additional} />
       </Grid>
     </Grid>
   );
