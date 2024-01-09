@@ -9,15 +9,8 @@ import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } f
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
-import {
-  Projects,
-  MAX_TITLE_LENGTH,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  TITLE_ERROR_TEXT
-} from '../../../utils/constants';
-// import TextEntry from '../../../components/TextEntry/TextEntry/TextEntry';
+import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import { helpers } from '../../../utils/helpers';
 
 interface TitleContentProps {
   page: number;
@@ -127,21 +120,6 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
       setTheSubProposalTemp(PROPOSAL);
     }
   }
-
-  const validateTheTitle = e => {
-    const title = e;
-    // specify the pattern for allowed characters
-    const pattern = /^[a-zA-Z0-9\s\-_.,!"'/]*$/;
-    // check if the input matches the pattern
-    if (pattern.test(title)) {
-      // if it does, update the title
-      setTheTitle(title.substring(0, MAX_TITLE_LENGTH));
-      setErrorText('');
-    } else {
-      // if input doesn't match the pattern, show an error message
-      setErrorText(TITLE_ERROR_TEXT);
-    }
-  };
 
   const setCardBG = (in1: any, in2: any) =>
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
@@ -255,7 +233,8 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
               label="Title"
               testId="titleId"
               value={theTitle}
-              setValue={validateTheTitle}
+              setValue={(title: string) =>
+                helpers.validate.validateTextEntry(title, setTheTitle, setErrorText)}
               disabled={false}
               errorText={errorText}
             />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
-import MockTeam from './mockTeam';
+import { getMockTeam } from './mockTeam';
 
 const GetTeam = async () => {
   const apiUrl = SKA_PHT_API_URL;
@@ -14,7 +14,7 @@ const GetTeam = async () => {
 
   if (USE_LOCAL_DATA) {
     // console.log("USE_LOCAL_DATA: Loading MockStatus")
-    return MockTeam;
+    return getMockTeam;
   }
 
   try {

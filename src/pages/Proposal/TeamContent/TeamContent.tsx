@@ -7,29 +7,26 @@ import {
   Grid,
   Tab,
   Tabs,
-  Typography,
   SvgIcon
 } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
+import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
-import {
-  DEFAULT_HELP,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  TEAM
-} from '../../../utils/constants';
+import { DEFAULT_HELP, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
+import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
 
+/*
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   tabValue: number;
 }
+*/
 
 export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
@@ -51,9 +48,40 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [phdThesis, setPhdThesid] = React.useState(true);
   const [help] = React.useState(DEFAULT_HELP);
+  const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
+  const [errorTextLastName, setErrorTextLastName] = React.useState('');
+  const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
-  // TODO - We can call the getTeam from here?
+  // to pass form state to TeamInviteButton
+  const formValues = {
+    firstName: {
+      value: firstName,
+      setValue: setErrorTextFirstName,
+      errorText: errorTextFirstName,
+      setErrorText: setErrorTextFirstName
+    },
+    lastName: {
+      value: lastName,
+      setValue: setErrorTextLastName,
+      errorText: errorTextLastName,
+      setErrorText: setErrorTextLastName
+    },
+    email: {
+      value: email,
+      setValue: setEmail,
+      errorText: errorTextEmail,
+      setErrorText: setErrorTextEmail
+    },
+    phdThesis: {
+      phdThesis
+    }
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhdThesid(event.target.checked);
+  };
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -76,15 +104,15 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', width: 200 },
-    { field: 'FirstName', headerName: 'First Name', width: 200 },
-    { field: 'Status', headerName: 'Status', width: 150 },
-    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
+    { field: 'LastName', headerName: 'Last Name', flex: 1 },
+    { field: 'FirstName', headerName: 'First Name', flex: 1 },
+    { field: 'Status', headerName: 'Status', flex: 1 },
+    { field: 'PHDThesis', headerName: 'PhD Thesis', flex: 1 },
     {
       field: 'PI',
       headerName: 'PI',
       sortable: false,
-      width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: params => (
         <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
@@ -94,7 +122,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       field: 'Actions',
       headerName: 'Actions',
       sortable: false,
-      width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: () => <DeleteProposalButton />
     }
@@ -105,6 +133,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     // TODO
   };
 
+  /*
   function CustomTabPanel(props: TabPanelProps) {
     const { children, tabValue, index } = props;
 
@@ -123,6 +152,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       </div>
     );
   }
+  */
 
   function a11yProps(index: number) {
     return {
@@ -131,18 +161,99 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     };
   }
 
+  const panel1 = () => (
+    <Grid item>
+      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid item xs={6}>
+          <Box component="form">
+            <TextEntry
+              label="First Name"
+              testId="firstName"
+              value={firstName}
+              setValue={(firstNameVal: string) =>
+                helpers.validate.validateTextEntry(
+                  firstNameVal,
+                  setFirstName,
+                  setErrorTextFirstName
+                )}
+              disabled={false}
+              errorText={errorTextFirstName}
+            />
+            <TextEntry
+              label="Last Name"
+              testId="lastName"
+              value={lastName}
+              setValue={(lastNameVal: string) =>
+                helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+              errorText={errorTextLastName}
+            />
+            <TextEntry
+              label="Email"
+              testId="email"
+              value={email}
+              setValue={(emailVal: string) =>
+                helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+              errorText={errorTextEmail}
+            />
+            <FormControlLabel
+              value="phdThesis"
+              control={(
+                <Checkbox
+                  sx={{
+                    '&.Mui-checked': {
+                      color: theme.palette.secondary.main
+                    }
+                  }}
+                />
+              )}
+              label="PhD Thesis"
+              labelPlacement="end"
+              checked={phdThesis}
+              onChange={handleCheckboxChange}
+              sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={4}>
+          <InfoPanel
+            title={help.title}
+            description={help.description}
+            additional={help.additional}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid item xs={3} ml={3}>
+        <TeamInviteButton formValues={formValues} />
+      </Grid>
+    </Grid>
+  );
+
+  const panel2 = () => (
+    <Grid item>
+      <p>To be implemented at a later date</p>
+    </Grid>
+  );
+
+  const panel3 = () => (
+    <Grid item>
+      <p>To be implemented at a later date</p>
+    </Grid>
+  );
+
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item>
+        <Grid item md={6} xs={11}>
           <DataGridWrapper
-            rows={TEAM}
+            rows={getMockTeam()}
             extendedColumns={extendedColumns}
             height={400}
             rowClick={ClickFunction}
+            testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey' }} item>
+        <Grid sx={{ border: '1px solid grey', minWidth: 545}} item md={5} xs={11}>
           <Box sx={{ width: '100%' }}>
             <Box>
               <Tabs
@@ -171,66 +282,9 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                 />
               </Tabs>
             </Box>
-            <CustomTabPanel tabValue={value} index={0}>
-              <Grid item>
-                <Grid
-                  p={1}
-                  container
-                  direction="row"
-                  alignItems="space-evenly"
-                  justifyContent="space-around"
-                >
-                  <Grid item xs={6}>
-                    <TextEntry
-                      label="First Name"
-                      testId="firstName"
-                      value={firstName}
-                      setValue={setFirstName}
-                    />
-                    <TextEntry
-                      label="Last Name"
-                      testId="lastName"
-                      value={lastName}
-                      setValue={setLastName}
-                    />
-                    <TextEntry label="Email" testId="email" value={email} setValue={setEmail} />
-                    <FormControlLabel
-                      value="phdThesis"
-                      control={(
-                        <Checkbox
-                          defaultChecked
-                          sx={{
-                            '&.Mui-checked': {
-                              color: theme.palette.secondary.main
-                            }
-                          }}
-                        />
-                      )}
-                      label="PhD Thesis"
-                      labelPlacement="end"
-                      sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <InfoPanel
-                      title={help.title}
-                      description={help.description}
-                      additional={help.additional}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <TeamInviteButton />
-                </Grid>
-              </Grid>
-            </CustomTabPanel>
-            <CustomTabPanel tabValue={value} index={1}>
-              <p>To be implemented at a later date</p>
-            </CustomTabPanel>
-            <CustomTabPanel tabValue={value} index={2}>
-              <p>To be implemented at a later date</p>
-            </CustomTabPanel>
+            {value === 0 && panel1()}
+            {value === 1 && panel2()}
+            {value === 2 && panel3()}
           </Box>
         </Grid>
       </Grid>
