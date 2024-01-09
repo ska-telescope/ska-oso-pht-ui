@@ -220,11 +220,36 @@ export const OBSERVATION = {
         { label: 'AA4 (15-m antennas only)', value: 5 },
         { label: 'Custom', value: 6 }
       ],
+      robust: [
+        { label: '-2', value: 1 },
+        { label: '-1', value: 2 },
+        { label: '0', value: 3 },
+        { label: '1', value: 4 },
+        { label: '2', value: 5 }
+      ],
       band: [
         { label: 'Band 1 (0.35 - 1.05 GHz)', value: 1 },
         { label: 'Band 2 (0.95 - 1.76 GHz)', value: 2 },
         { label: 'Band 5a (4.6 - 8.5 GHz)', value: 3 },
         { label: 'Band 5b (8.3 - 15.4 GHz)', value: 4 }
+      ],
+      bandWidth: [
+        { label: '3.125 MHz', value: 1 },
+        { label: '6.25 MHz', value: 2 },
+        { label: '12.5 MHz', value: 3 },
+        { label: '25 MHz', value: 4 },
+        { label: '50 MHz', value: 5 },
+        { label: '100 MHz', value: 6 },
+        { label: '200 MHz', value: 7 }
+      ],
+      spectralResolution: [
+        { label: '0.21 KHz', value: 1 },
+        { label: '0.42 KHz', value: 2 },
+        { label: '0.84 KHz', value: 3 },
+        { label: '1.68 KHz', value: 4 },
+        { label: '3.36 KHz', value: 5 },
+        { label: '6.72 KHz', value: 6 },
+        { label: '13.44 KHz', value: 7 }
       ]
     },
     {
@@ -233,9 +258,38 @@ export const OBSERVATION = {
       subarray: [
         { label: 'AA0.5', value: 1 },
         { label: 'AA1', value: 2 },
-        { label: 'AA2', value: 3 }
+        { label: 'AA2', value: 3 },
+        { label: 'AA2 (core only', value: 4 },
+        { label: 'AA*', value: 5 },
+        { label: 'AA* (core only)', value: 6 },
+        { label: 'AA4', value: 7 },
+        { label: 'AA4 (core only)', value: 8 },
+        { label: 'Custom', value: 9 }
       ],
-      band: null
+      robust: [
+        { label: 'n/a', value: 1 }
+      ],
+      band: null,
+      bandWidth: [
+        { label: '24.4 KHz', value: 1 },
+        { label: '48.8 KHz', value: 2 },
+        { label: '97.7 KHz', value: 3 },
+        { label: '195.3 KHz', value: 4 },
+        { label: '390.6 KHz', value: 5 },
+        { label: '781.3 KHz', value: 6 },
+        { label: '1562.5 KHz', value: 7 },
+        { label: '3125.0 KHz', value: 8 }
+      ],
+      spectralResolution: [
+        { label: '14.1 Hz', value: 1 },
+        { label: '28.3 Hz', value: 2 },
+        { label: '56.5 Hz', value: 3 },
+        { label: '113.0 Hz', value: 4 },
+        { label: '226.1 Hz', value: 5 },
+        { label: '452.1 Hz', value: 6 },
+        { label: '904.2 Hz', value: 7 },
+        { label: '1808.4 Hz', value: 8 }
+      ]
     }
   ],
   ObservationType: [
@@ -247,13 +301,60 @@ export const OBSERVATION = {
     { label: 'Uniform', value: 1 },
     { label: 'Briggs', value: 2 }
   ],
-  Bandwidth_LOW: [{ label: 'TO BE DEFINED', value: 0 }],
-  Bandwidth_MID: [{ label: 'TO BE DEFINED', value: 0 }],
-  Tapering: [{ label: 'TO BE DEFINED', value: 0 }],
-  Robust: [{ label: 'TO BE DEFINED', value: 0 }],
-  Specral: [{ label: 'TO BE DEFINED', value: 0 }],
-  Sensitivity: [{ label: 'Sensitivity', value: 0 }],
-  Units: [{ label: 'MHz', value: 0 }]
+  SpectralAveraging: [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '6', value: 5 },
+    { label: '8', value: 6 },
+    { label: '12', value: 7 },
+    { label: '24', value: 8 }
+  ],
+  Tapering: [
+    { label: 'No tapering', value: 1 },
+    { label: '0.250"', value: 2 },
+    { label: '1.000"', value: 3 },
+    { label: '4.000"', value: 4 },
+    { label: '16.000"', value: 5 },
+    { label: '64.000"', value: 6 },
+    { label: '256.000"', value: 7 },
+    { label: '1024.000"', value: 8 }
+  ],
+  Supplied: [
+    { 
+      label: 'Integration Time', 
+      value: 1,
+      units: [
+        { label: 'd', value: 1 },
+        { label: 'h', value: 2 },
+        { label: 'min', value: 3 },
+        { label: 's', value: 4 },
+        { label: 'ms', value: 5 },
+        { label: 'us', value: 6 },
+        { label: 'ns', value: 7 }
+      ] 
+    },
+    { 
+      label: 'Sensitivity', 
+      value: 2,
+      units: [
+        { label: 'jy/beam', value: 1 },
+        { label: 'mjy/beam', value: 2 },
+        { label: 'ujy/beam', value: 3 },
+        { label: 'njy/beam', value: 4 },
+        { label: 'K', value: 5 },
+        { label: 'mK', value: 6 },
+        { label: 'uK', value: 7 }
+      ]  
+    }
+  ],
+  Units: [
+    { label: 'GHz', value: 1 },
+    { label: 'MHz', value: 2 },
+    { label: 'KHz', value: 3 },
+    { label: 'Hz', value: 4 }
+  ]
 };
 
 export const TARGETS = {
