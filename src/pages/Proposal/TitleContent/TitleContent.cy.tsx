@@ -53,7 +53,7 @@ describe('<TitleContent />', () => {
           .invoke('text')
           .then(helperText => {
             // Check that helper text matches what's expected
-            expect(helperText).to.equal(TEXT_ENTRY_PARAMS.TITLE.ERROR_TEXT);
+            expect(helperText).to.equal(TEXT_ENTRY_PARAMS.DEFAULT.ERROR_TEXT);
           });
       });
       it('should clear the title helper text when text is cleared', () => {
