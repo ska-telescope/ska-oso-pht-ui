@@ -1,14 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Tab,
-  Tabs,
-  SvgIcon
-} from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
@@ -253,7 +245,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey', minWidth: 545}} item md={5} xs={11}>
+        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={5} xs={11}>
           <Box sx={{ width: '100%' }}>
             <Box>
               <Tabs

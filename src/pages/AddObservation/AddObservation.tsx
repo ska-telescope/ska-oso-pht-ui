@@ -1,12 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import InfoPanel from '../../components/infoPanel/infoPanel';
 import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
-import SensCalcButton from '../../components/button/SensCalc/SensCalcButton';
 
 export const HELP_ARRAY = {
   title: 'ARRAY TITLE',
@@ -43,6 +42,11 @@ export const HELP_FREQUENCY = {
   description: 'FREQUENCY DESCRIPTION',
   additional: ''
 };
+export const HELP_EFFECTIVE_RESOLUTION = {
+  title: 'EFFECTIVE RESOLUTION TITLE',
+  description: 'EFFECTIVE RESOLUTION DESCRIPTION',
+  additional: ''
+};
 export const HELP_IMAGE = {
   title: 'IMAGE TITLE',
   description: 'IMAGE DESCRIPTION',
@@ -63,14 +67,29 @@ export const HELP_ROBUST = {
   description: 'ROBUST DESCRIPTION',
   additional: ''
 };
-export const HELP_SPECTRAL = {
-  title: 'SPECTRAL TITLE',
-  description: 'SPECTRAL DESCRIPTION',
+export const HELP_SPECTRAL_AVERAGING = {
+  title: 'SPECTRAL AVERAGING TITLE',
+  description: 'SPECTRAL AVERAGING DESCRIPTION',
   additional: ''
 };
-export const HELP_SENSITIVITY = {
-  title: 'SENSITIVITY TITLE',
-  description: 'SENSITIVITY DESCRIPTION',
+export const HELP_SPECTRAL_RESOLUTION = {
+  title: 'SPECTRAL RESOLUTION TITLE',
+  description: 'SPECTRAL RESOLUTION DESCRIPTION',
+  additional: ''
+};
+export const HELP_SUPPLIED_TYPE = {
+  title: 'SUPPLIED TYPE TITLE',
+  description: 'SUPPLIED TYPE DESCRIPTION',
+  additional: ''
+};
+export const HELP_SUPPLIED_VALUE = {
+  title: 'SUPPLIED VALUE TITLE',
+  description: 'SUPPLIED VALUE DESCRIPTION',
+  additional: ''
+};
+export const HELP_SUPPLIED_UNITS = {
+  title: 'SUPPLIED UNITS TITLE',
+  description: 'SUPPLIED UNITS DESCRIPTION',
   additional: ''
 };
 export const HELP_SENSE_VALUE = {
@@ -94,21 +113,21 @@ export default function AddObservation() {
   const [elevation, setElevation] = React.useState('');
   const [weather, setWeather] = React.useState('');
   const [frequency, setFrequency] = React.useState('');
+  const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(0);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(0);
   const [robust, setRobust] = React.useState(0);
-  const [spectral, setSpectral] = React.useState(0);
-  const [sensitivity, setSensitivity] = React.useState(0);
-  const [senseValue, setSenseValue] = React.useState();
-  const [units1, setUnits1] = React.useState(0);
-  const [units2, setUnits2] = React.useState(0);
+  const [spectralAveraging, setSpectralAveraging] = React.useState(1);
+  const [spectralResolution, setSpectralResolution] = React.useState(1);
+  const [suppliedType, setSuppliedType] = React.useState(1);
+  const [suppliedValue, setSuppliedValue] = React.useState();
+  const [suppliedUnits, setSuppliedUnits] = React.useState(1);
+  const [units, setUnits] = React.useState(1);
 
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
-  const createProposal = () => {
-    // TODO : We need to call putProposal here.
-
+  const addObservation = () => {
     navigate('/proposal');
   };
 
@@ -203,8 +222,12 @@ export default function AddObservation() {
   );
 
   const bandwidthField = () => {
-    const getOptions = () => OBSERVATION.Bandwidth_MID;
-    // TODO : TO BE DEFINED CORRECTLY
+    const getOptions = () => {
+      if (arrayConfig) {
+        return OBSERVATION.array[arrayConfig - 1].bandWidth;
+      }
+      return [{ label: '', value: 0 }];
+    };
 
     return (
       <DropDown
@@ -219,12 +242,17 @@ export default function AddObservation() {
   };
 
   const robustField = () => {
-    const getOptions = () => OBSERVATION.Robust;
-    // TODO : TO BE DEFINED CORRECTLY
+    const getOptions = () => {
+      if (arrayConfig && imageWeighting === 2) {
+        return OBSERVATION.array[arrayConfig - 1].robust;
+      }
+      return [{ label: '', value: 0 }];
+    };
 
     return (
       <DropDown
         options={getOptions()}
+        disabled={!arrayConfig || imageWeighting !== 2}
         testId="robust"
         value={robust}
         setValue={setRobust}
@@ -234,69 +262,109 @@ export default function AddObservation() {
     );
   };
 
-  const spectralField = () => {
-    const getOptions = () => OBSERVATION.Specral;
-    // TODO : TO BE DEFINED CORRECTLY
+  const spectralResolutionField = () => {
+    const getOptions = () => {
+      if (arrayConfig) {
+        return OBSERVATION.array[arrayConfig - 1].spectralResolution;
+      }
+      return [{ label: '', value: 0 }];
+    };
+
+    return (
+      <DropDown
+        options={getOptions()}
+        testId="spectralResolution"
+        value={spectralResolution}
+        setValue={setSpectralResolution}
+        label="Spectral Resolution"
+        onFocus={() => setHelp(HELP_SPECTRAL_RESOLUTION)}
+      />
+    );
+  };
+
+  const spectralAveragingField = () => {
+    const getOptions = () => OBSERVATION.SpectralAveraging;
 
     return (
       <DropDown
         options={getOptions()}
         testId="spectral"
-        value={spectral}
-        setValue={setSpectral}
+        value={spectralAveraging}
+        setValue={setSpectralAveraging}
         label="Spectral Averaging"
-        onFocus={() => setHelp(HELP_SPECTRAL)}
+        onFocus={() => setHelp(HELP_SPECTRAL_AVERAGING)}
       />
     );
   };
 
-  const sensitivityField = () => {
-    const getOptions = () => OBSERVATION.Sensitivity;
-    // TODO : TO BE DEFINED CORRECTLY
+  const suppliedTypeField = () => {
+    const getOptions = () => OBSERVATION.Supplied;
 
     return (
       <DropDown
         options={getOptions()}
-        testId="sensitivity"
-        value={sensitivity}
-        setValue={setSensitivity}
+        testId="suppliedType"
+        value={suppliedType}
+        setValue={setSuppliedType}
         label=""
-        onFocus={() => setHelp(HELP_SENSITIVITY)}
+        onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
       />
     );
   };
 
-  const units1Field = () => {
-    const getOptions = () => OBSERVATION.Units;
-    // TODO : TO BE DEFINED CORRECTLY
+  const suppliedUnitsField = () => {
+    const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
 
     return (
       <DropDown
         options={getOptions()}
-        testId="units1"
-        value={units1}
-        setValue={setUnits1}
+        testId="suppliedUnits"
+        value={suppliedUnits}
+        setValue={setSuppliedUnits}
         label=""
-        onFocus={() => setHelp(HELP_UNITS)}
+        onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
       />
     );
   };
 
-  const units2Field = () => {
+  const unitsField = () => {
     const getOptions = () => OBSERVATION.Units;
-    // TODO : TO BE DEFINED CORRECTLY
 
     return (
       <DropDown
         options={getOptions()}
         testId="units2"
-        value={units2}
-        setValue={setUnits2}
+        value={units}
+        setValue={setUnits}
         label=""
         onFocus={() => setHelp(HELP_UNITS)}
       />
     );
   };
+
+  const suppliedValueField = () => (
+    <TextEntry
+      label=""
+      testId="suppliedValue"
+      value={suppliedValue}
+      setValue={setSuppliedValue}
+      onFocus={() => setHelp(HELP_SUPPLIED_VALUE)}
+    />
+  );
+
+  const suppliedField = () => (
+    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={4}>
+        {suppliedTypeField()}
+      </Grid>
+      <Grid item xs={5}>
+        {suppliedValueField()}
+      </Grid>
+      <Grid item xs={3}>
+        {suppliedUnitsField()}
+      </Grid>
+    </Grid>
+  );
 
   const elevationField = () => (
     <TextEntry
@@ -328,43 +396,29 @@ export default function AddObservation() {
     />
   );
 
-  const senseValueField = () => (
+  const effectiveResolutionField = () => (
     <TextEntry
-      label=""
-      testId="senseValue"
-      value={senseValue}
-      setValue={setSenseValue}
-      onFocus={() => setHelp(HELP_SENSE_VALUE)}
+      label="Effective Resolution"
+      testId="effective"
+      value={effective}
+      setValue={setEffective}
+      onFocus={() => setHelp(HELP_EFFECTIVE_RESOLUTION)}
     />
+  );
+
+  const centralFrequencyField = () => (
+    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={8}>
+        {frequencyField()}
+      </Grid>
+      <Grid item xs={4}>
+        {unitsField()}
+      </Grid>
+    </Grid>
   );
 
   const helpPanel = () => (
     <InfoPanel title={help.title} description={help.description} additional={help.additional} />
-  );
-
-  const sensCalcPanel = () => (
-    <Grid
-      sx={{ border: '1px solid grey' }}
-      container
-      direction="column"
-      alignItems="center"
-      justifyContent="space-evenly"
-    >
-      <Grid item>
-        <Typography sx={{ fontWeight: 'bold' }} m={1} variant="subtitle2">
-          Sensitivity Calculator
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Typography m={1} variant="body2">
-          Area where information about the calculator is displayed and also any notifications or
-          errors after running the calculator
-        </Typography>
-      </Grid>
-      <Grid m={1} item>
-        <SensCalcButton />
-      </Grid>
-    </Grid>
   );
 
   return (
@@ -395,64 +449,37 @@ export default function AddObservation() {
               {weatherField()}
             </Grid>
           </Grid>
-          <Grid
-            gap={1}
-            spacing={1}
-            sx={{ border: '1px solid grey' }}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="space-evenly"
-          >
-            <Grid item xs={5}>
-              {observationTypeField()}
-              <Grid
-                gap={0}
-                container
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Grid item xs={8}>
-                  {frequencyField()}
-                </Grid>
-                <Grid item xs={4}>
-                  {units1Field()}
-                </Grid>
+          <Card variant="outlined">
+            <Grid
+              gap={1}
+              spacing={1}
+              container
+              direction="row"
+              alignItems="center"
+              justifyContent="space-evenly"
+            >
+              <Grid item xs={5}>
+                {observationTypeField()}
+                {suppliedField()}
+                {centralFrequencyField()}
+                {bandwidthField()}
+                {spectralResolutionField()}
+                {spectralAveragingField()}
+                {effectiveResolutionField()}
               </Grid>
-              {imageWeightingField()}
-              {robustField()}
-            </Grid>
-            <Grid item xs={5}>
-              <Grid
-                gap={0}
-                container
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Grid item xs={3}>
-                  {sensitivityField()}
-                </Grid>
-                <Grid item xs={6}>
-                  {senseValueField()}
-                </Grid>
-                <Grid item xs={3}>
-                  {units2Field()}
-                </Grid>
+              <Grid item xs={5}>
+                {taperingField()}
+                {imageWeightingField()}
+                {robustField()}
               </Grid>
-              {taperingField()}
-              {bandwidthField()}
-              {spectralField()}
             </Grid>
-          </Grid>
+          </Card>
         </Grid>
         <Grid item xs={3}>
           {helpPanel()}
-          {sensCalcPanel()}
         </Grid>
       </Grid>
-      <PageFooter pageNo={-1} buttonFunc={createProposal} />
+      <PageFooter pageNo={-2} buttonFunc={addObservation} />
     </Grid>
   );
 }
