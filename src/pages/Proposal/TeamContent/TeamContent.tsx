@@ -104,15 +104,15 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', width: 200 },
-    { field: 'FirstName', headerName: 'First Name', width: 200 },
-    { field: 'Status', headerName: 'Status', width: 150 },
-    { field: 'PHDThesis', headerName: 'PHD Thesis', width: 150 },
+    { field: 'LastName', headerName: 'Last Name', flex: 1 },
+    { field: 'FirstName', headerName: 'First Name', flex: 1 },
+    { field: 'Status', headerName: 'Status', flex: 1 },
+    { field: 'PHDThesis', headerName: 'PHD Thesis', flex: 1 },
     {
       field: 'PI',
       headerName: 'PI',
       sortable: false,
-      width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: params => (
         <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
@@ -122,7 +122,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       field: 'Actions',
       headerName: 'Actions',
       sortable: false,
-      width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: () => <DeleteProposalButton />
     }
@@ -244,7 +244,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item>
+        <Grid item md={6} xs={11}>
           <DataGridWrapper
             rows={getMockTeam()}
             extendedColumns={extendedColumns}
@@ -253,7 +253,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey' }} item>
+        <Grid sx={{ border: '1px solid grey', minWidth: 545}} item md={5} xs={11}>
           <Box sx={{ width: '100%' }}>
             <Box>
               <Tabs
