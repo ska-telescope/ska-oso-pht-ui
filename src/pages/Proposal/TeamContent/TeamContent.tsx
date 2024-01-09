@@ -107,7 +107,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     { field: 'LastName', headerName: 'Last Name', flex: 1 },
     { field: 'FirstName', headerName: 'First Name', flex: 1 },
     { field: 'Status', headerName: 'Status', flex: 1 },
-    { field: 'PHDThesis', headerName: 'PHD Thesis', flex: 1 },
+    { field: 'PHDThesis', headerName: 'PhD Thesis', flex: 1 },
     {
       field: 'PI',
       headerName: 'PI',
