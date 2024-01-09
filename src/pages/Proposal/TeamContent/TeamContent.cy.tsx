@@ -67,7 +67,7 @@ describe('Content', () => {
       const text = 'Jean-Jaques';
       // Select the input field and type the text
       cy.get('[data-testid="firstName"] input').type(text);
-      // Get the updated fist name value from the input
+      // Get the updated first name value from the input
       cy.get('[data-testid="firstName"] input').then(input => {
         const updatedName = input.val();
         // Check that the updated name matches the typed text
