@@ -8,7 +8,6 @@ export const helpers = {
       setErrorText: Function,
       textType?: string
     ): boolean {
-
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {
@@ -21,8 +20,8 @@ export const helpers = {
         setErrorText('');
         return true;
       }
-        setErrorText(ERROR_TEXT);
-        return false;
+      setErrorText(ERROR_TEXT);
+      return false;
     }
   }
 };

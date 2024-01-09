@@ -35,19 +35,29 @@ describe('Content', () => {
     it('Displays filled star for PI', () => {
       const index = TEAM.findIndex(teamMember => teamMember.PI);
       if (index !== -1) {
-        cy.get(`[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`).should('exist');
+        cy.get(
+          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
+        ).should('exist');
       }
     });
     it('Displays border star for non PI accepted invitation', () => {
-      const index = TEAM.findIndex(teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted);
+      const index = TEAM.findIndex(
+        teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
+      );
       if (index !== -1) {
-        cy.get(`[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarBorderRoundedIcon"]`).should('exist');
+        cy.get(
+          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarBorderRoundedIcon"]`
+        ).should('exist');
       }
     });
     it('Displays no star for pending invitation', () => {
-      const index = TEAM.findIndex(teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending);
+      const index = TEAM.findIndex(
+        teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
+      );
       if (index !== -1) {
-        cy.get(`[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"]`).should('be.empty');
+        cy.get(
+          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"]`
+        ).should('be.empty');
       }
     });
   });
@@ -55,7 +65,7 @@ describe('Content', () => {
 
 describe('First Name', () => {
   it('first name updated with user input', () => {
-    const text = 'John Smith';
+    // const text = 'John Smith';
     // Select the input field and type the text
     cy.get('[data-testid="firstNameId"]');
     // Get the updated first name value from the input

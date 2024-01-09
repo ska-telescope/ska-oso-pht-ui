@@ -7,7 +7,6 @@ import {
   Grid,
   Tab,
   Tabs,
-  Typography,
   SvgIcon
 } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
@@ -17,20 +16,17 @@ import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
-import {
-  DEFAULT_HELP,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  TEAM
-} from '../../../utils/constants';
+import { DEFAULT_HELP, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
+import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
 
+/*
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   tabValue: number;
 }
+*/
 
 export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
@@ -81,13 +77,11 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     phdThesis: {
       phdThesis
     }
-  }
+  };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhdThesid(event.target.checked);
   };
-
-  // TODO - We can call the getTeam from here?
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -139,6 +133,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     // TODO
   };
 
+  /*
   function CustomTabPanel(props: TabPanelProps) {
     const { children, tabValue, index } = props;
 
@@ -157,6 +152,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       </div>
     );
   }
+  */
 
   function a11yProps(index: number) {
     return {
@@ -167,13 +163,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
 
   const panel1 = () => (
     <Grid item>
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item xs={6}>
           <Box component="form">
             <TextEntry
@@ -181,7 +171,11 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               testId="firstName"
               value={firstName}
               setValue={(firstNameVal: string) =>
-              helpers.validate.validateTextEntry(firstNameVal, setFirstName, setErrorTextFirstName)}
+                helpers.validate.validateTextEntry(
+                  firstNameVal,
+                  setFirstName,
+                  setErrorTextFirstName
+                )}
               disabled={false}
               errorText={errorTextFirstName}
             />
@@ -190,29 +184,28 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               testId="lastName"
               value={lastName}
               setValue={(lastNameVal: string) =>
-                        helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+                helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
               errorText={errorTextLastName}
             />
-            <TextEntry 
+            <TextEntry
               label="Email"
               testId="email"
-              value={email} 
+              value={email}
               setValue={(emailVal: string) =>
-                        helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+                helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
               errorText={errorTextEmail}
             />
             <FormControlLabel
               value="phdThesis"
               control={(
                 <Checkbox
-                  defaultChecked
                   sx={{
-                            '&.Mui-checked': {
-                              color: theme.palette.secondary.main
-                            }
-                          }}
+                    '&.Mui-checked': {
+                      color: theme.palette.secondary.main
+                    }
+                  }}
                 />
-                      )}
+              )}
               label="PhD Thesis"
               labelPlacement="end"
               checked={phdThesis}
@@ -234,31 +227,30 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
         <TeamInviteButton formValues={formValues} />
       </Grid>
     </Grid>
-  )
+  );
 
   const panel2 = () => (
     <Grid item>
       <p>To be implemented at a later date</p>
     </Grid>
-  )
+  );
 
   const panel3 = () => (
     <Grid item>
       <p>To be implemented at a later date</p>
     </Grid>
-  )
-
+  );
 
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>
           <DataGridWrapper
-            rows={TEAM}
+            rows={getMockTeam()}
             extendedColumns={extendedColumns}
             height={400}
             rowClick={ClickFunction}
-            testId='teamTableId'
+            testId="teamTableId"
           />
         </Grid>
         <Grid sx={{ border: '1px solid grey' }} item>

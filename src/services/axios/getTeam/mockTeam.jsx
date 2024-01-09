@@ -4,7 +4,7 @@ const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
-const MockTeam = [
+let MockTeam = [
   // DUMMY CONTENT TO GO IN HERE
   {
     id: 1,
@@ -44,4 +44,10 @@ const MockTeam = [
   }
 ];
 
-export default MockTeam;
+export function setMockTeam(newTeamMember) {
+  MockTeam = [...MockTeam, newTeamMember];
+}
+
+export function getMockTeam() {
+  return MockTeam;
+}
