@@ -264,11 +264,11 @@ export default function AddObservation() {
 
   const spectralResolutionField = () => {
     const getOptions = () => {
-    if (arrayConfig) {
-      return OBSERVATION.array[arrayConfig - 1].spectralResolution;
-    }
-    return [{ label: '', value: 0 }];
-  };
+      if (arrayConfig) {
+        return OBSERVATION.array[arrayConfig - 1].spectralResolution;
+      }
+      return [{ label: '', value: 0 }];
+    };
 
     return (
       <DropDown
@@ -313,7 +313,7 @@ export default function AddObservation() {
   };
 
   const suppliedUnitsField = () => {
-    const getOptions = () =>  OBSERVATION.Supplied[suppliedType - 1].units;
+    const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
 
     return (
       <DropDown
@@ -353,13 +353,7 @@ export default function AddObservation() {
   );
 
   const suppliedField = () => (
-    <Grid
-      gap={0}
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-    >
+    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={4}>
         {suppliedTypeField()}
       </Grid>
@@ -370,7 +364,7 @@ export default function AddObservation() {
         {suppliedUnitsField()}
       </Grid>
     </Grid>
-)
+  );
 
   const elevationField = () => (
     <TextEntry
@@ -413,13 +407,7 @@ export default function AddObservation() {
   );
 
   const centralFrequencyField = () => (
-    <Grid
-      gap={0}
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-    >
+    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={8}>
         {frequencyField()}
       </Grid>
@@ -427,7 +415,7 @@ export default function AddObservation() {
         {unitsField()}
       </Grid>
     </Grid>
-)
+  );
 
   const helpPanel = () => (
     <InfoPanel title={help.title} description={help.description} additional={help.additional} />

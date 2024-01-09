@@ -16,9 +16,9 @@ export default function PageFooter({ pageNo, buttonFunc = null }: PageFooterProp
     }
     if (pageNo === -1) {
       return 'Create';
-     }
-     return PAGES[pageNo + 1];
-  }
+    }
+    return PAGES[pageNo + 1];
+  };
 
   const prevLabel = () => PAGES[pageNo - 1];
 

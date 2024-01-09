@@ -266,9 +266,7 @@ export const OBSERVATION = {
         { label: 'AA4 (core only)', value: 8 },
         { label: 'Custom', value: 9 }
       ],
-      robust: [
-        { label: 'n/a', value: 1 }
-      ],
+      robust: [{ label: 'n/a', value: 1 }],
       band: null,
       bandWidth: [
         { label: '24.4 KHz', value: 1 },
@@ -322,8 +320,8 @@ export const OBSERVATION = {
     { label: '1024.000"', value: 8 }
   ],
   Supplied: [
-    { 
-      label: 'Integration Time', 
+    {
+      label: 'Integration Time',
       value: 1,
       units: [
         { label: 'd', value: 1 },
@@ -333,10 +331,10 @@ export const OBSERVATION = {
         { label: 'ms', value: 5 },
         { label: 'us', value: 6 },
         { label: 'ns', value: 7 }
-      ] 
+      ]
     },
-    { 
-      label: 'Sensitivity', 
+    {
+      label: 'Sensitivity',
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },
@@ -346,7 +344,7 @@ export const OBSERVATION = {
         { label: 'K', value: 5 },
         { label: 'mK', value: 6 },
         { label: 'uK', value: 7 }
-      ]  
+      ]
     }
   ],
   Units: [
