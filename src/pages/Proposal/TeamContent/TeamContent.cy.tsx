@@ -194,5 +194,28 @@ describe('Content', () => {
     });
   });
 
+  describe('Form Validation', () => {
+    it('First Name input displays error if empty when send invitation clicked', () => {
+      cy.get('[data-testid="firstName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('Last Name input displays error if empty when send invitation clicked', () => {
+      cy.get('[data-testid="lastName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="lastName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('Email input displays error if empty when send invitation clicked', () => {
+      cy.get('[data-testid="email"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+
+  });
+
+
 
 });
