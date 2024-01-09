@@ -34,6 +34,27 @@ interface TeamContentProps {
   setStatus: Function;
 }
 
+export const HELP_FIRSTNAME= {
+  title: 'Help first name',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_LASTNAME = {
+  title: 'Help last name',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_EMAIL = {
+  title: 'Help email',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_PHD = {
+  title: 'Help PhD',
+  description: 'Field sensitive help',
+  additional: ''
+};
+
 export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -41,7 +62,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [phdThesis, setPhdThesid] = React.useState(true);
-  const [help] = React.useState(DEFAULT_HELP);
+  const [help, setHelp] = React.useState(DEFAULT_HELP);
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
   const [errorTextLastName, setErrorTextLastName] = React.useState('');
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
@@ -168,6 +189,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                   setFirstName,
                   setErrorTextFirstName
                 )}
+              onFocus={() => setHelp(HELP_FIRSTNAME)}
               disabled={false}
               errorText={errorTextFirstName}
             />
@@ -177,6 +199,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               value={lastName}
               setValue={(lastNameVal: string) =>
                 helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+              onFocus={() => setHelp(HELP_LASTNAME)}
               errorText={errorTextLastName}
             />
             <TextEntry
@@ -185,6 +208,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               value={email}
               setValue={(emailVal: string) =>
                 helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+              onFocus={() => setHelp(HELP_EMAIL)}
               errorText={errorTextEmail}
             />
             <FormControlLabel
@@ -202,6 +226,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               labelPlacement="end"
               checked={phdThesis}
               onChange={handleCheckboxChange}
+              onFocus={() => setHelp(HELP_PHD)}
               sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
             />
           </Box>
