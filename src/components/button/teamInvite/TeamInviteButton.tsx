@@ -38,7 +38,10 @@ export default function TeamInviteButton({ formValues }) {
     );
   }
 
-  const highestId = getMockTeam().reduce((acc, teamMember) => teamMember.id > acc ? teamMember.id : acc, 0);
+  const highestId = getMockTeam().reduce(
+    (acc, teamMember) => (teamMember.id > acc ? teamMember.id : acc),
+    0
+  );
 
   function AddTeamMember() {
     const newTeamMember = {
