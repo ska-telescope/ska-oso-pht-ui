@@ -223,7 +223,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
         </Grid>
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item xs={3} ml={3}>
         <TeamInviteButton formValues={formValues} />
       </Grid>
     </Grid>
