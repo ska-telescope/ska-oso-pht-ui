@@ -228,6 +228,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               onChange={handleCheckboxChange}
               onFocus={() => setHelp(HELP_PHD)}
               sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+              data-testid="PhDCheckbox"
             />
           </Box>
         </Grid>
@@ -236,6 +237,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             title={help.title}
             description={help.description}
             additional={help.additional}
+            testId="infoPanelId"
           />
         </Grid>
       </Grid>
