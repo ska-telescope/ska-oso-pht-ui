@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import TeamContent from './TeamContent';
-import { TEAM, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
+import { TEAM, TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -61,50 +61,202 @@ describe('Content', () => {
       }
     });
   });
-});
 
-describe('First Name', () => {
-  it('first name updated with user input', () => {
-    // const text = 'John Smith';
-    // Select the input field and type the text
-    cy.get('[data-testid="firstNameId"]');
-    // Get the updated first name value from the input
-    /* cy.get('[data-testid="firstNameId"] input').then(firstNameInput => {
-      // const updatedTitle = firstNameInput.val();
-      // Check that the updated first name matches the typed text
-      expect(firstNameInput.val()).to.equal(text);
-    }); */
-  });
-  /*
-  it('title field displays error when incorrect input entered', () => {
-    const incorrectText = 'XXX*%$';
-    // Select the input field and type the text
-    cy.get('[data-testid="titleId"] input').type(incorrectText);
-    // Get the text displayed in the helper text section
-    cy.get('[data-testid="titleId"] > p.Mui-error')
-      .invoke('text')
-      .then(helperText => {
-        // Check that helper text matches what's expected
-        expect(helperText).to.equal(TEXT_ENTRY_PARAMS.TITLE.ERROR_TEXT);
+  describe('First Name Input', () => {
+    it('First Name updated with user input', () => {
+      const text = 'Jean-Jaques';
+      // Select the input field and type the text
+      cy.get('[data-testid="firstName"] input').type(text);
+      // Get the updated first name value from the input
+      cy.get('[data-testid="firstName"] input').then(input => {
+        const updatedName = input.val();
+        // Check that the updated name matches the typed text
+        expect(updatedName).to.equal(text);
       });
+    });
+    it('First Name field displays error when incorrect input entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Select the input field and type the text
+      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      // Get the text displayed in the helper text section
+      cy.get('[data-testid="firstName"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          // Check that helper text matches what's expected
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.DEFAULT.ERROR_TEXT);
+        });
+    });
+    it('should clear the First Name helper text when text is cleared', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      // Check that the helper text element exists
+      cy.get('[data-testid="firstName"] > p.Mui-error').should('exist');
+      // Clear the input field
+      cy.get('[data-testid="firstName"] input').clear();
+      // Check that the helper text element doesn't exist
+      cy.get('[data-testid="firstName"] > p.Mui-error').should('not.exist');
+    });
+    it('should set the First Name field to incorrect status when incorrect text is entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
   });
-  it('should clear the title helper text when text is cleared', () => {
-    const incorrectText = 'XXX*%$';
-    // Type incorrect text into the input field
-    cy.get('[data-testid="titleId"] input').type(incorrectText);
-    // Check that the helper text element exists
-    cy.get('[data-testid="titleId"] > p.Mui-error').should('exist');
-    // Clear the input field
-    cy.get('[data-testid="titleId"] input').clear();
-    // Check that the helper text element doesn't exist
-    cy.get('[data-testid="titleId"] > p.Mui-error').should('not.exist');
+
+  describe('Last Name Input', () => {
+    it('Last Name updated with user input', () => {
+      const text = 'Dupont';
+      // Select the input field and type the text
+      cy.get('[data-testid="lastName"] input').type(text);
+      // Get the updated last name value from the input
+      cy.get('[data-testid="lastName"] input').then(input => {
+        const updatedName = input.val();
+        // Check that the updated name matches the typed text
+        expect(updatedName).to.equal(text);
+      });
+    });
+    it('Last Name field displays error when incorrect input entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Select the input field and type the text
+      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      // Get the text displayed in the helper text section
+      cy.get('[data-testid="lastName"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          // Check that helper text matches what's expected
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.DEFAULT.ERROR_TEXT);
+        });
+    });
+    it('should clear the Last Name helper text when text is cleared', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      // Check that the helper text element exists
+      cy.get('[data-testid="lastName"] > p.Mui-error').should('exist');
+      // Clear the input field
+      cy.get('[data-testid="lastName"] input').clear();
+      // Check that the helper text element doesn't exist
+      cy.get('[data-testid="lastName"] > p.Mui-error').should('not.exist');
+    });
+    it('should set the Last Name field to incorrect status when incorrect text is entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="lastName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
   });
-  it('should set the title field to incorrect status when incorrect text is entered', () => {
-    const incorrectText = 'XXX*%$';
-    // Type incorrect text into the input field
-    cy.get('[data-testid="titleId"] input').type(incorrectText);
-    // Check that the input field has an "incorrect" status
-    cy.get('[data-testid="titleId"] input').should('have.attr', 'aria-invalid', 'true');
+
+  describe('Email Input', () => {
+    it('Email updated with user input', () => {
+      const text = 'jeandupont@gmail.com';
+      // Select the input field and type the text
+      cy.get('[data-testid="email"] input').type(text);
+      // Get the updated email value from the input
+      cy.get('[data-testid="email"] input').then(input => {
+        const updatedName = input.val();
+        // Check that the updated name matches the typed text
+        expect(updatedName).to.equal(text);
+      });
+    });
+    it('Email field displays error when incorrect input entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Select the input field and type the text
+      cy.get('[data-testid="email"] input').type(incorrectText);
+      // Get the text displayed in the helper text section
+      cy.get('[data-testid="email"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          // Check that helper text matches what's expected
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMAIL.ERROR_TEXT);
+        });
+    });
+    it('should clear the Email helper text when text is cleared', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="email"] input').type(incorrectText);
+      // Check that the helper text element exists
+      cy.get('[data-testid="email"] > p.Mui-error').should('exist');
+      // Clear the input field
+      cy.get('[data-testid="email"] input').clear();
+      // Check that the helper text element doesn't exist
+      cy.get('[data-testid="email"] > p.Mui-error').should('not.exist');
+    });
+    it('should set the Email field to incorrect status when incorrect text is entered', () => {
+      const incorrectText = 'XXX*%$';
+      // Type incorrect text into the input field
+      cy.get('[data-testid="email"] input').type(incorrectText);
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+    });
   });
-  */
+
+  describe('Form Validation', () => {
+    it('First Name input set to incorrect status if empty when send invitation clicked', () => {
+      cy.get('[data-testid="firstName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('Last Name input set to incorrect status if empty when send invitation clicked', () => {
+      cy.get('[data-testid="lastName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="lastName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('Email input set to incorrect status if empty when send invitation clicked', () => {
+      cy.get('[data-testid="email"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('mail input set to incorrect status if incorrect format when send invitation clicked', () => {
+      const incorrectText = 'email@';
+      cy.get('[data-testid="email"] input').type(incorrectText);
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      // Check that the input field has an "incorrect" status
+      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    it('Email field displays error if incorrect format when send invitation clicked', () => {
+      const incorrectText = 'email@';
+      cy.get('[data-testid="email"] input').type(incorrectText);
+      cy.get('[data-testid="Send InvitationButton"]').click();
+       // Get the text displayed in the helper text section
+       cy.get('[data-testid="email"] > p.Mui-error')
+       .invoke('text')
+       .then(helperText => {
+         // Check that helper text matches what's expected
+         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMAIL_STRICT.ERROR_TEXT);
+       });
+    });
+    it('First Name field displays error if empty when send invitation clicked', () => {
+      cy.get('[data-testid="firstName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+       // Get the text displayed in the helper text section
+       cy.get('[data-testid="firstName"] > p.Mui-error')
+       .invoke('text')
+       .then(helperText => {
+         // Check that helper text matches what's expected
+         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
+       });
+    });
+    it('Last Name field displays error if empty when send invitation clicked', () => {
+      cy.get('[data-testid="lastName"] input').clear();
+      cy.get('[data-testid="Send InvitationButton"]').click();
+       // Get the text displayed in the helper text section
+       cy.get('[data-testid="lastName"] > p.Mui-error')
+       .invoke('text')
+       .then(helperText => {
+         // Check that helper text matches what's expected
+         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
+       });
+    });
+
+  });
+
+
+
 });
