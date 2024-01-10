@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Box,
   Card,
@@ -17,12 +17,16 @@ import PDFUpload from "../../../components/pdfUpload/pdfUpload";
 
 interface ScienceContentProps {
   page: number;
-  setStatus: Function;
 }
 
-export default function ScienceContent({ page, setStatus }: ScienceContentProps) {
+export default function ScienceContent({ page}: ScienceContentProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [pdfUrl] = React.useState('');
+
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<
+      "initial" | "uploading" | "success" | "fail"
+  >("initial");
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -46,6 +50,49 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
   function closeModal() {
     setIsOpen(false);
   }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setStatus("initial");
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (file) {
+      setStatus("uploading");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const result = await fetch("https://httpbin.org/post", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await result.json();
+
+        console.log(data);
+        setStatus("success");
+      } catch (error) {
+        console.error(error);
+        setStatus("fail");
+      }
+    }
+  };
+
+  const Result = ({ status }: { status: string }) => {
+    if (status === "success") {
+      return <p> File uploaded successfully!</p>;
+    } else if (status === "fail") {
+      return <p>File upload failed!</p>;
+    } else if (status === "uploading") {
+      return <p>Uploading selected file...</p>;
+    } else {
+      return null;
+    }
+  };
 
   const pdfUploadModal = () => (
     <Modal open={isOpen}>
@@ -74,32 +121,47 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
     </Modal>
   );
 
+  // return (
+  //   <>
+  //     {pdfUploadModal()}
+  //     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
+  //       <Grid item>
+  //         <Grid container p={5} spacing={5} direction="row" justifyContent="space-evenly">
+  //           <Grid item xs={6}>
+  //             <Grid container direction="column" alignItems="left">
+  //               <Typography variant="h5">Upload PDF</Typography>
+  //               <PDFUpload
+  //                 // eslint-disable-next-line react/jsx-no-bind
+  //                 setModal={openModal}
+  //               />
+  //               <Grid container direction="row" justifyContent="space-between">
+  //                 <UploadPdfButton />
+  //               </Grid>
+  //             </Grid>
+  //           </Grid>
+  //           <Grid item xs={6}>
+  //             <Box m={1}>
+  //               <Typography variant="h5">Uploaded PDF Preview</Typography>
+  //             </Box>
+  //           </Grid>
+  //         </Grid>
+  //       </Grid>
+  //     </Grid>
+  //   </>
+  // );
+
   return (
-    <>
-      {pdfUploadModal()}
-      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item>
-          <Grid container p={5} spacing={5} direction="row" justifyContent="space-evenly">
-            <Grid item xs={6}>
-              <Grid container direction="column" alignItems="left">
-                <Typography variant="h5">Upload PDF</Typography>
-                <PDFUpload
-                  // eslint-disable-next-line react/jsx-no-bind
-                  setModal={openModal}
-                />
-                <Grid container direction="row" justifyContent="space-between">
-                  <UploadPdfButton />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              <Box m={1}>
-                <Typography variant="h5">Uploaded PDF Preview</Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </>
+      <>
+        <div className="input-group">
+          <input id="file" type="file" onChange={handleFileChange} />
+          <UploadPdfButton/>
+        </div>
+        {file && (
+            <button onClick={handleUpload} className="submit">
+              Upload a file
+            </button>
+        )}
+        <Result status={status} />
+      </>
   );
 }
