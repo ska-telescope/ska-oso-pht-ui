@@ -12,14 +12,6 @@ import { DEFAULT_HELP, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../
 import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
 import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
 
-/*
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  tabValue: number;
-}
-*/
-
 export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
     return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
@@ -61,36 +53,90 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [phdThesis, setPhdThesid] = React.useState(true);
+  const [phdThesis, setPhdThesid] = React.useState(false);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
   const [errorTextLastName, setErrorTextLastName] = React.useState('');
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
+  const [validFistNameState, setValidFistNameState] = React.useState(false);
+  const [validLastNameState, setValidLastNameState] = React.useState(false);
+  const [validEmailState, setValidEmailState] = React.useState(false);
+  const [invalidFormState, setInvalidFormState] = React.useState(true);
+
   // to pass form state to TeamInviteButton
   const formValues = {
     firstName: {
       value: firstName,
-      setValue: setErrorTextFirstName,
-      errorText: errorTextFirstName,
-      setErrorText: setErrorTextFirstName
+      setValue: setFirstName
     },
     lastName: {
       value: lastName,
-      setValue: setErrorTextLastName,
-      errorText: errorTextLastName,
-      setErrorText: setErrorTextLastName
+      setValue: setLastName
     },
     email: {
       value: email,
-      setValue: setEmail,
-      errorText: errorTextEmail,
-      setErrorText: setErrorTextEmail
+      setValue: setEmail
     },
     phdThesis: {
-      phdThesis
+      phdThesis,
+      setValue: setPhdThesid
     }
   };
+
+  function formValidation() {
+    let count = 0;
+
+    // first name
+    let emptyField = firstName=== '';
+    let isValid = !emptyField;
+    setValidFistNameState(isValid);
+    count += isValid ? 0 : 1;   
+    if (!emptyField) {
+      isValid =  helpers.validate.validateTextEntry(
+        firstName,
+        setFirstName,
+        setErrorTextFirstName,
+        'DEFAULT'
+      );
+      setValidFistNameState(isValid);
+      count += isValid ? 0 : 1;
+    }
+
+    // last name
+    emptyField = lastName=== '';
+    isValid = !emptyField;
+    setValidLastNameState(isValid);
+    count += isValid ? 0 : 1;   
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        lastName,
+        setLastName,
+        setErrorTextLastName,
+        'DEFAULT'
+      );
+      setValidLastNameState(isValid);
+      count += isValid ? 0 : 1;
+    }
+    
+    // email
+    emptyField = email=== '';
+    isValid = !emptyField;
+    setValidEmailState(isValid);
+    count += isValid ? 0 : 1;   
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        email,
+        setEmail,
+        setErrorTextEmail,
+        'EMAIL'
+      )
+      setValidEmailState(isValid);
+      count += isValid ? 0 : 1;   
+    }
+
+    return count;
+  }
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhdThesid(event.target.checked);
@@ -111,6 +157,11 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
 
     setStatus([page, result[count]]);
   }, [setStatus]);
+
+  React.useEffect(() => { 
+    const invalidForm= Boolean(formValidation());
+    setInvalidFormState(invalidForm);
+  });
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -146,27 +197,6 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     // TODO
   };
 
-  /*
-  function CustomTabPanel(props: TabPanelProps) {
-    const { children, tabValue, index } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-      >
-        {tabValue === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-  */
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -183,12 +213,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               label="First Name"
               testId="firstName"
               value={firstName}
-              setValue={(firstNameVal: string) =>
-                helpers.validate.validateTextEntry(
-                  firstNameVal,
-                  setFirstName,
-                  setErrorTextFirstName
-                )}
+              setValue={setFirstName}
               onFocus={() => setHelp(HELP_FIRSTNAME)}
               disabled={false}
               errorText={errorTextFirstName}
@@ -197,8 +222,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               label="Last Name"
               testId="lastName"
               value={lastName}
-              setValue={(lastNameVal: string) =>
-                helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+              setValue={setLastName}
               onFocus={() => setHelp(HELP_LASTNAME)}
               errorText={errorTextLastName}
             />
@@ -206,10 +230,9 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               label="Email"
               testId="email"
               value={email}
-              setValue={(emailVal: string) =>
-                helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
-              onFocus={() => setHelp(HELP_EMAIL)}
+              setValue={setEmail}
               errorText={errorTextEmail}
+              onFocus={() => setHelp(HELP_PHD)}
             />
             <FormControlLabel
               value="phdThesis"
@@ -243,7 +266,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       </Grid>
 
       <Grid item xs={3} ml={3}>
-        <TeamInviteButton formValues={formValues} />
+        <TeamInviteButton disabled={invalidFormState} formValues={formValues} />
       </Grid>
     </Grid>
   );

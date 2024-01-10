@@ -2,13 +2,17 @@ import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import EmailIcon from '@mui/icons-material/Email';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
-import { helpers } from '../../../utils/helpers';
 import { getMockTeam, setMockTeam } from '../../../services/axios/getTeam/mockTeam';
 
-export default function TeamInviteButton({ formValues }) {
-  const [validFistNameState, setValidFistNameState] = React.useState(false);
-  const [validLastNameState, setValidLastNameState] = React.useState(false);
-  const [validEmailState, setValidEmailState] = React.useState(false);
+interface TeamInviteButtonProps {
+  formValues: any;
+  disabled: boolean
+}
+
+export default function TeamInviteButton({
+  formValues,
+  disabled
+}: TeamInviteButtonProps) {
 
   function AddTeamMember() {
     const currentTeam = getMockTeam();
@@ -28,49 +32,20 @@ export default function TeamInviteButton({ formValues }) {
       Actions: null,
       PI: false
     };
-    // setMockTeam(newTeamMember);
     setMockTeam([...currentTeam, newTeamMember]);
   }
 
-  function validateForm() {
-    let count = 0;
-    // VALIDATE FORM
-    let isValid =  helpers.validate.validateTextEntry(
-      formValues.firstName.value,
-      formValues.firstName.setValue,
-      formValues.firstName.setErrorText,
-      'EMPTY'
-    );
-    setValidFistNameState(isValid);
-    count += isValid ? 0 : 1;
-
-    isValid = helpers.validate.validateTextEntry(
-      formValues.lastName.value,
-      formValues.lastName.setValue,
-      formValues.lastName.setErrorText,
-      'EMPTY'
-    )
-  
-    setValidLastNameState(isValid);
-    count += isValid ? 0 : 1;
-
-    isValid = helpers.validate.validateTextEntry(
-      formValues.email.value,
-      formValues.email.setValue,
-      formValues.email.setErrorText,
-      'EMAIL_STRICT'
-    )
-  
-    setValidEmailState(isValid);
-    count += isValid ? 0 : 1;
-    return !count;
+  function clearForm() {
+    // TODO
+    formValues.firstName.setValue("");
+    formValues.lastName.setValue("");
+    formValues.email.setValue("");
+    formValues.phdThesis.setValue("");
   }
 
-
   const ClickFunction = () => {
-    if (validateForm()) {
       AddTeamMember();
-    }
+      clearForm();
   };
 
   const title = 'Send Invitation';
@@ -84,6 +59,7 @@ export default function TeamInviteButton({ formValues }) {
       icon={<EmailIcon />}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
+      disabled={disabled}
     />
   );
 }

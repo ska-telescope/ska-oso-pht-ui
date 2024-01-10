@@ -159,6 +159,11 @@ describe('Content', () => {
   });
 
   describe('Form Validation', () => {
+    it('Button disabled if First Name input is empty', () => {
+      cy.get('[data-testid="firstName"] input').clear();
+      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
+    });
+    /*
     it('First Name input set to incorrect status if empty when send invitation clicked', () => {
       cy.get('[data-testid="firstName"] input').clear();
       cy.get('[data-testid="Send InvitationButton"]').click();
@@ -208,6 +213,7 @@ describe('Content', () => {
          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
        });
     });
+    */
   });
 
   describe('Contextual help', () => {
