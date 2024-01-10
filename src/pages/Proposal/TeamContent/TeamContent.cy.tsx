@@ -161,65 +161,56 @@ describe('Content', () => {
   describe('Form Validation', () => {
     it('Button disabled if First Name input is empty', () => {
       cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    /*
-    it('First Name input set to incorrect status if empty when send invitation clicked', () => {
-      cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
-    });
-    it('Last Name input set to incorrect status if empty when send invitation clicked', () => {
+    it('Button disabled if Last Name input is empty', () => {
       cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="lastName"] input').should('have.attr', 'aria-invalid', 'true');
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    it('Email input set to incorrect status if empty when send invitation clicked', () => {
+    it('Button disabled if Email input is empty', () => {
       cy.get('[data-testid="email"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    it('mail input set to incorrect status if incorrect format when send invitation clicked', () => {
+    it('Button disabled if Email has incorrect format', () => {
       const incorrectText = 'email@';
       cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    it('Email field displays error if incorrect format when send invitation clicked', () => {
-      const incorrectText = 'email@';
-      cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="email"] > p.Mui-error')
-        .invoke('text')
-        .then(helperText => {
-          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMAIL_STRICT.ERROR_TEXT);
-        });
+    it('Button disabled if First Name has incorrect format', () => {
+      const incorrectText = 'XXX*%$';
+      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    it('First Name field displays error if empty when send invitation clicked', () => {
-      cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="firstName"] > p.Mui-error')
-        .invoke('text')
-        .then(helperText => {
-          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
-        });
+    it('Button disabled if Last Name has incorrect format', () => {
+      const incorrectText = 'XXX*%$';
+      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
     });
-    it('Last Name field displays error if empty when send invitation clicked', () => {
-      cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get('[data-testid="lastName"] > p.Mui-error')
-        .invoke('text')
-        .then(helperText => {
-          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
-        });
+    it('Button NOT disabled if all fields have correct format', () => {
+      const firstName = 'Alia';
+      const lastName = 'Benammar'
+      const email = 'alia123@gmail.com'
+      cy.get('[data-testid="lastName"] input').type(firstName);
+      cy.get('[data-testid="firstName"] input').type(lastName);
+      cy.get('[data-testid="email"] input').type(email);
+      cy.get('[data-testid="Send InvitationButton"]').should('not.be.disabled');
     });
-    */
+    it('Button clickable if all fields have correct format', () => {
+      const firstName = 'Alia';
+      const lastName = 'Benammar'
+      const email = 'alia123@gmail.com'
+      cy.get('[data-testid="lastName"] input').type(firstName);
+      cy.get('[data-testid="firstName"] input').type(lastName);
+      cy.get('[data-testid="email"] input').type(email);
+      cy.get('[data-testid="Send InvitationButton"]').should('be.enabled').click();
+    });
+   
   });
 
   describe('Contextual help', () => {
     it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
         .invoke('text')
         .then(helpTitle => {
           expect(helpTitle).to.equal(HELP_FIRSTNAME.title);
@@ -227,7 +218,7 @@ describe('Content', () => {
     });
     it('Contextual help displayed when Last Name input field on focus', () => {
       cy.get('[data-testid="lastName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
         .invoke('text')
         .then(helpTitle => {
           expect(helpTitle).to.equal(HELP_LASTNAME.title);
@@ -235,19 +226,20 @@ describe('Content', () => {
     });
     it('Contextual help displayed when Email input field on focus', () => {
       cy.get('[data-testid="email"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
         .invoke('text')
         .then(helpTitle => {
           expect(helpTitle).to.equal(HELP_EMAIL.title);
         });
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
-      cy.get('[data-testid="PhDCheckbox"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+      cy.get('[testid="PhDCheckbox"] input').focus();
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
         .invoke('text')
         .then(helpTitle => {
           expect(helpTitle).to.equal(HELP_PHD.title);
         });
     });
   });
+
 });

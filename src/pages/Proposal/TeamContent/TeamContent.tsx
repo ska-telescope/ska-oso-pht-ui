@@ -99,6 +99,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       );
       setValidFistNameState(isValid);
       count += isValid ? 0 : 1;
+    } else {
+      setErrorTextFirstName(''); // don't display error when empty
     }
 
     // last name
@@ -115,6 +117,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       );
       setValidLastNameState(isValid);
       count += isValid ? 0 : 1;
+    } else {
+      setErrorTextLastName('');
     }
     
     // email
@@ -131,6 +135,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
       )
       setValidEmailState(isValid);
       count += isValid ? 0 : 1;   
+    } else {
+      setErrorTextEmail('');
     }
 
     return count;
@@ -230,7 +236,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               value={email}
               setValue={setEmail}
               errorText={errorTextEmail}
-              onFocus={() => setHelp(HELP_PHD)}
+              onFocus={() => setHelp(HELP_EMAIL)}
             />
             <TickBox
               label="PhD Thesis"
