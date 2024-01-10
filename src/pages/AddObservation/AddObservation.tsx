@@ -1,11 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Grid } from '@mui/material';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box, Card, CardContent, Grid } from '@mui/material';
+import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import InfoPanel from '../../components/infoPanel/infoPanel';
 import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
+
+const XS_TOP = 3; 
+const XS_BOTTOM = 5; 
 
 export const HELP_ARRAY = {
   title: 'ARRAY TITLE',
@@ -97,10 +100,25 @@ export const HELP_SENSE_VALUE = {
   description: 'SENSE VALUE DESCRIPTION',
   additional: ''
 };
-export const HELP_UNITS = {
-  title: 'UNITS TITLE',
-  description: 'UNITS DESCRIPTION',
+export const HELP_FREQUENCY_UNITS = {
+  title: 'FREQUENCY UNITS TITLE',
+  description: 'FREQUENCY UNITS DESCRIPTION',
   additional: ''
+};
+export const HELP_CONTINUUM_BANDWIDTH = {
+  title: 'CONTINUUM BANDWIDTH TITLE',
+  description: 'CONTINUUM BANDWIDTH DESCRIPTION',
+  additional: ''
+};
+export const HELP_CONTINUUM_UNITS = {
+  title: 'CONTINUUM UNITS TITLE',
+  description: 'CONTINUUM UNITS DESCRIPTION',
+  additional: ''
+};
+export const HELP_SUB_BANDS = {
+  title: 'SUB-BANDS TITLE',
+  description: 'SUB-BANDS DESCRIPTION',
+  additional: 'SUB-BANDS ADDITIONAL'
 };
 
 export default function AddObservation() {
@@ -123,7 +141,10 @@ export default function AddObservation() {
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState();
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
-  const [units, setUnits] = React.useState(1);
+  const [frequencyUnits, setFrequencyUnits] = React.useState(1);
+  const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
+  const [continuumUnits, setContinuumUnits] = React.useState(1);
+  const [subBands, setSubBands] = React.useState(0);
 
   const [help, setHelp] = React.useState(DEFAULT_HELP);
 
@@ -135,6 +156,8 @@ export default function AddObservation() {
     setArrayConfig(e);
     setSubarrayConfig(e > 0 ? 1 : 0);
   };
+
+  const isContinuum = () => observationType === 1;
 
   const arrayConfigurationField = () => (
     <DropDown
@@ -301,14 +324,16 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="suppliedType"
-        value={suppliedType}
-        setValue={setSuppliedType}
-        label=""
-        onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
-      />
+      <Box pt={1}>
+        <DropDown
+          options={getOptions()}
+          testId="suppliedType"
+          value={suppliedType}
+          setValue={setSuppliedType}
+          label=""
+          onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
+        />
+      </Box>
     );
   };
 
@@ -316,29 +341,50 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="suppliedUnits"
-        value={suppliedUnits}
-        setValue={setSuppliedUnits}
-        label=""
-        onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
-      />
+      <Box pt={1}>
+        <DropDown
+          options={getOptions()}
+          testId="suppliedUnits"
+          value={suppliedUnits}
+          setValue={setSuppliedUnits}
+          label=""
+          onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
+        />
+      </Box>
     );
   };
 
-  const unitsField = () => {
+  const frequencyUnitsField = () => {
     const getOptions = () => OBSERVATION.Units;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="units2"
-        value={units}
-        setValue={setUnits}
-        label=""
-        onFocus={() => setHelp(HELP_UNITS)}
-      />
+      <Box pt={3}>
+        <DropDown
+          options={getOptions()}
+          testId="frequencyUnits"
+          value={frequencyUnits}
+          setValue={setFrequencyUnits}
+          label=""
+          onFocus={() => setHelp(HELP_FREQUENCY_UNITS)}
+        />
+      </Box>
+    );
+  };
+
+  const continuumUnitsField = () => {
+    const getOptions = () => OBSERVATION.Units;
+
+    return (
+      <Box pt={3}>
+        <DropDown
+          options={getOptions()}
+          testId="continuumUnits"
+          value={continuumUnits}
+          setValue={setContinuumUnits}
+          label=""
+          onFocus={() => setHelp(HELP_CONTINUUM_UNITS)}
+        />
+      </Box>
     );
   };
 
@@ -353,7 +399,7 @@ export default function AddObservation() {
   );
 
   const suppliedField = () => (
-    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={4}>
         {suppliedTypeField()}
       </Grid>
@@ -396,6 +442,26 @@ export default function AddObservation() {
     />
   );
 
+  const subBandsField = () => (
+    <NumberEntry
+      label="Number of sub-bands"
+      testId="subBands"
+      value={subBands}
+      setValue={setSubBands}
+      onFocus={() => setHelp(HELP_SUB_BANDS)}
+    />
+  );
+
+  const continuumBandwidthValueField = () => (
+    <TextEntry
+      label="Continuum Bandwidth"
+      testId="continuumBandwidth"
+      value={continuumBandwidth}
+      setValue={setContinuumBandwidth}
+      onFocus={() => setHelp(HELP_CONTINUUM_BANDWIDTH)}
+    />
+  );
+
   const effectiveResolutionField = () => (
     <TextEntry
       label="Effective Resolution"
@@ -407,12 +473,23 @@ export default function AddObservation() {
   );
 
   const centralFrequencyField = () => (
-    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={8}>
         {frequencyField()}
       </Grid>
       <Grid item xs={4}>
-        {unitsField()}
+        {frequencyUnitsField()}
+      </Grid>
+    </Grid>
+  );
+
+  const continuumBandwidthField = () => (
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={8}>
+        {continuumBandwidthValueField()}
+      </Grid>
+      <Grid item xs={4}>
+        {continuumUnitsField()}
       </Grid>
     </Grid>
   );
@@ -436,43 +513,65 @@ export default function AddObservation() {
         spacing={1}
       >
         <Grid item xs={9}>
-          <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
-            <Grid item xs={3}>
+          <Grid container direction="row" alignItems="center" gap={1} spacing={1} justifyContent="space-evenly">
+            <Grid item xs={XS_TOP}>
               {arrayConfigurationField()}
-              {subarrayConfigurationField()}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={XS_TOP}>
               {elevationField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {subarrayConfigurationField()}
+            </Grid>
+            <Grid item xs={XS_TOP} />
+            <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
           </Grid>
           <Card variant="outlined">
-            <Grid
-              gap={1}
-              spacing={1}
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="space-evenly"
-            >
-              <Grid item xs={5}>
-                {observationTypeField()}
-                {suppliedField()}
-                {centralFrequencyField()}
-                {bandwidthField()}
-                {spectralResolutionField()}
-                {spectralAveragingField()}
-                {effectiveResolutionField()}
+            <CardContent>
+              <Grid container direction="row" alignItems="center" gap={1} justifyContent="space-evenly">
+                <Grid item xs={XS_BOTTOM}>
+                  {observationTypeField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {suppliedField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {centralFrequencyField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {isContinuum() && continuumBandwidthField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {bandwidthField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {spectralResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {spectralAveragingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {effectiveResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {taperingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {imageWeightingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {robustField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {isContinuum() && subBandsField()}
+                </Grid>
               </Grid>
-              <Grid item xs={5}>
-                {taperingField()}
-                {imageWeightingField()}
-                {robustField()}
-              </Grid>
-            </Grid>
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={3}>
