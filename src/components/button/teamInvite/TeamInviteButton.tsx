@@ -33,56 +33,45 @@ export default function TeamInviteButton({ formValues }) {
   }
 
   function validateForm() {
+    let count = 0;
     // VALIDATE FORM
-    setValidFistNameState(
-      helpers.validate.validateTextEntry(
-        formValues.firstName.value,
-        formValues.firstName.setValue,
-        formValues.firstName.setErrorText,
-        'EMPTY'
-      )
+    let isValid =  helpers.validate.validateTextEntry(
+      formValues.firstName.value,
+      formValues.firstName.setValue,
+      formValues.firstName.setErrorText,
+      'EMPTY'
     );
-    setValidLastNameState(
-      helpers.validate.validateTextEntry(
-        formValues.lastName.value,
-        formValues.lastName.setValue,
-        formValues.lastName.setErrorText,
-        'EMPTY'
-      )
-    );
-    setValidEmailState(
-      helpers.validate.validateTextEntry(
-        formValues.email.value,
-        formValues.email.setValue,
-        formValues.email.setErrorText,
-        'EMAIL_STRICT'
-      )
-    );
+    setValidFistNameState(isValid);
+    count += isValid ? 0 : 1;
 
-    if (validFistNameState && validLastNameState && validEmailState) {
-      // console.log("YES VALID");
-      AddTeamMember();
-    }
+    isValid = helpers.validate.validateTextEntry(
+      formValues.lastName.value,
+      formValues.lastName.setValue,
+      formValues.lastName.setErrorText,
+      'EMPTY'
+    )
+  
+    setValidLastNameState(isValid);
+    count += isValid ? 0 : 1;
 
+    isValid = helpers.validate.validateTextEntry(
+      formValues.email.value,
+      formValues.email.setValue,
+      formValues.email.setErrorText,
+      'EMAIL_STRICT'
+    )
+  
+    setValidEmailState(isValid);
+    count += isValid ? 0 : 1;
+    return !count;
   }
 
 
   const ClickFunction = () => {
-    validateForm();
-    // call AddTeamMember if all three form items are valid
-    /*
-    if (validFistNameState && validLastNameState && validEmailState) {
+    if (validateForm()) {
       AddTeamMember();
     }
-    */
-    
   };
-
-  React.useEffect(() => {
-    if (validFistNameState && validLastNameState && validEmailState) {
-      // AddTeamMember();
-    }
-  }, [validFistNameState, validLastNameState, validEmailState]);
 
   const title = 'Send Invitation';
 
