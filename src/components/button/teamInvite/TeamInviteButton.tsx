@@ -10,6 +10,28 @@ export default function TeamInviteButton({ formValues }) {
   const [validLastNameState, setValidLastNameState] = React.useState(false);
   const [validEmailState, setValidEmailState] = React.useState(false);
 
+  function AddTeamMember() {
+    const currentTeam = getMockTeam();
+    const highestId = getMockTeam().reduce(
+      (acc, teamMember) => (teamMember.id > acc ? teamMember.id : acc),
+      0
+    );
+    const newTeamMember = {
+      id: highestId + 1,
+      FirstName: formValues.firstName.value,
+      LastName: formValues.lastName.value,
+      Email: formValues.email.value,
+      Country: '',
+      Affiliation: '',
+      PHDThesis: formValues.phdThesis.phdThesis,
+      Status: TEAM_STATUS_TYPE_OPTIONS.pending,
+      Actions: null,
+      PI: false
+    };
+    // setMockTeam(newTeamMember);
+    setMockTeam([...currentTeam, newTeamMember]);
+  }
+
   function validateForm() {
     // VALIDATE FORM
     setValidFistNameState(
@@ -36,36 +58,31 @@ export default function TeamInviteButton({ formValues }) {
         'EMAIL_STRICT'
       )
     );
+
+    if (validFistNameState && validLastNameState && validEmailState) {
+      // console.log("YES VALID");
+      AddTeamMember();
+    }
+
   }
 
-  const highestId = getMockTeam().reduce(
-    (acc, teamMember) => (teamMember.id > acc ? teamMember.id : acc),
-    0
-  );
-
-  function AddTeamMember() {
-    const newTeamMember = {
-      id: highestId + 1,
-      FirstName: formValues.firstName.value,
-      LastName: formValues.lastName.value,
-      Email: formValues.email.value,
-      Country: '',
-      Affiliation: '',
-      PHDThesis: formValues.phdThesis.phdThesis,
-      Status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      Actions: null,
-      PI: false
-    };
-    setMockTeam(newTeamMember);
-  }
 
   const ClickFunction = () => {
     validateForm();
     // call AddTeamMember if all three form items are valid
+    /*
     if (validFistNameState && validLastNameState && validEmailState) {
       AddTeamMember();
     }
+    */
+    
   };
+
+  React.useEffect(() => {
+    if (validFistNameState && validLastNameState && validEmailState) {
+      // AddTeamMember();
+    }
+  }, [validFistNameState, validLastNameState, validEmailState]);
 
   const title = 'Send Invitation';
 
