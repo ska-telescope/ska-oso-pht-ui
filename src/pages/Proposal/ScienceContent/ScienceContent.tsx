@@ -9,12 +9,11 @@ import {
   Modal,
   Typography
 } from '@mui/material';
-// import PreviewPdfButton from '@/components/button/previewPdf/PreviewPdfButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
-import LatexEntry from '../../../components/latexEntry/latexEntry';
 
-import { SCIENCE, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import {STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import PDFUpload from "../../../components/pdfUpload/pdfUpload";
 
 interface ScienceContentProps {
   page: number;
@@ -22,9 +21,8 @@ interface ScienceContentProps {
 }
 
 export default function ScienceContent({ page, setStatus }: ScienceContentProps) {
-  const [latex, setLatex] = React.useState(SCIENCE);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [pdfUrl, setPdfUrl] = React.useState('');
+  const [pdfUrl] = React.useState('');
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -49,7 +47,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
     setIsOpen(false);
   }
 
-  const latexModal = () => (
+  const pdfUploadModal = () => (
     <Modal open={isOpen}>
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <Card variant="outlined" sx={{ height: '90vh', width: '90vw' }}>
@@ -76,45 +74,27 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
     </Modal>
   );
 
-  const updatePreview = (isOpenModal: boolean) => {
-    const tex = [latex].join('\n');
-
-    setPdfUrl(`https://latexonline.cc/compile?text=${encodeURIComponent(tex)}`);
-    if (isOpenModal) openModal();
-  };
-
-  const setTheLatex = (e: string) => {
-    setLatex(e);
-    updatePreview(false);
-  };
-
   return (
     <>
-      {latexModal()}
+      {pdfUploadModal()}
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>
           <Grid container p={5} spacing={5} direction="row" justifyContent="space-evenly">
             <Grid item xs={6}>
               <Grid container direction="column" alignItems="left">
-                <Typography variant="h5">LaTeX Input</Typography>
-                <LatexEntry
-                  value={latex}
-                  setValue={(e: string) => {
-                    setTheLatex(e);
-                  }}
+                <Typography variant="h5">Upload PDF</Typography>
+                <PDFUpload
                   // eslint-disable-next-line react/jsx-no-bind
                   setModal={openModal}
                 />
                 <Grid container direction="row" justifyContent="space-between">
-                  {/* <PreviewPdfButton onClick={()=>updatePreview(true)} /> */}
                   <UploadPdfButton />
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <Box m={1}>
-                <Typography variant="h5">LaTeX Preview</Typography>
-                {/* TODO : Need React version of this <Latex>{latex}</Latex>  */}
+                <Typography variant="h5">Uploaded PDF Preview</Typography>
               </Box>
             </Grid>
           </Grid>
