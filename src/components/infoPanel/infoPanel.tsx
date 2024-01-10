@@ -18,6 +18,7 @@ interface InfoPanelProps {
   additional?: string;
   sensCalc?: Boolean;
   maxWidth?: number;
+  testId?: string;
   detailLines?: number;
 }
 
@@ -27,6 +28,7 @@ export default function InfoPanel({
   additional = '',
   sensCalc = false,
   maxWidth = 400,
+  testId,
   detailLines = 5
 }: InfoPanelProps) {
   const [expanded, setExpanded] = React.useState(false);
@@ -47,7 +49,7 @@ export default function InfoPanel({
   };
 
   return (
-    <Card variant="outlined" sx={{ maxWidth }}>
+    <Card variant="outlined" sx={{ maxWidth }} data-testid={testId}>
       <CardHeader
         title={<Typography variant="button">{title}</Typography>}
         action={getIcon() !== null && <IconButton aria-label="settings">{getIcon()}</IconButton>}
