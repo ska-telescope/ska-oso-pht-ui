@@ -1,13 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid } from '@mui/material';
-import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Button, ButtonColorTypes, ButtonVariantTypes, DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import InfoPanel from '../../components/infoPanel/infoPanel';
 import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
 
-const XS_TOP = 3; 
+// TODO : Cypress Testing
+// TODO : Documentation
+// TODO : Improved validation
+// TODO : Add functionality
+// TODO : Combine Bandwidth & Spectral Resolution ( SensCalc )
+
+const XS_TOP = 5; 
 const XS_BOTTOM = 5; 
 
 export const HELP_ARRAY = {
@@ -124,17 +130,17 @@ export const HELP_SUB_BANDS = {
 export default function AddObservation() {
   const navigate = useNavigate();
 
-  const [arrayConfig, setArrayConfig] = React.useState(0);
-  const [subarrayConfig, setSubarrayConfig] = React.useState(0);
-  const [observingBand, setObservingBand] = React.useState(0);
-  const [observationType, setObservationType] = React.useState(0);
+  const [arrayConfig, setArrayConfig] = React.useState(1);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(1);
+  const [observingBand, setObservingBand] = React.useState(1);
+  const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState('');
   const [weather, setWeather] = React.useState('');
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
-  const [imageWeighting, setImageWeighting] = React.useState(0);
-  const [tapering, setTapering] = React.useState(0);
-  const [bandwidth, setBandwidth] = React.useState(0);
+  const [imageWeighting, setImageWeighting] = React.useState(1);
+  const [tapering, setTapering] = React.useState(1);
+  const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState(1);
@@ -191,6 +197,18 @@ export default function AddObservation() {
     );
   };
 
+  const arrayField = () => (
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={3}>
+        {arrayConfigurationField()}
+      </Grid>
+      <Grid item xs={1} />
+      <Grid item xs={7}>
+        {subarrayConfigurationField()}
+      </Grid>
+    </Grid>
+  );
+
   const observationTypeField = () => (
     <DropDown
       options={OBSERVATION.ObservationType}
@@ -204,7 +222,7 @@ export default function AddObservation() {
 
   const observingBandField = () => {
     const getOptions = () => {
-      if (arrayConfig && OBSERVATION.array[arrayConfig - 1].band) {
+      if (OBSERVATION.array[arrayConfig - 1].band) {
         return OBSERVATION.array[arrayConfig - 1].band;
       }
       return [{ label: 'Not applicable', value: 0 }];
@@ -266,7 +284,7 @@ export default function AddObservation() {
 
   const robustField = () => {
     const getOptions = () => {
-      if (arrayConfig && imageWeighting === 2) {
+      if (imageWeighting === 2) {
         return OBSERVATION.array[arrayConfig - 1].robust;
       }
       return [{ label: '', value: 0 }];
@@ -275,7 +293,6 @@ export default function AddObservation() {
     return (
       <DropDown
         options={getOptions()}
-        disabled={!arrayConfig || imageWeighting !== 2}
         testId="robust"
         value={robust}
         setValue={setRobust}
@@ -442,15 +459,33 @@ export default function AddObservation() {
     />
   );
 
-  const subBandsField = () => (
-    <NumberEntry
-      label="Number of sub-bands"
-      testId="subBands"
-      value={subBands}
-      setValue={setSubBands}
-      onFocus={() => setHelp(HELP_SUB_BANDS)}
-    />
-  );
+  const subBandsField = () => {  
+    const [error, setError] = React.useState('');
+    const validate = (e) => {
+      if (e < 0 || e > 32) {
+        setError('Value must be in the range 0 - 32 inclusive')
+      } else {
+        setError('');
+      }
+      setSubBands(e);
+    }
+
+    return (
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      <>
+        {isContinuum() && (
+        <NumberEntry
+          label="Number of sub-bands"
+          testId="subBands"
+          value={subBands}
+          setValue={validate}
+          onFocus={() => setHelp(HELP_SUB_BANDS)}
+          errorText={error}
+        />
+        )}
+      </>
+    );
+  };
 
   const continuumBandwidthValueField = () => (
     <TextEntry
@@ -494,6 +529,49 @@ export default function AddObservation() {
     </Grid>
   );
 
+  const pageFooter = () => {
+    const getIcon = () => <AddIcon />;
+
+    const disabled = () => {
+      // TODO : Extend so that all options are covered
+      if (!elevation || !weather || !frequency || !effective) {
+        return true;
+      }
+      if (isContinuum && !continuumBandwidth) { 
+        return true;
+      }
+      return false;
+    }
+
+    return (
+      <Paper
+        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        elevation={0}
+      >
+        <Grid
+          p={1}
+          container
+          direction="row"
+          alignItems="space-between"
+          justifyContent="space-between"
+        >
+          <Grid item />
+          <Grid item />
+          <Grid item>
+            <Button
+              ariaDescription="add Button"
+              color={ButtonColorTypes.Secondary}
+              disabled={disabled()}
+              icon={getIcon()}
+              label="Add"
+              testId="addButton"
+              variant={ButtonVariantTypes.Contained}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+    )};
+
   const helpPanel = () => (
     <InfoPanel title={help.title} description={help.description} additional={help.additional} />
   );
@@ -515,7 +593,7 @@ export default function AddObservation() {
         <Grid item xs={9}>
           <Grid container direction="row" alignItems="center" gap={1} spacing={1} justifyContent="space-evenly">
             <Grid item xs={XS_TOP}>
-              {arrayConfigurationField()}
+              {arrayField()}
             </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}
@@ -524,12 +602,9 @@ export default function AddObservation() {
               {elevationField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {subarrayConfigurationField()}
-            </Grid>
-            <Grid item xs={XS_TOP} />
-            <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
+            <Grid item xs={XS_TOP} />
           </Grid>
           <Card variant="outlined">
             <CardContent>
@@ -562,13 +637,13 @@ export default function AddObservation() {
                   {taperingField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
+                  {subBandsField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
                   {imageWeightingField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {robustField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {isContinuum() && subBandsField()}
+                  {imageWeighting === 2 && robustField()}
                 </Grid>
               </Grid>
             </CardContent>
@@ -578,7 +653,7 @@ export default function AddObservation() {
           {helpPanel()}
         </Grid>
       </Grid>
-      <PageFooter pageNo={-2} buttonFunc={addObservation} />
+      {pageFooter()}
     </Grid>
   );
 }

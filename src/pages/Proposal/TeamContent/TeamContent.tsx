@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
+import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -211,25 +211,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               onFocus={() => setHelp(HELP_EMAIL)}
               errorText={errorTextEmail}
             />
-            <FormControlLabel
-              value="phdThesis"
-              control={(
-                <Checkbox
-                  sx={{
-                    '&.Mui-checked': {
-                      color: theme.palette.secondary.main
-                    }
-                  }}
-                />
-              )}
-              label="PhD Thesis"
-              labelPlacement="end"
-              checked={phdThesis}
-              onChange={handleCheckboxChange}
-              onFocus={() => setHelp(HELP_PHD)}
-              sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-              data-testid="PhDCheckbox"
-            />
+            <TickBox label="PhD Thesis" testId="PhDCheckbox" checked={phdThesis} onChange={handleCheckboxChange} onFocus={() => setHelp(HELP_PHD)} />
           </Box>
         </Grid>
         <Grid item xs={4}>

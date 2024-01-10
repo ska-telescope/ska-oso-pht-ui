@@ -211,25 +211,25 @@ describe('Content', () => {
   });
 
   describe('Contextual help', () => {
-    it('Contextuel help displayed when First Name input field on focus', () => {
+    it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
         expect(helpTitle).to.equal(HELP_FIRSTNAME.title);
       });
     });
-    it('Contextuel help displayed when Last Name input field on focus', () => {
+    it('Contextual help displayed when Last Name input field on focus', () => {
       cy.get('[data-testid="lastName"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
         expect(helpTitle).to.equal(HELP_LASTNAME.title);
       });
     });
-    it('Contextuel help displayed when Email input field on focus', () => {
+    it('Contextual help displayed when Email input field on focus', () => {
       cy.get('[data-testid="email"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
         expect(helpTitle).to.equal(HELP_EMAIL.title);
       });
     });
-    it('Contextuel help displayed when Phd checkbox on focus', () => {
+    it('Contextual help displayed when Phd checkbox on focus', () => {
       cy.get('[data-testid="PhDCheckbox"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
         expect(helpTitle).to.equal(HELP_PHD.title);

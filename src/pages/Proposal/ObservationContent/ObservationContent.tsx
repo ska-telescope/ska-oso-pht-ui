@@ -3,14 +3,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
-  FormControlLabel,
   Grid,
   Typography
 } from '@mui/material';
+import { TickBox } from '@ska-telescope/ska-gui-components';
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import SensCalcButton from '../../../components/button/SensCalc/SensCalcButton';
 import {
   OBSERVATION,
   STATUS_ERROR,
@@ -25,6 +23,8 @@ interface ObservationContentProps {
 }
 
 export default function ObservationContent({ page, setStatus }: ObservationContentProps) {
+  const [linked ] = React.useState(true);
+  const [unlinked ] = React.useState(true);
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -91,7 +91,6 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
           <Grid item xs={7}>
             <Card variant="outlined">
               <CardHeader
-                action={<SensCalcButton />}
                 title={(
                   <Typography variant="h6">
                     Target List related to the selected Observation
@@ -99,37 +98,8 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                 )}
               />
               <CardContent>
-                <FormControlLabel
-                  value="linked"
-                  control={(
-                    <Checkbox
-                      defaultChecked
-                      sx={{
-                        '&.Mui-checked': {
-                          color: 'green'
-                        }
-                      }}
-                    />
-                  )}
-                  label="Linked"
-                  labelPlacement="end"
-                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                />
-                <FormControlLabel
-                  value="unlinked"
-                  control={(
-                    <Checkbox
-                      sx={{
-                        '&.Mui-checked': {
-                          color: 'green'
-                        }
-                      }}
-                    />
-                  )}
-                  label="Unlinked"
-                  labelPlacement="end"
-                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                />
+                <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
+                <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
                 <DataGridWrapper
                   rows={TARGETS.ListOfTargets.TargetItems}
                   extendedColumns={extendedColumnsTargets}
