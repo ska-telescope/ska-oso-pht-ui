@@ -36,7 +36,6 @@ export default function TeamInviteButton({
   }
 
   function clearForm() {
-    // TODO
     formValues.firstName.setValue("");
     formValues.lastName.setValue("");
     formValues.email.setValue("");

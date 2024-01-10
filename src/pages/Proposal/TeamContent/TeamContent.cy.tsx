@@ -5,6 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import TeamContent, { HELP_EMAIL, HELP_FIRSTNAME, HELP_LASTNAME, HELP_PHD } from './TeamContent';
 import { TEAM, TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../../utils/constants';
+import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -190,8 +191,8 @@ describe('Content', () => {
       const firstName = 'Alia';
       const lastName = 'Benammar'
       const email = 'alia123@gmail.com'
-      cy.get('[data-testid="lastName"] input').type(firstName);
-      cy.get('[data-testid="firstName"] input').type(lastName);
+      cy.get('[data-testid="firstName"] input').type(firstName);
+      cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
       cy.get('[data-testid="Send InvitationButton"]').should('not.be.disabled');
     });
@@ -199,8 +200,8 @@ describe('Content', () => {
       const firstName = 'Alia';
       const lastName = 'Benammar'
       const email = 'alia123@gmail.com'
-      cy.get('[data-testid="lastName"] input').type(firstName);
-      cy.get('[data-testid="firstName"] input').type(lastName);
+      cy.get('[data-testid="firstName"] input').type(firstName);
+      cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
       cy.get('[data-testid="Send InvitationButton"]').should('be.enabled').click();
     });
@@ -240,6 +241,21 @@ describe('Content', () => {
           expect(helpTitle).to.equal(HELP_PHD.title);
         });
     });
+  });
+
+  describe('Add team member to data table', () => {
+    it('Added team member should be displayed in table', () => {
+      const firstName = 'Joe';
+      const lastName = 'Whiteley'
+      const email = 'joe.whitely@icloud.com'
+      cy.get('[data-testid="firstName"] input').type(firstName);
+      cy.get('[data-testid="lastName"] input').type(lastName);
+      cy.get('[data-testid="email"] input').type(email);
+      cy.get('[data-testid="Send InvitationButton"]').click();
+      cy.get(`[data-testid="teamTableId"]`).contains(firstName);
+      cy.get(`[data-testid="teamTableId"]`).contains(lastName);
+    });
+    
   });
 
 });

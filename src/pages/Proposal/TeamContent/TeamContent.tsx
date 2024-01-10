@@ -211,7 +211,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const panel1 = () => (
     <Grid item>
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <Box component="form">
             <TextEntry
               label="First Name"
@@ -247,7 +247,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             />
           </Box>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           <InfoPanel
             title={help.title}
             description={help.description}
