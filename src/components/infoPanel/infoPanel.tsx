@@ -54,25 +54,22 @@ export default function InfoPanel({
         title={<Typography variant="button">{title}</Typography>}
         action={getIcon() !== null && <IconButton aria-label="settings">{getIcon()}</IconButton>}
       />
-      <CardContent sx={{ height : `${detailLines * 26}px` }}>
-        <Typography 
+      <CardContent sx={{ height: `${detailLines * 26}px` }}>
+        <Typography
           variant="caption"
           sx={{
-              display: '-webkit-box',
-              overflow: 'hidden',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: detailLines
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: detailLines
           }}
         >
           {description}
-
         </Typography>
       </CardContent>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography>
-            {additional}
-          </Typography>
+          <Typography>{additional}</Typography>
         </CardContent>
       </Collapse>
     </Card>

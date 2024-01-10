@@ -184,57 +184,64 @@ describe('Content', () => {
       const incorrectText = 'email@';
       cy.get('[data-testid="email"] input').type(incorrectText);
       cy.get('[data-testid="Send InvitationButton"]').click();
-       cy.get('[data-testid="email"] > p.Mui-error')
-       .invoke('text')
-       .then(helperText => {
-         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMAIL_STRICT.ERROR_TEXT);
-       });
+      cy.get('[data-testid="email"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMAIL_STRICT.ERROR_TEXT);
+        });
     });
     it('First Name field displays error if empty when send invitation clicked', () => {
       cy.get('[data-testid="firstName"] input').clear();
       cy.get('[data-testid="Send InvitationButton"]').click();
-       cy.get('[data-testid="firstName"] > p.Mui-error')
-       .invoke('text')
-       .then(helperText => {
-         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
-       });
+      cy.get('[data-testid="firstName"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
+        });
     });
     it('Last Name field displays error if empty when send invitation clicked', () => {
       cy.get('[data-testid="lastName"] input').clear();
       cy.get('[data-testid="Send InvitationButton"]').click();
-       cy.get('[data-testid="lastName"] > p.Mui-error')
-       .invoke('text')
-       .then(helperText => {
-         expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
-       });
+      cy.get('[data-testid="lastName"] > p.Mui-error')
+        .invoke('text')
+        .then(helperText => {
+          expect(helperText).to.equal(TEXT_ENTRY_PARAMS.EMPTY.ERROR_TEXT);
+        });
     });
   });
 
   describe('Contextual help', () => {
     it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
-        expect(helpTitle).to.equal(HELP_FIRSTNAME.title);
-      });
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+        .invoke('text')
+        .then(helpTitle => {
+          expect(helpTitle).to.equal(HELP_FIRSTNAME.title);
+        });
     });
     it('Contextual help displayed when Last Name input field on focus', () => {
       cy.get('[data-testid="lastName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
-        expect(helpTitle).to.equal(HELP_LASTNAME.title);
-      });
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+        .invoke('text')
+        .then(helpTitle => {
+          expect(helpTitle).to.equal(HELP_LASTNAME.title);
+        });
     });
     it('Contextual help displayed when Email input field on focus', () => {
       cy.get('[data-testid="email"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
-        expect(helpTitle).to.equal(HELP_EMAIL.title);
-      });
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+        .invoke('text')
+        .then(helpTitle => {
+          expect(helpTitle).to.equal(HELP_EMAIL.title);
+        });
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
       cy.get('[data-testid="PhDCheckbox"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p').invoke('text').then(helpTitle => {
-        expect(helpTitle).to.equal(HELP_PHD.title);
-      });
+      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content > p')
+        .invoke('text')
+        .then(helpTitle => {
+          expect(helpTitle).to.equal(HELP_PHD.title);
+        });
     });
   });
-
 });

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  Typography
-} from '@mui/material';
+import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -23,8 +17,8 @@ interface ObservationContentProps {
 }
 
 export default function ObservationContent({ page, setStatus }: ObservationContentProps) {
-  const [linked ] = React.useState(true);
-  const [unlinked ] = React.useState(true);
+  const [linked] = React.useState(true);
+  const [unlinked] = React.useState(true);
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;

@@ -2,7 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, ButtonColorTypes, ButtonVariantTypes, DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  Button,
+  ButtonColorTypes,
+  ButtonVariantTypes,
+  DropDown,
+  NumberEntry,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import InfoPanel from '../../components/infoPanel/infoPanel';
 import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
@@ -13,8 +20,8 @@ import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
 // TODO : Add functionality
 // TODO : Combine Bandwidth & Spectral Resolution ( SensCalc )
 
-const XS_TOP = 5; 
-const XS_BOTTOM = 5; 
+const XS_TOP = 5;
+const XS_BOTTOM = 5;
 
 export const HELP_ARRAY = {
   title: 'ARRAY TITLE',
@@ -153,10 +160,6 @@ export default function AddObservation() {
   const [subBands, setSubBands] = React.useState(0);
 
   const [help, setHelp] = React.useState(DEFAULT_HELP);
-
-  const addObservation = () => {
-    navigate('/proposal');
-  };
 
   const checkConfiguration = (e: number) => {
     setArrayConfig(e);
@@ -459,29 +462,29 @@ export default function AddObservation() {
     />
   );
 
-  const subBandsField = () => {  
+  const subBandsField = () => {
     const [error, setError] = React.useState('');
-    const validate = (e) => {
+    const validate = e => {
       if (e < 0 || e > 32) {
-        setError('Value must be in the range 0 - 32 inclusive')
+        setError('Value must be in the range 0 - 32 inclusive');
       } else {
         setError('');
       }
       setSubBands(e);
-    }
+    };
 
     return (
       // eslint-disable-next-line react/jsx-no-useless-fragment
       <>
         {isContinuum() && (
-        <NumberEntry
-          label="Number of sub-bands"
-          testId="subBands"
-          value={subBands}
-          setValue={validate}
-          onFocus={() => setHelp(HELP_SUB_BANDS)}
-          errorText={error}
-        />
+          <NumberEntry
+            label="Number of sub-bands"
+            testId="subBands"
+            value={subBands}
+            setValue={validate}
+            onFocus={() => setHelp(HELP_SUB_BANDS)}
+            errorText={error}
+          />
         )}
       </>
     );
@@ -537,11 +540,15 @@ export default function AddObservation() {
       if (!elevation || !weather || !frequency || !effective) {
         return true;
       }
-      if (isContinuum && !continuumBandwidth) { 
+      if (isContinuum && !continuumBandwidth) {
         return true;
       }
       return false;
-    }
+    };
+
+    const buttonClicked = () => {
+      navigate('/proposal');
+    };
 
     return (
       <Paper
@@ -565,12 +572,14 @@ export default function AddObservation() {
               icon={getIcon()}
               label="Add"
               testId="addButton"
+              onClick={buttonClicked}
               variant={ButtonVariantTypes.Contained}
             />
           </Grid>
         </Grid>
       </Paper>
-    )};
+    );
+  };
 
   const helpPanel = () => (
     <InfoPanel title={help.title} description={help.description} additional={help.additional} />
@@ -591,7 +600,14 @@ export default function AddObservation() {
         spacing={1}
       >
         <Grid item xs={9}>
-          <Grid container direction="row" alignItems="center" gap={1} spacing={1} justifyContent="space-evenly">
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            gap={1}
+            spacing={1}
+            justifyContent="space-evenly"
+          >
             <Grid item xs={XS_TOP}>
               {arrayField()}
             </Grid>
@@ -608,7 +624,13 @@ export default function AddObservation() {
           </Grid>
           <Card variant="outlined">
             <CardContent>
-              <Grid container direction="row" alignItems="center" gap={1} justifyContent="space-evenly">
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                gap={1}
+                justifyContent="space-evenly"
+              >
                 <Grid item xs={XS_BOTTOM}>
                   {observationTypeField()}
                 </Grid>

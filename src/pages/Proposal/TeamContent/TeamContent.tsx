@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import { helpers } from '../../../utils/helpers';
@@ -34,7 +33,7 @@ interface TeamContentProps {
   setStatus: Function;
 }
 
-export const HELP_FIRSTNAME= {
+export const HELP_FIRSTNAME = {
   title: 'Help first name',
   description: 'Field sensitive help',
   additional: ''
@@ -56,12 +55,11 @@ export const HELP_PHD = {
 };
 
 export default function TeamContent({ page, setStatus }: TeamContentProps) {
-  const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [phdThesis, setPhdThesid] = React.useState(true);
+  const [phdThesis, setPhdThesis] = React.useState(true);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
   const [errorTextLastName, setErrorTextLastName] = React.useState('');
@@ -93,7 +91,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhdThesid(event.target.checked);
+    setPhdThesis(event.target.checked);
   };
 
   React.useEffect(() => {
@@ -211,7 +209,13 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               onFocus={() => setHelp(HELP_EMAIL)}
               errorText={errorTextEmail}
             />
-            <TickBox label="PhD Thesis" testId="PhDCheckbox" checked={phdThesis} onChange={handleCheckboxChange} onFocus={() => setHelp(HELP_PHD)} />
+            <TickBox
+              label="PhD Thesis"
+              testId="PhDCheckbox"
+              checked={phdThesis}
+              onChange={handleCheckboxChange}
+              onFocus={() => setHelp(HELP_PHD)}
+            />
           </Box>
         </Grid>
         <Grid item xs={4}>
