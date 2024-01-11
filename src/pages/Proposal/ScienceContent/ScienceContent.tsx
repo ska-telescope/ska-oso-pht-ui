@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
 
 import {STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import UploadPdfAlertDialog from "../../../components/button/uploadPdf/UploadPdfAlertDialog";
 
 interface ScienceContentProps {
   page: number;
@@ -12,8 +13,11 @@ export default function ScienceContent({ page}: ScienceContentProps) {
   const [status, setStatus] = useState<
       "initial" | "uploading" | "success" | "fail"
   >("initial");
+  const [openDialog, setOpenDialog] = React.useState(false);
 
-  React.useEffect(() => {
+
+
+    React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
@@ -35,6 +39,14 @@ export default function ScienceContent({ page}: ScienceContentProps) {
     }
   };
 
+    function uploadPdf() {
+        // if (theProposal.proposalType === 0 || theProposal.proposalSubType === 0) {
+        //     setProposal({ ...theProposal, proposalType: id });
+        // } else if (theProposal.proposalType !== id) {
+        //     confirmChange(id, false);
+        // }
+    }
+
   const handleUpload = async () => {
     if (file) {
       setStatus("uploading");
@@ -45,7 +57,7 @@ export default function ScienceContent({ page}: ScienceContentProps) {
       try {
         const result = await fetch("https://httpbin.org/post", {
           method: "POST",
-          body: formData,
+          body: formData
         });
 
         const data = await result.json();
@@ -62,27 +74,27 @@ export default function ScienceContent({ page}: ScienceContentProps) {
   const Result = ({ status }: { status: string }) => {
     if (status === "success") {
       return <p> File uploaded successfully!</p>;
-    } else if (status === "fail") {
+    } if (status === "fail") {
       return <p>File upload failed!</p>;
-    } else if (status === "uploading") {
+    } if (status === "uploading") {
       return <p>Uploading selected file...</p>;
-    } else {
-      return null;
     }
+      return null;
+
   };
 
   return (
-      <>
-        <div className="input-group">
-          <input id="file" type="file" onChange={handleFileChange} />
-          <UploadPdfButton onClick={handleFileChange}/>
-        </div>
-        {file && (
-            <button onClick={handleUpload} className="submit">
-              Upload a file
-            </button>
+    <>
+      <div className="input-group">
+        <input id="file" type="file" onChange={handleFileChange} />
+        <UploadPdfButton onClick={{UploadPdfAlertDialog}}/>
+      </div>
+      {file && (
+        <button onClick={handleUpload} className="submit">
+          Upload a file
+        </button>
         )}
-        <Result status={status} />
-      </>
+      <Result status={status} />
+    </>
   );
 }
