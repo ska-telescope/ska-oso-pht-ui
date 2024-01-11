@@ -125,6 +125,10 @@ module.exports = () => {
             eager: true
           },
           // mixture
+          axios: {
+            requiredVersion: deps['axios'],
+            eager: true
+          },
           '@emotion/react': {
             singleton: true,
             requiredVersion: deps['@emotion/react'],
