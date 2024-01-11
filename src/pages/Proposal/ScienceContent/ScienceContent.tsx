@@ -83,11 +83,14 @@ export default function ScienceContent({ page}: ScienceContentProps) {
 
   };
 
+  const func = () => { 
+    console.log('BUTTON CLICKED');
+  }
   return (
     <>
       <div className="input-group">
         <input id="file" type="file" onChange={handleFileChange} />
-        <UploadPdfButton onClick={{UploadPdfAlertDialog}}/>
+        <UploadPdfButton func={func} />
       </div>
       {file && (
         <button onClick={handleUpload} className="submit">

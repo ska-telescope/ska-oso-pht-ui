@@ -2,7 +2,11 @@ import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-export default function UploadPdfButton() {
+interface UploadPdfProps {
+  func: Function;
+}
+
+export default function UploadPdfButton({ func }: UploadPdfProps) {
   const title = 'Supporting PDF';
 
   return (
@@ -11,6 +15,7 @@ export default function UploadPdfButton() {
       color={ButtonColorTypes.Inherit}
       icon={<UploadFileIcon />}
       label={title}
+      onClick={func}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
       toolTip="Eventually this will the allow the user to upload a number of PDFs. Finalized usage to be completed"
