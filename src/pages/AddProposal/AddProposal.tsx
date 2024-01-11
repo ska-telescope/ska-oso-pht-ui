@@ -7,6 +7,15 @@ import TitleContent from '../Proposal/TitleContent/TitleContent';
 import { PAGES } from '../../utils/constants';
 
 export default function AddProposal() {
+  const EMPTY_PROPOSAL = {
+    id: null,
+    title: '',
+    proposalType: 0,
+    proposalSubType: 0
+  };
+
+  const [proposal, setProposal] = React.useState(EMPTY_PROPOSAL);
+
   const navigate = useNavigate();
 
   const createProposal = () => {
@@ -21,7 +30,7 @@ export default function AddProposal() {
         <PageBanner proposalState={null} title={PAGES[0]} addPage={0} />
       </Grid>
       <Grid item>
-        <TitleContent page={0} setStatus={null} />
+        <TitleContent page={0} theProposal={proposal} setProposal={setProposal} setStatus={null} />
       </Grid>
       <Grid item>
         <PageFooter pageNo={-1} buttonFunc={createProposal} />

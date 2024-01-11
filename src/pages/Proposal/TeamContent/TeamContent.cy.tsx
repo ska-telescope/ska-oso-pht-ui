@@ -189,8 +189,8 @@ describe('Content', () => {
     });
     it('Button NOT disabled if all fields have correct format', () => {
       const firstName = 'Alia';
-      const lastName = 'Benammar'
-      const email = 'alia123@gmail.com'
+      const lastName = 'Benammar';
+      const email = 'alia123@gmail.com';
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
@@ -198,14 +198,15 @@ describe('Content', () => {
     });
     it('Button clickable if all fields have correct format', () => {
       const firstName = 'Alia';
-      const lastName = 'Benammar'
-      const email = 'alia123@gmail.com'
+      const lastName = 'Benammar';
+      const email = 'alia123@gmail.com';
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="Send InvitationButton"]').should('be.enabled').click();
+      cy.get('[data-testid="Send InvitationButton"]')
+        .should('be.enabled')
+        .click();
     });
-   
   });
 
   describe('Contextual help', () => {
@@ -246,8 +247,8 @@ describe('Content', () => {
   describe('Add team member to data table', () => {
     it('Added team member should be displayed in table', () => {
       const firstName = 'Joe';
-      const lastName = 'Whiteley'
-      const email = 'joe.whitely@icloud.com'
+      const lastName = 'Whiteley';
+      const email = 'joe.whitely@icloud.com';
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
@@ -255,7 +256,5 @@ describe('Content', () => {
       cy.get(`[data-testid="teamTableId"]`).contains(firstName);
       cy.get(`[data-testid="teamTableId"]`).contains(lastName);
     });
-    
   });
-
 });

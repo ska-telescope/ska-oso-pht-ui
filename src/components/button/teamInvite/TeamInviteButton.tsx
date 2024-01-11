@@ -6,14 +6,10 @@ import { getMockTeam, setMockTeam } from '../../../services/axios/getTeam/mockTe
 
 interface TeamInviteButtonProps {
   formValues: any;
-  disabled: boolean
+  disabled: boolean;
 }
 
-export default function TeamInviteButton({
-  formValues,
-  disabled
-}: TeamInviteButtonProps) {
-
+export default function TeamInviteButton({ formValues, disabled }: TeamInviteButtonProps) {
   function AddTeamMember() {
     const currentTeam = getMockTeam();
     const highestId = getMockTeam().reduce(
@@ -36,15 +32,15 @@ export default function TeamInviteButton({
   }
 
   function clearForm() {
-    formValues.firstName.setValue("");
-    formValues.lastName.setValue("");
-    formValues.email.setValue("");
-    formValues.phdThesis.setValue("");
+    formValues.firstName.setValue('');
+    formValues.lastName.setValue('');
+    formValues.email.setValue('');
+    formValues.phdThesis.setValue('');
   }
 
   const ClickFunction = () => {
-      AddTeamMember();
-      clearForm();
+    AddTeamMember();
+    clearForm();
   };
 
   const title = 'Send Invitation';

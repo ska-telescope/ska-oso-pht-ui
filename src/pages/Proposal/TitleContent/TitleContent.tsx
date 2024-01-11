@@ -11,59 +11,57 @@ import { Proposal } from '../../../services/types/proposal';
 
 interface TitleContentProps {
   page: number;
-  original: Proposal;
   theProposal: Proposal;
   setProposal: Function;
   setStatus: Function;
 }
 
-export default function TitleContent({ page, original, theProposal, setProposal, setStatus }: TitleContentProps) {
+export default function TitleContent({
+  page,
+  theProposal,
+  setProposal,
+  setStatus
+}: TitleContentProps) {
   const theme = useTheme();
 
-  const emptySubProposal = {
-    id: 0,
-    title: '',
-    code: '',
-    description: ''
-  };
-
-  const [, setTheTitle] = React.useState('');
-  const [tempProposal, setTempProposal] = React.useState(theProposal);
-  const [theSubProposal, setTheSubProposal] = React.useState(emptySubProposal);
-  const [theSubProposalTemp, setTheSubProposalTemp] = React.useState(emptySubProposal);
+  const [validateToggle, setValidateToggle] = React.useState(false);
+  const [tempValue, setTempValue] = React.useState(0);
   const [subProposalChange, setSubProposalChange] = React.useState(false);
   const [errorText, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  const setTheProposal = (e: object) => {
-    console.log("TREVOR SET-THE-PROPOSAL", e);
-    // setProposal();
-  }
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [theProposal]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
     if (theProposal?.title?.length > 0) {
       count++;
     }
-    if (theSubProposal?.id !== 0) {
+    if (theProposal?.proposalType !== 0) {
+      count++;
+    }
+    if (theProposal?.proposalSubType !== 0) {
       count++;
     }
     setStatus([page, result[count]]);
-  }, [theProposal, theSubProposal]);
+  }, [validateToggle]);
 
   const handleDialogResponse = response => {
     if (response === 'continue') {
       if (!subProposalChange) {
-        // set proposal and reset sub-proposal
-        setTheProposal(tempProposal);
-        setTheSubProposal(emptySubProposal);
+        setProposal({ ...theProposal, proposalType: tempValue, proposalSubType: 0 });
       } else {
-        // set sub-proposal
-        setTheSubProposal(theSubProposalTemp);
+        setProposal({ ...theProposal, proposalSubType: tempValue });
       }
     }
   };
@@ -77,36 +75,34 @@ export default function TitleContent({ page, original, theProposal, setProposal,
     if (theProposal?.title?.length > 0) {
       count++;
     }
-    if (theSubProposal?.id !== 0) {
+    if (theProposal?.proposalType !== 0) {
+      count++;
+    }
+    if (theProposal?.proposalSubType !== 0) {
       count++;
     }
     setStatus([page, result[count]]);
   }, [theProposal]);
 
-  function clickProposal(PROPOSAL: any) {
-    if (theProposal?.title === '') {
-      // 1st time selecting a proposal
-      setTheProposal(PROPOSAL);
-    } else if (theProposal !== PROPOSAL) {
-      // changing proposal type
-      setSubProposalChange(false);
-      setOpenDialog(true);
-      // keep track of clicked proposal
-      setTempProposal(PROPOSAL);
+  const confirmChange = (id: number, isSubType: boolean) => {
+    setTempValue(id);
+    setSubProposalChange(isSubType);
+    setOpenDialog(true);
+  };
+
+  function clickProposal(id: number) {
+    if (theProposal.proposalType === 0 || theProposal.proposalSubType === 0) {
+      setProposal({ ...theProposal, proposalType: id });
+    } else if (theProposal.proposalType !== id) {
+      confirmChange(id, false);
     }
   }
 
-  function clickSubProposal(PROPOSAL: any) {
-    // setTheSubProposal(PROPOSAL);
-    if (theSubProposal.title === '') {
-      // 1st time selecting the sub-proposal
-      setTheSubProposal(PROPOSAL);
-    } else if (theSubProposal !== PROPOSAL) {
-      // changing sub-proposal type
-      setSubProposalChange(true);
-      setOpenDialog(true);
-      // keep track of clicked sub-proposal
-      setTheSubProposalTemp(PROPOSAL);
+  function clickSubProposal(id: any) {
+    if (theProposal.proposalSubType === 0) {
+      setProposal({ ...theProposal, proposalSubType: id });
+    } else if (theProposal.proposalSubType !== id) {
+      confirmChange(id, true);
     }
   }
 
@@ -114,7 +110,8 @@ export default function TitleContent({ page, original, theProposal, setProposal,
     in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
   const setCardFG = (in1: number, in2: number) =>
     in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
-  const setCardClassName = (in1: number, in2: number) => (in1 && in1 === in2 ? 'active' : 'inactive');
+  const setCardClassName = (in1: number, in2: number) =>
+    in1 && in1 === in2 ? 'active' : 'inactive';
 
   function ProposalType(TYPE: any) {
     const { id, title, code, description } = TYPE;
@@ -205,6 +202,25 @@ export default function TitleContent({ page, original, theProposal, setProposal,
     );
   }
 
+  const titleField = () => {
+    const setTitle = (e: string) => {
+      setProposal({ ...theProposal, title: e });
+    };
+
+    return (
+      <TextEntry
+        label=""
+        testId="titleId"
+        value={theProposal?.title}
+        setValue={(title: string) =>
+          helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
+        errorText={errorText}
+      />
+    );
+  };
+
+  const label = (e: string) => <Typography variant="h6">{e}</Typography>;
+
   return (
     <>
       {theProposal && (
@@ -218,18 +234,10 @@ export default function TitleContent({ page, original, theProposal, setProposal,
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="body2">Title</Typography>
+              {label('Title')}
             </Grid>
             <Grid item xs={4}>
-              <TextEntry
-                label="Title"
-                testId="titleId"
-                value={theProposal?.title}
-                setValue={(title: string) =>
-                  helpers.validate.validateTextEntry(title, setTheTitle, setErrorText)}
-                disabled={false}
-                errorText={errorText}
-              />
+              {titleField()}
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body2">
@@ -251,11 +259,12 @@ export default function TitleContent({ page, original, theProposal, setProposal,
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="body2">Proposal Type</Typography>
+              <Typography variant="h6">Proposal Type</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="body2">
-                Below are the available Proposal Types that can be used as a basis for a new proposal.
+                Below are the available Proposal Types that can be used as a basis for a new
+                proposal.
               </Typography>
               <Typography variant="body2">
                 A description of the different types is provided as an aid as to the correct type to
@@ -288,8 +297,11 @@ export default function TitleContent({ page, original, theProposal, setProposal,
             spacing={2}
             id="SubProposalContainer"
           >
-            {Projects[theProposal.proposalType].subProjects[0].id > 0 &&
-                Projects[theProposal.proposalType].subProjects?.map((proposalType: any) => ProposalSubType(proposalType))}
+            {theProposal.proposalType > 0 &&
+              Projects[theProposal.proposalType - 1].subProjects[0].id > 0 &&
+              Projects[theProposal.proposalType - 1].subProjects?.map((proposalType: any) =>
+                ProposalSubType(proposalType)
+              )}
           </Grid>
         </Grid>
       )}

@@ -2,9 +2,9 @@ import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposal from './mockProposal';
 
-const GetProposal = () => MockProposal;
+export const GetProposalLocal = () => MockProposal;
 
-async function GetProposalAsync() {
+async function GetProposal() {
   const apiUrl = SKA_PHT_API_URL;
   const URL_LIST = '/proposal';
   const config = {
@@ -15,9 +15,7 @@ async function GetProposalAsync() {
   };
 
   // TODO : Do this properly
-  if (true || USE_LOCAL_DATA) {
-    console.log("USE_LOCAL_DATA: Loading MockStatus");
-    console.log(MockProposal);
+  if (USE_LOCAL_DATA) {
     return MockProposal;
   }
 

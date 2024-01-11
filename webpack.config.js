@@ -125,7 +125,7 @@ module.exports = () => {
             eager: true
           },
           // mixture
-          'axios': {
+          axios: {
             requiredVersion: deps['axios'],
             eager: true
           },

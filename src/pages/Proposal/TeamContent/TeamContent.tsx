@@ -86,12 +86,12 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     let count = 0;
 
     // first name
-    let emptyField = firstName=== '';
+    let emptyField = firstName === '';
     let isValid = !emptyField;
     setValidFistNameState(isValid);
-    count += isValid ? 0 : 1;   
+    count += isValid ? 0 : 1;
     if (!emptyField) {
-      isValid =  helpers.validate.validateTextEntry(
+      isValid = helpers.validate.validateTextEntry(
         firstName,
         setFirstName,
         setErrorTextFirstName,
@@ -104,10 +104,10 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     }
 
     // last name
-    emptyField = lastName=== '';
+    emptyField = lastName === '';
     isValid = !emptyField;
     setValidLastNameState(isValid);
-    count += isValid ? 0 : 1;   
+    count += isValid ? 0 : 1;
     if (!emptyField) {
       isValid = helpers.validate.validateTextEntry(
         lastName,
@@ -120,21 +120,16 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     } else {
       setErrorTextLastName('');
     }
-    
+
     // email
-    emptyField = email=== '';
+    emptyField = email === '';
     isValid = !emptyField;
     setValidEmailState(isValid);
-    count += isValid ? 0 : 1;   
+    count += isValid ? 0 : 1;
     if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        email,
-        setEmail,
-        setErrorTextEmail,
-        'EMAIL'
-      )
+      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
       setValidEmailState(isValid);
-      count += isValid ? 0 : 1;   
+      count += isValid ? 0 : 1;
     } else {
       setErrorTextEmail('');
     }
@@ -162,8 +157,8 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     setStatus([page, result[count]]);
   }, [setStatus]);
 
-  React.useEffect(() => { 
-    const invalidForm= Boolean(formValidation());
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
     setInvalidFormState(invalidForm);
   });
 
