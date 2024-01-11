@@ -50,10 +50,10 @@ export default function ScienceContent({ page}: ScienceContentProps) {
 
         const data = await result.json();
 
-        console.log(data);
+        alert("Upload successful");
         setStatus("success");
       } catch (error) {
-        console.error(error);
+        alert(error);
         setStatus("fail");
       }
     }
@@ -75,7 +75,7 @@ export default function ScienceContent({ page}: ScienceContentProps) {
       <>
         <div className="input-group">
           <input id="file" type="file" onChange={handleFileChange} />
-          <UploadPdfButton/>
+          <UploadPdfButton onClick={handleFileChange}/>
         </div>
         {file && (
             <button onClick={handleUpload} className="submit">
