@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Box,
   Card,
@@ -9,11 +9,12 @@ import {
   Modal,
   Typography
 } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
 import LatexEntry from '../../../components/latexEntry/latexEntry';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, TECHNICAL } from '../../../utils/constants';
+import UploadPdfAlertDialog from "../../../components/button/uploadPdf/UploadPdfAlertDialog";
+import AlertDialog from "../../../components/alertDialog/AlertDialog";
 
 interface TechnicalContentProps {
   page: number;
@@ -21,9 +22,10 @@ interface TechnicalContentProps {
 }
 
 export default function TechnicalContent({ page, setStatus }: TechnicalContentProps) {
-  const [latex, setLatex] = React.useState(TECHNICAL);
   const [isOpen, setIsOpen] = React.useState(false);
   const [pdfUrl, setPdfUrl] = React.useState('');
+  const [file, setFile] = useState<File | null>(null);
+
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -41,6 +43,14 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
     setStatus([page, result[count]]);
   }, [setStatus]);
 
+  const handleDialogResponse = response => {
+    if (response === 'continue') {
+      console.log('BUTTON CLICKED 1');
+    } else {
+      console.log('BUTTON CLICKED 2');
+    }
+  }
+
   function openModal() {
     setIsOpen(true);
   }
@@ -48,71 +58,61 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
     setIsOpen(false);
   }
 
-  const latexModal = () => (
-    <Modal open={isOpen}>
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <Card variant="outlined" sx={{ height: '90vh', width: '90vw' }}>
-          <CardHeader
-            action={(
-              <IconButton
-                aria-label="DUMMY"
-                sx={{ '&:hover': { backgroundColor: 'primary.dark' }, ml: 1 }}
-                onClick={() => closeModal()}
-                color="inherit"
-              >
-                <HighlightOffIcon />
-              </IconButton>
-            )}
-            title={<Typography variant="h6">PDF Preview</Typography>}
-          />
-          <CardContent sx={{ height: '90vh', width: '90vw' }}>
-            <object data={pdfUrl} type="application/pdf" width="100%" height="100%">
-              <p>Syntax error or PDF not available </p>
-            </object>
-          </CardContent>
-        </Card>
-      </Box>
-    </Modal>
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setStatus("initial");
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const pdfUploadModal = () => (
+      <Modal open={isOpen}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+          <Card variant="outlined" sx={{ height: '90vh', width: '90vw' }}>
+            <CardHeader
+                title={<Typography variant="h6">Upload PDF</Typography>}
+            />
+            <div>
+              <input id="file" type="file" onChange={handleFileChange} />
+            </div>
+          </Card>
+        </Box>
+      </Modal>
   );
 
-  const updatePreview = (isOpenModal: boolean) => {
-    const tex = [latex].join('\n');
 
-    setPdfUrl(`https://latexonline.cc/compile?text=${encodeURIComponent(tex)}`);
-    if (isOpenModal) openModal();
-  };
 
-  const setTheLatex = (e: string) => {
-    setLatex(e);
-    updatePreview(false);
-  };
+  const func = () => {
+    console.log('BUTTON CLICKED');
+    openModal();
+  }
 
   return (
     <>
-      {latexModal()}
+      {/*{pdfUploadModal()}*/}
+      <UploadPdfAlertDialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          onDialogResponse={handleDialogResponse}
+      />
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>
           <Grid container p={5} spacing={5} direction="row" justifyContent="space-evenly">
             <Grid item xs={6}>
               <Grid container direction="column" alignItems="left">
-                <Typography variant="h5">LaTeX Input</Typography>
+                <Typography variant="h5">Upload PDF</Typography>
                 <LatexEntry
-                  value={latex}
-                  setValue={(e: string) => {
-                    setTheLatex(e);
-                  }}
                   // eslint-disable-next-line react/jsx-no-bind
                   setModal={openModal}
                 />
                 <Grid container direction="row" justifyContent="space-between">
-                  {/* <PreviewPdfButton onClick={()=>updatePreview(true)} /> */}
-                  <UploadPdfButton />
+                  <UploadPdfButton func={func} />
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <Box m={1}>
-                <Typography variant="h5">LaTeX Preview</Typography>
+                <Typography variant="h5">Preview Uploaded PDF</Typography>
                 {/* TODO : Need React version of this <Latex>{latex}</Latex>  */}
               </Box>
             </Grid>
