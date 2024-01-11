@@ -1,11 +1,27 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Grid } from '@mui/material';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import {
+  Button,
+  ButtonColorTypes,
+  ButtonVariantTypes,
+  DropDown,
+  NumberEntry,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import InfoPanel from '../../components/infoPanel/infoPanel';
 import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
+
+// TODO : Cypress Testing
+// TODO : Documentation
+// TODO : Improved validation
+// TODO : Add functionality
+// TODO : Combine Bandwidth & Spectral Resolution ( SensCalc )
+
+const XS_TOP = 5;
+const XS_BOTTOM = 5;
 
 export const HELP_ARRAY = {
   title: 'ARRAY TITLE',
@@ -97,44 +113,60 @@ export const HELP_SENSE_VALUE = {
   description: 'SENSE VALUE DESCRIPTION',
   additional: ''
 };
-export const HELP_UNITS = {
-  title: 'UNITS TITLE',
-  description: 'UNITS DESCRIPTION',
+export const HELP_FREQUENCY_UNITS = {
+  title: 'FREQUENCY UNITS TITLE',
+  description: 'FREQUENCY UNITS DESCRIPTION',
   additional: ''
+};
+export const HELP_CONTINUUM_BANDWIDTH = {
+  title: 'CONTINUUM BANDWIDTH TITLE',
+  description: 'CONTINUUM BANDWIDTH DESCRIPTION',
+  additional: ''
+};
+export const HELP_CONTINUUM_UNITS = {
+  title: 'CONTINUUM UNITS TITLE',
+  description: 'CONTINUUM UNITS DESCRIPTION',
+  additional: ''
+};
+export const HELP_SUB_BANDS = {
+  title: 'SUB-BANDS TITLE',
+  description: 'SUB-BANDS DESCRIPTION',
+  additional: 'SUB-BANDS ADDITIONAL'
 };
 
 export default function AddObservation() {
   const navigate = useNavigate();
 
-  const [arrayConfig, setArrayConfig] = React.useState(0);
-  const [subarrayConfig, setSubarrayConfig] = React.useState(0);
-  const [observingBand, setObservingBand] = React.useState(0);
-  const [observationType, setObservationType] = React.useState(0);
+  const [arrayConfig, setArrayConfig] = React.useState(1);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(1);
+  const [observingBand, setObservingBand] = React.useState(1);
+  const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState('');
   const [weather, setWeather] = React.useState('');
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
-  const [imageWeighting, setImageWeighting] = React.useState(0);
-  const [tapering, setTapering] = React.useState(0);
-  const [bandwidth, setBandwidth] = React.useState(0);
+  const [imageWeighting, setImageWeighting] = React.useState(1);
+  const [tapering, setTapering] = React.useState(1);
+  const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState(1);
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState();
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
-  const [units, setUnits] = React.useState(1);
+  const [frequencyUnits, setFrequencyUnits] = React.useState(1);
+  const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
+  const [continuumUnits, setContinuumUnits] = React.useState(1);
+  const [subBands, setSubBands] = React.useState(0);
 
   const [help, setHelp] = React.useState(DEFAULT_HELP);
-
-  const addObservation = () => {
-    navigate('/proposal');
-  };
 
   const checkConfiguration = (e: number) => {
     setArrayConfig(e);
     setSubarrayConfig(e > 0 ? 1 : 0);
   };
+
+  const isContinuum = () => observationType === 1;
 
   const arrayConfigurationField = () => (
     <DropDown
@@ -168,6 +200,18 @@ export default function AddObservation() {
     );
   };
 
+  const arrayField = () => (
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={3}>
+        {arrayConfigurationField()}
+      </Grid>
+      <Grid item xs={1} />
+      <Grid item xs={7}>
+        {subarrayConfigurationField()}
+      </Grid>
+    </Grid>
+  );
+
   const observationTypeField = () => (
     <DropDown
       options={OBSERVATION.ObservationType}
@@ -181,7 +225,7 @@ export default function AddObservation() {
 
   const observingBandField = () => {
     const getOptions = () => {
-      if (arrayConfig && OBSERVATION.array[arrayConfig - 1].band) {
+      if (OBSERVATION.array[arrayConfig - 1].band) {
         return OBSERVATION.array[arrayConfig - 1].band;
       }
       return [{ label: 'Not applicable', value: 0 }];
@@ -243,7 +287,7 @@ export default function AddObservation() {
 
   const robustField = () => {
     const getOptions = () => {
-      if (arrayConfig && imageWeighting === 2) {
+      if (imageWeighting === 2) {
         return OBSERVATION.array[arrayConfig - 1].robust;
       }
       return [{ label: '', value: 0 }];
@@ -252,7 +296,6 @@ export default function AddObservation() {
     return (
       <DropDown
         options={getOptions()}
-        disabled={!arrayConfig || imageWeighting !== 2}
         testId="robust"
         value={robust}
         setValue={setRobust}
@@ -301,14 +344,16 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="suppliedType"
-        value={suppliedType}
-        setValue={setSuppliedType}
-        label=""
-        onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
-      />
+      <Box pt={1}>
+        <DropDown
+          options={getOptions()}
+          testId="suppliedType"
+          value={suppliedType}
+          setValue={setSuppliedType}
+          label=""
+          onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
+        />
+      </Box>
     );
   };
 
@@ -316,29 +361,50 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="suppliedUnits"
-        value={suppliedUnits}
-        setValue={setSuppliedUnits}
-        label=""
-        onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
-      />
+      <Box pt={1}>
+        <DropDown
+          options={getOptions()}
+          testId="suppliedUnits"
+          value={suppliedUnits}
+          setValue={setSuppliedUnits}
+          label=""
+          onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
+        />
+      </Box>
     );
   };
 
-  const unitsField = () => {
+  const frequencyUnitsField = () => {
     const getOptions = () => OBSERVATION.Units;
 
     return (
-      <DropDown
-        options={getOptions()}
-        testId="units2"
-        value={units}
-        setValue={setUnits}
-        label=""
-        onFocus={() => setHelp(HELP_UNITS)}
-      />
+      <Box pt={3}>
+        <DropDown
+          options={getOptions()}
+          testId="frequencyUnits"
+          value={frequencyUnits}
+          setValue={setFrequencyUnits}
+          label=""
+          onFocus={() => setHelp(HELP_FREQUENCY_UNITS)}
+        />
+      </Box>
+    );
+  };
+
+  const continuumUnitsField = () => {
+    const getOptions = () => OBSERVATION.Units;
+
+    return (
+      <Box pt={3}>
+        <DropDown
+          options={getOptions()}
+          testId="continuumUnits"
+          value={continuumUnits}
+          setValue={setContinuumUnits}
+          label=""
+          onFocus={() => setHelp(HELP_CONTINUUM_UNITS)}
+        />
+      </Box>
     );
   };
 
@@ -353,7 +419,7 @@ export default function AddObservation() {
   );
 
   const suppliedField = () => (
-    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={4}>
         {suppliedTypeField()}
       </Grid>
@@ -396,6 +462,44 @@ export default function AddObservation() {
     />
   );
 
+  const subBandsField = () => {
+    const [error, setError] = React.useState('');
+    const validate = e => {
+      if (e < 0 || e > 32) {
+        setError('Value must be in the range 0 - 32 inclusive');
+      } else {
+        setError('');
+      }
+      setSubBands(e);
+    };
+
+    return (
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      <>
+        {isContinuum() && (
+          <NumberEntry
+            label="Number of sub-bands"
+            testId="subBands"
+            value={subBands}
+            setValue={validate}
+            onFocus={() => setHelp(HELP_SUB_BANDS)}
+            errorText={error}
+          />
+        )}
+      </>
+    );
+  };
+
+  const continuumBandwidthValueField = () => (
+    <TextEntry
+      label="Continuum Bandwidth"
+      testId="continuumBandwidth"
+      value={continuumBandwidth}
+      setValue={setContinuumBandwidth}
+      onFocus={() => setHelp(HELP_CONTINUUM_BANDWIDTH)}
+    />
+  );
+
   const effectiveResolutionField = () => (
     <TextEntry
       label="Effective Resolution"
@@ -407,15 +511,75 @@ export default function AddObservation() {
   );
 
   const centralFrequencyField = () => (
-    <Grid gap={0} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={8}>
         {frequencyField()}
       </Grid>
       <Grid item xs={4}>
-        {unitsField()}
+        {frequencyUnitsField()}
       </Grid>
     </Grid>
   );
+
+  const continuumBandwidthField = () => (
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={8}>
+        {continuumBandwidthValueField()}
+      </Grid>
+      <Grid item xs={4}>
+        {continuumUnitsField()}
+      </Grid>
+    </Grid>
+  );
+
+  const pageFooter = () => {
+    const getIcon = () => <AddIcon />;
+
+    const disabled = () => {
+      // TODO : Extend so that all options are covered
+      if (!elevation || !weather || !frequency || !effective) {
+        return true;
+      }
+      if (isContinuum && !continuumBandwidth) {
+        return true;
+      }
+      return false;
+    };
+
+    const buttonClicked = () => {
+      navigate('/proposal');
+    };
+
+    return (
+      <Paper
+        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        elevation={0}
+      >
+        <Grid
+          p={1}
+          container
+          direction="row"
+          alignItems="space-between"
+          justifyContent="space-between"
+        >
+          <Grid item />
+          <Grid item />
+          <Grid item>
+            <Button
+              ariaDescription="add Button"
+              color={ButtonColorTypes.Secondary}
+              disabled={disabled()}
+              icon={getIcon()}
+              label="Add"
+              testId="addButton"
+              onClick={buttonClicked}
+              variant={ButtonVariantTypes.Contained}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+  };
 
   const helpPanel = () => (
     <InfoPanel title={help.title} description={help.description} additional={help.additional} />
@@ -436,50 +600,82 @@ export default function AddObservation() {
         spacing={1}
       >
         <Grid item xs={9}>
-          <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
-            <Grid item xs={3}>
-              {arrayConfigurationField()}
-              {subarrayConfigurationField()}
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            gap={1}
+            spacing={1}
+            justifyContent="space-evenly"
+          >
+            <Grid item xs={XS_TOP}>
+              {arrayField()}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={XS_TOP}>
               {elevationField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
+            <Grid item xs={XS_TOP} />
           </Grid>
           <Card variant="outlined">
-            <Grid
-              gap={1}
-              spacing={1}
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="space-evenly"
-            >
-              <Grid item xs={5}>
-                {observationTypeField()}
-                {suppliedField()}
-                {centralFrequencyField()}
-                {bandwidthField()}
-                {spectralResolutionField()}
-                {spectralAveragingField()}
-                {effectiveResolutionField()}
+            <CardContent>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                gap={1}
+                justifyContent="space-evenly"
+              >
+                <Grid item xs={XS_BOTTOM}>
+                  {observationTypeField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {suppliedField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {centralFrequencyField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {isContinuum() && continuumBandwidthField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {bandwidthField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {spectralResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {spectralAveragingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {effectiveResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {taperingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {subBandsField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {imageWeightingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {imageWeighting === 2 && robustField()}
+                </Grid>
               </Grid>
-              <Grid item xs={5}>
-                {taperingField()}
-                {imageWeightingField()}
-                {robustField()}
-              </Grid>
-            </Grid>
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={3}>
           {helpPanel()}
         </Grid>
       </Grid>
-      <PageFooter pageNo={-2} buttonFunc={addObservation} />
+      {pageFooter()}
     </Grid>
   );
 }

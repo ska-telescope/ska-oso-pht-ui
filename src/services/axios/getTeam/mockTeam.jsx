@@ -44,8 +44,8 @@ let MockTeam = [
   }
 ];
 
-export function setMockTeam(newTeamMember) {
-  MockTeam = [...MockTeam, newTeamMember];
+export function setMockTeam(newTeam) {
+  MockTeam = newTeam;
 }
 
 export function getMockTeam() {

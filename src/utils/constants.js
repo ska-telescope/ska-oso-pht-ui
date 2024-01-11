@@ -216,9 +216,9 @@ export const OBSERVATION = {
         { label: 'AA0.5', value: 1 },
         { label: 'AA1', value: 2 },
         { label: 'AA2', value: 3 },
-        { label: 'AA* (15-m antennas only)', value: 4 },
-        { label: 'AA4 (15-m antennas only)', value: 5 },
-        { label: 'Custom', value: 6 }
+        { label: 'AA* (15-m antennas only)', value: 9 },
+        { label: 'AA4 (15-m antennas only)', value: 10 },
+        { label: 'Custom', value: 20 }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -264,7 +264,7 @@ export const OBSERVATION = {
         { label: 'AA* (core only)', value: 6 },
         { label: 'AA4', value: 7 },
         { label: 'AA4 (core only)', value: 8 },
-        { label: 'Custom', value: 9 }
+        { label: 'Custom', value: 20 }
       ],
       robust: [{ label: 'n/a', value: 1 }],
       band: null,
@@ -304,10 +304,10 @@ export const OBSERVATION = {
     { label: '2', value: 2 },
     { label: '3', value: 3 },
     { label: '4', value: 4 },
-    { label: '6', value: 5 },
-    { label: '8', value: 6 },
-    { label: '12', value: 7 },
-    { label: '24', value: 8 }
+    { label: '6', value: 6 },
+    { label: '8', value: 8 },
+    { label: '12', value: 12 },
+    { label: '24', value: 24 }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },
@@ -497,18 +497,7 @@ export const TEXT_ENTRY_PARAMS = {
       'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
     PATTERN: /^[a-zA-Z0-9\s\-_.,!"'/]*$/
   },
-  EMPTY: {
-    MAX_LENGTH: 50,
-    ERROR_TEXT: 'Please do not leave empty',
-    // eslint-disable-next-line no-useless-escape
-    PATTERN: /^.{1,}$/
-  },
   EMAIL: {
-    MAX_LENGTH: 25,
-    ERROR_TEXT: 'Invalid input: please enter a valid email address.',
-    PATTERN: /^[a-zA-Z0-9\-_.@]*$/
-  },
-  EMAIL_STRICT: {
     MAX_LENGTH: 25,
     ERROR_TEXT: 'Please enter a valid email address.',
     // eslint-disable-next-line no-useless-escape

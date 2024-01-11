@@ -18,6 +18,8 @@ interface InfoPanelProps {
   additional?: string;
   sensCalc?: Boolean;
   maxWidth?: number;
+  testId?: string;
+  detailLines?: number;
 }
 
 export default function InfoPanel({
@@ -25,7 +27,9 @@ export default function InfoPanel({
   description,
   additional = '',
   sensCalc = false,
-  maxWidth = 400
+  maxWidth = 400,
+  testId,
+  detailLines = 5
 }: InfoPanelProps) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -45,17 +49,27 @@ export default function InfoPanel({
   };
 
   return (
-    <Card variant="outlined" sx={{ maxWidth }}>
+    <Card variant="outlined" sx={{ maxWidth }} data-testid={testId}>
       <CardHeader
-        title={<Typography variant="body2">{title}</Typography>}
+        title={<Typography variant="button">{title}</Typography>}
         action={getIcon() !== null && <IconButton aria-label="settings">{getIcon()}</IconButton>}
       />
-      <CardContent>
-        <Typography variant="caption">{description}</Typography>
+      <CardContent sx={{ height: `${detailLines * 26}px` }}>
+        <Typography
+          variant="caption"
+          sx={{
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: detailLines
+          }}
+        >
+          {description}
+        </Typography>
       </CardContent>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography variant="caption">{additional}</Typography>
+          <Typography>{additional}</Typography>
         </CardContent>
       </Collapse>
     </Card>

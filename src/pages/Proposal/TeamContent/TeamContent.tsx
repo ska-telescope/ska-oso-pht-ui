@@ -1,8 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
+import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -11,14 +10,6 @@ import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteBu
 import { DEFAULT_HELP, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
 import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
-
-/*
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  tabValue: number;
-}
-*/
 
 export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
@@ -34,45 +25,120 @@ interface TeamContentProps {
   setStatus: Function;
 }
 
+export const HELP_FIRSTNAME = {
+  title: 'Help first name',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_LASTNAME = {
+  title: 'Help last name',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_EMAIL = {
+  title: 'Help email',
+  description: 'Field sensitive help',
+  additional: ''
+};
+export const HELP_PHD = {
+  title: 'Help PhD',
+  description: 'Field sensitive help',
+  additional: ''
+};
+
 export default function TeamContent({ page, setStatus }: TeamContentProps) {
-  const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [phdThesis, setPhdThesid] = React.useState(true);
-  const [help] = React.useState(DEFAULT_HELP);
+  const [phdThesis, setPhdThesis] = React.useState(false);
+  const [help, setHelp] = React.useState(DEFAULT_HELP);
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
   const [errorTextLastName, setErrorTextLastName] = React.useState('');
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
+
+  const [validFistNameState, setValidFistNameState] = React.useState(false);
+  const [validLastNameState, setValidLastNameState] = React.useState(false);
+  const [validEmailState, setValidEmailState] = React.useState(false);
+  const [invalidFormState, setInvalidFormState] = React.useState(true);
 
   // to pass form state to TeamInviteButton
   const formValues = {
     firstName: {
       value: firstName,
-      setValue: setErrorTextFirstName,
-      errorText: errorTextFirstName,
-      setErrorText: setErrorTextFirstName
+      setValue: setFirstName
     },
     lastName: {
       value: lastName,
-      setValue: setErrorTextLastName,
-      errorText: errorTextLastName,
-      setErrorText: setErrorTextLastName
+      setValue: setLastName
     },
     email: {
       value: email,
-      setValue: setEmail,
-      errorText: errorTextEmail,
-      setErrorText: setErrorTextEmail
+      setValue: setEmail
     },
     phdThesis: {
-      phdThesis
+      phdThesis,
+      setValue: setPhdThesis
     }
   };
 
+  function formValidation() {
+    let count = 0;
+
+    // first name
+    let emptyField = firstName === '';
+    let isValid = !emptyField;
+    setValidFistNameState(isValid);
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        firstName,
+        setFirstName,
+        setErrorTextFirstName,
+        'DEFAULT'
+      );
+      setValidFistNameState(isValid);
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextFirstName(''); // don't display error when empty
+    }
+
+    // last name
+    emptyField = lastName === '';
+    isValid = !emptyField;
+    setValidLastNameState(isValid);
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        lastName,
+        setLastName,
+        setErrorTextLastName,
+        'DEFAULT'
+      );
+      setValidLastNameState(isValid);
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextLastName('');
+    }
+
+    // email
+    emptyField = email === '';
+    isValid = !emptyField;
+    setValidEmailState(isValid);
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
+      setValidEmailState(isValid);
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextEmail('');
+    }
+
+    return count;
+  }
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhdThesid(event.target.checked);
+    setPhdThesis(event.target.checked);
   };
 
   React.useEffect(() => {
@@ -90,6 +156,11 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
 
     setStatus([page, result[count]]);
   }, [setStatus]);
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
+    setInvalidFormState(invalidForm);
+  });
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -125,27 +196,6 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     // TODO
   };
 
-  /*
-  function CustomTabPanel(props: TabPanelProps) {
-    const { children, tabValue, index } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-      >
-        {tabValue === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-  */
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -156,18 +206,14 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
   const panel1 = () => (
     <Grid item>
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
+        <Grid item xs={5}>
           <Box component="form">
             <TextEntry
               label="First Name"
               testId="firstName"
               value={firstName}
-              setValue={(firstNameVal: string) =>
-                helpers.validate.validateTextEntry(
-                  firstNameVal,
-                  setFirstName,
-                  setErrorTextFirstName
-                )}
+              setValue={setFirstName}
+              onFocus={() => setHelp(HELP_FIRSTNAME)}
               disabled={false}
               errorText={errorTextFirstName}
             />
@@ -175,48 +221,39 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
               label="Last Name"
               testId="lastName"
               value={lastName}
-              setValue={(lastNameVal: string) =>
-                helpers.validate.validateTextEntry(lastNameVal, setLastName, setErrorTextLastName)}
+              setValue={setLastName}
+              onFocus={() => setHelp(HELP_LASTNAME)}
               errorText={errorTextLastName}
             />
             <TextEntry
               label="Email"
               testId="email"
               value={email}
-              setValue={(emailVal: string) =>
-                helpers.validate.validateTextEntry(emailVal, setEmail, setErrorTextEmail, 'EMAIL')}
+              setValue={setEmail}
               errorText={errorTextEmail}
+              onFocus={() => setHelp(HELP_EMAIL)}
             />
-            <FormControlLabel
-              value="phdThesis"
-              control={(
-                <Checkbox
-                  sx={{
-                    '&.Mui-checked': {
-                      color: theme.palette.secondary.main
-                    }
-                  }}
-                />
-              )}
+            <TickBox
               label="PhD Thesis"
-              labelPlacement="end"
+              testId="PhDCheckbox"
               checked={phdThesis}
               onChange={handleCheckboxChange}
-              sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+              onFocus={() => setHelp(HELP_PHD)}
             />
           </Box>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           <InfoPanel
             title={help.title}
             description={help.description}
             additional={help.additional}
+            testId="infoPanelId"
           />
         </Grid>
       </Grid>
 
       <Grid item xs={3} ml={3}>
-        <TeamInviteButton formValues={formValues} />
+        <TeamInviteButton disabled={invalidFormState} formValues={formValues} />
       </Grid>
     </Grid>
   );
@@ -245,7 +282,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={5} xs={11}>
+        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={6} xs={11}>
           <Box sx={{ width: '100%' }}>
             <Box>
               <Tabs
