@@ -8,3 +8,4 @@ Pages
    LandingPage
    TitlePage
    GeneralPage
+   TeamPage
