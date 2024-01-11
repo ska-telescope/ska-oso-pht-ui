@@ -287,7 +287,7 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
             testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={5} xs={11}>
+        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={6} xs={11}>
           <Box sx={{ width: '100%' }}>
             <Box>
               <Tabs
