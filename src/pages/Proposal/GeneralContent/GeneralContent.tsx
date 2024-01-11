@@ -2,15 +2,9 @@ import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import InfoPanel from '../../../components/infoPanel/infoPanel';
-import {
-  DEFAULT_HELP,
-  GENERAL,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL
-} from '../../../utils/constants';
-
-// TODO : Migrate the help to the parent so it is more dynamic
+import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import { Help } from '../../../services/types/help';
+import { Proposal } from '../../../services/types/proposal';
 
 export const HELP_ABSTRACT = {
   title: 'ABSTRACT TITLE',
@@ -29,16 +23,22 @@ export const HELP_SUBCATEGORY = {
 };
 
 interface GeneralContentProps {
+  help: Help;
   page: number;
+  setHelp: Function;
+  setProposal: Function;
   setStatus: Function;
+  theProposal: Proposal;
 }
 
-export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
-  const [abstract, setAbstract] = React.useState('');
-  const [category, setCategory] = React.useState(0);
-  const [subCategory, setSubCategory] = React.useState(0);
-  const [help, setHelp] = React.useState(DEFAULT_HELP);
-
+export default function GeneralContent({
+  help,
+  page,
+  setHelp,
+  setProposal,
+  setStatus,
+  theProposal
+}: GeneralContentProps) {
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -46,29 +46,26 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
-    if (abstract?.length > 0) {
+    if (theProposal?.abstract?.length > 0) {
       count++;
     }
-    if (category && category > 0) {
+    if (theProposal?.category > 0) {
       count++;
     }
-    if (subCategory && subCategory > 0) {
+    if (theProposal?.subCategory > 0) {
       count++;
     }
 
     setStatus([page, result[count]]);
-  }, [setStatus, abstract, category, subCategory]);
+  }, [setStatus, theProposal]);
 
-  const checkCategory = e => {
-    setCategory(e);
-    if (e > 0 && GENERAL.ScienceCategory[e - 1].subCategory) {
-      setSubCategory(1); // Ensure a value is initially selected
-    }
+  const checkCategory = (id: number) => {
+    setProposal({ ...theProposal, category: id, subCategory: 1 });
   };
 
   const getSubCategoryOptions = () => {
-    if (category) {
-      return GENERAL.ScienceCategory[category - 1].subCategory;
+    if (theProposal.category) {
+      return GENERAL.ScienceCategory[theProposal.category - 1].subCategory;
     }
     return [{ label: '', value: 0 }];
   };
@@ -83,8 +80,8 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
           label=""
           testId="abstractId"
           rows={10}
-          value={abstract}
-          setValue={setAbstract}
+          value={theProposal.abstract}
+          setValue={e => setProposal({ ...theProposal, abstract: e })}
           onFocus={() => setHelp(HELP_ABSTRACT)}
           helperText="Please enter your abstract information"
         />
@@ -108,13 +105,13 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
   const categoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={4}>
-        <Typography>Scientific Category</Typography>
+        <Typography>Scientific category</Typography>
       </Grid>
       <Grid item xs={8}>
         <DropDown
           options={GENERAL.ScienceCategory}
           testId="categoryId"
-          value={category}
+          value={theProposal.category}
           setValue={checkCategory}
           label=""
           onFocus={() => setHelp(HELP_CATEGORY)}
@@ -131,10 +128,13 @@ export default function GeneralContent({ page, setStatus }: GeneralContentProps)
       <Grid item xs={6}>
         <DropDown
           options={getSubCategoryOptions()}
-          disabled={!category || GENERAL.ScienceCategory[category - 1].subCategory.length < 2}
+          disabled={
+            theProposal.category < 1 ||
+            GENERAL.ScienceCategory[theProposal.category - 1].subCategory.length < 2
+          }
           testId="subCategoryId"
-          value={subCategory}
-          setValue={setSubCategory}
+          value={theProposal.subCategory}
+          setValue={(e: number) => setProposal({ ...theProposal, subCategory: e })}
           label=""
           onFocus={() => setHelp(HELP_SUBCATEGORY)}
         />
