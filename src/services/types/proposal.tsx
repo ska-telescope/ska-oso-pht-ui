@@ -3,4 +3,8 @@ export type Proposal = {
   title: string;
   proposalType: number;
   proposalSubType: number;
+  // General
+  abstract: string;
+  category: number;
+  subCategory: number;
 };
