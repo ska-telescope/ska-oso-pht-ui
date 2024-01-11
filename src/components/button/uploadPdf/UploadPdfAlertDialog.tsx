@@ -6,9 +6,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid, Typography } from '@mui/material';
 import { ButtonColorTypes, ButtonVariantTypes, Button } from '@ska-telescope/ska-gui-components';
+import {useState} from "react";
 
 export default function UploadPdfAlertDialog(props) {
   const { open, onClose, onDialogResponse } = props;
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<
+      "initial" | "uploading" | "success" | "fail"
+  >("initial");
 
   const handleContinue = () => {
     onDialogResponse('continue');
@@ -18,6 +23,13 @@ export default function UploadPdfAlertDialog(props) {
   const handleCancel = () => {
     onDialogResponse('cancel');
     onClose();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setStatus("initial");
+      setFile(e.target.files[0]);
+    }
   };
 
   return (
@@ -35,6 +47,9 @@ export default function UploadPdfAlertDialog(props) {
             You are about to upload a PDF document to your proposal.
           </Typography>
         </DialogContentText>
+        <div>
+          <input id="file" type="file" onChange={handleFileChange} />
+        </div>
       </DialogContent>
       <DialogActions sx={{ p: '24px' }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">

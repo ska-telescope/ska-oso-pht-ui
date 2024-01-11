@@ -58,30 +58,6 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
     setIsOpen(false);
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setStatus("initial");
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const pdfUploadModal = () => (
-      <Modal open={isOpen}>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-          <Card variant="outlined" sx={{ height: '90vh', width: '90vw' }}>
-            <CardHeader
-                title={<Typography variant="h6">Upload PDF</Typography>}
-            />
-            <div>
-              <input id="file" type="file" onChange={handleFileChange} />
-            </div>
-          </Card>
-        </Box>
-      </Modal>
-  );
-
-
-
   const func = () => {
     console.log('BUTTON CLICKED');
     openModal();
@@ -89,7 +65,6 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
 
   return (
     <>
-      {/*{pdfUploadModal()}*/}
       <UploadPdfAlertDialog
           open={isOpen}
           onClose={() => setIsOpen(false)}
