@@ -1,6 +1,6 @@
 export type Proposal = {
   id: number;
-  name: string;
+  title: string;
   proposalType: number;
   proposalSubType: number;
 };
