@@ -9,10 +9,6 @@ const MockProposal = {
   title: 'MOCK PROPOSAL',
   proposalType: 1,
   proposalSubType: 5,
-  // General
-  abstract: '',
-  category: 1,
-  subCategory: 1,
   // Team
   team: [
     {
@@ -50,6 +46,41 @@ const MockProposal = {
       Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
       Actions: null,
       PI: false
+    }
+  ],
+  // General
+  abstract: '',
+  category: 1,
+  subCategory: 1,
+  // Target
+  targetOption: 1,
+  targets: [
+    {
+      id: 1,
+      Name: 'Target 1',
+      RA: '01:00:00',
+      Dec: '00:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
+    },
+    {
+      id: 2,
+      Name: 'Target 2',
+      RA: '03:00:00',
+      Dec: '-10:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
+    },
+    {
+      id: 3,
+      Name: 'Target 3',
+      RA: '05:30:00',
+      Dec: '-10:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
     }
   ]
 };

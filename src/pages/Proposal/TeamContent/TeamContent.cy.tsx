@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import theme from '../../../services/theme/theme';
-import TeamContent, { HELP_EMAIL, HELP_FIRST_NAME, HELP_LAST_NAME, HELP_PHD } from './TeamContent';
+import TeamContent from './TeamContent';
 import {
   DEFAULT_HELP,
   TEAM,

@@ -120,7 +120,7 @@ export default function TeamContent({
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item md={6} xs={11}>
+        <Grid item md={5} xs={11}>
           <DataGridWrapper
             rows={proposal.team}
             extendedColumns={extendedColumns}

@@ -1,14 +1,15 @@
-import { TeamMember } from './teamMember';
-
 export type Proposal = {
   id: number;
   title: string;
   proposalType: number;
   proposalSubType: number;
+  // Team
+  team: [];
   // General
   abstract: string;
   category: number;
   subCategory: number;
-  // Team
-  team: TeamMember[];
+  // Target
+  targetOption: number;
+  targets: [];
 };

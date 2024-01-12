@@ -2,11 +2,12 @@ import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
 
-export default function AddTargetButton() {
-  const ClickFunction = () => {
-    // TODO
-  };
+interface AddTargetButtonProps {
+  disabled: boolean;
+  onClick: Function;
+}
 
+export default function AddTargetButton({ disabled, onClick }: AddTargetButtonProps) {
   const title = 'Add Target';
 
   return (
@@ -15,9 +16,10 @@ export default function AddTargetButton() {
       color={ButtonColorTypes.Secondary}
       icon={<AddIcon />}
       label={title}
-      onClick={ClickFunction}
+      onClick={onClick}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
+      disabled={disabled}
     />
   );
 }
