@@ -7,7 +7,7 @@ import { Box, Grid, Tab, Tabs } from '@mui/material';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import { Help } from '../../../../services/types/help';
 import { Proposal } from '../../../../services/types/proposal';
-import FileImport from './FileImport/FileImport';
+import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
 
@@ -92,7 +92,7 @@ export default function TargetListSection({
                 setProposal={setProposal}
               />
             )}
-            {value === 1 && <FileImport />}
+            {value === 1 && <TargetFileImport />}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Box>

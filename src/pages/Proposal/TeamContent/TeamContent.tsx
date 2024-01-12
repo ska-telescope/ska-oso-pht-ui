@@ -9,7 +9,7 @@ import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 // import { TeamMember } from '../../../services/types/teamMember';
 import MemberInvite from './MemberInvite/MemberInvite';
-import FileImport from './FileImport/FileImport';
+import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 
 // TODO : Either this should be moved to a component of export removed
@@ -166,7 +166,7 @@ export default function TeamContent({
                 setProposal={setProposal}
               />
             )}
-            {value === 1 && <FileImport />}
+            {value === 1 && <TeamFileImport />}
             {value === 2 && <MemberSearch />}
           </Box>
         </Grid>
