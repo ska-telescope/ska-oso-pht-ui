@@ -3,48 +3,37 @@
 /* eslint-disable react/no-array-index-key */
 
 import React from 'react';
-import { Box, Grid, Tab, Tabs, Typography, TextField } from '@mui/material';
+import { Box, Grid, Tab, Tabs } from '@mui/material';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
-import InfoPanel from '../../../../components/infoPanel/infoPanel';
-import { TARGETS } from '../../../../utils/constants';
+import { Help } from '../../../../services/types/help';
+import { Proposal } from '../../../../services/types/proposal';
+import TargetFileImport from './TargetFileImport/TargetFileImport';
+import SpatialImaging from './SpatialImaging/SpatialImaging';
+import AddTarget from './AddTarget/AddTarget';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+interface TargetListSectionProps {
+  help: Help;
+  proposal: Proposal;
+  setHelp: Function;
+  setProposal: Function;
 }
 
-export default function TargetListSection() {
+export default function TargetListSection({
+  help,
+  proposal,
+  setHelp,
+  setProposal
+}: TargetListSectionProps) {
   const columns = [
     { field: 'Name', headerName: 'Name', width: 200 },
-    { field: 'RA', headerName: 'Right Ascension', width: 200 },
-    { field: 'Dec', headerName: 'Declination', width: 300 }
+    { field: 'RA', headerName: 'Right Ascension', width: 150 },
+    { field: 'Dec', headerName: 'Declination', width: 150 }
   ];
   const extendedColumns = structuredClone(columns);
 
   const ClickFunction = () => {
     // TODO
   };
-
-  function CustomTabPanel(props: TabPanelProps) {
-    const { children, value, index } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
 
   function a11yProps(index: number) {
     return {
@@ -59,75 +48,53 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const [inputs] = React.useState(
-    TARGETS.ListOfTargets.AddTarget.map((value: string) => ({ label: value }))
-  );
-
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-      <Grid item>
+      <Grid item md={5} xs={11}>
         <DataGridWrapper
-          rows={TARGETS.ListOfTargets.TargetItems}
+          rows={proposal.targets}
           extendedColumns={extendedColumns}
           height={400}
           rowClick={ClickFunction}
         />
       </Grid>
-      <Grid item>
+      <Grid item md={6} xs={11}>
         <Box sx={{ width: '100%', border: '1px solid grey', borderTop: 'none' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'grey' }}>
-            <Tabs
-              textColor="secondary"
-              indicatorColor="secondary"
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
-              <Tab label="Import From File" {...a11yProps(1)} sx={{ border: '1px solid grey' }} />
-              <Tab label="Spatial Imaging" {...a11yProps(2)} sx={{ border: '1px solid grey' }} />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={0}>
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="space-evenly"
-              spacing={2}
-            >
-              <Grid item>
-                <Grid
-                  container
-                  direction="column"
-                  alignItems="center"
-                  justifyContent="space-evenly"
-                >
-                  {inputs.map((input: { label: string }, index: React.Key | null | undefined) => (
-                    <Grid item key={index}>
-                      <TextField id="standard-basic" variant="standard" label={input.label} />
-                    </Grid>
-                  ))}
-                  <Grid mt={2} item>
-                    <AddTargetButton />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <InfoPanel
-                  title="FIELD TITLE HERE"
-                  description="FIELD DESCRIPTION IN HERE"
-                  additional="ADDITIONAL"
+          <Box>
+            <Box>
+              <Tabs
+                textColor="secondary"
+                indicatorColor="secondary"
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
+                <Tab
+                  label="Import From File"
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey' }}
+                  disabled
                 />
-              </Grid>
-            </Grid>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <p>To be implemented at a later date</p>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}>
-            <p>To be implemented at a later date</p>
-          </CustomTabPanel>
+                <Tab
+                  label="Spatial Imaging"
+                  {...a11yProps(2)}
+                  sx={{ border: '1px solid grey' }}
+                  disabled
+                />
+              </Tabs>
+            </Box>
+            {value === 0 && (
+              <AddTarget
+                help={help}
+                proposal={proposal}
+                setHelp={setHelp}
+                setProposal={setProposal}
+              />
+            )}
+            {value === 1 && <TargetFileImport />}
+            {value === 2 && <SpatialImaging />}
+          </Box>
         </Box>
       </Grid>
     </Grid>

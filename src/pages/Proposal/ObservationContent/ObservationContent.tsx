@@ -24,14 +24,8 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    const count = 0;
-
-    // TODO : Increment the count for every passing element of the page.
-    // This is then used to take the status from the result array
-    // In the default provided, the count must be 2 for the page to pass.
-
-    // See titleContent page for working example
-
+    let count = OBSERVATION.list.length > 0 ? 1 : 0;
+    count += TARGETS.ListOfTargets.TargetItems.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [setStatus]);
 

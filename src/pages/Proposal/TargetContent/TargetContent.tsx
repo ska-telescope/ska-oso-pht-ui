@@ -5,51 +5,67 @@ import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../../utils/constants';
+import { Help } from '../../../services/types/help';
+import { Proposal } from '../../../services/types/proposal';
 
-const TITLE = ['No specific Target', 'List of Targets', 'Target Mosaic'];
+const TITLE = ['', 'No specific Target', 'List of Targets', 'Target Mosaic'];
 
 const TOOLTIP = [
-  'We are just going to look up',
+  '',
+  'Current functionality is not yet available',
   'A list of target will be entered and/or imported from file',
-  'Using a tool to create a mosaic of targets'
+  'Current functionality is not yet available'
 ];
 
-interface TargetContentProps {
+interface GeneralContentProps {
+  help: Help;
   page: number;
+  proposal: Proposal;
+  setHelp: Function;
+  setProposal: Function;
   setStatus: Function;
 }
 
-export default function TargetContent({ page, setStatus }: TargetContentProps) {
+export default function TargetContent({
+  help,
+  page,
+  proposal,
+  setHelp,
+  setProposal,
+  setStatus
+}: GeneralContentProps) {
   const theme = useTheme();
-
-  const [selectedCards, setSelectedCards] = React.useState([
-    { index: 0, isSelected: false },
-    { index: 1, isSelected: false },
-    { index: 2, isSelected: false }
-  ]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    const count = 0;
-
-    // TODO : Increment the count for every passing element of the page.
-    // This is then used to take the status from the result array
-    // In the default provided, the count must be 2 for the page to pass.
-
-    // See titleContent page for working example
-
-    setStatus([page, result[count]]);
-  }, [setStatus]);
+    let count = 0;
+    switch (proposal.targetOption) {
+      case 1: {
+        count = 2;
+        setStatus([page, result[count]]);
+        return;
+      }
+      case 2: {
+        count = 1;
+        count += proposal.targets.length ? 1 : 0;
+        setStatus([page, result[count]]);
+        return;
+      }
+      case 3: {
+        count = 2;
+        setStatus([page, result[count]]);
+        return;
+      }
+      default:
+        setStatus([page, result[count]]);
+    }
+  }, [proposal]);
 
   const handleClick = (index: number) => {
-    const updatedSelectedCards = selectedCards.map(card => ({
-      ...card,
-      isSelected: card.index === index
-    }));
-    setSelectedCards(updatedSelectedCards);
+    setProposal({ ...proposal, targetOption: index });
   };
 
   const setCardBG = (isSelected: boolean) =>
@@ -62,8 +78,8 @@ export default function TargetContent({ page, setStatus }: TargetContentProps) {
       <Grid item>
         <Card
           style={{
-            color: setCardFG(selectedCards[occ].isSelected),
-            backgroundColor: setCardBG(selectedCards[occ].isSelected)
+            color: setCardFG(occ === proposal.targetOption),
+            backgroundColor: setCardBG(occ === proposal.targetOption)
           }}
         >
           <CardActionArea onClick={() => handleClick(occ)}>
@@ -90,17 +106,24 @@ export default function TargetContent({ page, setStatus }: TargetContentProps) {
         alignItems="baseline"
         spacing={2}
       >
-        {targetCard(0)}
         {targetCard(1)}
         {targetCard(2)}
+        {targetCard(3)}
       </Grid>
 
       <Grid mt={4} container direction="column" justifyContent="space-between" alignItems="center">
-        <Grid item>{selectedCards[0].isSelected && <TargetNoSpecificSection />}</Grid>
+        <Grid item>{proposal.targetOption === 1 && <TargetNoSpecificSection />}</Grid>
         <Grid item sx={{ width: '100%' }}>
-          {selectedCards[1].isSelected && <TargetListSection />}
+          {proposal.targetOption === 2 && (
+            <TargetListSection
+              help={help}
+              proposal={proposal}
+              setHelp={setHelp}
+              setProposal={setProposal}
+            />
+          )}
         </Grid>
-        <Grid item>{selectedCards[2].isSelected && <TargetMosaicSection />}</Grid>
+        <Grid item>{proposal.targetOption === 3 && <TargetMosaicSection />}</Grid>
       </Grid>
     </Grid>
   );

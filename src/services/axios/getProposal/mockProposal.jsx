@@ -9,47 +9,78 @@ const MockProposal = {
   title: 'MOCK PROPOSAL',
   proposalType: 1,
   proposalSubType: 5,
-  // General
-  abstract: '',
-  category: 1,
-  subCategory: 1,
   // Team
   team: [
     {
       id: 1,
-      FirstName: 'Van Loo',
-      LastName: 'Cheng',
-      Email: 'ask.lop@map.com',
-      Country: 'Lagoon',
-      Affiliation: 'University of Free Town',
-      PHDThesis: false,
-      Status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      Actions: null,
-      PI: false
+      firstName: 'Van Loo',
+      lastName: 'Cheng',
+      email: 'ask.lop@map.com',
+      country: 'Lagoon',
+      affiliation: 'University of Free Town',
+      phdThesis: false,
+      status: TEAM_STATUS_TYPE_OPTIONS.pending,
+      actions: null,
+      pi: false
     },
     {
       id: 2,
-      FirstName: 'Anu',
-      LastName: 'Vijay',
-      Email: 'ask.lop@map.com',
-      Country: 'Ocean',
-      Affiliation: 'University of Free Town',
-      PHDThesis: true,
-      Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      Actions: null,
-      PI: true
+      firstName: 'Anu',
+      lastName: 'Vijay',
+      email: 'ask.lop@map.com',
+      country: 'Ocean',
+      affiliation: 'University of Free Town',
+      phdThesis: true,
+      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+      actions: null,
+      pi: true
     },
     {
       id: 3,
-      FirstName: 'Sady',
-      LastName: 'Field',
-      Email: 'ask.lop@map.com',
-      Country: 'Park',
-      Affiliation: 'University of Virginia',
-      PHDThesis: false,
-      Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      Actions: null,
-      PI: false
+      firstName: 'Sady',
+      lastName: 'Field',
+      email: 'ask.lop@map.com',
+      country: 'Park',
+      affiliation: 'University of Virginia',
+      phdThesis: false,
+      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+      actions: null,
+      pi: false
+    }
+  ],
+  // General
+  abstract: '',
+  category: 1,
+  subCategory: 1,
+  // Target
+  targetOption: 1,
+  targets: [
+    {
+      id: 1,
+      name: 'Target 1',
+      ra: '01:00:00',
+      dec: '00:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
+    },
+    {
+      id: 2,
+      name: 'Target 2',
+      ra: '03:00:00',
+      dec: '-10:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
+    },
+    {
+      id: 3,
+      name: 'Target 3',
+      ra: '05:30:00',
+      dec: '-10:00:00',
+      sc1: '82.48',
+      sc2: '20',
+      sc3: '34'
     }
   ]
 };

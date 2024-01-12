@@ -9,7 +9,7 @@ import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 // import { TeamMember } from '../../../services/types/teamMember';
 import MemberInvite from './MemberInvite/MemberInvite';
-import FileImport from './FileImport/FileImport';
+import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 
 // TODO : Either this should be moved to a component of export removed
@@ -120,7 +120,7 @@ export default function TeamContent({
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item md={6} xs={11}>
+        <Grid item md={5} xs={11}>
           <DataGridWrapper
             rows={proposal.team}
             extendedColumns={extendedColumns}
@@ -166,7 +166,7 @@ export default function TeamContent({
                 setProposal={setProposal}
               />
             )}
-            {value === 1 && <FileImport />}
+            {value === 1 && <TeamFileImport />}
             {value === 2 && <MemberSearch />}
           </Box>
         </Grid>
