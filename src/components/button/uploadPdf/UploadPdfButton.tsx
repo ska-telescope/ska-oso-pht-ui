@@ -18,7 +18,6 @@ export default function UploadPdfButton({ func }: UploadPdfProps) {
       onClick={func}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
-      toolTip="Eventually this will the allow the user to upload a number of PDFs. Finalized usage to be completed"
     />
   );
 }

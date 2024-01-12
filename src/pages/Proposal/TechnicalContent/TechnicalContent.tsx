@@ -46,7 +46,6 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
   }
 
   const func = () => {
-    console.log('BUTTON CLICKED');
     openModal();
   }
 
