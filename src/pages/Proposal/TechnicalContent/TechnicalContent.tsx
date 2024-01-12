@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-  Box,
-  Grid,
-  Typography
-} from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import UploadPdfAlertDialog from "../../../components/button/uploadPdf/UploadPdfAlertDialog";
+import UploadPdfAlertDialog from '../../../components/button/uploadPdf/UploadPdfAlertDialog';
 
 interface TechnicalContentProps {
   page: number;
@@ -39,7 +35,7 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
     } else {
       console.log('BUTTON CLICKED 2');
     }
-  }
+  };
 
   function openModal() {
     setIsOpen(true);
@@ -47,14 +43,14 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
 
   const func = () => {
     openModal();
-  }
+  };
 
   return (
     <>
       <UploadPdfAlertDialog
-          open={isOpen}
-          onClose={() => setIsOpen(false)}
-          onDialogResponse={handleDialogResponse}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        onDialogResponse={handleDialogResponse}
       />
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>

@@ -6,14 +6,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid, Typography } from '@mui/material';
 import { ButtonColorTypes, ButtonVariantTypes, Button } from '@ska-telescope/ska-gui-components';
-import {useState} from "react";
+import { useState } from 'react';
 
 export default function UploadPdfAlertDialog(props) {
   const { open, onClose, onDialogResponse } = props;
   const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<
-      "initial" | "uploading" | "success" | "fail"
-  >("initial");
+  const [status, setStatus] = useState<'initial' | 'uploading' | 'success' | 'fail'>('initial');
 
   const handleClose = () => {
     onDialogResponse('close');
@@ -27,43 +25,44 @@ export default function UploadPdfAlertDialog(props) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setStatus("initial");
+      setStatus('initial');
       setFile(e.target.files[0]);
     }
   };
 
   const handleUpload = async () => {
     if (file) {
-      setStatus("uploading");
+      setStatus('uploading');
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
 
       try {
-       await fetch("https://httpbin.org/post", {
-          method: "POST",
+        await fetch('https://httpbin.org/post', {
+          method: 'POST',
           body: formData
         });
 
-        alert("Upload successful");
-        setStatus("success");
+        alert('Upload successful');
+        setStatus('success');
       } catch (error) {
         alert(error);
-        setStatus("fail");
+        setStatus('fail');
       }
     }
   };
 
   const Result = ({ status }: { status: string }) => {
-    if (status === "success") {
+    if (status === 'success') {
       return <p> File uploaded successfully!</p>;
-    } if (status === "fail") {
+    }
+    if (status === 'fail') {
       return <p>File upload failed!</p>;
-    } if (status === "uploading") {
+    }
+    if (status === 'uploading') {
       return <p>Uploading selected file...</p>;
     }
     return null;
-
   };
 
   return (
@@ -85,9 +84,9 @@ export default function UploadPdfAlertDialog(props) {
           <input id="file" type="file" onChange={handleFileChange} />
         </div>
         {file && (
-            <button onClick={handleUpload} className="submit">
-              Upload a file
-            </button>
+          <button onClick={handleUpload} className="submit">
+            Upload a file
+          </button>
         )}
         <Result status={status} />
       </DialogContent>
