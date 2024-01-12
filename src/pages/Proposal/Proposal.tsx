@@ -81,9 +81,20 @@ export default function Proposal() {
           setStatus={setTheProposalState}
         />
       )}
-      {thePage === 5 && <ObservationContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 5 && (
+        <ObservationContent page={thePage} proposal={proposal} setStatus={setTheProposalState} />
+      )}
       {thePage === 6 && <TechnicalContent page={thePage} setStatus={setTheProposalState} />}
-      {thePage === 7 && <DataContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 7 && (
+        <DataContent
+          help={help}
+          page={thePage}
+          proposal={proposal}
+          setHelp={setHelp}
+          setProposal={setProposal}
+          setStatus={setTheProposalState}
+        />
+      )}
       <PageFooter pageNo={thePage} buttonFunc={setThePage} />
     </>
   );

@@ -1,4 +1,5 @@
 import Target from './Target';
+import Observation from './observation';
 import TeamMember from './teamMember';
 
 export type Proposal = {
@@ -15,4 +16,8 @@ export type Proposal = {
   // Target
   targetOption: number;
   targets: Target[];
+  // Observation
+  observations: Observation[];
+  // data
+  pipeline: string;
 };
