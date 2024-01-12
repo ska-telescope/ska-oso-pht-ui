@@ -3,5 +3,5 @@
 import React from 'react';
 
 export default function TargetNoSpecificSection() {
-  return <h3>Target No Specific Content</h3>;
+  return <h3>Selecting this option indicates ???</h3>;
 }

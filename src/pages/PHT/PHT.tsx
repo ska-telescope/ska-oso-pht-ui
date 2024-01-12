@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry } from '@ska-telescope/ska-gui-components';
-import { EXISTING_PROPOSALS, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton';
@@ -9,6 +9,7 @@ import CloneProposalButton from '../../components/button/cloneProposal/cloneProp
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
 import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
+import MockProposals from '../../services/axios/getProposals/mockProposals';
 
 export default function PHT() {
   /*
@@ -48,7 +49,7 @@ export default function PHT() {
   ];
   const extendedColumns = [...COLUMNS];
 
-  const filteredData = EXISTING_PROPOSALS.filter(
+  const filteredData = MockProposals.filter(
     item =>
       ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
       (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())

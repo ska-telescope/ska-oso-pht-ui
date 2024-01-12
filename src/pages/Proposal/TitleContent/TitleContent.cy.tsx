@@ -15,7 +15,12 @@ describe('<TitleContent />', () => {
         cy.mount(
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <TitleContent page={0} setStatus={cy.stub().as('setTheProposalState')} />
+            <TitleContent
+              page={0}
+              proposal={MockProposal}
+              setProposal={cy.stub().as('setProposal')}
+              setStatus={cy.stub().as('setTheProposalState')}
+            />
           </ThemeProvider>
         );
       });
@@ -27,7 +32,12 @@ describe('<TitleContent />', () => {
       cy.mount(
         <ThemeProvider theme={theme(THEME_LIGHT)}>
           <CssBaseline />
-          <TitleContent page={0} setStatus={cy.stub().as('setTheProposalState')} />
+          <TitleContent
+            page={0}
+            proposal={MockProposal}
+            setProposal={cy.stub().as('setProposal')}
+            setStatus={cy.stub().as('setTheProposalState')}
+          />
         </ThemeProvider>
       );
     });
