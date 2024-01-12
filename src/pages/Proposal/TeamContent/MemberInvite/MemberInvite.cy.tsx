@@ -2,31 +2,34 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import theme from '../../../services/theme/theme';
-import TeamContent, { HELP_EMAIL, HELP_FIRST_NAME, HELP_LAST_NAME, HELP_PHD } from './TeamContent';
+import MockProposal from '../../../../services/axios/getProposal/mockProposal';
+import theme from '../../../../services/theme/theme';
+import MemberInvite, {
+  HELP_EMAIL,
+  HELP_FIRST_NAME,
+  HELP_LAST_NAME,
+  HELP_PHD
+} from './MemberInvite';
 import {
   DEFAULT_HELP,
   TEAM,
   TEAM_STATUS_TYPE_OPTIONS,
   TEXT_ENTRY_PARAMS
-} from '../../../utils/constants';
+} from '../../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<TeamContent />', () => {
+describe('<MemberInvite />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <TeamContent
+          <MemberInvite
             help={DEFAULT_HELP}
-            page={1}
             proposal={MockProposal}
             setHelp={cy.stub().as('setHelp')}
             setProposal={cy.stub().as('setProposal')}
-            setStatus={cy.stub().as('setTheProposalState')}
           />
         </ThemeProvider>
       );
@@ -39,13 +42,11 @@ describe('Content', () => {
     cy.mount(
       <ThemeProvider theme={theme(THEME_LIGHT)}>
         <CssBaseline />
-        <TeamContent
+        <MemberInvite
           help={DEFAULT_HELP}
-          page={1}
           proposal={MockProposal}
           setHelp={cy.stub().as('setHelp')}
           setProposal={cy.stub().as('setProposal')}
-          setStatus={cy.stub().as('setTheProposalState')}
         />
       </ThemeProvider>
     );
@@ -229,8 +230,6 @@ describe('Content', () => {
   });
 
   describe('Contextual help', () => {
-    /*
-    // contextual help working when serving the app but notwith cypress: test set up issue? to investigate
     it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
@@ -263,13 +262,9 @@ describe('Content', () => {
           expect(helpTitle).to.equal(HELP_PHD.title);
         });
     });
-    */
   });
 
   describe('Add team member to data table', () => {
-    /*
-    TO DO
-    // new member added to table when serving the app but notwith cypress: test set up issue? to investigate
     it('Added team member should be displayed in table', () => {
       const firstName = 'Joe';
       const lastName = 'Whiteley';
@@ -281,6 +276,5 @@ describe('Content', () => {
       cy.get(`[data-testid="teamTableId"]`).contains(firstName);
       cy.get(`[data-testid="teamTableId"]`).contains(lastName);
     });
-    */
   });
 });

@@ -4,6 +4,8 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import GeneralContent from './GeneralContent';
+import { DEFAULT_HELP } from '../../../utils/constants';
+import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -14,7 +16,14 @@ describe('<GeneralContent />', () => {
         cy.mount(
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <GeneralContent page={2} setStatus={cy.stub().as('setTheProposalState')} />
+            <GeneralContent
+              help={DEFAULT_HELP}
+              page={2}
+              proposal={MockProposal}
+              setHelp={cy.stub().as('setHelp')}
+              setProposal={cy.stub().as('setProposal')}
+              setStatus={cy.stub().as('setTheProposalState')}
+            />
           </ThemeProvider>
         );
       });
@@ -26,7 +35,14 @@ describe('<GeneralContent />', () => {
       cy.mount(
         <ThemeProvider theme={theme(THEME_LIGHT)}>
           <CssBaseline />
-          <GeneralContent page={2} setStatus={cy.stub().as('setTheProposalState')} />
+          <GeneralContent
+            help={DEFAULT_HELP}
+            page={2}
+            proposal={MockProposal}
+            setHelp={cy.stub().as('setHelp')}
+            setProposal={cy.stub().as('setProposal')}
+            setStatus={cy.stub().as('setTheProposalState')}
+          />
         </ThemeProvider>
       );
     });

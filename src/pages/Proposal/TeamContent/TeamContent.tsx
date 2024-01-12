@@ -1,16 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
-import { helpers } from '../../../utils/helpers';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import InfoPanel from '../../../components/infoPanel/infoPanel';
-import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
-import { DEFAULT_HELP, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
 import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
-import { getMockTeam } from '../../../services/axios/getTeam/mockTeam';
+import { Help } from '../../../services/types/help';
+import { Proposal } from '../../../services/types/proposal';
+// import { TeamMember } from '../../../services/types/teamMember';
+import MemberInvite from './MemberInvite/MemberInvite';
+import FileImport from './FileImport/FileImport';
+import MemberSearch from './MemberSearch/MemberSearch';
 
+// TODO : Either this should be moved to a component of export removed
 export function PIStar({ isPI, status, ...rest }) {
   if (isPI) {
     return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
@@ -20,17 +22,12 @@ export function PIStar({ isPI, status, ...rest }) {
   }
 }
 
-interface TeamContentProps {
-  page: number;
-  setStatus: Function;
-}
-
-export const HELP_FIRSTNAME = {
+export const HELP_FIRST_NAME = {
   title: 'Help first name',
   description: 'Field sensitive help',
   additional: ''
 };
-export const HELP_LASTNAME = {
+export const HELP_LAST_NAME = {
   title: 'Help last name',
   description: 'Field sensitive help',
   additional: ''
@@ -45,122 +42,39 @@ export const HELP_PHD = {
   description: 'Field sensitive help',
   additional: ''
 };
+export const HELP_PI = {
+  title: 'Help PI',
+  description: 'PI HELP',
+  additional: ''
+};
 
-export default function TeamContent({ page, setStatus }: TeamContentProps) {
+interface TeamContentProps {
+  help: Help;
+  page: number;
+  proposal: Proposal;
+  setHelp: Function;
+  setProposal: Function;
+  setStatus: Function;
+}
+
+export default function TeamContent({
+  help,
+  page,
+  proposal,
+  setHelp,
+  setProposal,
+  setStatus
+}: TeamContentProps) {
   const [value, setValue] = React.useState(0);
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [phdThesis, setPhdThesis] = React.useState(false);
-  const [help, setHelp] = React.useState(DEFAULT_HELP);
-  const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
-  const [errorTextLastName, setErrorTextLastName] = React.useState('');
-  const [errorTextEmail, setErrorTextEmail] = React.useState('');
-
-  const [validFistNameState, setValidFistNameState] = React.useState(false);
-  const [validLastNameState, setValidLastNameState] = React.useState(false);
-  const [validEmailState, setValidEmailState] = React.useState(false);
-  const [invalidFormState, setInvalidFormState] = React.useState(true);
-
-  // to pass form state to TeamInviteButton
-  const formValues = {
-    firstName: {
-      value: firstName,
-      setValue: setFirstName
-    },
-    lastName: {
-      value: lastName,
-      setValue: setLastName
-    },
-    email: {
-      value: email,
-      setValue: setEmail
-    },
-    phdThesis: {
-      phdThesis,
-      setValue: setPhdThesis
-    }
-  };
-
-  function formValidation() {
-    let count = 0;
-
-    // first name
-    let emptyField = firstName === '';
-    let isValid = !emptyField;
-    setValidFistNameState(isValid);
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        firstName,
-        setFirstName,
-        setErrorTextFirstName,
-        'DEFAULT'
-      );
-      setValidFistNameState(isValid);
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextFirstName(''); // don't display error when empty
-    }
-
-    // last name
-    emptyField = lastName === '';
-    isValid = !emptyField;
-    setValidLastNameState(isValid);
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        lastName,
-        setLastName,
-        setErrorTextLastName,
-        'DEFAULT'
-      );
-      setValidLastNameState(isValid);
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextLastName('');
-    }
-
-    // email
-    emptyField = email === '';
-    isValid = !emptyField;
-    setValidEmailState(isValid);
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
-      setValidEmailState(isValid);
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextEmail('');
-    }
-
-    return count;
-  }
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhdThesis(event.target.checked);
-  };
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    const count = 0;
-
-    // TODO : Increment the count for every passing element of the page.
-    // This is then used to take the status from the result array
-    // In the default provided, the count must be 2 for the page to pass.
-
-    // See titleContent page for working example
-
+    const result = [STATUS_ERROR, STATUS_OK];
+    const count = proposal.team.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [setStatus]);
-
-  React.useEffect(() => {
-    const invalidForm = Boolean(formValidation());
-    setInvalidFormState(invalidForm);
-  });
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -203,87 +117,20 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
     };
   }
 
-  const panel1 = () => (
-    <Grid item>
-      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={5}>
-          <Box component="form">
-            <TextEntry
-              label="First Name"
-              testId="firstName"
-              value={firstName}
-              setValue={setFirstName}
-              onFocus={() => setHelp(HELP_FIRSTNAME)}
-              disabled={false}
-              errorText={errorTextFirstName}
-            />
-            <TextEntry
-              label="Last Name"
-              testId="lastName"
-              value={lastName}
-              setValue={setLastName}
-              onFocus={() => setHelp(HELP_LASTNAME)}
-              errorText={errorTextLastName}
-            />
-            <TextEntry
-              label="Email"
-              testId="email"
-              value={email}
-              setValue={setEmail}
-              errorText={errorTextEmail}
-              onFocus={() => setHelp(HELP_EMAIL)}
-            />
-            <TickBox
-              label="PhD Thesis"
-              testId="PhDCheckbox"
-              checked={phdThesis}
-              onChange={handleCheckboxChange}
-              onFocus={() => setHelp(HELP_PHD)}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={5}>
-          <InfoPanel
-            title={help.title}
-            description={help.description}
-            additional={help.additional}
-            testId="infoPanelId"
-          />
-        </Grid>
-      </Grid>
-
-      <Grid item xs={3} ml={3}>
-        <TeamInviteButton disabled={invalidFormState} formValues={formValues} />
-      </Grid>
-    </Grid>
-  );
-
-  const panel2 = () => (
-    <Grid item>
-      <p>To be implemented at a later date</p>
-    </Grid>
-  );
-
-  const panel3 = () => (
-    <Grid item>
-      <p>To be implemented at a later date</p>
-    </Grid>
-  );
-
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item md={6} xs={11}>
           <DataGridWrapper
-            rows={getMockTeam()}
+            rows={proposal.team}
             extendedColumns={extendedColumns}
             height={400}
             rowClick={ClickFunction}
             testId="teamTableId"
           />
         </Grid>
-        <Grid sx={{ border: '1px solid grey', minWidth: 545 }} item md={6} xs={11}>
-          <Box sx={{ width: '100%' }}>
+        <Grid item md={6} xs={11}>
+          <Box sx={{ width: '100%', border: '1px solid grey' }}>
             <Box>
               <Tabs
                 textColor="secondary"
@@ -311,9 +158,16 @@ export default function TeamContent({ page, setStatus }: TeamContentProps) {
                 />
               </Tabs>
             </Box>
-            {value === 0 && panel1()}
-            {value === 1 && panel2()}
-            {value === 2 && panel3()}
+            {value === 0 && (
+              <MemberInvite
+                help={help}
+                proposal={proposal}
+                setHelp={setHelp}
+                setProposal={setProposal}
+              />
+            )}
+            {value === 1 && <FileImport />}
+            {value === 2 && <MemberSearch />}
           </Box>
         </Grid>
       </Grid>

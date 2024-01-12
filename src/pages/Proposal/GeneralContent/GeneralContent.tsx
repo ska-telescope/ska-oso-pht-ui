@@ -25,19 +25,19 @@ export const HELP_SUBCATEGORY = {
 interface GeneralContentProps {
   help: Help;
   page: number;
+  proposal: Proposal;
   setHelp: Function;
   setProposal: Function;
   setStatus: Function;
-  theProposal: Proposal;
 }
 
 export default function GeneralContent({
   help,
   page,
+  proposal,
   setHelp,
   setProposal,
-  setStatus,
-  theProposal
+  setStatus
 }: GeneralContentProps) {
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -46,26 +46,26 @@ export default function GeneralContent({
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
-    if (theProposal?.abstract?.length > 0) {
+    if (proposal?.abstract?.length > 0) {
       count++;
     }
-    if (theProposal?.category > 0) {
+    if (proposal?.category > 0) {
       count++;
     }
-    if (theProposal?.subCategory > 0) {
+    if (proposal?.subCategory > 0) {
       count++;
     }
 
     setStatus([page, result[count]]);
-  }, [setStatus, theProposal]);
+  }, [setStatus, proposal]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...theProposal, category: id, subCategory: 1 });
+    setProposal({ ...proposal, category: id, subCategory: 1 });
   };
 
   const getSubCategoryOptions = () => {
-    if (theProposal.category) {
-      return GENERAL.ScienceCategory[theProposal.category - 1].subCategory;
+    if (proposal.category) {
+      return GENERAL.ScienceCategory[proposal.category - 1].subCategory;
     }
     return [{ label: '', value: 0 }];
   };
@@ -80,8 +80,8 @@ export default function GeneralContent({
           label=""
           testId="abstractId"
           rows={10}
-          value={theProposal.abstract}
-          setValue={e => setProposal({ ...theProposal, abstract: e })}
+          value={proposal.abstract}
+          setValue={e => setProposal({ ...proposal, abstract: e })}
           onFocus={() => setHelp(HELP_ABSTRACT)}
           helperText="Please enter your abstract information"
         />
@@ -111,7 +111,7 @@ export default function GeneralContent({
         <DropDown
           options={GENERAL.ScienceCategory}
           testId="categoryId"
-          value={theProposal.category}
+          value={proposal.category}
           setValue={checkCategory}
           label=""
           onFocus={() => setHelp(HELP_CATEGORY)}
@@ -129,12 +129,12 @@ export default function GeneralContent({
         <DropDown
           options={getSubCategoryOptions()}
           disabled={
-            theProposal.category < 1 ||
-            GENERAL.ScienceCategory[theProposal.category - 1].subCategory.length < 2
+            proposal.category < 1 ||
+            GENERAL.ScienceCategory[proposal.category - 1].subCategory.length < 2
           }
           testId="subCategoryId"
-          value={theProposal.subCategory}
-          setValue={(e: number) => setProposal({ ...theProposal, subCategory: e })}
+          value={proposal.subCategory}
+          setValue={(e: number) => setProposal({ ...proposal, subCategory: e })}
           label=""
           onFocus={() => setHelp(HELP_SUBCATEGORY)}
         />
