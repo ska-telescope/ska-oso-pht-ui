@@ -32,6 +32,42 @@ export default function UploadPdfAlertDialog(props) {
     }
   };
 
+  const handleUpload = async () => {
+    if (file) {
+      setStatus("uploading");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const result = await fetch("https://httpbin.org/post", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await result.json();
+
+        alert("Upload successful");
+        setStatus("success");
+      } catch (error) {
+        alert(error);
+        setStatus("fail");
+      }
+    }
+  };
+
+  const Result = ({ status }: { status: string }) => {
+    if (status === "success") {
+      return <p> File uploaded successfully!</p>;
+    } if (status === "fail") {
+      return <p>File upload failed!</p>;
+    } if (status === "uploading") {
+      return <p>Uploading selected file...</p>;
+    }
+    return null;
+
+  };
+
   return (
     <Dialog
       open={open}
@@ -50,6 +86,12 @@ export default function UploadPdfAlertDialog(props) {
         <div>
           <input id="file" type="file" onChange={handleFileChange} />
         </div>
+        {file && (
+            <button onClick={handleUpload} className="submit">
+              Upload a file
+            </button>
+        )}
+        <Result status={status} />
       </DialogContent>
       <DialogActions sx={{ p: '24px' }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">

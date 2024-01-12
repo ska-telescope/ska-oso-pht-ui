@@ -1,12 +1,7 @@
 import React, {useState} from 'react';
 import {
   Box,
-  Card,
-  CardContent,
-  CardHeader,
   Grid,
-  IconButton,
-  Modal,
   Typography
 } from '@mui/material';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
@@ -14,7 +9,6 @@ import LatexEntry from '../../../components/latexEntry/latexEntry';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, TECHNICAL } from '../../../utils/constants';
 import UploadPdfAlertDialog from "../../../components/button/uploadPdf/UploadPdfAlertDialog";
-import AlertDialog from "../../../components/alertDialog/AlertDialog";
 
 interface TechnicalContentProps {
   page: number;
@@ -76,10 +70,6 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
             <Grid item xs={6}>
               <Grid container direction="column" alignItems="left">
                 <Typography variant="h5">Upload PDF</Typography>
-                <LatexEntry
-                  // eslint-disable-next-line react/jsx-no-bind
-                  setModal={openModal}
-                />
                 <Grid container direction="row" justifyContent="space-between">
                   <UploadPdfButton func={func} />
                 </Grid>
