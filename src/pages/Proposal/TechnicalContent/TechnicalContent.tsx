@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Box,
   Grid,
   Typography
 } from '@mui/material';
 import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
-import LatexEntry from '../../../components/latexEntry/latexEntry';
 
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, TECHNICAL } from '../../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import UploadPdfAlertDialog from "../../../components/button/uploadPdf/UploadPdfAlertDialog";
 
 interface TechnicalContentProps {
@@ -17,9 +16,6 @@ interface TechnicalContentProps {
 
 export default function TechnicalContent({ page, setStatus }: TechnicalContentProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [pdfUrl, setPdfUrl] = React.useState('');
-  const [file, setFile] = useState<File | null>(null);
-
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -47,9 +43,6 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
 
   function openModal() {
     setIsOpen(true);
-  }
-  function closeModal() {
-    setIsOpen(false);
   }
 
   const func = () => {

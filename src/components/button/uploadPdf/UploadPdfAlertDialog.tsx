@@ -40,12 +40,10 @@ export default function UploadPdfAlertDialog(props) {
       formData.append("file", file);
 
       try {
-        const result = await fetch("https://httpbin.org/post", {
+       await fetch("https://httpbin.org/post", {
           method: "POST",
           body: formData
         });
-
-        const data = await result.json();
 
         alert("Upload successful");
         setStatus("success");
