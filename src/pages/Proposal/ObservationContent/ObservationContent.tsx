@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 import {
   OBSERVATION,
@@ -82,11 +81,11 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
           <Grid item xs={7}>
             <Card variant="outlined">
               <CardHeader
-                title={
+                title={(
                   <Typography variant="h6">
                     Target List related to the selected Observation
                   </Typography>
-                }
+                )}
               />
               <CardContent>
                 <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
