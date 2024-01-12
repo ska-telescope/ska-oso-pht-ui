@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
-import { getMockTeam } from './mockTeam';
+import MockProposals from './mockProposals';
 
-const GetTeam = async () => {
+async function GetProposals() {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_LIST = '/team';
+  const URL_LIST = '/proposals';
   const config = {
     headers: {
       Accept: 'application/json',
@@ -13,8 +13,7 @@ const GetTeam = async () => {
   };
 
   if (USE_LOCAL_DATA) {
-    // console.log("USE_LOCAL_DATA: Loading MockStatus")
-    return getMockTeam;
+    return MockProposals;
   }
 
   try {
@@ -23,6 +22,6 @@ const GetTeam = async () => {
   } catch (e) {
     return 'error.API_NOT_AVAILABLE';
   }
-};
+}
 
-export default GetTeam;
+export default GetProposals;

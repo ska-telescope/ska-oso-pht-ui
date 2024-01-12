@@ -1,3 +1,5 @@
+import { TeamMember } from './teamMember';
+
 export type Proposal = {
   id: number;
   title: string;
@@ -7,4 +9,6 @@ export type Proposal = {
   abstract: string;
   category: number;
   subCategory: number;
+  // Team
+  team: TeamMember[];
 };

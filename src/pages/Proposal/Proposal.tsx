@@ -45,20 +45,29 @@ export default function Proposal() {
       {thePage === 0 && (
         <TitleContent
           page={thePage}
-          theProposal={proposal}
+          proposal={proposal}
           setProposal={setProposal}
           setStatus={setTheProposalState}
         />
       )}
-      {thePage === 1 && <TeamContent page={thePage} setStatus={setTheProposalState} />}
-      {thePage === 2 && (
-        <GeneralContent
-          page={thePage}
+      {thePage === 1 && (
+        <TeamContent
           help={help}
+          page={thePage}
+          proposal={proposal}
           setHelp={setHelp}
           setProposal={setProposal}
           setStatus={setTheProposalState}
-          theProposal={proposal}
+        />
+      )}
+      {thePage === 2 && (
+        <GeneralContent
+          help={help}
+          page={thePage}
+          proposal={proposal}
+          setHelp={setHelp}
+          setProposal={setProposal}
+          setStatus={setTheProposalState}
         />
       )}
       {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}

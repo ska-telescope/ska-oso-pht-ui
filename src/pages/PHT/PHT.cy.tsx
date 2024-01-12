@@ -3,7 +3,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
-import { EXISTING_PROPOSALS } from '../../utils/constants';
+import MockProposals from '../../services/axios/getProposals/mockProposals';
 import theme from '../../services/theme/theme';
 import PHT from './PHT';
 
@@ -47,7 +47,7 @@ describe('search functionality', () => {
       '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     )
       .children('div[role="row"]')
-      .should('have.length', EXISTING_PROPOSALS.length);
+      .should('have.length', MockProposals.length);
   });
   it('returns 0 results when searching for "xxx"', () => {
     cy.get('[data-testid="searchId"]').type('xxx');
@@ -124,6 +124,6 @@ describe('filtering by proposal type', () => {
       '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     )
       .children('div[role="row"]')
-      .should('have.length', EXISTING_PROPOSALS.length);
+      .should('have.length', MockProposals.length);
   });
 });
