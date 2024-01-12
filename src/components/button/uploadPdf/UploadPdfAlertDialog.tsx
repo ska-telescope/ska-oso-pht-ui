@@ -15,8 +15,8 @@ export default function UploadPdfAlertDialog(props) {
       "initial" | "uploading" | "success" | "fail"
   >("initial");
 
-  const handleContinue = () => {
-    onDialogResponse('continue');
+  const handleClose = () => {
+    onDialogResponse('close');
     onClose();
   };
 
@@ -107,11 +107,11 @@ export default function UploadPdfAlertDialog(props) {
           </Grid>
           <Grid item>
             <Button
-              ariaDescription="Continue Button"
+              ariaDescription="Close Button"
               color={ButtonColorTypes.Secondary}
-              label="Continue"
-              onClick={handleContinue}
-              testId="continueId"
+              label="Close"
+              onClick={handleClose}
+              testId="closeId"
               variant={ButtonVariantTypes.Contained}
             />
           </Grid>
