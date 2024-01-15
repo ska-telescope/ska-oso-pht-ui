@@ -32,45 +32,6 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
-export const TEAM = [
-  {
-    id: 1,
-    FirstName: 'Van Loo',
-    LastName: 'Cheng',
-    Email: 'ask.lop@map.com',
-    Country: 'Lagoon',
-    Affiliation: 'University of Free Town',
-    PHDThesis: false,
-    Status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    Actions: null,
-    PI: false
-  },
-  {
-    id: 2,
-    FirstName: 'Anu',
-    LastName: 'Vijay',
-    Email: 'ask.lop@map.com',
-    Country: 'Ocean',
-    Affiliation: 'University of Free Town',
-    PHDThesis: true,
-    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-    Actions: null,
-    PI: true
-  },
-  {
-    id: 3,
-    FirstName: 'Sady',
-    LastName: 'Field',
-    Email: 'ask.lop@map.com',
-    Country: 'Park',
-    Affiliation: 'University of Virginia',
-    PHDThesis: false,
-    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-    Actions: null,
-    PI: false
-  }
-];
-
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
   Abstract:
@@ -110,12 +71,6 @@ export const GENERAL = {
   ]
 };
 
-export const SCIENCE =
-  "\n\n% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.\n\n\\documentclass{article} % \\documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble\n\n\\usepackage{amsmath} % \\usepackage is a command that allows you to add functionality to your LaTeX code\n\n\\title{Simple Sample} % Sets article title\n\\author{My Name} % Sets authors name\n\\date{\\today} % Sets date for date compiled\n\n% The preamble ends with the command \\begin{document}\n\\begin{document} % All begin commands must be paired with an end command somewhere\n    \\maketitle % creates title using information in preamble (title, author, date)\n    \n    \\section{Hello World!} % creates a section\n    \n    \\textbf{Hello World!} Today I am learning \\LaTeX. %notice how the command will end at the first non-alphabet charecter such as the . after \\LaTeX\n     \\LaTeX{} is a great program for writing math. I can write in line math such as $a^2+b^2=c^2$ %$ tells LaTexX to compile as math\n     . I can also give equations their own space: \n    \\begin{equation} % Creates an equation environment and is compiled as math\n    \\gamma^2+\\theta^2=\\omega^2\n    \\end{equation}\n    If I do not leave any blank lines \\LaTeX{} will continue  this text without making it into a new paragraph.  Notice how there was no indentation in the text after equation (1).  \n    Also notice how even though I hit enter after that sentence and here $\\downarrow$\n     \\LaTeX{} formats the sentence without any break.  Also   look  how      it   doesn't     matter          how    many  spaces     I put     between       my    words.\n    \n    For a new paragraph I can leave a blank space in my code. \n\n\\end{document} % This is the end of the document\n";
-
-export const TECHNICAL =
-  "\n\n% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.\n\n\\documentclass{article} % \\documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble\n\n\\usepackage{amsmath} % \\usepackage is a command that allows you to add functionality to your LaTeX code\n\n\\title{Simple Sample} % Sets article title\n\\author{My Name} % Sets authors name\n\\date{\\today} % Sets date for date compiled\n\n% The preamble ends with the command \\begin{document}\n\\begin{document} % All begin commands must be paired with an end command somewhere\n    \\maketitle % creates title using information in preamble (title, author, date)\n    \n    \\section{Hello World!} % creates a section\n    \n    \\textbf{Hello World!} Today I am learning \\LaTeX. %notice how the command will end at the first non-alphabet charecter such as the . after \\LaTeX\n     \\LaTeX{} is a great program for writing math. I can write in line math such as $a^2+b^2=c^2$ %$ tells LaTexX to compile as math\n     . I can also give equations their own space: \n    \\begin{equation} % Creates an equation environment and is compiled as math\n    \\gamma^2+\\theta^2=\\omega^2\n    \\end{equation}\n    If I do not leave any blank lines \\LaTeX{} will continue  this text without making it into a new paragraph.  Notice how there was no indentation in the text after equation (1).  \n    Also notice how even though I hit enter after that sentence and here $\\downarrow$\n     \\LaTeX{} formats the sentence without any break.  Also   look  how      it   doesn't     matter          how    many  spaces     I put     between       my    words.\n    \n    For a new paragraph I can leave a blank space in my code. \n\n\\end{document} % This is the end of the document\n";
-
 export const DEFAULT_HELP = {
   title: 'Help Title',
   description: 'Field sensitive help',
@@ -123,43 +78,6 @@ export const DEFAULT_HELP = {
 };
 
 export const OBSERVATION = {
-  list: [
-    {
-      id: '1',
-      array: 'MID',
-      subarray: 'subarray 1',
-      linked: '4',
-      type: 'Continuum'
-    },
-    {
-      id: '2',
-      array: 'MID',
-      subarray: 'subarray 2',
-      linked: '6',
-      type: 'Zoom'
-    },
-    {
-      id: '3',
-      array: 'LOW',
-      subarray: 'subarray 2',
-      linked: '8',
-      type: 'Zoom'
-    },
-    {
-      id: '4',
-      array: 'LOW',
-      subarray: 'subarray 3',
-      linked: '12',
-      type: 'Continuum'
-    },
-    {
-      id: '5',
-      array: 'LOW',
-      subarray: 'subarray 4',
-      linked: '0',
-      type: 'Zoom'
-    }
-  ],
   array: [
     {
       label: 'MID',
@@ -309,38 +227,6 @@ export const OBSERVATION = {
 
 export const TARGETS = {
   'No Target': null,
-  ListOfTargets: {
-    AddTarget: ['Name', 'Right Ascension', 'Declination', 'Velocity / Redshift'],
-    TargetItems: [
-      {
-        id: 1,
-        Name: 'Target 1',
-        RA: '01:00:00',
-        Dec: '00:00:00',
-        sc1: '82.48',
-        sc2: '20',
-        sc3: '34'
-      },
-      {
-        id: 2,
-        Name: 'Target 2',
-        RA: '03:00:00',
-        Dec: '-10:00:00',
-        sc1: '82.48',
-        sc2: '20',
-        sc3: '34'
-      },
-      {
-        id: 3,
-        Name: 'Target 3',
-        RA: '05:30:00',
-        Dec: '-10:00:00',
-        sc1: '82.48',
-        sc2: '20',
-        sc3: '34'
-      }
-    ]
-  },
   'Create Mosaic': null
 };
 

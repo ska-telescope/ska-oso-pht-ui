@@ -85,8 +85,48 @@ const MockProposal = {
       sc3: '34'
     }
   ],
+  // Observation
+  observations: [
+    {
+      id: 1,
+      array: 'MID',
+      subarray: 'subarray 1',
+      linked: '4',
+      type: 'Continuum'
+    },
+    {
+      id: 2,
+      array: 'MID',
+      subarray: 'subarray 2',
+      linked: '6',
+      type: 'Zoom'
+    },
+    {
+      id: 3,
+      array: 'LOW',
+      subarray: 'subarray 2',
+      linked: '8',
+      type: 'Zoom'
+    },
+    {
+      id: 4,
+      array: 'LOW',
+      subarray: 'subarray 3',
+      linked: '12',
+      type: 'Continuum'
+    },
+    {
+      id: 5,
+      array: 'LOW',
+      subarray: 'subarray 4',
+      linked: '0',
+      type: 'Zoom'
+    }
+  ],
   // Technical,
-  technicalPDF: null
+  technicalPDF: null,
+  // Data
+  pipeline: ''
 };
 
 export default MockProposal;

@@ -25,9 +25,9 @@ export default function TargetListSection({
   setProposal
 }: TargetListSectionProps) {
   const columns = [
-    { field: 'Name', headerName: 'Name', width: 200 },
-    { field: 'RA', headerName: 'Right Ascension', width: 150 },
-    { field: 'Dec', headerName: 'Declination', width: 150 }
+    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'ra', headerName: 'Right Ascension', width: 150 },
+    { field: 'dec', headerName: 'Declination', width: 150 }
   ];
   const extendedColumns = structuredClone(columns);
 

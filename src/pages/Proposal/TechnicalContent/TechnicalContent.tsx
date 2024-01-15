@@ -17,25 +17,39 @@ export default function TechnicalContent({
   setProposal,
   setStatus
 }: TechnicalContentProps) {
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = (proposal?.technicalPDF) ? 1 : 0;
+    const count = proposal?.technicalPDF ? 1 : 0;
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [validateToggle]);
 
-  const setFile = (theFile: string) => { 
-    setProposal({ ...proposal, sciencePDF: theFile });
-  }
-  
+  const setFile = (theFile: string) => {
+    setProposal({ ...proposal, technicalPDF: theFile });
+  };
+
   return (
     <Grid container p={1} direction="column" alignItems="flex-start" justifyContent="flex-start">
       <Grid item>
         <Typography variant="body2">Upload PDF</Typography>
-        <FileUpload chooseFileTypes=".pdf" setFile={setFile} uploadURL="https://httpbin.org/post" />
+        <FileUpload
+          chooseFileTypes=".pdf"
+          file={proposal.technicalPDF}
+          setFile={setFile}
+          uploadURL="https://httpbin.org/post"
+        />
       </Grid>
     </Grid>
   );

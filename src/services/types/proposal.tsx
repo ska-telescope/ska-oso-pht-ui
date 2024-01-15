@@ -1,4 +1,5 @@
 import Target from './Target';
+import Observation from './observation';
 import TeamMember from './teamMember';
 
 export type Proposal = {
@@ -13,10 +14,14 @@ export type Proposal = {
   category: number;
   subCategory: number;
   // Science
-  sciencePDF: File;
+  sciencePDF: File | null;
   // Target
   targetOption: number;
   targets: Target[];
+  // Observation
+  observations: Observation[];
   // Technical
-  technicalPDF: File;
+  technicalPDF: File | null;
+  // data
+  pipeline: string;
 };

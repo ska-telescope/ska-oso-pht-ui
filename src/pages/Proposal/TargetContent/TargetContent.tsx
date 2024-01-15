@@ -17,7 +17,7 @@ const TOOLTIP = [
   'Current functionality is not yet available'
 ];
 
-interface GeneralContentProps {
+interface TargetContentProps {
   help: Help;
   page: number;
   proposal: Proposal;
@@ -33,8 +33,17 @@ export default function TargetContent({
   setHelp,
   setProposal,
   setStatus
-}: GeneralContentProps) {
+}: TargetContentProps) {
   const theme = useTheme();
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -62,7 +71,7 @@ export default function TargetContent({
       default:
         setStatus([page, result[count]]);
     }
-  }, [proposal]);
+  }, [validateToggle]);
 
   const handleClick = (index: number) => {
     setProposal({ ...proposal, targetOption: index });

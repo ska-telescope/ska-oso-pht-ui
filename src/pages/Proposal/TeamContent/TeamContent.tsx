@@ -66,6 +66,15 @@ export default function TeamContent({
   setStatus
 }: TeamContentProps) {
   const [value, setValue] = React.useState(0);
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -74,7 +83,7 @@ export default function TeamContent({
     const result = [STATUS_ERROR, STATUS_OK];
     const count = proposal.team.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [validateToggle]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
