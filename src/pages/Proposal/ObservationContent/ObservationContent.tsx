@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
+import { Proposal } from '../../../services/types/proposal';
 import {
   OBSERVATION,
   STATUS_ERROR,
@@ -13,10 +14,11 @@ import {
 
 interface ObservationContentProps {
   page: number;
+  proposal: Proposal;
   setStatus: Function;
 }
 
-export default function ObservationContent({ page, setStatus }: ObservationContentProps) {
+export default function ObservationContent({ page, proposal, setStatus }: ObservationContentProps) {
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
   React.useEffect(() => {
@@ -24,7 +26,7 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = OBSERVATION.list.length > 0 ? 1 : 0;
+    let count = proposal.observations.length > 0 ? 1 : 0;
     count += TARGETS.ListOfTargets.TargetItems.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [setStatus]);
@@ -38,9 +40,9 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
   const extendedColumnsObservations = structuredClone(columnsObservations);
 
   const columnsTargets = [
-    { field: 'Name', headerName: 'Name', minWidth: 200 },
-    { field: 'RA', headerName: 'Right Ascension ( hh:mm:ss:s )', minWidth: 300 },
-    { field: 'Dec', headerName: 'Declination ( dd:mm:ss:s )', width: 300 }
+    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'ra', headerName: 'Right Ascension', width: 150 },
+    { field: 'dec', headerName: 'Declination', width: 150 }
   ];
   const extendedColumnsTargets = structuredClone(columnsTargets);
 
@@ -90,7 +92,7 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                 <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
                 <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
                 <DataGridWrapper
-                  rows={TARGETS.ListOfTargets.TargetItems}
+                  rows={proposal.targets}
                   extendedColumns={extendedColumnsTargets}
                   height={350}
                   rowClick={ClickFunction}
