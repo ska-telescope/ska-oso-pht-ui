@@ -1,34 +1,29 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "target": "es6",
-    "lib": ["dom", "ES6", "dom.iterable", "ScriptHost", "ES2016.Array.Include"],
-    "allowJs": true,
-    "skipLibCheck": true,
+    "target": "es5",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "incremental": true
-  },
-  "include": [
-    "src",
-    "cypress",
-    "./cypress.d.ts",
-    "./cypress/support/index.d.ts",
-    "public/locales/en/userJourney.cy.ts"
-  ],
-  "exclude": ["node_modules"],
-  "paths": {
-    "@components/*": ["components/*"],
-    "@pages/*": ["pages/*"],
-    "@hooks/*": ["hooks/*"]
+
+    "jsx": "react",
+    "module": "ESNext",
+    "declaration": true,
+    "declarationDir": "types",
+    "sourceMap": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
+
+    "baseUrl": "src/",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"]
+    }
   }
 }
