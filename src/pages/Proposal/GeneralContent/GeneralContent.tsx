@@ -39,6 +39,16 @@ export default function GeneralContent({
   setProposal,
   setStatus
 }: GeneralContentProps) {
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
+
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -57,7 +67,7 @@ export default function GeneralContent({
     }
 
     setStatus([page, result[count]]);
-  }, [setStatus, proposal]);
+  }, [validateToggle]);
 
   const checkCategory = (id: number) => {
     setProposal({ ...proposal, category: id, subCategory: 1 });
