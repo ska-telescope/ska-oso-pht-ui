@@ -70,7 +70,14 @@ export default function Proposal() {
           setStatus={setTheProposalState}
         />
       )}
-      {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 3 && (
+        <ScienceContent
+          page={thePage}
+          proposal={proposal}
+          setProposal={setProposal}
+          setStatus={setTheProposalState}
+        />
+      )}
       {thePage === 4 && (
         <TargetContent
           help={help}

@@ -52,6 +52,8 @@ const MockProposal = {
   abstract: '',
   category: 1,
   subCategory: 1,
+  // Science,
+  sciencePDF: null,
   // Target
   targetOption: 1,
   targets: [
@@ -82,7 +84,9 @@ const MockProposal = {
       sc2: '20',
       sc3: '34'
     }
-  ]
+  ],
+  // Technical,
+  technicalPDF: null
 };
 
 export default MockProposal;

@@ -1,77 +1,42 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@mui/material';
-import UploadPdfButton from '../../../components/button/uploadPdf/UploadPdfButton';
-
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import UploadPdfAlertDialog from '../../../components/button/uploadPdf/UploadPdfAlertDialog';
+import { Grid, Typography } from '@mui/material';
+import { FileUpload } from '@ska-telescope/ska-gui-components';
+import { Proposal } from '../../../services/types/proposal';
+import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
 
 interface TechnicalContentProps {
   page: number;
+  proposal: Proposal;
+  setProposal: Function;
   setStatus: Function;
 }
 
-export default function TechnicalContent({ page, setStatus }: TechnicalContentProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+export default function TechnicalContent({
+  page,
+  proposal,
+  setProposal,
+  setStatus
+}: TechnicalContentProps) {
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    const count = 0;
-
-    // TODO : Increment the count for every passing element of the page.
-    // This is then used to take the status from the result array
-    // In the default provided, the count must be 2 for the page to pass.
-
-    // See titleContent page for working example
-
+    const result = [STATUS_ERROR, STATUS_OK];
+    const count = (proposal?.technicalPDF) ? 1 : 0;
     setStatus([page, result[count]]);
   }, [setStatus]);
 
-  const handleDialogResponse = response => {
-    if (response === 'continue') {
-      console.log('BUTTON CLICKED 1');
-    } else {
-      console.log('BUTTON CLICKED 2');
-    }
-  };
-
-  function openModal() {
-    setIsOpen(true);
+  const setFile = (theFile: string) => { 
+    setProposal({ ...proposal, sciencePDF: theFile });
   }
-
-  const func = () => {
-    openModal();
-  };
-
+  
   return (
-    <>
-      <UploadPdfAlertDialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onDialogResponse={handleDialogResponse}
-      />
-      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item>
-          <Grid container p={5} spacing={5} direction="row" justifyContent="space-evenly">
-            <Grid item xs={6}>
-              <Grid container direction="column" alignItems="left">
-                <Typography variant="h5">Upload PDF</Typography>
-                <Grid container direction="row" justifyContent="space-between">
-                  <UploadPdfButton func={func} />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              <Box m={1}>
-                <Typography variant="h5">Preview Uploaded PDF</Typography>
-                {/* TODO : Need React version of this <Latex>{latex}</Latex>  */}
-              </Box>
-            </Grid>
-          </Grid>
-        </Grid>
+    <Grid container p={1} direction="column" alignItems="flex-start" justifyContent="flex-start">
+      <Grid item>
+        <Typography variant="body2">Upload PDF</Typography>
+        <FileUpload chooseFileTypes=".pdf" setFile={setFile} uploadURL="https://httpbin.org/post" />
       </Grid>
-    </>
+    </Grid>
   );
 }

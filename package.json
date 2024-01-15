@@ -47,7 +47,7 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.12.1",
     "@react-pdf-viewer/core": "^3.12.0",
-    "@ska-telescope/ska-gui-components": "^0.1.82",
+    "@ska-telescope/ska-gui-components": "^0.1.83",
     "@ska-telescope/ska-gui-local-storage": "^0.0.7",
     "axios": "^1.6.3",
     "babel-core": "6",

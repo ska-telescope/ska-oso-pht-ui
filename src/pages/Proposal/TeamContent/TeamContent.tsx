@@ -81,12 +81,12 @@ export default function TeamContent({
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', flex: 1 },
-    { field: 'FirstName', headerName: 'First Name', flex: 1 },
-    { field: 'Status', headerName: 'Status', flex: 1 },
-    { field: 'PHDThesis', headerName: 'PhD Thesis', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
+    { field: 'firstName', headerName: 'First Name', flex: 1 },
+    { field: 'status', headerName: 'Status', flex: 1 },
+    { field: 'phdThesis', headerName: 'PhD Thesis', flex: 1 },
     {
-      field: 'PI',
+      field: 'pi',
       headerName: 'PI',
       sortable: false,
       flex: 1,

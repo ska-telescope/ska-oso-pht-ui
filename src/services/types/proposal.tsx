@@ -12,7 +12,11 @@ export type Proposal = {
   abstract: string;
   category: number;
   subCategory: number;
+  // Science
+  sciencePDF: File;
   // Target
   targetOption: number;
   targets: Target[];
+  // Technical
+  technicalPDF: File;
 };
