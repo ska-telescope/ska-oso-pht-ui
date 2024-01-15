@@ -19,6 +19,8 @@ describe('<ObservationContent />', () => {
             </BrowserRouter>
           </ThemeProvider>
         );
+        cy.get('[dataid=1]').should('have.text', 'MID')
+        cy.get('h6').contains('Target List related to the selected Observation')
     });
   }
 });

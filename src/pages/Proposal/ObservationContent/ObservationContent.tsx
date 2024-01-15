@@ -73,6 +73,7 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                 extendedColumns={extendedColumnsObservations}
                 height={450}
                 rowClick={ClickFunction}
+                testId="chloe"
               />
             </Grid>
           </Grid>
@@ -93,6 +94,7 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
                   extendedColumns={extendedColumnsTargets}
                   height={350}
                   rowClick={ClickFunction}
+                  testId="chloe2"
                 />
               </CardContent>
             </Card>
