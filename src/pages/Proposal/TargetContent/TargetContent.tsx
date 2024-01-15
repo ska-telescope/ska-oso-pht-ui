@@ -17,7 +17,7 @@ const TOOLTIP = [
   'Current functionality is not yet available'
 ];
 
-interface GeneralContentProps {
+interface TargetContentProps {
   help: Help;
   page: number;
   proposal: Proposal;
@@ -33,7 +33,7 @@ export default function TargetContent({
   setHelp,
   setProposal,
   setStatus
-}: GeneralContentProps) {
+}: TargetContentProps) {
   const theme = useTheme();
 
   React.useEffect(() => {
