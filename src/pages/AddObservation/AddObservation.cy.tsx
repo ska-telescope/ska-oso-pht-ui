@@ -112,7 +112,6 @@ function verifyContinuumUnits() {
 }
 
 function verifyMidBandwidthFrequency() {
-  // verify bandwidth field entry
   cy.get('[data-testid="bandwidth"]').contains('3.125 MHz');
   cy.get('[data-testid="bandwidth"]').click();
   cy.get('[data-value="2"]').click();
@@ -121,7 +120,6 @@ function verifyMidBandwidthFrequency() {
 }
 
 function verifyLowBandwidthFrequency() {
-  // verify bandwidth field entry
   cy.get('[data-testid="bandwidth"]').contains('24.4 KHz');
   cy.get('[data-testid="bandwidth"]').click();
   cy.get('[data-value="2"]').click();
@@ -130,7 +128,6 @@ function verifyLowBandwidthFrequency() {
 }
 
 function verifySpectralResolutionLow() {
-  // verify spectral resolution dropdown
   cy.get('[data-testid="spectralResolution"]').contains('14.1 Hz');
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="2"]').click();
@@ -139,7 +136,6 @@ function verifySpectralResolutionLow() {
 }
 
 function verifySpectralResolutionMid() {
-  // verify spectral resolution dropdown
   cy.get('[data-testid="spectralResolution"]').contains('0.21 KHz');
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="2"]').click();
@@ -148,7 +144,6 @@ function verifySpectralResolutionMid() {
 }
 
 function verifySpectralAveraging() {
-  // verify spectral averaging dropdown
   cy.get('[data-testid="spectral"]').contains('1');
   cy.get('[data-testid="spectral"]').click();
   cy.get('[data-value="2"]').click();
@@ -157,13 +152,11 @@ function verifySpectralAveraging() {
 }
 
 function verifyEffectiveResolution() {
-  // verify effective resolution field entry
   cy.get('[data-testid="effective"]').type("test effective resolution");
   cy.get('[data-testid="helpPanel"]').contains('EFFECTIVE RESOLUTION DESCRIPTION');
 }
 
 function verifyTapering() {
-  // verify tapering dropdown
   cy.get('[data-testid="tapering"]').contains('No tapering');
   cy.get('[data-testid="tapering"]').click();
   cy.get('[data-value="2"]').click();
@@ -172,7 +165,6 @@ function verifyTapering() {
 }
 
 function verifyImageWeighting() {
-  // verify image weighting dropdown
   cy.get('[data-testid="imageWeighting"]').contains('Uniform');
   cy.get('[data-testid="imageWeighting"]').click();
   cy.get('[data-value="0"]').click();
@@ -181,7 +173,6 @@ function verifyImageWeighting() {
 }
 
 function verifySubBands() {
-  // verify number of sub bands field entry
   cy.get('[data-testid="subBands"]').click();
   cy.get('[data-testid="subBands"]').type("2");
   cy.get('[data-testid="helpPanel"]').contains('SUB-BANDS DESCRIPTION');
