@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
+import { Proposal } from "../../types/proposal";
 
 async function GetProposals() {
   const apiUrl = SKA_PHT_API_URL;
@@ -13,14 +14,15 @@ async function GetProposals() {
   };
 
   if (USE_LOCAL_DATA) {
-    return MockProposals;
+    return MockProposals as unknown as Proposal[];
   }
 
   try {
+    // const result = await axios.get(`https://cat-fact.herokuapp.com/facts/`, config); // temp dummy test
     const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return 'error.API_NOT_AVAILABLE';
+    return {'error': e.message};
   }
 }
 
