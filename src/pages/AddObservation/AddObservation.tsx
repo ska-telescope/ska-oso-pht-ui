@@ -511,7 +511,7 @@ export default function AddObservation() {
   );
 
   const centralFrequencyField = () => (
-    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between" data-testid="centralFrequency">
       <Grid item xs={8}>
         {frequencyField()}
       </Grid>
