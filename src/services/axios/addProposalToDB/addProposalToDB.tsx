@@ -2,8 +2,9 @@
 // import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import { Proposal } from '../../types/proposal';
 
-async function AddProposalToDB(inData: Proposal) {
-  console.log("TODO : We need to use this", inData);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function AddProposalToDB(_inData: Proposal) {
+  // console.log('TODO : We need to use this', inData);
   return true;
 
   /*

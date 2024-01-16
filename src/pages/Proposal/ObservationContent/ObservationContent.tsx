@@ -16,10 +16,6 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
-<<<<<<< HEAD
-  const [validateToggle, setValidateToggle] = React.useState(false);
-=======
->>>>>>> main
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);

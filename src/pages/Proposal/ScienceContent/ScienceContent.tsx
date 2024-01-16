@@ -26,7 +26,6 @@ export default function ScienceContent({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    console.log('TREVOR', uploadStatus); 
   }, [proposal, uploadStatus]);
 
   React.useEffect(() => {

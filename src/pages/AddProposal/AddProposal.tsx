@@ -8,7 +8,6 @@ import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
 import AddProposalToDB from '../../services/axios/addProposalToDB/addProposalToDB';
 
 export default function AddProposal() {
-
   const [proposal, setProposal] = React.useState(EMPTY_PROPOSAL);
 
   const navigate = useNavigate();
@@ -17,12 +16,11 @@ export default function AddProposal() {
     if (AddProposalToDB(proposal)) {
       // TODO : Make sure we go to Page 2 of the proposal
       navigate('/proposal');
-    } else {
-      console.error("FAILED TO ADD THE PROPOSAL");
     }
   };
 
-  const contentValid = () => !(proposal.title.length > 0 && proposal.proposalType > 0 && proposal.proposalSubType > 0);
+  const contentValid = () =>
+    !(proposal.title.length > 0 && proposal.proposalType > 0 && proposal.proposalSubType > 0);
 
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">

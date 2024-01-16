@@ -13,7 +13,12 @@ interface NextPageProps {
   disabled?: boolean;
 }
 
-export default function NextPageButton({ label = '', page = 0, func = null, disabled }: NextPageProps) {
+export default function NextPageButton({
+  label = '',
+  page = 0,
+  func = null,
+  disabled
+}: NextPageProps) {
   const ClickFunction = () => {
     func(page === PAGES.length ? 0 : page + 1);
   };

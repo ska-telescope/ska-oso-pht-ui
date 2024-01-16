@@ -12,23 +12,11 @@ export type Proposal = {
   abstract: string;
   category: number;
   subCategory: number;
-<<<<<<< HEAD
-  sciencePDF: File|null;
-=======
-  // Science
   sciencePDF: File | null;
-  // Target
->>>>>>> main
   targetOption: number;
   targets: Target[];
   observations: Observation[];
-<<<<<<< HEAD
   targetObservation: TargetObservation[];
-  technicalPDF: File|null;
-=======
-  // Technical
   technicalPDF: File | null;
-  // data
->>>>>>> main
   pipeline: string;
 };

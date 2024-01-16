@@ -50,13 +50,7 @@ const MockProposal = {
   abstract: '',
   category: 1,
   subCategory: 1,
-<<<<<<< HEAD
   sciencePDF: null,
-=======
-  // Science,
-  sciencePDF: null,
-  // Target
->>>>>>> main
   targetOption: 1,
   targets: [
     {
@@ -124,17 +118,11 @@ const MockProposal = {
       type: 'Zoom'
     }
   ],
-<<<<<<< HEAD
   targetObservation: [
     { targetId: 1, observationId: 1 },
     { targetId: 3, observationId: 2 }
   ],
   technicalPDF: null,
-=======
-  // Technical,
-  technicalPDF: null,
-  // Data
->>>>>>> main
   pipeline: ''
 };
 

@@ -10,7 +10,11 @@ interface PageFooterProps {
   buttonFunc?: Function;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false, buttonFunc = null }: PageFooterProps) {
+export default function PageFooter({
+  pageNo,
+  buttonDisabled = false,
+  buttonFunc = null
+}: PageFooterProps) {
   const nextLabel = () => {
     if (pageNo === -2) {
       return 'Add';
@@ -41,7 +45,12 @@ export default function PageFooter({ pageNo, buttonDisabled = false, buttonFunc 
         <Grid item />
         <Grid item>
           {pageNo < PAGES.length - 1 && (
-            <NextPageButton disabled={buttonDisabled} label={nextLabel()} page={pageNo} func={buttonFunc} />
+            <NextPageButton
+              disabled={buttonDisabled}
+              label={nextLabel()}
+              page={pageNo}
+              func={buttonFunc}
+            />
           )}
         </Grid>
       </Grid>
