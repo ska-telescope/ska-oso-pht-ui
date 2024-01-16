@@ -7,7 +7,6 @@ import theme from '../../../services/theme/theme';
 import TeamContent from './TeamContent';
 import {
   DEFAULT_HELP,
-  TEAM,
   TEAM_STATUS_TYPE_OPTIONS,
   TEXT_ENTRY_PARAMS
 } from '../../../utils/constants';
@@ -53,7 +52,7 @@ describe('Content', () => {
 
   describe('Stars', () => {
     it('Displays filled star for PI', () => {
-      const index = TEAM.findIndex(teamMember => teamMember.PI);
+      const index = MockProposal.team.findIndex(teamMember => teamMember.PI);
       if (index !== -1) {
         cy.get(
           `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
@@ -61,7 +60,7 @@ describe('Content', () => {
       }
     });
     it('Displays border star for non PI accepted invitation', () => {
-      const index = TEAM.findIndex(
+      const index = MockProposal.team.findIndex(
         teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
       );
       if (index !== -1) {
@@ -71,7 +70,7 @@ describe('Content', () => {
       }
     });
     it('Displays no star for pending invitation', () => {
-      const index = TEAM.findIndex(
+      const index = MockProposal.team.findIndex(
         teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
       );
       if (index !== -1) {
@@ -230,7 +229,7 @@ describe('Content', () => {
 
   describe('Contextual help', () => {
     /*
-    // contextual help working when serving the app but notwith cypress: test set up issue? to investigate
+    // contextual help working when serving the app but not with cypress: test set up issue? to investigate
     it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
@@ -269,7 +268,7 @@ describe('Content', () => {
   describe('Add team member to data table', () => {
     /*
     TO DO
-    // new member added to table when serving the app but notwith cypress: test set up issue? to investigate
+    // new member added to table when serving the app but not with cypress: test set up issue? to investigate
     it('Added team member should be displayed in table', () => {
       const firstName = 'Joe';
       const lastName = 'Whiteley';

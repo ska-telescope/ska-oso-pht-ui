@@ -140,15 +140,15 @@ export default function MemberInvite({ help, proposal, setHelp, setProposal }: M
     );
     const newTeamMember = {
       id: highestId + 1,
-      FirstName: formValues.firstName.value,
-      LastName: formValues.lastName.value,
-      Email: formValues.email.value,
-      Country: '',
-      Affiliation: '',
-      PHDThesis: formValues.phdThesis.phdThesis,
-      Status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      Actions: null,
-      PI: false
+      firstName: formValues.firstName.value,
+      lastName: formValues.lastName.value,
+      email: formValues.email.value,
+      country: '',
+      affiliation: '',
+      phdThesis: formValues.phdThesis.phdThesis,
+      status: TEAM_STATUS_TYPE_OPTIONS.pending,
+      actions: null,
+      pi: false
     };
     setProposal({ ...proposal, team: [...currentTeam, newTeamMember] });
   }
