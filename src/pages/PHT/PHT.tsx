@@ -11,7 +11,7 @@ import CloneProposalButton from '../../components/button/cloneProposal/cloneProp
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
 import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
-import {Proposal} from '../../services/types/proposal'
+import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
   /*
@@ -43,7 +43,7 @@ export default function PHT() {
           setAxiosError(response.error);
         }
       }
-  };
+    };
     fetchData();
     return () => {
       // Clean up on unmount
@@ -85,7 +85,7 @@ export default function PHT() {
     );
   }
 
- const filteredData = dataProposals? filterProposals() : [];
+  const filteredData = dataProposals ? filterProposals() : [];
 
   return (
     <>
@@ -124,12 +124,17 @@ export default function PHT() {
       </Grid>
 
       <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
-        <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around" />
-        { axiosError ? (
+        <Grid
+          p={1}
+          container
+          direction="column"
+          alignItems="flex-left"
+          justifyContent="space-around"
+        />
+        {axiosError ? (
           <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
             <Typography>{axiosError}</Typography>
           </Alert>
-          
         ) : (
           <DataGridWrapper
             testId="dataGridId"
@@ -137,7 +142,7 @@ export default function PHT() {
             extendedColumns={extendedColumns}
             height={500}
           />
-        ) }
+        )}
       </Grid>
     </>
   );
