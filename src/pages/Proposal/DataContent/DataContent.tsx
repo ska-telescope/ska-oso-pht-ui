@@ -29,6 +29,16 @@ export default function DataContent({
   setProposal,
   setStatus
 }: DataContentProps) {
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
+
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -36,7 +46,7 @@ export default function DataContent({
     const result = [STATUS_ERROR, STATUS_OK];
     const count = proposal.pipeline.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [validateToggle]);
 
   const sdpField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">

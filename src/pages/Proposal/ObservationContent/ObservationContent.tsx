@@ -21,6 +21,16 @@ interface ObservationContentProps {
 export default function ObservationContent({ page, proposal, setStatus }: ObservationContentProps) {
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
+
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
@@ -29,7 +39,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
     let count = proposal.observations.length > 0 ? 1 : 0;
     count += TARGETS.ListOfTargets.TargetItems.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [validateToggle]);
 
   const columnsObservations = [
     { field: 'array', headerName: 'Array', minWidth: 100 },

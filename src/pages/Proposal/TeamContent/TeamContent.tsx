@@ -66,6 +66,15 @@ export default function TeamContent({
   setStatus
 }: TeamContentProps) {
   const [value, setValue] = React.useState(0);
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [proposal]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -74,19 +83,19 @@ export default function TeamContent({
     const result = [STATUS_ERROR, STATUS_OK];
     const count = proposal.team.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
-  }, [setStatus]);
+  }, [validateToggle]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   const columns = [
-    { field: 'LastName', headerName: 'Last Name', flex: 1 },
-    { field: 'FirstName', headerName: 'First Name', flex: 1 },
-    { field: 'Status', headerName: 'Status', flex: 1 },
-    { field: 'PHDThesis', headerName: 'PhD Thesis', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
+    { field: 'firstName', headerName: 'First Name', flex: 1 },
+    { field: 'status', headerName: 'Status', flex: 1 },
+    { field: 'phdThesis', headerName: 'PhD Thesis', flex: 1 },
     {
-      field: 'PI',
+      field: 'pi',
       headerName: 'PI',
       sortable: false,
       flex: 1,

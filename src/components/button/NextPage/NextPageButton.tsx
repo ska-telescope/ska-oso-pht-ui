@@ -10,9 +10,10 @@ interface NextPageProps {
   label?: string;
   page?: number;
   func?: Function;
+  disabled?: boolean;
 }
 
-export default function NextPageButton({ label = '', page = 0, func = null }: NextPageProps) {
+export default function NextPageButton({ label = '', page = 0, func = null, disabled }: NextPageProps) {
   const ClickFunction = () => {
     func(page === PAGES.length ? 0 : page + 1);
   };
@@ -23,6 +24,7 @@ export default function NextPageButton({ label = '', page = 0, func = null }: Ne
     <Button
       ariaDescription={`${label}Button`}
       color={ButtonColorTypes.Secondary}
+      disabled={disabled}
       icon={getIcon()}
       label={label}
       onClick={ClickFunction}

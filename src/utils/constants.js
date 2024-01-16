@@ -32,45 +32,6 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
-export const TEAM = [
-  {
-    id: 1,
-    FirstName: 'Van Loo',
-    LastName: 'Cheng',
-    Email: 'ask.lop@map.com',
-    Country: 'Lagoon',
-    Affiliation: 'University of Free Town',
-    PHDThesis: false,
-    Status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    Actions: null,
-    PI: false
-  },
-  {
-    id: 2,
-    FirstName: 'Anu',
-    LastName: 'Vijay',
-    Email: 'ask.lop@map.com',
-    Country: 'Ocean',
-    Affiliation: 'University of Free Town',
-    PHDThesis: true,
-    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-    Actions: null,
-    PI: true
-  },
-  {
-    id: 3,
-    FirstName: 'Sady',
-    LastName: 'Field',
-    Email: 'ask.lop@map.com',
-    Country: 'Park',
-    Affiliation: 'University of Virginia',
-    PHDThesis: false,
-    Status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-    Actions: null,
-    PI: false
-  }
-];
-
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
   Abstract:
@@ -455,4 +416,22 @@ export const TEXT_ENTRY_PARAMS = {
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   }
+};
+
+export const EMPTY_PROPOSAL = {
+  id: null,
+  title: '',
+  proposalType: 0,
+  proposalSubType: 0,
+  team: null,
+  abstract: '',
+  category: 0,
+  subCategory: 0,
+  sciencePDF: null,
+  targetOption: 0,
+  targets: null,
+  observations: null,
+  targetObservation: null,
+  technicalPDF: null,
+  pipeline: ''
 };

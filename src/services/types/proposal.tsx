@@ -1,5 +1,6 @@
-import Target from './Target';
 import Observation from './observation';
+import Target from './targetTemp';
+import TargetObservation from './targetObservation';
 import TeamMember from './teamMember';
 
 export type Proposal = {
@@ -7,17 +8,15 @@ export type Proposal = {
   title: string;
   proposalType: number;
   proposalSubType: number;
-  // Team
   team: TeamMember[];
-  // General
   abstract: string;
   category: number;
   subCategory: number;
-  // Target
+  sciencePDF: File|null;
   targetOption: number;
   targets: Target[];
-  // Observation
   observations: Observation[];
-  // data
+  targetObservation: TargetObservation[];
+  technicalPDF: File|null;
   pipeline: string;
 };
