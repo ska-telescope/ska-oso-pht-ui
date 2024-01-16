@@ -4,13 +4,7 @@ import { TickBox } from '@ska-telescope/ska-gui-components';
 import AddObservationButton from '../../../components/button/AddObservation/AddObservationButton';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import { Proposal } from '../../../services/types/proposal';
-import {
-  OBSERVATION,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  TARGETS
-} from '../../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 interface ObservationContentProps {
   page: number;
@@ -19,9 +13,13 @@ interface ObservationContentProps {
 }
 
 export default function ObservationContent({ page, proposal, setStatus }: ObservationContentProps) {
+  const [validateToggle, setValidateToggle] = React.useState(false);
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
+<<<<<<< HEAD
   const [validateToggle, setValidateToggle] = React.useState(false);
+=======
+>>>>>>> main
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -37,7 +35,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = proposal.observations.length > 0 ? 1 : 0;
-    count += TARGETS.ListOfTargets.TargetItems.length > 0 ? 1 : 0;
+    count += proposal.targets.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
@@ -81,7 +79,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
                 <AddObservationButton />
               </Grid>
               <DataGridWrapper
-                rows={OBSERVATION.list}
+                rows={proposal.observations}
                 extendedColumns={extendedColumnsObservations}
                 height={450}
                 rowClick={ClickFunction}

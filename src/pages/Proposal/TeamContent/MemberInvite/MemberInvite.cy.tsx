@@ -12,7 +12,6 @@ import MemberInvite, {
 } from './MemberInvite';
 import {
   DEFAULT_HELP,
-  TEAM,
   TEAM_STATUS_TYPE_OPTIONS,
   TEXT_ENTRY_PARAMS
 } from '../../../../utils/constants';
@@ -54,7 +53,7 @@ describe('Content', () => {
 
   describe('Stars', () => {
     it('Displays filled star for PI', () => {
-      const index = TEAM.findIndex(teamMember => teamMember.PI);
+      const index = MockProposal.team.findIndex(teamMember => teamMember.PI);
       if (index !== -1) {
         cy.get(
           `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
@@ -62,7 +61,7 @@ describe('Content', () => {
       }
     });
     it('Displays border star for non PI accepted invitation', () => {
-      const index = TEAM.findIndex(
+      const index = MockProposal.team.findIndex(
         teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
       );
       if (index !== -1) {
@@ -72,7 +71,7 @@ describe('Content', () => {
       }
     });
     it('Displays no star for pending invitation', () => {
-      const index = TEAM.findIndex(
+      const index = MockProposal.team.findIndex(
         teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
       );
       if (index !== -1) {
