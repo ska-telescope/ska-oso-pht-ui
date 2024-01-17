@@ -9,3 +9,4 @@ Pages
    TitlePage
    GeneralPage
    TeamPage
+   TargetPage

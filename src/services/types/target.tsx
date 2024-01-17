@@ -1,11 +1,10 @@
 type Target = {
   id: number;
+  actions: string;
   name: string;
   ra: string;
   dec: string;
-  sc1: string;
-  sc2: string;
-  sc3: string;
+  vel: string;
 };
 
 export default Target;

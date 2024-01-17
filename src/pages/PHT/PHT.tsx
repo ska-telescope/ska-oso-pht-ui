@@ -10,7 +10,7 @@ import ViewProposalButton from '../../components/button/viewProposal/viewProposa
 import CloneProposalButton from '../../components/button/cloneProposal/cloneProposalButton';
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
-import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
+import TrashIcon from '../../components/button/trashIcon/trashIcon';
 import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
@@ -51,6 +51,10 @@ export default function PHT() {
     };
   }, []);
 
+  const deleteIconClicked = () => {
+    // TODO : Display confirmation and if confirm, delete
+  };
+
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 200 },
     { field: 'cycle', headerName: 'Cycle', width: 200 },
@@ -70,7 +74,7 @@ export default function PHT() {
           <EditProposalButton />
           <CloneProposalButton />
           <DownloadProposalButton />
-          <DeleteProposalButton />
+          <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
         </>
       )
     }

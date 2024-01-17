@@ -42,17 +42,51 @@ export default function AddTarget({ help, proposal, setHelp, setProposal }: AddT
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
 
-  const clickAddButton = () => {
+  const formValues = {
+    name: {
+      value: name,
+      setValue: setName
+    },
+    ra: {
+      value: ra,
+      setValue: setRA
+    },
+    dec: {
+      value: dec,
+      setValue: setDec
+    },
+    vel: {
+      vel,
+      setValue: setVel
+    }
+  };
+
+  const AddTheTarget = () => {
+    const highestId = proposal.targets.reduce(
+      (acc, target) => (target.id > acc ? target.id : acc),
+      0
+    );
     const newTarget = {
-      id: proposal.targets.length,
-      Name: name,
-      RA: ra,
-      Dec: dec,
-      sc1: vel,
-      sc2: '',
-      sc3: ''
+      id: highestId + 1,
+      action: null,
+      name,
+      ra,
+      dec,
+      vel
     };
     setProposal({ ...proposal, targets: [...proposal.targets, newTarget] });
+  };
+
+  function clearForm() {
+    formValues.name.setValue('');
+    formValues.ra.setValue('');
+    formValues.dec.setValue('');
+    formValues.vel.setValue('');
+  }
+
+  const clickFunction = () => {
+    AddTheTarget();
+    clearForm();
   };
 
   return (
@@ -90,7 +124,7 @@ export default function AddTarget({ help, proposal, setHelp, setProposal }: AddT
         </Grid>
 
         <Box p={1}>
-          <AddTargetButton disabled={disabled()} onClick={clickAddButton} />
+          <AddTargetButton disabled={disabled()} onClick={clickFunction} />
         </Box>
       </Grid>
       <Grid item xs={5}>
