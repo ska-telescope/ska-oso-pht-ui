@@ -202,11 +202,11 @@ export default function AddObservation() {
 
   const arrayField = () => (
     <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={3} data-testid={'arrayConfiguration'}>
+      <Grid item xs={3} data-testid="arrayConfiguration">
         {arrayConfigurationField()}
       </Grid>
       <Grid item xs={1} />
-      <Grid item xs={7} data-testid={'subarrayConfiguration'}>
+      <Grid item xs={7} data-testid="subarrayConfiguration">
         {subarrayConfigurationField()}
       </Grid>
     </Grid>
@@ -511,7 +511,14 @@ export default function AddObservation() {
   );
 
   const centralFrequencyField = () => (
-    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between" data-testid="centralFrequency">
+    <Grid
+      spacing={1}
+      container
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      data-testid="centralFrequency"
+    >
       <Grid item xs={8}>
         {frequencyField()}
       </Grid>
@@ -582,7 +589,12 @@ export default function AddObservation() {
   };
 
   const helpPanel = () => (
-    <InfoPanel title={help.title} description={help.description} additional={help.additional} testId="helpPanel"/>
+    <InfoPanel
+      title={help.title}
+      description={help.description}
+      additional={help.additional}
+      testId="helpPanel"
+    />
   );
 
   return (

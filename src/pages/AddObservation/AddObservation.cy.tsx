@@ -2,9 +2,9 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
+import { BrowserRouter } from 'react-router-dom';
 import theme from '../../services/theme/theme';
 import AddObservation from './AddObservation';
-import {BrowserRouter} from "react-router-dom";
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -53,12 +53,12 @@ function verifySuppliedTypeValueAndUnits() {
 }
 
 function verifyElevationField() {
-  cy.get('[data-testid="elevation"]').type("test elevation");
+  cy.get('[data-testid="elevation"]').type('test elevation');
   cy.get('[data-testid="helpPanel"]').contains('ELEVATION DESCRIPTION');
 }
 
 function verifyWeatherField() {
-  cy.get('[data-testid="weather"]').type("test weather");
+  cy.get('[data-testid="weather"]').type('test weather');
   cy.get('[data-testid="helpPanel"]').contains('WEATHER DESCRIPTION');
 }
 
@@ -78,7 +78,7 @@ function verifyObservationTypeContinuum() {
 }
 
 function verifyCentralFrequency() {
-  cy.get('[data-testid="centralFrequency"]').type("test central frequency");
+  cy.get('[data-testid="centralFrequency"]').type('test central frequency');
   cy.get('[data-testid="helpPanel"]').contains('FREQUENCY DESCRIPTION');
 }
 
@@ -99,7 +99,7 @@ function verifyFrequencyUnits() {
 }
 
 function verifyContinuumBandwidth() {
-  cy.get('[data-testid="continuumBandwidth"]').type("test continuum bandwidth frequency");
+  cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
   cy.get('[data-testid="helpPanel"]').contains('CONTINUUM BANDWIDTH DESCRIPTION');
 }
 
@@ -152,7 +152,7 @@ function verifySpectralAveraging() {
 }
 
 function verifyEffectiveResolution() {
-  cy.get('[data-testid="effective"]').type("test effective resolution");
+  cy.get('[data-testid="effective"]').type('test effective resolution');
   cy.get('[data-testid="helpPanel"]').contains('EFFECTIVE RESOLUTION DESCRIPTION');
 }
 
@@ -174,7 +174,7 @@ function verifyImageWeighting() {
 
 function verifySubBands() {
   cy.get('[data-testid="subBands"]').click();
-  cy.get('[data-testid="subBands"]').type("2");
+  cy.get('[data-testid="subBands"]').type('2');
   cy.get('[data-testid="helpPanel"]').contains('SUB-BANDS DESCRIPTION');
 }
 
@@ -184,18 +184,18 @@ describe('<AddObservation />', () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-            <BrowserRouter>
-                <AddObservation />
-            </BrowserRouter>
+          <BrowserRouter>
+            <AddObservation />
+          </BrowserRouter>
         </ThemeProvider>
       );
     });
   }
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
     cy.mount(
-          <BrowserRouter>
-            <AddObservation />
-          </BrowserRouter>
+      <BrowserRouter>
+        <AddObservation />
+      </BrowserRouter>
     );
     verifyMidArrayAndSubArrayConfig();
     verifyObservingBand();
@@ -218,16 +218,16 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     cy.mount(
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
+      <BrowserRouter>
+        <AddObservation />
+      </BrowserRouter>
     );
-    verifyMidArrayAndSubArrayConfig()
+    verifyMidArrayAndSubArrayConfig();
     verifyObservingBand();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
-    verifySuppliedTypeValueAndUnits()
+    verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnits();
     verifyMidBandwidthFrequency();
     verifySpectralResolutionMid();
@@ -239,15 +239,15 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     cy.mount(
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
+      <BrowserRouter>
+        <AddObservation />
+      </BrowserRouter>
     );
     verifyLowArrayAndSubArrayConfig();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
-    verifySuppliedTypeValueAndUnits()
+    verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnits();
     verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
@@ -259,9 +259,9 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
     cy.mount(
-          <BrowserRouter>
-            <AddObservation />
-          </BrowserRouter>
+      <BrowserRouter>
+        <AddObservation />
+      </BrowserRouter>
     );
     verifyLowArrayAndSubArrayConfig();
     verifyElevationField();
