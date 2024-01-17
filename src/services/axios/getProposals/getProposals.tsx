@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
-import { Proposal } from '../../types/proposal';
 
 async function GetProposals() {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_LIST = '/proposals';
+  const URL_LIST = '/list';
   const config = {
     headers: {
       Accept: 'application/json',
@@ -14,7 +13,7 @@ async function GetProposals() {
   };
 
   if (USE_LOCAL_DATA) {
-    return (MockProposals as unknown) as Proposal[];
+    return MockProposals;
   }
 
   try {

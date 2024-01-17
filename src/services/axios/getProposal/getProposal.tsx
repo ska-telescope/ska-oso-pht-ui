@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposal from './mockProposal';
-import { Proposal } from '../../types/proposal';
 
 async function GetProposal() {
   const apiUrl = SKA_PHT_API_URL;
@@ -15,7 +14,7 @@ async function GetProposal() {
 
   // TODO : Do this properly
   if (USE_LOCAL_DATA) {
-    return MockProposal as Proposal;
+    return MockProposal;
   }
 
   try {
