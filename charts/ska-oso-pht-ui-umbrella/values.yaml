@@ -1,0 +1,15 @@
+global:
+  annotations:
+    app.gitlab.com/app: CI_PROJECT_PATH_SLUG
+    app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+  minikube: true
+
+ska-oso-pht-ui:
+  ingress:
+    production: false
+    hostname: # Only used in production
+
+ska-ost-senscalc:
+  ingress:
+    production: false
+    hostname: # Only used in production
