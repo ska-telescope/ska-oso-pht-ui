@@ -2228,10 +2228,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^0.1.85":
-  version "0.1.85"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-0.1.85.tgz#412818c4c47f33a163889c1e5f33429d036f0140"
-  integrity sha512-NxjX0Eu0/xdH9v3LaWkesrPoqu+zq6kxewKlInb7clrICsDm4RjveDqBiR2bSm7SgHICbiJurkON/uN7teI6Yg==
+"@ska-telescope/ska-gui-components@^0.1.86":
+  version "0.1.86"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-0.1.86.tgz#ca596cfca1bd28dfbb8fb6ec3b3ebd587a351d82"
+  integrity sha512-D9Sm+MM5rrUqUj6YtHgD6mkUFOnY5UvrHtBiLjiiEbbLPMlTs5j7V3IQZB/6bZbDIwkB+KGHwasoJ6hYUcq7FQ==
   dependencies:
     "@mui/lab" "^5.0.0-alpha.135"
     "@mui/system" "^5.13.7"
@@ -2260,10 +2260,10 @@
     redux-saga "^1.2.3"
     trim "^1.0.1"
 
-"@ska-telescope/ska-gui-local-storage@^0.0.7":
-  version "0.0.7"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-local-storage/-/ska-gui-local-storage-0.0.7.tgz#a496542ec621cfaad95cc55407d44727eb3ba7c7"
-  integrity sha512-+DcFatyYu/CHUm8FIX5dOvAZebt2xdCO+5B85tsSdx9wbnZp2qGjEI2FKuZb7tLDSFMi2wY2B6fg3ey3H4Z5OA==
+"@ska-telescope/ska-gui-local-storage@^0.0.9":
+  version "0.0.9"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-local-storage/-/ska-gui-local-storage-0.0.9.tgz#69d0ce1f395e002476d660609c2b5d8187128106"
+  integrity sha512-k7MZTvTei/KBzipOyGXBsHPO4VmcR+aWb98YQv4pVWL06TGpzr4OqAoBc+lIzPPJMKhWliQtmbVcVKd55WkM0g==
   dependencies:
     "@react-spring/web" "^9.7.3"
     "@reduxjs/toolkit" "^1.9.7"
