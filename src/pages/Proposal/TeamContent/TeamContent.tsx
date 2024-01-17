@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import TrashIcon from '../../../components/button/trashIcon/trashIcon';
+import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
 import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';

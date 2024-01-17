@@ -10,7 +10,7 @@ import { Proposal } from '../../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
-import TrashIcon from '../../../../components/button/trashIcon/trashIcon';
+import TrashIcon from '../../../../components/icon/trashIcon/trashIcon';
 
 interface TargetListSectionProps {
   help: Help;

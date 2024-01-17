@@ -1,16 +1,15 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-// import Alert from '@mui/material/Alert';
 import GetProposals from '../../services/axios/getProposals/getProposals';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton';
-import CloneProposalButton from '../../components/button/cloneProposal/cloneProposalButton';
-import EditProposalButton from '../../components/button/editProposal/editProposalButton';
-import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
-import TrashIcon from '../../components/button/trashIcon/trashIcon';
+import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import EditIcon from '../../components/icon/editIcon/editIcon';
+import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
@@ -51,8 +50,24 @@ export default function PHT() {
     };
   }, []);
 
+  const cloneIconClicked = () => {
+    // TODO : Display confirmation and if confirm, clone
+  };
+
   const deleteIconClicked = () => {
     // TODO : Display confirmation and if confirm, delete
+  };
+
+  const downloadIconClicked = () => {
+    // TODO : Implement
+  };
+
+  const editIconClicked = () => {
+    // TODO : Implement
+  };
+
+  const viewIconClicked = () => {
+    // TODO : Implement
   };
 
   const COLUMNS = [
@@ -70,10 +85,10 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <ViewProposalButton />
-          <EditProposalButton />
-          <CloneProposalButton />
-          <DownloadProposalButton />
+          <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
+          <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
+          <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
+          <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
         </>
       )
