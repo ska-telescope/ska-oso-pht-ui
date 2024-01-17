@@ -1,6 +1,11 @@
+# Default values for oet.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 minikube: true
 
-system: oso
+system: TM-mid
+telescope: SKA-mid
+subsystem: ska-oso-pht-services
 
 global:
   minikube: true
