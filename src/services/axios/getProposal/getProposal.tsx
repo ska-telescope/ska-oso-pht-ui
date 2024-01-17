@@ -19,9 +19,9 @@ async function GetProposal() {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return 'error.API_NOT_AVAILABLE';
+    return { error: e.message };
   }
 }
 
