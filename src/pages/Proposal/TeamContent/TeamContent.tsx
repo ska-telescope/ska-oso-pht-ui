@@ -3,8 +3,8 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
 import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
+import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
-import DeleteProposalButton from '../../../components/button/deleteProposal/deleteProposalButton';
 import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 // import { TeamMember } from '../../../services/types/teamMember';
@@ -89,6 +89,10 @@ export default function TeamContent({
     setValue(newValue);
   };
 
+  const deleteIconClicked = () => {
+    // TODO : Display confirmation and if confirm, delete
+  };
+
   const columns = [
     { field: 'lastName', headerName: 'Last Name', flex: 1 },
     { field: 'firstName', headerName: 'First Name', flex: 1 },
@@ -110,7 +114,7 @@ export default function TeamContent({
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: () => <DeleteProposalButton />
+      renderCell: () => <TrashIcon onClick={deleteIconClicked} toolTip="Delete team member" />
     }
   ];
   const extendedColumns = [...columns];
