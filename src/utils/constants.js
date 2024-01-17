@@ -342,3 +342,21 @@ export const TEXT_ENTRY_PARAMS = {
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   }
 };
+
+export const EMPTY_PROPOSAL = {
+  id: null,
+  title: '',
+  proposalType: 0,
+  proposalSubType: 0,
+  team: null,
+  abstract: '',
+  category: 0,
+  subCategory: 0,
+  sciencePDF: null,
+  targetOption: 0,
+  targets: null,
+  observations: null,
+  targetObservation: null,
+  technicalPDF: null,
+  pipeline: ''
+};

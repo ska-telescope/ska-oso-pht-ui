@@ -9,7 +9,6 @@ const MockProposal = {
   title: 'MOCK PROPOSAL',
   proposalType: 1,
   proposalSubType: 5,
-  // Team
   team: [
     {
       id: 1,
@@ -48,13 +47,10 @@ const MockProposal = {
       pi: false
     }
   ],
-  // General
   abstract: '',
   category: 1,
   subCategory: 1,
-  // Science,
   sciencePDF: null,
-  // Target
   targetOption: 1,
   targets: [
     {
@@ -85,7 +81,6 @@ const MockProposal = {
       sc3: '34'
     }
   ],
-  // Observation
   observations: [
     {
       id: 1,
@@ -123,9 +118,11 @@ const MockProposal = {
       type: 'Zoom'
     }
   ],
-  // Technical,
+  targetObservation: [
+    { targetId: 1, observationId: 1 },
+    { targetId: 3, observationId: 2 }
+  ],
   technicalPDF: null,
-  // Data
   pipeline: ''
 };
 
