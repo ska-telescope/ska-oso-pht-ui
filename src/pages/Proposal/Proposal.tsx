@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 
@@ -70,7 +71,14 @@ export default function Proposal() {
           setStatus={setTheProposalState}
         />
       )}
-      {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 3 && (
+        <ScienceContent
+          page={thePage}
+          proposal={proposal}
+          setProposal={setProposal}
+          setStatus={setTheProposalState}
+        />
+      )}
       {thePage === 4 && (
         <TargetContent
           help={help}
@@ -84,7 +92,14 @@ export default function Proposal() {
       {thePage === 5 && (
         <ObservationContent page={thePage} proposal={proposal} setStatus={setTheProposalState} />
       )}
-      {thePage === 6 && <TechnicalContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 6 && (
+        <TechnicalContent
+          page={thePage}
+          proposal={proposal}
+          setProposal={setProposal}
+          setStatus={setTheProposalState}
+        />
+      )}
       {thePage === 7 && (
         <DataContent
           help={help}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
-import { DropDown, SearchEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+// import Alert from '@mui/material/Alert';
+import GetProposals from '../../services/axios/getProposals/getProposals';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -9,7 +11,7 @@ import CloneProposalButton from '../../components/button/cloneProposal/cloneProp
 import EditProposalButton from '../../components/button/editProposal/editProposalButton';
 import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
 import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
-import MockProposals from '../../services/axios/getProposals/mockProposals';
+import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
   /*
@@ -19,9 +21,35 @@ export default function PHT() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
+  const [dataProposals, setDataProposals] = React.useState([]);
+  const [axiosError, setAxiosError] = React.useState('');
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      const response = await GetProposals();
+      if (isMounted) {
+        if (response && !response.error) {
+          if (response.every(item => item.id && item.title)) {
+            setAxiosError('');
+            setDataProposals(response as Proposal[]);
+          } else {
+            setAxiosError('Unexpected data format returned from API');
+          }
+        } else {
+          setAxiosError(response.error);
+        }
+      }
+    };
+    fetchData();
+    return () => {
+      // Clean up on unmount
+      isMounted = false;
+    };
+  }, []);
 
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 200 },
@@ -49,11 +77,15 @@ export default function PHT() {
   ];
   const extendedColumns = [...COLUMNS];
 
-  const filteredData = MockProposals.filter(
-    item =>
-      ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
-  );
+  function filterProposals() {
+    return dataProposals.filter(
+      item =>
+        ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
+    );
+  }
+
+  const filteredData = dataProposals ? filterProposals() : [];
 
   return (
     <>
@@ -92,12 +124,25 @@ export default function PHT() {
       </Grid>
 
       <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
-        <DataGridWrapper
-          testId="dataGridId"
-          rows={filteredData}
-          extendedColumns={extendedColumns}
-          height={500}
+        <Grid
+          p={1}
+          container
+          direction="column"
+          alignItems="flex-left"
+          justifyContent="space-around"
         />
+        {axiosError ? (
+          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+            <Typography>{axiosError}</Typography>
+          </Alert>
+        ) : (
+          <DataGridWrapper
+            testId="dataGridId"
+            rows={filteredData}
+            extendedColumns={extendedColumns}
+            height={500}
+          />
+        )}
       </Grid>
     </>
   );
