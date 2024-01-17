@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import GetProposals from '../../services/axios/getProposals/getProposals';
@@ -13,6 +14,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
+  const navigate = useNavigate();
   /*
   TODO: remove colouring of selected row for better visibility
   using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
@@ -51,7 +53,7 @@ export default function PHT() {
   }, []);
 
   const cloneIconClicked = () => {
-    // TODO : Display confirmation and if confirm, clone
+    // TODO
   };
 
   const deleteIconClicked = () => {
@@ -63,11 +65,11 @@ export default function PHT() {
   };
 
   const editIconClicked = () => {
-    // TODO : Implement
+    navigate('/proposal');
   };
 
   const viewIconClicked = () => {
-    // TODO : Implement
+    navigate('/proposal');
   };
 
   const COLUMNS = [
@@ -76,17 +78,17 @@ export default function PHT() {
     { field: 'title', headerName: 'Title', width: 300 },
     { field: 'pi', headerName: 'PI', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'lastUpdated', headerName: 'Last Updated', width: 250 },
+    { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
     {
-      field: 'actions',
-      headerName: 'Actions',
+      field: 'cpi',
+      headerName: ' ',
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
           <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
-          <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
+          {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
           <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
