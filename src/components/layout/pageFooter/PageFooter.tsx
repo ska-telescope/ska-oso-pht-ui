@@ -6,10 +6,15 @@ import { PAGES } from '../../../utils/constants';
 
 interface PageFooterProps {
   pageNo: number;
+  buttonDisabled: boolean;
   buttonFunc?: Function;
 }
 
-export default function PageFooter({ pageNo, buttonFunc = null }: PageFooterProps) {
+export default function PageFooter({
+  pageNo,
+  buttonDisabled = false,
+  buttonFunc = null
+}: PageFooterProps) {
   const nextLabel = () => {
     if (pageNo === -2) {
       return 'Add';
@@ -40,7 +45,12 @@ export default function PageFooter({ pageNo, buttonFunc = null }: PageFooterProp
         <Grid item />
         <Grid item>
           {pageNo < PAGES.length - 1 && (
-            <NextPageButton label={nextLabel()} page={pageNo} func={buttonFunc} />
+            <NextPageButton
+              disabled={buttonDisabled}
+              label={nextLabel()}
+              page={pageNo}
+              func={buttonFunc}
+            />
           )}
         </Grid>
       </Grid>

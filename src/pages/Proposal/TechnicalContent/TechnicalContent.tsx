@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { FileUpload } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
-import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 interface TechnicalContentProps {
   page: number;
@@ -17,6 +17,7 @@ export default function TechnicalContent({
   setProposal,
   setStatus
 }: TechnicalContentProps) {
+  const [uploadStatus, setUploadStatus] = React.useState(9);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   React.useEffect(() => {
@@ -31,8 +32,9 @@ export default function TechnicalContent({
     if (typeof setStatus !== 'function') {
       return;
     }
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = proposal?.technicalPDF ? 1 : 0;
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    let count = proposal?.technicalPDF ? 1 : 0;
+    count += uploadStatus === 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
@@ -48,6 +50,7 @@ export default function TechnicalContent({
           chooseFileTypes=".pdf"
           file={proposal.technicalPDF}
           setFile={setFile}
+          setStatus={setUploadStatus}
           uploadURL="https://httpbin.org/post"
         />
       </Grid>
