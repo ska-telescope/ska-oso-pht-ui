@@ -27,6 +27,7 @@ export default function DataGridWrapper({
       columns={extendedColumns}
       height={height}
       onRowClick={rowClick}
+      showBorder={false}
       rows={rows}
     />
   );

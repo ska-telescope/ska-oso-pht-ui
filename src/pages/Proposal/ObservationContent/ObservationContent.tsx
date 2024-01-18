@@ -82,7 +82,8 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
               />
             </Grid>
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={1} />
+          <Grid item xs={6}>
             <Card variant="outlined">
               <CardHeader
                 title={(
