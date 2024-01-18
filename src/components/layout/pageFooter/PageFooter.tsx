@@ -6,7 +6,7 @@ import { PAGES } from '../../../utils/constants';
 
 interface PageFooterProps {
   pageNo: number;
-  buttonDisabled: boolean;
+  buttonDisabled?: boolean;
   buttonFunc?: Function;
 }
 

@@ -18,7 +18,7 @@ import MockProposal from '../../services/axios/getProposal/mockProposal';
 export default function Proposal() {
   const [thePage, setThePage] = React.useState(0);
   const [help, setHelp] = React.useState(DEFAULT_HELP);
-  const [proposalState, setProposalState] = React.useState([5, 5, 5, 5, 5, 5, 5, 5]);
+  const [proposalState, setProposalState] = React.useState([5, 5, 5, 5, 5, 5, 5, 0]);
   const [proposal, setProposal] = React.useState(null);
 
   React.useEffect(() => {
@@ -101,14 +101,7 @@ export default function Proposal() {
         />
       )}
       {thePage === 7 && (
-        <DataContent
-          help={help}
-          page={thePage}
-          proposal={proposal}
-          setHelp={setHelp}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
+        <DataContent page={thePage} proposal={proposal} setStatus={setTheProposalState} />
       )}
       <PageFooter pageNo={thePage} buttonFunc={setThePage} />
     </>
