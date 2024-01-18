@@ -22,46 +22,16 @@ export function PIStar({ isPI, status, ...rest }) {
   }
 }
 
-export const HELP_FIRST_NAME = {
-  title: 'Help first name',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_LAST_NAME = {
-  title: 'Help last name',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_EMAIL = {
-  title: 'Help email',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_PHD = {
-  title: 'Help PhD',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_PI = {
-  title: 'Help PI',
-  description: 'PI HELP',
-  additional: ''
-};
-
 interface TeamContentProps {
-  help: Help;
   page: number;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
   setStatus: Function;
 }
 
 export default function TeamContent({
-  help,
   page,
   proposal,
-  setHelp,
   setProposal,
   setStatus
 }: TeamContentProps) {
@@ -173,9 +143,7 @@ export default function TeamContent({
             </Box>
             {value === 0 && (
               <MemberInvite
-                help={help}
                 proposal={proposal}
-                setHelp={setHelp}
                 setProposal={setProposal}
               />
             )}

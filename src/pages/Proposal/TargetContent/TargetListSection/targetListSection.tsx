@@ -20,9 +20,7 @@ interface TargetListSectionProps {
 }
 
 export default function TargetListSection({
-  help,
   proposal,
-  setHelp,
   setProposal
 }: TargetListSectionProps) {
   const deleteIconClicked = () => {
@@ -99,9 +97,7 @@ export default function TargetListSection({
           </Box>
           {value === 0 && (
             <AddTarget
-              help={help}
               proposal={proposal}
-              setHelp={setHelp}
               setProposal={setProposal}
             />
           )}

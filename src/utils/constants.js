@@ -71,11 +71,9 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = {
-  title: 'Help Title',
-  description: 'Field sensitive help',
-  additional: ''
-};
+export const DEFAULT_HELP = [
+  '', '', ''
+];
 
 export const OBSERVATION = {
   array: [

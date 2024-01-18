@@ -1,49 +1,47 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Grid } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
-import InfoPanel from '../../../../components/infoPanel/infoPanel';
 import TeamInviteButton from '../../../../components/button/teamInvite/TeamInviteButton';
-import { Help } from '../../../../services/types/help';
 import { Proposal } from '../../../../services/types/proposal';
 import { helpers } from '../../../../utils/helpers';
-import { TEAM_STATUS_TYPE_OPTIONS } from '../../../../utils/constants';
-// TODO import { TeamMember } from '../../../../services/types/teamMember';
+import { DEFAULT_HELP, TEAM_STATUS_TYPE_OPTIONS } from '../../../../utils/constants';
+import HelpPanel from '../../../../components/helpPanel/helpPanel';
 
-export const HELP_FIRST_NAME = {
-  title: 'Help first name',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_LAST_NAME = {
-  title: 'Help last name',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_EMAIL = {
-  title: 'Help email',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_PHD = {
-  title: 'Help PhD',
-  description: 'Field sensitive help',
-  additional: ''
-};
-export const HELP_PI = {
-  title: 'Help PI',
-  description: 'PI HELP',
-  additional: ''
-};
+export const HELP_FIRST_NAME = [
+  'Help first name',
+  'Field sensitive help',
+  ''
+];
+export const HELP_LAST_NAME = [
+  'Help last name',
+  'Field sensitive help',
+  ''
+];
+export const HELP_EMAIL = [
+  'Help email',
+  'Field sensitive help',
+  ''
+];
+export const HELP_PHD = [
+  'Help PhD',
+  'Field sensitive help',
+  ''
+];
+export const HELP_PI = [
+  'Help PI',
+  'PI HELP',
+  ''
+];
 
 interface MemberInviteProps {
-  help: Help;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
 }
 
-export default function MemberInvite({ help, proposal, setHelp, setProposal }: MemberInviteProps) {
+export default function MemberInvite({ proposal, setProposal }: MemberInviteProps) {
+  const { helpContent } = storageObject.useStore();
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -107,7 +105,8 @@ export default function MemberInvite({ help, proposal, setHelp, setProposal }: M
   React.useEffect(() => {
     const invalidForm = Boolean(formValidation());
     setFormInvalid(invalidForm);
-  });
+    helpContent(DEFAULT_HELP);
+  }, []);
 
   const formValues = {
     firstName: {
@@ -174,7 +173,7 @@ export default function MemberInvite({ help, proposal, setHelp, setProposal }: M
             testId="firstName"
             value={firstName}
             setValue={setFirstName}
-            onFocus={() => setHelp(HELP_FIRST_NAME)}
+            onFocus={() => helpContent(HELP_FIRST_NAME)}
             disabled={false}
             errorText={errorTextFirstName}
           />
@@ -183,7 +182,7 @@ export default function MemberInvite({ help, proposal, setHelp, setProposal }: M
             testId="lastName"
             value={lastName}
             setValue={setLastName}
-            onFocus={() => setHelp(HELP_LAST_NAME)}
+            onFocus={() => helpContent(HELP_LAST_NAME)}
             errorText={errorTextLastName}
           />
           <TextEntry
@@ -192,23 +191,18 @@ export default function MemberInvite({ help, proposal, setHelp, setProposal }: M
             value={email}
             setValue={setEmail}
             errorText={errorTextEmail}
-            onFocus={() => setHelp(HELP_EMAIL)}
+            onFocus={() => helpContent(HELP_EMAIL)}
           />
           <TickBox
             label="PhD Thesis"
             testId="PhDCheckbox"
             checked={phdThesis}
             onChange={handleCheckboxChange}
-            onFocus={() => setHelp(HELP_PHD)}
+            onFocus={() => helpContent(HELP_PHD)}
           />
         </Grid>
         <Grid item xs={5}>
-          <InfoPanel
-            title={help.title}
-            description={help.description}
-            additional={help.additional}
-            testId="infoPanelId"
-          />
+          <HelpPanel />
         </Grid>
       </Grid>
 
