@@ -22,7 +22,7 @@ ui:
   image:
     registry: artefact.skao.int
     image: ska-oso-pht-ui
-    tag: 0.1.0
+    tag: 0.0.0
     pullPolicy: IfNotPresent
 
 # Configure Ingress
