@@ -33,7 +33,7 @@ export default function PHT() {
       const response = await GetProposals();
       if (isMounted) {
         if (response && !response.error) {
-          if (response.every(item => item.id && item.title)) {
+          if (response.length > 1 && response.every(item => item.id && item.title)) {
             setAxiosError('');
             setDataProposals(response as Proposal[]);
           } else {
