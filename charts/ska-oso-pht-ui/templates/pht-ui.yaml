@@ -58,7 +58,7 @@ spec:
 {{- end}}
 {{ end }}
 ---
-apiVersion: v2
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
@@ -77,7 +77,7 @@ spec:
   - protocol: TCP
     port: 80
 ---
-apiVersion: v2
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}-conf
@@ -85,7 +85,7 @@ metadata:
 data:
   runtime-configuration.json: {{ .Values.ui.runtime | toJson | quote }}
 ---
-apiVersion: apps/v2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
