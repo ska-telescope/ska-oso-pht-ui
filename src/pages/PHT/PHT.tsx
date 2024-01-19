@@ -1,19 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-// import Alert from '@mui/material/Alert';
 import GetProposals from '../../services/axios/getProposals/getProposals';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton';
-import CloneProposalButton from '../../components/button/cloneProposal/cloneProposalButton';
-import EditProposalButton from '../../components/button/editProposal/editProposalButton';
-import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
-import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
+import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import EditIcon from '../../components/icon/editIcon/editIcon';
+import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
+  const navigate = useNavigate();
   /*
   TODO: remove colouring of selected row for better visibility
   using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
@@ -51,26 +52,46 @@ export default function PHT() {
     };
   }, []);
 
+  const cloneIconClicked = () => {
+    // TODO
+  };
+
+  const deleteIconClicked = () => {
+    // TODO : Display confirmation and if confirm, delete
+  };
+
+  const downloadIconClicked = () => {
+    // TODO : Implement
+  };
+
+  const editIconClicked = () => {
+    navigate('/proposal');
+  };
+
+  const viewIconClicked = () => {
+    navigate('/proposal');
+  };
+
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 200 },
     { field: 'cycle', headerName: 'Cycle', width: 200 },
     { field: 'title', headerName: 'Title', width: 300 },
     { field: 'pi', headerName: 'PI', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'lastUpdated', headerName: 'Last Updated', width: 250 },
+    { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
     {
-      field: 'actions',
-      headerName: 'Actions',
+      field: 'cpi',
+      headerName: ' ',
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <ViewProposalButton />
-          <EditProposalButton />
-          <CloneProposalButton />
-          <DownloadProposalButton />
-          <DeleteProposalButton />
+          <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
+          {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
+          <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
+          <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
+          <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
         </>
       )
     }

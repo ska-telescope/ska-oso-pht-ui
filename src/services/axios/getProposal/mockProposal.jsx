@@ -51,34 +51,32 @@ const MockProposal = {
   category: 1,
   subCategory: 1,
   sciencePDF: null,
-  targetOption: 1,
+  scienceLoadStatus: false,
+  targetOption: 2,
   targets: [
     {
       id: 1,
+      actions: null,
       name: 'Target 1',
       ra: '01:00:00',
       dec: '00:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     },
     {
       id: 2,
+      actions: null,
       name: 'Target 2',
       ra: '03:00:00',
       dec: '-10:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     },
     {
       id: 3,
+      actions: null,
       name: 'Target 3',
       ra: '05:30:00',
       dec: '-10:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     }
   ],
   observations: [
@@ -123,6 +121,7 @@ const MockProposal = {
     { targetId: 3, observationId: 2 }
   ],
   technicalPDF: null,
+  technicalLoadStatus: false,
   pipeline: ''
 };
 
