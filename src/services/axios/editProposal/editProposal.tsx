@@ -4,15 +4,13 @@ import MockUpdatedProposal from './mockUpdatedProposal';
 
 async function editProposal(proposalId, updatedProposal?) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_EDIT = `/${proposalId}`;
+  // const URL_EDIT = `/${proposalId}`;
   const config = {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     }
   };
-
-  console.log('api url', apiUrl);
 
   if (USE_DUMMY_EDIT) {
     updatedProposal = MockUpdatedProposal;

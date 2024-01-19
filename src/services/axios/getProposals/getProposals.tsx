@@ -4,7 +4,7 @@ import MockProposals from './mockProposals';
 
 async function GetProposals() {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_LIST = '/list';
+  // const URL_LIST = '/list';
   const config = {
     headers: {
       Accept: 'application/json',

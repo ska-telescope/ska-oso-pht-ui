@@ -19,10 +19,10 @@ export default function EditProposalButton() {
     const response = await editProposal(proposal.id, updatedProposal);
     if (response && !response.error) {
       // Handle successful response
-      console.log('success');
+      // console.log('success');
     } else {
       // Handle error response
-      console.log('error', response.error);
+      // console.log('error', response.error);
     }
   };
 
