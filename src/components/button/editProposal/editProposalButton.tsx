@@ -15,7 +15,7 @@ export default function EditProposalButton() {
     };
     const proposal = {
       id: 1
-    }
+    };
     const response = await editProposal(proposal.id, updatedProposal);
     if (response && !response.error) {
       // Handle successful response

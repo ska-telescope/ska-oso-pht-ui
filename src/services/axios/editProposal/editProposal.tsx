@@ -3,16 +3,16 @@ import { SKA_PHT_API_URL, USE_DUMMY_EDIT } from '../../../utils/constants';
 import MockUpdatedProposal from './mockUpdatedProposal';
 
 async function editProposal(proposalId, updatedProposal?) {
-    const apiUrl = SKA_PHT_API_URL;
-    const URL_EDIT = `/${proposalId}`;
-    const config = {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    };
+  const apiUrl = SKA_PHT_API_URL;
+  const URL_EDIT = `/${proposalId}`;
+  const config = {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  };
 
-  console.log("api url", apiUrl);
+  console.log('api url', apiUrl);
 
   if (USE_DUMMY_EDIT) {
     updatedProposal = MockUpdatedProposal;
