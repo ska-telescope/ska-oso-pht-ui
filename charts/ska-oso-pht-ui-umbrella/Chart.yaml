@@ -9,6 +9,6 @@ dependencies:
 - name: ska-oso-pht-services
   version: 0.1.0
   repository: https://artefact.skao.int/repository/helm-internal
-- name: ska-oso-pht-services
-  version: 0.1.0
+- name: ska-oso-pht-ui
+  version: 0.1.0-dirty
   repository: file://../ska-oso-pht-ui

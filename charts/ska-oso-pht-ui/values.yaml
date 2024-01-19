@@ -3,9 +3,8 @@
 # Declare variables to be passed into your templates.
 minikube: true
 
-system: TM-mid
-telescope: SKA-mid
-subsystem: ska-oso-pht-services
+system: oso
+subsystem: oso
 
 global:
   minikube: true
@@ -19,6 +18,7 @@ ui:
   component: pht-ui
   function: ui
   domain: operations
+  enabled: true
   image:
     registry: artefact.skao.int
     image: ska-oso-pht-ui

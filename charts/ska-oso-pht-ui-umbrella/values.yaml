@@ -9,7 +9,7 @@ ska-oso-pht-ui:
     production: false
     hostname: # Only used in production
 
-ska-ost-senscalc:
+ska-oso-pht-services:
   ingress:
     production: false
     hostname: # Only used in production
