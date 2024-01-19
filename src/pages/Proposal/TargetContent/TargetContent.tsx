@@ -89,7 +89,7 @@ export default function TargetContent({
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
               <Tooltip title={TOOLTIP[occ]} arrow>
-                <Typography variant="h6" component="div">
+                <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
                   {TITLE[occ]}
                 </Typography>
               </Tooltip>
