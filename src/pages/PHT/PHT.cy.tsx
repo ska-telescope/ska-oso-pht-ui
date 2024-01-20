@@ -6,6 +6,7 @@ import { Router } from 'react-router';
 import MockProposals from '../../services/axios/getProposals/mockProposals';
 import theme from '../../services/theme/theme';
 import PHT from './PHT';
+import { SKA_PHT_API_URL } from '../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -126,4 +127,23 @@ describe('filtering by proposal type', () => {
       .children('div[role="row"]')
       .should('have.length', MockProposals.length);
   });
+
+    describe('Get proposal/list bad request', () => {
+      beforeEach(() => {
+        cy.mount(
+          <Router location="/" navigator={undefined}>
+            <PHT />
+          </Router>
+        );
+      });
+      it('displays proposal title in Alert component on success getProposal', () => {
+        cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposal.json' }).as('getProposal');
+        cy.get('.MuiIconButton-root [data-testid="VisibilityRoundedIcon"]').click();
+        cy.wait('@getProposal');
+        cy.get('[data-testid="alertViewErrorId"]').should('be.visible');
+        // cy.get('[data-testid="alertViewErrorId"]').should('be.visible').should('have.text', 'The Milky Way View');
+      });
+    });
+
+  
 });

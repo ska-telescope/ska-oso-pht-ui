@@ -127,7 +127,7 @@ export default function PHT() {
     <>
       {
         axiosViewError ? (
-          <Alert testId="alertErrorId" color={axiosViewErrorColor}>
+          <Alert testId="alertViewErrorId" color={axiosViewErrorColor}>
             <Typography>{axiosViewError}</Typography>
           </Alert>
           ): (null)
