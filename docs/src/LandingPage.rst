@@ -53,3 +53,19 @@ The SEARCH_TYPE_OPTIONS constant is defined in the constants.js file, and contai
 
 The DataGridWrapper component is from the @material-ui/data-grid package, while the DropDown and SearchEntry components are from the @ska-telescope/ska-gui-components package.
 
+
+GET Proposal/list
+------------------------------
+The data can now be returned from the API from the GET proposal/list endpoint to display the list of proposals.
+
+As the format of the data is currently different to what's returned in the front-end, this will currently show an error message in a Alert component wit the text:
+"Unexpected data format returned from API"
+
+There is the option to turn on/off the API call with REACT_APP_USE_LOCAL_DATA: in env.js. If set to true, the service will use the local mockProposals file and will not do a request.
+
+
+PUT Proposal
+------------------------------
+Clicking on the edit icon in the data table will do a request to the API PUT proposal endpoint.
+
+An Alert component is displayed at the top of the page with the result of the request.
