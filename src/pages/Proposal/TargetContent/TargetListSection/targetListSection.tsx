@@ -19,10 +19,7 @@ interface TargetListSectionProps {
   setProposal: Function;
 }
 
-export default function TargetListSection({
-  proposal,
-  setProposal
-}: TargetListSectionProps) {
+export default function TargetListSection({ proposal, setProposal }: TargetListSectionProps) {
   const deleteIconClicked = () => {
     // TODO : Display confirmation and if confirm, delete
   };
@@ -103,12 +100,7 @@ export default function TargetListSection({
               />
             </Tabs>
           </Box>
-          {value === 0 && (
-            <AddTarget
-              proposal={proposal}
-              setProposal={setProposal}
-            />
-          )}
+          {value === 0 && <AddTarget proposal={proposal} setProposal={setProposal} />}
           {value === 1 && <TargetFileImport />}
           {value === 2 && <SpatialImaging />}
         </Box>

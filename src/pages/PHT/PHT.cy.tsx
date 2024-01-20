@@ -25,7 +25,9 @@ describe('<PHT />', () => {
 
 describe('search functionality', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as('getProposals');
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
+      'getProposals'
+    );
     cy.mount(
       <Router location="/" navigator={undefined}>
         <PHT />
@@ -64,7 +66,9 @@ describe('search functionality', () => {
 
 describe('filtering by proposal type', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as('getProposals');
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
+      'getProposals'
+    );
     cy.mount(
       <Router location="/" navigator={undefined}>
         <PHT />
@@ -133,7 +137,9 @@ describe('filtering by proposal type', () => {
   if (!USE_LOCAL_DATA) {
     describe('Get proposal/list good request', () => {
       beforeEach(() => {
-        cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as('getProposals');
+        cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
+          'getProposals'
+        );
         cy.mount(
           <Router location="/" navigator={undefined}>
             <PHT />
@@ -144,7 +150,9 @@ describe('filtering by proposal type', () => {
         cy.wait('@getProposals');
         // cy.get('[data-testid="dataGridId"]').should('be.visible');
         // temp test that things work as expected before we update the MockProposal format to match API response in the application
-        cy.get('[data-testid="alertErrorId"]').should('be.visible').should('have.text', 'Unexpected data format returned from API');
+        cy.get('[data-testid="alertErrorId"]')
+          .should('be.visible')
+          .should('have.text', 'Unexpected data format returned from API');
       });
     });
   }
@@ -161,11 +169,10 @@ describe('filtering by proposal type', () => {
       });
       it('displays error message in Alert component on failed getProposals', () => {
         cy.wait('@getProposalsFail');
-        cy.get('[data-testid="alertErrorId"]').should('be.visible').should('have.text', 'Request failed with status code 500');
+        cy.get('[data-testid="alertErrorId"]')
+          .should('be.visible')
+          .should('have.text', 'Request failed with status code 500');
       });
     });
   }
-
-
-
 });

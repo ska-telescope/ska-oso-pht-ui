@@ -105,7 +105,7 @@ export default function PHT() {
         <>
           <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
           {
-          // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />} 
+            // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           }
           <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
@@ -129,13 +129,11 @@ export default function PHT() {
 
   return (
     <>
-      {
-        axiosEditError ? (
-          <Alert testId="alertErrorId" color={axiosEditErrorColor}>
-            <Typography>{axiosEditError}</Typography>
-          </Alert>
-          ): (null)
-      }
+      {axiosEditError ? (
+        <Alert testId="alertErrorId" color={axiosEditErrorColor}>
+          <Typography>{axiosEditError}</Typography>
+        </Alert>
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>

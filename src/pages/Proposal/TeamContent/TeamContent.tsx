@@ -29,12 +29,7 @@ interface TeamContentProps {
   setStatus: Function;
 }
 
-export default function TeamContent({
-  page,
-  proposal,
-  setProposal,
-  setStatus
-}: TeamContentProps) {
+export default function TeamContent({ page, proposal, setProposal, setStatus }: TeamContentProps) {
   const [value, setValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
@@ -141,12 +136,7 @@ export default function TeamContent({
                 />
               </Tabs>
             </Box>
-            {value === 0 && (
-              <MemberInvite
-                proposal={proposal}
-                setProposal={setProposal}
-              />
-            )}
+            {value === 0 && <MemberInvite proposal={proposal} setProposal={setProposal} />}
             {value === 1 && <TeamFileImport />}
             {value === 2 && <MemberSearch />}
           </Box>
