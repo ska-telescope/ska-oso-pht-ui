@@ -17,7 +17,6 @@ async function GetProposals() {
   }
 
   try {
-    // const result = await axios.get(`https://cat-fact.herokuapp.com/facts/`, config); // temp dummy test
     const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
