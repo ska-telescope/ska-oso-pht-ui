@@ -59,3 +59,19 @@ The Avatar component is used to display the proposal code as an icon on each car
 The Grid component is used to arrange the cards in a grid layout. 
 
 The Typography component is used to display text on the page.
+
+
+POST Proposal
+------------------------------
+The CREATE button is displayed on the Title add proposal page.
+
+Clicking on the button will do a request to the API POST proposal endpoint.
+
+An Alert component is displayed at the bottom of the page with the result of the request. The user is then redirected to the Title proposal page.
+
+
+PUT Proposal
+------------------------------
+Clicking on the SAVE button will do a request to the API PUT proposal endpoint.
+
+An Alert component is displayed at the top of the page with the result of the request.
