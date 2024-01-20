@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import GetProposals from '../../services/axios/getProposals/getProposals';
+import GetProposal from '../../services/axios/getProposal/getProposal';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -24,6 +25,8 @@ export default function PHT() {
   const [searchType, setSearchType] = React.useState('');
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
+  const [axiosViewError, setAxiosViewError] = React.useState('');
+  const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -68,8 +71,20 @@ export default function PHT() {
     navigate('/proposal');
   };
 
-  const viewIconClicked = () => {
-    navigate('/proposal');
+  const viewIconClicked = async () => {
+    // navigate('/proposal');
+    // TODO : There should be a view proposal view
+    // this is 1st pass to establish connection to API endpoint
+    const response = await GetProposal();
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosViewError(`Success: ${response}`);
+      setAxiosViewErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosViewError(response.error);
+      setAxiosViewErrorColor(AlertColorTypes.Error);
+    }
   };
 
   const COLUMNS = [
@@ -110,6 +125,13 @@ export default function PHT() {
 
   return (
     <>
+      {
+        axiosViewError ? (
+          <Alert testId="alertErrorId" color={axiosViewErrorColor}>
+            <Typography>{axiosViewError}</Typography>
+          </Alert>
+          ): (null)
+      }
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
