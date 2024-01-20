@@ -6,7 +6,6 @@ import { Router } from 'react-router';
 import MockProposals from '../../services/axios/getProposals/mockProposals';
 import theme from '../../services/theme/theme';
 import PHT from './PHT';
-import { SKA_PHT_API_URL } from '../../utils/constants';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
