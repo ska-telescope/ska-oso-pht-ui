@@ -51,7 +51,7 @@ export default function AddProposal() {
           <Alert testId="alertCreateErrorId" color={axiosCreateErrorColor}>
             <Typography>{axiosCreateError}</Typography>
           </Alert>
-      ) : null}
+        ) : null}
         <PageFooter pageNo={-1} buttonDisabled={contentValid()} buttonFunc={createProposal} />
       </Grid>
     </Grid>
