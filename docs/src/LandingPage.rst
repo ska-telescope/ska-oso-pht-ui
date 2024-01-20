@@ -53,3 +53,9 @@ The SEARCH_TYPE_OPTIONS constant is defined in the constants.js file, and contai
 
 The DataGridWrapper component is from the @material-ui/data-grid package, while the DropDown and SearchEntry components are from the @ska-telescope/ska-gui-components package.
 
+
+GET Proposal
+-------------------
+Clicking on the view icon in the data table will do a request to the API GET proposal endpoint.
+An Alert component is displayed at the top of the page with the result of the request.
+
