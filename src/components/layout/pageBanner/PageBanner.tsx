@@ -80,7 +80,7 @@ export default function PageBanner({
         </Grid>
       </Grid>
       {axiosSaveError ? (
-        <Alert testId="alertErrorId" color={axiosSaveErrorColor}>
+        <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
           <Typography>{axiosSaveError}</Typography>
         </Alert>
       ) : null}
