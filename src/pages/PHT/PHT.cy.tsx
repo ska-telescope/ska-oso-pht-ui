@@ -140,7 +140,7 @@ describe('filtering by proposal type', () => {
           </Router>
         );
       });
-      it('displays data on successful getProposals', () => {
+      it('displays "Unexpected data format returned from API" on successful getProposals', () => {
         cy.wait('@getProposals');
         // cy.get('[data-testid="dataGridId"]').should('be.visible');
         // temp test that things work as expected before we update the MockProposal format to match API response in the application
