@@ -12,7 +12,7 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
-import editProposal from '../../services/axios/editProposal/editProposal';
+import EditProposal from '../../services/axios/editProposal/editProposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function PHT() {
@@ -72,7 +72,7 @@ export default function PHT() {
     // navigate('/proposal');
     // TODO : There should be a edit proposal view with a form
     // this is 1st pass to establish connection to API endpoint
-    const response = await editProposal(MockProposal.id, MockProposal);
+    const response = await EditProposal(MockProposal.id, MockProposal);
     if (response && !response.error) {
       // Handle successful response
       setAxiosEditError(`Success: ${response}`);
@@ -105,7 +105,7 @@ export default function PHT() {
         <>
           <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
           {
-          // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />} 
+            // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           }
           <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
@@ -129,13 +129,11 @@ export default function PHT() {
 
   return (
     <>
-      {
-        axiosEditError ? (
-          <Alert testId="alertErrorId" color={axiosEditErrorColor}>
-            <Typography>{axiosEditError}</Typography>
-          </Alert>
-          ): (null)
-      }
+      {axiosEditError ? (
+        <Alert testId="alertErrorId" color={axiosEditErrorColor}>
+          <Typography>{axiosEditError}</Typography>
+        </Alert>
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
