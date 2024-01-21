@@ -119,10 +119,7 @@ export default function TargetContent({
         <Grid item>{proposal.targetOption === 1 && <TargetNoSpecificSection />}</Grid>
         <Grid item sx={{ width: '100%' }}>
           {proposal.targetOption === 2 && (
-            <TargetListSection
-              proposal={proposal}
-              setProposal={setProposal}
-            />
+            <TargetListSection proposal={proposal} setProposal={setProposal} />
           )}
         </Grid>
         <Grid item>{proposal.targetOption === 3 && <TargetMosaicSection />}</Grid>

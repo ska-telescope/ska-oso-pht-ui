@@ -7,26 +7,10 @@ import HelpPanel from '../../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../../services/types/proposal';
 import { DEFAULT_HELP } from '../../../../../utils/constants';
 
-export const HELP_NAME = [
-  'NAME TITLE',
-  'NAME DESCRIPTION',
-  ''
-];
-export const HELP_RA = [
-  'RIGHT ASCENSION TITLE',
-  'RIGHT ASCENSION DESCRIPTION',
-  ''
-];
-export const HELP_DEC = [
-  'DECLINATION TITLE',
-  'DECLINATION DESCRIPTION',
-  ''
-];
-export const HELP_VEL = [
-  'VELOCITY TITLE',
-  'VELOCITY DESCRIPTION',
-  ''
-];
+export const HELP_NAME = ['NAME TITLE', 'NAME DESCRIPTION', ''];
+export const HELP_RA = ['RIGHT ASCENSION TITLE', 'RIGHT ASCENSION DESCRIPTION', ''];
+export const HELP_DEC = ['DECLINATION TITLE', 'DECLINATION DESCRIPTION', ''];
+export const HELP_VEL = ['VELOCITY TITLE', 'VELOCITY DESCRIPTION', ''];
 
 interface AddTargetProps {
   proposal: Proposal;
@@ -39,7 +23,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
   const [vel, setVel] = React.useState('');
-  
+
   React.useEffect(() => {
     helpContent(DEFAULT_HELP);
   }, []);

@@ -9,31 +9,11 @@ import { helpers } from '../../../../utils/helpers';
 import { DEFAULT_HELP, TEAM_STATUS_TYPE_OPTIONS } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 
-export const HELP_FIRST_NAME = [
-  'Help first name',
-  'Field sensitive help',
-  ''
-];
-export const HELP_LAST_NAME = [
-  'Help last name',
-  'Field sensitive help',
-  ''
-];
-export const HELP_EMAIL = [
-  'Help email',
-  'Field sensitive help',
-  ''
-];
-export const HELP_PHD = [
-  'Help PhD',
-  'Field sensitive help',
-  ''
-];
-export const HELP_PI = [
-  'Help PI',
-  'PI HELP',
-  ''
-];
+export const HELP_FIRST_NAME = ['Help first name', 'Field sensitive help', ''];
+export const HELP_LAST_NAME = ['Help last name', 'Field sensitive help', ''];
+export const HELP_EMAIL = ['Help email', 'Field sensitive help', ''];
+export const HELP_PHD = ['Help PhD', 'Field sensitive help', ''];
+export const HELP_PI = ['Help PI', 'PI HELP', ''];
 
 interface MemberInviteProps {
   proposal: Proposal;
