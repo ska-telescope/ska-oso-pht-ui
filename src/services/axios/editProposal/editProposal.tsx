@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL } from '../../../utils/constants';
 
-async function editProposal(proposalId, updatedProposal?) {
+async function EditProposal(proposalId, updatedProposal?) {
   const apiUrl = SKA_PHT_API_URL;
   // const URL_EDIT = `/${proposalId}`; // API endpoint doesn't take ID yet?
   const config = {
@@ -19,4 +19,4 @@ async function editProposal(proposalId, updatedProposal?) {
   }
 }
 
-export default editProposal;
+export default EditProposal;

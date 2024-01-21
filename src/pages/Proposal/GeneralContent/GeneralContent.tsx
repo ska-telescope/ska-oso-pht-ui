@@ -3,24 +3,18 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
-import { DEFAULT_HELP, GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import {
+  DEFAULT_HELP,
+  GENERAL,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 
-export const HELP_ABSTRACT = [
-  'ABSTRACT TITLE',
-  'ABSTRACT DESCRIPTION',
-  ''
-];
-export const HELP_CATEGORY = [
-  'CATEGORY TITLE',
-  'CATEGORY DESCRIPTION',
-  ''
-];
-export const HELP_SUBCATEGORY = [
-  'SUBCATEGORY TITLE',
-  'SUBCATEGORY DESCRIPTION',
-  ''
-];
+export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
+export const HELP_CATEGORY = ['CATEGORY TITLE', 'CATEGORY DESCRIPTION', ''];
+export const HELP_SUBCATEGORY = ['SUBCATEGORY TITLE', 'SUBCATEGORY DESCRIPTION', ''];
 
 interface GeneralContentProps {
   page: number;
