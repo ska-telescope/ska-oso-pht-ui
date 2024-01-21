@@ -26,6 +26,8 @@ export default function PageBanner({
 
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
+  const [axiosSaveError, setAxiosSaveError] = React.useState('');
+  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
 
   const handleValidateClick = response => {
     if (response && !response.error) {
@@ -36,8 +38,8 @@ export default function PageBanner({
       // Handle error response
       setAxiosValidateError(response.error);
       setAxiosValidateErrorColor(AlertColorTypes.Error);
-  const [axiosSaveError, setAxiosSaveError] = React.useState('');
-  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+    }
+  }
 
   const handleSaveClick = response => {
     if (response && !response.error) {
