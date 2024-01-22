@@ -86,11 +86,11 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
           <Grid item xs={6}>
             <Card variant="outlined">
               <CardHeader
-                title={
+                title={(
                   <Typography variant="h6">
                     Target List related to the selected Observation
                   </Typography>
-                }
+                )}
               />
               <CardContent>
                 <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
