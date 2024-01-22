@@ -32,6 +32,9 @@ export default function AddProposal() {
       // Handle error response
       setAxiosCreateError(response.error);
       setAxiosCreateErrorColor(AlertColorTypes.Error);
+      setTimeout(() => {
+        navigate('/proposal');
+      }, 2000);
     }
   };
 
