@@ -23,7 +23,6 @@ export default function PageBanner({
   title,
   proposalState
 }: PageBannerProps) {
-
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
@@ -39,7 +38,7 @@ export default function PageBanner({
       setAxiosValidateError(response.error);
       setAxiosValidateErrorColor(AlertColorTypes.Error);
     }
-  }
+  };
 
   const handleSaveClick = response => {
     if (response && !response.error) {
@@ -93,8 +92,12 @@ export default function PageBanner({
                 <Alert testId="alertSaveErrorId" color={axiosValidateErrorColor}>
                   <Typography>{axiosValidateError}</Typography>
                 </Alert>
-      ) : null}
-              <Grid item>{addPage !== 0 && <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />}</Grid>
+              ) : null}
+              <Grid item>
+                {addPage !== 0 && (
+                  <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                )}
+              </Grid>
               <Grid item>{addPage !== 0 && <SubmitButton />}</Grid>
             </Grid>
           </Grid>
