@@ -13,8 +13,6 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
-import EditProposal from '../../services/axios/editProposal/editProposal';
-import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function PHT() {
   const navigate = useNavigate();
@@ -28,10 +26,7 @@ export default function PHT() {
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
-
   const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
-  const [axiosEditError, setAxiosEditError] = React.useState('');
-  const [axiosEditErrorColor, setAxiosEditErrorColor] = React.useState(null);
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -73,19 +68,7 @@ export default function PHT() {
   };
 
   const editIconClicked = async () => {
-    // navigate('/proposal');
-    // TODO : There should be a edit proposal view with a form
-    // this is 1st pass to establish connection to API endpoint
-    const response = await EditProposal(MockProposal.id, MockProposal);
-    if (response && !response.error) {
-      // Handle successful response
-      setAxiosEditError(`Success: ${response}`);
-      setAxiosEditErrorColor(AlertColorTypes.Success);
-    } else {
-      // Handle error response
-      setAxiosEditError(response.error);
-      setAxiosEditErrorColor(AlertColorTypes.Error);
-    }
+    // TODO ?
   };
 
   const viewIconClicked = async () => {
@@ -120,10 +103,7 @@ export default function PHT() {
       renderCell: () => (
         <>
           <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
-          {
-            // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
-          }
-          <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
+          {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
           <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
@@ -145,18 +125,6 @@ export default function PHT() {
 
   return (
     <>
-      {
-        axiosEditError ? (
-          <Alert testId="alertErrorId" color={axiosEditErrorColor}>
-            <Typography>{axiosEditError}</Typography>
-          </Alert>
-          ): (null)
-      }
-      {axiosEditError ? (
-        <Alert testId="alertErrorId" color={axiosEditErrorColor}>
-          <Typography>{axiosEditError}</Typography>
-        </Alert>
-      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
