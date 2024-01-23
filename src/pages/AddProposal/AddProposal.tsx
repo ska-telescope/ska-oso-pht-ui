@@ -6,7 +6,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../Proposal/TitleContent/TitleContent';
 import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
-import AddProposalToDB from '../../services/axios/addProposalToDB/addProposalToDB';
+import AddProposalToDB from '../../services/axios/newProposal/newProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 
