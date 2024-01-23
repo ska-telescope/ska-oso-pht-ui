@@ -96,3 +96,10 @@ PUT Proposal
 Clicking on the edit icon in the data table will do a request to the API PUT proposal endpoint.
 
 An Alert component is displayed at the top of the page with the result of the request.
+
+
+POST Proposal/validate
+------------------------------
+Clicking on the Validate buton on the banner will do a request to the API POST proposal/validate endpoint.
+
+An Alert component is displayed next to the button with the result of the request.

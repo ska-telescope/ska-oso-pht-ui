@@ -1,6 +1,8 @@
 import { env } from '../../env';
 
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
+export const SKA_PHT_UPLOAD_API_URL = env.REACT_APP_SKA_PHT_UPLOAD_API_URL;
+export const SKA_PHT_UPLOAD_API_URL_DUMMY = 'https://httpbin.org/post';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA;
 
 export const STATUS_OK = 0;

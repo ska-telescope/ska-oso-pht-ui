@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL } from '../../../utils/constants';
-import { Proposal } from '../../types/proposal';
 
-async function AddProposalToDB(_inData: Proposal) {
+async function ValidateProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;
+  const URL_VALIDATE = `/validate`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -12,11 +12,11 @@ async function AddProposalToDB(_inData: Proposal) {
   };
 
   try {
-    const result = await axios.post(`${apiUrl}`, _inData, config);
+    const result = await axios.post(`${apiUrl}${URL_VALIDATE}`, proposal, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
   }
 }
 
-export default AddProposalToDB;
+export default ValidateProposal;

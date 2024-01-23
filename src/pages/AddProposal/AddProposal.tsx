@@ -6,7 +6,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../Proposal/TitleContent/TitleContent';
 import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
-import AddProposalToDB from '../../services/axios/addProposalToDB/addProposalToDB';
+import AddProposalToDB from '../../services/axios/newProposal/newProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 
@@ -27,11 +27,16 @@ export default function AddProposal() {
       // wrapped in a set time out so that the user can see the confirmation -> TODO: change this later
       setTimeout(() => {
         navigate('/proposal');
-      }, 2000);
+      }, 1000);
     } else {
       // Handle error response
       setAxiosCreateError(response.error);
       setAxiosCreateErrorColor(AlertColorTypes.Error);
+      if (USE_LOCAL_DATA) {
+        setTimeout(() => {
+          navigate('/proposal');
+        }, 1000);
+      }
     }
   };
 

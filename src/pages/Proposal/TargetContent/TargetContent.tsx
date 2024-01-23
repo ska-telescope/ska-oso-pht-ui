@@ -7,12 +7,12 @@ import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 
-const TITLE = ['', 'No specific Target', 'List of Targets', 'Target Mosaic'];
+const TITLE = ['', 'List of Targets', 'Target Mosaic', 'No specific Target'];
 
 const TOOLTIP = [
   '',
-  'Current functionality is not yet available',
   'A list of target will be entered and/or imported from file',
+  'Current functionality is not yet available',
   'Current functionality is not yet available'
 ];
 
@@ -116,13 +116,13 @@ export default function TargetContent({
       </Grid>
 
       <Grid mt={4} container direction="column" justifyContent="space-between" alignItems="center">
-        <Grid item>{proposal.targetOption === 1 && <TargetNoSpecificSection />}</Grid>
         <Grid item sx={{ width: '100%' }}>
-          {proposal.targetOption === 2 && (
+          {proposal.targetOption === 1 && (
             <TargetListSection proposal={proposal} setProposal={setProposal} />
           )}
         </Grid>
-        <Grid item>{proposal.targetOption === 3 && <TargetMosaicSection />}</Grid>
+        <Grid item>{proposal.targetOption === 2 && <TargetMosaicSection />}</Grid>
+        <Grid item>{proposal.targetOption === 3 && <TargetNoSpecificSection />}</Grid>
       </Grid>
     </Grid>
   );

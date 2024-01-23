@@ -2,7 +2,8 @@ import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposal from './mockProposal';
 
-async function GetProposal() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function GetProposal(_id: number) {
   const apiUrl = SKA_PHT_API_URL;
   const config = {
     headers: {

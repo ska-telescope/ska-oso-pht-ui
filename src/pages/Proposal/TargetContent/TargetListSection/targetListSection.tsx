@@ -5,7 +5,6 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import { Help } from '../../../../services/types/help';
 import { Proposal } from '../../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
@@ -13,9 +12,7 @@ import AddTarget from './AddTarget/AddTarget';
 import TrashIcon from '../../../../components/icon/trashIcon/trashIcon';
 
 interface TargetListSectionProps {
-  help: Help;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
 }
 
@@ -78,25 +75,18 @@ export default function TargetListSection({ proposal, setProposal }: TargetListS
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab
-                label="Add Target"
-                {...a11yProps(0)}
-                sx={{ border: '1px solid grey' }}
-                testId="addTarget"
-              />
+              <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
               <Tab
                 label="Import From File"
                 {...a11yProps(1)}
                 sx={{ border: '1px solid grey' }}
                 disabled
-                testId="importFromFile"
               />
               <Tab
                 label="Spatial Imaging"
                 {...a11yProps(2)}
                 sx={{ border: '1px solid grey' }}
                 disabled
-                testId="spatialImaging"
               />
             </Tabs>
           </Box>

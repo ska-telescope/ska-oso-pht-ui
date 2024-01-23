@@ -5,7 +5,6 @@ import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
-import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 // import { TeamMember } from '../../../services/types/teamMember';
 import MemberInvite from './MemberInvite/MemberInvite';
@@ -13,8 +12,8 @@ import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 
 // TODO : Either this should be moved to a component of export removed
-export function PIStar({ isPI, status, ...rest }) {
-  if (isPI) {
+export function PIStar({ pi, status, ...rest }) {
+  if (pi) {
     return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
   }
   if (status === 'Accepted') {
@@ -70,7 +69,7 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: params => (
-        <PIStar isPI={Boolean(params.row.PI)} status={String(params.row.Status)} />
+        <PIStar pi={params.row.pi} status={String(params.row.status)} />
       )
     },
     {
