@@ -82,14 +82,20 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
     <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <TextEntry
-            label="Name"
-            testId="name"
-            value={name}
-            setValue={setName}
-            onFocus={() => helpContent(HELP_NAME)}
-          />
-          <Resolve />
+          <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+            <Grid item xs={10}>
+              <TextEntry
+                label="Name"
+                testId="name"
+                value={name}
+                setValue={setName}
+                onFocus={() => helpContent(HELP_NAME)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <Resolve />
+            </Grid>
+          </Grid>
           <TextEntry
             label="Right Ascension"
             testId="ra"
