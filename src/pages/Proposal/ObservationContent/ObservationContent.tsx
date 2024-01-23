@@ -55,7 +55,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
   };
 
   return (
-    <Grid p={3} container direction="row" alignItems="space-evenly" justifyContent="space-around">
+    <Grid spacing={1} p={3} container direction="row" alignItems="space-evenly" justifyContent="space-around">
       <Grid item xs={5}>
         <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
           <Grid item pb={1}>
@@ -69,7 +69,6 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
           />
         </Grid>
       </Grid>
-      <Grid item xs={1} />
       <Grid item xs={6}>
         <Card variant="outlined">
           <CardHeader
