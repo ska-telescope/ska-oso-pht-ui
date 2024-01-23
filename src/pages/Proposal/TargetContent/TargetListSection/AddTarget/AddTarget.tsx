@@ -6,6 +6,7 @@ import AddTargetButton from '../../../../../components/button/AddTarget/AddTarge
 import HelpPanel from '../../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../../services/types/proposal';
 import { DEFAULT_HELP } from '../../../../../utils/constants';
+import Resolve from '../../../../../components/button/Resolve/Resolve';
 
 export const HELP_NAME = ['NAME TITLE', 'NAME DESCRIPTION', ''];
 export const HELP_RA = ['RIGHT ASCENSION TITLE', 'RIGHT ASCENSION DESCRIPTION', ''];
@@ -88,6 +89,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
             setValue={setName}
             onFocus={() => helpContent(HELP_NAME)}
           />
+          <Resolve />
           <TextEntry
             label="Right Ascension"
             testId="ra"
