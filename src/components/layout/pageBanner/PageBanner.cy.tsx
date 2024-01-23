@@ -3,7 +3,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
-import theme from '../../services/theme/theme';
+import theme from '../../../services/theme/theme';
 import PageBanner from './PageBanner';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
@@ -14,7 +14,7 @@ describe('<AddProposal />', () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <PageBanner title={''} />
+          <PageBanner title="" />
         </ThemeProvider>
       );
     });
@@ -26,9 +26,10 @@ describe('POST proposal/ bad request', () => {
     // cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
     cy.mount(
       <Router location="/" navigator={undefined}>
-        <PageBanner title={''} />
+        <PageBanner title="" />
       </Router>
     );
   });
+});
 
-// TODO: create unit tests for SAVE and VALIDATE buttons
+// TODO: create unit tests for SAVE and VALIDATE
