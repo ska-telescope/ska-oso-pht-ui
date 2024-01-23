@@ -12,10 +12,11 @@ async function ResolveTarget(targetName) {
   };
 
   try {
-    const result = await axios.post(`${apiUrl}${URL_RESOLVE}${targetName}`, config);
+    const result = await axios.get(`${apiUrl}${URL_RESOLVE}${targetName}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+        return { error: e.message};
+    
   }
 }
 

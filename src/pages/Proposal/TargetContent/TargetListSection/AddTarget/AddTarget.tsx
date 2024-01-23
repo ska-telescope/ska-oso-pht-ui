@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../../components/button/AddTarget/AddTargetButton';
 import HelpPanel from '../../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../../services/types/proposal';
 import { DEFAULT_HELP } from '../../../../../utils/constants';
-import Resolve from '../../../../../components/button/Resolve/Resolve';
+import ResolveButton from '../../../../../components/button/Resolve/ResolveButton';
 
 export const HELP_NAME = ['NAME TITLE', 'NAME DESCRIPTION', ''];
 export const HELP_RA = ['RIGHT ASCENSION TITLE', 'RIGHT ASCENSION DESCRIPTION', ''];
@@ -78,12 +78,30 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
     clearForm();
   };
 
+  const [axiosResolveError, setAxiosResolveError] = React.useState('');
+
+  const handleResolveClick = response => {
+    if (response && !response.error) {
+      // TODO: set coordinates in fields properly
+      setRA(response);
+    } else {
+      setAxiosResolveError(response.error);
+    }
+  }
+
   return (
     <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid container direction="row" alignItems="center" justifyContent="flex-start">
             <Grid item xs={10}>
+              {axiosResolveError ? (
+                <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+                  <Typography>{axiosResolveError}</Typography>
+                </Alert>
+        ) : (
+          null
+        )}
               <TextEntry
                 label="Name"
                 testId="name"
@@ -93,7 +111,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
               />
             </Grid>
             <Grid item xs={2}>
-              <Resolve />
+              <ResolveButton targetName={name} onClick={handleResolveClick} />
             </Grid>
           </Grid>
           <TextEntry
