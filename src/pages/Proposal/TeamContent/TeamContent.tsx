@@ -68,9 +68,7 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: params => (
-        <PIStar pi={params.row.pi} status={String(params.row.status)} />
-      )
+      renderCell: params => <PIStar pi={params.row.pi} status={String(params.row.status)} />
     },
     {
       field: 'Actions',

@@ -55,7 +55,14 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
   };
 
   return (
-    <Grid spacing={1} p={3} container direction="row" alignItems="space-evenly" justifyContent="space-around">
+    <Grid
+      spacing={1}
+      p={3}
+      container
+      direction="row"
+      alignItems="space-evenly"
+      justifyContent="space-around"
+    >
       <Grid item xs={5}>
         <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
           <Grid item pb={1}>
@@ -66,6 +73,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
             extendedColumns={extendedColumnsObservations}
             height={450}
             rowClick={ClickFunction}
+            testId="observationDetails"
           />
         </Grid>
       </Grid>
@@ -84,6 +92,7 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
               extendedColumns={extendedColumnsTargets}
               height={350}
               rowClick={ClickFunction}
+              testId="linkedTargetDetails"
             />
           </CardContent>
         </Card>
