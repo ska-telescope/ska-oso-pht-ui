@@ -1,10 +1,41 @@
-image:
-  imagePullPolicy: IfNotPresent
-  container: registry.gitlab.com/ska-telescope/oso/ska-oso-pht-ui/ska-oso-pht-ui
-  version: 1.0.0
+# Default values for oet.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+minikube: true
 
-labels:
-  app: ska-oso-pht-ui
+system: oso
+subsystem: oso
 
+global:
+  minikube: true
+
+ui:
+  runtime:
+    backendURL:
+  ingress:
+    dummyUrl: http://dummy-url.tld
+    contextUrl: http://localhost
+  component: pht-ui
+  function: ui
+  domain: operations
+  enabled: true
+  image:
+    registry: artefact.skao.int
+    image: ska-oso-pht-ui
+    tag: 0.0.0
+    pullPolicy: IfNotPresent
+
+# Configure Ingress
 ingress:
-  prependByNamespace: true
+  enabled: true
+  production: false
+  hostname: # Only used in production
+
+  # Ingress annotations
+  annotations: {}
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []

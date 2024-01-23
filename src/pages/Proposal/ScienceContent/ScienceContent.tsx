@@ -6,9 +6,10 @@ import {
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
-  SKA_PHT_UPLOAD_API_URL,
+  SKA_PHT_UPLOAD_ENDPOINT,
   USE_LOCAL_DATA,
-  SKA_PHT_UPLOAD_API_URL_DUMMY
+  SKA_PHT_UPLOAD_API_URL_DUMMY,
+  SKA_PHT_API_URL
 } from '../../../utils/constants';
 
 interface ScienceContentProps {
@@ -68,7 +69,7 @@ export default function ScienceContent({
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL={USE_LOCAL_DATA ? SKA_PHT_UPLOAD_API_URL_DUMMY : SKA_PHT_UPLOAD_API_URL}
+          uploadURL={USE_LOCAL_DATA ? SKA_PHT_UPLOAD_API_URL_DUMMY : `${SKA_PHT_API_URL}${SKA_PHT_UPLOAD_ENDPOINT}`}
         />
       </Grid>
       <Grid item xs={6}>

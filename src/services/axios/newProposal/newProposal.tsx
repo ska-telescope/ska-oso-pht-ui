@@ -4,6 +4,7 @@ import { Proposal } from '../../types/proposal';
 
 async function NewProposal(_inData: Proposal) {
   const apiUrl = SKA_PHT_API_URL;
+  const URL_NEW = `/proposal`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -12,7 +13,7 @@ async function NewProposal(_inData: Proposal) {
   };
 
   try {
-    const result = await axios.post(`${apiUrl}`, _inData, config);
+    const result = await axios.post(`${apiUrl}${URL_NEW}`, _inData, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
