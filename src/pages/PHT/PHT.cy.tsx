@@ -133,6 +133,7 @@ describe('filtering by proposal type', () => {
       .children('div[role="row"]')
       .should('have.length', MockProposals.length);
   });
+});
 
   if (!USE_LOCAL_DATA) {
     describe('Get proposal/list good request', () => {
@@ -175,4 +176,23 @@ describe('filtering by proposal type', () => {
       });
     });
   }
+  describe('Get proposal good request', () => {
+    beforeEach(() => {
+      cy.mount(
+        <Router location="/" navigator={undefined}>
+          <PHT />
+        </Router>
+      );
+
+    });
+    // TODO: issue with targeting the view button in cypress
+    /*
+    it('displays proposal title in Alert component on success getProposal', () => {
+      cy.intercept('GET', `${SKA_PHT_API_URL}`, { fixture: 'proposal.json' }).as('getProposal');
+      cy.get('.MuiIconButton-root [data-testid="VisibilityRoundedIcon"]').click();
+      cy.wait('@getProposal');
+      cy.get('[data-testid="alertViewErrorId"]').should('be.visible');
+      // cy.get('[data-testid="alertViewErrorId"]').should('be.visible').should('have.text', 'The Milky Way View');
+    });
+    */
 });
