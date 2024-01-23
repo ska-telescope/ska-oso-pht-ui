@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import HomeButton from '../../button/Home/HomeButton';
 import SaveButton from '../../button/Save/SaveButton';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
+import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 interface PageBannerProps {
   addPage?: number;
@@ -21,6 +23,35 @@ export default function PageBanner({
   title,
   proposalState
 }: PageBannerProps) {
+  const [axiosValidateError, setAxiosValidateError] = React.useState('');
+  const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
+  const [axiosSaveError, setAxiosSaveError] = React.useState('');
+  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+
+  const handleValidateClick = response => {
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosValidateError(`Success: ${response}`);
+      setAxiosValidateErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosValidateError(response.error);
+      setAxiosValidateErrorColor(AlertColorTypes.Error);
+    }
+  };
+
+  const handleSaveClick = response => {
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosSaveError(`Success: ${response}`);
+      setAxiosSaveErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosSaveError(response.error);
+      setAxiosSaveErrorColor(AlertColorTypes.Error);
+    }
+  };
+
   return (
     <Grid
       p={1}
@@ -43,7 +74,7 @@ export default function PageBanner({
               <Grid item>
                 <HomeButton />
               </Grid>
-              <Grid item>{addPage === 1 && <SaveButton />}</Grid>
+              <Grid item>{addPage === 1 && <SaveButton onClick={handleSaveClick} />}</Grid>
             </Grid>
           </Grid>
           <Grid item xs={6}>
@@ -57,12 +88,26 @@ export default function PageBanner({
               alignItems="center"
               justifyContent="space-between"
             >
-              <Grid item>{addPage !== 0 && <ValidateButton />}</Grid>
+              {axiosValidateError ? (
+                <Alert testId="alertSaveErrorId" color={axiosValidateErrorColor}>
+                  <Typography>{axiosValidateError}</Typography>
+                </Alert>
+              ) : null}
+              <Grid item>
+                {addPage !== 0 && (
+                  <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                )}
+              </Grid>
               <Grid item>{addPage !== 0 && <SubmitButton />}</Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      {axiosSaveError ? (
+        <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
+          <Typography>{axiosSaveError}</Typography>
+        </Alert>
+      ) : null}
       <Grid item xs={2}>
         <Typography variant="h6" m={2}>
           {title}

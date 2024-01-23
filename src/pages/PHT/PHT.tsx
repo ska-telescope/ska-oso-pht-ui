@@ -1,28 +1,28 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-// import Alert from '@mui/material/Alert';
 import GetProposals from '../../services/axios/getProposals/getProposals';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import ViewProposalButton from '../../components/button/viewProposal/viewProposalButton';
-import CloneProposalButton from '../../components/button/cloneProposal/cloneProposalButton';
-import EditProposalButton from '../../components/button/editProposal/editProposalButton';
-import DownloadProposalButton from '../../components/button/downloadProposal/downloadProposalButton';
-import DeleteProposalButton from '../../components/button/deleteProposal/deleteProposalButton';
+import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import EditIcon from '../../components/icon/editIcon/editIcon';
+import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
+import GetProposal from '../../services/axios/getProposal/getProposal';
 
 export default function PHT() {
-  /*
-  TODO: remove colouring of selected row for better visibility
-  using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
-  */
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
+  const [axiosEditError, setAxiosEditError] = React.useState('');
+  const [axiosEditErrorColor, setAxiosEditErrorColor] = React.useState(null);
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -51,26 +51,63 @@ export default function PHT() {
     };
   }, []);
 
+  const canEdit = () => true;
+
+  const cloneIconClicked = () => {
+    // TODO
+  };
+
+  const deleteIconClicked = () => {
+    // TODO : Display confirmation and if confirm, delete
+  };
+
+  const downloadIconClicked = () => {
+    // TODO : Implement
+  };
+
+  const getTheProposal = async () => {
+    const proposalId = 1; // TODO replace with id from the list
+    const response = await GetProposal(proposalId);
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosEditError(`Success: ${response}`);
+      setAxiosEditErrorColor(AlertColorTypes.Success);
+      navigate('/proposal');
+    } else {
+      // Handle error response
+      setAxiosEditError(response.error);
+      setAxiosEditErrorColor(AlertColorTypes.Error);
+    }
+  };
+
+  const editIconClicked = async () => {
+    getTheProposal();
+  };
+
+  const viewIconClicked = () => {
+    getTheProposal();
+  };
+
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 200 },
     { field: 'cycle', headerName: 'Cycle', width: 200 },
     { field: 'title', headerName: 'Title', width: 300 },
     { field: 'pi', headerName: 'PI', width: 200 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'lastUpdated', headerName: 'Last Updated', width: 250 },
+    { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
     {
-      field: 'actions',
-      headerName: 'Actions',
+      field: 'cpi',
+      headerName: ' ',
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <ViewProposalButton />
-          <EditProposalButton />
-          <CloneProposalButton />
-          <DownloadProposalButton />
-          <DeleteProposalButton />
+          {!canEdit && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
+          {canEdit && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
+          <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
+          <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
+          <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
         </>
       )
     }
@@ -89,6 +126,11 @@ export default function PHT() {
 
   return (
     <>
+      {axiosEditError ? (
+        <Alert testId="alertErrorId" color={axiosEditErrorColor}>
+          <Typography>{axiosEditError}</Typography>
+        </Alert>
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>

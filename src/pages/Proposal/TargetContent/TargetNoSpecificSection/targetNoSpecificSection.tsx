@@ -3,5 +3,5 @@
 import React from 'react';
 
 export default function TargetNoSpecificSection() {
-  return <h3>Selecting this option indicates ???</h3>;
+  return <h3>Current functionality is not yet available</h3>;
 }

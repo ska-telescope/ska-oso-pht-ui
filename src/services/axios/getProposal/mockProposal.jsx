@@ -18,67 +18,41 @@ const MockProposal = {
       country: 'Lagoon',
       affiliation: 'University of Free Town',
       phdThesis: false,
-      status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      actions: null,
-      pi: false
-    },
-    {
-      id: 2,
-      firstName: 'Anu',
-      lastName: 'Vijay',
-      email: 'ask.lop@map.com',
-      country: 'Ocean',
-      affiliation: 'University of Free Town',
-      phdThesis: true,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
       actions: null,
       pi: true
-    },
-    {
-      id: 3,
-      firstName: 'Sady',
-      lastName: 'Field',
-      email: 'ask.lop@map.com',
-      country: 'Park',
-      affiliation: 'University of Virginia',
-      phdThesis: false,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      actions: null,
-      pi: false
     }
   ],
   abstract: '',
   category: 1,
   subCategory: 1,
   sciencePDF: null,
+  scienceLoadStatus: false,
   targetOption: 1,
   targets: [
     {
       id: 1,
+      actions: null,
       name: 'Target 1',
       ra: '01:00:00',
       dec: '00:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     },
     {
       id: 2,
+      actions: null,
       name: 'Target 2',
       ra: '03:00:00',
       dec: '-10:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     },
     {
       id: 3,
+      actions: null,
       name: 'Target 3',
       ra: '05:30:00',
       dec: '-10:00:00',
-      sc1: '82.48',
-      sc2: '20',
-      sc3: '34'
+      vel: '82.48'
     }
   ],
   observations: [
@@ -123,6 +97,7 @@ const MockProposal = {
     { targetId: 3, observationId: 2 }
   ],
   technicalPDF: null,
+  technicalLoadStatus: false,
   pipeline: ''
 };
 

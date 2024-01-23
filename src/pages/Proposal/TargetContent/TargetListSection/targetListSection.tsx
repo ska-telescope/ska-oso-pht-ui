@@ -5,31 +5,37 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import { Help } from '../../../../services/types/help';
 import { Proposal } from '../../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
+import TrashIcon from '../../../../components/icon/trashIcon/trashIcon';
 
 interface TargetListSectionProps {
-  help: Help;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
 }
 
-export default function TargetListSection({
-  help,
-  proposal,
-  setHelp,
-  setProposal
-}: TargetListSectionProps) {
+export default function TargetListSection({ proposal, setProposal }: TargetListSectionProps) {
+  const deleteIconClicked = () => {
+    // TODO : Display confirmation and if confirm, delete
+  };
+
   const columns = [
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'ra', headerName: 'Right Ascension', width: 150 },
-    { field: 'dec', headerName: 'Declination', width: 150 }
+    { field: 'dec', headerName: 'Declination', width: 100 },
+    { field: 'vel', headerName: 'Red Shift', width: 100 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      sortable: false,
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: () => <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
+    }
   ];
-  const extendedColumns = structuredClone(columns);
+  const extendedColumns = [...columns];
 
   const ClickFunction = () => {
     // TODO
@@ -56,45 +62,37 @@ export default function TargetListSection({
           extendedColumns={extendedColumns}
           height={400}
           rowClick={ClickFunction}
+          testId="targetListColumns"
         />
       </Grid>
       <Grid item md={6} xs={11}>
-        <Box sx={{ width: '100%', border: '1px solid grey', borderTop: 'none' }}>
+        <Box sx={{ width: '100%', border: '1px solid grey' }}>
           <Box>
-            <Box>
-              <Tabs
-                textColor="secondary"
-                indicatorColor="secondary"
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
-                <Tab
-                  label="Import From File"
-                  {...a11yProps(1)}
-                  sx={{ border: '1px solid grey' }}
-                  disabled
-                />
-                <Tab
-                  label="Spatial Imaging"
-                  {...a11yProps(2)}
-                  sx={{ border: '1px solid grey' }}
-                  disabled
-                />
-              </Tabs>
-            </Box>
-            {value === 0 && (
-              <AddTarget
-                help={help}
-                proposal={proposal}
-                setHelp={setHelp}
-                setProposal={setProposal}
+            <Tabs
+              textColor="secondary"
+              indicatorColor="secondary"
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
+              <Tab
+                label="Import From File"
+                {...a11yProps(1)}
+                sx={{ border: '1px solid grey' }}
+                disabled
               />
-            )}
-            {value === 1 && <TargetFileImport />}
-            {value === 2 && <SpatialImaging />}
+              <Tab
+                label="Spatial Imaging"
+                {...a11yProps(2)}
+                sx={{ border: '1px solid grey' }}
+                disabled
+              />
+            </Tabs>
           </Box>
+          {value === 0 && <AddTarget proposal={proposal} setProposal={setProposal} />}
+          {value === 1 && <TargetFileImport />}
+          {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
     </Grid>

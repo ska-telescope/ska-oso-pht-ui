@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+INPUT_FILE=$1
+START_LINE=$(head -n1 "$INPUT_FILE")
+PATTERN="^STAR-[[:digit:]]+ "
+if ! [[ "$START_LINE" =~ $PATTERN ]]; then
+  echo "Commit message invalid. Expected 'STAR-000 .*', but got '$START_LINE'"
+  exit 1
+fi
