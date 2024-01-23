@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SKA_PHT_API_URL } from '../../../utils/constants';
 import { Proposal } from '../../types/proposal';
 
-async function AddProposalToDB(_inData: Proposal) {
+async function NewProposal(_inData: Proposal) {
   const apiUrl = SKA_PHT_API_URL;
   const config = {
     headers: {
@@ -19,4 +19,4 @@ async function AddProposalToDB(_inData: Proposal) {
   }
 }
 
-export default AddProposalToDB;
+export default NewProposal;

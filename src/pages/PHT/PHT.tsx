@@ -12,15 +12,10 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
-import EditProposal from '../../services/axios/editProposal/editProposal';
-import MockProposal from '../../services/axios/getProposal/mockProposal';
+import GetProposal from '../../services/axios/getProposal/getProposal';
 
 export default function PHT() {
   const navigate = useNavigate();
-  /*
-  TODO: remove colouring of selected row for better visibility
-  using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
-  */
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -56,6 +51,8 @@ export default function PHT() {
     };
   }, []);
 
+  const canEdit = () => true;
+
   const cloneIconClicked = () => {
     // TODO
   };
@@ -68,15 +65,14 @@ export default function PHT() {
     // TODO : Implement
   };
 
-  const editIconClicked = async () => {
-    // navigate('/proposal');
-    // TODO : There should be a edit proposal view with a form
-    // this is 1st pass to establish connection to API endpoint
-    const response = await EditProposal(MockProposal.id, MockProposal);
+  const getTheProposal = async () => {
+    const proposalId = 1; // TODO replace with id from the list
+    const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
       setAxiosEditError(`Success: ${response}`);
       setAxiosEditErrorColor(AlertColorTypes.Success);
+      navigate('/proposal');
     } else {
       // Handle error response
       setAxiosEditError(response.error);
@@ -84,8 +80,12 @@ export default function PHT() {
     }
   };
 
+  const editIconClicked = async () => {
+    getTheProposal();
+  };
+
   const viewIconClicked = () => {
-    navigate('/proposal');
+    getTheProposal();
   };
 
   const COLUMNS = [
@@ -103,11 +103,8 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
-          {
-            // {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
-          }
-          <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />
+          {!canEdit && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
+          {canEdit && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
           <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />

@@ -32,6 +32,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
+  const [validateToggle, setValidateToggle] = React.useState(false);
 
   function formValidation() {
     let count = 0;
@@ -78,15 +79,22 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
     } else {
       setErrorTextEmail('');
     }
-
     return count;
   }
 
   React.useEffect(() => {
-    const invalidForm = Boolean(formValidation());
-    setFormInvalid(invalidForm);
+    setValidateToggle(!validateToggle);
     helpContent(DEFAULT_HELP);
   }, []);
+
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [firstName, lastName, email]);
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
+    setFormInvalid(invalidForm);
+  }, [validateToggle]);
 
   const formValues = {
     firstName: {

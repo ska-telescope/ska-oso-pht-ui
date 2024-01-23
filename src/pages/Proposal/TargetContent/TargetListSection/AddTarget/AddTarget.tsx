@@ -56,7 +56,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
     );
     const newTarget = {
       id: highestId + 1,
-      action: null,
+      actions: null,
       name,
       ra,
       dec,

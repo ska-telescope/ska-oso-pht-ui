@@ -52,7 +52,7 @@ const MockProposal = {
   subCategory: 1,
   sciencePDF: null,
   scienceLoadStatus: false,
-  targetOption: 2,
+  targetOption: 1,
   targets: [
     {
       id: 1,
