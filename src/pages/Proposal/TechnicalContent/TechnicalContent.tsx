@@ -55,7 +55,9 @@ export default function TechnicalContent({
       justifyContent="flex-start"
     >
       <Grid item xs={2}>
-        <Typography variant="body2">Upload PDF</Typography>
+        <Typography variant="body2" data-testid="uploadPdfLabel">
+          Upload PDF
+        </Typography>
         <FileUpload
           chooseFileTypes=".pdf"
           direction="column"
@@ -67,7 +69,13 @@ export default function TechnicalContent({
       </Grid>
       <Grid item xs={6}>
         <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
-          <CardHeader title={<Typography variant="h6">PDF Preview</Typography>} />
+          <CardHeader
+            title={(
+              <Typography variant="h6" data-testid="pdfPreviewLabel">
+                PDF Preview
+              </Typography>
+            )}
+          />
           <CardContent sx={{ height: '55vh' }}>
             <object
               data="https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"

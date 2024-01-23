@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import GetProposals from '../../services/axios/getProposals/getProposals';
+import GetProposal from '../../services/axios/getProposal/getProposal';
 import { SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
@@ -15,15 +16,13 @@ import { Proposal } from '../../services/types/proposal';
 
 export default function PHT() {
   const navigate = useNavigate();
-  /*
-  TODO: remove colouring of selected row for better visibility
-  using something like: sx={{ '&:selected': { backgroundColor: 'primary.light' } }}
-  */
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
+  const [, setAxiosViewError] = React.useState('');
+  const [, setAxiosViewErrorColor] = React.useState(null);
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -64,13 +63,30 @@ export default function PHT() {
     // TODO : Implement
   };
 
-  const editIconClicked = () => {
-    navigate('/proposal');
+  const getTheProposal = async () => {
+    const proposalId = 1; // TODO replace with id from the list
+    const response = await GetProposal(proposalId);
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosViewError(`Success: ${response}`);
+      setAxiosViewErrorColor(AlertColorTypes.Success);
+      navigate('/proposal');
+    } else {
+      // Handle error response
+      setAxiosViewError(response.error);
+      setAxiosViewErrorColor(AlertColorTypes.Error);
+    }
+  };
+
+  const editIconClicked = async () => {
+    getTheProposal();
   };
 
   const viewIconClicked = () => {
-    navigate('/proposal');
+    getTheProposal();
   };
+
+  const canEdit = () => true;
 
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 200 },
@@ -87,8 +103,8 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />
-          {false && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
+          {!canEdit && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
+          {canEdit && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
           <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />

@@ -2,7 +2,15 @@ import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import {
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL,
+  SKA_PHT_UPLOAD_ENDPOINT,
+  USE_LOCAL_DATA,
+  SKA_PHT_UPLOAD_API_URL_DUMMY,
+  SKA_PHT_API_URL
+} from '../../../utils/constants';
 
 interface ScienceContentProps {
   page: number;
@@ -51,7 +59,9 @@ export default function ScienceContent({
   return (
     <Grid container p={1} direction="row" alignItems="flex-start" justifyContent="flex-start">
       <Grid item xs={2}>
-        <Typography variant="body2">Upload PDF</Typography>
+        <Typography variant="body2" data-testid="uploadPdfLabel">
+          Upload PDF
+        </Typography>
         <FileUpload
           chooseFileTypes=".pdf"
           direction="column"
@@ -59,12 +69,18 @@ export default function ScienceContent({
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL="https://httpbin.org/post"
+          uploadURL={USE_LOCAL_DATA ? SKA_PHT_UPLOAD_API_URL_DUMMY : `${SKA_PHT_API_URL}${SKA_PHT_UPLOAD_ENDPOINT}`}
         />
       </Grid>
       <Grid item xs={6}>
         <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
-          <CardHeader title={<Typography variant="h6">PDF Preview</Typography>} />
+          <CardHeader
+            title={(
+              <Typography variant="h6" data-testid="pdfPreviewLabel">
+                PDF Preview
+              </Typography>
+            )}
+          />
           <CardContent sx={{ height: '55vh' }}>
             <object
               data="https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"

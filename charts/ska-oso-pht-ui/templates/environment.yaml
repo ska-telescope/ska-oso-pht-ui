@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ska-oso-pht-ui.name" . }}-environment-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ska-oso-pht-ui.labels" . | indent 4 }}
+    component: {{ .Values.ui.component }}
+    function: {{ .Values.ui.function }}
+    domain: {{ .Values.ui.domain }}
+    intent: production
+data:
+  DUMMY_URL: {{ .Values.ui.ingress.dummyUrl }}
+  CONTEXT_URL: {{ .Values.ui.ingress.contextUrl }}
+

@@ -1,6 +1,8 @@
 import { env } from '../../env';
 
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
+export const SKA_PHT_UPLOAD_ENDPOINT = env.REACT_APP_SKA_PHT_UPLOAD_ENDPOINT;
+export const SKA_PHT_UPLOAD_API_URL_DUMMY = 'https://httpbin.org/post';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA;
 
 export const STATUS_OK = 0;
@@ -71,11 +73,7 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = {
-  title: 'Help Title',
-  description: 'Field sensitive help',
-  additional: ''
-};
+export const DEFAULT_HELP = ['', '', ''];
 
 export const OBSERVATION = {
   array: [

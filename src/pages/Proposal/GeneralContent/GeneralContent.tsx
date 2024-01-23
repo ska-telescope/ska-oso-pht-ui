@@ -1,48 +1,40 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import InfoPanel from '../../../components/infoPanel/infoPanel';
-import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import { Help } from '../../../services/types/help';
+import HelpPanel from '../../../components/helpPanel/helpPanel';
+import {
+  DEFAULT_HELP,
+  GENERAL,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 
-export const HELP_ABSTRACT = {
-  title: 'ABSTRACT TITLE',
-  description: 'ABSTRACT DESCRIPTION',
-  additional: ''
-};
-export const HELP_CATEGORY = {
-  title: 'CATEGORY TITLE',
-  description: 'CATEGORY DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUBCATEGORY = {
-  title: 'SUBCATEGORY TITLE',
-  description: 'SUBCATEGORY DESCRIPTION',
-  additional: ''
-};
+export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
+export const HELP_CATEGORY = ['CATEGORY TITLE', 'CATEGORY DESCRIPTION', ''];
+export const HELP_SUBCATEGORY = ['SUBCATEGORY TITLE', 'SUBCATEGORY DESCRIPTION', ''];
 
 interface GeneralContentProps {
-  help: Help;
   page: number;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
   setStatus: Function;
 }
 
 export default function GeneralContent({
-  help,
   page,
   proposal,
-  setHelp,
   setProposal,
   setStatus
 }: GeneralContentProps) {
+  const { helpContent } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    helpContent(DEFAULT_HELP);
   }, []);
 
   React.useEffect(() => {
@@ -92,7 +84,7 @@ export default function GeneralContent({
           rows={10}
           value={proposal.abstract}
           setValue={e => setProposal({ ...proposal, abstract: e })}
-          onFocus={() => setHelp(HELP_ABSTRACT)}
+          onFocus={() => helpContent(HELP_ABSTRACT)}
           helperText="Please enter your abstract information"
         />
       </Grid>
@@ -124,7 +116,7 @@ export default function GeneralContent({
           value={proposal.category}
           setValue={checkCategory}
           label=""
-          onFocus={() => setHelp(HELP_CATEGORY)}
+          onFocus={() => helpContent(HELP_CATEGORY)}
         />
       </Grid>
     </Grid>
@@ -146,7 +138,7 @@ export default function GeneralContent({
           value={proposal.subCategory}
           setValue={(e: number) => setProposal({ ...proposal, subCategory: e })}
           label=""
-          onFocus={() => setHelp(HELP_SUBCATEGORY)}
+          onFocus={() => helpContent(HELP_SUBCATEGORY)}
         />
       </Grid>
     </Grid>
@@ -180,7 +172,7 @@ export default function GeneralContent({
         </Grid>
       </Grid>
       <Grid item xs={3}>
-        <InfoPanel title={help.title} description={help.description} additional={help.additional} />
+        <HelpPanel />
       </Grid>
     </Grid>
   );

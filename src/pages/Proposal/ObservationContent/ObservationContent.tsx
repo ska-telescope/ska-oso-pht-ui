@@ -55,56 +55,47 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
   };
 
   return (
-    <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-      <Grid item>
-        <Grid
-          p={1}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-around"
-        >
-          <Grid item xs={5}>
-            <Grid
-              container
-              direction="column"
-              alignItems="flex-start"
-              justifyContent="space-around"
-            >
-              <Grid item pb={1}>
-                <AddObservationButton />
-              </Grid>
-              <DataGridWrapper
-                rows={proposal.observations}
-                extendedColumns={extendedColumnsObservations}
-                height={450}
-                rowClick={ClickFunction}
-              />
-            </Grid>
+    <Grid
+      spacing={1}
+      p={3}
+      container
+      direction="row"
+      alignItems="space-evenly"
+      justifyContent="space-around"
+    >
+      <Grid item xs={5}>
+        <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
+          <Grid item pb={1}>
+            <AddObservationButton />
           </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardHeader
-                title={(
-                  <Typography variant="h6">
-                    Target List related to the selected Observation
-                  </Typography>
-                )}
-              />
-              <CardContent>
-                <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
-                <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
-                <DataGridWrapper
-                  rows={proposal.targets}
-                  extendedColumns={extendedColumnsTargets}
-                  height={350}
-                  rowClick={ClickFunction}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
+          <DataGridWrapper
+            rows={proposal.observations}
+            extendedColumns={extendedColumnsObservations}
+            height={450}
+            rowClick={ClickFunction}
+            testId="observationDetails"
+          />
         </Grid>
+      </Grid>
+      <Grid item xs={6}>
+        <Card variant="outlined">
+          <CardHeader
+            title={
+              <Typography variant="h6">Target List related to the selected Observation</Typography>
+            }
+          />
+          <CardContent>
+            <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
+            <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
+            <DataGridWrapper
+              rows={proposal.targets}
+              extendedColumns={extendedColumnsTargets}
+              height={350}
+              rowClick={ClickFunction}
+              testId="linkedTargetDetails"
+            />
+          </CardContent>
+        </Card>
       </Grid>
     </Grid>
   );

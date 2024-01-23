@@ -5,7 +5,6 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
-import { Help } from '../../../../services/types/help';
 import { Proposal } from '../../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
@@ -13,18 +12,11 @@ import AddTarget from './AddTarget/AddTarget';
 import TrashIcon from '../../../../components/icon/trashIcon/trashIcon';
 
 interface TargetListSectionProps {
-  help: Help;
   proposal: Proposal;
-  setHelp: Function;
   setProposal: Function;
 }
 
-export default function TargetListSection({
-  help,
-  proposal,
-  setHelp,
-  setProposal
-}: TargetListSectionProps) {
+export default function TargetListSection({ proposal, setProposal }: TargetListSectionProps) {
   const deleteIconClicked = () => {
     // TODO : Display confirmation and if confirm, delete
   };
@@ -70,6 +62,7 @@ export default function TargetListSection({
           extendedColumns={extendedColumns}
           height={400}
           rowClick={ClickFunction}
+          testId="targetListColumns"
         />
       </Grid>
       <Grid item md={6} xs={11}>
@@ -97,14 +90,7 @@ export default function TargetListSection({
               />
             </Tabs>
           </Box>
-          {value === 0 && (
-            <AddTarget
-              help={help}
-              proposal={proposal}
-              setHelp={setHelp}
-              setProposal={setProposal}
-            />
-          )}
+          {value === 0 && <AddTarget proposal={proposal} setProposal={setProposal} />}
           {value === 1 && <TargetFileImport />}
           {value === 2 && <SpatialImaging />}
         </Box>

@@ -4,7 +4,7 @@ import MockProposals from './mockProposals';
 
 async function GetProposals() {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_LIST = '/list';
+  const URL_LIST = '/proposal/list';
   const config = {
     headers: {
       Accept: 'application/json',
@@ -17,8 +17,10 @@ async function GetProposals() {
   }
 
   try {
-    // const result = await axios.get(`https://cat-fact.herokuapp.com/facts/`, config); // temp dummy test
-    const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
+    const result = await axios.get(`${apiUrl}${URL_LIST}`, config); // list proposals // works
+    // const result = await axios.get(`${apiUrl}`, config); // proposal // works
+    // const result = await axios.put(`${apiUrl}`, config); // put proposal // works
+    // const result = await axios.post(`${apiUrl}`, config); // post proposal // works
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
