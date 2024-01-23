@@ -3,7 +3,7 @@ import { SKA_PHT_API_URL } from '../../../utils/constants';
 
 async function ValidateProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_VALIDATE = `/validate`;
+  const URL_VALIDATE = `/proposal/validate`;
   const config = {
     headers: {
       Accept: 'application/json',
