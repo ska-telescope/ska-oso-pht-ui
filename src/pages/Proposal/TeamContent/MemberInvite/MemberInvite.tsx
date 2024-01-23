@@ -25,6 +25,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
   const [errorTextFirstName, setErrorTextFirstName] = React.useState('');
@@ -112,11 +113,19 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
     phdThesis: {
       phdThesis,
       setValue: setPhdThesis
+    },
+    pi: {
+      pi,
+      setValue: setPi
     }
   };
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChangePhD = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhdThesis(event.target.checked);
+  };
+
+  const handleCheckboxChangePI = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPi(event.target.checked);
   };
 
   function AddTeamMember() {
@@ -135,7 +144,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
       actions: null,
-      pi: false
+      pi: formValues.pi.pi
     };
     setProposal({ ...proposal, team: [...currentTeam, newTeamMember] });
   }
@@ -144,6 +153,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
     formValues.firstName.setValue('');
     formValues.lastName.setValue('');
     formValues.email.setValue('');
+    formValues.pi.setValue(false);
     formValues.phdThesis.setValue(false);
   }
 
@@ -182,10 +192,17 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
             onFocus={() => helpContent(HELP_EMAIL)}
           />
           <TickBox
+            label="Primary Investigator"
+            testId="piCheckbox"
+            checked={pi}
+            onChange={handleCheckboxChangePI}
+            onFocus={() => helpContent(HELP_PI)}
+          />
+          <TickBox
             label="PhD Thesis"
             testId="PhDCheckbox"
             checked={phdThesis}
-            onChange={handleCheckboxChange}
+            onChange={handleCheckboxChangePhD}
             onFocus={() => helpContent(HELP_PHD)}
           />
         </Grid>

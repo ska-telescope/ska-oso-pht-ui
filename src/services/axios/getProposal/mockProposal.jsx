@@ -18,33 +18,9 @@ const MockProposal = {
       country: 'Lagoon',
       affiliation: 'University of Free Town',
       phdThesis: false,
-      status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      actions: null,
-      pi: false
-    },
-    {
-      id: 2,
-      firstName: 'Anu',
-      lastName: 'Vijay',
-      email: 'ask.lop@map.com',
-      country: 'Ocean',
-      affiliation: 'University of Free Town',
-      phdThesis: true,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
       actions: null,
       pi: true
-    },
-    {
-      id: 3,
-      firstName: 'Sady',
-      lastName: 'Field',
-      email: 'ask.lop@map.com',
-      country: 'Park',
-      affiliation: 'University of Virginia',
-      phdThesis: false,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      actions: null,
-      pi: false
     }
   ],
   abstract: '',
