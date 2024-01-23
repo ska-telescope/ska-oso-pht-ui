@@ -112,7 +112,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
         </Grid>
 
         <Box p={1}>
-          <AddTargetButton disabled={disabled()} onClick={clickFunction} /> 
+          <AddTargetButton disabled={disabled()} onClick={clickFunction} />
         </Box>
       </Grid>
       <Grid item xs={5}>

@@ -13,7 +13,6 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function PHT() {
   const navigate = useNavigate();
@@ -52,7 +51,7 @@ export default function PHT() {
     };
   }, []);
 
-  const canEdit = () => true; 
+  const canEdit = () => true;
 
   const cloneIconClicked = () => {
     // TODO
@@ -67,7 +66,7 @@ export default function PHT() {
   };
 
   const getTheProposal = async () => {
-    const proposalId = 1;  // TODO replace with id from the list
+    const proposalId = 1; // TODO replace with id from the list
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
@@ -79,7 +78,7 @@ export default function PHT() {
       setAxiosEditError(response.error);
       setAxiosEditErrorColor(AlertColorTypes.Error);
     }
-  }
+  };
 
   const editIconClicked = async () => {
     getTheProposal();

@@ -55,20 +55,9 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
   };
 
   return (
-    <Grid
-      p={3}
-      container
-      direction="row"
-      alignItems="space-evenly"
-      justifyContent="space-around"
-    >
+    <Grid p={3} container direction="row" alignItems="space-evenly" justifyContent="space-around">
       <Grid item xs={5}>
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-start"
-          justifyContent="space-around"
-        >
+        <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
           <Grid item pb={1}>
             <AddObservationButton />
           </Grid>
@@ -84,11 +73,9 @@ export default function ObservationContent({ page, proposal, setStatus }: Observ
       <Grid item xs={6}>
         <Card variant="outlined">
           <CardHeader
-            title={(
-              <Typography variant="h6">
-                Target List related to the selected Observation
-              </Typography>
-              )}
+            title={
+              <Typography variant="h6">Target List related to the selected Observation</Typography>
+            }
           />
           <CardContent>
             <TickBox label="Linked" testId="linkedTickBox" checked={linked} />

@@ -5,7 +5,6 @@ import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
-import { Help } from '../../../services/types/help';
 import { Proposal } from '../../../services/types/proposal';
 // import { TeamMember } from '../../../services/types/teamMember';
 import MemberInvite from './MemberInvite/MemberInvite';

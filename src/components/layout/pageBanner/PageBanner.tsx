@@ -25,7 +25,7 @@ export default function PageBanner({
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
   const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
 
-  const handleSaveClick = (response: { error: React.SetStateAction<string>; }) => {
+  const handleSaveClick = (response: { error: React.SetStateAction<string> }) => {
     if (response && !response.error) {
       // Handle successful response
       setAxiosSaveError(`Success: ${response}`);
