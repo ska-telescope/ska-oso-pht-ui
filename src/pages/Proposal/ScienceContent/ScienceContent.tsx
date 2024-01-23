@@ -2,7 +2,14 @@ import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import {
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL,
+  SKA_PHT_UPLOAD_API_URL,
+  USE_LOCAL_DATA,
+  SKA_PHT_UPLOAD_API_URL_DUMMY
+} from '../../../utils/constants';
 
 interface ScienceContentProps {
   page: number;
@@ -61,7 +68,7 @@ export default function ScienceContent({
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL="https://httpbin.org/post"
+          uploadURL={USE_LOCAL_DATA ? SKA_PHT_UPLOAD_API_URL_DUMMY : SKA_PHT_UPLOAD_API_URL}
         />
       </Grid>
       <Grid item xs={6}>

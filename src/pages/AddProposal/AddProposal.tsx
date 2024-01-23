@@ -27,14 +27,16 @@ export default function AddProposal() {
       // wrapped in a set time out so that the user can see the confirmation -> TODO: change this later
       setTimeout(() => {
         navigate('/proposal');
-      }, 2000);
+      }, 1000);
     } else {
       // Handle error response
       setAxiosCreateError(response.error);
       setAxiosCreateErrorColor(AlertColorTypes.Error);
-      setTimeout(() => {
-        navigate('/proposal');
-      }, 2000);
+      if (USE_LOCAL_DATA) {
+        setTimeout(() => {
+          navigate('/proposal');
+        }, 1000);
+      }
     }
   };
 
