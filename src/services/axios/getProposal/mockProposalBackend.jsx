@@ -4,7 +4,7 @@ const MockProposalBackend = {
   submitted_by: '',
   submitted_on: '',
   proposal_info: {
-    title: 'The Milky Way View test',
+    title: 'The Milky Way View Backend Format',
     cycle: 'SKA_5000_2023',
     abstract: 'Prettyllll llklkl',
     proposal_type: { type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
