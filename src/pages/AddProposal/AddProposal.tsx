@@ -9,7 +9,6 @@ import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
 import AddProposalToDB from '../../services/axios/newProposal/newProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
-// test
 
 export default function AddProposal() {
   const [proposal, setProposal] = React.useState(EMPTY_PROPOSAL);
