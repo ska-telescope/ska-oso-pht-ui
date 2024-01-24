@@ -6,11 +6,7 @@ import UploadPDF from '../../../services/axios/uploadPDF/uploadPDF';
 import {
   STATUS_ERROR,
   STATUS_OK,
-  STATUS_PARTIAL,
-  SKA_PHT_UPLOAD_ENDPOINT,
-  USE_LOCAL_DATA,
-  SKA_PHT_UPLOAD_API_URL_DUMMY,
-  SKA_PHT_API_URL
+  STATUS_PARTIAL
 } from '../../../utils/constants';
 
 interface ScienceContentProps {

@@ -87,7 +87,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
     } else {
       setAxiosResolveError(response.error);
     }
-  }
+  };
 
   return (
     <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
@@ -99,9 +99,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
                 <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
                   <Typography>{axiosResolveError}</Typography>
                 </Alert>
-        ) : (
-          null
-        )}
+              ) : null}
               <TextEntry
                 label="Name"
                 testId="name"

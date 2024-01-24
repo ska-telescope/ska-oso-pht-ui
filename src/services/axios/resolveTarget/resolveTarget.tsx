@@ -22,8 +22,7 @@ async function ResolveTarget(targetName) {
     const result = await axios.get(`${apiUrl}${URL_RESOLVE}${targetName}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-        return { error: e.message};
-    
+    return { error: e.message };
   }
 }
 

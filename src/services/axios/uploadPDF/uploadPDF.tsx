@@ -1,6 +1,6 @@
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
-function UploadPDF() : string {
+function UploadPDF(): string {
   const URL_UPLOAD = `/upload/pdf`;
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/post';
 
@@ -10,7 +10,7 @@ function UploadPDF() : string {
   if (USE_LOCAL_DATA) {
     return `${UPLOAD_URL_DUMMY}`;
   }
-    return `${SKA_PHT_API_URL}${URL_UPLOAD}`;
+  return `${SKA_PHT_API_URL}${URL_UPLOAD}`;
 }
 
 export default UploadPDF;
