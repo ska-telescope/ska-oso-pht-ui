@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL } from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function ValidateProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;
@@ -10,6 +10,10 @@ async function ValidateProposal(proposal) {
       'Content-Type': 'application/json'
     }
   };
+
+  if (USE_LOCAL_DATA) {
+    return 'OK - Local DATA';
+  }
 
   try {
     const result = await axios.post(`${apiUrl}${URL_VALIDATE}`, proposal, config);
