@@ -5,7 +5,7 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../Proposal/TitleContent/TitleContent';
-import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
+import { EMPTY_PROPOSAL, PAGES, USE_LOCAL_DATA } from '../../utils/constants';
 import AddProposalToDB from '../../services/axios/newProposal/newProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
@@ -49,7 +49,7 @@ export default function AddProposal() {
         <PageBanner proposalState={null} title={PAGES[0]} addPage={0} />
       </Grid>
       <Grid item>
-        <TitleContent page={0} proposal={proposal} setProposal={setProposal} setStatus={null} />
+        <TitleContent page={0} proposal={proposal as Proposal} setProposal={setProposal} setStatus={null} />
       </Grid>
       <Grid item>
         {axiosCreateError ? (
