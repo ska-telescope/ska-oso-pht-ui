@@ -31,7 +31,7 @@ export default function PageBanner({
   const handleValidateClick = response => {
     if (response && !response.error) {
       // Handle successful response
-      setAxiosValidateError(`Success: ${response}`);
+      setAxiosValidateError(`200 OK : ${response}`);
       setAxiosValidateErrorColor(AlertColorTypes.Success);
     } else {
       // Handle error response
