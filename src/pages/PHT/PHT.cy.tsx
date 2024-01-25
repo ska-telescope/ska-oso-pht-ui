@@ -135,6 +135,9 @@ describe('filtering by proposal type', () => {
   });
 });
 
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list good request', () => {
     beforeEach(() => {
@@ -158,6 +161,9 @@ if (!USE_LOCAL_DATA) {
   });
 }
 
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list bad request', () => {
     beforeEach(() => {
