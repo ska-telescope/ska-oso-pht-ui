@@ -70,6 +70,7 @@ export default function PHT() {
       // Handle successful response
       setAxiosViewError(`Success: ${response}`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
+      setDataProposals([]);
       navigate('/proposal');
     } else {
       // Handle error response
@@ -118,7 +119,9 @@ export default function PHT() {
   function filterProposals() {
     return dataProposals.filter(
       item =>
-        ['title', 'cycle'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+        ['title', 'cycle'].some(field =>
+          item[field].toLowerCase().includes(searchTerm.toLowerCase())
+        ) &&
         (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
     );
   }

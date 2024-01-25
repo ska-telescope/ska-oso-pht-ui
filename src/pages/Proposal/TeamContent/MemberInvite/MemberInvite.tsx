@@ -6,7 +6,7 @@ import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../../components/button/teamInvite/TeamInviteButton';
 import { Proposal } from '../../../../services/types/proposal';
 import { helpers } from '../../../../utils/helpers';
-import { DEFAULT_HELP, TEAM_STATUS_TYPE_OPTIONS } from '../../../../utils/constants';
+import { TEAM_STATUS_TYPE_OPTIONS } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 
 export const HELP_FIRST_NAME = ['Help first name', 'Field sensitive help', ''];
@@ -15,13 +15,12 @@ export const HELP_EMAIL = ['Help email', 'Field sensitive help', ''];
 export const HELP_PHD = ['Help PhD', 'Field sensitive help', ''];
 export const HELP_PI = ['Help PI', 'PI HELP', ''];
 
-interface MemberInviteProps {
-  proposal: Proposal;
-  setProposal: Function;
-}
+export default function MemberInvite() {
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
-export default function MemberInvite({ proposal, setProposal }: MemberInviteProps) {
-  const { helpContent } = storageObject.useStore();
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -85,7 +84,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpContent(DEFAULT_HELP);
+    helpComponent(HELP_FIRST_NAME);
   }, []);
 
   React.useEffect(() => {
@@ -129,7 +128,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
   };
 
   function AddTeamMember() {
-    const currentTeam = proposal.team;
+    const currentTeam = getProposal().team;
     const highestId = currentTeam.reduce(
       (acc, teamMember) => (teamMember.id > acc ? teamMember.id : acc),
       0
@@ -146,7 +145,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
       actions: null,
       pi: formValues.pi.pi
     };
-    setProposal({ ...proposal, team: [...currentTeam, newTeamMember] });
+    setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
   function clearForm() {
@@ -171,7 +170,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
             testId="firstName"
             value={firstName}
             setValue={setFirstName}
-            onFocus={() => helpContent(HELP_FIRST_NAME)}
+            onFocus={() => helpComponent(HELP_FIRST_NAME)}
             disabled={false}
             errorText={errorTextFirstName}
           />
@@ -180,7 +179,7 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
             testId="lastName"
             value={lastName}
             setValue={setLastName}
-            onFocus={() => helpContent(HELP_LAST_NAME)}
+            onFocus={() => helpComponent(HELP_LAST_NAME)}
             errorText={errorTextLastName}
           />
           <TextEntry
@@ -189,21 +188,21 @@ export default function MemberInvite({ proposal, setProposal }: MemberInviteProp
             value={email}
             setValue={setEmail}
             errorText={errorTextEmail}
-            onFocus={() => helpContent(HELP_EMAIL)}
+            onFocus={() => helpComponent(HELP_EMAIL)}
           />
           <TickBox
             label="Primary Investigator"
             testId="piCheckbox"
             checked={pi}
             onChange={handleCheckboxChangePI}
-            onFocus={() => helpContent(HELP_PI)}
+            onFocus={() => helpComponent(HELP_PI)}
           />
           <TickBox
             label="PhD Thesis"
             testId="PhDCheckbox"
             checked={phdThesis}
             onChange={handleCheckboxChangePhD}
-            onFocus={() => helpContent(HELP_PHD)}
+            onFocus={() => helpComponent(HELP_PHD)}
           />
         </Grid>
         <Grid item xs={5}>

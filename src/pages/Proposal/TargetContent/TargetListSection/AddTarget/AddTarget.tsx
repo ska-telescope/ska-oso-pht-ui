@@ -5,7 +5,6 @@ import { TextEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-compon
 import AddTargetButton from '../../../../../components/button/AddTarget/AddTargetButton';
 import HelpPanel from '../../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../../services/types/proposal';
-import { DEFAULT_HELP } from '../../../../../utils/constants';
 import ResolveButton from '../../../../../components/button/Resolve/ResolveButton';
 
 export const HELP_NAME = ['NAME TITLE', 'NAME DESCRIPTION', ''];
@@ -13,20 +12,18 @@ export const HELP_RA = ['RIGHT ASCENSION TITLE', 'RIGHT ASCENSION DESCRIPTION', 
 export const HELP_DEC = ['DECLINATION TITLE', 'DECLINATION DESCRIPTION', ''];
 export const HELP_VEL = ['VELOCITY TITLE', 'VELOCITY DESCRIPTION', ''];
 
-interface AddTargetProps {
-  proposal: Proposal;
-  setProposal: Function;
-}
-
-export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
-  const { helpContent } = storageObject.useStore();
+export default function AddTarget() {
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
   const [vel, setVel] = React.useState('');
 
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   React.useEffect(() => {
-    helpContent(DEFAULT_HELP);
+    helpComponent(HELP_NAME);
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
@@ -51,7 +48,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
   };
 
   const AddTheTarget = () => {
-    const highestId = proposal.targets.reduce(
+    const highestId = getProposal().targets.reduce(
       (acc, target) => (target.id > acc ? target.id : acc),
       0
     );
@@ -63,7 +60,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
       dec,
       vel
     };
-    setProposal({ ...proposal, targets: [...proposal.targets, newTarget] });
+    setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
   };
 
   function clearForm() {
@@ -90,7 +87,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
   };
 
   return (
-    <Grid container direction="row" alignItems="center" justifyContent="space-evenly">
+    <Grid container direction="row" alignItems="flex-start" justifyContent="space-evenly">
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid container direction="row" alignItems="center" justifyContent="flex-start">
@@ -105,7 +102,7 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
                 testId="name"
                 value={name}
                 setValue={setName}
-                onFocus={() => helpContent(HELP_NAME)}
+                onFocus={() => helpComponent(HELP_NAME)}
               />
             </Grid>
             <Grid item xs={2}>
@@ -117,21 +114,21 @@ export default function AddTarget({ proposal, setProposal }: AddTargetProps) {
             testId="ra"
             value={ra}
             setValue={setRA}
-            onFocus={() => helpContent(HELP_RA)}
+            onFocus={() => helpComponent(HELP_RA)}
           />
           <TextEntry
             label="Declination"
             testId="dec"
             value={dec}
             setValue={setDec}
-            onFocus={() => helpContent(HELP_DEC)}
+            onFocus={() => helpComponent(HELP_DEC)}
           />
           <TextEntry
             label="Velocity / Redshift"
             testId="vel"
             value={vel}
             setValue={setVel}
-            onFocus={() => helpContent(HELP_VEL)}
+            onFocus={() => helpComponent(HELP_VEL)}
           />
         </Grid>
 

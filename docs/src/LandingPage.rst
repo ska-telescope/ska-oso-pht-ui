@@ -1,5 +1,5 @@
-LandingPage
-============
+Landing Page
+=============
 This is the first page seen by the user when opening the application.
 
 It shows the user the list of proposals where he has participated as a Co-Investigator or Principal Investigator. The list is organised in a table, with an actions columns providing possible actions towards the proposal. 

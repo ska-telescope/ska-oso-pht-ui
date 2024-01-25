@@ -48,11 +48,11 @@ describe('search functionality', () => {
     cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
     cy.get('[data-testid="SearchIcon"]').click();
     cy.get(
-        '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+      '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     )
-        .children('div[role="row"]')
-        .should('contain', 'SKA_5000_2022')
-        .should('have.length', 1);
+      .children('div[role="row"]')
+      .should('contain', 'SKA_5000_2022')
+      .should('have.length', 1);
   });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();

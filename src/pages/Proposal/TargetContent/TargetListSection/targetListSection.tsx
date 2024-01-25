@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import DataGridWrapper from '../../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import { Proposal } from '../../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
@@ -11,15 +12,14 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
 import TrashIcon from '../../../../components/icon/trashIcon/trashIcon';
 
-interface TargetListSectionProps {
-  proposal: Proposal;
-  setProposal: Function;
-}
+export default function TargetListSection() {
+  const { application } = storageObject.useStore();
 
-export default function TargetListSection({ proposal, setProposal }: TargetListSectionProps) {
   const deleteIconClicked = () => {
     // TODO : Display confirmation and if confirm, delete
   };
+
+  const getProposal = () => application.content2 as Proposal;
 
   const columns = [
     { field: 'name', headerName: 'Name', width: 200 },
@@ -58,7 +58,7 @@ export default function TargetListSection({ proposal, setProposal }: TargetListS
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       <Grid item md={5} xs={11}>
         <DataGridWrapper
-          rows={proposal.targets}
+          rows={getProposal().targets}
           extendedColumns={extendedColumns}
           height={400}
           rowClick={ClickFunction}
@@ -90,7 +90,7 @@ export default function TargetListSection({ proposal, setProposal }: TargetListS
               />
             </Tabs>
           </Box>
-          {value === 0 && <AddTarget proposal={proposal} setProposal={setProposal} />}
+          {value === 0 && <AddTarget />}
           {value === 1 && <TargetFileImport />}
           {value === 2 && <SpatialImaging />}
         </Box>

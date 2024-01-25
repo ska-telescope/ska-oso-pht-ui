@@ -1,5 +1,5 @@
-TeamPage
-============
+Team Page
+=============
 This page is responsible for displaying the team members involved in a proposal.
 
 

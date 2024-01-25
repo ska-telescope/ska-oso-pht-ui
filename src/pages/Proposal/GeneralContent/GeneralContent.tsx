@@ -3,13 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
-import {
-  DEFAULT_HELP,
-  GENERAL,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL
-} from '../../../utils/constants';
+import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 
 export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
@@ -18,28 +12,24 @@ export const HELP_SUBCATEGORY = ['SUBCATEGORY TITLE', 'SUBCATEGORY DESCRIPTION',
 
 interface GeneralContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
-export default function GeneralContent({
-  page,
-  proposal,
-  setProposal,
-  setStatus
-}: GeneralContentProps) {
-  const { helpContent } = storageObject.useStore();
+export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpContent(DEFAULT_HELP);
+    helpComponent(HELP_ABSTRACT);
   }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [proposal]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -48,13 +38,13 @@ export default function GeneralContent({
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
-    if (proposal?.abstract?.length > 0) {
+    if (getProposal()?.abstract?.length > 0) {
       count++;
     }
-    if (proposal?.category > 0) {
+    if (getProposal()?.category > 0) {
       count++;
     }
-    if (proposal?.subCategory > 0) {
+    if (getProposal()?.subCategory > 0) {
       count++;
     }
 
@@ -62,12 +52,12 @@ export default function GeneralContent({
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...proposal, category: id, subCategory: 1 });
+    setProposal({ ...getProposal(), category: id, subCategory: 1 });
   };
 
   const getSubCategoryOptions = () => {
-    if (proposal.category) {
-      return GENERAL.ScienceCategory[proposal.category - 1].subCategory;
+    if (getProposal().category) {
+      return GENERAL.ScienceCategory[getProposal().category - 1].subCategory;
     }
     return [{ label: '', value: 0 }];
   };
@@ -82,9 +72,9 @@ export default function GeneralContent({
           label=""
           testId="abstractId"
           rows={10}
-          value={proposal.abstract}
-          setValue={e => setProposal({ ...proposal, abstract: e })}
-          onFocus={() => helpContent(HELP_ABSTRACT)}
+          value={getProposal().abstract}
+          setValue={e => setProposal({ ...getProposal(), abstract: e })}
+          onFocus={() => helpComponent(HELP_ABSTRACT)}
           helperText="Please enter your abstract information"
         />
       </Grid>
@@ -113,10 +103,10 @@ export default function GeneralContent({
         <DropDown
           options={GENERAL.ScienceCategory}
           testId="categoryId"
-          value={proposal.category}
+          value={getProposal().category}
           setValue={checkCategory}
           label=""
-          onFocus={() => helpContent(HELP_CATEGORY)}
+          onFocus={() => helpComponent(HELP_CATEGORY)}
         />
       </Grid>
     </Grid>
@@ -131,14 +121,14 @@ export default function GeneralContent({
         <DropDown
           options={getSubCategoryOptions()}
           disabled={
-            proposal.category < 1 ||
-            GENERAL.ScienceCategory[proposal.category - 1].subCategory.length < 2
+            getProposal().category < 1 ||
+            GENERAL.ScienceCategory[getProposal().category - 1].subCategory.length < 2
           }
           testId="subCategoryId"
-          value={proposal.subCategory}
-          setValue={(e: number) => setProposal({ ...proposal, subCategory: e })}
+          value={getProposal().subCategory}
+          setValue={(e: number) => setProposal({ ...getProposal(), subCategory: e })}
           label=""
-          onFocus={() => helpContent(HELP_SUBCATEGORY)}
+          onFocus={() => helpComponent(HELP_SUBCATEGORY)}
         />
       </Grid>
     </Grid>
@@ -148,11 +138,11 @@ export default function GeneralContent({
     <Grid
       container
       direction="row"
+      p={3}
       spacing={1}
       alignItems="space-evenly"
       justifyContent="space-around"
     >
-      <Grid item xs={1} />
       <Grid item xs={8}>
         {cycleField()}
         {abstractField()}
