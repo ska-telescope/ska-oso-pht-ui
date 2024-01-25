@@ -112,7 +112,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -124,14 +124,14 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div" maxWidth={200}>
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -155,7 +155,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -167,14 +167,14 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div">
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -193,7 +193,8 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
         testId="titleId"
         value={getProposal()?.title}
         setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
+          helpers.validate.validateTextEntry(title, setTitle, setErrorText)
+        }
         errorText={errorText}
       />
     );
@@ -222,9 +223,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
             <Grid item xs={4}>
               <Typography variant="body2">
                 This title should be used to allow for the
-                <br />
-                {' '}
-                identification of this proposal in a list of proposals
+                <br /> identification of this proposal in a list of proposals
               </Typography>
             </Grid>
           </Grid>

@@ -167,16 +167,16 @@ export default function PHT() {
       <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
         <Grid item>
           {axiosError ? (
-              <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-                <Typography>{axiosError}</Typography>
-              </Alert>
+            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+              <Typography>{axiosError}</Typography>
+            </Alert>
           ) : (
-              <DataGridWrapper
-                  testId="dataGridId"
-                  rows={filteredData}
-                  extendedColumns={extendedColumns}
-                  height={500}
-              />
+            <DataGridWrapper
+              testId="dataGridId"
+              rows={filteredData}
+              extendedColumns={extendedColumns}
+              height={500}
+            />
           )}
         </Grid>
       </Grid>

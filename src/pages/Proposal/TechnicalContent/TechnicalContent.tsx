@@ -68,11 +68,11 @@ export default function TechnicalContent({ page, setStatus }: TechnicalContentPr
       <Grid item xs={6}>
         <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
           <CardHeader
-            title={(
+            title={
               <Typography variant="h6" data-testid="pdfPreviewLabel">
                 PDF Preview
               </Typography>
-            )}
+            }
           />
           <CardContent sx={{ height: '55vh' }}>
             <object
