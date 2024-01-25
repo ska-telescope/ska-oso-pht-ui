@@ -2,10 +2,10 @@ import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TickBox } from '@ska-telescope/ska-gui-components';
-import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
-import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
+import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import { Proposal } from '../../services/types/proposal';
 import { OBSERVATION, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -13,7 +13,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 const PAGE = 5;
 
 export default function ObservationPage() {
-  const { application, updateAppContent1 } = storageObject.useStore();
+  const { application , updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
@@ -90,14 +90,7 @@ export default function ObservationPage() {
   const columnsTargets = [
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'ra', headerName: 'Right Ascension', width: 150 },
-    { field: 'dec', headerName: 'Declination', width: 150 },
-    {
-      field: 'id',
-      headerName: 'Linked',
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true
-    }
+    { field: 'dec', headerName: 'Declination', width: 150 }
   ];
   const extendedColumnsTargets = structuredClone(columnsTargets);
 
@@ -133,11 +126,9 @@ export default function ObservationPage() {
         <Grid item xs={6}>
           <Card variant="outlined">
             <CardHeader
-              title={(
-                <Typography variant="h6">
-                  Target List related to the selected Observation
-                </Typography>
-              )}
+              title={
+                <Typography variant="h6">Target List related to the selected Observation</Typography>
+            }
             />
             <CardContent>
               <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
