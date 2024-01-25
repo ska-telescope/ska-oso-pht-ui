@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
-async function ResolveTarget(targetName) {
+async function GetCoordinates(targetName) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_RESOLVE = `/coordinates/`;
+  const URL_COORDINATES = `/coordinates/`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -19,11 +19,11 @@ async function ResolveTarget(targetName) {
   }
 
   try {
-    const result = await axios.get(`${apiUrl}${URL_RESOLVE}${targetName}`, config);
+    const result = await axios.get(`${apiUrl}${URL_COORDINATES}${targetName}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
   }
 }
 
-export default ResolveTarget;
+export default GetCoordinates;
