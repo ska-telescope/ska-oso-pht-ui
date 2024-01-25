@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL } from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import { Proposal } from '../../types/proposal';
 
 async function NewProposal(_inData: Proposal) {
@@ -11,6 +11,10 @@ async function NewProposal(_inData: Proposal) {
       'Content-Type': 'application/json'
     }
   };
+
+  if (USE_LOCAL_DATA) {
+    return 'OK - Local Data';
+  }
 
   try {
     const result = await axios.post(`${apiUrl}${URL_NEW}`, _inData, config);
