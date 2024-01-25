@@ -39,9 +39,9 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
   }, [validateToggle]);
 
   const columnsObservations = [
-    { field: 'array', headerName: 'Array', minWidth: 100 },
+    { field: 'telescope', headerName: 'Telescope', minWidth: 100 },
     { field: 'subarray', headerName: 'Subarray', minWidth: 200 },
-    { field: 'linked', headerName: 'Linked Targets', minWidth: 200 },
+    { field: 'linked', headerName: 'Linked Targets', minWidth: 150 },
     { field: 'type', headerName: 'Type', minWidth: 100 }
   ];
   const extendedColumnsObservations = structuredClone(columnsObservations);

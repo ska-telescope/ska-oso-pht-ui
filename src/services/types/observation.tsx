@@ -1,6 +1,6 @@
 type Observation = {
   id: number;
-  array: string;
+  telescope: string;
   subarray: string;
   linked: string;
   type: string;
