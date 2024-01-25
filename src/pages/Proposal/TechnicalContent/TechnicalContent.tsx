@@ -1,30 +1,31 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 interface TechnicalContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
 export default function TechnicalContent({
   page,
-  proposal,
-  setProposal,
   setStatus
 }: TechnicalContentProps) {
+  const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   const setFile = (theFile: string) => {
-    setProposal({ ...proposal, technicalPDF: theFile });
+    setProposal({ ...getProposal(), technicalPDF: theFile });
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
-    setProposal({ ...proposal, technicalLoadStatus: status });
+    setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
   React.useEffect(() => {
@@ -33,15 +34,15 @@ export default function TechnicalContent({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [proposal]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = proposal?.technicalPDF ? 1 : 0;
-    count += proposal?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
+    let count = getProposal()?.technicalPDF ? 1 : 0;
+    count += getProposal()?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
@@ -61,7 +62,7 @@ export default function TechnicalContent({
         <FileUpload
           chooseFileTypes=".pdf"
           direction="column"
-          file={proposal.technicalPDF}
+          file={getProposal().technicalPDF}
           setFile={setFile}
           setStatus={setUploadStatus}
           uploadURL="https://httpbin.org/post"

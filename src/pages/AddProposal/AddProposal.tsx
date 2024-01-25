@@ -49,7 +49,12 @@ export default function AddProposal() {
         <PageBanner proposalState={null} title={PAGES[0]} addPage={0} />
       </Grid>
       <Grid item>
-        <TitleContent page={0} proposal={proposal as Proposal} setProposal={setProposal} setStatus={null} />
+        <TitleContent
+          page={0}
+          proposal={proposal as Proposal}
+          setProposal={setProposal}
+          setStatus={null}
+        />
       </Grid>
       <Grid item>
         {axiosCreateError ? (

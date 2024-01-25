@@ -1,3 +1,8 @@
+Overview
+~~~~~~~~~~~~
+
+TODO : WHAT IS THE PURPOSE OF THE APPLICATION ? 
+
 Pages
 ~~~~~~~~~~~~
 
@@ -7,6 +12,10 @@ Pages
 
    LandingPage
    TitlePage
-   GeneralPage
    TeamPage
+   GeneralPage
+   SciencePage
    TargetPage
+   ObservationPage
+   TechnicalPage
+   DataPage

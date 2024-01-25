@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
 import {
@@ -14,25 +15,25 @@ import {
 
 interface ScienceContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
 export default function ScienceContent({
   page,
-  proposal,
-  setProposal,
   setStatus
 }: ScienceContentProps) {
+  const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   const setFile = (theFile: string) => {
-    setProposal({ ...proposal, sciencePDF: theFile });
+    setProposal({ ...getProposal(), sciencePDF: theFile });
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
-    setProposal({ ...proposal, scienceLoadStatus: status });
+    setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
   React.useEffect(() => {
@@ -41,18 +42,18 @@ export default function ScienceContent({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    if (proposal?.scienceLoadStatus === null) {
+    if (getProposal()?.scienceLoadStatus === null) {
       setUploadStatus(FileUploadStatus.INITIAL);
     }
-  }, [proposal]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = proposal?.sciencePDF ? 1 : 0;
-    count += proposal?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
+    let count = getProposal()?.sciencePDF ? 1 : 0;
+    count += getProposal()?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
@@ -65,11 +66,15 @@ export default function ScienceContent({
         <FileUpload
           chooseFileTypes=".pdf"
           direction="column"
-          file={proposal?.sciencePDF}
+          file={getProposal()?.sciencePDF}
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL={USE_LOCAL_DATA ? SKA_PHT_UPLOAD_API_URL_DUMMY : `${SKA_PHT_API_URL}${SKA_PHT_UPLOAD_ENDPOINT}`}
+          uploadURL={
+            USE_LOCAL_DATA
+              ? SKA_PHT_UPLOAD_API_URL_DUMMY
+              : `${SKA_PHT_API_URL}${SKA_PHT_UPLOAD_ENDPOINT}`
+          }
         />
       </Grid>
       <Grid item xs={6}>

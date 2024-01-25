@@ -14,14 +14,12 @@ interface PageBannerProps {
   addPage?: number;
   title: string;
   setPage?: Function;
-  proposalState?: number[];
 }
 
 export default function PageBanner({
   addPage = 0,
   setPage = null,
-  title,
-  proposalState
+  title
 }: PageBannerProps) {
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
@@ -78,7 +76,7 @@ export default function PageBanner({
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            {addPage !== 0 && <StatusArray setPage={setPage} proposalState={proposalState} />}
+            {addPage !== 0 && <StatusArray setPage={setPage} />}
           </Grid>
           <Grid item>
             <Grid

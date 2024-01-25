@@ -3,6 +3,7 @@
 import React from 'react';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../../../components/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
@@ -11,18 +12,16 @@ import { Proposal } from '../../../services/types/proposal';
 
 interface TitleContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
 export default function TitleContent({
   page,
-  proposal,
-  setProposal,
   setStatus
 }: TitleContentProps) {
   const theme = useTheme();
+  const { application, updateAppContent2 } = storageObject.useStore();
+  
 
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [tempValue, setTempValue] = React.useState(0);
@@ -36,7 +35,10 @@ export default function TitleContent({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [proposal]);
+  }, [application.content2]);
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -44,13 +46,13 @@ export default function TitleContent({
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
-    if (proposal?.title?.length > 0) {
+    if (getProposal()?.title?.length > 0) {
       count++;
     }
-    if (proposal?.proposalType !== 0) {
+    if (getProposal()?.proposalType !== 0) {
       count++;
     }
-    if (proposal?.proposalSubType !== 0) {
+    if (getProposal()?.proposalSubType !== 0) {
       count++;
     }
     setStatus([page, result[count]]);
@@ -59,30 +61,12 @@ export default function TitleContent({
   const handleDialogResponse = response => {
     if (response === 'continue') {
       if (!subProposalChange) {
-        setProposal({ ...proposal, proposalType: tempValue, proposalSubType: 0 });
+        setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: 0 });
       } else {
-        setProposal({ ...proposal, proposalSubType: tempValue });
+        setProposal({ ...getProposal(), proposalSubType: tempValue });
       }
     }
   };
-
-  React.useEffect(() => {
-    if (typeof setStatus !== 'function') {
-      return;
-    }
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = 0;
-    if (proposal?.title?.length > 0) {
-      count++;
-    }
-    if (proposal?.proposalType !== 0) {
-      count++;
-    }
-    if (proposal?.proposalSubType !== 0) {
-      count++;
-    }
-    setStatus([page, result[count]]);
-  }, [proposal]);
 
   const confirmChange = (id: number, isSubType: boolean) => {
     setTempValue(id);
@@ -91,17 +75,17 @@ export default function TitleContent({
   };
 
   function clickProposal(id: number) {
-    if (proposal.proposalType === 0 || proposal.proposalSubType === 0) {
-      setProposal({ ...proposal, proposalType: id });
-    } else if (proposal.proposalType !== id) {
+    if (getProposal().proposalType === 0 || getProposal().proposalSubType === 0) {
+      setProposal({ ...getProposal(), proposalType: id });
+    } else if (getProposal().proposalType !== id) {
       confirmChange(id, false);
     }
   }
 
   function clickSubProposal(id: any) {
-    if (proposal.proposalSubType === 0) {
-      setProposal({ ...proposal, proposalSubType: id });
-    } else if (proposal.proposalSubType !== id) {
+    if (getProposal().proposalSubType === 0) {
+      setProposal({ ...getProposal(), proposalSubType: id });
+    } else if (getProposal().proposalSubType !== id) {
       confirmChange(id, true);
     }
   }
@@ -119,13 +103,13 @@ export default function TitleContent({
       <Grid key={id} item>
         <Card
           style={{
-            color: setCardFG(proposal.proposalType, id),
-            backgroundColor: setCardBG(proposal.proposalType, id),
+            color: setCardFG(getProposal().proposalType, id),
+            backgroundColor: setCardBG(getProposal().proposalType, id),
 
             display: 'flex',
             justifyContent: 'center'
           }}
-          className={setCardClassName(proposal.proposalType, id)}
+          className={setCardClassName(getProposal().proposalType, id)}
           onClick={() => clickProposal(id)}
           variant="outlined"
           id={`ProposalType-${id}`}
@@ -136,8 +120,8 @@ export default function TitleContent({
                 <Avatar
                   variant="rounded"
                   style={{
-                    color: setCardBG(proposal.proposalType, id),
-                    backgroundColor: setCardFG(proposal.proposalType, id)
+                    color: setCardBG(getProposal().proposalType, id),
+                    backgroundColor: setCardFG(getProposal().proposalType, id)
                   }}
                 >
                   <Typography variant="body2" component="div">
@@ -165,10 +149,10 @@ export default function TitleContent({
       <Grid key={id} item xs={12} sm={6} md={3}>
         <Card
           style={{
-            color: setCardFG(proposal.proposalSubType, id),
-            backgroundColor: setCardBG(proposal.proposalSubType, id)
+            color: setCardFG(getProposal().proposalSubType, id),
+            backgroundColor: setCardBG(getProposal().proposalSubType, id)
           }}
-          className={setCardClassName(proposal.proposalSubType, id)}
+          className={setCardClassName(getProposal().proposalSubType, id)}
           onClick={() => clickSubProposal(id)}
           variant="outlined"
           id={`SubProposalType-${id}`}
@@ -179,8 +163,8 @@ export default function TitleContent({
                 <Avatar
                   variant="rounded"
                   style={{
-                    color: setCardBG(proposal.proposalSubType, id),
-                    backgroundColor: setCardFG(proposal.proposalSubType, id)
+                    color: setCardBG(getProposal().proposalSubType, id),
+                    backgroundColor: setCardFG(getProposal().proposalSubType, id)
                   }}
                 >
                   <Typography variant="body2" component="div">
@@ -204,14 +188,14 @@ export default function TitleContent({
 
   const titleField = () => {
     const setTitle = (e: string) => {
-      setProposal({ ...proposal, title: e });
+      setProposal({ ...getProposal(), title: e });
     };
 
     return (
       <TextEntry
         label=""
         testId="titleId"
-        value={proposal?.title}
+        value={getProposal()?.title}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
         errorText={errorText}
@@ -223,7 +207,7 @@ export default function TitleContent({
 
   return (
     <>
-      {proposal && (
+      {getProposal() && (
         <Grid container direction="column" alignItems="flex-start" justifyContent="space-evenly">
           <Grid
             pl={2}
@@ -297,9 +281,9 @@ export default function TitleContent({
             spacing={2}
             id="SubProposalContainer"
           >
-            {proposal.proposalType > 0 &&
-              Projects[proposal.proposalType - 1].subProjects[0].id > 0 &&
-              Projects[proposal.proposalType - 1].subProjects?.map((proposalType: any) =>
+            {getProposal().proposalType > 0 &&
+              Projects[getProposal().proposalType - 1].subProjects[0].id > 0 &&
+              Projects[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
                 ProposalSubType(proposalType)
               )}
           </Grid>

@@ -73,7 +73,7 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = ['', '', ''];
+export const DEFAULT_HELP = ['', ' ', ''];
 
 export const OBSERVATION = {
   array: [

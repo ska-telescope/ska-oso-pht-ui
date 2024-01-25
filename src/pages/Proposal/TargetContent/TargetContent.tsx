@@ -1,6 +1,7 @@
 import React from 'react';
 import useTheme from '@mui/material/styles/useTheme';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
@@ -18,19 +19,19 @@ const TOOLTIP = [
 
 interface TargetContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
 export default function TargetContent({
   page,
-  proposal,
-  setProposal,
   setStatus
 }: TargetContentProps) {
   const theme = useTheme();
+  const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -38,7 +39,7 @@ export default function TargetContent({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [proposal]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
@@ -46,7 +47,7 @@ export default function TargetContent({
     }
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
-    switch (proposal.targetOption) {
+    switch (getProposal().targetOption) {
       case 1: {
         count = 2;
         setStatus([page, result[count]]);
@@ -54,7 +55,7 @@ export default function TargetContent({
       }
       case 2: {
         count = 1;
-        count += proposal.targets.length ? 1 : 0;
+        count += getProposal().targets.length ? 1 : 0;
         setStatus([page, result[count]]);
         return;
       }
@@ -69,7 +70,7 @@ export default function TargetContent({
   }, [validateToggle]);
 
   const handleClick = (index: number) => {
-    setProposal({ ...proposal, targetOption: index });
+    setProposal({ ...getProposal(), targetOption: index });
   };
 
   const setCardBG = (isSelected: boolean) =>
@@ -82,8 +83,8 @@ export default function TargetContent({
       <Grid item>
         <Card
           style={{
-            color: setCardFG(occ === proposal.targetOption),
-            backgroundColor: setCardBG(occ === proposal.targetOption)
+            color: setCardFG(occ === getProposal().targetOption),
+            backgroundColor: setCardBG(occ === getProposal().targetOption)
           }}
         >
           <CardActionArea onClick={() => handleClick(occ)}>
@@ -117,12 +118,12 @@ export default function TargetContent({
 
       <Grid mt={4} container direction="column" justifyContent="space-between" alignItems="center">
         <Grid item sx={{ width: '100%' }}>
-          {proposal.targetOption === 1 && (
-            <TargetListSection proposal={proposal} setProposal={setProposal} />
+          {getProposal().targetOption === 1 && (
+            <TargetListSection />
           )}
         </Grid>
-        <Grid item>{proposal.targetOption === 2 && <TargetMosaicSection />}</Grid>
-        <Grid item>{proposal.targetOption === 3 && <TargetNoSpecificSection />}</Grid>
+        <Grid item>{getProposal().targetOption === 2 && <TargetMosaicSection />}</Grid>
+        <Grid item>{getProposal().targetOption === 3 && <TargetNoSpecificSection />}</Grid>
       </Grid>
     </Grid>
   );
