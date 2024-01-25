@@ -14,7 +14,6 @@ export default function HelpPanel() {
       color={InfoCardColorTypes.Info}
       fontSize={20}
       message={getHelp()[1]}
-      showStatus
       testId="helpPanelId"
     />
   );
