@@ -44,6 +44,16 @@ describe('search functionality', () => {
       .should('contain', 'Milky Way')
       .should('have.length', 2);
   });
+  it('returns 1 result when searching for "SKA_5000_2022"', () => {
+    cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
+    cy.get('[data-testid="SearchIcon"]').click();
+    cy.get(
+        '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    )
+        .children('div[role="row"]')
+        .should('contain', 'SKA_5000_2022')
+        .should('have.length', 1);
+  });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
     cy.get('[data-testid="SearchIcon"]').click();

@@ -117,7 +117,7 @@ export default function PHT() {
   function filterProposals() {
     return dataProposals.filter(
       item =>
-        ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+        ['title', 'cycle'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
         (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
     );
   }
