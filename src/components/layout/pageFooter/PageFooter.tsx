@@ -1,20 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
-import { PAGES } from '../../../utils/constants';
+import { NAV, PAGES } from '../../../utils/constants';
 
 interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
-  buttonFunc?: Function;
 }
 
-export default function PageFooter({
-  pageNo,
-  buttonDisabled = false,
-  buttonFunc = null
-}: PageFooterProps) {
+export default function PageFooter({ pageNo, buttonDisabled = false }: PageFooterProps) {
+  const navigate = useNavigate();
+
   const nextLabel = () => {
     if (pageNo === -2) {
       return 'Add';
@@ -26,6 +24,10 @@ export default function PageFooter({
   };
 
   const prevLabel = () => PAGES[pageNo - 1];
+
+  const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
+
+  const nextPageNav = () => (pageNo < NAV.length ? navigate(NAV[pageNo + 1]) : '');
 
   return (
     <Paper
@@ -40,7 +42,9 @@ export default function PageFooter({
         justifyContent="space-between"
       >
         <Grid item>
-          {pageNo > 0 && <PreviousPageButton label={prevLabel()} page={pageNo} func={buttonFunc} />}
+          {pageNo > 0 && (
+            <PreviousPageButton label={prevLabel()} page={pageNo} func={prevPageNav} />
+          )}
         </Grid>
         <Grid item />
         <Grid item>
@@ -49,7 +53,7 @@ export default function PageFooter({
               disabled={buttonDisabled}
               label={nextLabel()}
               page={pageNo}
-              func={buttonFunc}
+              func={nextPageNav}
             />
           )}
         </Grid>

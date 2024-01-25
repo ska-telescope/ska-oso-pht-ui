@@ -16,7 +16,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
-export default function PHT() {
+export default function LandingPage() {
   const navigate = useNavigate();
   const {
     clearApp,
