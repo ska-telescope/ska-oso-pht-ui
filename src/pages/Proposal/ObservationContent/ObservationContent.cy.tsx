@@ -44,7 +44,7 @@ describe('<ObservationContent />', () => {
       </BrowserRouter>
     );
     cy.get('[data-testid="Add observationButton"]').click();
-    cy.get('[data-testid="observationDetails"]').should('contain', 'Array');
+    cy.get('[data-testid="observationDetails"]').should('contain', 'Telescope');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Subarray');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Linked Targets');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Type');
