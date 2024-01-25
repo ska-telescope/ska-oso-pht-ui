@@ -70,7 +70,7 @@ export default function PHT() {
       // Handle successful response
       setAxiosViewError(`Success: ${response}`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
-      setDataProposals()
+      setDataProposals();
       navigate('/proposal');
     } else {
       // Handle error response

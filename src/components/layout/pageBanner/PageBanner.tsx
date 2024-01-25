@@ -16,11 +16,7 @@ interface PageBannerProps {
   setPage?: Function;
 }
 
-export default function PageBanner({
-  addPage = 0,
-  setPage = null,
-  title
-}: PageBannerProps) {
+export default function PageBanner({ addPage = 0, setPage = null, title }: PageBannerProps) {
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
   const [axiosSaveError, setAxiosSaveError] = React.useState('');

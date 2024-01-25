@@ -18,10 +18,7 @@ interface ScienceContentProps {
   setStatus: Function;
 }
 
-export default function ScienceContent({
-  page,
-  setStatus
-}: ScienceContentProps) {
+export default function ScienceContent({ page, setStatus }: ScienceContentProps) {
   const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 

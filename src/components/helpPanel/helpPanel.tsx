@@ -7,9 +7,15 @@ import { Help } from '../../services/types/help';
 export default function HelpPanel() {
   const { help } = storageObject.useStore();
 
-  const getHelp = () => help.component as Help
+  const getHelp = () => help.component as Help;
 
   return (
-    <InfoCard color={InfoCardColorTypes.Info} fontSize={20} message={getHelp()[1]} showStatus testId="helpPanelId" />
+    <InfoCard
+      color={InfoCardColorTypes.Info}
+      fontSize={20}
+      message={getHelp()[1]}
+      showStatus
+      testId="helpPanelId"
+    />
   );
 }

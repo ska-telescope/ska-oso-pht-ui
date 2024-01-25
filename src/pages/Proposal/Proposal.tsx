@@ -17,15 +17,22 @@ import { DEFAULT_HELP, PAGES } from '../../utils/constants';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function Proposal() {
-  const { application, clearApp, helpComponent, updateAppContent1, updateAppContent2, updateAppContent3 } = storageObject.useStore();
+  const {
+    application,
+    clearApp,
+    helpComponent,
+    updateAppContent1,
+    updateAppContent2,
+    updateAppContent3
+  } = storageObject.useStore();
   const [thePage, setThePage] = React.useState(0);
 
   React.useEffect(() => {
     helpComponent(DEFAULT_HELP);
     clearApp();
     updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
-    updateAppContent2(MockProposal);  // TODO Replace with axios/GetProposal();
-    updateAppContent3(MockProposal);  // TODO Replace with axios/GetProposal();
+    updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
+    updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
   }, []);
 
   const getProposalState = () => application.content1 as number[];
@@ -41,53 +48,15 @@ export default function Proposal() {
 
   return (
     <>
-      <PageBanner
-        title={PAGES[thePage].toUpperCase()}
-        addPage={1}
-        setPage={setThePage}
-      />
-      {thePage === 0 && (
-        <TitleContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 1 && (
-        <TeamContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 2 && (
-        <GeneralContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 3 && (
-        <ScienceContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 4 && (
-        <TargetContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 5 && (
-        <ObservationContent page={thePage} setStatus={setTheProposalState} />
-      )}
-      {thePage === 6 && (
-        <TechnicalContent
-          page={thePage}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 7 && (
-        <DataContent page={thePage} setStatus={setTheProposalState} />
-      )}
+      <PageBanner title={PAGES[thePage].toUpperCase()} addPage={1} setPage={setThePage} />
+      {thePage === 0 && <TitleContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 1 && <TeamContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 2 && <GeneralContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 4 && <TargetContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 5 && <ObservationContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 6 && <TechnicalContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 7 && <DataContent page={thePage} setStatus={setTheProposalState} />}
       <PageFooter pageNo={thePage} buttonFunc={setThePage} />
     </>
   );

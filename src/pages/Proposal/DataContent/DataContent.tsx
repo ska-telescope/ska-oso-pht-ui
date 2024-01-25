@@ -6,7 +6,7 @@ import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
 
-export const HELP_PIPELINE = ['PIPELINE TITLE','PIPELINE DESCRIPTION','' ];
+export const HELP_PIPELINE = ['PIPELINE TITLE', 'PIPELINE DESCRIPTION', ''];
 
 interface DataContentProps {
   page: number;
@@ -76,7 +76,6 @@ export default function DataContent({ page, setStatus }: DataContentProps) {
           <Typography variant="h6" m={2}>
             SRC Net
           </Typography>
-
         </Grid>
         <Grid item xs={1} />
         <Grid item xs={3}>

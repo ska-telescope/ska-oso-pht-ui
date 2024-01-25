@@ -10,10 +10,7 @@ interface TechnicalContentProps {
   setStatus: Function;
 }
 
-export default function TechnicalContent({
-  page,
-  setStatus
-}: TechnicalContentProps) {
+export default function TechnicalContent({ page, setStatus }: TechnicalContentProps) {
   const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 

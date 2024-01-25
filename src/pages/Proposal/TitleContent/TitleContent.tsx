@@ -15,13 +15,9 @@ interface TitleContentProps {
   setStatus: Function;
 }
 
-export default function TitleContent({
-  page,
-  setStatus
-}: TitleContentProps) {
+export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const theme = useTheme();
   const { application, updateAppContent2 } = storageObject.useStore();
-  
 
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [tempValue, setTempValue] = React.useState(0);

@@ -22,10 +22,7 @@ interface TargetContentProps {
   setStatus: Function;
 }
 
-export default function TargetContent({
-  page,
-  setStatus
-}: TargetContentProps) {
+export default function TargetContent({ page, setStatus }: TargetContentProps) {
   const theme = useTheme();
   const { application, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -118,9 +115,7 @@ export default function TargetContent({
 
       <Grid mt={4} container direction="column" justifyContent="space-between" alignItems="center">
         <Grid item sx={{ width: '100%' }}>
-          {getProposal().targetOption === 1 && (
-            <TargetListSection />
-          )}
+          {getProposal().targetOption === 1 && <TargetListSection />}
         </Grid>
         <Grid item>{getProposal().targetOption === 2 && <TargetMosaicSection />}</Grid>
         <Grid item>{getProposal().targetOption === 3 && <TargetNoSpecificSection />}</Grid>

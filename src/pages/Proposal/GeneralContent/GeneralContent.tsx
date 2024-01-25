@@ -3,12 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
-import {
-  GENERAL,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL
-} from '../../../utils/constants';
+import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import { Proposal } from '../../../services/types/proposal';
 
 export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
@@ -20,10 +15,7 @@ interface GeneralContentProps {
   setStatus: Function;
 }
 
-export default function GeneralContent({
-  page,
-  setStatus
-}: GeneralContentProps) {
+export default function GeneralContent({ page, setStatus }: GeneralContentProps) {
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
@@ -146,7 +138,7 @@ export default function GeneralContent({
     <Grid
       container
       direction="row"
-      p={3} 
+      p={3}
       spacing={1}
       alignItems="space-evenly"
       justifyContent="space-around"
