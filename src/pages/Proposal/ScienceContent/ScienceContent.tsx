@@ -3,15 +3,8 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
-import {
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  SKA_PHT_UPLOAD_ENDPOINT,
-  USE_LOCAL_DATA,
-  SKA_PHT_UPLOAD_API_URL_DUMMY,
-  SKA_PHT_API_URL
-} from '../../../utils/constants';
+import UploadPDF from '../../../services/axios/uploadPDF/uploadPDF';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 interface ScienceContentProps {
   page: number;
@@ -25,7 +18,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const setFile = (theFile: string) => {
+  const setFile = (theFile: File) => {
     setProposal({ ...getProposal(), sciencePDF: theFile });
   };
 
@@ -67,11 +60,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL={
-            USE_LOCAL_DATA
-              ? SKA_PHT_UPLOAD_API_URL_DUMMY
-              : `${SKA_PHT_API_URL}${SKA_PHT_UPLOAD_ENDPOINT}`
-          }
+          uploadURL={UploadPDF()}
         />
       </Grid>
       <Grid item xs={6}>

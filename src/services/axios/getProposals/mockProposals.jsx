@@ -11,7 +11,7 @@ const MockProposals = [
   {
     id: 'SKA2311',
     title: 'The Milky Way View',
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_5000_2022',
     pi: 'Van Loo Cheng',
     cpi: '',
     status: 'Submitted',

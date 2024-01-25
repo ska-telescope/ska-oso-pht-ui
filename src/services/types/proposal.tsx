@@ -13,12 +13,12 @@ export type Proposal = {
   category: number;
   subCategory: number;
   sciencePDF: File | null;
-  scienceLoadStatus: boolean | null;
+  scienceLoadStatus: number;
   targetOption: number;
   targets: Target[];
   observations: Observation[];
   targetObservation: TargetObservation[];
   technicalPDF: File | null;
-  technicalLoadStatus: boolean | null;
+  technicalLoadStatus: number;
   pipeline: string;
 };

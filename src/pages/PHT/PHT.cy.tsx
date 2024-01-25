@@ -44,6 +44,16 @@ describe('search functionality', () => {
       .should('contain', 'Milky Way')
       .should('have.length', 2);
   });
+  it('returns 1 result when searching for "SKA_5000_2022"', () => {
+    cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
+    cy.get('[data-testid="SearchIcon"]').click();
+    cy.get(
+      '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    )
+      .children('div[role="row"]')
+      .should('contain', 'SKA_5000_2022')
+      .should('have.length', 1);
+  });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
     cy.get('[data-testid="SearchIcon"]').click();
@@ -135,6 +145,9 @@ describe('filtering by proposal type', () => {
   });
 });
 
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list good request', () => {
     beforeEach(() => {
@@ -158,6 +171,9 @@ if (!USE_LOCAL_DATA) {
   });
 }
 
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list bad request', () => {
     beforeEach(() => {
