@@ -140,7 +140,7 @@ export default function PHT() {
         container
         direction="row"
         alignItems="center"
-        justifyContent="flex-start"
+        justifyContent="space-around"
       >
         <Grid item xs={2}>
           <AddProposalButton />
@@ -164,26 +164,21 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-evenly">
-        <Grid
-          p={1}
-          container
-          direction="column"
-          alignItems="flex-left"
-          justifyContent="space-evenly"
-        />
-        {axiosError ? (
-          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-            <Typography>{axiosError}</Typography>
-          </Alert>
-        ) : (
-          <DataGridWrapper
-            testId="dataGridId"
-            rows={filteredData}
-            extendedColumns={extendedColumns}
-            height={500}
-          />
-        )}
+      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid item>
+          {axiosError ? (
+              <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+                <Typography>{axiosError}</Typography>
+              </Alert>
+          ) : (
+              <DataGridWrapper
+                  testId="dataGridId"
+                  rows={filteredData}
+                  extendedColumns={extendedColumns}
+                  height={500}
+              />
+          )}
+        </Grid>
       </Grid>
     </>
   );
