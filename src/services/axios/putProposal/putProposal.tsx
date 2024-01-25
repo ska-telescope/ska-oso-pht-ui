@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
-async function EditProposal(proposal) {
+async function PutProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;
   const URL_EDIT = `/proposal`;
   const config = {
@@ -23,4 +23,4 @@ async function EditProposal(proposal) {
   }
 }
 
-export default EditProposal;
+export default PutProposal;
