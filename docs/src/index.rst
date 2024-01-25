@@ -14,9 +14,21 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    Requirements
    Installation
    DuringDevelopment
+   Services
    RunningBuilding
    Testing
 
-   :caption: User Guide : 
+.. toctree::
+   :maxdepth: 2
+   :caption: User Guide :
 
-   Pages
+   UserOverview
+   LandingPage
+   TitlePage
+   TeamPage
+   GeneralPage
+   SciencePage
+   TargetPage
+   ObservationPage
+   TechnicalPage
+   DataPage
