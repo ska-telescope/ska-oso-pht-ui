@@ -1,5 +1,5 @@
-LandingPage
-============
+Landing Page
+=============
 This is the first page seen by the user when opening the application.
 
 It shows the user the list of proposals where he has participated as a Co-Investigator or Principal Investigator. The list is organised in a table, with an actions columns providing possible actions towards the proposal. 
@@ -103,3 +103,11 @@ POST Proposal/validate
 Clicking on the Validate buton on the banner will do a request to the API POST proposal/validate endpoint.
 
 An Alert component is displayed next to the button with the result of the request.
+
+
+GET coordinates
+------------------------------
+Clicking on the Resolve buton in the add target form will do a request to the API GET coordinates/{targetName} endpoint 
+to retrieve the coordinates of the names target.
+
+An Alert component is displayed next to the button if the request fails.

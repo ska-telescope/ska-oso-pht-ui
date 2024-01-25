@@ -70,6 +70,7 @@ export default function PHT() {
       // Handle successful response
       setAxiosViewError(`Success: ${response}`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
+      setDataProposals([]);
       navigate('/proposal');
     } else {
       // Handle error response
@@ -89,11 +90,12 @@ export default function PHT() {
   const canEdit = () => true;
 
   const COLUMNS = [
-    { field: 'id', headerName: 'Proposal ID', width: 200 },
-    { field: 'cycle', headerName: 'Cycle', width: 200 },
-    { field: 'title', headerName: 'Title', width: 300 },
-    { field: 'pi', headerName: 'PI', width: 200 },
-    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'id', headerName: 'Proposal ID', width: 100 },
+    { field: 'telescope', headerName: 'Telescope', width: 100 },
+    { field: 'cycle', headerName: 'Cycle', width: 150 },
+    { field: 'title', headerName: 'Title', width: 250 },
+    { field: 'pi', headerName: 'PI', width: 150 },
+    { field: 'status', headerName: 'Status', width: 100 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
     {
       field: 'cpi',
@@ -117,7 +119,9 @@ export default function PHT() {
   function filterProposals() {
     return dataProposals.filter(
       item =>
-        ['title'].some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase())) &&
+        ['title', 'cycle'].some(field =>
+          item[field].toLowerCase().includes(searchTerm.toLowerCase())
+        ) &&
         (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
     );
   }
@@ -136,7 +140,7 @@ export default function PHT() {
         container
         direction="row"
         alignItems="center"
-        justifyContent="flex-start"
+        justifyContent="space-around"
       >
         <Grid item xs={2}>
           <AddProposalButton />
@@ -160,26 +164,21 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
-        <Grid
-          p={1}
-          container
-          direction="column"
-          alignItems="flex-left"
-          justifyContent="space-around"
-        />
-        {axiosError ? (
-          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-            <Typography>{axiosError}</Typography>
-          </Alert>
-        ) : (
-          <DataGridWrapper
-            testId="dataGridId"
-            rows={filteredData}
-            extendedColumns={extendedColumns}
-            height={500}
-          />
-        )}
+      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid item>
+          {axiosError ? (
+            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+              <Typography>{axiosError}</Typography>
+            </Alert>
+          ) : (
+            <DataGridWrapper
+              testId="dataGridId"
+              rows={filteredData}
+              extendedColumns={extendedColumns}
+              height={500}
+            />
+          )}
+        </Grid>
       </Grid>
     </>
   );

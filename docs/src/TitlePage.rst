@@ -1,5 +1,5 @@
-TitlePage
-============
+Title Page
+=============
 This page allows the user to create a new proposal by selecting a proposal type and a sub-proposal type. 
 
 The user can also enter a title for the new proposal.

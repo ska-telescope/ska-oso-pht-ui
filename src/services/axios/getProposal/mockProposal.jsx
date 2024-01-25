@@ -58,38 +58,33 @@ const MockProposal = {
   observations: [
     {
       id: 1,
-      array: 'MID',
-      subarray: 'subarray 1',
-      linked: '4',
-      type: 'Continuum'
+      telescope: 0,
+      subarray: 0,
+      type: 1
     },
     {
       id: 2,
-      array: 'MID',
-      subarray: 'subarray 2',
-      linked: '6',
-      type: 'Zoom'
+      telescope: 0,
+      subarray: 1,
+      type: 0
     },
     {
       id: 3,
-      array: 'LOW',
-      subarray: 'subarray 2',
-      linked: '8',
-      type: 'Zoom'
+      telescope: 1,
+      subarray: 1,
+      type: 0
     },
     {
       id: 4,
-      array: 'LOW',
-      subarray: 'subarray 3',
-      linked: '12',
-      type: 'Continuum'
+      telescope: 1,
+      subarray: 2,
+      type: 1
     },
     {
       id: 5,
-      array: 'LOW',
-      subarray: 'subarray 4',
-      linked: '0',
-      type: 'Zoom'
+      telescope: 1,
+      subarray: 3,
+      type: 0
     }
   ],
   targetObservation: [

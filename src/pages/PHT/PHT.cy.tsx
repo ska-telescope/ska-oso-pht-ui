@@ -44,6 +44,16 @@ describe('search functionality', () => {
       .should('contain', 'Milky Way')
       .should('have.length', 2);
   });
+  it('returns 1 result when searching for "SKA_5000_2022"', () => {
+    cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
+    cy.get('[data-testid="SearchIcon"]').click();
+    cy.get(
+      '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    )
+      .children('div[role="row"]')
+      .should('contain', 'SKA_5000_2022')
+      .should('have.length', 1);
+  });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
     cy.get('[data-testid="SearchIcon"]').click();
@@ -135,58 +145,63 @@ describe('filtering by proposal type', () => {
   });
 });
 
-  if (!USE_LOCAL_DATA) {
-    describe('Get proposal/list good request', () => {
-      beforeEach(() => {
-        cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
-          'getProposals'
-        );
-        cy.mount(
-          <Router location="/" navigator={undefined}>
-            <PHT />
-          </Router>
-        );
-      });
-      it('displays "Unexpected data format returned from API" on successful getProposals', () => {
-        cy.wait('@getProposals');
-        // cy.get('[data-testid="dataGridId"]').should('be.visible');
-        // temp test that things work as expected before we update the MockProposal format to match API response in the application
-        cy.get('[data-testid="alertErrorId"]')
-          .should('be.visible')
-          .should('have.text', 'Unexpected data format returned from API');
-      });
-    });
-  }
-
-  if (!USE_LOCAL_DATA) {
-    describe('Get proposal/list bad request', () => {
-      beforeEach(() => {
-        cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalsFail');
-        cy.mount(
-          <Router location="/" navigator={undefined}>
-            <PHT />
-          </Router>
-        );
-      });
-      it('displays error message in Alert component on failed getProposals', () => {
-        cy.wait('@getProposalsFail');
-        cy.get('[data-testid="alertErrorId"]')
-          .should('be.visible')
-          .should('have.text', 'Request failed with status code 500');
-      });
-    });
-  }
-  describe('Get proposal good request', () => {
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
+if (!USE_LOCAL_DATA) {
+  describe('Get proposal/list good request', () => {
     beforeEach(() => {
+      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
+        'getProposals'
+      );
       cy.mount(
         <Router location="/" navigator={undefined}>
           <PHT />
         </Router>
       );
-
     });
-    // TODO: issue with targeting the view button in cypress
-    /*
+    it('displays "Unexpected data format returned from API" on successful getProposals', () => {
+      cy.wait('@getProposals');
+      // cy.get('[data-testid="dataGridId"]').should('be.visible');
+      // temp test that things work as expected before we update the MockProposal format to match API response in the application
+      cy.get('[data-testid="alertErrorId"]')
+        .should('be.visible')
+        .should('have.text', 'Unexpected data format returned from API');
+    });
+  });
+}
+
+// we should not need to use if LOCAL_DATA in tests as they should always use the local data
+// currently removing this will cause the tests to fail when the data is returned from the API
+// TODO: set up Cypress so that it always use some local data for the tests
+if (!USE_LOCAL_DATA) {
+  describe('Get proposal/list bad request', () => {
+    beforeEach(() => {
+      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalsFail');
+      cy.mount(
+        <Router location="/" navigator={undefined}>
+          <PHT />
+        </Router>
+      );
+    });
+    it('displays error message in Alert component on failed getProposals', () => {
+      cy.wait('@getProposalsFail');
+      cy.get('[data-testid="alertErrorId"]')
+        .should('be.visible')
+        .should('have.text', 'Request failed with status code 500');
+    });
+  });
+}
+describe('Get proposal good request', () => {
+  beforeEach(() => {
+    cy.mount(
+      <Router location="/" navigator={undefined}>
+        <PHT />
+      </Router>
+    );
+  });
+  // TODO: issue with targeting the view button in cypress
+  /*
     it('displays proposal title in Alert component on success getProposal', () => {
       cy.intercept('GET', `${SKA_PHT_API_URL}`, { fixture: 'proposal.json' }).as('getProposal');
       cy.get('.MuiIconButton-root [data-testid="VisibilityRoundedIcon"]').click();

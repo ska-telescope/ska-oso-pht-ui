@@ -17,10 +17,7 @@ async function GetProposals() {
   }
 
   try {
-    const result = await axios.get(`${apiUrl}${URL_LIST}`, config); // list proposals // works
-    // const result = await axios.get(`${apiUrl}`, config); // proposal // works
-    // const result = await axios.put(`${apiUrl}`, config); // put proposal // works
-    // const result = await axios.post(`${apiUrl}`, config); // post proposal // works
+    const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

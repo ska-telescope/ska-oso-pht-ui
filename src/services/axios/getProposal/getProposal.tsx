@@ -12,12 +12,9 @@ async function GetProposal(_id: number) {
     }
   };
 
-  // TODO : Do this properly
-  /*
   if (USE_LOCAL_DATA) {
     return MockProposal;
   }
-  */
 
   try {
     const result = await axios.get(`${apiUrl}`, config);

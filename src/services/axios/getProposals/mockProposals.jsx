@@ -6,16 +6,18 @@ const MockProposals = [
     pi: 'Van Loo Cheng',
     cpi: 'Keeper Sung',
     status: 'Submitted',
-    lastUpdated: '2023-12-21 00:00:15'
+    lastUpdated: '2023-12-21 00:00:15',
+    telescope: 'LOW'
   },
   {
     id: 'SKA2311',
     title: 'The Milky Way View',
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_5000_2022',
     pi: 'Van Loo Cheng',
     cpi: '',
     status: 'Submitted',
-    lastUpdated: '2023-12-20 00:00:15'
+    lastUpdated: '2023-12-20 00:00:15',
+    telescope: 'LOW'
   },
   {
     id: 'SKA2399',
@@ -24,7 +26,8 @@ const MockProposals = [
     pi: 'Keeper Sung',
     cpi: 'Van Loo Cheng',
     status: 'Accepted',
-    lastUpdated: '2023-12-21 00:00:15'
+    lastUpdated: '2023-12-21 00:00:15',
+    telescope: 'MID'
   },
   {
     id: 'SKA2319',
@@ -33,7 +36,8 @@ const MockProposals = [
     pi: 'Precious Luthan',
     cpi: '',
     status: 'Draft',
-    lastUpdated: '2023-12-21 00:00:15'
+    lastUpdated: '2023-12-21 00:00:15',
+    telescope: 'MID'
   },
   {
     id: 'SKA2317',
@@ -42,7 +46,8 @@ const MockProposals = [
     pi: 'Ma James Nuka',
     cpi: '',
     status: 'Withdrawn',
-    lastUpdated: '2023-12-21 00:00:15'
+    lastUpdated: '2023-12-21 00:00:15',
+    telescope: 'LOW'
   }
 ];
 

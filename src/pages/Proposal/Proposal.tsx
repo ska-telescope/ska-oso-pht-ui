@@ -17,88 +17,46 @@ import { DEFAULT_HELP, PAGES } from '../../utils/constants';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function Proposal() {
-  const { helpContent } = storageObject.useStore();
+  const {
+    application,
+    clearApp,
+    helpComponent,
+    updateAppContent1,
+    updateAppContent2,
+    updateAppContent3
+  } = storageObject.useStore();
   const [thePage, setThePage] = React.useState(0);
-  const [proposalState, setProposalState] = React.useState([5, 5, 5, 5, 5, 5, 5, 0]);
-  const [proposal, setProposal] = React.useState(null);
 
   React.useEffect(() => {
-    const result = MockProposal; // TODO Replace with axios/GetProposal();
-    setProposal(result);
-    helpContent(DEFAULT_HELP);
+    helpComponent(DEFAULT_HELP);
+    clearApp();
+    updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
+    updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
+    updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
   }, []);
+
+  const getProposalState = () => application.content1 as number[];
 
   const setTheProposalState = (e: number[]) => {
     const [page, value] = e;
     const temp = [];
-    for (let i = 0; i < proposalState.length; i++) {
-      temp.push(page === i ? value : proposalState[i]);
+    for (let i = 0; i < getProposalState().length; i++) {
+      temp.push(page === i ? value : getProposalState()[i]);
     }
-    setProposalState(temp);
+    updateAppContent1(temp);
   };
 
   return (
     <>
-      <PageBanner
-        title={PAGES[thePage].toUpperCase()}
-        addPage={1}
-        setPage={setThePage}
-        proposalState={proposalState}
-      />
-      {thePage === 0 && (
-        <TitleContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 1 && (
-        <TeamContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 2 && (
-        <GeneralContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 3 && (
-        <ScienceContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 4 && (
-        <TargetContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 5 && (
-        <ObservationContent page={thePage} proposal={proposal} setStatus={setTheProposalState} />
-      )}
-      {thePage === 6 && (
-        <TechnicalContent
-          page={thePage}
-          proposal={proposal}
-          setProposal={setProposal}
-          setStatus={setTheProposalState}
-        />
-      )}
-      {thePage === 7 && (
-        <DataContent page={thePage} proposal={proposal} setStatus={setTheProposalState} />
-      )}
+      <PageBanner title={PAGES[thePage].toUpperCase()} addPage={1} setPage={setThePage} />
+      {thePage === 0 && <TitleContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 1 && <TeamContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 2 && <GeneralContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 3 && <ScienceContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 4 && <TargetContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 5 && <ObservationContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 6 && <TechnicalContent page={thePage} setStatus={setTheProposalState} />}
+      {thePage === 7 && <DataContent page={thePage} setStatus={setTheProposalState} />}
       <PageFooter pageNo={thePage} buttonFunc={setThePage} />
     </>
   );

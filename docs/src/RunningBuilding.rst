@@ -1,5 +1,5 @@
-Running and Building the Application
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running / Building the Application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Scripts for running, testing, and building the application are provided as part of the standard configuration. These are run using YARN and listed in the scripts section of the package.json file.
 
@@ -33,7 +33,8 @@ From the project directory, you can run any of the following:
 
   Checks the dependencies to see if there are any vulnerabilities.  
 
-### Running the application inside a container
+Running the application inside a container
+==========================================
 
 There are two ways that this can be done as below:
 

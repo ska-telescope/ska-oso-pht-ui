@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Grid, Tab, Tabs, SvgIcon } from '@mui/material';
-import { StarBorderRounded, StarRateRounded } from '@mui/icons-material';
+import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
+import { StarRateRounded } from '@mui/icons-material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../../utils/constants';
@@ -12,25 +13,23 @@ import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 
 // TODO : Either this should be moved to a component of export removed
-export function PIStar({ pi, status, ...rest }) {
+export function PIStar({ pi }) {
   if (pi) {
-    return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" {...rest} />;
-  }
-  if (status === 'Accepted') {
-    return <SvgIcon component={StarBorderRounded} viewBox="0 0 24 24" {...rest} />;
+    return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" />;
   }
 }
 
 interface TeamContentProps {
   page: number;
-  proposal: Proposal;
-  setProposal: Function;
   setStatus: Function;
 }
 
-export default function TeamContent({ page, proposal, setProposal, setStatus }: TeamContentProps) {
+export default function TeamContent({ page, setStatus }: TeamContentProps) {
+  const { application } = storageObject.useStore();
   const [value, setValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -38,14 +37,14 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [proposal]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     if (typeof setStatus !== 'function') {
       return;
     }
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = proposal.team.length > 0 ? 1 : 0;
+    const count = getProposal().team.length > 0 ? 1 : 0;
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
@@ -61,14 +60,22 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
     { field: 'lastName', headerName: 'Last Name', flex: 1 },
     { field: 'firstName', headerName: 'First Name', flex: 1 },
     { field: 'status', headerName: 'Status', flex: 1 },
-    { field: 'phdThesis', headerName: 'PhD Thesis', flex: 1 },
+    {
+      field: 'phdThesis',
+      headerName: 'PhD Thesis',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (params: { row: { pi: boolean } }) => (
+        <Typography>{params.row.pi ? 'Yes' : 'No'}</Typography>
+      )
+    },
     {
       field: 'pi',
       headerName: 'PI',
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: params => <PIStar pi={params.row.pi} status={String(params.row.status)} />
+      renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
     },
     {
       field: 'Actions',
@@ -97,7 +104,7 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item md={5} xs={11}>
           <DataGridWrapper
-            rows={proposal.team}
+            rows={getProposal().team}
             extendedColumns={extendedColumns}
             height={400}
             rowClick={ClickFunction}
@@ -133,7 +140,7 @@ export default function TeamContent({ page, proposal, setProposal, setStatus }: 
                 />
               </Tabs>
             </Box>
-            {value === 0 && <MemberInvite proposal={proposal} setProposal={setProposal} />}
+            {value === 0 && <MemberInvite />}
             {value === 1 && <TeamFileImport />}
             {value === 2 && <MemberSearch />}
           </Box>
