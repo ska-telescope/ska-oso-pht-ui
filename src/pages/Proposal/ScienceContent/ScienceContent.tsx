@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
-import UploadPDF from '../../../services/axios/uploadPDF/uploadPDF';
+import PostUploadPDF from '../../../services/axios/postUploadPDF/postUploadPDF';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 
 interface ScienceContentProps {
@@ -60,7 +60,7 @@ export default function ScienceContent({ page, setStatus }: ScienceContentProps)
           maxFileWidth={25}
           setFile={setFile}
           setStatus={setUploadStatus}
-          uploadURL={UploadPDF()}
+          uploadURL={PostUploadPDF()}
         />
       </Grid>
       <Grid item xs={6}>
