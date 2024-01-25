@@ -89,11 +89,12 @@ export default function PHT() {
   const canEdit = () => true;
 
   const COLUMNS = [
-    { field: 'id', headerName: 'Proposal ID', width: 200 },
-    { field: 'cycle', headerName: 'Cycle', width: 200 },
-    { field: 'title', headerName: 'Title', width: 300 },
-    { field: 'pi', headerName: 'PI', width: 200 },
-    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'id', headerName: 'Proposal ID', width: 100 },
+    { field: 'telescope', headerName: 'Telescope', width: 100 },
+    { field: 'cycle', headerName: 'Cycle', width: 150 },
+    { field: 'title', headerName: 'Title', width: 200 },
+    { field: 'pi', headerName: 'PI', width: 150 },
+    { field: 'status', headerName: 'Status', width: 100 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
     {
       field: 'cpi',
@@ -160,13 +161,13 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-around">
+      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-evenly">
         <Grid
           p={1}
           container
           direction="column"
           alignItems="flex-left"
-          justifyContent="space-around"
+          justifyContent="space-evenly"
         />
         {axiosError ? (
           <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
