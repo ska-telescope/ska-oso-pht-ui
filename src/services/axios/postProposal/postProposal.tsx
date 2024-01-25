@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import { Proposal } from '../../types/proposal';
 
-async function NewProposal(_inData: Proposal) {
+async function PostProposal(_inData: Proposal) {
   const apiUrl = SKA_PHT_API_URL;
   const URL_NEW = `/proposal`;
   const config = {
@@ -24,4 +24,4 @@ async function NewProposal(_inData: Proposal) {
   }
 }
 
-export default NewProposal;
+export default PostProposal;
