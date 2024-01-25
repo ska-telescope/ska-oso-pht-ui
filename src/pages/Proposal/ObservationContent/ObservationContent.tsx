@@ -43,17 +43,14 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
     setStatus([page, result[count]]);
   }, [validateToggle]);
 
-
   const columns = [
     {
       field: 'telescope',
       headerName: 'Telescope',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number }; }) => (
-        <Typography>
-          {OBSERVATION.array[e.row.telescope].label}
-        </Typography>
+      renderCell: (e: { row: { telescope: number } }) => (
+        <Typography>{OBSERVATION.array[e.row.telescope].label}</Typography>
       )
     },
     {
@@ -61,10 +58,8 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
       headerName: 'Subarray',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number, subarray: number }; }) => (
-        <Typography>
-          {OBSERVATION.array[e.row.telescope].subarray[e.row.subarray].label}
-        </Typography>
+      renderCell: (e: { row: { telescope: number; subarray: number } }) => (
+        <Typography>{OBSERVATION.array[e.row.telescope].subarray[e.row.subarray].label}</Typography>
       )
     },
     {
@@ -72,10 +67,8 @@ export default function ObservationContent({ page, setStatus }: ObservationConte
       headerName: 'Type',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number }; }) => (
-        <Typography>
-          {OBSERVATION.ObservationType[e.row.type].label}
-        </Typography>
+      renderCell: (e: { row: { type: number } }) => (
+        <Typography>{OBSERVATION.ObservationType[e.row.type].label}</Typography>
       )
     },
     {
