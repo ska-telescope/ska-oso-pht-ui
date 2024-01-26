@@ -12,10 +12,18 @@ import {
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
-import Proposal from '../pages/Proposal/Proposal';
 import AddProposal from '../pages/AddProposal/AddProposal';
 import AddObservation from '../pages/AddObservation/AddObservation';
+import TitlePage from '../pages/TitlePage/TitlePage';
+import TeamPage from '../pages/TeamPage/TeamPage';
+import GeneralPage from '../pages/GeneralPage/GeneralPage';
+import SciencePage from '../pages/SciencePage/SciencePage';
+import TargetPage from '../pages/TargetPage/TargetPage';
+import ObservationPage from '../pages/ObservationPage/ObservationPage';
+import TechnicalPage from '../pages/TechnicalPage/TechnicalPage';
+import DataPage from '../pages/DataPage/DataPage';
 import theme from '../services/theme/theme';
+import { NAV } from '../utils/constants';
 
 const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
@@ -46,7 +54,14 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<PHT />} />
-              <Route path="/proposal" element={<Proposal />} />
+              <Route path={NAV[0]} element={<TitlePage />} />
+              <Route path={NAV[1]} element={<TeamPage />} />
+              <Route path={NAV[2]} element={<GeneralPage />} />
+              <Route path={NAV[3]} element={<SciencePage />} />
+              <Route path={NAV[4]} element={<TargetPage />} />
+              <Route path={NAV[5]} element={<ObservationPage />} />
+              <Route path={NAV[6]} element={<TechnicalPage />} />
+              <Route path={NAV[7]} element={<DataPage />} />
               <Route path="/addProposal" element={<AddProposal />} />
               <Route path="/addObservation" element={<AddObservation />} />
             </Routes>

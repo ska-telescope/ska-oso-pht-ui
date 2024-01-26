@@ -4,11 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 import { PAGES } from '../../utils/constants';
 
-interface StatusArrayProps {
-  setPage: Function;
-}
-
-export default function StatusArray({ setPage }: StatusArrayProps) {
+export default function StatusArray() {
   const { application } = storageObject.useStore();
 
   const getProposalState = () => application.content1 as number[];
@@ -36,7 +32,7 @@ export default function StatusArray({ setPage }: StatusArrayProps) {
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           <Grid item>
-            <StatusWrapper level={getProposalState()[index]} page={index} setPage={setPage} />
+            <StatusWrapper level={getProposalState()[index]} page={index} />
           </Grid>
           {generateDivider(index)}
         </React.Fragment>

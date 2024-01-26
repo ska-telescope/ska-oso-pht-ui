@@ -18,6 +18,17 @@ export const PAGES = [
   'Data'
 ];
 
+export const NAV = [
+  '/proposal/title',
+  '/proposal/team',
+  '/proposal/general',
+  '/proposal/science',
+  '/proposal/target',
+  '/proposal/observation',
+  '/proposal/technical',
+  '/proposal/data'
+];
+
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
