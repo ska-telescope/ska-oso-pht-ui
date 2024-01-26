@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
-async function ValidateProposal(proposal) {
+async function PostProposalValidate(proposal) {
   const apiUrl = SKA_PHT_API_URL;
   const URL_VALIDATE = `/proposal/validate`;
   const config = {
@@ -23,4 +23,4 @@ async function ValidateProposal(proposal) {
   }
 }
 
-export default ValidateProposal;
+export default PostProposalValidate;
