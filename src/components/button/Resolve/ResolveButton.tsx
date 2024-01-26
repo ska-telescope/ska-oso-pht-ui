@@ -16,7 +16,7 @@ export default function ResolveButton({ targetName, onClick }) {
   return (
     <Button
       ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
+      color={ButtonColorTypes.Inherit}
       label={title}
       onClick={ClickFunction}
       testId={`${title}Button`}
