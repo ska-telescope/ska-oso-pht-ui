@@ -154,7 +154,7 @@ export default function PHT() {
         container
         direction="row"
         alignItems="center"
-        justifyContent="space-around"
+        justifyContent="center"
       >
         <Grid item xs={2}>
           <AddProposalButton />
