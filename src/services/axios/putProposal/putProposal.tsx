@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { helpers } from '../../../utils/helpers'
 
 async function PutProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;
@@ -12,6 +13,8 @@ async function PutProposal(proposal) {
   };
 
   if (USE_LOCAL_DATA) {
+    const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
+    // console.log('convertedProposal', convertedProposal);
     return 'OK - Local DATA';
   }
 
