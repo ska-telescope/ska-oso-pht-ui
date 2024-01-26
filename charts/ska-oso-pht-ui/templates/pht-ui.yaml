@@ -48,7 +48,7 @@ spec:
     component: {{ .Values.ui.component }}
   ports:
   - protocol: TCP
-    port: 80
+    port: 6100
 ---
 apiVersion: v1
 kind: ConfigMap

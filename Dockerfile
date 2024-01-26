@@ -13,15 +13,15 @@ EXPOSE 6100
 # start app
 CMD ["yarn", "start"]
 
-FROM base as builder
+# FROM base as builder
 
-RUN yarn webpack build \
-    --optimization-concatenate-modules \
-    --optimization-minimize \
-    --mode production \
-    --output-clean --output-path /dist/
+# RUN yarn webpack build \
+    #--optimization-concatenate-modules \
+    #--optimization-minimize \
+    #--mode production \
+    #--output-clean --output-path /dist/
 
-FROM nginx:1.25.2 as final
+# FROM nginx:1.25.2 as final
 
 # Copy built files
-COPY --from=builder /dist/* /usr/share/nginx/html/
+# COPY --from=builder /dist/* /usr/share/nginx/html/
