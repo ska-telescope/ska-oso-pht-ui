@@ -5,7 +5,7 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import DataGridWrapper from '../../../components/wrappers/dataGridWrapper/dataGridWrapper';
+import { DataGrid } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../services/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
@@ -57,11 +57,11 @@ export default function TargetListSection() {
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       <Grid item md={5} xs={11}>
-        <DataGridWrapper
+        <DataGrid
           rows={getProposal().targets}
-          extendedColumns={extendedColumns}
+          columns={extendedColumns}
           height={400}
-          rowClick={ClickFunction}
+          onRowClick={ClickFunction}
           testId="targetListColumns"
         />
       </Grid>

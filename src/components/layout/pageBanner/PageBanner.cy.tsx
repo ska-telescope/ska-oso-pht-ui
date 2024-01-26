@@ -14,7 +14,7 @@ describe('<AddProposal />', () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <PageBanner title="" />
+          <PageBanner pageNo={0} />
         </ThemeProvider>
       );
     });
@@ -26,7 +26,7 @@ describe('POST proposal/ bad request', () => {
     // cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
     cy.mount(
       <Router location="/" navigator={undefined}>
-        <PageBanner title="" />
+        <PageBanner pageNo={0} />
       </Router>
     );
   });

@@ -1,11 +1,10 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TickBox } from '@ska-telescope/ska-gui-components';
+import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
-import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import { Proposal } from '../../services/types/proposal';
 import { OBSERVATION, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -13,8 +12,9 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 const PAGE = 5;
 
 export default function ObservationPage() {
-  const { application , updateAppContent1 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [currentObservation, setCurrentObservation] = React.useState(0);
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
 
@@ -92,10 +92,33 @@ export default function ObservationPage() {
     { field: 'ra', headerName: 'Right Ascension', width: 150 },
     { field: 'dec', headerName: 'Declination', width: 150 }
   ];
-  const extendedColumnsTargets = structuredClone(columnsTargets);
+  const columnsTargetsSelected = [
+    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'ra', headerName: 'Right Ascension', width: 150 },
+    { field: 'dec', headerName: 'Declination', width: 150 },
+    {
+      field: 'id',
+      headerName: 'Linked',
+      sortable: false,
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: () => {
+        if (currentObservation > 0) {
+          return <TickBox label="" testId="linkedTickBox" />;
+        }
+        return '';
+      }
+    }
+  ];
+  const extendedColumnsTargets = [...columnsTargets];
+  const extendedColumnsTargetsSelected = [...columnsTargetsSelected];
 
-  const ClickFunction = () => {
+  const clickFunction = () => {
     // TODO
+  };
+
+  const ClickObservationRow = (e: { id: number }) => {
+    setCurrentObservation(e.id);
   };
 
   return (
@@ -114,11 +137,11 @@ export default function ObservationPage() {
             <Grid item pb={1}>
               <AddObservationButton />
             </Grid>
-            <DataGridWrapper
+            <DataGrid
               rows={getProposal().observations}
-              extendedColumns={extendedColumnsObservations}
+              columns={extendedColumnsObservations}
               height={450}
-              rowClick={ClickFunction}
+              // onRowClick={ClickObservationRow}
               testId="observationDetails"
             />
           </Grid>
@@ -126,18 +149,23 @@ export default function ObservationPage() {
         <Grid item xs={6}>
           <Card variant="outlined">
             <CardHeader
-              title={
-                <Typography variant="h6">Target List related to the selected Observation</Typography>
-            }
+              title={(
+                <Typography variant="h6">
+                  Target List related to the selected Observation
+                </Typography>
+              )}
             />
             <CardContent>
               <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
               <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
-              <DataGridWrapper
+              <DataGrid
                 rows={getProposal().targets}
-                extendedColumns={extendedColumnsTargets}
+                columns={
+                  currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
+                }
                 height={350}
-                rowClick={ClickFunction}
+                onRowClick={clickFunction}
+                onColumnVisibilityModelChange={ClickObservationRow}
                 testId="linkedTargetDetails"
               />
             </CardContent>
