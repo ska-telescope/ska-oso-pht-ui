@@ -12,13 +12,14 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 const PAGE = 5;
 
 export default function ObservationPage() {
-  const { application, updateAppContent1 } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentObservation, setCurrentObservation] = React.useState(0);
   const [linked] = React.useState(true);
   const [unlinked] = React.useState(true);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -32,6 +33,31 @@ export default function ObservationPage() {
   const deleteIconClicked = () => {
     // TODO : Display confirmation and if confirm, delete
   };
+
+  const AddObservationTarget = (id:number) => {
+    const rec = { observationId: currentObservation, targetId: id };
+    setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
+  };
+
+  function filterRecords(id: number) {
+    return getProposal().targetObservation.filter(
+      item => !(item.observationId === currentObservation && item.targetId === id)
+    );
+  }
+
+  const DeleteObservationTarget = (id:number) => {
+    setProposal({ ...getProposal(), targetObservation: filterRecords(id) });
+  };
+
+  const isTargetLinked = (id: number) => getProposal().targetObservation.filter(entry => entry.observationId === currentObservation && entry.targetId === id).length > 0;
+  
+  const targetLinkToggle = (id: number) => {
+    if (isTargetLinked(id)) {
+      DeleteObservationTarget(id);
+    } else {
+      AddObservationTarget(id);
+    }
+  }
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -86,7 +112,7 @@ export default function ObservationPage() {
     }
   ];
   const extendedColumnsObservations = [...columns];
-
+  
   const columnsTargets = [
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'ra', headerName: 'Right Ascension', width: 150 },
@@ -102,9 +128,9 @@ export default function ObservationPage() {
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: () => {
+      renderCell: (e: { row: { id: number; }; }) => {
         if (currentObservation > 0) {
-          return <TickBox label="" testId="linkedTickBox" />;
+          return <TickBox label="" testId="linkedTickBox" checked={isTargetLinked(e.row.id)} onChange={() => targetLinkToggle(e.row.id)} />;
         }
         return '';
       }
@@ -141,7 +167,7 @@ export default function ObservationPage() {
               rows={getProposal().observations}
               columns={extendedColumnsObservations}
               height={450}
-              // onRowClick={ClickObservationRow}
+              onRowClick={ClickObservationRow}
               testId="observationDetails"
             />
           </Grid>
@@ -156,16 +182,15 @@ export default function ObservationPage() {
               )}
             />
             <CardContent>
-              <TickBox label="Linked" testId="linkedTickBox" checked={linked} />
-              <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />
+              {false && currentObservation > 0 && <TickBox label="Linked" testId="linkedTickBox" checked={linked} />}
+              {false && currentObservation > 0 && <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />}
               <DataGrid
                 rows={getProposal().targets}
                 columns={
                   currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
                 }
                 height={350}
-                onRowClick={clickFunction}
-                onColumnVisibilityModelChange={ClickObservationRow}
+                onColumnVisibilityModelChange={clickFunction}
                 testId="linkedTargetDetails"
               />
             </CardContent>
