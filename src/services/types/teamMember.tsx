@@ -7,7 +7,6 @@ type TeamMember = {
   affiliation: string;
   phdThesis: boolean;
   status: string;
-  actions: string;
   pi: boolean;
 };
 

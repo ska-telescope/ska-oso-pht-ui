@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
+import GetProposals from '../../services/axios/getProposals/getProposals';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
@@ -16,7 +16,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
-export default function PHT() {
+export default function LandingPage() {
   const navigate = useNavigate();
   const {
     clearApp,
@@ -39,7 +39,7 @@ export default function PHT() {
   React.useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
-      const response = await GetProposalList();
+      const response = await GetProposals();
       if (isMounted) {
         if (response && !response.error) {
           if (response.every(item => item.id && item.title)) {
@@ -108,7 +108,7 @@ export default function PHT() {
     { field: 'id', headerName: 'Proposal ID', width: 100 },
     { field: 'telescope', headerName: 'Telescope', width: 100 },
     { field: 'cycle', headerName: 'Cycle', width: 150 },
-    { field: 'title', headerName: 'Title', width: 250 },
+    { field: 'title', headerName: 'Title', width: 200 },
     { field: 'pi', headerName: 'PI', width: 150 },
     { field: 'status', headerName: 'Status', width: 100 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
@@ -155,7 +155,7 @@ export default function PHT() {
         container
         direction="row"
         alignItems="center"
-        justifyContent="space-around"
+        justifyContent="flex-start"
       >
         <Grid item xs={2}>
           <AddProposalButton />
@@ -179,21 +179,26 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-        <Grid item>
-          {axiosError ? (
-            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-              <Typography>{axiosError}</Typography>
-            </Alert>
-          ) : (
-            <DataGridWrapper
-              testId="dataGridId"
-              rows={filteredData}
-              extendedColumns={extendedColumns}
-              height={500}
-            />
-          )}
-        </Grid>
+      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-evenly">
+        <Grid
+          p={1}
+          container
+          direction="column"
+          alignItems="flex-left"
+          justifyContent="space-evenly"
+        />
+        {axiosError ? (
+          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+            <Typography>{axiosError}</Typography>
+          </Alert>
+        ) : (
+          <DataGridWrapper
+            testId="dataGridId"
+            rows={filteredData}
+            extendedColumns={extendedColumns}
+            height={500}
+          />
+        )}
       </Grid>
     </>
   );

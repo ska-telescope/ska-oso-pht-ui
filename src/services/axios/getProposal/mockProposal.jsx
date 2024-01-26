@@ -19,7 +19,6 @@ const MockProposal = {
       affiliation: 'University of Free Town',
       phdThesis: false,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      actions: null,
       pi: true
     }
   ],
@@ -32,7 +31,6 @@ const MockProposal = {
   targets: [
     {
       id: 1,
-      actions: null,
       name: 'Target 1',
       ra: '01:00:00',
       dec: '00:00:00',
@@ -40,7 +38,6 @@ const MockProposal = {
     },
     {
       id: 2,
-      actions: null,
       name: 'Target 2',
       ra: '03:00:00',
       dec: '-10:00:00',
@@ -48,7 +45,6 @@ const MockProposal = {
     },
     {
       id: 3,
-      actions: null,
       name: 'Target 3',
       ra: '05:30:00',
       dec: '-10:00:00',

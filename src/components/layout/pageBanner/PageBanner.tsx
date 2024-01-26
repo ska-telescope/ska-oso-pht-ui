@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -9,14 +7,13 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
+import { PAGES } from '../../../utils/constants';
 
 interface PageBannerProps {
-  addPage?: number;
-  title: string;
-  setPage?: Function;
+  pageNo: number;
 }
 
-export default function PageBanner({ addPage = 0, setPage = null, title }: PageBannerProps) {
+export default function PageBanner({ pageNo }: PageBannerProps) {
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
@@ -47,14 +44,7 @@ export default function PageBanner({ addPage = 0, setPage = null, title }: PageB
   };
 
   return (
-    <Grid
-      p={1}
-      pt={addPage}
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-around"
-    >
+    <Grid p={1} pt={1} container direction="row" alignItems="center" justifyContent="space-around">
       <Grid item xs={12}>
         <Grid container direction="row" alignItems="center" justifyContent="space-between">
           <Grid item>
@@ -68,11 +58,13 @@ export default function PageBanner({ addPage = 0, setPage = null, title }: PageB
               <Grid item>
                 <HomeButton />
               </Grid>
-              <Grid item>{addPage === 1 && <SaveButton onClick={handleSaveClick} />}</Grid>
+              <Grid item>
+                <SaveButton onClick={handleSaveClick} />
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            {addPage !== 0 && <StatusArray setPage={setPage} />}
+            <StatusArray />
           </Grid>
           <Grid item>
             <Grid
@@ -88,11 +80,11 @@ export default function PageBanner({ addPage = 0, setPage = null, title }: PageB
                 </Alert>
               ) : null}
               <Grid item>
-                {addPage !== 0 && (
-                  <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
-                )}
+                <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
               </Grid>
-              <Grid item>{addPage !== 0 && <SubmitButton />}</Grid>
+              <Grid item>
+                <SubmitButton />
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -104,7 +96,7 @@ export default function PageBanner({ addPage = 0, setPage = null, title }: PageB
       ) : null}
       <Grid item xs={2}>
         <Typography variant="h6" m={2}>
-          {title}
+          {PAGES[pageNo].toUpperCase()}
         </Typography>
       </Grid>
       <Grid item xs={8}>
