@@ -12,7 +12,7 @@ import {
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { OBSERVATION } from '../../utils/constants';
+import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import { Proposal } from '../../services/types/proposal';
 
@@ -24,6 +24,7 @@ import { Proposal } from '../../services/types/proposal';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
+const PAGE = 9;
 
 export const HELP_ARRAY = ['ARRAY TITLE', 'ARRAY DESCRIPTION', ''];
 export const HELP_SUBARRAY = ['SUBARRAY TITLE', 'SUBARRAY DESCRIPTION', ''];
@@ -509,7 +510,7 @@ export default function AddObservation() {
 
     const buttonClicked = () => {
       addObservationToProposal();
-      navigate('/proposal');
+      navigate(NAV[5]);
     };
 
     return (
@@ -546,7 +547,7 @@ export default function AddObservation() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
-        <PageBanner title="Add Observation" addPage={0} />
+        <PageBanner pageNo={PAGE} />
       </Grid>
 
       <Grid
