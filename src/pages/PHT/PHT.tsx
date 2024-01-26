@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import GetProposals from '../../services/axios/getProposals/getProposals';
+import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
@@ -39,7 +39,7 @@ export default function PHT() {
   React.useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
-      const response = await GetProposals();
+      const response = await GetProposalList();
       if (isMounted) {
         if (response && !response.error) {
           if (response.every(item => item.id && item.title)) {

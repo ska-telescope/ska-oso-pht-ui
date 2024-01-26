@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
 
-async function GetProposals() {
+async function GetProposalList() {
   const apiUrl = SKA_PHT_API_URL;
   const URL_LIST = '/proposal/list';
   const config = {
@@ -24,4 +24,4 @@ async function GetProposals() {
   }
 }
 
-export default GetProposals;
+export default GetProposalList;

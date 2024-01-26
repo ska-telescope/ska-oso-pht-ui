@@ -5,7 +5,7 @@ import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components'
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import { Proposal } from '../../services/types/proposal';
-import UploadPDF from '../../services/axios/uploadPDF/uploadPDF';
+import PostUploadPDF from '../../services/axios/postUploadPDF/postUploadPDF';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 
 const PAGE = 3;
@@ -67,7 +67,7 @@ export default function SciencePage() {
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}
-            uploadURL={UploadPDF()}
+            uploadURL={PostUploadPDF()}
           />
         </Grid>
         <Grid item xs={6}>

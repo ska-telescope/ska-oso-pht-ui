@@ -7,7 +7,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
 import { EMPTY_PROPOSAL, PAGES } from '../../utils/constants';
-import AddProposalToDB from '../../services/axios/newProposal/newProposal';
+import PostProposal from '../../services/axios/postProposal/postProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 
@@ -26,7 +26,7 @@ export default function AddProposal() {
 
   const createProposal = async () => {
     // TODO : Make sure we go to Page 2 of the proposal
-    const response = await AddProposalToDB((mockProposal as unknown) as Proposal);
+    const response = await PostProposal((mockProposal as unknown) as Proposal);
     if (response && !response.error) {
       setAxiosCreateError(`Success: ${response}`);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
