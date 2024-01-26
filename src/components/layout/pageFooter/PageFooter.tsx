@@ -11,7 +11,11 @@ interface PageFooterProps {
   buttonFunc?: Function;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false, buttonFunc = null }: PageFooterProps) {
+export default function PageFooter({
+  pageNo,
+  buttonDisabled = false,
+  buttonFunc = null
+}: PageFooterProps) {
   const navigate = useNavigate();
 
   const nextLabel = () => {
@@ -35,7 +39,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, buttonFunc 
       buttonFunc();
     }
     nextPageNav();
-  }
+  };
 
   return (
     <Paper

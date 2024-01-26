@@ -16,8 +16,8 @@ export const PAGES = [
   'Observation',
   'Technical',
   'Data',
-  "Add Proposal",
-  "Add Observation"
+  'Add Proposal',
+  'Add Observation'
 ];
 
 export const NAV = [

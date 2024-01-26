@@ -6,7 +6,7 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
-import { EMPTY_PROPOSAL, NAV } from '../../utils/constants';
+import { EMPTY_PROPOSAL } from '../../utils/constants';
 import AddProposalToDB from '../../services/axios/newProposal/newProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
@@ -33,7 +33,7 @@ export default function AddProposal() {
       setAxiosCreateErrorColor(AlertColorTypes.Success);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
-        navigate('/');  //  TODO : Should be NAV[1] here, however we need to load the new proposal into memory.
+        navigate('/'); //  TODO : Should be NAV[1] here, however we need to load the new proposal into memory.
       }, 1000);
     } else {
       setAxiosCreateError(response.error);

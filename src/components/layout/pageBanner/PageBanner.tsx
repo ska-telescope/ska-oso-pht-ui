@@ -58,9 +58,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
               <Grid item>
                 <HomeButton />
               </Grid>
-              <Grid item>
-                {pageNo < 8 && <SaveButton onClick={handleSaveClick} />}
-              </Grid>
+              <Grid item>{pageNo < 8 && <SaveButton onClick={handleSaveClick} />}</Grid>
             </Grid>
           </Grid>
           <Grid item xs={6}>
@@ -80,11 +78,11 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                 </Alert>
               ) : null}
               <Grid item>
-                {pageNo < 8 && <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />}
+                {pageNo < 8 && (
+                  <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                )}
               </Grid>
-              <Grid item>
-                {pageNo < 8 && <SubmitButton />}
-              </Grid>
+              <Grid item>{pageNo < 8 && <SubmitButton />}</Grid>
             </Grid>
           </Grid>
         </Grid>
