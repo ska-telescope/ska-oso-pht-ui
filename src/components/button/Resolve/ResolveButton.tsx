@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 
 export default function ResolveButton({ targetName, onClick }) {
@@ -20,6 +21,7 @@ export default function ResolveButton({ targetName, onClick }) {
       onClick={ClickFunction}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
+      icon={<MyLocationIcon />}
     />
   );
 }
