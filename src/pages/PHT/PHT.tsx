@@ -2,12 +2,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import {
+  DataGrid,
+  DropDown,
+  SearchEntry,
+  Alert,
+  AlertColorTypes
+} from '@ska-telescope/ska-gui-components';
 import GetProposals from '../../services/axios/getProposals/getProposals';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
-import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -186,10 +191,10 @@ export default function PHT() {
               <Typography>{axiosError}</Typography>
             </Alert>
           ) : (
-            <DataGridWrapper
+            <DataGrid
               testId="dataGridId"
               rows={filteredData}
-              extendedColumns={extendedColumns}
+              columns={extendedColumns}
               height={500}
             />
           )}

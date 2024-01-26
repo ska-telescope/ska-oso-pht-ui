@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import DataGridWrapper from '../../components/wrappers/dataGridWrapper/dataGridWrapper';
+import { DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
@@ -114,11 +114,11 @@ export default function TeamPage() {
           justifyContent="space-around"
         >
           <Grid item md={5} xs={11}>
-            <DataGridWrapper
+            <DataGrid
               rows={getProposal().team}
-              extendedColumns={extendedColumns}
+              columns={extendedColumns}
               height={400}
-              rowClick={ClickFunction}
+              onRowClick={ClickFunction}
               testId="teamTableId"
             />
           </Grid>

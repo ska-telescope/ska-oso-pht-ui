@@ -8,9 +8,10 @@ import { NAV, PAGES } from '../../../utils/constants';
 interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
+  buttonFunc?: Function;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false }: PageFooterProps) {
+export default function PageFooter({ pageNo, buttonDisabled = false, buttonFunc = null }: PageFooterProps) {
   const navigate = useNavigate();
 
   const nextLabel = () => {
@@ -28,6 +29,13 @@ export default function PageFooter({ pageNo, buttonDisabled = false }: PageFoote
   const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
 
   const nextPageNav = () => (pageNo < NAV.length ? navigate(NAV[pageNo + 1]) : '');
+
+  const nextPageClicked = () => {
+    if (buttonFunc) {
+      buttonFunc();
+    }
+    nextPageNav();
+  }
 
   return (
     <Paper
@@ -53,7 +61,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false }: PageFoote
               disabled={buttonDisabled}
               label={nextLabel()}
               page={pageNo}
-              func={nextPageNav}
+              func={nextPageClicked}
             />
           )}
         </Grid>
