@@ -13,12 +13,13 @@ async function PutProposal(proposal) {
   };
 
   if (USE_LOCAL_DATA) {
-    const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
     return 'OK - Local DATA';
   }
 
+  const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
+
   try {
-    const result = await axios.put(`${apiUrl}${URL_EDIT}`, proposal, config);
+    const result = await axios.put(`${apiUrl}${URL_EDIT}`, convertedProposal, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
