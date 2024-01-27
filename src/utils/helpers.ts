@@ -27,7 +27,6 @@ export const helpers = {
 
   transform: {
     convertProposalToBackendFormat(mockProposal):any {
-      // console.log('PROPOSAL', mockProposal);
       
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
@@ -47,7 +46,15 @@ export const helpers = {
             
           },
           science_category: mockProposal.category.toString(),
-          targets: [],
+          targets: mockProposal.targets.map((target) => ({
+            name: target.name,
+            right_ascension: target.ra,
+            declination: target.dec,
+            velocity: parseFloat(target.vel),
+            velocity_unit: 'km/s',
+            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees',
+            declination_unit: 'dd:mm:ss'
+          })),
           investigator: mockProposal.team.map(teamMember => ({
             investigator_id: teamMember.id.toString(),
             first_name: teamMember.firstName,
@@ -71,26 +78,6 @@ export const helpers = {
           })
         }
       };
-    
-      transformedProposal.proposal_info.targets = mockProposal.targets.map(target => {
-        const targetObservation = mockProposal.targetObservation.find(to => to.targetId === target.id);
-        const foundTarget = mockProposal.targets.find(t => t.id === (targetObservation || {}).targetId);
-        if (foundTarget) {
-          return {
-            name: foundTarget.name,
-            right_ascension: foundTarget.ra,
-            declination: foundTarget.dec,
-            velocity: parseFloat(foundTarget.vel),
-            velocity_unit: '',
-            right_ascension_unit: foundTarget.ra.includes(':') ? 'hh:mm:ss' : 'degrees',
-            declination_unit: ''
-          };
-        } 
-          // handle the case where the target observation is undefined
-          return null;
-        
-      }).filter(target => target !== null); // filter out any null values
-    
       return transformedProposal;
     }
   }
