@@ -104,7 +104,7 @@ export default function AddTarget() {
                 onFocus={() => helpComponent(HELP_NAME)}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={5}>
               <ResolveButton targetName={name} onClick={handleResolveClick} />
             </Grid>
           </Grid>
