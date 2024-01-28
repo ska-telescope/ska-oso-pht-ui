@@ -2,7 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import {
+  DataGrid,
+  DropDown,
+  SearchEntry,
+  Alert,
+  AlertColorTypes
+} from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
@@ -148,14 +154,7 @@ export default function PHT() {
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
 
-      <Grid
-        p={1}
-        spacing={2}
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-      >
+      <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
         <Grid item xs={2}>
           <AddProposalButton />
         </Grid>

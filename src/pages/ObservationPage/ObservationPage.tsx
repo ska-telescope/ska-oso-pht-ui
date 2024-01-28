@@ -1,9 +1,8 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import { Proposal } from '../../services/types/proposal';
 import { OBSERVATION, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
@@ -15,8 +14,8 @@ export default function ObservationPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentObservation, setCurrentObservation] = React.useState(0);
-  const [linked] = React.useState(true);
-  const [unlinked] = React.useState(true);
+  const [linked, setLinked] = React.useState(true);
+  const [unlinked, setUnlinked] = React.useState(true);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -34,7 +33,7 @@ export default function ObservationPage() {
     // TODO : Display confirmation and if confirm, delete
   };
 
-  const AddObservationTarget = (id:number) => {
+  const AddObservationTarget = (id: number) => {
     const rec = { observationId: currentObservation, targetId: id };
     setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
   };
@@ -45,19 +44,22 @@ export default function ObservationPage() {
     );
   }
 
-  const DeleteObservationTarget = (id:number) => {
+  const DeleteObservationTarget = (id: number) => {
     setProposal({ ...getProposal(), targetObservation: filterRecords(id) });
   };
 
-  const isTargetLinked = (id: number) => getProposal().targetObservation.filter(entry => entry.observationId === currentObservation && entry.targetId === id).length > 0;
-  
+  const isTargetLinked = (id: number) =>
+    getProposal().targetObservation.filter(
+      entry => entry.observationId === currentObservation && entry.targetId === id
+    ).length > 0;
+
   const targetLinkToggle = (id: number) => {
     if (isTargetLinked(id)) {
       DeleteObservationTarget(id);
     } else {
       AddObservationTarget(id);
     }
-  }
+  };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -86,7 +88,7 @@ export default function ObservationPage() {
     },
     {
       field: 'subarray',
-      headerName: 'Subarray',
+      headerName: 'Array',
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => (
@@ -108,11 +110,11 @@ export default function ObservationPage() {
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
+      renderCell: (e: { row: { id: number; }; }) => <TrashIcon onClick={deleteIconClicked} selected={e.row.id === currentObservation} toolTip="Delete target" />
     }
   ];
   const extendedColumnsObservations = [...columns];
-  
+
   const columnsTargets = [
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'ra', headerName: 'Right Ascension', width: 150 },
@@ -128,9 +130,16 @@ export default function ObservationPage() {
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number; }; }) => {
+      renderCell: (e: { row: { id: number } }) => {
         if (currentObservation > 0) {
-          return <TickBox label="" testId="linkedTickBox" checked={isTargetLinked(e.row.id)} onChange={() => targetLinkToggle(e.row.id)} />;
+          return (
+            <TickBox
+              label=""
+              testId="linkedTickBox"
+              checked={isTargetLinked(e.row.id)}
+              onChange={() => targetLinkToggle(e.row.id)}
+            />
+          );
         }
         return '';
       }
@@ -147,9 +156,22 @@ export default function ObservationPage() {
     setCurrentObservation(e.id);
   };
 
+  const filteredTargets = () => {
+    const list = getProposal().targets;
+    if (linked) {
+      if (unlinked) {
+        return list;
+      }
+      return list.filter(e => isTargetLinked(e.id));
+    }
+    if (unlinked) {
+      return list.filter(e => !isTargetLinked(e.id));
+    }
+    return [];
+  };
+
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid
         spacing={1}
         p={3}
@@ -168,36 +190,53 @@ export default function ObservationPage() {
               columns={extendedColumnsObservations}
               height={450}
               onRowClick={ClickObservationRow}
+              showBorder={false}
               testId="observationDetails"
             />
           </Grid>
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined">
-            <CardHeader
-              title={(
-                <Typography variant="h6">
+            <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
+              <Grid item>
+                <Typography pt={1} variant="h6">
                   Target List related to the selected Observation
                 </Typography>
-              )}
-            />
+              </Grid>
+              <Grid item>
+                <TickBox
+                  disabled={currentObservation === 0}
+                  label="Linked"
+                  testId="linkedTickBox"
+                  checked={linked}
+                  onChange={() => setLinked(!linked)}
+                />
+              </Grid>
+              <Grid item>
+                <TickBox
+                  disabled={currentObservation === 0}
+                  label="Unlinked"
+                  testId="unlinkedTickBox"
+                  checked={unlinked}
+                  onChange={() => setUnlinked(!unlinked)}
+                />
+              </Grid>
+            </Grid>
             <CardContent>
-              {false && currentObservation > 0 && <TickBox label="Linked" testId="linkedTickBox" checked={linked} />}
-              {false && currentObservation > 0 && <TickBox label="Unlinked" testId="unlinkedTickBox" checked={unlinked} />}
               <DataGrid
-                rows={getProposal().targets}
+                rows={filteredTargets()}
                 columns={
                   currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
                 }
-                height={350}
+                height={390}
                 onColumnVisibilityModelChange={clickFunction}
+                showBorder={false}
                 testId="linkedTargetDetails"
               />
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

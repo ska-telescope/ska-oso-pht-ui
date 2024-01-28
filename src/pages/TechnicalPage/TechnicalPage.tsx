@@ -2,8 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../services/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 
@@ -49,8 +48,7 @@ export default function TechnicalPage() {
   }, [validateToggle]);
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid
         container
         p={1}
@@ -94,7 +92,6 @@ export default function TechnicalPage() {
           </Card>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

@@ -2,7 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, DropDown, SearchEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import {
+  DataGrid,
+  DropDown,
+  SearchEntry,
+  Alert,
+  AlertColorTypes
+} from '@ska-telescope/ska-gui-components';
 import GetProposals from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';

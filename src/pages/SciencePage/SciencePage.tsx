@@ -2,8 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../services/types/proposal';
 import PostUploadPDF from '../../services/axios/postUploadPDF/postUploadPDF';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
@@ -53,8 +52,7 @@ export default function SciencePage() {
   }, [validateToggle]);
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid container p={1} direction="row" alignItems="flex-start" justifyContent="flex-start">
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
@@ -92,7 +90,6 @@ export default function SciencePage() {
           </Card>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

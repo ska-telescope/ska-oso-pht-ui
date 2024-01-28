@@ -55,7 +55,7 @@ export default function AddProposal() {
         <PageBanner pageNo={PAGE} />
       </Grid>
       <Grid item>
-        <TitleContent page={0} setStatus={null} />
+        <TitleContent page={0} />
       </Grid>
       <Grid item>
         {axiosCreateError ? (
