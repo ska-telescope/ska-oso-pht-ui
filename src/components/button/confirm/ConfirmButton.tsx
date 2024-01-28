@@ -1,23 +1,19 @@
-'useClient';
-
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
-import PublishIcon from '@mui/icons-material/Publish';
+import CheckIcon from '@mui/icons-material/Check';
 
-const title = 'Submit';
+const title = 'Confirm';
 
-interface SubmitButtonProps {
-  disabled: boolean;
+interface ConfirmButtonProps {
   onClick: Function;
 }
 
-export default function SubmitButton({ disabled, onClick }: SubmitButtonProps) {
+export default function ConfirmButton({ onClick }: ConfirmButtonProps) {
   return (
     <Button
       ariaDescription={`${title}Button`}
       color={ButtonColorTypes.Secondary}
-      disabled={disabled}
-      icon={<PublishIcon />}
+      icon={<CheckIcon />}
       label={title}
       onClick={onClick}
       testId={`${title}Button`}

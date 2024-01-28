@@ -5,7 +5,6 @@ import TitleContent from '../../components/TitleContent/TitleContent';
 const PAGE = 0;
 
 export default function TitlePage() {
-
   return (
     <Shell page={PAGE}>
       <TitleContent page={PAGE} />
