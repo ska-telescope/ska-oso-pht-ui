@@ -5,8 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 
@@ -104,8 +103,7 @@ export default function TargetPage() {
   }
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid container direction="column" justifyContent="space-around">
         <Grid
           p={2}
@@ -134,7 +132,6 @@ export default function TargetPage() {
           <Grid item>{getProposal().targetOption === 3 && <TargetNoSpecificSection />}</Grid>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

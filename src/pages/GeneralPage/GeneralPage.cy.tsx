@@ -14,7 +14,7 @@ describe('<GeneralPage />', () => {
         cy.mount(
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <GeneralPage page={2} setStatus={cy.stub().as('setTheProposalState')} />
+            <GeneralPage />
           </ThemeProvider>
         );
       });
@@ -26,7 +26,7 @@ describe('<GeneralPage />', () => {
       cy.mount(
         <ThemeProvider theme={theme(THEME_LIGHT)}>
           <CssBaseline />
-          <GeneralPage page={2} setStatus={cy.stub().as('setTheProposalState')} />
+          <GeneralPage />
         </ThemeProvider>
       );
     });

@@ -12,12 +12,11 @@ import { Proposal } from '../../services/types/proposal';
 
 interface TitleContentProps {
   page: number;
-  setStatus: Function;
 }
 
-export default function TitleContent({ page, setStatus }: TitleContentProps) {
+export default function TitleContent({ page }: TitleContentProps) {
   const theme = useTheme();
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
 
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [tempValue, setTempValue] = React.useState(0);
@@ -36,10 +35,16 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  React.useEffect(() => {
-    if (typeof setStatus !== 'function') {
-      return;
+  const getProposalState = () => application.content1 as number[];
+  const setTheProposalState = (value: number) => {
+    const temp = [];
+    for (let i = 0; i < getProposalState().length; i++) {
+      temp.push(page === i ? value : getProposalState()[i]);
     }
+    updateAppContent1(temp);
+  };
+
+  React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
     if (getProposal()?.title?.length > 0) {
@@ -51,7 +56,7 @@ export default function TitleContent({ page, setStatus }: TitleContentProps) {
     if (getProposal()?.proposalSubType !== 0) {
       count++;
     }
-    setStatus([page, result[count]]);
+    setTheProposalState(result[count]);
   }, [validateToggle]);
 
   const handleDialogResponse = response => {

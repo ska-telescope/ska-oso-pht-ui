@@ -5,7 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 import theme from '../../services/theme/theme';
 import TeamPage from './TeamPage';
-import { DEFAULT_HELP, TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../utils/constants';
+import { TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -15,14 +15,7 @@ describe('<TeamPage />', () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <TeamPage
-            help={DEFAULT_HELP}
-            page={1}
-            proposal={MockProposal}
-            setHelp={cy.stub().as('setHelp')}
-            setProposal={cy.stub().as('setProposal')}
-            setStatus={cy.stub().as('setTheProposalState')}
-          />
+          <TeamPage />
         </ThemeProvider>
       );
     });
@@ -34,14 +27,7 @@ describe('Content', () => {
     cy.mount(
       <ThemeProvider theme={theme(THEME_LIGHT)}>
         <CssBaseline />
-        <TeamPage
-          help={DEFAULT_HELP}
-          page={1}
-          proposal={MockProposal}
-          setHelp={cy.stub().as('setHelp')}
-          setProposal={cy.stub().as('setProposal')}
-          setStatus={cy.stub().as('setTheProposalState')}
-        />
+        <TeamPage />
       </ThemeProvider>
     );
   });
