@@ -51,9 +51,9 @@ export const helpers = {
             right_ascension: target.ra,
             declination: target.dec,
             velocity: parseFloat(target.vel),
-            velocity_unit: 'km/s',
-            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees',
-            declination_unit: 'dd:mm:ss'
+            velocity_unit: 'km/s', // TODO: confirm what units should be expected and strategy
+            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees', // TODO: confirm what units should be expected and strategy
+            declination_unit: 'dd:mm:ss' // TODO: confirm what units should be expected and strategy
           })),
           investigator: mockProposal.team.map(teamMember => ({
             investigator_id: teamMember.id.toString(),
@@ -66,6 +66,7 @@ export const helpers = {
             principal_investigator: teamMember.pi
           })),
           science_programmes: mockProposal.observations.map(observation => {
+            // TODO: confirm linked obesrvations format for the backend
             const targetObservation = mockProposal.targetObservation.find(to => to.observationId === observation.id);
             const target = mockProposal.targets.find(foundTarget => foundTarget.id === (targetObservation || {}).targetId);
             return {

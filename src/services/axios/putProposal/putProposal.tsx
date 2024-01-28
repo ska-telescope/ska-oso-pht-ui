@@ -16,6 +16,7 @@ async function PutProposal(proposal) {
     return 'OK - Local DATA';
   }
 
+  // TODO: add testing for proposal conversion format
   const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
 
   try {
