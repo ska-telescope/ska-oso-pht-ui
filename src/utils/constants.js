@@ -339,7 +339,7 @@ export const Projects = [
 
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
-    MAX_LENGTH: 50, // TODO: remove MAX_LENGTH here and EMAIL as not used and make sure we don't break something in nhelpers function
+    MAX_LENGTH: 50, // TODO: remove MAX_LENGTH here and EMAIL as not used and make sure we don't break something in helpers function
     ERROR_TEXT:
       'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
     PATTERN: /^[a-zA-Z0-9\s\-_.,!"'/]*$/

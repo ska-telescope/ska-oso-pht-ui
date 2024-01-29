@@ -83,7 +83,7 @@ export default function GeneralPage() {
           MAXCHART
       );
       if (isValid) { 
-        setErrorTextAbstract(''); // clean up residual errors if valid or MAXLENGTH error still shows
+        setErrorTextAbstract(''); // clean up residual errors if valid otherwise MAXLENGTH error still shows
       }
       count += isValid ? 0 : 1;
     } else {

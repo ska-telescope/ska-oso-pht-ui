@@ -7,7 +7,7 @@ export const helpers = {
     },
     validateTextEntry(
       text: string,
-      setText: Function, // TODO: we should be able to remove setText as not used -> need to modify function calls
+      setText: Function,
       setErrorText: Function,
       textType?: string,
       maxLength?: number
@@ -24,6 +24,7 @@ export const helpers = {
         // if pattern is correct, we check for length too
         const isValidLength = !maxLength || this.validateMaxLength(text, maxLength);
         if (isValidLength) {
+          setText(text);
           setErrorText('');
           return true;
         } 
