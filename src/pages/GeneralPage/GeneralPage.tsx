@@ -3,8 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/helpPanel/helpPanel';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 
@@ -145,8 +144,7 @@ export default function GeneralPage() {
   );
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid
         container
         direction="row"
@@ -177,7 +175,6 @@ export default function GeneralPage() {
           <HelpPanel />
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

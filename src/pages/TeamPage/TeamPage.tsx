@@ -7,8 +7,7 @@ import { DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
@@ -103,8 +102,7 @@ export default function TeamPage() {
   }
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid
           p={1}
@@ -158,7 +156,6 @@ export default function TeamPage() {
           </Grid>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }

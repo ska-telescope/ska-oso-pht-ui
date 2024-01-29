@@ -5,7 +5,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Grid, Typography } from '@mui/material';
-import { ButtonColorTypes, ButtonVariantTypes, Button } from '@ska-telescope/ska-gui-components';
+import CancelButton from '../../button/cancel/CancelButton';
+import ConfirmButton from '../../button/confirm/ConfirmButton';
 
 export default function AlertDialog(props) {
   const { open, onClose, onDialogResponse } = props;
@@ -42,24 +43,10 @@ export default function AlertDialog(props) {
       <DialogActions sx={{ p: '24px' }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
-            <Button
-              ariaDescription="Cancel Button"
-              color={ButtonColorTypes.Secondary}
-              label="Cancel"
-              onClick={handleCancel}
-              testId="cancelId"
-              variant={ButtonVariantTypes.Contained}
-            />
+            <CancelButton onClick={handleCancel} />
           </Grid>
           <Grid item>
-            <Button
-              ariaDescription="Continue Button"
-              color={ButtonColorTypes.Secondary}
-              label="Continue"
-              onClick={handleContinue}
-              testId="continueId"
-              variant={ButtonVariantTypes.Contained}
-            />
+            <ConfirmButton onClick={handleContinue} />
           </Grid>
         </Grid>
       </DialogActions>

@@ -4,8 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import PageFooter from '../../components/layout/pageFooter/PageFooter';
+import Shell from '../../components/layout/Shell/Shell';
 
 import HelpPanel from '../../components/helpPanel/helpPanel';
 
@@ -63,8 +62,7 @@ export default function DataPage() {
   );
 
   return (
-    <>
-      <PageBanner pageNo={PAGE} />
+    <Shell page={PAGE}>
       <Grid
         spacing={1}
         p={3}
@@ -97,7 +95,6 @@ export default function DataPage() {
           </Grid>
         </Grid>
       </Grid>
-      <PageFooter pageNo={PAGE} />
-    </>
+    </Shell>
   );
 }
