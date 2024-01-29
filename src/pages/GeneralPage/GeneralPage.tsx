@@ -6,6 +6,7 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
+import {helpers} from "../../utils/helpers";
 
 export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
 export const HELP_CATEGORY = ['CATEGORY TITLE', 'CATEGORY DESCRIPTION', ''];
@@ -21,6 +22,7 @@ export default function GeneralPage() {
     updateAppContent2
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -71,24 +73,41 @@ export default function GeneralPage() {
     return [{ label: '', value: 0 }];
   };
 
-  const abstractField = () => (
-    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid mt={2} item xs={2}>
-        <Typography>Abstract</Typography>
-      </Grid>
-      <Grid item xs={10}>
-        <TextEntry
-          label=""
-          testId="abstractId"
-          rows={10}
-          value={getProposal().abstract}
-          setValue={e => setProposal({ ...getProposal(), abstract: e })}
-          onFocus={() => helpComponent(HELP_ABSTRACT)}
-          helperText="Please enter your abstract information"
-        />
-      </Grid>
-    </Grid>
-  );
+  // const abstractField = () => (
+  //   <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
+  //     <Grid mt={2} item xs={2}>
+  //       <Typography>Abstract</Typography>
+  //     </Grid>
+  //     <Grid item xs={10}>
+  //       <TextEntry
+  //         label=""
+  //         testId="abstractId"
+  //         rows={10}
+  //         value={getProposal().abstract}
+  //         setValue={e => setProposal({ ...getProposal(), abstract: e })}
+  //         onFocus={() => helpComponent(HELP_ABSTRACT)}
+  //         helperText="Please enter your abstract information"
+  //       />
+  //     </Grid>
+  //   </Grid>
+  // );
+
+  const abstractField = () => {
+    const setAbstract = (e: string) => {
+      setProposal({ ...getProposal(), title: e });
+    };
+
+    return (
+      <TextEntry
+        label=""
+        testId="abstractId"
+        value={getProposal()?.title}
+        setValue={(title: string) =>
+                helpers.validate.validateTextEntry(title, setAbstract, setErrorText)}
+        errorText={errorText}
+      />
+    );
+  };
 
   const cycleField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
