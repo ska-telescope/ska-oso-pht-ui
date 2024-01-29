@@ -62,6 +62,7 @@ export default function TargetListSection() {
           columns={extendedColumns}
           height={400}
           onRowClick={ClickFunction}
+          showBorder={false}
           testId="targetListColumns"
         />
       </Grid>

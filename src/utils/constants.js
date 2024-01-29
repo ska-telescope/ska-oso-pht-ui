@@ -7,6 +7,8 @@ export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 
+export const LAST_PAGE = 8;
+
 export const PAGES = [
   'Title',
   'Team',
@@ -357,15 +359,18 @@ export const EMPTY_PROPOSAL = {
   title: '',
   proposalType: 0,
   proposalSubType: 0,
-  team: null,
+  cycle: '',
+  team: [],
   abstract: '',
   category: 0,
   subCategory: 0,
   sciencePDF: null,
-  targetOption: 0,
-  targets: null,
-  observations: null,
-  targetObservation: null,
+  scienceLoadStatus: false,
+  targetOption: 1,
+  targets: [],
+  observations: [],
+  targetObservation: [],
   technicalPDF: null,
+  technicalLoadStatus: false,
   pipeline: ''
 };

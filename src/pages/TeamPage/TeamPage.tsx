@@ -90,6 +90,8 @@ export default function TeamPage() {
   ];
   const extendedColumns = [...columns];
 
+  const getRows = () => getProposal().team;
+
   const ClickFunction = () => {
     // TODO
   };
@@ -112,13 +114,19 @@ export default function TeamPage() {
           justifyContent="space-around"
         >
           <Grid item md={5} xs={11}>
-            <DataGrid
-              rows={getProposal().team}
-              columns={extendedColumns}
-              height={400}
-              onRowClick={ClickFunction}
-              testId="teamTableId"
-            />
+            {getRows().length > 0 && (
+              <DataGrid
+                rows={getRows()}
+                columns={extendedColumns}
+                height={400}
+                onRowClick={ClickFunction}
+                showBorder={false}
+                testId="teamTableId"
+              />
+            )}
+            {getRows().length === 0 && (
+              <Typography>THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL</Typography>
+            )}
           </Grid>
           <Grid item md={6} xs={11}>
             <Box sx={{ width: '100%', border: '1px solid grey' }}>

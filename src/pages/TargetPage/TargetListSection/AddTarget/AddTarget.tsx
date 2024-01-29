@@ -89,8 +89,8 @@ export default function AddTarget() {
     <Grid container direction="row" alignItems="flex-start" justifyContent="space-evenly">
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid item xs={10}>
+          <Grid container direction="row" alignItems="center" justifyContent="space-between">
+            <Grid item xs={8}>
               {axiosResolveError ? (
                 <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
                   <Typography>{axiosResolveError}</Typography>
@@ -104,7 +104,7 @@ export default function AddTarget() {
                 onFocus={() => helpComponent(HELP_NAME)}
               />
             </Grid>
-            <Grid item xs={5}>
+            <Grid item>
               <ResolveButton targetName={name} onClick={handleResolveClick} />
             </Grid>
           </Grid>
