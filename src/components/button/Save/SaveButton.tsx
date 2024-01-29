@@ -5,7 +5,6 @@ import { Proposal } from '../../../services/types/proposal';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 // import MockProposalBackend from '../../../services/axios/getProposal/getProposal';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import { helpers } from '../../../utils/helpers'
 
 export default function SaveButton({ onClick }) {
   const ClickFunction = async () => {

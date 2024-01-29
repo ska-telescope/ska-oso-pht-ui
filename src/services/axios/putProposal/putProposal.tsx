@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
-import { helpers } from '../../../utils/helpers'
+import { helpers } from '../../../utils/helpers';
 
 async function PutProposal(proposal) {
   const apiUrl = SKA_PHT_API_URL;

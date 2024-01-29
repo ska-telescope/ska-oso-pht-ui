@@ -26,8 +26,7 @@ export const helpers = {
   },
 
   transform: {
-    convertProposalToBackendFormat(mockProposal):any {
-      
+    convertProposalToBackendFormat(mockProposal) {
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
 
@@ -40,13 +39,12 @@ export const helpers = {
           title: mockProposal.title,
           cycle: mockProposal.cycle,
           abstract: mockProposal.abstract,
-          proposal_type: { 
+          proposal_type: {
             type: project.title,
             sub_type: subProject.title
-            
           },
           science_category: mockProposal.category.toString(),
-          targets: mockProposal.targets.map((target) => ({
+          targets: mockProposal.targets.map(target => ({
             name: target.name,
             right_ascension: target.ra,
             declination: target.dec,
@@ -67,8 +65,12 @@ export const helpers = {
           })),
           science_programmes: mockProposal.observations.map(observation => {
             // TODO: confirm linked obesrvations format for the backend
-            const targetObservation = mockProposal.targetObservation.find(to => to.observationId === observation.id);
-            const target = mockProposal.targets.find(foundTarget => foundTarget.id === (targetObservation || {}).targetId);
+            const targetObservation = mockProposal.targetObservation.find(
+              to => to.observationId === observation.id
+            );
+            const target = mockProposal.targets.find(
+              foundTarget => foundTarget.id === (targetObservation || {}).targetId
+            );
             return {
               science_goal_id: observation.id.toString(),
               array: observation.telescope.toString(),
