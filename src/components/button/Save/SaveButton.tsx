@@ -2,12 +2,12 @@ import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import SaveIcon from '@mui/icons-material/Save';
 import { Proposal } from '../../../services/types/proposal';
-import EditProposal from '../../../services/axios/editProposal/editProposal';
-import MockProposalBackend from '../../../services/axios/getProposal/getProposal';
+import PutProposal from '../../../services/axios/putProposal/putProposal';
+import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 export default function SaveButton({ onClick }) {
   const ClickFunction = async () => {
-    const response = await EditProposal((MockProposalBackend as unknown) as Proposal);
+    const response = await PutProposal((MockProposal as unknown) as Proposal);
     onClick(response);
   };
 

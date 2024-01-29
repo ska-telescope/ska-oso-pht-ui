@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
-import ResolveTarget from '../../../services/axios/resolveTarget/resolveTarget';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 
 export default function ResolveButton({ targetName, onClick }) {
   const ClickFunction = async () => {
-    const response = await ResolveTarget(targetName);
+    const response = await GetCoordinates(targetName);
     onClick(response);
   };
 
@@ -15,11 +16,12 @@ export default function ResolveButton({ targetName, onClick }) {
   return (
     <Button
       ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
+      color={ButtonColorTypes.Inherit}
       label={title}
       onClick={ClickFunction}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
+      icon={<MyLocationIcon />}
     />
   );
 }

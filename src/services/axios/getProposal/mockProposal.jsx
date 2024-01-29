@@ -8,7 +8,8 @@ const MockProposal = {
   id: 1,
   title: 'MOCK PROPOSAL',
   proposalType: 1,
-  proposalSubType: 5,
+  proposalSubType: 4,
+  cycle: 'SKA_5000_2023',
   team: [
     {
       id: 1,
@@ -19,7 +20,6 @@ const MockProposal = {
       affiliation: 'University of Free Town',
       phdThesis: false,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      actions: null,
       pi: true
     }
   ],
@@ -32,7 +32,6 @@ const MockProposal = {
   targets: [
     {
       id: 1,
-      actions: null,
       name: 'Target 1',
       ra: '01:00:00',
       dec: '00:00:00',
@@ -40,7 +39,6 @@ const MockProposal = {
     },
     {
       id: 2,
-      actions: null,
       name: 'Target 2',
       ra: '03:00:00',
       dec: '-10:00:00',
@@ -48,7 +46,6 @@ const MockProposal = {
     },
     {
       id: 3,
-      actions: null,
       name: 'Target 3',
       ra: '05:30:00',
       dec: '-10:00:00',
@@ -58,38 +55,33 @@ const MockProposal = {
   observations: [
     {
       id: 1,
-      array: 'MID',
-      subarray: 'subarray 1',
-      linked: '4',
-      type: 'Continuum'
+      telescope: 0,
+      subarray: 0,
+      type: 1
     },
     {
       id: 2,
-      array: 'MID',
-      subarray: 'subarray 2',
-      linked: '6',
-      type: 'Zoom'
+      telescope: 0,
+      subarray: 1,
+      type: 0
     },
     {
       id: 3,
-      array: 'LOW',
-      subarray: 'subarray 2',
-      linked: '8',
-      type: 'Zoom'
+      telescope: 1,
+      subarray: 1,
+      type: 0
     },
     {
       id: 4,
-      array: 'LOW',
-      subarray: 'subarray 3',
-      linked: '12',
-      type: 'Continuum'
+      telescope: 1,
+      subarray: 2,
+      type: 1
     },
     {
       id: 5,
-      array: 'LOW',
-      subarray: 'subarray 4',
-      linked: '0',
-      type: 'Zoom'
+      telescope: 1,
+      subarray: 3,
+      type: 0
     }
   ],
   targetObservation: [

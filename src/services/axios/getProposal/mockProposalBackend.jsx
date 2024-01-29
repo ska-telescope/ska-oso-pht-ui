@@ -1,5 +1,5 @@
 const MockProposalBackend = {
-  proposal_id: '',
+  prsl_id: '',
   status: 'draft',
   submitted_by: '',
   submitted_on: '',

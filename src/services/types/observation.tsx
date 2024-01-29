@@ -1,9 +1,8 @@
 type Observation = {
   id: number;
-  array: string;
-  subarray: string;
-  linked: string;
-  type: string;
+  telescope: number;
+  subarray: number;
+  type: number;
 };
 
 export default Observation;

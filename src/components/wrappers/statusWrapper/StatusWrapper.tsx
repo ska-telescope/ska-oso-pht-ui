@@ -1,19 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { PAGES } from '../../../utils/constants';
+import { NAV, PAGES } from '../../../utils/constants';
 
 interface StatusWrapperProps {
   level?: number;
   page: number;
-  setPage?: Function;
 }
 
-export default function StatusWrapper({ level = 5, page, setPage }: StatusWrapperProps) {
+export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
+  const navigate = useNavigate();
   const SIZE = 35;
 
   const ClickFunction = () => {
-    setPage(page);
+    navigate(NAV[page]);
   };
 
   const getLevel = () => (level > 5 ? 0 : level);

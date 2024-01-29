@@ -1,5 +1,5 @@
-TargetPage
-==============
+Target Page
+===============
 This page is responsible for displaying the targets involved in a proposal with three variations
 
 No Specific Target

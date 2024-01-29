@@ -1,19 +1,34 @@
 Welcome to ska-oso-pht-ui's documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This repository is intended to act as a skeleton for any SKA developer looking to make a React based web application.
+This project is is based upon the ska-react-webapp-skeleton, which is intended as a basis for all React applications
 
-It includes tools for linting, code formatting, and testing which are easily integrated into various IDEs.
+The skeleton includes tools for linting, code formatting, and testing which are easily integrated into various IDEs.
 It also includes modular federation, exposing the ReactSkeleton component, which can be imported into other applications.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Developer Guide :
 
    Overview
    Requirements
    Installation
    DuringDevelopment
+   Services
    RunningBuilding
    Testing
-   Pages
+
+.. toctree::
+   :maxdepth: 2
+   :caption: User Guide :
+
+   UserOverview
+   LandingPage
+   TitlePage
+   TeamPage
+   GeneralPage
+   SciencePage
+   TargetPage
+   ObservationPage
+   TechnicalPage
+   DataPage

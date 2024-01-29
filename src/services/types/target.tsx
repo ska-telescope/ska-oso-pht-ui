@@ -1,6 +1,5 @@
 type Target = {
   id: number;
-  actions: string;
   name: string;
   ra: string;
   dec: string;

@@ -3,11 +3,11 @@
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
-import ValidateProposal from '../../../services/axios/validateProposal/validateProposal';
+import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 
 export default function ValidateButton({ onClick, proposal }) {
   const ClickFunction = async () => {
-    const response = await ValidateProposal(proposal);
+    const response = await PostProposalValidate(proposal);
     onClick(response);
   };
 

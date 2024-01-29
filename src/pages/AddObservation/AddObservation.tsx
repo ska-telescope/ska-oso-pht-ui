@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   Button,
   ButtonColorTypes,
@@ -11,8 +12,9 @@ import {
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import InfoPanel from '../../components/infoPanel/infoPanel';
-import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
+import { NAV, OBSERVATION } from '../../utils/constants';
+import HelpPanel from '../../components/helpPanel/helpPanel';
+import { Proposal } from '../../services/types/proposal';
 
 // TODO : Cypress Testing
 // TODO : Documentation
@@ -22,120 +24,53 @@ import { DEFAULT_HELP, OBSERVATION } from '../../utils/constants';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
+const PAGE = 9;
 
-export const HELP_ARRAY = {
-  title: 'ARRAY TITLE',
-  description: 'ARRAY DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUBARRAY = {
-  title: 'SUBARRAY TITLE',
-  description: 'SUBARRAY DESCRIPTION',
-  additional: ''
-};
-export const HELP_TYPE = {
-  title: 'TYPE TITLE',
-  description: 'TYPE DESCRIPTION',
-  additional: ''
-};
-export const HELP_BAND = {
-  title: 'BAND TITLE',
-  description: 'BAND DESCRIPTION',
-  additional: ''
-};
-export const HELP_ELEVATION = {
-  title: 'ELEVATION TITLE',
-  description: 'ELEVATION DESCRIPTION',
-  additional: ''
-};
-export const HELP_WEATHER = {
-  title: 'WEATHER TITLE',
-  description: 'WEATHER DESCRIPTION',
-  additional: ''
-};
-export const HELP_FREQUENCY = {
-  title: 'FREQUENCY TITLE',
-  description: 'FREQUENCY DESCRIPTION',
-  additional: ''
-};
-export const HELP_EFFECTIVE_RESOLUTION = {
-  title: 'EFFECTIVE RESOLUTION TITLE',
-  description: 'EFFECTIVE RESOLUTION DESCRIPTION',
-  additional: ''
-};
-export const HELP_IMAGE = {
-  title: 'IMAGE TITLE',
-  description: 'IMAGE DESCRIPTION',
-  additional: ''
-};
-export const HELP_TAPERING = {
-  title: 'TAPERING TITLE',
-  description: 'TAPERING DESCRIPTION',
-  additional: ''
-};
-export const HELP_BANDWIDTH = {
-  title: 'BANDWIDTH TITLE',
-  description: 'BANDWIDTH DESCRIPTION',
-  additional: ''
-};
-export const HELP_ROBUST = {
-  title: 'ROBUST TITLE',
-  description: 'ROBUST DESCRIPTION',
-  additional: ''
-};
-export const HELP_SPECTRAL_AVERAGING = {
-  title: 'SPECTRAL AVERAGING TITLE',
-  description: 'SPECTRAL AVERAGING DESCRIPTION',
-  additional: ''
-};
-export const HELP_SPECTRAL_RESOLUTION = {
-  title: 'SPECTRAL RESOLUTION TITLE',
-  description: 'SPECTRAL RESOLUTION DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUPPLIED_TYPE = {
-  title: 'SUPPLIED TYPE TITLE',
-  description: 'SUPPLIED TYPE DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUPPLIED_VALUE = {
-  title: 'SUPPLIED VALUE TITLE',
-  description: 'SUPPLIED VALUE DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUPPLIED_UNITS = {
-  title: 'SUPPLIED UNITS TITLE',
-  description: 'SUPPLIED UNITS DESCRIPTION',
-  additional: ''
-};
-export const HELP_SENSE_VALUE = {
-  title: 'SENSE VALUE TITLE',
-  description: 'SENSE VALUE DESCRIPTION',
-  additional: ''
-};
-export const HELP_FREQUENCY_UNITS = {
-  title: 'FREQUENCY UNITS TITLE',
-  description: 'FREQUENCY UNITS DESCRIPTION',
-  additional: ''
-};
-export const HELP_CONTINUUM_BANDWIDTH = {
-  title: 'CONTINUUM BANDWIDTH TITLE',
-  description: 'CONTINUUM BANDWIDTH DESCRIPTION',
-  additional: ''
-};
-export const HELP_CONTINUUM_UNITS = {
-  title: 'CONTINUUM UNITS TITLE',
-  description: 'CONTINUUM UNITS DESCRIPTION',
-  additional: ''
-};
-export const HELP_SUB_BANDS = {
-  title: 'SUB-BANDS TITLE',
-  description: 'SUB-BANDS DESCRIPTION',
-  additional: 'SUB-BANDS ADDITIONAL'
-};
+export const HELP_ARRAY = ['ARRAY TITLE', 'ARRAY DESCRIPTION', ''];
+export const HELP_SUBARRAY = ['SUBARRAY TITLE', 'SUBARRAY DESCRIPTION', ''];
+export const HELP_TYPE = ['TYPE TITLE', 'TYPE DESCRIPTION', ''];
+export const HELP_BAND = ['BAND TITLE', 'BAND DESCRIPTION', ''];
+export const HELP_ELEVATION = ['ELEVATION TITLE', 'ELEVATION DESCRIPTION', ''];
+export const HELP_WEATHER = ['WEATHER TITLE', 'WEATHER DESCRIPTION', ''];
+export const HELP_FREQUENCY = ['FREQUENCY TITLE', 'FREQUENCY DESCRIPTION', ''];
+export const HELP_EFFECTIVE_RESOLUTION = [
+  'EFFECTIVE RESOLUTION TITLE',
+  'EFFECTIVE RESOLUTION DESCRIPTION',
+  ''
+];
+export const HELP_IMAGE = ['IMAGE TITLE', 'IMAGE DESCRIPTION', ''];
+export const HELP_TAPERING = ['TAPERING TITLE', 'TAPERING DESCRIPTION', ''];
+export const HELP_BANDWIDTH = ['BANDWIDTH TITLE', 'BANDWIDTH DESCRIPTION', ''];
+export const HELP_ROBUST = ['ROBUST TITLE', 'ROBUST DESCRIPTION', ''];
+export const HELP_SPECTRAL_AVERAGING = [
+  'SPECTRAL AVERAGING TITLE',
+  'SPECTRAL AVERAGING DESCRIPTION',
+  ''
+];
+export const HELP_SPECTRAL_RESOLUTION = [
+  'SPECTRAL RESOLUTION TITLE',
+  'SPECTRAL RESOLUTION DESCRIPTION',
+  ''
+];
+export const HELP_SUPPLIED_TYPE = ['SUPPLIED TYPE TITLE', 'SUPPLIED TYPE DESCRIPTION', ''];
+export const HELP_SUPPLIED_VALUE = ['SUPPLIED VALUE TITLE', 'SUPPLIED VALUE DESCRIPTION', ''];
+export const HELP_SUPPLIED_UNITS = ['SUPPLIED UNITS TITLE', 'SUPPLIED UNITS DESCRIPTION', ''];
+export const HELP_SENSE_VALUE = ['SENSE VALUE TITLE', 'SENSE VALUE DESCRIPTION', ''];
+export const HELP_FREQUENCY_UNITS = ['FREQUENCY UNITS TITLE', 'FREQUENCY UNITS DESCRIPTION', ''];
+export const HELP_CONTINUUM_BANDWIDTH = [
+  'CONTINUUM BANDWIDTH TITLE',
+  'CONTINUUM BANDWIDTH DESCRIPTION',
+  ''
+];
+export const HELP_CONTINUUM_UNITS = ['CONTINUUM UNITS TITLE', 'CONTINUUM UNITS DESCRIPTION', ''];
+export const HELP_SUB_BANDS = ['SUB-BANDS TITLE', 'SUB-BANDS DESCRIPTION', 'SUB-BANDS ADDITIONAL'];
 
 export default function AddObservation() {
   const navigate = useNavigate();
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [arrayConfig, setArrayConfig] = React.useState(1);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
@@ -159,7 +94,9 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
 
-  const [help, setHelp] = React.useState(DEFAULT_HELP);
+  React.useEffect(() => {
+    helpComponent(HELP_ARRAY);
+  }, []);
 
   const checkConfiguration = (e: number) => {
     setArrayConfig(e);
@@ -175,7 +112,7 @@ export default function AddObservation() {
       value={arrayConfig}
       setValue={checkConfiguration}
       label="Array Configuration"
-      onFocus={() => setHelp(HELP_ARRAY)}
+      onFocus={() => helpComponent(HELP_ARRAY)}
     />
   );
 
@@ -195,7 +132,7 @@ export default function AddObservation() {
         value={subarrayConfig}
         setValue={setSubarrayConfig}
         label="Subarray Configuration"
-        onFocus={() => setHelp(HELP_SUBARRAY)}
+        onFocus={() => helpComponent(HELP_SUBARRAY)}
       />
     );
   };
@@ -219,7 +156,7 @@ export default function AddObservation() {
       value={observationType}
       setValue={setObservationType}
       label="Observation Type"
-      onFocus={() => setHelp(HELP_TYPE)}
+      onFocus={() => helpComponent(HELP_TYPE)}
     />
   );
 
@@ -238,7 +175,7 @@ export default function AddObservation() {
         value={observingBand}
         setValue={setObservingBand}
         label="Observing Band"
-        onFocus={() => setHelp(HELP_BAND)}
+        onFocus={() => helpComponent(HELP_BAND)}
       />
     );
   };
@@ -250,7 +187,7 @@ export default function AddObservation() {
       value={imageWeighting}
       setValue={setImageWeighting}
       label="Image Weighting"
-      onFocus={() => setHelp(HELP_IMAGE)}
+      onFocus={() => helpComponent(HELP_IMAGE)}
     />
   );
 
@@ -261,7 +198,7 @@ export default function AddObservation() {
       value={tapering}
       setValue={setTapering}
       label="tapering"
-      onFocus={() => setHelp(HELP_TAPERING)}
+      onFocus={() => helpComponent(HELP_TAPERING)}
     />
   );
 
@@ -280,7 +217,7 @@ export default function AddObservation() {
         value={bandwidth}
         setValue={setBandwidth}
         label="Bandwidth"
-        onFocus={() => setHelp(HELP_BANDWIDTH)}
+        onFocus={() => helpComponent(HELP_BANDWIDTH)}
       />
     );
   };
@@ -300,7 +237,7 @@ export default function AddObservation() {
         value={robust}
         setValue={setRobust}
         label="Robust"
-        onFocus={() => setHelp(HELP_ROBUST)}
+        onFocus={() => helpComponent(HELP_ROBUST)}
       />
     );
   };
@@ -320,7 +257,7 @@ export default function AddObservation() {
         value={spectralResolution}
         setValue={setSpectralResolution}
         label="Spectral Resolution"
-        onFocus={() => setHelp(HELP_SPECTRAL_RESOLUTION)}
+        onFocus={() => helpComponent(HELP_SPECTRAL_RESOLUTION)}
       />
     );
   };
@@ -335,7 +272,7 @@ export default function AddObservation() {
         value={spectralAveraging}
         setValue={setSpectralAveraging}
         label="Spectral Averaging"
-        onFocus={() => setHelp(HELP_SPECTRAL_AVERAGING)}
+        onFocus={() => helpComponent(HELP_SPECTRAL_AVERAGING)}
       />
     );
   };
@@ -351,7 +288,7 @@ export default function AddObservation() {
           value={suppliedType}
           setValue={setSuppliedType}
           label=""
-          onFocus={() => setHelp(HELP_SUPPLIED_TYPE)}
+          onFocus={() => helpComponent(HELP_SUPPLIED_TYPE)}
         />
       </Box>
     );
@@ -368,7 +305,7 @@ export default function AddObservation() {
           value={suppliedUnits}
           setValue={setSuppliedUnits}
           label=""
-          onFocus={() => setHelp(HELP_SUPPLIED_UNITS)}
+          onFocus={() => helpComponent(HELP_SUPPLIED_UNITS)}
         />
       </Box>
     );
@@ -385,7 +322,7 @@ export default function AddObservation() {
           value={frequencyUnits}
           setValue={setFrequencyUnits}
           label=""
-          onFocus={() => setHelp(HELP_FREQUENCY_UNITS)}
+          onFocus={() => helpComponent(HELP_FREQUENCY_UNITS)}
         />
       </Box>
     );
@@ -402,7 +339,7 @@ export default function AddObservation() {
           value={continuumUnits}
           setValue={setContinuumUnits}
           label=""
-          onFocus={() => setHelp(HELP_CONTINUUM_UNITS)}
+          onFocus={() => helpComponent(HELP_CONTINUUM_UNITS)}
         />
       </Box>
     );
@@ -414,7 +351,7 @@ export default function AddObservation() {
       testId="suppliedValue"
       value={suppliedValue}
       setValue={setSuppliedValue}
-      onFocus={() => setHelp(HELP_SUPPLIED_VALUE)}
+      onFocus={() => helpComponent(HELP_SUPPLIED_VALUE)}
     />
   );
 
@@ -438,7 +375,7 @@ export default function AddObservation() {
       testId="elevation"
       value={elevation}
       setValue={setElevation}
-      onFocus={() => setHelp(HELP_ELEVATION)}
+      onFocus={() => helpComponent(HELP_ELEVATION)}
     />
   );
 
@@ -448,7 +385,7 @@ export default function AddObservation() {
       testId="weather"
       value={weather}
       setValue={setWeather}
-      onFocus={() => setHelp(HELP_WEATHER)}
+      onFocus={() => helpComponent(HELP_WEATHER)}
     />
   );
 
@@ -458,7 +395,7 @@ export default function AddObservation() {
       testId="frequency"
       value={frequency}
       setValue={setFrequency}
-      onFocus={() => setHelp(HELP_FREQUENCY)}
+      onFocus={() => helpComponent(HELP_FREQUENCY)}
     />
   );
 
@@ -482,7 +419,7 @@ export default function AddObservation() {
             testId="subBands"
             value={subBands}
             setValue={validate}
-            onFocus={() => setHelp(HELP_SUB_BANDS)}
+            onFocus={() => helpComponent(HELP_SUB_BANDS)}
             errorText={error}
           />
         )}
@@ -496,7 +433,7 @@ export default function AddObservation() {
       testId="continuumBandwidth"
       value={continuumBandwidth}
       setValue={setContinuumBandwidth}
-      onFocus={() => setHelp(HELP_CONTINUUM_BANDWIDTH)}
+      onFocus={() => helpComponent(HELP_CONTINUUM_BANDWIDTH)}
     />
   );
 
@@ -506,7 +443,7 @@ export default function AddObservation() {
       testId="effective"
       value={effective}
       setValue={setEffective}
-      onFocus={() => setHelp(HELP_EFFECTIVE_RESOLUTION)}
+      onFocus={() => helpComponent(HELP_EFFECTIVE_RESOLUTION)}
     />
   );
 
@@ -553,8 +490,27 @@ export default function AddObservation() {
       return false;
     };
 
+    const addObservationToProposal = () => {
+      const highestId = getProposal().observations.reduce(
+        (acc, observation) => (observation.id > acc ? observation.id : acc),
+        0
+      );
+      const newObservation = {
+        id: highestId + 1,
+        telescope: arrayConfig,
+        subarray: subarrayConfig,
+        linked: '0',
+        type: observationType
+      };
+      setProposal({
+        ...getProposal(),
+        observations: [...getProposal().observations, newObservation]
+      });
+    };
+
     const buttonClicked = () => {
-      navigate('/proposal');
+      addObservationToProposal();
+      navigate(NAV[5]);
     };
 
     return (
@@ -588,19 +544,10 @@ export default function AddObservation() {
     );
   };
 
-  const helpPanel = () => (
-    <InfoPanel
-      title={help.title}
-      description={help.description}
-      additional={help.additional}
-      testId="helpPanel"
-    />
-  );
-
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
-        <PageBanner proposalState={null} title="Add Observation" addPage={0} />
+        <PageBanner pageNo={PAGE} />
       </Grid>
 
       <Grid
@@ -684,7 +631,7 @@ export default function AddObservation() {
           </Card>
         </Grid>
         <Grid item xs={3}>
-          {helpPanel()}
+          <HelpPanel />
         </Grid>
       </Grid>
       {pageFooter()}

@@ -7,6 +7,8 @@ export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 
+export const LAST_PAGE = 8;
+
 export const PAGES = [
   'Title',
   'Team',
@@ -15,7 +17,20 @@ export const PAGES = [
   'Target',
   'Observation',
   'Technical',
-  'Data'
+  'Data',
+  'Add Proposal',
+  'Add Observation'
+];
+
+export const NAV = [
+  '/proposal/title',
+  '/proposal/team',
+  '/proposal/general',
+  '/proposal/science',
+  '/proposal/target',
+  '/proposal/observation',
+  '/proposal/technical',
+  '/proposal/data'
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
@@ -71,7 +86,7 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = ['', '', ''];
+export const DEFAULT_HELP = ['', ' ', ''];
 
 export const OBSERVATION = {
   array: [
@@ -344,15 +359,18 @@ export const EMPTY_PROPOSAL = {
   title: '',
   proposalType: 0,
   proposalSubType: 0,
-  team: null,
+  cycle: '',
+  team: [],
   abstract: '',
   category: 0,
   subCategory: 0,
   sciencePDF: null,
-  targetOption: 0,
-  targets: null,
-  observations: null,
-  targetObservation: null,
+  scienceLoadStatus: false,
+  targetOption: 1,
+  targets: [],
+  observations: [],
+  targetObservation: [],
   technicalPDF: null,
+  technicalLoadStatus: false,
   pipeline: ''
 };

@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -9,30 +7,28 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
+import { LAST_PAGE, PAGES } from '../../../utils/constants';
+import SubmitConfirmation from '../../alerts/submitConfirmation/SubmitConfirmation';
 
 interface PageBannerProps {
-  addPage?: number;
-  title: string;
-  setPage?: Function;
-  proposalState?: number[];
+  pageNo: number;
 }
 
-export default function PageBanner({
-  addPage = 0,
-  setPage = null,
-  title,
-  proposalState
-}: PageBannerProps) {
+export default function PageBanner({ pageNo }: PageBannerProps) {
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
   const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+  const [canSubmit, setCanSubmit] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleValidateClick = response => {
+    setCanSubmit(false);
     if (response && !response.error) {
       // Handle successful response
       setAxiosValidateError(`Success: ${response}`);
       setAxiosValidateErrorColor(AlertColorTypes.Success);
+      setCanSubmit(true);
     } else {
       // Handle error response
       setAxiosValidateError(response.error);
@@ -52,73 +48,92 @@ export default function PageBanner({
     }
   };
 
+  const submitClicked = () => {
+    setOpenDialog(true);
+  };
+
+  const submitConfirmed = () => {
+    setOpenDialog(false); // TODO : Replace with the push Proposal function
+  };
+
   return (
-    <Grid
-      p={1}
-      pt={addPage}
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="space-around"
-    >
-      <Grid item xs={12}>
-        <Grid container direction="row" alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Grid
-              container
-              spacing={1}
-              direction="row"
-              alignItems="flex-end"
-              justifyContent="space-between"
-            >
-              <Grid item>
-                <HomeButton />
+    <>
+      <Grid
+        p={1}
+        pt={1}
+        container
+        direction="row"
+        alignItems="center"
+        justifyContent="space-around"
+      >
+        <Grid item xs={12}>
+          <Grid container direction="row" alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Grid
+                container
+                spacing={1}
+                direction="row"
+                alignItems="flex-end"
+                justifyContent="space-between"
+              >
+                <Grid item>
+                  <HomeButton />
+                </Grid>
+                <Grid item>{pageNo < LAST_PAGE && <SaveButton onClick={handleSaveClick} />}</Grid>
               </Grid>
-              <Grid item>{addPage === 1 && <SaveButton onClick={handleSaveClick} />}</Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={6}>
-            {addPage !== 0 && <StatusArray setPage={setPage} proposalState={proposalState} />}
-          </Grid>
-          <Grid item>
-            <Grid
-              container
-              spacing={1}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              {axiosValidateError ? (
-                <Alert testId="alertSaveErrorId" color={axiosValidateErrorColor}>
-                  <Typography>{axiosValidateError}</Typography>
-                </Alert>
-              ) : null}
-              <Grid item>
-                {addPage !== 0 && (
-                  <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
-                )}
+            <Grid item xs={6}>
+              {pageNo < LAST_PAGE && <StatusArray />}
+            </Grid>
+            <Grid item>
+              <Grid
+                container
+                spacing={1}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                {axiosValidateError ? (
+                  <Alert testId="alertSaveErrorId" color={axiosValidateErrorColor}>
+                    <Typography>{axiosValidateError}</Typography>
+                  </Alert>
+                ) : null}
+                <Grid item>
+                  {pageNo < LAST_PAGE && (
+                    <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                  )}
+                </Grid>
+                <Grid item>
+                  {pageNo < LAST_PAGE && (
+                    <SubmitButton disabled={canSubmit} onClick={submitClicked} />
+                  )}
+                </Grid>
               </Grid>
-              <Grid item>{addPage !== 0 && <SubmitButton />}</Grid>
             </Grid>
           </Grid>
         </Grid>
+        {axiosSaveError ? (
+          <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
+            <Typography>{axiosSaveError}</Typography>
+          </Alert>
+        ) : null}
+        <Grid item xs={2}>
+          <Typography variant="h6" m={2}>
+            {PAGES[pageNo].toUpperCase()}
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography variant="body1" m={2}>
+            In this space should be some sort of description as to the purpose of this page,
+            including guidance, how to progress, etc
+          </Typography>
+        </Grid>
       </Grid>
-      {axiosSaveError ? (
-        <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
-          <Typography>{axiosSaveError}</Typography>
-        </Alert>
-      ) : null}
-      <Grid item xs={2}>
-        <Typography variant="h6" m={2}>
-          {title}
-        </Typography>
-      </Grid>
-      <Grid item xs={8}>
-        <Typography variant="body1" m={2}>
-          In this space should be some sort of description as to the purpose of this page, including
-          guidance, how to progress, etc
-        </Typography>
-      </Grid>
-    </Grid>
+      <SubmitConfirmation
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={submitConfirmed}
+      />
+    </>
   );
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
-import MockProposals from '../../services/axios/getProposals/mockProposals';
+import MockProposals from '../../services/axios/getProposalList/mockProposals';
 import theme from '../../services/theme/theme';
 import PHT from './PHT';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
@@ -26,7 +26,7 @@ describe('<PHT />', () => {
 describe('search functionality', () => {
   beforeEach(() => {
     cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
-      'getProposals'
+      'getProposalList'
     );
     cy.mount(
       <Router location="/" navigator={undefined}>
@@ -43,6 +43,16 @@ describe('search functionality', () => {
       .children('div[role="row"]')
       .should('contain', 'Milky Way')
       .should('have.length', 2);
+  });
+  it('returns 1 result when searching for "SKA_5000_2022"', () => {
+    cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
+    cy.get('[data-testid="SearchIcon"]').click();
+    cy.get(
+      '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    )
+      .children('div[role="row"]')
+      .should('contain', 'SKA_5000_2022')
+      .should('have.length', 1);
   });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
@@ -67,7 +77,7 @@ describe('search functionality', () => {
 describe('filtering by proposal type', () => {
   beforeEach(() => {
     cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
-      'getProposals'
+      'getProposalList'
     );
     cy.mount(
       <Router location="/" navigator={undefined}>
@@ -142,7 +152,7 @@ if (!USE_LOCAL_DATA) {
   describe('Get proposal/list good request', () => {
     beforeEach(() => {
       cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
-        'getProposals'
+        'getProposalList'
       );
       cy.mount(
         <Router location="/" navigator={undefined}>
@@ -150,8 +160,8 @@ if (!USE_LOCAL_DATA) {
         </Router>
       );
     });
-    it('displays "Unexpected data format returned from API" on successful getProposals', () => {
-      cy.wait('@getProposals');
+    it('displays "Unexpected data format returned from API" on successful getProposalList', () => {
+      cy.wait('@getProposalList');
       // cy.get('[data-testid="dataGridId"]').should('be.visible');
       // temp test that things work as expected before we update the MockProposal format to match API response in the application
       cy.get('[data-testid="alertErrorId"]')
@@ -167,15 +177,15 @@ if (!USE_LOCAL_DATA) {
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list bad request', () => {
     beforeEach(() => {
-      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalsFail');
+      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalListFail');
       cy.mount(
         <Router location="/" navigator={undefined}>
           <PHT />
         </Router>
       );
     });
-    it('displays error message in Alert component on failed getProposals', () => {
-      cy.wait('@getProposalsFail');
+    it('displays error message in Alert component on failed getProposalList', () => {
+      cy.wait('@getProposalListFail');
       cy.get('[data-testid="alertErrorId"]')
         .should('be.visible')
         .should('have.text', 'Request failed with status code 500');

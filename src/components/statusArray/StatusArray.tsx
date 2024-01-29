@@ -1,16 +1,14 @@
 import React from 'react';
 import { Grid, Divider } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
-import { PAGES } from '../../utils/constants';
+import { NAV } from '../../utils/constants';
 
-interface StatusArrayProps {
-  setPage: Function;
-  proposalState: number[];
-}
+export default function StatusArray() {
+  const { application } = storageObject.useStore();
 
-export default function StatusArray({ setPage, proposalState }: StatusArrayProps) {
   const generateDivider = (index: number) => {
-    if (index < PAGES.length - 1) {
+    if (index < NAV.length - 1) {
       return (
         <Grid item mt={-2} sx={{ width: '6%' }}>
           <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
@@ -28,11 +26,11 @@ export default function StatusArray({ setPage, proposalState }: StatusArrayProps
       alignItems="center"
       justifyContent="space-evenly"
     >
-      {PAGES.map((_page, index) => (
+      {NAV.map((_page, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           <Grid item>
-            <StatusWrapper level={proposalState[index]} page={index} setPage={setPage} />
+            <StatusWrapper level={application.content1[index]} page={index} />
           </Grid>
           {generateDivider(index)}
         </React.Fragment>

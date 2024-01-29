@@ -5,8 +5,10 @@ Writing
 =======
 
 We use Cypress as the test running framework. It will look for test files within a number of locations, however the standard that the SKAO will employ will be the use of `.cy.{tsx | jsx}` in the same folder as the component being tested.
+Below is a small illustration as an example.
 
 ```
+
 components
 └─ App
    |  App.cy.tsx
@@ -19,7 +21,7 @@ components
 
 Note that the ReactSkeleton component is exposed via WebPack 5 ModuleFederationPlugin, so this name should be changed to reflect the application being written ( e.g. SignalDisplay, DataProductDashboard ...)
 
-See the developer guide for more information
+See the SKAO developer guide for more information
 
 Running
 =======
@@ -36,7 +38,7 @@ To run the tests with coverage, execute
 
 The coverage results are displayed in the console. They are also written to the `coverage` folder.
 
-- `./build/coverage/index.html` - open in a web browser to view
+    `./build/coverage/index.html` - open in a web browser to view
 
 **All the tests should pass before merging the code**
 
@@ -50,7 +52,8 @@ These tools can be run in the command line or integrated into your IDE (recommen
 
 JavaScript based SKA projects must comply with the [AirBnB JavaScript Style Guide](https://github.com/airbnb/javascript). These rules are included in this project and ESLint and Prettier are configured to use them.
 
-### Running
+Running
+=======
 
 To run the analysis tools, execute
 
