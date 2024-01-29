@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
-import { NAV, PAGES } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PAGES } from '../../../utils/constants';
 
 interface PageFooterProps {
   pageNo: number;
@@ -60,7 +60,7 @@ export default function PageFooter({
         </Grid>
         <Grid item />
         <Grid item>
-          {pageNo < 7 && (
+          {pageNo < LAST_PAGE - 1 && (
             <NextPageButton
               disabled={buttonDisabled}
               label={nextLabel()}

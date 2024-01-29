@@ -35,7 +35,7 @@ export default function AddProposal() {
       setAxiosCreateErrorColor(AlertColorTypes.Success);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
-        navigate(NAV[1]); 
+        navigate(NAV[1]);
       }, 1000);
     } else {
       setAxiosCreateError(response.error);

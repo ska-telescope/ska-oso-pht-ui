@@ -104,7 +104,9 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                   )}
                 </Grid>
                 <Grid item>
-                  {pageNo < LAST_PAGE && <SubmitButton disabled={canSubmit} onClick={submitClicked} />}
+                  {pageNo < LAST_PAGE && (
+                    <SubmitButton disabled={canSubmit} onClick={submitClicked} />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
