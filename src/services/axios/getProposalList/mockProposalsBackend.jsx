@@ -1,6 +1,6 @@
 const MockProposals = [
   {
-    proposal_id: '1',
+    prsl_id: '1',
     status: 'draft',
     submitted_by: '',
     submitted_on: '',
@@ -69,7 +69,7 @@ const MockProposals = [
     }
   },
   {
-    proposal_id: '2',
+    prsl_id: '2',
     status: 'draft',
     submitted_by: '',
     submitted_on: '',
