@@ -60,7 +60,7 @@ export default function PageFooter({
         </Grid>
         <Grid item />
         <Grid item>
-          {pageNo < PAGES.length - 1 && (
+          {pageNo < 7 && (
             <NextPageButton
               disabled={buttonDisabled}
               label={nextLabel()}

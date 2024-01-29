@@ -3,11 +3,12 @@ import PageBanner from '../pageBanner/PageBanner';
 import PageFooter from '../pageFooter/PageFooter';
 
 interface ShellProps {
-  page: number;
-  children?: JSX.Element | JSX.Element[];
-}
+    page: number;
+    children?: JSX.Element | JSX.Element[];
+  }
+  
+  export default function Shell({ page, children }: ShellProps) {
 
-export default function Shell({ page, children }: ShellProps) {
   return (
     <>
       <PageBanner pageNo={page} />

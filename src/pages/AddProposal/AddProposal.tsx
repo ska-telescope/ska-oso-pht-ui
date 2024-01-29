@@ -6,7 +6,7 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
-import { EMPTY_PROPOSAL } from '../../utils/constants';
+import { EMPTY_PROPOSAL, NAV } from '../../utils/constants';
 import PostProposal from '../../services/axios/postProposal/postProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
@@ -14,13 +14,14 @@ import { Proposal } from '../../services/types/proposal';
 const PAGE = 8;
 
 export default function AddProposal() {
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [axiosCreateError, setAxiosCreateError] = React.useState('');
   const [axiosCreateErrorColor, setAxiosCreateErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
+    updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
     updateAppContent2(EMPTY_PROPOSAL);
   }, []);
 
@@ -34,7 +35,7 @@ export default function AddProposal() {
       setAxiosCreateErrorColor(AlertColorTypes.Success);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
-        navigate('/'); //  TODO : Should be NAV[1] here, however we need to load the new proposal into memory.
+        navigate(NAV[1]); 
       }, 1000);
     } else {
       setAxiosCreateError(response.error);
