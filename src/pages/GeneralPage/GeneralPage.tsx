@@ -6,7 +6,7 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
-import {helpers} from "../../utils/helpers";
+import { helpers } from '../../utils/helpers';
 
 export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
 export const HELP_CATEGORY = ['CATEGORY TITLE', 'CATEGORY DESCRIPTION', ''];
@@ -21,13 +21,13 @@ export default function GeneralPage() {
     updateAppContent1,
     updateAppContent2
   } = storageObject.useStore();
+  const [, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [errorText, setErrorText] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [abstract, setAbstract] = React.useState('');
+  const [, setAbstract] = React.useState('');
   const [errorTextAbstract, setErrorTextAbstract] = React.useState('');
 
   const getProposalState = () => application.content1 as number[];
@@ -69,12 +69,12 @@ export default function GeneralPage() {
     let count = 0;
 
     // abstract
-    const emptyField = abstract === '';
+    const emptyField = getProposal()?.abstract === '';
     let isValid = !emptyField;
     count += isValid ? 0 : 1;
     if (!emptyField) {
       isValid = helpers.validate.validateTextEntry(
-          abstract,
+          getProposal()?.abstract,
           setAbstract,
           setErrorTextAbstract,
           'DEFAULT'
@@ -85,6 +85,11 @@ export default function GeneralPage() {
     }
     return count;
   }
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation()); // calls formValidation function
+    setFormInvalid(invalidForm);
+  }, [validateToggle]);
 
   const checkCategory = (id: number) => {
     setProposal({ ...getProposal(), category: id, subCategory: 1 });
@@ -111,6 +116,7 @@ export default function GeneralPage() {
           setValue={e => setProposal({ ...getProposal(), abstract: e })}
           onFocus={() => helpComponent(HELP_ABSTRACT)}
           helperText="Please enter your abstract information"
+          errorText={errorTextAbstract}
         />
       </Grid>
     </Grid>
