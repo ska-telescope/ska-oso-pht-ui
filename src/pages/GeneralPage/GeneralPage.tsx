@@ -39,6 +39,8 @@ export default function GeneralPage() {
     updateAppContent1(temp);
   };
 
+  const MAXCHART = 250;
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     helpComponent(HELP_ABSTRACT);
@@ -77,8 +79,12 @@ export default function GeneralPage() {
           getProposal()?.abstract,
           setAbstract,
           setErrorTextAbstract,
-          'DEFAULT'
+          'DEFAULT',
+          MAXCHART
       );
+      if (isValid) { 
+        setErrorTextAbstract(''); // clean up residual errors if valid or MAXLENGTH error still shows
+      }
       count += isValid ? 0 : 1;
     } else {
       setErrorTextAbstract(''); // don't display error when empty

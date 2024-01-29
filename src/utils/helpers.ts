@@ -2,11 +2,15 @@ import { TEXT_ENTRY_PARAMS, Projects } from './constants';
 
 export const helpers = {
   validate: {
+    validateMaxLength(text:string, maxLength:number):boolean {
+      return text.length <= maxLength;
+    },
     validateTextEntry(
       text: string,
-      setText: Function,
+      setText: Function, // TODO: we should be able to remove setText as not used -> need to modify function calls
       setErrorText: Function,
-      textType?: string
+      textType?: string,
+      maxLength?: number
     ): boolean {
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
@@ -15,10 +19,17 @@ export const helpers = {
         throw new Error(`Invalid text type: ${textType}`);
       }
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
+      // if text respects pattern
       if (PATTERN.test(text)) {
-        setText(text.substring(0, MAX_LENGTH));
-        setErrorText('');
-        return true;
+        // if pattern is correct, we check for length too
+        const isValidLength = !maxLength || this.validateMaxLength(text, maxLength);
+        if (isValidLength) {
+          setErrorText('');
+          return true;
+        } 
+          setErrorText(`Text should be no longer than ${maxLength} characters.`);
+          return false;
+        
       }
       setErrorText(ERROR_TEXT);
       return false;
