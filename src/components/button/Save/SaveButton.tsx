@@ -3,7 +3,6 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import SaveIcon from '@mui/icons-material/Save';
 import { Proposal } from '../../../services/types/proposal';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-// import MockProposalBackend from '../../../services/axios/getProposal/getProposal';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 export default function SaveButton({ onClick }) {
