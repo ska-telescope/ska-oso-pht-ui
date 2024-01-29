@@ -27,6 +27,9 @@ export default function GeneralPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const [abstract, setAbstract] = React.useState('');
+  const [errorTextAbstract, setErrorTextAbstract] = React.useState('');
+
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp = [];
@@ -62,6 +65,27 @@ export default function GeneralPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  function formValidation() {
+    let count = 0;
+
+    // abstract
+    const emptyField = abstract === '';
+    let isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+          abstract,
+          setAbstract,
+          setErrorTextAbstract,
+          'DEFAULT'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextAbstract(''); // don't display error when empty
+    }
+    return count;
+  }
+
   const checkCategory = (id: number) => {
     setProposal({ ...getProposal(), category: id, subCategory: 1 });
   };
@@ -73,41 +97,24 @@ export default function GeneralPage() {
     return [{ label: '', value: 0 }];
   };
 
-  // const abstractField = () => (
-  //   <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-  //     <Grid mt={2} item xs={2}>
-  //       <Typography>Abstract</Typography>
-  //     </Grid>
-  //     <Grid item xs={10}>
-  //       <TextEntry
-  //         label=""
-  //         testId="abstractId"
-  //         rows={10}
-  //         value={getProposal().abstract}
-  //         setValue={e => setProposal({ ...getProposal(), abstract: e })}
-  //         onFocus={() => helpComponent(HELP_ABSTRACT)}
-  //         helperText="Please enter your abstract information"
-  //       />
-  //     </Grid>
-  //   </Grid>
-  // );
-
-  const abstractField = () => {
-    const setAbstract = (e: string) => {
-      setProposal({ ...getProposal(), title: e });
-    };
-
-    return (
-      <TextEntry
-        label=""
-        testId="abstractId"
-        value={getProposal()?.title}
-        setValue={(title: string) =>
-                helpers.validate.validateTextEntry(title, setAbstract, setErrorText)}
-        errorText={errorText}
-      />
-    );
-  };
+  const abstractField = () => (
+    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
+      <Grid mt={2} item xs={2}>
+        <Typography>Abstract</Typography>
+      </Grid>
+      <Grid item xs={10}>
+        <TextEntry
+          label=""
+          testId="abstractId"
+          rows={10}
+          value={getProposal().abstract}
+          setValue={e => setProposal({ ...getProposal(), abstract: e })}
+          onFocus={() => helpComponent(HELP_ABSTRACT)}
+          helperText="Please enter your abstract information"
+        />
+      </Grid>
+    </Grid>
+  );
 
   const cycleField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
