@@ -5,7 +5,7 @@ import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } f
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import AlertDialog from '../alertDialog/AlertDialog';
+import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
 import { Proposal } from '../../services/types/proposal';

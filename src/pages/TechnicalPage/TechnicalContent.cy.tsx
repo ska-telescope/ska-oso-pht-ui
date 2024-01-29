@@ -19,17 +19,13 @@ describe('<TechnicalPage />', () => {
     });
   }
   it(`Verify upload file elements`, () => {
-    cy.mount(
-      <TechnicalPage />
-    );
+    cy.mount(<TechnicalPage />);
     cy.get('[data-testid="uploadPdfLabel"]').contains('Upload PDF');
     cy.get('[data-testid="SearchIcon"]').click();
   });
 
   it(`Verify pdf preview elements`, () => {
-    cy.mount(
-      <TechnicalPage />
-    );
+    cy.mount(<TechnicalPage />);
     cy.get('[data-testid="pdfPreviewLabel"]').contains('PDF Preview');
   });
 });

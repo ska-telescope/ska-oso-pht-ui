@@ -110,7 +110,13 @@ export default function ObservationPage() {
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number; }; }) => <TrashIcon onClick={deleteIconClicked} selected={e.row.id === currentObservation} toolTip="Delete target" />
+      renderCell: (e: { row: { id: number } }) => (
+        <TrashIcon
+          onClick={deleteIconClicked}
+          selected={e.row.id === currentObservation}
+          toolTip="Delete target"
+        />
+      )
     }
   ];
   const extendedColumnsObservations = [...columns];

@@ -7,8 +7,6 @@ import { NAV } from '../../utils/constants';
 export default function StatusArray() {
   const { application } = storageObject.useStore();
 
-  const getProposalState = () => application.content1 as number[];
-
   const generateDivider = (index: number) => {
     if (index < NAV.length - 1) {
       return (
@@ -32,7 +30,7 @@ export default function StatusArray() {
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           <Grid item>
-            <StatusWrapper level={getProposalState()[index]} page={index} />
+            <StatusWrapper level={application.content1[index]} page={index} />
           </Grid>
           {generateDivider(index)}
         </React.Fragment>
