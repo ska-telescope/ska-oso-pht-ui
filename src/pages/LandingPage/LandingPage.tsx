@@ -9,7 +9,7 @@ import {
   Alert,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import GetProposals from '../../services/axios/getProposalList/getProposalList';
+import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
@@ -44,7 +44,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
-      const response = await GetProposals();
+      const response = await GetProposalList();
       if (isMounted) {
         if (response && !response.error) {
           if (response.every(item => item.id && item.title)) {
@@ -113,7 +113,7 @@ export default function LandingPage() {
     { field: 'id', headerName: 'Proposal ID', width: 100 },
     { field: 'telescope', headerName: 'Telescope', width: 100 },
     { field: 'cycle', headerName: 'Cycle', width: 150 },
-    { field: 'title', headerName: 'Title', width: 200 },
+    { field: 'title', headerName: 'Title', width: 250 },
     { field: 'pi', headerName: 'PI', width: 150 },
     { field: 'status', headerName: 'Status', width: 100 },
     { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
@@ -154,14 +154,7 @@ export default function LandingPage() {
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
 
-      <Grid
-        p={1}
-        spacing={2}
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-start"
-      >
+      <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
         <Grid item xs={2}>
           <AddProposalButton />
         </Grid>
@@ -184,26 +177,21 @@ export default function LandingPage() {
         </Grid>
       </Grid>
 
-      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-evenly">
-        <Grid
-          p={1}
-          container
-          direction="column"
-          alignItems="flex-left"
-          justifyContent="space-evenly"
-        />
-        {axiosError ? (
-          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-            <Typography>{axiosError}</Typography>
-          </Alert>
-        ) : (
-          <DataGrid
-            testId="dataGridId"
-            rows={filteredData}
-            columns={extendedColumns}
-            height={500}
-          />
-        )}
+      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid item>
+          {axiosError ? (
+            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+              <Typography>{axiosError}</Typography>
+            </Alert>
+          ) : (
+            <DataGrid
+              testId="dataGridId"
+              rows={filteredData}
+              columns={extendedColumns}
+              height={500}
+            />
+          )}
+        </Grid>
       </Grid>
     </>
   );
