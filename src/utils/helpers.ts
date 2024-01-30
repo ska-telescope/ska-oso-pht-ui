@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS, Projects } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL } from './constants';
 
 export const helpers = {
   validate: {
@@ -43,15 +43,15 @@ export const helpers = {
             type: project.title,
             sub_type: subProject.title
           },
-          science_category: mockProposal.category.toString(),
+          science_category: GENERAL.ScienceCategory.find(category => category.value === mockProposal.category).label,
           targets: mockProposal.targets.map(target => ({
             name: target.name,
             right_ascension: target.ra,
             declination: target.dec,
             velocity: parseFloat(target.vel),
-            velocity_unit: 'km/s', // TODO: confirm what units should be expected and strategy
-            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees', // TODO: confirm what units should be expected and strategy
-            declination_unit: 'dd:mm:ss' // TODO: confirm what units should be expected and strategy
+            velocity_unit: 'km/s', // TODO: confirm what units should be expected
+            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees', // TODO: confirm what units should be expected
+            declination_unit: 'dd:mm:ss' // TODO: confirm what units should be expected
           })),
           investigator: mockProposal.team.map(teamMember => ({
             investigator_id: teamMember.id.toString(),
@@ -72,6 +72,7 @@ export const helpers = {
               foundTarget => foundTarget.id === (targetObservation || {}).targetId
             );
             return {
+              // TODO: map arrays and subarrays propoerly
               science_goal_id: observation.id.toString(),
               array: observation.telescope.toString(),
               subarray: `subarray ${observation.subarray.toString()}`,

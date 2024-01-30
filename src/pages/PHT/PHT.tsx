@@ -35,8 +35,8 @@ export default function PHT() {
   const [searchType, setSearchType] = React.useState('');
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
-  const [, setAxiosViewError] = React.useState('');
-  const [, setAxiosViewErrorColor] = React.useState(null);
+  const [axiosViewError, setAxiosViewError] = React.useState('');
+  const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
 
   const PAGE_DESC =
     'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
@@ -85,13 +85,15 @@ export default function PHT() {
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
-      setAxiosViewError(`Success: ${response}`);
+      setAxiosViewError(`Success`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
-      setDataProposals([]);
+      // setDataProposals([]); // can we remove this???
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
-      navigate(NAV[0]);
+      setTimeout(() => {
+        navigate(NAV[0]);
+      }, 1000);
     } else {
       // Handle error response
       setAxiosViewError(response.error);
@@ -162,6 +164,12 @@ export default function PHT() {
 
   return (
     <>
+      { axiosViewError ? (
+        <Alert testId="alertErrorId" color={axiosViewErrorColor}>
+          <Typography>{axiosViewError}</Typography>
+        </Alert>
+          )
+      : null }
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{PAGE_DESC}</Typography>
       </Grid>
