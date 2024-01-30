@@ -133,11 +133,17 @@ export default function PHT() {
         <>
           {!canEdit(e) && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
           {canEdit(e) && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
-          {canClone && <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />}
-          {canDownload && (
-            <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
-          )}
-          {canDelete(e) && <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />}
+          <CloneIcon onClick={cloneIconClicked} disabled={!canClone()} toolTip="Clone proposal" />
+          <DownloadIcon
+            onClick={downloadIconClicked}
+            disabled={!canDownload()}
+            toolTip="Download proposal"
+          />
+          <TrashIcon
+            onClick={deleteIconClicked}
+            disabled={!canDelete(e)}
+            toolTip="Delete proposal"
+          />
         </>
       )
     }
