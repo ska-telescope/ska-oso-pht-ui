@@ -14,7 +14,6 @@ import TitlePage from '../TitlePage/TitlePage';
 import { NAV } from '../../utils/constants';
 
 export default function PHT() {
-
   return (
     <Router>
       <Routes>

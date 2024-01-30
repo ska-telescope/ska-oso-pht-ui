@@ -10,11 +10,12 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Loader from '../components/layout/Loader/Loader';
-import PHT from '../pages/PHT/PHT';
+import LandingPage from '../pages/LandingPage/LandingPage';
 import theme from '../services/theme/theme';
 
 const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
+const {REACT_APP_VERSION} = process.env;
 
 function App() {
   const { t } = useTranslation('pht');
@@ -24,7 +25,6 @@ function App() {
   const skao = t('toolTip.button.skao');
   const mode = t('toolTip.button.mode');
   const toolTip = { skao, mode };
-  const version = process.env.VERSION;
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>
@@ -39,10 +39,10 @@ function App() {
         />
         <>
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />
-          <PHT />
+          <LandingPage />
           <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
         </>
-        <Footer copyrightFunc={setShowCopyright} testId="footerId" version={version} />
+        <Footer copyrightFunc={setShowCopyright} testId="footerId" version={REACT_APP_VERSION} />
       </React.Suspense>
     </ThemeProvider>
   );

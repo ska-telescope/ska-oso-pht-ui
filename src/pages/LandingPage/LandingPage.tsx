@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// TAS import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -22,7 +22,7 @@ import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function LandingPage() {
-  const navigate = useNavigate();
+  // TAS const navigate = useNavigate();
   const {
     clearApp,
     helpComponent,
@@ -91,7 +91,7 @@ export default function LandingPage() {
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
-      navigate(NAV[0]);
+      // TAS navigate(NAV[0]);
     } else {
       // Handle error response
       setAxiosViewError(response.error);
