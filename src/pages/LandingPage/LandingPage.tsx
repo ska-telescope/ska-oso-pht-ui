@@ -11,7 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { DEFAULT_HELP, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';

@@ -15,7 +15,7 @@ import theme from '../services/theme/theme';
 
 const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
-const {REACT_APP_VERSION} = process.env;
+const { REACT_APP_VERSION } = process.env;
 
 function App() {
   const { t } = useTranslation('pht');
