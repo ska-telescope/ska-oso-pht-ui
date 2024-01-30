@@ -12,14 +12,14 @@ async function GetProposal(_id: number) {
       'Content-Type': 'application/json'
     }
   };
-
+  
   if (USE_LOCAL_DATA) {
-    return MockProposal.title; // TODO: return title to display in confirmation message / this will probably have to change to whole proposal at some point
+    return MockProposal;
   }
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${_id}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data.proposal_info.title;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data.proposal_info;
   } catch (e) {
     return { error: e.message };
   }

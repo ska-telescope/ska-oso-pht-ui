@@ -85,7 +85,7 @@ export default function PHT() {
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
-      setAxiosViewError(`Success: ${response}`);
+      setAxiosViewError(`Success`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
       // setDataProposals([]); // can we remove this???
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
