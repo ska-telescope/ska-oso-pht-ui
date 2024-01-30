@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
-import { env } from '../../../../env';
 
 async function GetProposalList() {
   const apiUrl = SKA_PHT_API_URL;

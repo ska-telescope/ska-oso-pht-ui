@@ -24,11 +24,11 @@ module.exports = () => {
         '@components': path.resolve(__dirname, 'src/components'),
         '@services': path.resolve(__dirname, 'src/services'),
         '@pages': path.resolve(__dirname, 'src/pages'),
-        '@utils': path.resolve(__dirname, 'src/utils'),
+        '@utils': path.resolve(__dirname, 'src/utils')
       },
       extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
       fallback: {
-        path: require.resolve('path-browserify'),
+        path: require.resolve('path-browserify')
       }
     },
 
@@ -145,7 +145,7 @@ module.exports = () => {
         template: './public/index.html'
       }),
       new webpack.EnvironmentPlugin({
-        REACT_APP_VERSION: version,
+        REACT_APP_VERSION: version
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -160,7 +160,7 @@ module.exports = () => {
         ]
       }),
       new Dotenv({
-        path: '.env',
+        path: '.env'
       })
     ]
   };
