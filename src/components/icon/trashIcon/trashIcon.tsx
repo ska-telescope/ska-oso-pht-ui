@@ -4,17 +4,18 @@ import useTheme from '@mui/material/styles/useTheme';
 import { DeleteRounded } from '@mui/icons-material';
 
 interface TrashIconProps {
-  toolTip: string;
+  disabled: boolean;
   onClick: Function;
-  selected?: Boolean;
+  selected?: boolean;
+  toolTip: string;
 }
 
-export default function TrashIcon({ toolTip = '', onClick, selected }: TrashIconProps) {
+export default function TrashIcon({ disabled = false, onClick, selected, toolTip = '' }: TrashIconProps) {
   const theme = useTheme();
 
   return (
     <Tooltip title={toolTip} arrow>
-      <IconButton aria-label={toolTip} onClick={() => onClick} style={{ cursor: 'hand' }}>
+      <IconButton aria-label={toolTip} disabled={disabled} onClick={() => onClick} style={{ cursor: 'hand' }}>
         {selected && <DeleteRounded sx={{ color: theme.palette.secondary.contrastText }} />}
         {!selected && <DeleteRounded />}
       </IconButton>
