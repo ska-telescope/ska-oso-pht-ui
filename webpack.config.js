@@ -2,8 +2,11 @@ const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 const deps = require('./package.json').dependencies;
+const version = require('./package.json').version;
 
 module.exports = () => {
   return {
@@ -17,7 +20,16 @@ module.exports = () => {
     },
 
     resolve: {
-      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+      alias: {
+        '@components': path.resolve(__dirname, 'src/components'),
+        '@services': path.resolve(__dirname, 'src/services'),
+        '@pages': path.resolve(__dirname, 'src/pages'),
+        '@utils': path.resolve(__dirname, 'src/utils'),
+      },
+      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+      fallback: {
+        path: require.resolve('path-browserify'),
+      }
     },
 
     devServer: {
@@ -60,9 +72,6 @@ module.exports = () => {
     devtool: 'source-map',
 
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env.VERSION': JSON.stringify(process.env.npm_package_version)
-      }),
       new ModuleFederationPlugin({
         name: 'pht',
         filename: 'remoteEntry.js',
@@ -87,15 +96,14 @@ module.exports = () => {
             singleton: true,
             requiredVersion: deps['react-router-dom']
           },
-          // i18n
           i18next: {
             eager: true,
-            // singleton: true,
+            singleton: true,
             requiredVersion: deps.i18next
           },
           'react-i18next': {
             eager: true,
-            // singleton: true,
+            singleton: true,
             requiredVersion: deps['react-i18next']
           },
           'i18next-browser-languagedetector': {
@@ -105,40 +113,26 @@ module.exports = () => {
           },
           'i18next-http-backend': {
             eager: true,
-            // singleton: true,
+            singleton: true,
             requiredVersion: deps['i18next-http-backend']
           },
-          // Material UI
-          '@mui/material': { singleton: true, requiredVersion: deps['@mui/material'], eager: true },
-          '@mui/icons-material': {
-            singleton: true,
-            requiredVersion: deps['@mui/icons-material'],
-            eager: true
-          },
+          '@mui/icons-material': { singleton: true, requiredVersion: '^5.8.4', eager: true },
+          '@mui/material': { singleton: true, requiredVersion: '^5.9.0', eager: true },
+          '@mui/x-data-grid': { singleton: true, requiredVersion: '^5.17.22', eager: true },
+          '@emotion/react': { singleton: true, requiredVersion: '^11.9.3', eager: true },
+          '@emotion/styled': { singleton: true, requiredVersion: '^11.9.3', eager: true },
           // SKAO components
           '@ska-telescope/ska-gui-components': {
-            requiredVersion: deps['@ska-telescope/ska-gui-components'],
+            requiredVersion: 'auto',
             eager: true
           },
           '@ska-telescope/ska-gui-local-storage': {
             requiredVersion: deps['@ska-telescope/ska-gui-local-storage'],
+            singleton: true,
             eager: true
           },
           // mixture
-          axios: {
-            requiredVersion: deps['axios'],
-            eager: true
-          },
-          '@emotion/react': {
-            singleton: true,
-            requiredVersion: deps['@emotion/react'],
-            eager: true
-          },
-          '@emotion/styled': {
-            singleton: true,
-            requiredVersion: deps['@emotion/styled'],
-            eager: true
-          },
+          axios: { singleton: true, requiredVersion: '^1.5.1', eager: true },
           moment: {
             eager: true,
             singleton: true,
@@ -147,7 +141,11 @@ module.exports = () => {
         }
       }),
       new HtmlWebPackPlugin({
+        inject: true,
         template: './public/index.html'
+      }),
+      new webpack.EnvironmentPlugin({
+        REACT_APP_VERSION: version,
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -160,6 +158,9 @@ module.exports = () => {
             }
           }
         ]
+      }),
+      new Dotenv({
+        path: '.env',
       })
     ]
   };
