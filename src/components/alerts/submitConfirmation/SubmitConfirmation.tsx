@@ -14,8 +14,8 @@ interface SubmitConfirmationProps {
   onConfirm: Function;
 }
 
-const LABEL_WIDTH = 4; 
-const LABEL_STYLE = 'subtitle1'; 
+const LABEL_WIDTH = 4;
+const LABEL_STYLE = 'subtitle1';
 const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
 
@@ -34,46 +34,52 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     onClose();
   };
 
-  const proposalType = () => { 
+  const proposalType = () => {
     const pt = getProposal().proposalType;
-    const pName = (!pt || pt < 1) ? 'None selected' : Projects[pt - 1].title;
+    const pName = !pt || pt < 1 ? 'None selected' : Projects[pt - 1].title;
     const st = getProposal().proposalSubType;
-    const sName = (!pt || pt < 1 || !st || st < 1) ? 'None selected' : Projects[pt - 1].subProjects[st - 1].title;
-    return `${pName  } / ${  sName}`;
-  }
+    const sName =
+      !pt || pt < 1 || !st || st < 1 ? 'None selected' : Projects[pt - 1].subProjects[st - 1].title;
+    return `${pName} / ${sName}`;
+  };
 
-  const category = () => { 
+  const category = () => {
     const pt = getProposal().category;
-    const pName = (!pt || pt < 1) ? 'None selected' : GENERAL.ScienceCategory[pt - 1].label;
+    const pName = !pt || pt < 1 ? 'None selected' : GENERAL.ScienceCategory[pt - 1].label;
     const st = getProposal().subCategory;
-    const sName = (!pt || pt < 1 || !st || st < 1) ? 'None selected' : GENERAL.ScienceCategory[pt - 1].subCategory[st - 1].label;
-    return `${pName  } / ${  sName}`;
-  }
+    const sName =
+      !pt || pt < 1 || !st || st < 1
+        ? 'None selected'
+        : GENERAL.ScienceCategory[pt - 1].subCategory[st - 1].label;
+    return `${pName} / ${sName}`;
+  };
 
   const pageTitle = (title: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item>
-        <Typography variant="h4">
-          {title}
-        </Typography>
+        <Typography variant="h4">{title}</Typography>
       </Grid>
     </Grid>
-  )
+  );
 
   const sectionTitle = (title: string) => (
-    <Grid item> 
-      <Grid container sx={{ backgroundColor: theme.palette.primary.main }} direction="row" justifyContent="space-around" alignItems="center">
+    <Grid item>
+      <Grid
+        container
+        sx={{ backgroundColor: theme.palette.primary.main }}
+        direction="row"
+        justifyContent="space-around"
+        alignItems="center"
+      >
         <Grid item>
-          <Typography variant="button">
-            {title}
-          </Typography>
+          <Typography variant="button">{title}</Typography>
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const pageFooter = () => (
-    <Grid item> 
+    <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>
           <CancelButton onClick={handleCancel} />
@@ -83,7 +89,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const titleContent = () => (
     <Grid item>
@@ -102,7 +108,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const teamContent = () => (
     <Grid item>
@@ -115,7 +121,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const generalContent = () => (
     <Grid item>
@@ -134,7 +140,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const scienceContent = () => (
     <Grid item>
@@ -147,7 +153,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const targetContent = () => (
     <Grid item>
@@ -160,7 +166,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const observationsContent = () => (
     <Grid item>
@@ -179,7 +185,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const technicalContent = () => (
     <Grid item>
@@ -192,7 +198,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   const dataContent = () => (
     <Grid item>
@@ -205,7 +211,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 
   return (
     <Dialog
@@ -215,7 +221,14 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
     >
-      <Grid p={2} spacing={2} container direction="column" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        p={2}
+        spacing={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
         {pageTitle('SUBMIT PROPOSAL')}
         {sectionTitle(PAGES[0])}
         {titleContent()}

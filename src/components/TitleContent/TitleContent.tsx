@@ -188,7 +188,6 @@ export default function TitleContent({ page }: TitleContentProps) {
   }
 
   const titleField = () => {
-
     const MAX_CHAR = 50;
 
     const setTitle = (e: string) => {

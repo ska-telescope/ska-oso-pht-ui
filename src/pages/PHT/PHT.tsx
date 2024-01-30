@@ -47,7 +47,7 @@ export default function PHT() {
       const response = await GetProposalList();
       if (isMounted) {
         if (response && !response.error) {
-          if (response.every((item: { id: number; title: string; }) => item.id && item.title)) {
+          if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
             setAxiosError('');
             setDataProposals(response as Proposal[]);
           } else {
@@ -107,10 +107,11 @@ export default function PHT() {
     getTheProposal();
   };
 
-  const canEdit = (e: { row: { status: string; }; }) => e.row.status === 'Draft';
+  const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
   const canClone = () => true;
   const canDownload = () => true;
-  const canDelete = (e: { row: { status: string; }; }) => e.row.status === 'Draft' || e.row.status === 'Withdrawn';
+  const canDelete = (e: { row: { status: string } }) =>
+    e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 100 },
@@ -131,7 +132,9 @@ export default function PHT() {
           {!canEdit(e) && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
           {canEdit(e) && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
           {canClone && <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />}
-          {canDownload && <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />}
+          {canDownload && (
+            <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
+          )}
           {canDelete(e) && <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />}
         </>
       )

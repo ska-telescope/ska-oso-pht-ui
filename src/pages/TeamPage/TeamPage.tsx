@@ -125,12 +125,12 @@ export default function TeamPage() {
               />
             )}
             {getRows().length === 0 && (
-            <InfoCard
-              color={InfoCardColorTypes.Error}
-              fontSize={20}
-              message="THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
-              testId="helpPanelId"
-            />
+              <InfoCard
+                color={InfoCardColorTypes.Error}
+                fontSize={20}
+                message="THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
+                testId="helpPanelId"
+              />
             )}
           </Grid>
           <Grid item md={6} xs={11}>

@@ -95,7 +95,7 @@ export default function GeneralPage() {
           />
         </Grid>
       </Grid>
-    )
+    );
   };
 
   const cycleField = () => (
