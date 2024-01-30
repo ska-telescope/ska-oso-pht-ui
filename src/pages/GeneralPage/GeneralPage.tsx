@@ -71,24 +71,32 @@ export default function GeneralPage() {
     return [{ label: '', value: 0 }];
   };
 
-  const abstractField = () => (
-    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid mt={2} item xs={2}>
-        <Typography>Abstract</Typography>
+  const abstractField = () => {
+    const MAX_CHAR = 250;
+
+    const setValue = (e: string) => {
+      setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+    };
+
+    return (
+      <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
+        <Grid mt={2} item xs={2}>
+          <Typography>Abstract</Typography>
+        </Grid>
+        <Grid item xs={10}>
+          <TextEntry
+            label=""
+            testId="abstractId"
+            rows={10}
+            value={getProposal().abstract}
+            setValue={(e: string) => setValue(e)}
+            onFocus={() => helpComponent(HELP_ABSTRACT)}
+            helperText="Please enter your abstract information"
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={10}>
-        <TextEntry
-          label=""
-          testId="abstractId"
-          rows={10}
-          value={getProposal().abstract}
-          setValue={e => setProposal({ ...getProposal(), abstract: e })}
-          onFocus={() => helpComponent(HELP_ABSTRACT)}
-          helperText="Please enter your abstract information"
-        />
-      </Grid>
-    </Grid>
-  );
+    )
+  };
 
   const cycleField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">

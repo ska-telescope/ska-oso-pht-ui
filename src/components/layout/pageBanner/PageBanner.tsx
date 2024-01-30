@@ -129,11 +129,13 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
           </Typography>
         </Grid>
       </Grid>
+      {openDialog && (
       <SubmitConfirmation
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={submitConfirmed}
       />
+)}
     </>
   );
 }

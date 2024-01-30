@@ -283,26 +283,26 @@ export const Projects = [
       'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
     subProjects: [
       {
-        id: 5,
+        id: 1,
         title: 'Target of opportunity',
         code: 'ToO',
         description: 'A target of opportunity observing proposal'
       },
       {
-        id: 6,
+        id: 2,
         title: 'Joint SKA proposal',
         code: 'JTP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
-        id: 7,
+        id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
         description:
           'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
       },
       {
-        id: 8,
+        id: 4,
         title: 'Long term proposal',
         code: 'LTP',
         description: 'A proposal that spans multiple PROPOSAL CYCLES'
@@ -317,19 +317,19 @@ export const Projects = [
       "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
     subProjects: [
       {
-        id: 9,
+        id: 1,
         title: 'Target of opportunity',
         code: 'ToO',
         description: 'A target of opportunity observing proposal'
       },
       {
-        id: 10,
+        id: 2,
         title: 'Joint SKA proposal',
         code: 'JTP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
-        id: 11,
+        id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
         description:

@@ -47,7 +47,7 @@ export default function PHT() {
       const response = await GetProposalList();
       if (isMounted) {
         if (response && !response.error) {
-          if (response.every(item => item.id && item.title)) {
+          if (response.every((item: { id: number; title: string; }) => item.id && item.title)) {
             setAxiosError('');
             setDataProposals(response as Proposal[]);
           } else {
@@ -107,7 +107,10 @@ export default function PHT() {
     getTheProposal();
   };
 
-  const canEdit = () => true;
+  const canEdit = (e: { row: { status: string; }; }) => e.row.status === 'Draft';
+  const canClone = () => true;
+  const canDownload = () => true;
+  const canDelete = (e: { row: { status: string; }; }) => e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
     { field: 'id', headerName: 'Proposal ID', width: 100 },
@@ -123,13 +126,13 @@ export default function PHT() {
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
-      renderCell: () => (
+      renderCell: (e: never) => (
         <>
-          {!canEdit && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
-          {canEdit && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
-          <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />
-          <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />
-          <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />
+          {!canEdit(e) && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
+          {canEdit(e) && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
+          {canClone && <CloneIcon onClick={cloneIconClicked} toolTip="Clone proposal" />}
+          {canDownload && <DownloadIcon onClick={downloadIconClicked} toolTip="Download proposal" />}
+          {canDelete(e) && <TrashIcon onClick={deleteIconClicked} toolTip="Delete proposal" />}
         </>
       )
     }
@@ -188,6 +191,7 @@ export default function PHT() {
               testId="dataGridId"
               rows={filteredData}
               columns={extendedColumns}
+              showBorder={false}
               height={500}
             />
           )}
