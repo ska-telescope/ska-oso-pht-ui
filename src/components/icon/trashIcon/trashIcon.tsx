@@ -10,12 +10,22 @@ interface TrashIconProps {
   toolTip: string;
 }
 
-export default function TrashIcon({ disabled = false, onClick, selected, toolTip = '' }: TrashIconProps) {
+export default function TrashIcon({
+  disabled = false,
+  onClick,
+  selected,
+  toolTip = ''
+}: TrashIconProps) {
   const theme = useTheme();
 
   return (
     <Tooltip title={toolTip} arrow>
-      <IconButton aria-label={toolTip} disabled={disabled} onClick={() => onClick} style={{ cursor: 'hand' }}>
+      <IconButton
+        aria-label={toolTip}
+        disabled={disabled}
+        onClick={() => onClick}
+        style={{ cursor: 'hand' }}
+      >
         {selected && <DeleteRounded sx={{ color: theme.palette.secondary.contrastText }} />}
         {!selected && <DeleteRounded />}
       </IconButton>

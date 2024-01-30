@@ -10,12 +10,22 @@ interface DownloadIconProps {
   toolTip: string;
 }
 
-export default function DownloadIcon({ disabled = false, onClick, selected, toolTip = '' }: DownloadIconProps) {
+export default function DownloadIcon({
+  disabled = false,
+  onClick,
+  selected,
+  toolTip = ''
+}: DownloadIconProps) {
   const theme = useTheme();
 
   return (
     <Tooltip title={toolTip} arrow>
-      <IconButton aria-label="clone" disabled={disabled} onClick={() => onClick} style={{ cursor: 'hand' }}>
+      <IconButton
+        aria-label="clone"
+        disabled={disabled}
+        onClick={() => onClick}
+        style={{ cursor: 'hand' }}
+      >
         {selected && <DownloadRounded sx={{ color: theme.palette.secondary.contrastText }} />}
         {!selected && <DownloadRounded />}
       </IconButton>
