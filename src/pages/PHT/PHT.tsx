@@ -87,7 +87,7 @@ export default function PHT() {
       // Handle successful response
       setAxiosViewError(`Success: ${response}`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
-      setDataProposals([]);
+      // setDataProposals([]); // can we remove this???
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
