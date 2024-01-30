@@ -93,7 +93,7 @@ export default function PHT() {
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
       setTimeout(() => {
         navigate(NAV[0]);
-      }, 2000);
+      }, 1000);
     } else {
       // Handle error response
       setAxiosViewError(response.error);
