@@ -14,8 +14,8 @@ export default function ObservationPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentObservation, setCurrentObservation] = React.useState(0);
-  const [linked, setLinked] = React.useState(true);
-  const [unlinked, setUnlinked] = React.useState(true);
+  const [selected, setSelected] = React.useState(true);
+  const [notSelected, setNotSelected] = React.useState(true);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -48,13 +48,13 @@ export default function ObservationPage() {
     setProposal({ ...getProposal(), targetObservation: filterRecords(id) });
   };
 
-  const isTargetLinked = (id: number) =>
+  const isTargetSelected = (id: number) =>
     getProposal().targetObservation.filter(
       entry => entry.observationId === currentObservation && entry.targetId === id
     ).length > 0;
 
-  const targetLinkToggle = (id: number) => {
-    if (isTargetLinked(id)) {
+  const targetSelectedToggle = (id: number) => {
+    if (isTargetSelected(id)) {
       DeleteObservationTarget(id);
     } else {
       AddObservationTarget(id);
@@ -132,7 +132,7 @@ export default function ObservationPage() {
     { field: 'dec', headerName: 'Declination', width: 150 },
     {
       field: 'id',
-      headerName: 'Linked',
+      headerName: 'Selected',
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -142,8 +142,8 @@ export default function ObservationPage() {
             <TickBox
               label=""
               testId="linkedTickBox"
-              checked={isTargetLinked(e.row.id)}
-              onChange={() => targetLinkToggle(e.row.id)}
+              checked={isTargetSelected(e.row.id)}
+              onChange={() => targetSelectedToggle(e.row.id)}
             />
           );
         }
@@ -164,14 +164,14 @@ export default function ObservationPage() {
 
   const filteredTargets = () => {
     const list = getProposal().targets;
-    if (linked) {
-      if (unlinked) {
+    if (selected) {
+      if (notSelected) {
         return list;
       }
-      return list.filter(e => isTargetLinked(e.id));
+      return list.filter(e => isTargetSelected(e.id));
     }
-    if (unlinked) {
-      return list.filter(e => !isTargetLinked(e.id));
+    if (notSelected) {
+      return list.filter(e => !isTargetSelected(e.id));
     }
     return [];
   };
@@ -212,10 +212,10 @@ export default function ObservationPage() {
               <Grid item>
                 <TickBox
                   disabled={currentObservation === 0}
-                  label="Linked"
-                  testId="linkedTickBox"
-                  checked={linked}
-                  onChange={() => setLinked(!linked)}
+                  label="Selected"
+                  testId="selectedTickBox"
+                  checked={selected}
+                  onChange={() => setSelected(!selected)}
                 />
               </Grid>
               <Grid item>
@@ -223,8 +223,8 @@ export default function ObservationPage() {
                   disabled={currentObservation === 0}
                   label="Unlinked"
                   testId="unlinkedTickBox"
-                  checked={unlinked}
-                  onChange={() => setUnlinked(!unlinked)}
+                  checked={notSelected}
+                  onChange={() => setNotSelected(!notSelected)}
                 />
               </Grid>
             </Grid>

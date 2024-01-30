@@ -7,7 +7,7 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import { PAGES } from '../../../utils/constants';
+import { LAST_PAGE, PAGES } from '../../../utils/constants';
 import SubmitConfirmation from '../../alerts/submitConfirmation/SubmitConfirmation';
 
 interface PageBannerProps {
@@ -79,11 +79,11 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                 <Grid item>
                   <HomeButton />
                 </Grid>
-                <Grid item>{pageNo < 8 && <SaveButton onClick={handleSaveClick} />}</Grid>
+                <Grid item>{pageNo < LAST_PAGE && <SaveButton onClick={handleSaveClick} />}</Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>
-              {pageNo < 8 && <StatusArray />}
+              {pageNo < LAST_PAGE && <StatusArray />}
             </Grid>
             <Grid item>
               <Grid
@@ -99,12 +99,14 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                   </Alert>
                 ) : null}
                 <Grid item>
-                  {pageNo < 8 && (
+                  {pageNo < LAST_PAGE && (
                     <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
                   )}
                 </Grid>
                 <Grid item>
-                  {pageNo < 8 && <SubmitButton disabled={canSubmit} onClick={submitClicked} />}
+                  {pageNo < LAST_PAGE && (
+                    <SubmitButton disabled={canSubmit} onClick={submitClicked} />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -127,11 +129,13 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
           </Typography>
         </Grid>
       </Grid>
-      <SubmitConfirmation
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        onConfirm={submitConfirmed}
-      />
+      {openDialog && (
+        <SubmitConfirmation
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onConfirm={submitConfirmed}
+        />
+      )}
     </>
   );
 }
