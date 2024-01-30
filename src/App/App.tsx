@@ -10,12 +10,12 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Loader from '../components/layout/Loader/Loader';
-import LandingPage from '../pages/LandingPage/LandingPage';
+import PHT from '../pages/PHT/PHT';
 import theme from '../services/theme/theme';
 
 const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
-const { REACT_APP_VERSION } = process.env;
+const {REACT_APP_VERSION} = process.env;
 
 function App() {
   const { t } = useTranslation('pht');
@@ -39,7 +39,7 @@ function App() {
         />
         <>
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />
-          <LandingPage />
+          <PHT />
           <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
         </>
         <Footer copyrightFunc={setShowCopyright} testId="footerId" version={REACT_APP_VERSION} />

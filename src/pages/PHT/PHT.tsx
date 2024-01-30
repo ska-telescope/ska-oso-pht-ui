@@ -28,6 +28,7 @@ export default function PHT() {
         <Route path={NAV[7]} element={<DataPage />} />
         <Route path="/addProposal" element={<AddProposal />} />
         <Route path="/addObservation" element={<AddObservation />} />
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     </Router>
   );

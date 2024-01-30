@@ -1,5 +1,5 @@
 import React from 'react';
-// TAS import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -11,7 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { DEFAULT_HELP, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
@@ -22,7 +22,7 @@ import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function LandingPage() {
-  // TAS const navigate = useNavigate();
+  const navigate = useNavigate();
   const {
     clearApp,
     helpComponent,
@@ -91,7 +91,7 @@ export default function LandingPage() {
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
-      // TAS navigate(NAV[0]);
+      navigate(NAV[0]);
     } else {
       // Handle error response
       setAxiosViewError(response.error);

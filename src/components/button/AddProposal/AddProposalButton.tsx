@@ -1,13 +1,13 @@
 import React from 'react';
-// TAS import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
 
 export default function AddProposalButton() {
-  // TAS const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const ClickFunction = () => {
-    // TAS navigate('/addProposal');
+    navigate('/addProposal');
   };
 
   const title = 'Add proposal';
