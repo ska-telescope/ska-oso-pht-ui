@@ -374,3 +374,15 @@ export const EMPTY_PROPOSAL = {
   technicalLoadStatus: false,
   pipeline: ''
 };
+
+export const DEFAULT_PI = {
+  id: 1,
+  firstName: 'Van Loo',
+  lastName: 'Cheng',
+  email: 'ask.lop@map.com',
+  country: 'Lagoon',
+  affiliation: 'University of Free Town',
+  phdThesis: false,
+  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+  pi: true
+};

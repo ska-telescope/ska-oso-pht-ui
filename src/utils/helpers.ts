@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, TEAM_STATUS_TYPE_OPTIONS, DEFAULT_PI } from './constants';
 
 export const helpers = {
   validate: {
@@ -50,6 +50,16 @@ export const helpers = {
 
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
+
+      // add a team member as PI if none => this is to ensure we have at least 1 team member/PI upon proposal creation
+      // TODO: use logged in user instead of hardcoded team member
+      if (!('team' in mockProposal)) {
+        mockProposal.team = [
+          DEFAULT_PI
+        ]
+      } else if (mockProposal.team?.length === 0) {
+        mockProposal.team.push(DEFAULT_PI); 
+      }
 
       const targetObservationsByObservation = mockProposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {

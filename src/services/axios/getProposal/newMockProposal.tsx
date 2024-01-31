@@ -16,7 +16,8 @@ const TEAM_STATUS_TYPE_OPTIONS = {
     scienceLoadStatus: false,
     technicalPDF: null,
     technicalLoadStatus: false,
-    pipeline: ''
+    pipeline: '',
+    team: []
   };
   
   export default NewMockProposal;
