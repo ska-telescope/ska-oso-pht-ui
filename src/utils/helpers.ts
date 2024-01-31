@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION } from './constants';
 
 export const helpers = {
   validate: {
@@ -26,15 +26,43 @@ export const helpers = {
   },
 
   transform: {
+    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
+    // TODO: handle save/submit/create scenarios differences
+    /*
+    CREATE = proposal with no observations, etc. TODO: handle scenarios without these bits
+    SAVE = proposal with or without observations, etc. STATUS: draft
+    SUBMIT = STATUS: submitted
+    */
     convertProposalToBackendFormat(mockProposal) {
+
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
 
+      const targetObservationsByObservation = mockProposal.targetObservation.reduce((acc, to) => {
+        if (!acc[to.observationId]) {
+          acc[to.observationId] = [];
+        }
+        acc[to.observationId].push(to.targetId.toString());
+        return acc;
+      }, {});
+
+      const scienceProgrammes = mockProposal.observations.map(observation => {
+        const targetIds = targetObservationsByObservation[observation.id] || [];
+        const targets = mockProposal.targets.filter(target => targetIds.includes(target.id.toString()));
+        const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1);
+        return {
+          array: array?.label,
+          subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label,
+          linked_sources: targets.map(target => target.name),
+          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
+        };
+      });
+
       const transformedProposal = {
         prsl_id: mockProposal.id.toString(),
-        status: 'draft',
-        submitted_by: '',
-        submitted_on: '',
+        status: 'draft', // TODO: draft status for save: change status to submitted when clicking on "submit" button
+        submitted_by: '', // TODO: fill when clicking on submit
+        submitted_on: '', // TODO: fill when clicking on submit
         proposal_info: {
           title: mockProposal.title,
           cycle: mockProposal.cycle,
@@ -49,9 +77,9 @@ export const helpers = {
             right_ascension: target.ra,
             declination: target.dec,
             velocity: parseFloat(target.vel),
-            velocity_unit: 'km/s', // TODO: confirm what units should be expected
-            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees', // TODO: confirm what units should be expected
-            declination_unit: 'dd:mm:ss' // TODO: confirm what units should be expected
+            velocity_unit: '', // TODO: confirm what units should be expected
+            right_ascension_unit: '', // TODO: confirm what units should be expected
+            declination_unit: '' // TODO: confirm what units should be expected
           })),
           investigator: mockProposal.team.map(teamMember => ({
             investigator_id: teamMember.id.toString(),
@@ -63,23 +91,7 @@ export const helpers = {
             for_phd: teamMember.phdThesis,
             principal_investigator: teamMember.pi
           })),
-          science_programmes: mockProposal.observations.map(observation => {
-            // TODO: confirm linked obesrvations format for the backend
-            const targetObservation = mockProposal.targetObservation.find(
-              to => to.observationId === observation.id
-            );
-            const target = mockProposal.targets.find(
-              foundTarget => foundTarget.id === (targetObservation || {}).targetId
-            );
-            return {
-              // TODO: map arrays and subarrays propoerly
-              science_goal_id: observation.id.toString(),
-              array: observation.telescope.toString(),
-              subarray: `subarray ${observation.subarray.toString()}`,
-              linked_sources: (target || {}).name ? [target.name] : [],
-              observation_type: observation.type === 1 ? 'Continuum' : 'Spectral Line'
-            };
-          })
+          science_programmes: scienceProgrammes
         }
       };
       return transformedProposal;
