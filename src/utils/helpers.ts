@@ -79,7 +79,7 @@ export const helpers = {
               array: array?.label, // MID or LOW - ? why is it 0 and 1 in mock proposal but OBSERVATION.array I see 1 and 2?
               subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // same with sub-array see id 0 to 3 in mock but OBS.array 1-20
               // linked_sources: (target || {}).name ? [target.name] : [],
-              linked_sources: target? linkedSources.push(target?.name): linkedSources,
+              // linked_sources: target? linkedSources.push(target?.name): linkedSources,
               observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
             };
           })
