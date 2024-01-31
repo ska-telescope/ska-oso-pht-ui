@@ -26,8 +26,8 @@ export const helpers = {
   },
 
   transform: {
-    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) request and POST/PROPOSAL/REQUEST (submit button) */
-    // TODO: handle save/submit scenarios differences => what about Create button? 
+    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) request and PUT/PROPOSAL/ (submit button) */
+    // TODO: handle save/submit scenarios differences => what about Create button? (POST/PROPOSAL)
     convertProposalToBackendFormat(mockProposal) {
 
       const project = Projects.find(p => p.id === mockProposal.proposalType);
