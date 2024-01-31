@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION } from './constants';
 
 export const helpers = {
   validate: {
@@ -71,13 +71,16 @@ export const helpers = {
             const target = mockProposal.targets.find(
               foundTarget => foundTarget.id === (targetObservation || {}).targetId
             );
+            const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1); // **
+            const linkedSources = [];
             return {
-              // TODO: map arrays and subarrays propoerly
-              science_goal_id: observation.id.toString(),
-              array: observation.telescope.toString(),
-              subarray: `subarray ${observation.subarray.toString()}`,
-              linked_sources: (target || {}).name ? [target.name] : [],
-              observation_type: observation.type === 1 ? 'Continuum' : 'Spectral Line'
+              // TODO: map arrays and subarrays properly
+              science_goal_id: observation.id.toString(), // what's science goal? Is it different than science category?
+              array: array?.label, // MID or LOW - ? why is it 0 and 1 in mock proposal but OBSERVATION.array I see 1 and 2?
+              subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // same with sub-array see id 0 to 3 in mock but OBS.array 1-20
+              // linked_sources: (target || {}).name ? [target.name] : [],
+              linked_sources: target? linkedSources.push(target?.name): linkedSources,
+              observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
             };
           })
         }
