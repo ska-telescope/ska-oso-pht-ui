@@ -234,7 +234,7 @@ export default function TitleContent({ page }: TitleContentProps) {
                 identification of this proposal in a list of proposals
               </Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                Special characters including *+:/ not allowed
+                Special characters including *+:;[] not allowed
               </Typography>
             </Grid>
           </Grid>
