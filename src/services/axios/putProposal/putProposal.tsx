@@ -12,12 +12,12 @@ async function PutProposal(proposal) {
     }
   };
 
+  // TODO: add testing for proposal conversion format
+  const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
+
   if (USE_LOCAL_DATA) {
     return 'OK - Local DATA';
   }
-
-  // TODO: add testing for proposal conversion format
-  const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal);
 
   try {
     const result = await axios.put(`${apiUrl}${URL_EDIT}`, convertedProposal, config);
