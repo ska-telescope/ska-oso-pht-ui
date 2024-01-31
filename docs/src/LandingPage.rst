@@ -4,6 +4,7 @@ To submit a proposal to seek observing and processing time on the SKAO telescope
 
 .. figure:: /images/landingPageLight.png
    :width: 90%
+   :alt: screen in light mode
 
 Layout and Navigation
 =====================
@@ -13,17 +14,20 @@ Layout and Navigation
 - Add New Proposal Button: Click this button to start creating a new proposal.
 
 .. figure:: /images/addProposalBtn.png
-   :width: 90%
+   :width: 20%
+   :alt: Add proposal button
 
 - Filter by Status: Use the dropdown menu to filter proposals by their current status.
 
 .. figure:: /images/landingPageFilter.png
-   :width: 90%
+   :width: 20%
+   :alt: Page filter
 
 - Search bar : Search for specific proposals by title.
 
 .. figure:: /images/landingPageSearch.png
-   :width: 90%
+   :width: 20%
+   :alt: Page search filter
 
 - Proposal Table : This table lists your proposals with the following information
   - Proposal ID : Unique identifier for each proposal.
@@ -35,7 +39,8 @@ Layout and Navigation
   - Perform various actions on individual proposals (See below).
 
   .. figure:: /images/landingPageIcons.png
-   :width: 90%
+   :width: 20%
+   :alt: Landing page icons
 
 Table Actions
 =============
@@ -65,7 +70,8 @@ Additional Notes
 - The SKAO logo when clicked, opens a new browser window with the SKAO website
 
 .. figure:: /images/skaoBtn.png
-   :width: 90%
+   :width: 20%
+   :alt: SKAO button
 
 - The page supports both light and dark mode with a Sun/Moon icon on the top right corner of the page.
 
@@ -78,14 +84,18 @@ Additional Notes
     "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
     "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
 
-.. figure:: /images/landingPageLight.png
-   :width: 20%
+.. figure:: /images/sunMoonBtn.png
+   :width: 10%
+   :alt: light/dark Button
 
 .. figure:: /images/landingPageLight.png
-   :width: 70%
+   :width: 40%
+   :alt: screen in light mode
 
-   .. figure:: /images/landingPagePark.png
-   :width: 90%
+   .. figure:: /images/landingPageDark.png
+   :width: 40%
+   :align: right
+   :alt: screen in dark mode
 
 Next Steps
 ==========
