@@ -19,6 +19,7 @@ export const helpers = {
         if(text.includes("*")){
           console.log("No good")
           setErrorText(ERROR_TEXT);
+          return false;
         }else {
           console.log("All good")
         }
