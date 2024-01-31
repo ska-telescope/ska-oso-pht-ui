@@ -38,3 +38,6 @@ package-lock.json
 
 PrivateRules.mak
 node_modules
+
+charts/*/Chart.lock
+charts/*/charts

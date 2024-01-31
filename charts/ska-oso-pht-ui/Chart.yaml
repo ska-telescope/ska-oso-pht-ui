@@ -3,6 +3,6 @@ name: ska-oso-pht-ui
 description: A Helm chart to deploy the OSO Proposal Handling Tool UI on Kubernetes
 type: application
 home: https://gitlab.com/ska-telescope/oso/ska-oso-pht
-appVersion: 0.0.0
-version: 0.0.0
+appVersion: 0.0.1
+version: 0.0.1
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
