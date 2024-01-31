@@ -9,4 +9,4 @@ This can be set to "continuum" or "line" and will return slightly different resu
 
 On Continuum Mode, There is 1 call made to "weighting line mode", and 1 call to weighting continuum mode.
 
-On Zoom Mode, There is 2 identic calls made to "weighting line mode", returning the same data.
+On Zoom Mode, There are 2 identic calls made to "weighting line mode", returning the same data.
