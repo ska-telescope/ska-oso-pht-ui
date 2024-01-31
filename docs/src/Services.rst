@@ -17,8 +17,6 @@ Allows for text to be displayed in the language of the browser, with English as 
 
 axios
 =====
-
-There is the option to turn on/off the API call with REACT_APP_USE_LOCAL_DATA.
  
 .. csv-table:: Properties
    :header: "Endpoint", "Type", "LocalData", "Parameters", "Purpose",
@@ -29,3 +27,6 @@ There is the option to turn on/off the API call with REACT_APP_USE_LOCAL_DATA.
     "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
     "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
 
+.. admonition:: REACT_APP_USE_LOCAL_DATA note
+    
+    This is an option to turn on/off the API call and instead use mocked data.
