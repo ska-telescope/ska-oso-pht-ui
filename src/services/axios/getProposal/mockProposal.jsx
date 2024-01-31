@@ -86,7 +86,8 @@ const MockProposal = {
   ],
   targetObservation: [
     { targetId: 1, observationId: 1 },
-    { targetId: 3, observationId: 2 }
+    { targetId: 3, observationId: 2 },
+    { targetId: 3, observationId: 1 }
   ],
   technicalPDF: null,
   technicalLoadStatus: false,

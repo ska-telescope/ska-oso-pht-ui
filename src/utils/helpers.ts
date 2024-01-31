@@ -26,15 +26,39 @@ export const helpers = {
   },
 
   transform: {
+    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) request and POST/PROPOSAL/REQUEST (submit button) */
+    // TODO: handle save/submit scenarios differences
     convertProposalToBackendFormat(mockProposal) {
+
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
 
+      const targetObservationsByObservation = mockProposal.targetObservation.reduce((acc, to) => {
+        if (!acc[to.observationId]) {
+          acc[to.observationId] = [];
+        }
+        acc[to.observationId].push(to.targetId.toString());
+        return acc;
+      }, {});
+
+      const scienceProgrammes = mockProposal.observations.map(observation => {
+        const targetIds = targetObservationsByObservation[observation.id] || [];
+        const targets = mockProposal.targets.filter(target => targetIds.includes(target.id.toString()));
+        const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1); // TODO: check why array 0-1 in data but 1-2 in CONST
+        return {
+          science_goal_id: observation.id.toString(), // TODO: check what to map science_goal_id to?
+          array: array?.label,
+          subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // TODO: check why subArray 0-10 in data but 1-10 in CONST
+          linked_sources: targets.map(target => target.name),
+          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
+        };
+      });
+
       const transformedProposal = {
         prsl_id: mockProposal.id.toString(),
-        status: 'draft',
-        submitted_by: '',
-        submitted_on: '',
+        status: 'draft', // TODO: draft status for save: what's the status when click on submit?
+        submitted_by: '', // TODO: fill when clicking on submit
+        submitted_on: '', // TODO: fill when clicking on submit
         proposal_info: {
           title: mockProposal.title,
           cycle: mockProposal.cycle,
@@ -49,9 +73,9 @@ export const helpers = {
             right_ascension: target.ra,
             declination: target.dec,
             velocity: parseFloat(target.vel),
-            velocity_unit: 'km/s', // TODO: confirm what units should be expected
-            right_ascension_unit: target.ra.includes(':') ? 'hh:mm:ss' : 'degrees', // TODO: confirm what units should be expected
-            declination_unit: 'dd:mm:ss' // TODO: confirm what units should be expected
+            velocity_unit: '', // TODO: confirm what units should be expected
+            right_ascension_unit: '', // TODO: confirm what units should be expected
+            declination_unit: '' // TODO: confirm what units should be expected
           })),
           investigator: mockProposal.team.map(teamMember => ({
             investigator_id: teamMember.id.toString(),
@@ -63,26 +87,7 @@ export const helpers = {
             for_phd: teamMember.phdThesis,
             principal_investigator: teamMember.pi
           })),
-          science_programmes: mockProposal.observations.map(observation => {
-            // TODO: confirm linked obesrvations format for the backend
-            const targetObservation = mockProposal.targetObservation.find(
-              to => to.observationId === observation.id
-            );
-            const target = mockProposal.targets.find(
-              foundTarget => foundTarget.id === (targetObservation || {}).targetId
-            );
-            const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1); // **
-            const linkedSources = [];
-            return {
-              // TODO: map arrays and subarrays properly
-              science_goal_id: observation.id.toString(), // what's science goal? Is it different than science category?
-              array: array?.label, // MID or LOW - ? why is it 0 and 1 in mock proposal but OBSERVATION.array I see 1 and 2?
-              subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // same with sub-array see id 0 to 3 in mock but OBS.array 1-20
-              // linked_sources: (target || {}).name ? [target.name] : [],
-              // linked_sources: target? linkedSources.push(target?.name): linkedSources,
-              observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
-            };
-          })
+          science_programmes: scienceProgrammes
         }
       };
       return transformedProposal;
