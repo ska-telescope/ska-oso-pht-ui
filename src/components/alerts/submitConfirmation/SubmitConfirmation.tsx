@@ -6,7 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
 import { Proposal } from '../../../services/types/proposal';
-import { GENERAL, OBSERVATION, PAGES, Projects } from '../../../utils/constants';
+import { GENERAL, OBSERVATION, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
@@ -29,7 +29,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
   const getProposal = () => {
     const p = application.content2 as Proposal;
     return p;
-  }
+  };
 
   const handleConfirm = () => {
     onConfirm();
@@ -67,7 +67,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
   const pageTitle = (title: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item>
-        <Typography variant="h4">{`${title  } ${  GENERAL.Cycle}`}</Typography>
+        <Typography variant="h4">{`${title} ${GENERAL.Cycle}`}</Typography>
       </Grid>
     </Grid>
   );
@@ -128,7 +128,11 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           {getProposal().team.map((rec: TeamMember) => (
             <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>{`${rec.firstName  } ${  rec.lastName}`}</Typography>
+                <Typography
+                  variant={CONTENT_STYLE}
+                >
+                  {`${rec.firstName} ${rec.lastName}`}
+                </Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>{rec.email}</Typography>
@@ -172,7 +176,9 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           <Typography variant={LABEL_STYLE}>File name</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().sciencePDF as unknown as string}</Typography>
+          <Typography variant={CONTENT_STYLE}>
+            {(getProposal().sciencePDF as unknown) as string}
+          </Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -225,7 +231,9 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
                 <Typography variant={CONTENT_STYLE}>{telescope(rec.telescope)}</Typography>
               </Grid>
               <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>{subarray(rec.telescope, rec.subarray)}</Typography>
+                <Typography variant={CONTENT_STYLE}>
+                  {subarray(rec.telescope, rec.subarray)}
+                </Typography>
               </Grid>
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{observationType(rec.type)}</Typography>
@@ -244,16 +252,18 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           <Typography variant={LABEL_STYLE}>Target Selections</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation.map((rec: {targetId: number, observationId: number}) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
+          {getProposal().targetObservation.map(
+            (rec: { targetId: number; observationId: number }) => (
+              <Grid container direction="row" justifyContent="space-between" alignItems="center">
+                <Grid item xs={2}>
+                  <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant={CONTENT_STYLE}>{rec.observationId}</Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.observationId}</Typography>
-              </Grid>
-            </Grid>
-          ))}
+            )
+          )}
         </Grid>
       </Grid>
     </Grid>
@@ -266,7 +276,9 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           <Typography variant={LABEL_STYLE}>File name</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().technicalPDF as unknown as string}</Typography>
+          <Typography variant={CONTENT_STYLE}>
+            {(getProposal().technicalPDF as unknown) as string}
+          </Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -324,9 +336,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           {dataContent()}
         </Grid>
       </DialogContent>
-      <DialogActions>
-        {pageFooter()}
-      </DialogActions>
+      <DialogActions>{pageFooter()}</DialogActions>
     </Dialog>
   );
 }

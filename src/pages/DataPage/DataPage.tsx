@@ -13,7 +13,12 @@ export const HELP_PIPELINE = ['PIPELINE TITLE', 'PIPELINE DESCRIPTION', ''];
 const PAGE = 7;
 
 export default function DataPage() {
-  const { application, helpComponent, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const {
+    application,
+    helpComponent,
+    updateAppContent1,
+    updateAppContent2
+  } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
