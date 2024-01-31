@@ -128,9 +128,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           {getProposal().team.map((rec: TeamMember) => (
             <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={4}>
-                <Typography
-                  variant={CONTENT_STYLE}
-                >
+                <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}
                 </Typography>
               </Grid>
