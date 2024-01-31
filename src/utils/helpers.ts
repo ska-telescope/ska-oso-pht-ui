@@ -26,8 +26,13 @@ export const helpers = {
   },
 
   transform: {
-    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) request and PUT/PROPOSAL/ (submit button) */
-    // TODO: handle save/submit scenarios differences => what about Create button? (POST/PROPOSAL)
+    /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
+    // TODO: handle save/submit/create scenarios differences
+    /*
+    CREATE = proposal with no observations, etc. TODO: handle scenarios without these bits
+    SAVE = proposal with or without observations, etc. STATUS: draft
+    SUBMIT = STATUS: submitted
+    */
     convertProposalToBackendFormat(mockProposal) {
 
       const project = Projects.find(p => p.id === mockProposal.proposalType);
@@ -44,10 +49,10 @@ export const helpers = {
       const scienceProgrammes = mockProposal.observations.map(observation => {
         const targetIds = targetObservationsByObservation[observation.id] || [];
         const targets = mockProposal.targets.filter(target => targetIds.includes(target.id.toString()));
-        const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1); // TODO: check why array 0-1 in data but 1-2 in CONST
+        const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1);
         return {
           array: array?.label,
-          subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // TODO: check why subArray 0-10 in data but 1-10 in CONST
+          subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label,
           linked_sources: targets.map(target => target.name),
           observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
         };
@@ -55,7 +60,7 @@ export const helpers = {
 
       const transformedProposal = {
         prsl_id: mockProposal.id.toString(),
-        status: 'draft', // TODO: draft status for save: what's the status when click on submit?
+        status: 'draft', // TODO: draft status for save: change status to submitted when clicking on "submit" button
         submitted_by: '', // TODO: fill when clicking on submit
         submitted_on: '', // TODO: fill when clicking on submit
         proposal_info: {
