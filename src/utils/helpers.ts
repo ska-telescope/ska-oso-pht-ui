@@ -46,7 +46,6 @@ export const helpers = {
         const targets = mockProposal.targets.filter(target => targetIds.includes(target.id.toString()));
         const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1); // TODO: check why array 0-1 in data but 1-2 in CONST
         return {
-          science_goal_id: observation.id.toString(), // TODO: check what to map science_goal_id to?
           array: array?.label,
           subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label, // TODO: check why subArray 0-10 in data but 1-10 in CONST
           linked_sources: targets.map(target => target.name),
