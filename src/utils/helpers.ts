@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, TEAM_STATUS_TYPE_OPTIONS, DEFAULT_PI } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
 const specialChars = /[!*+[\]]/
 
@@ -70,7 +70,7 @@ export const helpers = {
           DEFAULT_PI
         ]
       } else if (mockProposal.team?.length === 0) {
-        mockProposal.team.push(DEFAULT_PI); 
+        mockProposal.team.push(DEFAULT_PI);
       }
 
       const targetObservationsByObservation = mockProposal.targetObservation?.reduce((acc, to) => {
