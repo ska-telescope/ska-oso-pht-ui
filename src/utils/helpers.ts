@@ -46,7 +46,7 @@ export const helpers = {
     SAVE = proposal with or without observations, etc. STATUS: draft
     SUBMIT = STATUS: submitted
     */
-    convertProposalToBackendFormat(mockProposal) {
+    convertProposalToBackendFormat(mockProposal, status) {
 
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
@@ -83,9 +83,9 @@ export const helpers = {
 
       const transformedProposal = {
         prsl_id: mockProposal?.id.toString(),
-        status: 'draft', // TODO: draft status for save: change status to submitted when clicking on "submit" button
-        submitted_by: '', // TODO: fill when clicking on submit
-        submitted_on: '', // TODO: fill when clicking on submit
+        status,
+        submitted_by: status === 'Submitted' ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
+        submitted_on: status === 'Submitted' ? new Date().toISOString() : '',
         proposal_info: {
           title: mockProposal?.title,
           cycle: mockProposal?.cycle,

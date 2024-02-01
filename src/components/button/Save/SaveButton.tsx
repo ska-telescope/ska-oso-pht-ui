@@ -4,11 +4,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import { Proposal } from '../../../services/types/proposal';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import NewMockProposal from '../../../services/axios/getProposal/newMockProposal';
 
 export default function SaveButton({ onClick }) {
   const ClickFunction = async () => {
-    const response = await PutProposal((NewMockProposal as unknown) as Proposal);
+    const response = await PutProposal((MockProposal as unknown) as Proposal, 'Draft');
     onClick(response);
   };
 
