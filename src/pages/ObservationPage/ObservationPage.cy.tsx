@@ -30,12 +30,11 @@ describe('<ObservationContent />', () => {
     cy.get('[data-testid="Add observationButton"]').click();
     cy.get('[data-testid="observationDetails"]').should('contain', 'Telescope');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Subarray');
-    cy.get('[data-testid="observationDetails"]').should('contain', 'Linked Targets');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Type');
+    cy.get('[data-testid="observationDetails"]').should('contain', 'Actions');
 
     cy.get('[data-testid="observationDetails"]').should('contain', 'MID');
     cy.get('[data-testid="observationDetails"]').should('contain', 'subarray');
-    cy.get('[data-testid="observationDetails"]').should('contain', '4');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Continuum');
 
     cy.get('[data-testid="linkedTargetDetails"]').should('contain', 'Name');

@@ -50,13 +50,13 @@ export default function TargetPage() {
     let count = 0;
     switch (getProposal().targetOption) {
       case 1: {
-        count = 2;
+        count = 1;
+        count += getProposal().targets.length ? 1 : 0;
         setTheProposalState(result[count]);
         return;
       }
       case 2: {
-        count = 1;
-        count += getProposal().targets.length ? 1 : 0;
+        count = 2;
         setTheProposalState(result[count]);
         return;
       }

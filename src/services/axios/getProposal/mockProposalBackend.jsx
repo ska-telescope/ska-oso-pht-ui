@@ -51,14 +51,12 @@ const MockProposalBackend = {
     ],
     science_programmes: [
       {
-        science_goal_id: 'goal1',
         array: 'MID',
         subarray: 'subarray 1',
         linked_sources: ['M1', 'M2'],
         observation_type: 'Continuum'
       },
       {
-        science_goal_id: 'goal2',
         array: 'MID',
         subarray: 'subarray 1',
         linked_sources: ['M1', 'M2'],

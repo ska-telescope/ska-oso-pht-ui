@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid } from '@ska-telescope/ska-gui-components';
+import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
@@ -125,7 +125,12 @@ export default function TeamPage() {
               />
             )}
             {getRows().length === 0 && (
-              <Typography>THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL</Typography>
+              <InfoCard
+                color={InfoCardColorTypes.Error}
+                fontSize={20}
+                message="THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
+                testId="helpPanelId"
+              />
             )}
           </Grid>
           <Grid item md={6} xs={11}>

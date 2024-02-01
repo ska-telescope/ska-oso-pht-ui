@@ -6,6 +6,8 @@ This project is is based upon the ska-react-webapp-skeleton, which is intended a
 The skeleton includes tools for linting, code formatting, and testing which are easily integrated into various IDEs.
 It also includes modular federation, exposing the ReactSkeleton component, which can be imported into other applications.
 
+For the latest information on the application, please refer to the User Guide
+
 IDE Integration
 ===============
 

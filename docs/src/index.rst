@@ -22,7 +22,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    :maxdepth: 2
    :caption: User Guide :
 
-   UserOverview
+   UserIntroduction
    LandingPage
    TitlePage
    TeamPage

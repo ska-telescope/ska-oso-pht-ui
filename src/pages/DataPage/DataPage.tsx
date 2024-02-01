@@ -13,11 +13,16 @@ export const HELP_PIPELINE = ['PIPELINE TITLE', 'PIPELINE DESCRIPTION', ''];
 const PAGE = 7;
 
 export default function DataPage() {
-  const { application, helpComponent, updateAppContent1 } = storageObject.useStore();
+  const {
+    application,
+    helpComponent,
+    updateAppContent1,
+    updateAppContent2
+  } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [pipeline, setPipeline] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -35,11 +40,11 @@ export default function DataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [pipeline, getProposal()]);
+  }, [getProposal()]);
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = pipeline.length > 0 ? 1 : 0;
+    const count = getProposal().pipeline.length > 0 ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
@@ -52,8 +57,8 @@ export default function DataPage() {
         <TextEntry
           label=""
           testId="pipelineId"
-          value={pipeline}
-          setValue={setPipeline}
+          value={getProposal().pipeline}
+          setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
           onFocus={() => helpComponent(HELP_PIPELINE)}
           helperText="Please enter your pipeline information"
         />
