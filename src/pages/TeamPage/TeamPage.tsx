@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -21,6 +22,7 @@ export function PIStar({ pi }) {
 }
 
 export default function TeamPage() {
+  const { t } = useTranslation('pht');
   const { application, updateAppContent1 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -59,12 +61,12 @@ export default function TeamPage() {
   };
 
   const columns = [
-    { field: 'lastName', headerName: 'Last Name', flex: 1 },
-    { field: 'firstName', headerName: 'First Name', flex: 1 },
-    { field: 'status', headerName: 'Status', flex: 1 },
+    { field: 'lastName', headerName: t('label.lastName'), flex: 1 },
+    { field: 'firstName', headerName: t('label.firstName'), flex: 1 },
+    { field: 'status', headerName: t('column.status'), flex: 1 },
     {
       field: 'phdThesis',
-      headerName: 'PhD Thesis',
+      headerName: t('label.phdThesis'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (params: { row: { pi: boolean } }) => (
@@ -73,15 +75,15 @@ export default function TeamPage() {
     },
     {
       field: 'pi',
-      headerName: 'PI',
+      headerName: t('column.pi'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
     },
     {
-      field: 'Actions',
-      headerName: 'Actions',
+      field: 'id',
+      headerName: t('column.actions'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -128,7 +130,7 @@ export default function TeamPage() {
               <InfoCard
                 color={InfoCardColorTypes.Error}
                 fontSize={20}
-                message="THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
+                message={t('error.noTeamMembers')}
                 testId="helpPanelId"
               />
             )}
@@ -144,18 +146,18 @@ export default function TeamPage() {
                   aria-label="basic tabs example"
                 >
                   <Tab
-                    label="Invite Team Member"
+                    label={t('label.inviteTeamMember')}
                     {...a11yProps(0)}
                     sx={{ border: '1px solid grey' }}
                   />
                   <Tab
-                    label="Import From File"
+                    label={t('label.importFromFile')}
                     {...a11yProps(1)}
                     sx={{ border: '1px solid grey' }}
                     disabled
                   />
                   <Tab
-                    label="Search For Member"
+                    label={t('label.searchForMember')}
                     {...a11yProps(2)}
                     sx={{ border: '1px solid grey' }}
                     disabled

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { PAGES } from '../../../utils/constants';
+import { NAV } from '../../../utils/constants';
 
 interface PreviousPageProps {
   label?: string;
@@ -13,7 +13,7 @@ interface PreviousPageProps {
 
 export default function PreviousPageButton({ label = '', page = 0, func }: PreviousPageProps) {
   const ClickFunction = () => {
-    func(page === 0 ? PAGES.length - 1 : page - 1);
+    func(page === 0 ? NAV.length - 1 : page - 1);
   };
 
   return (

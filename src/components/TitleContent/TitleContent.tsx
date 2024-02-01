@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -15,6 +16,7 @@ interface TitleContentProps {
 }
 
 export default function TitleContent({ page }: TitleContentProps) {
+  const { t } = useTranslation('pht');
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
 
@@ -225,21 +227,14 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              {label('Title')}
+              {label(t('label.title'))}
             </Grid>
             <Grid item xs={4}>
               {titleField()}
             </Grid>
             <Grid item xs={4}>
-              <Typography variant="body2">
-                This title should be used to allow for the
-                <br />
-                {' '}
-                identification of this proposal in a list of proposals
-              </Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                Special characters !*+[] not allowed
-              </Typography>
+              <Typography variant="body2">{t('help.title')}</Typography>
+              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>{t('help.specialCharacters')}</Typography>
             </Grid>
           </Grid>
 
@@ -253,21 +248,12 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="h6">Proposal Type</Typography>
+              <Typography variant="h6">{t('label.proposalType')}</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography variant="body2">
-                Below are the available Proposal Types that can be used as a basis for a new
-                proposal.
-              </Typography>
-              <Typography variant="body2">
-                A description of the different types is provided as an aid as to the correct type to
-                be selected to allow the proposal to be completed as required
-              </Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                It is possible to be able to change this at a later date, however be aware that this
-                may cause information already entered to be lost.
-              </Typography>
+              <Typography variant="body2">{t('help.proposalType1')}</Typography>
+              <Typography variant="body2">{t('help.proposalType2')}</Typography>
+              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>{t('help.proposalType3')}</Typography>
             </Grid>
           </Grid>
 

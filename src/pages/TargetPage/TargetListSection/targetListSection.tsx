@@ -3,6 +3,7 @@
 /* eslint-disable react/no-array-index-key */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid } from '@ska-telescope/ska-gui-components';
@@ -13,6 +14,7 @@ import AddTarget from './AddTarget/AddTarget';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 
 export default function TargetListSection() {
+  const { t } = useTranslation('pht');
   const { application } = storageObject.useStore();
 
   const deleteIconClicked = () => {
@@ -76,15 +78,19 @@ export default function TargetListSection() {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab label="Add Target" {...a11yProps(0)} sx={{ border: '1px solid grey' }} />
+              <Tab 
+                label={t('label.addTarget')} 
+                {...a11yProps(0)} 
+                sx={{ border: '1px solid grey' }} 
+              />
               <Tab
-                label="Import From File"
+                label={t('label.importFromFile')}
                 {...a11yProps(1)}
                 sx={{ border: '1px solid grey' }}
                 disabled
               />
               <Tab
-                label="Spatial Imaging"
+                label={t('label.spatialImaging')}
                 {...a11yProps(2)}
                 sx={{ border: '1px solid grey' }}
                 disabled

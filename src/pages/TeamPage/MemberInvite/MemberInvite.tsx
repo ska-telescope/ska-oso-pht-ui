@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
@@ -9,13 +10,9 @@ import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
 
-export const HELP_FIRST_NAME = ['Help first name', 'Field sensitive help', ''];
-export const HELP_LAST_NAME = ['Help last name', 'Field sensitive help', ''];
-export const HELP_EMAIL = ['Help email', 'Field sensitive help', ''];
-export const HELP_PHD = ['Help PhD', 'Field sensitive help', ''];
-export const HELP_PI = ['Help PI', 'PI HELP', ''];
-
 export default function MemberInvite() {
+  const { t } = useTranslation('pht');
+
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
@@ -84,7 +81,7 @@ export default function MemberInvite() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(HELP_FIRST_NAME);
+    helpComponent(t('help.firstName'));
   }, []);
 
   React.useEffect(() => {
@@ -165,43 +162,43 @@ export default function MemberInvite() {
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item xs={5}>
           <TextEntry
-            label="First Name"
+            label={t('label.firstName')}
             testId="firstName"
             value={firstName}
             setValue={setFirstName}
-            onFocus={() => helpComponent(HELP_FIRST_NAME)}
+            onFocus={() => helpComponent(t('help.firstName'))}
             disabled={false}
             errorText={errorTextFirstName}
           />
           <TextEntry
-            label="Last Name"
+            label={t('label.lastName')}
             testId="lastName"
             value={lastName}
             setValue={setLastName}
-            onFocus={() => helpComponent(HELP_LAST_NAME)}
+            onFocus={() => helpComponent(t('help.lastName'))}
             errorText={errorTextLastName}
           />
           <TextEntry
-            label="Email"
+            label={t('label.email')}
             testId="email"
             value={email}
             setValue={setEmail}
             errorText={errorTextEmail}
-            onFocus={() => helpComponent(HELP_EMAIL)}
+            onFocus={() => helpComponent(t('help.email'))}
           />
           <TickBox
-            label="Primary Investigator"
+            label={t('label.pi')}
             testId="piCheckbox"
             checked={pi}
             onChange={handleCheckboxChangePI}
-            onFocus={() => helpComponent(HELP_PI)}
+            onFocus={() => helpComponent(t('help.pi'))}
           />
           <TickBox
-            label="PhD Thesis"
+            label={t('label.phdThesis')}
             testId="PhDCheckbox"
             checked={phdThesis}
             onChange={handleCheckboxChangePhD}
-            onFocus={() => helpComponent(HELP_PHD)}
+            onFocus={() => helpComponent(t('help.phdThesis'))}
           />
         </Grid>
         <Grid item xs={5}>

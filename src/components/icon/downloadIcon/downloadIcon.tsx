@@ -4,7 +4,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { DownloadRounded } from '@mui/icons-material';
 
 interface DownloadIconProps {
-  disabled: boolean;
+  disabled?: boolean;
   onClick: Function;
   selected?: boolean;
   toolTip: string;

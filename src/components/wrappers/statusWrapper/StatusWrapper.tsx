@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { NAV, PAGES } from '../../../utils/constants';
+import { NAV } from '../../../utils/constants';
 
 interface StatusWrapperProps {
   level?: number;
@@ -10,6 +11,7 @@ interface StatusWrapperProps {
 }
 
 export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
+  const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const SIZE = 35;
 
@@ -28,7 +30,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       onClick={ClickFunction}
     >
       <StatusIcon testId="statusId" icon level={getLevel()} size={SIZE} />
-      <Typography variant="caption">{PAGES[page]}</Typography>
+      <Typography variant="caption">{t(`page.${  page  }.title`)}</Typography>
     </Grid>
   );
 }

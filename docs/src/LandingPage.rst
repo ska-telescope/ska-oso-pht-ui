@@ -46,7 +46,7 @@ Table Actions
 =============
 
 .. csv-table:: Properties
-   :header: "Icon", "Active Status", "Purpose",
+   :header: "Icon", "Active Status", "Purpose"
 
     "View", "Submitted , Accepted, Withdrawn" "View the selected proposal only"
     "Edit", "Draft", "View and edit the selected proposal"
@@ -75,24 +75,16 @@ Additional Notes
 
 - The page supports both light and dark mode with a Sun/Moon icon on the top right corner of the page.
 
-.. csv-table:: Properties
-   :header: "Icon", "Image",
-
-    "Proposal/list", "GET", "MockProposals", "current user" "A list of proposals that the user is involved with is obtained from the API"
-    "Proposal", "GET", "MockProposal", "proposal Id", "Complete details of a single proposal is obtained from the API"
-    "Proposal", "PUT", "", "", "Complete details of a proposal are sent to the API for storage"
-    "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
-    "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
-
 .. figure:: /images/sunMoonBtn.png
-   :width: 10%
+   :width: 5%
    :alt: light/dark Button
 
 .. figure:: /images/landingPageLight.png
    :width: 40%
+   :align: left
    :alt: screen in light mode
 
-   .. figure:: /images/landingPageDark.png
+.. figure:: /images/landingPageDark.png
    :width: 40%
    :align: right
    :alt: screen in dark mode

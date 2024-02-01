@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import HomeButton from '../../button/Home/HomeButton';
@@ -7,7 +8,7 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import { LAST_PAGE, PAGES } from '../../../utils/constants';
+import { LAST_PAGE } from '../../../utils/constants';
 import SubmitConfirmation from '../../alerts/submitConfirmation/SubmitConfirmation';
 
 interface PageBannerProps {
@@ -15,6 +16,8 @@ interface PageBannerProps {
 }
 
 export default function PageBanner({ pageNo }: PageBannerProps) {
+  const { t } = useTranslation('pht');
+
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
@@ -119,7 +122,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
         ) : null}
         <Grid item xs={2}>
           <Typography variant="h6" m={2}>
-            {PAGES[pageNo].toUpperCase()}
+            {t(`page.${  pageNo  }.title`).toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={8}>
