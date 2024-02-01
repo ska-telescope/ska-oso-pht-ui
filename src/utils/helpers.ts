@@ -1,5 +1,7 @@
 import { TEXT_ENTRY_PARAMS, Projects } from './constants';
 
+const specialChars = /[!*+[\]]/
+
 export const helpers = {
   validate: {
     validateTextEntry(
@@ -16,7 +18,7 @@ export const helpers = {
       }
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
-        if(text.includes("*")){
+        if(specialChars.test(text)){
           setText(text);
           setErrorText(ERROR_TEXT);
           return false;
