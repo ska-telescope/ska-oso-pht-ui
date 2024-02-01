@@ -626,6 +626,9 @@ export default function AddObservation() {
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeighting === 2 && robustField()}
                 </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  TEST
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
