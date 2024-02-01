@@ -36,7 +36,7 @@ export default function DataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t("help.pipeline"));
+    helpComponent(t('help.pipeline'));
   }, []);
 
   React.useEffect(() => {

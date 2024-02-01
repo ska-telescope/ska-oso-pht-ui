@@ -121,7 +121,7 @@ export default function AddTarget() {
             onFocus={() => helpComponent(t('help.declination'))}
           />
           <TextEntry
-            label={t("label.velocity")}
+            label={t('label.velocity')}
             testId="vel"
             value={vel}
             setValue={setVel}

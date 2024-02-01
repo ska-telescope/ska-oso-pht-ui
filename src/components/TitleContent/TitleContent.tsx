@@ -196,8 +196,7 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
-    const helperFunction = (title:string) =>
-      `character count ${  title?.length  }/${  MAX_CHAR}`;
+    const helperFunction = (title: string) => `character count ${title?.length}/${MAX_CHAR}`;
 
     return (
       <TextEntry
@@ -234,7 +233,9 @@ export default function TitleContent({ page }: TitleContentProps) {
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body2">{t('help.title')}</Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>{t('help.specialCharacters')}</Typography>
+              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
+                {t('help.specialCharacters')}
+              </Typography>
             </Grid>
           </Grid>
 
@@ -253,7 +254,9 @@ export default function TitleContent({ page }: TitleContentProps) {
             <Grid item xs={8}>
               <Typography variant="body2">{t('help.proposalType1')}</Typography>
               <Typography variant="body2">{t('help.proposalType2')}</Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>{t('help.proposalType3')}</Typography>
+              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
+                {t('help.proposalType3')}
+              </Typography>
             </Grid>
           </Grid>
 

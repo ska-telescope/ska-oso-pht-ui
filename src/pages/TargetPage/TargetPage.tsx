@@ -85,9 +85,9 @@ export default function TargetPage() {
         >
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
-              <Tooltip title={t(`tooltip.${  TITLE[occ]}`)} arrow>
+              <Tooltip title={t(`tooltip.${TITLE[occ]}`)} arrow>
                 <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
-                  {t(`label.${  TITLE[occ]}`)}
+                  {t(`label.${TITLE[occ]}`)}
                 </Typography>
               </Tooltip>
             </CardContent>

@@ -60,7 +60,9 @@ export default function TechnicalPage() {
         justifyContent="flex-start"
       >
         <Grid item xs={2}>
-          <Typography variant="body2" data-testid="uploadPdfLabel">{t('label.uploadPDF')}</Typography>
+          <Typography variant="body2" data-testid="uploadPdfLabel">
+            {t('label.uploadPDF')}
+          </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
             direction="column"
@@ -74,7 +76,9 @@ export default function TechnicalPage() {
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
             <CardHeader
               title={(
-                <Typography variant="h6" data-testid="pdfPreviewLabel">{t('label.pdfPreview')}</Typography>
+                <Typography variant="h6" data-testid="pdfPreviewLabel">
+                  {t('label.pdfPreview')}
+                </Typography>
               )}
             />
             <CardContent sx={{ height: '55vh' }}>

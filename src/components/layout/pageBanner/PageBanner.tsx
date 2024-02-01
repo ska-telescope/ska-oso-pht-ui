@@ -122,7 +122,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
         ) : null}
         <Grid item xs={2}>
           <Typography variant="h6" m={2}>
-            {t(`page.${  pageNo  }.title`).toUpperCase()}
+            {t(`page.${pageNo}.title`).toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={8}>

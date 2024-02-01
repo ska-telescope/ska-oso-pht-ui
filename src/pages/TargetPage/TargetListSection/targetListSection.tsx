@@ -78,10 +78,10 @@ export default function TargetListSection() {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab 
-                label={t('label.addTarget')} 
-                {...a11yProps(0)} 
-                sx={{ border: '1px solid grey' }} 
+              <Tab
+                label={t('label.addTarget')}
+                {...a11yProps(0)}
+                sx={{ border: '1px solid grey' }}
               />
               <Tab
                 label={t('label.importFromFile')}

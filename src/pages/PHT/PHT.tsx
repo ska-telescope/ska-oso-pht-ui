@@ -130,9 +130,17 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: (e: never) => (
         <>
-          {!canEdit(e) && <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />}
-          {canEdit(e) && <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />}
-          <CloneIcon onClick={cloneIconClicked} disabled={!canClone()} toolTip={t('icon.tooltip.cloneProposal')} />
+          {!canEdit(e) && (
+            <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />
+          )}
+          {canEdit(e) && (
+            <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />
+          )}
+          <CloneIcon
+            onClick={cloneIconClicked}
+            disabled={!canClone()}
+            toolTip={t('icon.tooltip.cloneProposal')}
+          />
           <DownloadIcon
             onClick={downloadIconClicked}
             disabled={!canDownload()}
@@ -163,12 +171,11 @@ export default function PHT() {
 
   return (
     <>
-      { axiosViewError ? (
+      {axiosViewError ? (
         <Alert testId="alertErrorId" color={axiosViewErrorColor}>
           <Typography>{axiosViewError}</Typography>
         </Alert>
-          )
-      : null }
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{t('page.10.desc')}</Typography>
       </Grid>

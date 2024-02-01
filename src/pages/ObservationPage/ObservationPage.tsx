@@ -82,7 +82,7 @@ export default function ObservationPage() {
   const columns = [
     {
       field: 'telescope',
-      headerName: t("label.telescope"),
+      headerName: t('label.telescope'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
@@ -91,7 +91,7 @@ export default function ObservationPage() {
     },
     {
       field: 'subarray',
-      headerName: t("label.array"),
+      headerName: t('label.array'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => (
@@ -100,7 +100,7 @@ export default function ObservationPage() {
     },
     {
       field: 'type',
-      headerName: t("column.type"),
+      headerName: t('column.type'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
@@ -109,7 +109,7 @@ export default function ObservationPage() {
     },
     {
       field: 'id',
-      headerName: t("column.actions"),
+      headerName: t('column.actions'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -208,7 +208,9 @@ export default function ObservationPage() {
           <Card variant="outlined">
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>
-                <Typography pt={1} variant="h6">{t("label.targetObservation")}</Typography>
+                <Typography pt={1} variant="h6">
+                  {t('label.targetObservation')}
+                </Typography>
               </Grid>
               <Grid item>
                 <TickBox

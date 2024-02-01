@@ -1,6 +1,6 @@
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
-const specialChars = /[!*+[\]]/
+const specialChars = /[!*+[\]]/;
 
 export const helpers = {
   validate: {
@@ -18,14 +18,14 @@ export const helpers = {
       }
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
-        if(specialChars.test(text)){
+        if (specialChars.test(text)) {
           setText(text);
           setErrorText(ERROR_TEXT);
           return false;
         }
-        if(text.length > MAX_LENGTH) {
+        if (text.length > MAX_LENGTH) {
           setText(text);
-          setErrorText("Exceeded expected character count");
+          setErrorText('Exceeded expected character count');
           return false;
         }
         setText(text);
@@ -38,7 +38,6 @@ export const helpers = {
   },
 
   transform: {
-
     // trim undefined and empty properties of an object
     trimObject(obj) {
       Object.keys(obj).forEach(key => {
@@ -59,16 +58,13 @@ export const helpers = {
     SUBMIT = STATUS: submitted
     */
     convertProposalToBackendFormat(mockProposal, status) {
-
       const project = Projects.find(p => p.id === mockProposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
 
       // add a team member as PI if none => this is to ensure we have at least 1 team member/PI upon proposal creation
       // TODO: use logged in user instead of hardcoded team member
       if (!('team' in mockProposal)) {
-        mockProposal.team = [
-          DEFAULT_PI
-        ]
+        mockProposal.team = [DEFAULT_PI];
       } else if (mockProposal.team?.length === 0) {
         mockProposal.team.push(DEFAULT_PI);
       }
@@ -83,20 +79,24 @@ export const helpers = {
 
       const scienceProgrammes = mockProposal.observations?.map(observation => {
         const targetIds = targetObservationsByObservation[observation.id] || [];
-        const targets = mockProposal?.targets?.filter(target => targetIds.includes(target.id.toString()));
+        const targets = mockProposal?.targets?.filter(target =>
+          targetIds.includes(target.id.toString())
+        );
         const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1);
         return {
           array: array?.label,
           subarray: array?.subarray?.find(sa => sa.value === observation.subarray + 1)?.label,
           linked_sources: targets?.map(target => target.name),
-          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
+          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)
+            ?.label
         };
       });
 
       const transformedProposal = {
         prsl_id: mockProposal?.id?.toString(),
         status,
-        submitted_by: status === 'Submitted' ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
+        submitted_by:
+          status === 'Submitted' ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
         submitted_on: status === 'Submitted' ? new Date().toISOString() : '',
         proposal_info: {
           title: mockProposal?.title,
@@ -106,7 +106,9 @@ export const helpers = {
             type: project?.title,
             sub_type: subProject?.title
           },
-          science_category: GENERAL.ScienceCategory?.find(category => category.value === mockProposal?.category)?.label,
+          science_category: GENERAL.ScienceCategory?.find(
+            category => category.value === mockProposal?.category
+          )?.label,
           targets: mockProposal?.targets?.map(target => ({
             name: target?.name,
             right_ascension: target?.ra,

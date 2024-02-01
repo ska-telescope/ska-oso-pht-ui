@@ -5,10 +5,10 @@
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
   "button": {
-    "label":{
-      "addObservation" : "Add observation",
-      "addProposal" : "Add proposal",
-      "addTarget" : "Add target",
+    "label": {
+      "addObservation": "Add observation",
+      "addProposal": "Add proposal",
+      "addTarget": "Add target",
       "cancel": "Cancel",
       "confirm": "Confirm",
       "home": "Home",
@@ -35,7 +35,7 @@
     }
   },
   "help": {
-    "abstract" : "ABSTRACT HELP", 
+    "abstract": "ABSTRACT HELP",
     "arrayConfiguration": "ARRAY CONFIGURATION HELP",
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
@@ -54,28 +54,28 @@
     "observationType": "OBSERVATION TYPE HELP",
     "phdThesis": "PHD THESIS HELP",
     "pi": "PI HELP",
-    "pipeline" : "PIPELINE HELP", 
+    "pipeline": "PIPELINE HELP",
     "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
     "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
     "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
     "rightAscension": "RIGHT ASCENSION HELP",
-    "scienceCategory": "CATEGORY HELP", 
-    "scienceSubCategory": "SUB-CATEGORY HELP", 
+    "scienceCategory": "CATEGORY HELP",
+    "scienceSubCategory": "SUB-CATEGORY HELP",
     "spectralAveraging": "Spectral Averaging HELP",
-    "specialCharacters": "Special characters !*+[] not allowed", 
+    "specialCharacters": "Special characters !*+[] not allowed",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
     "subArrayConfiguration": "SUB-ARRAY CONFIGURATION HELP",
-    "subBands": "SUB-BANDS HELP", 
+    "subBands": "SUB-BANDS HELP",
     "suppliedType": "SUPPLIED TIME HELP",
     "suppliedUnits": "SUPPLIED UNITS HELP",
     "suppliedValue": "SUPPLIED VALUE HELP",
     "tapering": "TAPERING HELP",
-    "title":  "This title should be used to allow for the identification of this proposal in a list of proposals",
+    "title": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "velocity": "VELOCITY HELP",
     "weather": "WEATHER HELP"
   },
   "icon": {
-    "tooltip": { 
+    "tooltip": {
       "cloneProposal": "Clone proposal",
       "downloadProposal": "Download proposal",
       "deleteProposal": "Delete proposal",
@@ -105,7 +105,7 @@
       "desc": ""
     },
     "5": {
-      "title":"Observation",
+      "title": "Observation",
       "desc": ""
     },
     "6": {
@@ -113,7 +113,7 @@
       "desc": ""
     },
     "7": {
-      "title":"Data",
+      "title": "Data",
       "desc": ""
     },
     "8": {
@@ -147,7 +147,7 @@
     "firstName": "First Name",
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
-    "inviteTeamMember" : "Invite Team Member",
+    "inviteTeamMember": "Invite Team Member",
     "lastName": "Last Name",
     "listOfTargets": "List of Targets",
     "noSpecificTarget": "No specific Target",
@@ -175,7 +175,7 @@
     "telescope": "Telescope",
     "title": "Title",
     "uploadPDF": "Upload PDF",
-    "velocity" : "Velocity / Redshift",
+    "velocity": "Velocity / Redshift",
     "weather": "Weather"
   },
   "toolTip": {

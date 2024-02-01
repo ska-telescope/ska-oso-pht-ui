@@ -12,7 +12,7 @@ async function GetProposal(_id: number) {
       'Content-Type': 'application/json'
     }
   };
-  
+
   if (USE_LOCAL_DATA) {
     return MockProposal;
   }

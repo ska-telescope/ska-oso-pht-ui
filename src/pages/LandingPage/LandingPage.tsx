@@ -46,7 +46,7 @@ export default function LandingPage() {
       const response = await GetProposals();
       if (isMounted) {
         if (response && !response.error) {
-          if (response.every((item: { id: number; title: string; }) => item.id && item.title)) {
+          if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
             setAxiosError('');
             setDataProposals(response as Proposal[]);
           } else {
@@ -124,10 +124,17 @@ export default function LandingPage() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          {!canEdit && <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />}
-          {canEdit && <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />}
+          {!canEdit && (
+            <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />
+          )}
+          {canEdit && (
+            <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />
+          )}
           <CloneIcon onClick={cloneIconClicked} toolTip={t('icon.tooltip.cloneProposal')} />
-          <DownloadIcon onClick={downloadIconClicked} toolTip={t('icon.tooltip.downloadProposal')} />
+          <DownloadIcon
+            onClick={downloadIconClicked}
+            toolTip={t('icon.tooltip.downloadProposal')}
+          />
           <TrashIcon onClick={deleteIconClicked} toolTip={t('icon.tooltip.deleteProposal')} />
         </>
       )

@@ -27,10 +27,10 @@ export default function PageFooter({
     if (pageNo === -1) {
       return 'Create';
     }
-    return t(`page.${  pageNo + 1  }.title`);
+    return t(`page.${pageNo + 1}.title`);
   };
 
-  const prevLabel = () => t(`page.${  pageNo - 1  }.title`);
+  const prevLabel = () => t(`page.${pageNo - 1}.title`);
 
   const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
 
