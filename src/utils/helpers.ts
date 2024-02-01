@@ -71,18 +71,18 @@ export const helpers = {
 
       const scienceProgrammes = mockProposal.observations?.map(observation => {
         const targetIds = targetObservationsByObservation[observation.id] || [];
-        const targets = mockProposal.targets.filter(target => targetIds.includes(target.id.toString()));
+        const targets = mockProposal?.targets?.filter(target => targetIds.includes(target.id.toString()));
         const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1);
         return {
           array: array?.label,
-          subarray: array?.subarray.find(sa => sa.value === observation.subarray + 1)?.label,
-          linked_sources: targets.map(target => target.name),
+          subarray: array?.subarray?.find(sa => sa.value === observation.subarray + 1)?.label,
+          linked_sources: targets?.map(target => target.name),
           observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)?.label
         };
       });
 
       const transformedProposal = {
-        prsl_id: mockProposal?.id.toString(),
+        prsl_id: mockProposal?.id?.toString(),
         status,
         submitted_by: status === 'Submitted' ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
         submitted_on: status === 'Submitted' ? new Date().toISOString() : '',
@@ -95,24 +95,24 @@ export const helpers = {
             sub_type: subProject?.title
           },
           science_category: GENERAL.ScienceCategory?.find(category => category.value === mockProposal?.category)?.label,
-          targets: mockProposal.targets?.map(target => ({
-            name: target.name,
-            right_ascension: target.ra,
-            declination: target.dec,
-            velocity: parseFloat(target.vel),
+          targets: mockProposal?.targets?.map(target => ({
+            name: target?.name,
+            right_ascension: target?.ra,
+            declination: target?.dec,
+            velocity: parseFloat(target?.vel),
             velocity_unit: '', // TODO: confirm what units should be expected
             right_ascension_unit: '', // TODO: confirm what units should be expected
             declination_unit: '' // TODO: confirm what units should be expected
           })),
           investigator: mockProposal.team?.map(teamMember => ({
             investigator_id: teamMember.id?.toString(),
-            first_name: teamMember.firstName,
-            last_name: teamMember.lastName,
-            email: teamMember.email,
-            country: teamMember.country,
-            organization: teamMember.affiliation,
-            for_phd: teamMember.phdThesis,
-            principal_investigator: teamMember.pi
+            first_name: teamMember?.firstName,
+            last_name: teamMember?.lastName,
+            email: teamMember?.email,
+            country: teamMember?.country,
+            organization: teamMember?.affiliation,
+            for_phd: teamMember?.phdThesis,
+            principal_investigator: teamMember?.pi
           })),
           science_programmes: scienceProgrammes
         }
