@@ -7,7 +7,7 @@ import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 export default function SaveButton({ onClick }) {
   const ClickFunction = async () => {
-    const response = await PutProposal((MockProposal as unknown) as Proposal);
+    const response = await PutProposal((MockProposal as unknown) as Proposal, 'Draft');
     onClick(response);
   };
 

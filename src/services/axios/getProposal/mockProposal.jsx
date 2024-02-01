@@ -55,8 +55,8 @@ const MockProposal = {
   observations: [
     {
       id: 1,
-      telescope: 0,
-      subarray: 0,
+      telescope: 0, // TODO: change telescope ids from 0,1 to 1,2 to match OBSERVATION.arrays values in constants.js
+      subarray: 0, // TODO: change subbaray ids to start from 1 instead of 0 to match OBSERVATION.arrays subarraysin constants.js
       type: 1
     },
     {
@@ -86,7 +86,8 @@ const MockProposal = {
   ],
   targetObservation: [
     { targetId: 1, observationId: 1 },
-    { targetId: 3, observationId: 2 }
+    { targetId: 3, observationId: 2 },
+    { targetId: 3, observationId: 1 }
   ],
   technicalPDF: null,
   technicalLoadStatus: false,

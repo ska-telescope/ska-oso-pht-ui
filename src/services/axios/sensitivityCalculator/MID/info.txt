@@ -1,0 +1,12 @@
+When clicking on the calculate button in the Sensitivity Calculator, there are 3 API calls made everytime.
+1 to the calculate endpoint and 2 to the weighting endpoint. 
+
+Calculate URL for MID: /ska-ost-senscalc-ui/api/mid/calculate
+Weighting URL for MID: /ska-ost-senscalc-ui/api/mid/weighting 
+
+The Weighting calls has a "calculator_mode parameter". 
+This can be set to "continuum" or "line" and will return slightly different results. The format is identic but the values slightly different.
+
+On Continuum Mode, There is 1 call made to "weighting line mode", and 1 call to weighting continuum mode.
+
+On Zoom Mode, There are 2 identic calls made to "weighting line mode", returning the same data.
