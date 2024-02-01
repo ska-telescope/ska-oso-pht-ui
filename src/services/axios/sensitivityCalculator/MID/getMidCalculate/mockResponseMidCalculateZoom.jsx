@@ -1,20 +1,20 @@
-/*
-Query strings parameters:
-rx_band: Band 1
-ra_str: 00:00:00.0
-dec_str: 00:00:00.0
-array_configuration: AA4
-pwv: 10
-el: 45
-frequency: 797500000
-bandwidth: 210
-zoom_frequencies: 797500000
-zoom_resolutions: 210
-weighting: uniform
-calculator_mode: line
-taper: 0
-integration_time: 600
-*/
+export const MockQuerryMidCalculateZoom =
+{
+    rx_band: 'Band 1',
+    ra_str: '00:00:00.0',
+    dec_str: '00:00:00.0',
+    array_configuration: 'AA4',
+    pwv: '10',
+    el: '45',
+    frequency: '797500000',
+    bandwidth: '210',
+    zoom_frequencies: '797500000',
+    zoom_resolutions: '210',
+    weighting: 'uniform',
+    calculator_mode: 'line',
+    taper: '0',
+    integration_time: '600'
+}
 
 /*
 In the response, I believe that the bit that is useful and used in the sensitivity calculator is the "sensitivity" and "line_sensitivity".
@@ -22,7 +22,7 @@ The sensitivity and line sensitivity are used to do calculations in the front-en
 I don't think that the "state" is used anywhere in the results.
 */
 
-const MockResponseMidCalculateZoom = 
+export const MockResponseMidCalculateZoom = 
 {
     "status": "success",
     "data": {
@@ -96,5 +96,3 @@ const MockResponseMidCalculateZoom =
         ]
     }
 }
-
-export default MockResponseMidCalculateZoom;
