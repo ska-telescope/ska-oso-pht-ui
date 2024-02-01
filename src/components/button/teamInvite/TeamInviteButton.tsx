@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import EmailIcon from '@mui/icons-material/Email';
 
@@ -8,7 +9,9 @@ interface TeamInviteButtonProps {
 }
 
 export default function TeamInviteButton({ disabled, onClick }: TeamInviteButtonProps) {
-  const title = 'Send Invitation';
+  const { t } = useTranslation('pht');
+
+  const title = t('button.label.sendInvite');
 
   return (
     <Button

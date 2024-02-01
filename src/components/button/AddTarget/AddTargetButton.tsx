@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -8,7 +9,9 @@ interface AddTargetButtonProps {
 }
 
 export default function AddTargetButton({ disabled, onClick }: AddTargetButtonProps) {
-  const title = 'Add Target';
+  const { t } = useTranslation('pht');
+
+  const title = t('button.label.addTarget');
 
   return (
     <Button

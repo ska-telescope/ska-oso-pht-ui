@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -26,46 +27,8 @@ const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const PAGE = 9;
 
-export const HELP_ARRAY = ['ARRAY TITLE', 'ARRAY DESCRIPTION', ''];
-export const HELP_SUBARRAY = ['SUBARRAY TITLE', 'SUBARRAY DESCRIPTION', ''];
-export const HELP_TYPE = ['TYPE TITLE', 'TYPE DESCRIPTION', ''];
-export const HELP_BAND = ['BAND TITLE', 'BAND DESCRIPTION', ''];
-export const HELP_ELEVATION = ['ELEVATION TITLE', 'ELEVATION DESCRIPTION', ''];
-export const HELP_WEATHER = ['WEATHER TITLE', 'WEATHER DESCRIPTION', ''];
-export const HELP_FREQUENCY = ['FREQUENCY TITLE', 'FREQUENCY DESCRIPTION', ''];
-export const HELP_EFFECTIVE_RESOLUTION = [
-  'EFFECTIVE RESOLUTION TITLE',
-  'EFFECTIVE RESOLUTION DESCRIPTION',
-  ''
-];
-export const HELP_IMAGE = ['IMAGE TITLE', 'IMAGE DESCRIPTION', ''];
-export const HELP_TAPERING = ['TAPERING TITLE', 'TAPERING DESCRIPTION', ''];
-export const HELP_BANDWIDTH = ['BANDWIDTH TITLE', 'BANDWIDTH DESCRIPTION', ''];
-export const HELP_ROBUST = ['ROBUST TITLE', 'ROBUST DESCRIPTION', ''];
-export const HELP_SPECTRAL_AVERAGING = [
-  'SPECTRAL AVERAGING TITLE',
-  'SPECTRAL AVERAGING DESCRIPTION',
-  ''
-];
-export const HELP_SPECTRAL_RESOLUTION = [
-  'SPECTRAL RESOLUTION TITLE',
-  'SPECTRAL RESOLUTION DESCRIPTION',
-  ''
-];
-export const HELP_SUPPLIED_TYPE = ['SUPPLIED TYPE TITLE', 'SUPPLIED TYPE DESCRIPTION', ''];
-export const HELP_SUPPLIED_VALUE = ['SUPPLIED VALUE TITLE', 'SUPPLIED VALUE DESCRIPTION', ''];
-export const HELP_SUPPLIED_UNITS = ['SUPPLIED UNITS TITLE', 'SUPPLIED UNITS DESCRIPTION', ''];
-export const HELP_SENSE_VALUE = ['SENSE VALUE TITLE', 'SENSE VALUE DESCRIPTION', ''];
-export const HELP_FREQUENCY_UNITS = ['FREQUENCY UNITS TITLE', 'FREQUENCY UNITS DESCRIPTION', ''];
-export const HELP_CONTINUUM_BANDWIDTH = [
-  'CONTINUUM BANDWIDTH TITLE',
-  'CONTINUUM BANDWIDTH DESCRIPTION',
-  ''
-];
-export const HELP_CONTINUUM_UNITS = ['CONTINUUM UNITS TITLE', 'CONTINUUM UNITS DESCRIPTION', ''];
-export const HELP_SUB_BANDS = ['SUB-BANDS TITLE', 'SUB-BANDS DESCRIPTION', 'SUB-BANDS ADDITIONAL'];
-
 export default function AddObservation() {
+  const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
@@ -95,7 +58,7 @@ export default function AddObservation() {
   const [subBands, setSubBands] = React.useState(0);
 
   React.useEffect(() => {
-    helpComponent(HELP_ARRAY);
+    helpComponent(t('help.arrayConfiguration'));
   }, []);
 
   const checkConfiguration = (e: number) => {
@@ -111,8 +74,8 @@ export default function AddObservation() {
       testId="arrayConfig"
       value={arrayConfig}
       setValue={checkConfiguration}
-      label="Array Configuration"
-      onFocus={() => helpComponent(HELP_ARRAY)}
+      label={t('label.arrayConfiguration')}
+      onFocus={() => helpComponent(t('help.arrayConfiguration'))}
     />
   );
 
@@ -131,8 +94,8 @@ export default function AddObservation() {
         testId="subarrayConfig"
         value={subarrayConfig}
         setValue={setSubarrayConfig}
-        label="Subarray Configuration"
-        onFocus={() => helpComponent(HELP_SUBARRAY)}
+        label={t('label.subArrayConfiguration')}
+        onFocus={() => helpComponent(t('help.subArrayConfiguration'))}
       />
     );
   };
@@ -155,8 +118,8 @@ export default function AddObservation() {
       testId="observationType"
       value={observationType}
       setValue={setObservationType}
-      label="Observation Type"
-      onFocus={() => helpComponent(HELP_TYPE)}
+      label={t('label.observationType')}
+      onFocus={() => helpComponent(t('help.observationType'))}
     />
   );
 
@@ -174,8 +137,8 @@ export default function AddObservation() {
         testId="observingBand"
         value={observingBand}
         setValue={setObservingBand}
-        label="Observing Band"
-        onFocus={() => helpComponent(HELP_BAND)}
+        label={t('label.observingBand')}
+        onFocus={() => helpComponent(t('help.observingBand'))}
       />
     );
   };
@@ -186,8 +149,8 @@ export default function AddObservation() {
       testId="imageWeighting"
       value={imageWeighting}
       setValue={setImageWeighting}
-      label="Image Weighting"
-      onFocus={() => helpComponent(HELP_IMAGE)}
+      label={t('label.imageWeighting')}
+      onFocus={() => helpComponent(t('help.imageWeighting'))}
     />
   );
 
@@ -197,8 +160,8 @@ export default function AddObservation() {
       testId="tapering"
       value={tapering}
       setValue={setTapering}
-      label="tapering"
-      onFocus={() => helpComponent(HELP_TAPERING)}
+      label={t('label.tapering')}
+      onFocus={() => helpComponent(t('help.tapering'))}
     />
   );
 
@@ -216,8 +179,8 @@ export default function AddObservation() {
         testId="bandwidth"
         value={bandwidth}
         setValue={setBandwidth}
-        label="Bandwidth"
-        onFocus={() => helpComponent(HELP_BANDWIDTH)}
+        label={t('label.bandWidth')}
+        onFocus={() => helpComponent(t('help.bandWidth'))}
       />
     );
   };
@@ -236,8 +199,8 @@ export default function AddObservation() {
         testId="robust"
         value={robust}
         setValue={setRobust}
-        label="Robust"
-        onFocus={() => helpComponent(HELP_ROBUST)}
+        label={t('label.robust')}
+        onFocus={() => helpComponent(t('help.robust'))}
       />
     );
   };
@@ -256,8 +219,8 @@ export default function AddObservation() {
         testId="spectralResolution"
         value={spectralResolution}
         setValue={setSpectralResolution}
-        label="Spectral Resolution"
-        onFocus={() => helpComponent(HELP_SPECTRAL_RESOLUTION)}
+        label={t('label.spectralResolution')}
+        onFocus={() => helpComponent(t('help.spectralResolution'))}
       />
     );
   };
@@ -271,8 +234,8 @@ export default function AddObservation() {
         testId="spectral"
         value={spectralAveraging}
         setValue={setSpectralAveraging}
-        label="Spectral Averaging"
-        onFocus={() => helpComponent(HELP_SPECTRAL_AVERAGING)}
+        label={t('label.spectralAveraging')}
+        onFocus={() => helpComponent(t('help.spectralAveraging'))}
       />
     );
   };
@@ -288,7 +251,7 @@ export default function AddObservation() {
           value={suppliedType}
           setValue={setSuppliedType}
           label=""
-          onFocus={() => helpComponent(HELP_SUPPLIED_TYPE)}
+          onFocus={() => helpComponent(t('help.suppliedType'))}
         />
       </Box>
     );
@@ -305,7 +268,7 @@ export default function AddObservation() {
           value={suppliedUnits}
           setValue={setSuppliedUnits}
           label=""
-          onFocus={() => helpComponent(HELP_SUPPLIED_UNITS)}
+          onFocus={() => helpComponent(t('help.suppliedUnits'))}
         />
       </Box>
     );
@@ -322,7 +285,7 @@ export default function AddObservation() {
           value={frequencyUnits}
           setValue={setFrequencyUnits}
           label=""
-          onFocus={() => helpComponent(HELP_FREQUENCY_UNITS)}
+          onFocus={() => helpComponent(t('help.frequencyUnits'))}
         />
       </Box>
     );
@@ -339,7 +302,7 @@ export default function AddObservation() {
           value={continuumUnits}
           setValue={setContinuumUnits}
           label=""
-          onFocus={() => helpComponent(HELP_CONTINUUM_UNITS)}
+          onFocus={() => helpComponent(t('help.continuumUnits'))}
         />
       </Box>
     );
@@ -351,7 +314,7 @@ export default function AddObservation() {
       testId="suppliedValue"
       value={suppliedValue}
       setValue={setSuppliedValue}
-      onFocus={() => helpComponent(HELP_SUPPLIED_VALUE)}
+      onFocus={() => helpComponent(t('help.suppliedValue'))}
     />
   );
 
@@ -371,31 +334,31 @@ export default function AddObservation() {
 
   const elevationField = () => (
     <TextEntry
-      label="Elevation"
+      label={t('label.elevation')}
       testId="elevation"
       value={elevation}
       setValue={setElevation}
-      onFocus={() => helpComponent(HELP_ELEVATION)}
+      onFocus={() => helpComponent(t('help.elevation'))}
     />
   );
 
   const weatherField = () => (
     <TextEntry
-      label="Weather"
+      label={t('label.weather')}
       testId="weather"
       value={weather}
       setValue={setWeather}
-      onFocus={() => helpComponent(HELP_WEATHER)}
+      onFocus={() => helpComponent(t('help.weather'))}
     />
   );
 
   const frequencyField = () => (
     <TextEntry
-      label="Central Frequency"
+      label={t('label.centralFrequency')}
       testId="frequency"
       value={frequency}
       setValue={setFrequency}
-      onFocus={() => helpComponent(HELP_FREQUENCY)}
+      onFocus={() => helpComponent(t('help.centralFrequency'))}
     />
   );
 
@@ -403,7 +366,7 @@ export default function AddObservation() {
     const [error, setError] = React.useState('');
     const validate = e => {
       if (e < 0 || e > 32) {
-        setError('Value must be in the range 0 - 32 inclusive');
+        setError(t('error.subBandRange'));
       } else {
         setError('');
       }
@@ -415,11 +378,11 @@ export default function AddObservation() {
       <>
         {isContinuum() && (
           <NumberEntry
-            label="Number of sub-bands"
+            label={t('label.subBands')}
             testId="subBands"
             value={subBands}
             setValue={validate}
-            onFocus={() => helpComponent(HELP_SUB_BANDS)}
+            onFocus={() => helpComponent(t('help.subBands'))}
             errorText={error}
           />
         )}
@@ -429,21 +392,21 @@ export default function AddObservation() {
 
   const continuumBandwidthValueField = () => (
     <TextEntry
-      label="Continuum Bandwidth"
+      label={t('label.continuumBandWidth')}
       testId="continuumBandwidth"
       value={continuumBandwidth}
       setValue={setContinuumBandwidth}
-      onFocus={() => helpComponent(HELP_CONTINUUM_BANDWIDTH)}
+      onFocus={() => helpComponent(t('help.continuumBandWidth'))}
     />
   );
 
   const effectiveResolutionField = () => (
     <TextEntry
-      label="Effective Resolution"
+      label={t('label.effectiveResolution')}
       testId="effective"
       value={effective}
       setValue={setEffective}
-      onFocus={() => helpComponent(HELP_EFFECTIVE_RESOLUTION)}
+      onFocus={() => helpComponent(t('help.effectiveResolution'))}
     />
   );
 
@@ -533,7 +496,7 @@ export default function AddObservation() {
               color={ButtonColorTypes.Secondary}
               disabled={disabled()}
               icon={getIcon()}
-              label="Add"
+              label={t('button.add')}
               testId="addButton"
               onClick={buttonClicked}
               variant={ButtonVariantTypes.Contained}

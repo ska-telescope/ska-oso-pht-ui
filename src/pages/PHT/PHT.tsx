@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { DEFAULT_HELP, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
@@ -22,7 +23,9 @@ import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
 export default function PHT() {
+  const { t } = useTranslation('pht');
   const navigate = useNavigate();
+
   const {
     clearApp,
     helpComponent,
@@ -38,9 +41,6 @@ export default function PHT() {
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
 
-  const PAGE_DESC =
-    'Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.';
-
   React.useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
@@ -51,7 +51,7 @@ export default function PHT() {
             setAxiosError('');
             setDataProposals(response as Proposal[]);
           } else {
-            setAxiosError('Unexpected data format returned from API');
+            setAxiosError(t('error.axios.format'));
           }
         } else {
           setAxiosError(response.error);
@@ -78,7 +78,7 @@ export default function PHT() {
   };
 
   const getTheProposal = async () => {
-    helpComponent(DEFAULT_HELP);
+    helpComponent('');
     clearApp();
 
     const proposalId = 1; // TODO replace with id from the list
@@ -87,7 +87,6 @@ export default function PHT() {
       // Handle successful response
       setAxiosViewError(`Success`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
-      // setDataProposals([]); // can we remove this???
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
@@ -116,13 +115,13 @@ export default function PHT() {
     e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
-    { field: 'id', headerName: 'Proposal ID', width: 100 },
-    { field: 'telescope', headerName: 'Telescope', width: 100 },
-    { field: 'cycle', headerName: 'Cycle', width: 150 },
-    { field: 'title', headerName: 'Title', width: 250 },
-    { field: 'pi', headerName: 'PI', width: 150 },
-    { field: 'status', headerName: 'Status', width: 100 },
-    { field: 'lastUpdated', headerName: 'Last Updated', width: 150 },
+    { field: 'id', headerName: t('column.id'), width: 100 },
+    { field: 'telescope', headerName: t('label.telescope'), width: 100 },
+    { field: 'cycle', headerName: t('column.cycle'), width: 150 },
+    { field: 'title', headerName: t('label.title'), width: 250 },
+    { field: 'pi', headerName: t('column.pi'), width: 150 },
+    { field: 'status', headerName: t('column.status'), width: 100 },
+    { field: 'lastUpdated', headerName: t('column.updated'), width: 150 },
     {
       field: 'cpi',
       headerName: ' ',
@@ -131,18 +130,26 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: (e: never) => (
         <>
-          {!canEdit(e) && <ViewIcon onClick={viewIconClicked} toolTip="View proposal" />}
-          {canEdit(e) && <EditIcon onClick={editIconClicked} toolTip="Edit proposal" />}
-          <CloneIcon onClick={cloneIconClicked} disabled={!canClone()} toolTip="Clone proposal" />
+          {!canEdit(e) && (
+            <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />
+          )}
+          {canEdit(e) && (
+            <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />
+          )}
+          <CloneIcon
+            onClick={cloneIconClicked}
+            disabled={!canClone()}
+            toolTip={t('icon.tooltip.cloneProposal')}
+          />
           <DownloadIcon
             onClick={downloadIconClicked}
             disabled={!canDownload()}
-            toolTip="Download proposal"
+            toolTip={t('icon.tooltip.downloadProposal')}
           />
           <TrashIcon
             onClick={deleteIconClicked}
             disabled={!canDelete(e)}
-            toolTip="Delete proposal"
+            toolTip={t('icon.tooltip.deleteProposal')}
           />
         </>
       )
@@ -164,14 +171,13 @@ export default function PHT() {
 
   return (
     <>
-      { axiosViewError ? (
+      {axiosViewError ? (
         <Alert testId="alertErrorId" color={axiosViewErrorColor}>
           <Typography>{axiosViewError}</Typography>
         </Alert>
-          )
-      : null }
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
-        <Typography variant="h5">{PAGE_DESC}</Typography>
+        <Typography variant="h5">{t('page.10.desc')}</Typography>
       </Grid>
 
       <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
@@ -180,16 +186,16 @@ export default function PHT() {
         </Grid>
         <Grid item xs={2}>
           <DropDown
-            options={[{ label: 'All Status Types', value: '' }, ...SEARCH_TYPE_OPTIONS]}
+            options={[{ label: t('dropdown.status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
             testId="proposalType"
             value={searchType}
             setValue={setSearchType}
-            label="All Status Types"
+            label={t('dropdown.status.0')}
           />
         </Grid>
         <Grid item xs={4} mt={-1}>
           <SearchEntry
-            label="Search"
+            label={t('label.search')}
             testId="searchId"
             value={searchTerm}
             setValue={setSearchTerm}

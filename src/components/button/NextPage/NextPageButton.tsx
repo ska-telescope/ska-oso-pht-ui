@@ -1,10 +1,7 @@
-'useClient';
-
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { PAGES } from '../../../utils/constants';
 
 interface NextPageProps {
   label?: string;
@@ -20,7 +17,7 @@ export default function NextPageButton({
   disabled
 }: NextPageProps) {
   const ClickFunction = () => {
-    func(page === PAGES.length ? 0 : page + 1);
+    func(page + 1);
   };
 
   const getIcon = () => (page < 0 ? <AddIcon /> : <ArrowForwardIosIcon />);

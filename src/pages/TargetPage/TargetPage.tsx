@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import useTheme from '@mui/material/styles/useTheme';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -9,18 +10,12 @@ import Shell from '../../components/layout/Shell/Shell';
 import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 
-const TITLE = ['', 'List of Targets', 'Target Mosaic', 'No specific Target'];
-
-const TOOLTIP = [
-  '',
-  'A list of target will be entered and/or imported from file',
-  'Current functionality is not yet available',
-  'Current functionality is not yet available'
-];
+const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
 const PAGE = 4;
 
 export default function TargetPage() {
+  const { t } = useTranslation('pht');
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -90,9 +85,9 @@ export default function TargetPage() {
         >
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
-              <Tooltip title={TOOLTIP[occ]} arrow>
+              <Tooltip title={t(`tooltip.${TITLE[occ]}`)} arrow>
                 <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
-                  {TITLE[occ]}
+                  {t(`label.${TITLE[occ]}`)}
                 </Typography>
               </Tooltip>
             </CardContent>
