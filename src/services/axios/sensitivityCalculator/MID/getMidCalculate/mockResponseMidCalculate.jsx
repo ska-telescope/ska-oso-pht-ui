@@ -1,20 +1,20 @@
-/*
-Query strings parameters:
-rx_band: Band 1
-ra_str: 00:00:00.0
-dec_str: 00:00:00.0
-array_configuration: AA4
-pwv: 10
-el: 45
-frequency: 797500000
-bandwidth: 435000000
-n_subbands: 1
-resolution: 13440
-weighting: uniform
-calculator_mode: continuum
-taper: 0
-integration_time: 600
-*/
+export const MockQuerryMidCalculate =
+{
+    rx_band: 'Band 1',
+    ra_str: '00:00:00.0',
+    dec_str: '00:00:00.0',
+    array_configuration: 'AA4',
+    pwv: '10',
+    el: '45',
+    frequency: '797500000',
+    bandwidth: '435000000',
+    n_subbands: '1',
+    resolution: '13440',
+    weighting: 'uniform',
+    calculator_mode: 'continuum',
+    taper: '0',
+    integration_time: '600'
+};
 
 /*
 In the response, I believe that the bit that is useful and used in the sensitivity calculator is the "sensitivity" and "line_sensitivity".
@@ -22,7 +22,7 @@ The sensitivity and line sensitivity are used to do calculations in the front-en
 I don't think that the "state" is used anywhere in the results.
 */
 
-const MockResponseMidCalculate = 
+export const MockResponseMidCalculate = 
 {
     "status": "success",
     "data": {
@@ -62,5 +62,3 @@ const MockResponseMidCalculate =
         }
     }
 }
-
-export default MockResponseMidCalculate;
