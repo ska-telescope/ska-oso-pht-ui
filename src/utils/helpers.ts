@@ -17,13 +17,16 @@ export const helpers = {
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
         if(text.includes("*")){
-          console.log(`No good ${  text}`)
+          setText(text);
           setErrorText(ERROR_TEXT);
           return false;
-        }else {
-          console.log("All good")
         }
-        setText(text.substring(0, MAX_LENGTH));
+        if(text.length > MAX_LENGTH) {
+          setText(text);
+          setErrorText("Exceeded expected character count");
+          return false;
+        }
+        setText(text);
         setErrorText('');
         return true;
       }
