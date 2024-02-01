@@ -4,6 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
+import TMPSensCalConnectButton from '../../components/button/TMPSensCalConnect/TMPSensCalConnectButton';
 import { Proposal } from '../../services/types/proposal';
 import { OBSERVATION, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -176,6 +177,10 @@ export default function ObservationPage() {
     return [];
   };
 
+  const handleSensCalConnectClick = response => {
+    // TODO: handle response
+  }
+
   return (
     <Shell page={PAGE}>
       <Grid
@@ -188,8 +193,13 @@ export default function ObservationPage() {
       >
         <Grid item xs={5}>
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid item pb={1}>
-              <AddObservationButton />
+            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Grid item pb={1}>
+                <AddObservationButton />
+              </Grid>
+              <Grid item pb={1}>
+                <TMPSensCalConnectButton onClick={handleSensCalConnectClick} />
+              </Grid>
             </Grid>
             <DataGrid
               rows={getProposal().observations}

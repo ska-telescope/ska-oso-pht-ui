@@ -9,6 +9,11 @@ calculator_mode: line
 taper: 0
 */
 
+/*
+The response here is used in the sensitivity calculator. Some are used directly like the confusion noise, 
+and some result are combined and used for some calculations in the front-end.
+*/
+
 const MockResponseMidWeightingLine =
 {
     "status": "success",
