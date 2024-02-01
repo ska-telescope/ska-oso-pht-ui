@@ -147,7 +147,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   function ProposalSubType(TYPE: any) {
     const { id, code, title, description } = TYPE;
     return (
-      <Grid key={id} item xs={12} sm={6} md={3}>
+      <Grid key={id} item>
         <Card
           style={{
             color: setCardFG(getProposal().proposalSubType, id),
@@ -194,6 +194,9 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
+    const helperFunction = (title:string) =>
+      `character count ${  title?.length  }/${  MAX_CHAR}`;
+
     return (
       <TextEntry
         label=""
@@ -202,6 +205,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
         errorText={errorText}
+        helperText={helperFunction(getProposal()?.title)}
       />
     );
   };
@@ -232,6 +236,9 @@ export default function TitleContent({ page }: TitleContentProps) {
                 <br />
                 {' '}
                 identification of this proposal in a list of proposals
+              </Typography>
+              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
+                Special characters !*+[] not allowed
               </Typography>
             </Grid>
           </Grid>

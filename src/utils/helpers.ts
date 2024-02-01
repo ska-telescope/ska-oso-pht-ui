@@ -1,4 +1,6 @@
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, TEAM_STATUS_TYPE_OPTIONS, DEFAULT_PI } from './constants';
+import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
+
+const specialChars = /[!*+[\]]/
 
 export const helpers = {
   validate: {
@@ -16,7 +18,17 @@ export const helpers = {
       }
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
-        setText(text.substring(0, MAX_LENGTH));
+        if(specialChars.test(text)){
+          setText(text);
+          setErrorText(ERROR_TEXT);
+          return false;
+        }
+        if(text.length > MAX_LENGTH) {
+          setText(text);
+          setErrorText("Exceeded expected character count");
+          return false;
+        }
+        setText(text);
         setErrorText('');
         return true;
       }
@@ -58,7 +70,7 @@ export const helpers = {
           DEFAULT_PI
         ]
       } else if (mockProposal.team?.length === 0) {
-        mockProposal.team.push(DEFAULT_PI); 
+        mockProposal.team.push(DEFAULT_PI);
       }
 
       const targetObservationsByObservation = mockProposal.targetObservation?.reduce((acc, to) => {
