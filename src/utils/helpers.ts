@@ -17,7 +17,7 @@ export const helpers = {
       const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
         if(text.includes("*")){
-          console.log("No good")
+          console.log(`No good ${  text}`)
           setErrorText(ERROR_TEXT);
           return false;
         }else {
