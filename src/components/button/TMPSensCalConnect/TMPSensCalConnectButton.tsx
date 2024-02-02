@@ -9,12 +9,12 @@ import GetMidWeighting from '../../../services/axios/sensitivityCalculator/MID/g
 export default function TMPSensCalConnectButton({ onClick }) {
   const ClickFunction = async () => {
     /* 3 calls for Mid Continuum */
-    const responseCalculate = await GetMidCalculate('Continuum');
+    const responseCalculate = await GetMidCalculate('Mid', 'Continuum');
     const responseWeightingContinuum = await GetMidWeighting('Continuum');
     const responseWeightingLine = await GetMidWeighting('Zoom');
 
     /* 2 calls for Mid Zoom */
-    const responseCalculate2 = await GetMidCalculate('Zoom');
+    const responseCalculate2 = await GetMidCalculate('Mid', 'Zoom');
     const responseWeightingLine2 = await GetMidWeighting('Zoom');
 
     const response = {

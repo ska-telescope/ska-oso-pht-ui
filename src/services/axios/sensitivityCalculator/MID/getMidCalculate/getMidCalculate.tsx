@@ -3,9 +3,11 @@ import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../
 import {MockQuerryMidCalculate, MockQuerryMidCalculateZoom, MockResponseMidCalculate} from './mockResponseMidCalculate';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetMidCalculate(mode) {
+async function GetMidCalculate(telescope, mode) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
+  let URL_TELESCOPE;
   const URL_MID = `mid/`;
+  const URL_LOW = `low/`;
   const URL_CALCULATE = `calculate`;
   let QUERRY_STRING_PARAMETERS;
   const config = {
@@ -14,6 +16,16 @@ async function GetMidCalculate(mode) {
       'Content-Type': 'application/json'
     }
   };
+
+  switch (telescope) {
+    case 'Mid':
+      URL_TELESCOPE = URL_MID;
+      break;
+    case 'Low':
+      URL_TELESCOPE = URL_LOW;
+      break
+    default:
+  }
 
   switch (mode) {
     case 'Continuum':
@@ -31,7 +43,7 @@ async function GetMidCalculate(mode) {
 
   try {
     const queryString = new URLSearchParams(QUERRY_STRING_PARAMETERS).toString();
-    const result = await axios.get(`${apiUrl}${URL_MID}${URL_CALCULATE}?${queryString}`, config);
+    const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_CALCULATE}?${queryString}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     return { error: e.message };
