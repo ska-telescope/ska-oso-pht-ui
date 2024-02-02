@@ -2,9 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
+import { DataGrid, TickBox, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
+import TMPSensCalConnectButton from '../../components/button/TMPSensCalConnect/TMPSensCalConnectButton';
 import { Proposal } from '../../services/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -19,6 +20,8 @@ export default function ObservationPage() {
   const [currentObservation, setCurrentObservation] = React.useState(0);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
+  const [axiosSensCalError, setAxiosSensCalError] = React.useState('');
+  const [axiosSensCalErrorColor, setAxiosSensCalErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -168,6 +171,19 @@ export default function ObservationPage() {
     // TODO
   };
 
+  const handleSensCalConnectClick = response => {
+    // TODO: handle response
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosSensCalError(`Success`);
+      setAxiosSensCalErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosSensCalError(response.error);
+      setAxiosSensCalErrorColor(AlertColorTypes.Error);
+    }
+  }
+
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
   };
@@ -188,6 +204,11 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
+      {axiosSensCalError ? (
+        <Alert testId="alertSaveErrorId" color={axiosSensCalErrorColor}>
+          <Typography>{axiosSensCalError}</Typography>
+        </Alert>
+                ) : null}
       <Grid
         spacing={1}
         p={3}
@@ -198,8 +219,13 @@ export default function ObservationPage() {
       >
         <Grid item xs={5}>
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid item pb={1}>
-              <AddObservationButton />
+            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Grid item pb={1}>
+                <AddObservationButton />
+              </Grid>
+              <Grid item pb={1}>
+                <TMPSensCalConnectButton onClick={handleSensCalConnectClick} />
+              </Grid>
             </Grid>
             <DataGrid
               rows={getProposal().observations}
