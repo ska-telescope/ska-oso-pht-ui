@@ -1,4 +1,4 @@
-export const MockQuerryMidCalculate =
+export const MockQueryMidCalculate =
 {
     rx_band: 'Band 1',
     ra_str: '00:00:00.0',
@@ -16,7 +16,7 @@ export const MockQuerryMidCalculate =
     integration_time: '600'
 };
 
-export const MockQuerryMidCalculateZoom =
+export const MockQueryMidCalculateZoom =
 {
     rx_band: 'Band 1',
     ra_str: '00:00:00.0',

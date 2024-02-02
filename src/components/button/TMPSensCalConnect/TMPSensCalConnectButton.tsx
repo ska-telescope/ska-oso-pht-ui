@@ -3,19 +3,22 @@
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import GetMidCalculate from '../../../services/axios/sensitivityCalculator/MID/getMidCalculate/getMidCalculate';
+import GetCalculate from '../../../services/axios/sensitivityCalculator/MID/getMidCalculate/getCalculate';
 import GetMidWeighting from '../../../services/axios/sensitivityCalculator/MID/getMidWeighting/getMidWeighting';
 
 export default function TMPSensCalConnectButton({ onClick }) {
   const ClickFunction = async () => {
     /* 3 calls for Mid Continuum */
-    const responseCalculate = await GetMidCalculate('Mid', 'Continuum');
+    const responseCalculate = await GetCalculate('Mid', 'Continuum');
     const responseWeightingContinuum = await GetMidWeighting('Continuum');
     const responseWeightingLine = await GetMidWeighting('Zoom');
 
     /* 2 calls for Mid Zoom */
-    const responseCalculate2 = await GetMidCalculate('Mid', 'Zoom');
+    const responseCalculate2 = await GetCalculate('Mid', 'Zoom');
     const responseWeightingLine2 = await GetMidWeighting('Zoom');
+
+    /* 3 calls for Low Continuum */
+    const responseCalculateLow = await GetCalculate('Low', 'Continuum');
 
     const response = {
       responseCalculate,
