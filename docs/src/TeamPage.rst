@@ -1,5 +1,5 @@
 Team Page
-=========
+~~~~~~~~~
 
 This guide explains the "Team Page," where you manage the researchers involved in your project.
 
@@ -12,10 +12,11 @@ Layout and Navigation
 
 The Team Page has two main sections:
 
-1. Team Member List (Left)
-==========================
+Team Member List (Left)
+=======================
 
-Displays a table with information about each team member:
+Displays a table with information about each team member
+
 - Last Name, First Name
 - Status (e.g., Invited, Accepted)
 - PhD Thesis checkbox
@@ -24,13 +25,13 @@ Displays a table with information about each team member:
 
 Click the star icon to make someone a PI or remove the PI role.
 
-2. Team Management Options (Right)
-==================================
+Team Management Options (Right)
+===============================
 
-= Invite Team Members: Add collaborators by entering their email and selecting PI, PhD Thesis options.
+- Invite Team Members: Add collaborators by entering their email and selecting PI, PhD Thesis options.
 - Import from File: Upload a file containing team member details.
 - Search for Member: Find existing users to add directly.
-- Field Sensitive Help:
+- Field Sensitive Help: Content changes dependant upon the focused field
 - Send Invitation: Click this button after entering team member details. (Disabled until required fields are filled).
 
 Navigation Elements

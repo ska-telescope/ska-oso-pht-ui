@@ -1,6 +1,6 @@
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
-const specialChars = /[!*+[\]]/;
+const specialChars = /[!+]/;
 
 export const helpers = {
   validate: {
