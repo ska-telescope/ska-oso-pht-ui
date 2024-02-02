@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../../utils/constants';
+import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
 import {MockQuerryMidWeightingContinuum, MockQuerryMidWeightingLine, MockResponseMidWeightingContinuum, MockResponseMidWeightingLine} from './mockResponseMidWeighting';
 import {MockQuerryLowWeightingContinuum, MockQuerryLowWeightingLine, MockResponseLowWeightingContinuum, MockResponseLowWeightingLine} from './mockResponseLowWeighting';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetMidWeighting(telescope, mode) {
+async function GetWeighting(telescope, mode) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
   let URL_TELESCOPE;
@@ -80,10 +80,10 @@ async function GetMidWeighting(telescope, mode) {
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
   }
 }
 
-export default GetMidWeighting;
+export default GetWeighting;

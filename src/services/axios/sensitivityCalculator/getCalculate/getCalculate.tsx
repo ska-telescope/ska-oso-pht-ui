@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../../utils/constants';
+import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
 import {MockQueryMidCalculate, MockQueryMidCalculateZoom, MockResponseMidCalculateZoom, MockResponseMidCalculate} from './mockResponseMidCalculate';
 import {MockQueryLowCalculate, MockQueryLowCalculateZoom, MockResponseLowCalculate, MockResponseLowCalculateZoom} from './mockResponseLowCalculate';
 
@@ -79,7 +79,7 @@ async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAME
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
   }
