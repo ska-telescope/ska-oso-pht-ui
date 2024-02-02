@@ -7,7 +7,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import TMPSensCalConnectButton from '../../components/button/TMPSensCalConnect/TMPSensCalConnectButton';
 import { Proposal } from '../../services/types/proposal';
-import { OBSERVATION, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 
 const PAGE = 5;
@@ -89,7 +89,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
-        <Typography>{OBSERVATION.array[e.row.telescope].label}</Typography>
+        <Typography>{t(`dropdown.telescope.${e.row.telescope}.title`)}</Typography>
       )
     },
     {
@@ -97,9 +97,16 @@ export default function ObservationPage() {
       headerName: t('label.array'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number; subarray: number } }) => (
-        <Typography>{OBSERVATION.array[e.row.telescope].subarray[e.row.subarray].label}</Typography>
-      )
+      renderCell: (e: { row: { telescope: number; subarray: number } }) => {
+        if (e.row.telescope) {
+          return (
+            <Typography>
+              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
+            </Typography>
+          );
+        }
+        return <Typography>{t('dropdown.telescope.0.title')}</Typography>;
+      }
     },
     {
       field: 'type',
@@ -107,7 +114,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
-        <Typography>{OBSERVATION.ObservationType[e.row.type].label}</Typography>
+        <Typography>{t(`dropdown.observationType.${e.row.type}`)}</Typography>
       )
     },
     {

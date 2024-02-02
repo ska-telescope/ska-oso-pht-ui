@@ -4,20 +4,20 @@
   "date_format_two": "{{date, DD-MM-YYYY}}",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
+  "yes": "Yes",
+  "no": "No",
   "button": {
-    "label": {
-      "addObservation": "Add observation",
-      "addProposal": "Add proposal",
-      "addTarget": "Add target",
-      "cancel": "Cancel",
-      "confirm": "Confirm",
-      "home": "Home",
-      "resolve": "Resolve",
-      "save": "Save",
-      "submit": "Submit",
-      "sendInvite": "Sent invitation",
-      "validate": "Validate"
-    }
+    "addObservation": "Add observation",
+    "addProposal": "Add proposal",
+    "addTarget": "Add target",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "home": "Home",
+    "resolve": "Resolve",
+    "save": "Save",
+    "submit": "Submit",
+    "sendInvite": "Sent invitation",
+    "validate": "Validate"
   },
   "column": {
     "actions": "Actions",
@@ -30,8 +30,65 @@
     "updated": "Last Updated"
   },
   "dropdown": {
+    "observationType": {
+      "0": "Not specified",
+      "1": "Zoom",
+      "2": "Continuum"
+    },
+    "scienceCategory": {
+      "1": "Cosmology",
+      "2": "Cradle of Life",
+      "3": "Epoch of Re-ionization",
+      "4": "Extra Galactic continuum",
+      "5": "Extra Galactic Spectral line",
+      "6": "Gravitational Waves",
+      "7": "High Energy Cosmic Particles",
+      "8": "HI Galaxy science",
+      "9": "Magnetism",
+      "10": "Our Galaxy",
+      "11": "Pulsars",
+      "12": "Solar, Heliospheric and Ionospheric Physics",
+      "13": "Transients",
+      "14": "VLBI"
+    },
+    "scienceSubCategory": {
+      "1": "Not specified"
+    },
     "status": {
       "0": "All status types"
+    },
+    "telescope": {
+      "0": {
+        "title": "Not specified"
+      },
+      "1": {
+        "title": "MID",
+        "array": {
+          "1": "AA0.5",
+          "2": "AA1",
+          "3": "AA2",
+          "4": "AA* (15-m antennas only)",
+          "5": "AA4 (15-m antennas only)",
+          "6": "Custom"
+        }
+      },
+      "2": {
+        "title": "LOW",
+        "array": {
+          "1": "AA0.5",
+          "2": "AA1",
+          "3": "AA2",
+          "4": "AA2 (core only",
+          "5": "AA*",
+          "6": "AA* (core only)",
+          "7": "AA4",
+          "8": "AA4 (core only)",
+          "9": "Custom"
+        },
+        "robust": {
+          "1": "n/a"
+        }
+      }
     }
   },
   "help": {
@@ -86,47 +143,51 @@
   "page": {
     "0": {
       "title": "Title",
-      "desc": ""
+      "desc": "TITLE. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "1": {
       "title": "Team",
-      "desc": ""
+      "desc": "TEAM. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "2": {
       "title": "General",
-      "desc": ""
+      "desc": "GENERAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "3": {
       "title": "Science",
-      "desc": ""
+      "desc": "SCIENCE. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "4": {
       "title": "Target",
-      "desc": ""
+      "desc": "TARGET. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "5": {
       "title": "Observation",
-      "desc": ""
+      "desc": "OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "6": {
       "title": "Technical",
-      "desc": ""
+      "desc": "TECHNICAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "7": {
       "title": "Data",
-      "desc": ""
+      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
       "title": "Add Proposal",
-      "desc": ""
+      "desc": "ADD PROPOSAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "9": {
       "title": "Add Observation",
-      "desc": ""
+      "desc": "ADD OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "10": {
-      "title": "",
+      "title": "Landing page",
       "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator."
+    },
+    "11": {
+      "title": "SKAO Cycle",
+      "desc": ""
     }
   },
   "label": {
@@ -137,20 +198,25 @@
     "button": {
       "telescopeToggle": "Telescope Toggle"
     },
+    "category": "Category",
+    "centralFrequency": "Central Frequency",
     "continuumBandWidth": "Continuum BandWidth",
     "cycle": "Cycle",
-    "centralFrequency": "Central Frequency",
     "declination": "Declination",
     "elevation": "Elevation",
     "effectiveResolution": "Effective Resolution",
     "email": "Email",
+    "fileName": "File name",
     "firstName": "First Name",
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
     "lastName": "Last Name",
     "listOfTargets": "List of Targets",
+    "members": "Members",
+    "noneSelected": "None selected",
     "noSpecificTarget": "No specific Target",
+    "observations": "Observations",
     "observationType": "Observation Type",
     "observingBand": "Observing Band",
     "pdfPreview": "PDF Preview",
@@ -161,17 +227,21 @@
     "rightAscension": "Right Ascension",
     "scienceCategory": "Scientific category",
     "scienceSubCategory": "Scientific sub-category",
+    "sdp": "SDP",
     "search": "Search",
     "searchForMember": "Search for member",
     "selected": "Selected",
     "spatialImaging": "Spatial Imaging",
     "spectralAveraging": "Spectral Averaging",
     "spectralResolution": "Spectral Resolution",
+    "srcNet": "SRC Net",
     "subArrayConfiguration": "Subarray Configuration",
     "subBands": "Number of sub bands",
     "tapering": "Tapering",
     "targetMosaic": "Target Mosaic",
     "targetObservation": "Target List related to the selected Observation",
+    "targetSelection": "Target selection",
+    "targets": "Targets",
     "telescope": "Telescope",
     "title": "Title",
     "uploadPDF": "Upload PDF",

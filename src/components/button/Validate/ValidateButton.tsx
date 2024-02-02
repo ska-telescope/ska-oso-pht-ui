@@ -14,7 +14,7 @@ export default function ValidateButton({ onClick, proposal }) {
     onClick(response);
   };
 
-  const title = t('button.label.validate');
+  const title = t('button.validate');
 
   return (
     <Button

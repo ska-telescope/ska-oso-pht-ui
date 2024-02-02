@@ -11,7 +11,7 @@ interface TeamInviteButtonProps {
 export default function TeamInviteButton({ disabled, onClick }: TeamInviteButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.label.sendInvite');
+  const title = t('button.sendInvite');
 
   return (
     <Button

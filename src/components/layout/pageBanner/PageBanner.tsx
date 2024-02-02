@@ -108,7 +108,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (
-                    <SubmitButton disabled={canSubmit} onClick={submitClicked} />
+                    <SubmitButton disabled={!canSubmit} onClick={submitClicked} />
                   )}
                 </Grid>
               </Grid>
@@ -127,8 +127,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
         </Grid>
         <Grid item xs={8}>
           <Typography variant="body1" m={2}>
-            In this space should be some sort of description as to the purpose of this page,
-            including guidance, how to progress, etc
+            {t(`page.${pageNo}.desc`)}
           </Typography>
         </Grid>
       </Grid>

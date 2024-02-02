@@ -14,7 +14,7 @@ export default function HomeButton() {
     navigate('/');
   };
 
-  const title = t('button.label.home');
+  const title = t('button.home');
 
   return (
     <Button
