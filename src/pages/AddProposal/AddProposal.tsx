@@ -29,7 +29,7 @@ export default function AddProposal() {
 
   const createProposal = async () => {
     // TODO : Make sure we go to Page 2 of the proposal
-    const response = await PostProposal((mockProposal as unknown) as Proposal);
+    const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
     if (response && !response.error) {
       setAxiosCreateError(`Success: ${response}`);
       setAxiosCreateErrorColor(AlertColorTypes.Success);

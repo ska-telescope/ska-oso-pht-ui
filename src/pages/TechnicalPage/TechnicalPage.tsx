@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
@@ -9,6 +10,7 @@ import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 const PAGE = 6;
 
 export default function TechnicalPage() {
+  const { t } = useTranslation('pht');
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
@@ -59,7 +61,7 @@ export default function TechnicalPage() {
       >
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            Upload PDF
+            {t('label.uploadPDF')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
@@ -75,7 +77,7 @@ export default function TechnicalPage() {
             <CardHeader
               title={(
                 <Typography variant="h6" data-testid="pdfPreviewLabel">
-                  PDF Preview
+                  {t('label.pdfPreview')}
                 </Typography>
               )}
             />
@@ -86,7 +88,7 @@ export default function TechnicalPage() {
                 width="100%"
                 height="100%"
               >
-                <p>Syntax error or PDF not available </p>
+                <p>{t('error.pdf')}</p>
               </object>
             </CardContent>
           </Card>

@@ -4,18 +4,196 @@
   "date_format_two": "{{date, DD-MM-YYYY}}",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
+  "button": {
+    "label": {
+      "addObservation": "Add observation",
+      "addProposal": "Add proposal",
+      "addTarget": "Add target",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "home": "Home",
+      "resolve": "Resolve",
+      "save": "Save",
+      "submit": "Submit",
+      "sendInvite": "Sent invitation",
+      "validate": "Validate"
+    }
+  },
+  "column": {
+    "actions": "Actions",
+    "id": "Id",
+    "cycle": "Cycle",
+    "title": "Title",
+    "pi": "PI",
+    "status": "Status",
+    "type": "Type",
+    "updated": "Last Updated"
+  },
+  "dropdown": {
+    "status": {
+      "0": "All status types"
+    }
+  },
+  "help": {
+    "abstract": "ABSTRACT HELP",
+    "arrayConfiguration": "ARRAY CONFIGURATION HELP",
+    "bandWidth": "BANDWIDTH HELP",
+    "centralFrequency": "CENTRAL FREQUENCY HELP",
+    "continuumBandWidth": "Continuum BANDWIDTH HELP",
+    "continuumUnits": "CONTINUUM UNITS HELP",
+    "declination": "DECLINATION HELP",
+    "effectiveResolution": "EFFECTIVE RESOLUTION HELP",
+    "elevation": "ELEVATION HELP",
+    "email": "EMAIL HELP",
+    "firstName": "FIRST NAME HELP",
+    "frequencyUnits": "FREQUENCY UNITS HELP",
+    "imageWeighting": "IMAGE WEIGHTING HLP",
+    "lastName": "LAST NAME HELP",
+    "name": "NAME HELP",
+    "observingBand": "Observing Band HELP",
+    "observationType": "OBSERVATION TYPE HELP",
+    "phdThesis": "PHD THESIS HELP",
+    "pi": "PI HELP",
+    "pipeline": "PIPELINE HELP",
+    "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
+    "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
+    "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
+    "rightAscension": "RIGHT ASCENSION HELP",
+    "scienceCategory": "CATEGORY HELP",
+    "scienceSubCategory": "SUB-CATEGORY HELP",
+    "spectralAveraging": "Spectral Averaging HELP",
+    "specialCharacters": "Special characters !*+[] not allowed",
+    "spectralResolution": "SPECTRAL RESOLUTION HELP",
+    "subArrayConfiguration": "SUB-ARRAY CONFIGURATION HELP",
+    "subBands": "SUB-BANDS HELP",
+    "suppliedType": "SUPPLIED TIME HELP",
+    "suppliedUnits": "SUPPLIED UNITS HELP",
+    "suppliedValue": "SUPPLIED VALUE HELP",
+    "tapering": "TAPERING HELP",
+    "title": "This title should be used to allow for the identification of this proposal in a list of proposals",
+    "velocity": "VELOCITY HELP",
+    "weather": "WEATHER HELP"
+  },
+  "icon": {
+    "tooltip": {
+      "cloneProposal": "Clone proposal",
+      "downloadProposal": "Download proposal",
+      "deleteProposal": "Delete proposal",
+      "editProposal": "Edit proposal",
+      "viewProposal": "View proposal"
+    }
+  },
+  "page": {
+    "0": {
+      "title": "Title",
+      "desc": ""
+    },
+    "1": {
+      "title": "Team",
+      "desc": ""
+    },
+    "2": {
+      "title": "General",
+      "desc": ""
+    },
+    "3": {
+      "title": "Science",
+      "desc": ""
+    },
+    "4": {
+      "title": "Target",
+      "desc": ""
+    },
+    "5": {
+      "title": "Observation",
+      "desc": ""
+    },
+    "6": {
+      "title": "Technical",
+      "desc": ""
+    },
+    "7": {
+      "title": "Data",
+      "desc": ""
+    },
+    "8": {
+      "title": "Add Proposal",
+      "desc": ""
+    },
+    "9": {
+      "title": "Add Observation",
+      "desc": ""
+    },
+    "10": {
+      "title": "",
+      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator."
+    }
+  },
   "label": {
+    "abstract": "Abstract",
+    "array": "Array",
+    "arrayConfiguration": "Array Configuration",
+    "bandWidth": "Bandwidth",
     "button": {
       "telescopeToggle": "Telescope Toggle"
     },
-    "number": "Number Label",
-    "text": "Text Label"
+    "continuumBandWidth": "Continuum BandWidth",
+    "cycle": "Cycle",
+    "centralFrequency": "Central Frequency",
+    "declination": "Declination",
+    "elevation": "Elevation",
+    "effectiveResolution": "Effective Resolution",
+    "email": "Email",
+    "firstName": "First Name",
+    "imageWeighting": "Image Weighting",
+    "importFromFile": "Import from file",
+    "inviteTeamMember": "Invite Team Member",
+    "lastName": "Last Name",
+    "listOfTargets": "List of Targets",
+    "noSpecificTarget": "No specific Target",
+    "observationType": "Observation Type",
+    "observingBand": "Observing Band",
+    "pdfPreview": "PDF Preview",
+    "phdThesis": "PhD Thesis",
+    "pi": "Primary Investigator",
+    "pipeline": "Pipeline",
+    "proposalType": "Proposal Types",
+    "rightAscension": "Right Ascension",
+    "scienceCategory": "Scientific category",
+    "scienceSubCategory": "Scientific sub-category",
+    "search": "Search",
+    "searchForMember": "Search for member",
+    "selected": "Selected",
+    "spatialImaging": "Spatial Imaging",
+    "spectralAveraging": "Spectral Averaging",
+    "spectralResolution": "Spectral Resolution",
+    "subArrayConfiguration": "Subarray Configuration",
+    "subBands": "Number of sub bands",
+    "tapering": "Tapering",
+    "targetMosaic": "Target Mosaic",
+    "targetObservation": "Target List related to the selected Observation",
+    "telescope": "Telescope",
+    "title": "Title",
+    "uploadPDF": "Upload PDF",
+    "velocity": "Velocity / Redshift",
+    "weather": "Weather"
   },
   "toolTip": {
     "button": {
       "mode": "Colour Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
-    }
+    },
+    "listOfTargets": "A list of target will be entered and/or imported from file",
+    "noSpecificTarget": "Current functionality is not yet available",
+    "targetMosaic": "Current functionality is not yet available"
+  },
+  "error": {
+    "axios": {
+      "format": "Unexpected data format returned from API"
+    },
+    "noTeamMembers": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL",
+    "pdf": "Syntax error or PDF not available ",
+    "subBandRange": "Value must be in the range 0 - 32 inclusive"
   }
 }

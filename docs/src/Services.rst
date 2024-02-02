@@ -19,7 +19,7 @@ axios
 =====
  
 .. csv-table:: Properties
-   :header: "Endpoint", "Type", "LocalData", "Parameters", "Purpose",
+   :header: "Endpoint", "Type", "LocalData", "Parameters", "Purpose"
 
     "Proposal/list", "GET", "MockProposals", "current user" "A list of proposals that the user is involved with is obtained from the API"
     "Proposal", "GET", "MockProposal", "proposal Id", "Complete details of a single proposal is obtained from the API"
@@ -27,6 +27,6 @@ axios
     "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
     "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
 
-.. admonition:: REACT_APP_USE_LOCAL_DATA note
+.. admonition:: REACT_APP_USE_LOCAL_DATA
     
     This is an option to turn on/off the API call and instead use mocked data.

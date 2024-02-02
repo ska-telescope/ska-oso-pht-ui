@@ -344,7 +344,7 @@ export const TEXT_ENTRY_PARAMS = {
     MAX_LENGTH: 50,
     ERROR_TEXT:
       'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
-    PATTERN: /^[a-zA-Z0-9\s\-_.,!"'/]*$/
+    PATTERN: /^[a-zA-Z0-9\s\-_.,!"*+'/]*$/
   },
   EMAIL: {
     MAX_LENGTH: 25,
@@ -373,4 +373,16 @@ export const EMPTY_PROPOSAL = {
   technicalPDF: null,
   technicalLoadStatus: false,
   pipeline: ''
+};
+
+export const DEFAULT_PI = {
+  id: 1,
+  firstName: 'Van Loo',
+  lastName: 'Cheng',
+  email: 'ask.lop@map.com',
+  country: 'Lagoon',
+  affiliation: 'University of Free Town',
+  phdThesis: false,
+  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+  pi: true
 };
