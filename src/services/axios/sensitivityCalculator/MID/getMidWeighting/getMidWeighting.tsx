@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../../utils/constants';
-import {MockQuerryMidWeightingContinuum, MockResponseMidWeightingContinuum, MockQuerryMidWeightingLine} from './mockResponseMidWeighting';
+import {MockQuerryMidWeightingContinuum, MockQuerryMidWeightingLine, MockResponseMidWeightingContinuum, MockResponseMidWeightingLine} from './mockResponseMidWeighting';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetMidWeighting(mode) {
@@ -8,6 +8,7 @@ async function GetMidWeighting(mode) {
   const URL_MID = `mid/`;
   const URL_WEIGHTING = `weighting`;
   let QUERRY_STRING_PARAMETERS;
+  let MockResponse;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -18,15 +19,17 @@ async function GetMidWeighting(mode) {
   switch (mode) {
     case 'Continuum':
         QUERRY_STRING_PARAMETERS = MockQuerryMidWeightingContinuum;
+        MockResponse = MockResponseMidWeightingContinuum;
         break;
     case 'Zoom':
         QUERRY_STRING_PARAMETERS = MockQuerryMidWeightingLine;
+        MockResponse = MockResponseMidWeightingLine;
         break
     default:
   }
 
   if (USE_LOCAL_DATA) {
-    return MockQuerryMidWeightingContinuum;
+    return MockResponse;
   }
 
   try {
