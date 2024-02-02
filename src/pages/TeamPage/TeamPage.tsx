@@ -70,7 +70,7 @@ export default function TeamPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (params: { row: { pi: boolean } }) => (
-        <Typography>{params.row.pi ? 'Yes' : 'No'}</Typography>
+        <Typography>{t(params.row.pi ? 'yes' : 'No')}</Typography>
       )
     },
     {

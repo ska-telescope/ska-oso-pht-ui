@@ -126,10 +126,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
           </Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography variant="body1" m={2}>
-            In this space should be some sort of description as to the purpose of this page,
-            including guidance, how to progress, etc
-          </Typography>
+          <Typography variant="body1" m={2}>{t(`page.${pageNo}.desc`)}</Typography>
         </Grid>
       </Grid>
       {openDialog && (

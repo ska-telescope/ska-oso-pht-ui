@@ -91,15 +91,14 @@ export const DEFAULT_HELP = ['', ' ', ''];
 export const OBSERVATION = {
   array: [
     {
-      label: 'MID',
       value: 1,
       subarray: [
-        { label: 'AA0.5', value: 1 },
-        { label: 'AA1', value: 2 },
-        { label: 'AA2', value: 3 },
-        { label: 'AA* (15-m antennas only)', value: 9 },
-        { label: 'AA4 (15-m antennas only)', value: 10 },
-        { label: 'Custom', value: 20 }
+        { value: 1 },
+        { value: 2 },
+        { value: 3 },
+        { lvalue: 4 },
+        { value: 5 },
+        { value: 6 }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -134,20 +133,19 @@ export const OBSERVATION = {
       ]
     },
     {
-      label: 'LOW',
       value: 2,
       subarray: [
-        { label: 'AA0.5', value: 1 },
-        { label: 'AA1', value: 2 },
-        { label: 'AA2', value: 3 },
-        { label: 'AA2 (core only', value: 4 },
-        { label: 'AA*', value: 5 },
-        { label: 'AA* (core only)', value: 6 },
-        { label: 'AA4', value: 7 },
-        { label: 'AA4 (core only)', value: 8 },
-        { label: 'Custom', value: 20 }
+        { value: 1 },
+        { value: 2 },
+        { value: 3 },
+        { value: 4 },
+        { value: 5 },
+        { value: 6 },
+        { value: 7 },
+        { value: 8 },
+        { value: 9 }
       ],
-      robust: [{ label: 'n/a', value: 1 }],
+      robust: [{ value: 1 }],
       band: null,
       bandWidth: [
         { label: '24.4 KHz', value: 1 },

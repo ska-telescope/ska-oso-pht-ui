@@ -85,14 +85,14 @@ export default function DataPage() {
           alignItems="baseline"
           justifyContent="flex-start"
         >
-          <Grid item xs={7}>
+          <Grid item xs={7}> 
             <Typography variant="h6" m={2}>
-              SDP
+              {t('label.sdp')}
             </Typography>
 
             {pipelineField()}
             <Typography variant="h6" m={2}>
-              SRC Net
+              {t('label.srcNet')}
             </Typography>
           </Grid>
           <Grid item xs={1} />

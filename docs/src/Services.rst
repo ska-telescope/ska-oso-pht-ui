@@ -13,7 +13,9 @@ The code for this has already been provided and ensures that styling adhere's to
 i18n
 ====
 
-Allows for text to be displayed in the language of the browser, with English as the default
+Allows for text to be displayed in the language of the browser, with English as the default.
+The data is stored in folders under public/locales, with each language in its own folder ( e.g. en ).
+In this application, all the json files needed to be called pht.json
 
 axios
 =====

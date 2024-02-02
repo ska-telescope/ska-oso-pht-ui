@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
@@ -23,6 +24,7 @@ const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
 
 export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitConfirmationProps) {
+  const { t } = useTranslation('pht');
   const theme = useTheme();
   const { application } = storageObject.useStore();
 
@@ -42,20 +44,20 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
 
   const proposalType = () => {
     const pt = getProposal().proposalType;
-    const pName = !pt || pt < 1 ? 'None selected' : Projects[pt - 1].title;
+    const pName = !pt || pt < 1 ? t('label.noneSelected') : Projects[pt - 1].title;
     const st = getProposal().proposalSubType;
     const sName =
-      !pt || pt < 1 || !st || st < 1 ? 'None selected' : Projects[pt - 1].subProjects[st - 1].title;
+      !pt || pt < 1 || !st || st < 1 ? t('label.noneSelected') : Projects[pt - 1].subProjects[st - 1].title;
     return `${pName} / ${sName}`;
   };
 
   const category = () => {
     const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? 'None selected' : GENERAL.ScienceCategory[pt - 1].label;
+    const pName = !pt || pt < 1 ? t('label.noneSelected') : GENERAL.ScienceCategory[pt - 1].label;
     const st = getProposal().subCategory;
     const sName =
       !pt || pt < 1 || !st || st < 1
-        ? 'None selected'
+        ? t('label.noneSelected')
         : GENERAL.ScienceCategory[pt - 1].subCategory[st - 1].label;
     return `${pName} / ${sName}`;
   };
@@ -103,13 +105,13 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Title</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.title')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().title}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Proposal Type</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.proposalType')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{proposalType()}</Typography>
@@ -122,7 +124,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Members</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.members')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().team.map((rec: TeamMember) => (
@@ -152,13 +154,13 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Abstract</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.abstract')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Category</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.category')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{category()}</Typography>
@@ -171,7 +173,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>File name</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.fileName')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
@@ -186,7 +188,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Targets</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.targets')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().targets.map((rec: Target) => (
@@ -217,7 +219,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Observations</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.observations')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().observations.map((rec: Observation) => (
@@ -247,7 +249,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Target Selections</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.targetSelection')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().targetObservation.map(
@@ -271,7 +273,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>File name</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.fileName')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
@@ -286,7 +288,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>Pipeline</Typography>
+          <Typography variant={LABEL_STYLE}>{t('label.pipeline')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
@@ -305,7 +307,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
     >
-      {pageTitle('SKAO Cycle')}
+      {pageTitle(t('page.11.title'))}
       <DialogContent>
         <Grid
           p={2}
