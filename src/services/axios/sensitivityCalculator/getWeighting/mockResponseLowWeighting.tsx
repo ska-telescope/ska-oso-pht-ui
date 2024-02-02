@@ -14,6 +14,11 @@ export const MockQuerryLowWeightingLine =
     freq_centre: '200'
 };
 
+/*
+The response here is used in the sensitivity calculator. Some results are used directly like the confusion noise, 
+and some are combined and used for some calculations in the front-end.
+*/
+
 export const MockResponseLowWeightingContinuum =
 {
     "weighting_factor": 15.176737500353465,

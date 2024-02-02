@@ -42,7 +42,7 @@ async function GetWeighting(telescope, mode) {
       MOCK_CONTINUUM_QUERY = MockQuerryMidWeightingContinuum;
       MOCK_ZOOM_QUERY = MockQuerryMidWeightingLine;
       MOCK_RESPONSE_CONTINUUM = MockResponseMidWeightingContinuum;
-      MOCK_RESPONSE = MockResponseMidWeightingLine;
+      MOCK_RESPONSE_ZOOM = MockResponseMidWeightingLine;
       break;
     case 'Low':
       URL_TELESCOPE = URL_LOW;
@@ -52,7 +52,7 @@ async function GetWeighting(telescope, mode) {
       MOCK_CONTINUUM_QUERY = MockQuerryLowWeightingContinuum;
       MOCK_ZOOM_QUERY = MockQuerryLowWeightingLine;
       MOCK_RESPONSE_CONTINUUM = MockResponseLowWeightingContinuum;
-      MOCK_RESPONSE = MockResponseLowWeightingLine;
+      MOCK_RESPONSE_ZOOM = MockResponseLowWeightingLine;
       break
     default:
   }

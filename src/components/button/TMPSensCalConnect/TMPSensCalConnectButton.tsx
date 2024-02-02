@@ -3,39 +3,19 @@
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import GetCalculate from '../../../services/axios/sensitivityCalculator/getCalculate/getCalculate';
-import GetWeighting from '../../../services/axios/sensitivityCalculator/getWeighting/getWeighting';
+import getSensitivityCalculatorAPIData from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 
 export default function TMPSensCalConnectButton({ onClick }) {
   const ClickFunction = async () => {
-    /* 3 calls for Mid Continuum */
-    const responseCalculate = await GetCalculate('Mid', 'Continuum');
-    const responseWeightingContinuum = await GetWeighting('Mid','Continuum');
-    const responseWeightingLine = await GetWeighting('Mid','Zoom');
-    console.log('Mid Continuum call', responseCalculate, responseWeightingContinuum, responseWeightingLine);
-
-    /* 2 calls for Mid Zoom */
-    const responseCalculate2 = await GetCalculate('Mid', 'Zoom');
-    const responseWeightingLine2 = await GetWeighting('Mid','Zoom');
-    console.log('Mid Zoom call', responseCalculate2, responseWeightingLine2);
-
-    /* 3 calls for Low Continuum */
-    const responseCalculateLow = await GetCalculate('Low', 'Continuum');
-    const responseWeightingContinuumLow = await GetWeighting('Low','Continuum');
-    const responseWeightingLineLow = await GetWeighting('Low','Zoom');
-    console.log('Low Continuum call', responseCalculateLow, responseWeightingContinuumLow, responseWeightingLineLow);
-
-    /* 2 calls for Low Zoom */
-    const responseCalculateLow2 = await GetCalculate('Low', 'Zoom');
-    const responseWeightingLineLow2 = await GetWeighting('Low','Zoom');
-    console.log('Low Continuum call', responseCalculateLow2, responseWeightingLineLow2);
-
-    const response = {
-      responseCalculate,
-      responseWeightingContinuum,
-      responseWeightingLine
-    }
-    onClick(response);
+    // Mid Continuum
+    const response1 = await getSensitivityCalculatorAPIData('Mid', 'Continuum');
+    // Mid Zoom
+    const response2 = await getSensitivityCalculatorAPIData('Mid', 'Zoom');
+    // Low Continuum
+    const response3 = await getSensitivityCalculatorAPIData('Low', 'Continuum');
+    // Low Zoom
+    const response4 = await getSensitivityCalculatorAPIData('Low', 'Zoom');
+    onClick(response1); // TODO: pass responses to Observation pages properly
   };
 
   const title = 'TMP BUTTON';

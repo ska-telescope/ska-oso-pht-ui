@@ -22,8 +22,8 @@ export const MockQuerryMidWeightingLine =
 };
 
 /*
-The response here is used in the sensitivity calculator. Some are used directly like the confusion noise, 
-and some result are combined and used for some calculations in the front-end.
+The response here is used in the sensitivity calculator. Some results are used directly like the confusion noise, 
+and some are combined and used for some calculations in the front-end.
 */
 
 export const MockResponseMidWeightingContinuum = {

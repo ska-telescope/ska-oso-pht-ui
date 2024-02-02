@@ -34,12 +34,6 @@ export const MockQueryMidCalculateZoom =
     integration_time: '600'
 }
 
-/*
-In the response, I believe that the bit that is useful and used in the sensitivity calculator is the "sensitivity" and "line_sensitivity".
-The sensitivity and line sensitivity are used to do calculations in the front-end combined with the weighting results.
-I don't think that the "state" is used anywhere in the results.
-*/
-
 export const MockResponseMidCalculate = 
 {
     "status": "success",
