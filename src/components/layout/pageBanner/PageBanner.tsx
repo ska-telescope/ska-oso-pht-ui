@@ -126,7 +126,9 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
           </Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography variant="body1" m={2}>{t(`page.${pageNo}.desc`)}</Typography>
+          <Typography variant="body1" m={2}>
+            {t(`page.${pageNo}.desc`)}
+          </Typography>
         </Grid>
       </Grid>
       {openDialog && (

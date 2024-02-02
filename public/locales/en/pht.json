@@ -34,11 +34,11 @@
   "dropdown": {
     "observationType": {
       "0": "Not specified",
-      "1" : "Zoom", 
+      "1": "Zoom",
       "2": "Continuum"
     },
     "scienceCategory": {
-      "1": "Cosmology", 
+      "1": "Cosmology",
       "2": "Cradle of Life",
       "3": "Epoch of Re-ionization",
       "4": "Extra Galactic continuum",
@@ -64,7 +64,7 @@
         "title": "Not specified"
       },
       "1": {
-        "title" : "MID",
+        "title": "MID",
         "array": {
           "1": "AA0.5",
           "2": "AA1",
@@ -87,7 +87,7 @@
           "8": "AA4 (core only)",
           "9": "Custom"
         },
-        "robust": { 
+        "robust": {
           "1": "n/a"
         }
       }
@@ -208,7 +208,7 @@
     "elevation": "Elevation",
     "effectiveResolution": "Effective Resolution",
     "email": "Email",
-    "fileName": "File name", 
+    "fileName": "File name",
     "firstName": "First Name",
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",

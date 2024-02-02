@@ -55,8 +55,8 @@ const MockProposal = {
   observations: [
     {
       id: 1,
-      telescope: 1, 
-      subarray: 1, 
+      telescope: 1,
+      subarray: 1,
       type: 2
     },
     {

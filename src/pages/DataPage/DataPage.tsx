@@ -85,7 +85,7 @@ export default function DataPage() {
           alignItems="baseline"
           justifyContent="flex-start"
         >
-          <Grid item xs={7}> 
+          <Grid item xs={7}>
             <Typography variant="h6" m={2}>
               {t('label.sdp')}
             </Typography>

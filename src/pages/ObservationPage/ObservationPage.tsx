@@ -86,7 +86,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
-        <Typography>{t(`dropdown.telescope.${  e.row.telescope  }.title`)}</Typography>
+        <Typography>{t(`dropdown.telescope.${e.row.telescope}.title`)}</Typography>
       )
     },
     {
@@ -94,13 +94,16 @@ export default function ObservationPage() {
       headerName: t('label.array'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number; subarray: number } }) => 
-        { 
-          if (e.row.telescope) { 
-            return <Typography>{t(`dropdown.telescope.${  e.row.telescope  }.array.${  e.row.subarray  }`)}</Typography>;
-          }
-          return <Typography>{t("dropdown.telescope.0.title")}</Typography>
+      renderCell: (e: { row: { telescope: number; subarray: number } }) => {
+        if (e.row.telescope) {
+          return (
+            <Typography>
+              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
+            </Typography>
+          );
         }
+        return <Typography>{t('dropdown.telescope.0.title')}</Typography>;
+      }
     },
     {
       field: 'type',
@@ -108,7 +111,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
-        <Typography>{t(`dropdown.observationType.${  e.row.type  }`)}</Typography>
+        <Typography>{t(`dropdown.observationType.${e.row.type}`)}</Typography>
       )
     },
     {

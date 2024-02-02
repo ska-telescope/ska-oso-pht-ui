@@ -47,7 +47,9 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     const pName = !pt || pt < 1 ? t('label.noneSelected') : Projects[pt - 1].title;
     const st = getProposal().proposalSubType;
     const sName =
-      !pt || pt < 1 || !st || st < 1 ? t('label.noneSelected') : Projects[pt - 1].subProjects[st - 1].title;
+      !pt || pt < 1 || !st || st < 1
+        ? t('label.noneSelected')
+        : Projects[pt - 1].subProjects[st - 1].title;
     return `${pName} / ${sName}`;
   };
 
