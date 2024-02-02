@@ -82,10 +82,10 @@ export const helpers = {
         const targets = mockProposal?.targets?.filter(target =>
           targetIds.includes(target.id.toString())
         );
-        const array = OBSERVATION.array.find(p => p.value === observation.telescope + 1);
+        const array = OBSERVATION.array.find(p => p.value === observation.telescope);
         return {
           array: array?.label,
-          subarray: array?.subarray?.find(sa => sa.value === observation.subarray + 1)?.label,
+          subarray: array?.subarray?.find(sa => sa.value === observation.subarray)?.label,
           linked_sources: targets?.map(target => target.name),
           observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)
             ?.label

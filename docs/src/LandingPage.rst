@@ -2,9 +2,9 @@ Landing Page
 ~~~~~~~~~~~~
 To submit a proposal to seek observing and processing time on the SKAO telescopes, start here. You will be guided through the landing page's main features and functionalities via this guide.
 
-.. figure:: /images/landingPageLight.png
+.. figure:: /images/landingPage.png
    :width: 90%
-   :alt: screen in light mode
+   :alt: screen in light & dark mode
 
 Layout and Navigation
 =====================
@@ -26,7 +26,7 @@ Layout and Navigation
 - Search bar : Search for specific proposals by title.
 
 .. figure:: /images/landingPageSearch.png
-   :width: 20%
+   :width: 30%
    :alt: Page search filter
 
 - Proposal Table : This table lists your proposals with the following information
@@ -42,8 +42,20 @@ Layout and Navigation
    :width: 20%
    :alt: Landing page icons
 
-Table Actions
+Table Actions  ( NOTE THAT BELOW IS TEMPORARY AND WILL BE REPLACED SOON )
 =============
+   
+.. csv-table:: Properties
+   :header: "Property", "Type", "Required", "default", ""
+
+    "action", "function", "No", "", "Allows for an onClick activity"
+    "ariaDescription", "string", "No", "", "Used by Screen Readers"
+    "ariaTitle", "string", "No", "AlertCard", "Used by Screen Readers"
+    "color", "AlertColorTypes", "No", "Info", "Identifies the coloring for the alert"
+    "children", "JSX.Element", "No", "", "Allows for content to be added within the alert"
+    "variant", "AlertVariantTypes", "No", "Outlined", "Styling option"
+    "testId", "string", "Yes", "", "Used for testing purposes"
+    
 
 .. csv-table:: Properties
    :header: "Icon", "Active Status", "Purpose"
@@ -79,15 +91,9 @@ Additional Notes
    :width: 5%
    :alt: light/dark Button
 
-.. figure:: /images/landingPageLight.png
-   :width: 40%
-   :align: left
-   :alt: screen in light mode
-
-.. figure:: /images/landingPageDark.png
-   :width: 40%
-   :align: right
-   :alt: screen in dark mode
+.. figure:: /images/landingPage.png
+   :width: 90%
+   :alt: screen in light & dark mode
 
 Next Steps
 ==========

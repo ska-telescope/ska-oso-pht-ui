@@ -1,77 +1,89 @@
 Title Page
 =============
-This page allows the user to create a new proposal by selecting a proposal type and a sub-proposal type. 
 
-The user can also enter a title for the new proposal.
+This guide will walk you through the "Title Page" section, where you define the key details of your proposal.
 
-Title
-------
-This field allows the user to enter a title for the new proposal. 
-The title should be used to identify the proposal in a list of proposals. 
-The user can only enter alphanumeric characters, spaces, and some special characters. 
-The maximum length of the title is specified in MAX_TITLE_LENGTH constant.
+.. figure:: /images/titlePage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
+ 
+Layout and Navigation
+=====================
 
-Proposal Type
---------------
-This section displays a list of available proposal types that can be used as a basis for a new proposal. 
-The user can select a proposal type by clicking on the corresponding card. 
-The card displays the proposal code, title, and description. 
-If the user selects a different proposal type after already having selected a sub-proposal type, they will be prompted to confirm whether they want to discard the current sub-proposal.
+The Title Page has two main layouts:
 
-Sub-Proposal Type
-------------------
-This section displays a list of available sub-proposal types for the selected proposal type. 
-The user can select a sub-proposal type by clicking on the corresponding card. 
-The card displays the sub-proposal code, title, and description. 
-If the user selects a different sub-proposal type after already having selected one, they will be prompted to confirm whether they want to discard the current sub-proposal.
+Selecting Proposal Type
+=======================
 
-AlertDialog
-------------
-This component is used to display a confirmation dialog when the user selects a different proposal type or sub-proposal type. 
-The dialog asks the user whether they want to continue with the new selection or discard their changes. 
-The user's response is passed to the handleDialogResponse function, which updates the state accordingly.
+- You will see several main proposal types like Standard Proposal, Key Science Project, and Director's Discretionary Time Proposal.
+   
+.. csv-table:: Properties
+   :header: "Proposal Type", "Initials", "Description"
 
-TextField
------------
-This component is used to display the Title field. It allows the user to enter the title for the new proposal. 
-The value of the field is stored in the TheTitle state. When the user types in the field, the validateTheTitle function is called to validate the input. 
-If the input is valid, the error state is set to false, and the helperText state is cleared. 
-If the input is not valid, the error state is set to true, and the helperText state displays an error message.
+    "Standard Proposal", "PI", "Standard Observing Proposal"
+    "Key Science Project", "KSP", "A large science project that requires observing time allocations over a period longer than one cycle."
+    "Director's Discretionary Time Proposal", "DDT", "Does not follow the normal proposal submission policies. It only requires approval from DG?"
 
-Projects
----------
-This constant is an array of objects representing the available proposal types and sub-proposal types. 
-Each object contains a code, title, and description property. 
-The available proposal types are displayed as cards in the Proposal Type section, while the available sub-proposal types for the selected proposal type are displayed as cards in the Sub-Proposal Type section.
+- Clicking a main proposal type reveals relevant sub-proposal types like Target of Opportunity or Joint SKA Proposal.
 
-Avatar, Button, Card, CardActionArea, CardHeader, Grid, Tooltip, and Typography
----------------------------------------------------------------------------------
-These are components from the Material-UI library used to display the cards and text on the page. 
+.. csv-table:: Properties
+   :header: "Proposal Sub-Type", "Initials", "Description"
 
-The Card component is used to display each proposal type and sub-proposal type as a card with a code, title, and description. 
+    "Target of Opportunity", "ToO", "A target of opportunity observing proposal"
+    "Joint Telescope proposal", "JTP", " proposal that requires both SKA-Mid and SKA-Low telescopes"
+    "Coordinated Proposal", "CP", "A proposal requiring observing to be coordinated with another facility( either ground or space based) with user-specified scheduling constraints provided."
+    "Long Term Proposal", "LTP", "A proposal that spans multiple proposal cycles. This differs from KSP as LTP typically needs small amounts of time spread over more than one cycle and KSP requires a lot of observing time."
 
-The CardHeader component is used to display the code and title of each card. 
+- Hovering over a proposal type displays a description for your reference.
 
-The Tooltip component is used to display the description of each card when the user hovers over the title. 
+- A status indicator at the top shows the validation status of each page in the flow.
 
-The Avatar component is used to display the proposal code as an icon on each card. 
+Entering Title and Creating proposal
+====================================
 
-The Grid component is used to arrange the cards in a grid layout. 
+- Enter your proposal's title in the provided text field.
+- Select your chosen main and sub-proposal types from the menus.
+- Once selected, a "Create" button with a plus sign appears at the bottom right.
+- Click "Create" to proceed to the next page.
 
-The Typography component is used to display text on the page.
+Navigation Elements
+===================
 
+- Home: (Top left corner) Returns you to the Landing Page.
+- Team: (Bottom right corner) Takes you to the next page for managing your team.
+- Save: (Top left ) Saves your progress on the Title Page.
+- Validate: (Top right) Checks if all required information is filled correctly.
+- Submit: (Top right corner, initially grayed out) Becomes clickable only when all details are entered and validated.
 
-POST Proposal
-------------------------------
-The CREATE button is displayed on the Title add proposal page.
+Additional Features
+===================
 
-Clicking on the button will do a request to the API POST proposal endpoint.
+- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
+- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
 
-An Alert component is displayed at the bottom of the page with the result of the request. The user is then redirected to the Title proposal page.
+.. figure:: /images/sunMoonBtn.png
+   :width: 5%
+   :alt: light/dark Button
 
+.. figure:: /images/titlePage.png
+   :width: 90%
+   :alt: screen in light & dark mode
 
-PUT Proposal
-------------------------------
-Clicking on the SAVE button will do a request to the API PUT proposal endpoint.
+Key Information and Actions
+===========================
 
-An Alert component is displayed at the top of the page with the result of the request.
+- On this page, you define the title and type of your proposal.
+- Selecting the appropriate type helps categorize your proposal and ensures alignment with SKAO priorities.
+- Use the "Create" button to proceed to the next step of building your proposal.
+
+Next Steps
+==========
+
+After successfully creating your proposal on this page, you'll move on to the "Team" page, where you can manage the researchers involved in your project.
+
+Additional Notes:
+
+- This guide assumes you're already logged in to PPT.
+- The content remains the same regardless of your user context.
+- Remember to save your progress regularly using the "Save" button.
+- The "Submit" button will only become active when all required information is entered and validated.
