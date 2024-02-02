@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../../utils/constants';
-import {MockQueryMidCalculate, MockQueryMidCalculateZoom, MockResponseMidCalculate} from './mockResponseMidCalculate';
+import {MockQueryMidCalculate, MockQueryMidCalculateZoom, MockResponseMidCalculateZoom, MockResponseMidCalculate} from './mockResponseMidCalculate';
 import {MockQueryLowCalculate, MockQueryLowCalculateZoom, MockResponseLowCalculate, MockResponseLowCalculateZoom} from './mockResponseLowCalculate';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,7 +41,7 @@ async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAME
       MOCK_CONTINUUM_QUERY = MockQueryMidCalculate;
       MOCK_ZOOM_QUERY = MockQueryMidCalculateZoom;
       MOCK_RESPONSE_CONTINUUM = MockResponseMidCalculate;
-      MOCK_RESPONSE_ZOOM = MockQueryMidCalculateZoom;
+      MOCK_RESPONSE_ZOOM = MockResponseMidCalculateZoom;
       break;
     case 'Low':
       URL_TELESCOPE = URL_LOW;

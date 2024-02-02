@@ -10,12 +10,12 @@ export default function TMPSensCalConnectButton({ onClick }) {
   const ClickFunction = async () => {
     /* 3 calls for Mid Continuum */
     const responseCalculate = await GetCalculate('Mid', 'Continuum');
-    const responseWeightingContinuum = await GetMidWeighting('Continuum');
-    const responseWeightingLine = await GetMidWeighting('Zoom');
+    const responseWeightingContinuum = await GetMidWeighting('Mid','Continuum');
+    const responseWeightingLine = await GetMidWeighting('Mid','Zoom');
 
     /* 2 calls for Mid Zoom */
     const responseCalculate2 = await GetCalculate('Mid', 'Zoom');
-    const responseWeightingLine2 = await GetMidWeighting('Zoom');
+    const responseWeightingLine2 = await GetMidWeighting('Mid','Zoom');
 
     /* 3 calls for Low Continuum */
     const responseCalculateLow = await GetCalculate('Low', 'Continuum');
