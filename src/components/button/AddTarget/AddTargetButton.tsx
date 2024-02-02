@@ -11,7 +11,7 @@ interface AddTargetButtonProps {
 export default function AddTargetButton({ disabled, onClick }: AddTargetButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.label.addTarget');
+  const title = t('button.addTarget');
 
   return (
     <Button

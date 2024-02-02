@@ -11,7 +11,7 @@ interface SubmitButtonProps {
 export default function SubmitButton({ disabled, onClick }: SubmitButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.label.submit');
+  const title = t('button.submit');
 
   return (
     <Button

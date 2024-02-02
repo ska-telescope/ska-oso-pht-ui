@@ -10,7 +10,7 @@ interface ConfirmButtonProps {
 export default function ConfirmButton({ onClick }: ConfirmButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.label.confirm');
+  const title = t('button.confirm');
 
   return (
     <Button

@@ -12,7 +12,7 @@ export default function AddObservationButton() {
     navigate('/AddObservation');
   };
 
-  const title = t('button.label.addObservation');
+  const title = t('button.addObservation');
 
   return (
     <Button

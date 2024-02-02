@@ -14,7 +14,7 @@ export default function ResolveButton({ targetName, onClick }) {
     onClick(response);
   };
 
-  const title = t('button.label.resolve');
+  const title = t('button.resolve');
 
   return (
     <Button
