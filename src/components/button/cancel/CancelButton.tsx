@@ -10,7 +10,7 @@ interface CancelButtonProps {
 export default function CancelButton({ onClick }: CancelButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.label.cancel');
+  const title = t('button.cancel');
 
   return (
     <Button

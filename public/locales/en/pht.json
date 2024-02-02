@@ -7,19 +7,17 @@
   "yes": "Yes",
   "no": "No",
   "button": {
-    "label": {
-      "addObservation": "Add observation",
-      "addProposal": "Add proposal",
-      "addTarget": "Add target",
-      "cancel": "Cancel",
-      "confirm": "Confirm",
-      "home": "Home",
-      "resolve": "Resolve",
-      "save": "Save",
-      "submit": "Submit",
-      "sendInvite": "Sent invitation",
-      "validate": "Validate"
-    }
+    "addObservation": "Add observation",
+    "addProposal": "Add proposal",
+    "addTarget": "Add target",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "home": "Home",
+    "resolve": "Resolve",
+    "save": "Save",
+    "submit": "Submit",
+    "sendInvite": "Sent invitation",
+    "validate": "Validate"
   },
   "column": {
     "actions": "Actions",

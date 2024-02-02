@@ -14,7 +14,7 @@ export default function SaveButton({ onClick }) {
     onClick(response);
   };
 
-  const title = t('button.label.save');
+  const title = t('button.save');
 
   return (
     <Button

@@ -19,11 +19,11 @@ In this application, all the json files needed to be called pht.json
 
 axios
 =====
- 
-.. csv-table:: Properties
+
+.. csv-table:: axios endpoints
    :header: "Endpoint", "Type", "LocalData", "Parameters", "Purpose"
 
-    "Proposal/list", "GET", "MockProposals", "current user" "A list of proposals that the user is involved with is obtained from the API"
+    "Proposal/list", "GET", "MockProposals", "current user", "A list of proposals that the user is involved with is obtained from the API"
     "Proposal", "GET", "MockProposal", "proposal Id", "Complete details of a single proposal is obtained from the API"
     "Proposal", "PUT", "", "", "Complete details of a proposal are sent to the API for storage"
     "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"

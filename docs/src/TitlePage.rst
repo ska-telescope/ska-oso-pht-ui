@@ -15,18 +15,18 @@ The Title Page has two main layouts:
 Selecting Proposal Type
 =======================
 
-- You will see several main proposal types like Standard Proposal, Key Science Project, and Director's Discretionary Time Proposal.
+You will see several main proposal types like Standard Proposal, Key Science Project, and Director's Discretionary Time Proposal.
    
-.. csv-table:: Properties
+.. csv-table:: Proposal Types
    :header: "Proposal Type", "Initials", "Description"
 
     "Standard Proposal", "PI", "Standard Observing Proposal"
     "Key Science Project", "KSP", "A large science project that requires observing time allocations over a period longer than one cycle."
     "Director's Discretionary Time Proposal", "DDT", "Does not follow the normal proposal submission policies. It only requires approval from DG?"
 
-- Clicking a main proposal type reveals relevant sub-proposal types like Target of Opportunity or Joint SKA Proposal.
+Clicking a main proposal type reveals relevant sub-proposal types like Target of Opportunity or Joint SKA Proposal.
 
-.. csv-table:: Properties
+.. csv-table:: Sub-Proposal types
    :header: "Proposal Sub-Type", "Initials", "Description"
 
     "Target of Opportunity", "ToO", "A target of opportunity observing proposal"
@@ -34,9 +34,9 @@ Selecting Proposal Type
     "Coordinated Proposal", "CP", "A proposal requiring observing to be coordinated with another facility( either ground or space based) with user-specified scheduling constraints provided."
     "Long Term Proposal", "LTP", "A proposal that spans multiple proposal cycles. This differs from KSP as LTP typically needs small amounts of time spread over more than one cycle and KSP requires a lot of observing time."
 
-- Hovering over a proposal type displays a description for your reference.
+.. tip:: On Hover
 
-- A status indicator at the top shows the validation status of each page in the flow.
+   - Hovering over a proposal type displays a description for your reference.
 
 Entering Title and Creating proposal
 ====================================
@@ -67,7 +67,14 @@ Additional Features
 
 .. figure:: /images/titlePage.png
    :width: 90%
-   :alt: screen in light & dark mode
+   :alt: screen in light & dark 
+   
+- A status indicator at the top shows the validation status of each page in the flow.
+- Each status indicator, when clicked, will navigate to the appropriate page
+
+.. figure:: /images/pageStatus.png
+   :width: 90%
+   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
@@ -81,7 +88,8 @@ Next Steps
 
 After successfully creating your proposal on this page, you'll move on to the "Team" page, where you can manage the researchers involved in your project.
 
-Additional Notes:
+Additional Notes
+================
 
 - This guide assumes you're already logged in to PPT.
 - The content remains the same regardless of your user context.

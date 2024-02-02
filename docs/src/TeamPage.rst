@@ -1,52 +1,85 @@
 Team Page
-=============
-This page is responsible for displaying the team members involved in a proposal.
+=========
 
+This guide explains the "Team Page," where you manage the researchers involved in your project.
 
-Team Table
--------------
-Displays the list of team members. 
+.. figure:: /images/teamPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
 
-The PI column displays a grey star icon if the team member is the Principal Investigator of the proposal. 
+Layout and Navigation
+=====================
 
-For non PI members, a bordered star is displayed if the invitation has been accepted.
+The Team Page has two main sections:
 
-If the invitation is pending, no star is displayed.
+1. Team Member List (Left)
+==========================
 
+Displays a table with information about each team member:
+- Last Name, First Name
+- Status (e.g., Invited, Accepted)
+- PhD Thesis checkbox
+- PI star icon (filled: Principal Investigator, hollow: not PI, missing: invitation not accepted)
+- "Actions" (delete)
 
-Invite Team Member
---------------------
+Click the star icon to make someone a PI or remove the PI role.
 
-The user can invite new members by filling the form. 
+2. Team Management Options (Right)
+==================================
 
-Information required is: first name, last name, email address and an optional check box for Principal Investigator.
+= Invite Team Members: Add collaborators by entering their email and selecting PI, PhD Thesis options.
+- Import from File: Upload a file containing team member details.
+- Search for Member: Find existing users to add directly.
+- Field Sensitive Help:
+- Send Invitation: Click this button after entering team member details. (Disabled until required fields are filled).
 
+Navigation Elements
+===================
 
-Syntax check
---------------
-The input fields of the form are checked for correct syntax, allowing only alpha-numeric characters and some limited special characters.
+- Home: (Top left corner) Returns you to the Landing Page.
+- Title Page: (Bottom left corner) Takes you back to the Title Page.
+- Save: (Top left) Saves your progress on the Team Page.
+- Validate: (Top right) Checks if all required information is filled correctly.
+- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
+- General: (Bottom right corner) Takes you to the next page for general proposal details.
 
-The email address checks for a valid email format.
+Additional Features
+===================
 
-Errors messages are displayed under the inputs in case of incorrect syntax.
+- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
+- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
 
+.. figure:: /images/sunMoonBtn.png
+   :width: 5%
+   :alt: light/dark Button
 
-Form Validation
-------------------
-The form button is disabled by default.
+.. figure:: /images/teamPage.png
+   :width: 90%
+   :alt: screen in light & dark 
+   
+- A status indicator at the top shows the validation status of each page in the flow.
+- Each status indicator, when clicked, will navigate to the appropriate page
 
-The form validation logic checks that there are no syntax issues and that no input fields are left empty.
+.. figure:: /images/pageStatus.png
+   :width: 90%
+   :alt: page status icons/navigation
 
-If all these conditions are met, the "Send Invitation" button is enabled.
+Key Information and Actions
+===========================
 
-No error message is displayed for empty fields, however the button will stay disabled.
+- View and manage your proposal team.
+- Invite new collaborators and assign PI roles.
+- Import team members from a file or find existing users.
+- Ensure clarity on everyone's involvement in the project.
 
+Next Steps
+==========
 
-Add Team Member
------------------
-Once the form has been validated and the button clicked, the data table will display the new team member with a pending status.
+After successfully managing your team on this page, you'll move on to the "General" page, where you enter general details about your proposal.
 
-The input fields are then cleared.
+Additional Notes
+================
 
-
-
+- This guide assumes you're already logged in to PPT.
+- The content remains the same regardless of your user context.
+- Remember to save your progress regularly using the "Save" button.

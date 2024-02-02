@@ -29,43 +29,35 @@ Layout and Navigation
    :width: 30%
    :alt: Page search filter
 
-- Proposal Table : This table lists your proposals with the following information
-  - Proposal ID : Unique identifier for each proposal.
-  - Cycle : SKAO observing cycle associated with the proposals.
-  - Title : Briefly describes the research project.
-  - PI : Principal Investigator leading the proposal.
-  - Status : Current stage of the proposal (e.g., draft, submitted, under review).
-  - Last Updated : Date and time the proposal was last modified.
-  - Perform various actions on individual proposals (See below).
+Proposal Table
+==============
 
-  .. figure:: /images/landingPageIcons.png
+This table lists your proposals with the following information
+
+- Proposal ID : Unique identifier for each proposal.
+- Cycle : SKAO observing cycle associated with the proposals.
+- Title : Briefly describes the research project.
+- PI : Principal Investigator leading the proposal.
+- Status : Current stage of the proposal (e.g., draft, submitted, under review).
+- Last Updated : Date and time the proposal was last modified.
+- Perform various actions on individual proposals (See below).
+
+.. figure:: /images/landingPageIcons.png
    :width: 20%
    :alt: Landing page icons
 
-Table Actions  ( NOTE THAT BELOW IS TEMPORARY AND WILL BE REPLACED SOON )
+Table Actions
 =============
    
-.. csv-table:: Properties
-   :header: "Property", "Type", "Required", "default", ""
-
-    "action", "function", "No", "", "Allows for an onClick activity"
-    "ariaDescription", "string", "No", "", "Used by Screen Readers"
-    "ariaTitle", "string", "No", "AlertCard", "Used by Screen Readers"
-    "color", "AlertColorTypes", "No", "Info", "Identifies the coloring for the alert"
-    "children", "JSX.Element", "No", "", "Allows for content to be added within the alert"
-    "variant", "AlertVariantTypes", "No", "Outlined", "Styling option"
-    "testId", "string", "Yes", "", "Used for testing purposes"
-    
-
-.. csv-table:: Properties
+.. csv-table:: Actions
    :header: "Icon", "Active Status", "Purpose"
 
-    "View", "Submitted , Accepted, Withdrawn" "View the selected proposal only"
+    "View", "Submitted, Accepted, Withdrawn", "View the selected proposal only"
     "Edit", "Draft", "View and edit the selected proposal"
     "Clone", "", "Create a new proposal using the selected proposal as a starting point"
     "Download", "", "Export the proposal from the application in PDF format"
     "Delete", "Draft, Withdrawn", "Selected proposal is removed from the application after removal confirmation"
-
+    
 Key Information and Actions
 ===========================
 
@@ -82,7 +74,7 @@ Additional Notes
 - The SKAO logo when clicked, opens a new browser window with the SKAO website
 
 .. figure:: /images/skaoBtn.png
-   :width: 20%
+   :width: 15%
    :alt: SKAO button
 
 - The page supports both light and dark mode with a Sun/Moon icon on the top right corner of the page.

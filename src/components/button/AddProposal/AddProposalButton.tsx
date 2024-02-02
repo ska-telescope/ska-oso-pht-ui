@@ -12,7 +12,7 @@ export default function AddProposalButton() {
     navigate('/addProposal');
   };
 
-  const title = t('button.label.addProposal');
+  const title = t('button.addProposal');
 
   return (
     <Button
