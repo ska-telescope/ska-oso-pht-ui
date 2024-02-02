@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
+import { DataGrid, TickBox, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import TMPSensCalConnectButton from '../../components/button/TMPSensCalConnect/TMPSensCalConnectButton';
@@ -17,6 +17,8 @@ export default function ObservationPage() {
   const [currentObservation, setCurrentObservation] = React.useState(0);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
+  const [axiosSensCalError, setAxiosSensCalError] = React.useState('');
+  const [axiosSensCalErrorColor, setAxiosSensCalErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -159,6 +161,19 @@ export default function ObservationPage() {
     // TODO
   };
 
+  const handleSensCalConnectClick = response => {
+    // TODO: handle response
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosSensCalError(`Success`);
+      setAxiosSensCalErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosSensCalError(response.error);
+      setAxiosSensCalErrorColor(AlertColorTypes.Error);
+    }
+  }
+
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
   };
@@ -177,12 +192,13 @@ export default function ObservationPage() {
     return [];
   };
 
-  const handleSensCalConnectClick = response => {
-    // TODO: handle response
-  }
-
   return (
     <Shell page={PAGE}>
+      {axiosSensCalError ? (
+        <Alert testId="alertSaveErrorId" color={axiosSensCalErrorColor}>
+          <Typography>{axiosSensCalError}</Typography>
+        </Alert>
+                ) : null}
       <Grid
         spacing={1}
         p={3}
