@@ -119,7 +119,7 @@
     "scienceCategory": "CATEGORY HELP",
     "scienceSubCategory": "SUB-CATEGORY HELP",
     "spectralAveraging": "Spectral Averaging HELP",
-    "specialCharacters": "Special characters !*+[] not allowed",
+    "specialCharacters": "Special characters !+ not allowed",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
     "subArrayConfiguration": "SUB-ARRAY CONFIGURATION HELP",
     "subBands": "SUB-BANDS HELP",
