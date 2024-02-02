@@ -4,7 +4,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { FileCopyRounded } from '@mui/icons-material';
 
 interface CloneIconProps {
-  disabled: boolean;
+  disabled?: boolean;
   onClick: Function;
   selected?: boolean;
   toolTip: string;

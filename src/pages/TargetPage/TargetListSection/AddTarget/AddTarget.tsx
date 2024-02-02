@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -7,12 +8,9 @@ import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 
-export const HELP_NAME = ['NAME TITLE', 'NAME DESCRIPTION', ''];
-export const HELP_RA = ['RIGHT ASCENSION TITLE', 'RIGHT ASCENSION DESCRIPTION', ''];
-export const HELP_DEC = ['DECLINATION TITLE', 'DECLINATION DESCRIPTION', ''];
-export const HELP_VEL = ['VELOCITY TITLE', 'VELOCITY DESCRIPTION', ''];
-
 export default function AddTarget() {
+  const { t } = useTranslation('pht');
+
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
@@ -23,7 +21,7 @@ export default function AddTarget() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(HELP_NAME);
+    helpComponent(t('help.name'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
@@ -101,7 +99,7 @@ export default function AddTarget() {
                 testId="name"
                 value={name}
                 setValue={setName}
-                onFocus={() => helpComponent(HELP_NAME)}
+                onFocus={() => helpComponent(t('help.name'))}
               />
             </Grid>
             <Grid item>
@@ -109,25 +107,25 @@ export default function AddTarget() {
             </Grid>
           </Grid>
           <TextEntry
-            label="Right Ascension"
+            label={t('label.rightAscension')}
             testId="ra"
             value={ra}
             setValue={setRA}
-            onFocus={() => helpComponent(HELP_RA)}
+            onFocus={() => helpComponent(t('help.rightAscension'))}
           />
           <TextEntry
-            label="Declination"
+            label={t('label.declination')}
             testId="dec"
             value={dec}
             setValue={setDec}
-            onFocus={() => helpComponent(HELP_DEC)}
+            onFocus={() => helpComponent(t('help.declination'))}
           />
           <TextEntry
-            label="Velocity / Redshift"
+            label={t('label.velocity')}
             testId="vel"
             value={vel}
             setValue={setVel}
-            onFocus={() => helpComponent(HELP_VEL)}
+            onFocus={() => helpComponent(t('help.velocity'))}
           />
         </Grid>
 

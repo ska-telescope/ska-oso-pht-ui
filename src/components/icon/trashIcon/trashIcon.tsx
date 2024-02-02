@@ -4,7 +4,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { DeleteRounded } from '@mui/icons-material';
 
 interface TrashIconProps {
-  disabled: boolean;
+  disabled?: boolean;
   onClick: Function;
   selected?: boolean;
   toolTip: string;

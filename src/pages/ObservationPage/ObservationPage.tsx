@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, TickBox, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -12,6 +13,8 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 const PAGE = 5;
 
 export default function ObservationPage() {
+  const { t } = useTranslation('pht');
+
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentObservation, setCurrentObservation] = React.useState(0);
@@ -82,7 +85,7 @@ export default function ObservationPage() {
   const columns = [
     {
       field: 'telescope',
-      headerName: 'Telescope',
+      headerName: t('label.telescope'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
@@ -91,7 +94,7 @@ export default function ObservationPage() {
     },
     {
       field: 'subarray',
-      headerName: 'Array',
+      headerName: t('label.array'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => (
@@ -100,7 +103,7 @@ export default function ObservationPage() {
     },
     {
       field: 'type',
-      headerName: 'Type',
+      headerName: t('column.type'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
@@ -109,7 +112,7 @@ export default function ObservationPage() {
     },
     {
       field: 'id',
-      headerName: 'Actions',
+      headerName: t('column.actions'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -125,17 +128,17 @@ export default function ObservationPage() {
   const extendedColumnsObservations = [...columns];
 
   const columnsTargets = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'ra', headerName: 'Right Ascension', width: 150 },
-    { field: 'dec', headerName: 'Declination', width: 150 }
+    { field: 'name', headerName: t('label.name'), width: 200 },
+    { field: 'ra', headerName: t('label.rightAscension'), width: 150 },
+    { field: 'dec', headerName: t('label.declination'), width: 150 }
   ];
   const columnsTargetsSelected = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'ra', headerName: 'Right Ascension', width: 150 },
-    { field: 'dec', headerName: 'Declination', width: 150 },
+    { field: 'name', headerName: t('label.name'), width: 200 },
+    { field: 'ra', headerName: t('label.rightAscension'), width: 150 },
+    { field: 'dec', headerName: t('label.declination'), width: 150 },
     {
       field: 'id',
-      headerName: 'Selected',
+      headerName: t('label.selected'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -232,7 +235,7 @@ export default function ObservationPage() {
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>
                 <Typography pt={1} variant="h6">
-                  Target List related to the selected Observation
+                  {t('label.targetObservation')}
                 </Typography>
               </Grid>
               <Grid item>

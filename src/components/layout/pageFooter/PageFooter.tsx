@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
-import { LAST_PAGE, NAV, PAGES } from '../../../utils/constants';
+import { LAST_PAGE, NAV } from '../../../utils/constants';
 
 interface PageFooterProps {
   pageNo: number;
@@ -16,6 +17,7 @@ export default function PageFooter({
   buttonDisabled = false,
   buttonFunc = null
 }: PageFooterProps) {
+  const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const nextLabel = () => {
@@ -25,10 +27,10 @@ export default function PageFooter({
     if (pageNo === -1) {
       return 'Create';
     }
-    return PAGES[pageNo + 1];
+    return t(`page.${pageNo + 1}.title`);
   };
 
-  const prevLabel = () => PAGES[pageNo - 1];
+  const prevLabel = () => t(`page.${pageNo - 1}.title`);
 
   const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
 

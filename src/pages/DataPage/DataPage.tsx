@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
@@ -8,11 +9,11 @@ import Shell from '../../components/layout/Shell/Shell';
 
 import HelpPanel from '../../components/helpPanel/helpPanel';
 
-export const HELP_PIPELINE = ['PIPELINE TITLE', 'PIPELINE DESCRIPTION', ''];
-
 const PAGE = 7;
 
 export default function DataPage() {
+  const { t } = useTranslation('pht');
+
   const {
     application,
     helpComponent,
@@ -35,7 +36,7 @@ export default function DataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(HELP_PIPELINE);
+    helpComponent(t('help.pipeline'));
   }, []);
 
   React.useEffect(() => {
@@ -51,7 +52,7 @@ export default function DataPage() {
   const pipelineField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid mt={2} item xs={2}>
-        <Typography>Pipeline</Typography>
+        <Typography>{t('label.pipeline')}</Typography>
       </Grid>
       <Grid item xs={10}>
         <TextEntry
@@ -59,7 +60,7 @@ export default function DataPage() {
           testId="pipelineId"
           value={getProposal().pipeline}
           setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-          onFocus={() => helpComponent(HELP_PIPELINE)}
+          onFocus={() => helpComponent(t('help.pipeline'))}
           helperText="Please enter your pipeline information"
         />
       </Grid>

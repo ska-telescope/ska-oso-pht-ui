@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
@@ -7,13 +8,11 @@ import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 
-export const HELP_ABSTRACT = ['ABSTRACT TITLE', 'ABSTRACT DESCRIPTION', ''];
-export const HELP_CATEGORY = ['CATEGORY TITLE', 'CATEGORY DESCRIPTION', ''];
-export const HELP_SUBCATEGORY = ['SUBCATEGORY TITLE', 'SUBCATEGORY DESCRIPTION', ''];
-
 const PAGE = 2;
 
 export default function GeneralPage() {
+  const { t } = useTranslation('pht');
+
   const {
     application,
     helpComponent,
@@ -36,7 +35,7 @@ export default function GeneralPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(HELP_ABSTRACT);
+    helpComponent(t('help.abstract'));
   }, []);
 
   React.useEffect(() => {
@@ -81,7 +80,7 @@ export default function GeneralPage() {
     return (
       <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
         <Grid mt={2} item xs={2}>
-          <Typography>Abstract</Typography>
+          <Typography>{t('label.abstract')}</Typography>
         </Grid>
         <Grid item xs={10}>
           <TextEntry
@@ -90,7 +89,7 @@ export default function GeneralPage() {
             rows={10}
             value={getProposal().abstract}
             setValue={(e: string) => setValue(e)}
-            onFocus={() => helpComponent(HELP_ABSTRACT)}
+            onFocus={() => helpComponent(t('help.abstract'))}
             helperText="Please enter your abstract information"
           />
         </Grid>
@@ -101,7 +100,7 @@ export default function GeneralPage() {
   const cycleField = () => (
     <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={2}>
-        <Typography>Cycle</Typography>
+        <Typography>{t('label.cycle')}</Typography>
       </Grid>
       <Grid item xs={10}>
         <Typography>
@@ -114,7 +113,7 @@ export default function GeneralPage() {
   const categoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={4}>
-        <Typography>Scientific category</Typography>
+        <Typography>{t('label.scienceCategory')}</Typography>
       </Grid>
       <Grid item xs={8}>
         <DropDown
@@ -123,7 +122,7 @@ export default function GeneralPage() {
           value={getProposal().category}
           setValue={checkCategory}
           label=""
-          onFocus={() => helpComponent(HELP_CATEGORY)}
+          onFocus={() => helpComponent(t('help.scienceCategory'))}
         />
       </Grid>
     </Grid>
@@ -132,7 +131,7 @@ export default function GeneralPage() {
   const subCategoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={6}>
-        <Typography>Scientific sub-category</Typography>
+        <Typography>{t('label.scienceSubCategory')}</Typography>
       </Grid>
       <Grid item xs={6}>
         <DropDown
@@ -145,7 +144,7 @@ export default function GeneralPage() {
           value={getProposal().subCategory}
           setValue={(e: number) => setProposal({ ...getProposal(), subCategory: e })}
           label=""
-          onFocus={() => helpComponent(HELP_SUBCATEGORY)}
+          onFocus={() => helpComponent(t('help.scienceSubCategory'))}
         />
       </Grid>
     </Grid>

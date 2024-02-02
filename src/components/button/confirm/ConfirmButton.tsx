@@ -1,14 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CheckIcon from '@mui/icons-material/Check';
-
-const title = 'Confirm';
 
 interface ConfirmButtonProps {
   onClick: Function;
 }
 
 export default function ConfirmButton({ onClick }: ConfirmButtonProps) {
+  const { t } = useTranslation('pht');
+
+  const title = t('button.label.confirm');
+
   return (
     <Button
       ariaDescription={`${title}Button`}

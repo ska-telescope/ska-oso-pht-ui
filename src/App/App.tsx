@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import {
   CopyrightModal,
   Footer,
