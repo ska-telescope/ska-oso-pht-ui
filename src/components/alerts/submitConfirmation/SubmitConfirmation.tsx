@@ -55,18 +55,18 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
 
   const category = () => {
     const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('label.noneSelected') : GENERAL.ScienceCategory[pt - 1].label;
+    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`dropdown.scienceCategory.${  pt}`);
     const st = getProposal().subCategory;
     const sName =
       !pt || pt < 1 || !st || st < 1
         ? t('label.noneSelected')
-        : GENERAL.ScienceCategory[pt - 1].subCategory[st - 1].label;
+        : t(`dropdown.scienceSubCategory.${  st}`);
     return `${pName} / ${sName}`;
   };
 
-  const telescope = (tel: number) => OBSERVATION.array[tel].label;
-  const subarray = (tel: number, arr: number) => OBSERVATION.array[tel].subarray[arr].label;
-  const observationType = (type: number) => OBSERVATION.ObservationType[type].label;
+  const telescope = (tel: number) => t(`dropdown.telescope.${  tel}.title`);
+  const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${  tel}.array.${  arr}`);
+  const observationType = (type: number) => t(`dropdown.observationType.${  type}`);
 
   const pageTitle = (title: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">

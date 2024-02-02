@@ -1,5 +1,5 @@
 Title Page
-=============
+~~~~~~~~~~
 
 This guide will walk you through the "Title Page" section, where you define the key details of your proposal.
 
