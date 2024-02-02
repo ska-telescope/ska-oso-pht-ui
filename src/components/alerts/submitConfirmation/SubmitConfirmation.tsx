@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
 import { Proposal } from '../../../services/types/proposal';
-import { GENERAL, OBSERVATION, Projects } from '../../../utils/constants';
+import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
@@ -55,18 +55,18 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
 
   const category = () => {
     const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`dropdown.scienceCategory.${  pt}`);
+    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`dropdown.scienceCategory.${pt}`);
     const st = getProposal().subCategory;
     const sName =
       !pt || pt < 1 || !st || st < 1
         ? t('label.noneSelected')
-        : t(`dropdown.scienceSubCategory.${  st}`);
+        : t(`dropdown.scienceSubCategory.${st}`);
     return `${pName} / ${sName}`;
   };
 
-  const telescope = (tel: number) => t(`dropdown.telescope.${  tel}.title`);
-  const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${  tel}.array.${  arr}`);
-  const observationType = (type: number) => t(`dropdown.observationType.${  type}`);
+  const telescope = (tel: number) => t(`dropdown.telescope.${tel}.title`);
+  const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${tel}.array.${arr}`);
+  const observationType = (type: number) => t(`dropdown.observationType.${type}`);
 
   const pageTitle = (title: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
