@@ -3,7 +3,9 @@ General Page
 
 This guide explains the "General Page", where you enter key details about your research proposal.
 
-IMAGE IN HERE 
+.. figure:: /images/generalPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
 
 Layout and Navigation
 =====================
@@ -54,9 +56,9 @@ Additional Features
    :width: 5%
    :alt: light/dark Button
 
-.. figure:: /images/teamPage.png
+.. figure:: /images/generalPage.png
    :width: 90%
-   :alt: screen in light & dark 
+   :alt: screen in light & dark mode 
    
 - A status indicator at the top shows the validation status of each page in the flow.
 - Each status indicator, when clicked, will navigate to the appropriate page
