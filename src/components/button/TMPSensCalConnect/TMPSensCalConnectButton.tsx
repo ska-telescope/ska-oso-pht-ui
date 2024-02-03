@@ -16,6 +16,7 @@ export default function TMPSensCalConnectButton({ onClick }) {
     // Low Zoom
     const response4 = await getSensitivityCalculatorAPIData('Low', 'Zoom');
     onClick(response1); // TODO: pass responses to Observation pages properly
+    // TODO: add testing when displaying results from the API in UI
   };
 
   const title = 'TMP BUTTON';
