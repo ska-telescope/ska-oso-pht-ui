@@ -172,7 +172,7 @@ export default function ObservationPage() {
   };
 
   const handleSensCalConnectClick = response => {
-    // TODO: handle response
+    // TODO: use response
     if (response && !response.error) {
       // Handle successful response
       setAxiosSensCalError(`Success`);
@@ -205,7 +205,7 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE}>
       {axiosSensCalError ? (
-        <Alert testId="alertSaveErrorId" color={axiosSensCalErrorColor}>
+        <Alert testId="alertSensCalErrorId" color={axiosSensCalErrorColor}>
           <Typography>{axiosSensCalError}</Typography>
         </Alert>
                 ) : null}

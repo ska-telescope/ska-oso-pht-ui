@@ -75,7 +75,7 @@ async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAME
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
   }
-
+  
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`, config);
