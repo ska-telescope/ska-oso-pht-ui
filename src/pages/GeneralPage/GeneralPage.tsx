@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
@@ -35,7 +36,7 @@ export default function GeneralPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('help.abstract'));
+    helpComponent(t('abstract.help'));
   }, []);
 
   React.useEffect(() => {
@@ -43,7 +44,7 @@ export default function GeneralPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
 
     if (getProposal()?.abstract?.length > 0) {
@@ -52,9 +53,11 @@ export default function GeneralPage() {
     if (getProposal()?.category > 0) {
       count++;
     }
+      /* TODO : Retained for future use
     if (getProposal()?.subCategory > 0) {
       count++;
     }
+    */
 
     setTheProposalState(result[count]);
   }, [validateToggle]);
@@ -63,12 +66,22 @@ export default function GeneralPage() {
     setProposal({ ...getProposal(), category: id, subCategory: 1 });
   };
 
+    /* TODO : Retained for future use
   const getSubCategoryOptions = () => {
     if (getProposal().category) {
       return GENERAL.ScienceCategory[getProposal().category - 1].subCategory;
     }
     return [{ label: '', value: 0 }];
   };
+  */
+
+  const cycleField = () => (
+    <FieldWrapper label={t('cycle.label')}>
+      <Typography>
+        <strong>{GENERAL.Cycle}</strong>
+      </Typography>
+    </FieldWrapper>
+  );
 
   const abstractField = () => {
     const MAX_CHAR = 250;
@@ -78,60 +91,38 @@ export default function GeneralPage() {
     };
 
     return (
-      <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-        <Grid mt={2} item xs={2}>
-          <Typography>{t('label.abstract')}</Typography>
-        </Grid>
-        <Grid item xs={10}>
-          <TextEntry
-            label=""
-            testId="abstractId"
-            rows={10}
-            value={getProposal().abstract}
-            setValue={(e: string) => setValue(e)}
-            onFocus={() => helpComponent(t('help.abstract'))}
-            helperText="Please enter your abstract information"
-          />
-        </Grid>
-      </Grid>
+      <FieldWrapper label={t('abstract.label')}>
+        <TextEntry
+          label=""
+          testId="abstractId"
+          rows={10}
+          value={getProposal().abstract}
+          setValue={(e: string) => setValue(e)}
+          onFocus={() => helpComponent(t('abstract.help'))}
+          helperText={t('abstract.helper')}
+        />
+      </FieldWrapper>
     );
   };
 
-  const cycleField = () => (
-    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid item xs={2}>
-        <Typography>{t('label.cycle')}</Typography>
-      </Grid>
-      <Grid item xs={10}>
-        <Typography>
-          <strong>{GENERAL.Cycle}</strong>
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-
   const categoryField = () => (
-    <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid item xs={4}>
-        <Typography>{t('label.scienceCategory')}</Typography>
-      </Grid>
-      <Grid item xs={8}>
-        <DropDown
-          options={GENERAL.ScienceCategory}
-          testId="categoryId"
-          value={getProposal().category}
-          setValue={checkCategory}
-          label=""
-          onFocus={() => helpComponent(t('help.scienceCategory'))}
-        />
-      </Grid>
-    </Grid>
+    <FieldWrapper label={t('scienceCategory.label')}>
+      <DropDown
+        options={GENERAL.ScienceCategory}
+        testId="categoryId"
+        value={getProposal().category}
+        setValue={checkCategory}
+        label=""
+        onFocus={() => helpComponent(t('scienceCategory.help'))}
+      />
+    </FieldWrapper>
   );
 
+  /* TODO : Retained for future use
   const subCategoryField = () => (
     <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
       <Grid item xs={6}>
-        <Typography>{t('label.scienceSubCategory')}</Typography>
+        <Typography>{t('scienceSubCategory.label')}</Typography>
       </Grid>
       <Grid item xs={6}>
         <DropDown
@@ -144,11 +135,12 @@ export default function GeneralPage() {
           value={getProposal().subCategory}
           setValue={(e: number) => setProposal({ ...getProposal(), subCategory: e })}
           label=""
-          onFocus={() => helpComponent(t('help.scienceSubCategory'))}
+          onFocus={() => helpComponent(t('scienceSubCategory.help'))}
         />
       </Grid>
     </Grid>
   );
+  */
 
   return (
     <Shell page={PAGE}>
@@ -163,20 +155,7 @@ export default function GeneralPage() {
         <Grid item xs={8}>
           {cycleField()}
           {abstractField()}
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="space-evenly"
-            spacing={1}
-          >
-            <Grid item xs={6}>
-              {categoryField()}
-            </Grid>
-            <Grid item xs={6}>
-              {subCategoryField()}
-            </Grid>
-          </Grid>
+          {categoryField()}
         </Grid>
         <Grid item xs={3}>
           <HelpPanel />

@@ -19,43 +19,14 @@
     "sendInvite": "Sent invitation",
     "validate": "Validate"
   },
-  "column": {
-    "actions": "Actions",
-    "id": "Id",
-    "cycle": "Cycle",
-    "title": "Title",
-    "pi": "PI",
-    "status": "Status",
-    "type": "Type",
-    "updated": "Last Updated"
-  },
   "dropdown": {
     "observationType": {
       "0": "Not specified",
       "1": "Zoom",
       "2": "Continuum"
     },
-    "scienceCategory": {
-      "1": "Cosmology",
-      "2": "Cradle of Life",
-      "3": "Epoch of Re-ionization",
-      "4": "Extra Galactic continuum",
-      "5": "Extra Galactic Spectral line",
-      "6": "Gravitational Waves",
-      "7": "High Energy Cosmic Particles",
-      "8": "HI Galaxy science",
-      "9": "Magnetism",
-      "10": "Our Galaxy",
-      "11": "Pulsars",
-      "12": "Solar, Heliospheric and Ionospheric Physics",
-      "13": "Transients",
-      "14": "VLBI"
-    },
     "scienceSubCategory": {
       "1": "Not specified"
-    },
-    "status": {
-      "0": "All status types"
     },
     "telescope": {
       "0": {
@@ -91,32 +62,112 @@
       }
     }
   },
+  "abstract": {
+    "label": "Abstract",
+    "help": "ABSTRACT HELP",
+    "helper": "Please enter your abstract information"
+  },
+  "actions": {
+    "label": "Actions"
+  },
+  "characterCount": {
+    "label": "Character count",
+    "error": "Exceeded expected character count"
+  },
+  "cycle": {
+    "label": "Cycle"
+  },
+  "declination": {
+    "label": "Declination",
+    "help": "DECLINATION HELP"
+  },
+  "email": {
+    "label": "Email",
+    "help": "EMAIL HELP"
+  },
+  "firstName": {
+    "label": "First Name",
+    "help": "FIRST NAME HELP"
+  },
+  "id": {
+    "label": "ID"
+  },
+  "lastName": {
+    "label": "Last Name",
+    "help": "LAST NAME HELP"
+  },  
+  "name": {
+    "label": "Name",
+    "help": "NAME HELP"
+  },
+  "phdThesis": {
+    "label": "PhD Thesis",
+    "help": "PHD THESIS HELP"
+  },
+  "pi": {
+    "label": "Primary Investigator",
+    "help": "PI HELP",
+    "short": "PI"
+  },
+  "pipeline": {
+    "label": "Pipeline",
+    "help": "PIPELINE HELP",
+    "helper": "Please enter your pipeline information"
+  },
+  "rightAscension": {
+    "label": "Right Ascension",
+    "help": "RIGHT ASCENSION HELP"
+  },
+  "scienceCategory": {
+    "1": "Cosmology",
+    "2": "Cradle of Life",
+    "3": "Epoch of Re-ionization",
+    "4": "Extra Galactic continuum",
+    "5": "Extra Galactic Spectral line",
+    "6": "Gravitational Waves",
+    "7": "High Energy Cosmic Particles",
+    "8": "HI Galaxy science",
+    "9": "Magnetism",
+    "10": "Our Galaxy",
+    "11": "Pulsars",
+    "12": "Solar, Heliospheric and Ionospheric Physics",
+    "13": "Transients",
+    "14": "VLBI",
+    "label": "Science Category",
+    "help": "CATEGORY HELP"
+  },
+  "status": {
+    "0": "All status types",
+    "label": "Status"
+  },
+  "title": {
+    "label": "Title"
+  },
+  "type": {
+    "label": "Type"
+  },
+  "updated": {
+    "label": "Last Updated"
+  },
+  "velocity": {
+    "label": "Velocity / Redshift",
+    "help": "VELOCITY HELP"
+  },
   "help": {
-    "abstract": "ABSTRACT HELP",
     "arrayConfiguration": "ARRAY CONFIGURATION HELP",
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
     "continuumBandWidth": "Continuum BANDWIDTH HELP",
     "continuumUnits": "CONTINUUM UNITS HELP",
-    "declination": "DECLINATION HELP",
     "effectiveResolution": "EFFECTIVE RESOLUTION HELP",
     "elevation": "ELEVATION HELP",
-    "email": "EMAIL HELP",
-    "firstName": "FIRST NAME HELP",
     "frequencyUnits": "FREQUENCY UNITS HELP",
     "imageWeighting": "IMAGE WEIGHTING HLP",
-    "lastName": "LAST NAME HELP",
-    "name": "NAME HELP",
     "observingBand": "Observing Band HELP",
     "observationType": "OBSERVATION TYPE HELP",
-    "phdThesis": "PHD THESIS HELP",
-    "pi": "PI HELP",
-    "pipeline": "PIPELINE HELP",
     "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
     "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
     "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
-    "rightAscension": "RIGHT ASCENSION HELP",
-    "scienceCategory": "CATEGORY HELP",
     "scienceSubCategory": "SUB-CATEGORY HELP",
     "spectralAveraging": "Spectral Averaging HELP",
     "specialCharacters": "Special characters !+ not allowed",
@@ -128,7 +179,6 @@
     "suppliedValue": "SUPPLIED VALUE HELP",
     "tapering": "TAPERING HELP",
     "title": "This title should be used to allow for the identification of this proposal in a list of proposals",
-    "velocity": "VELOCITY HELP",
     "weather": "WEATHER HELP"
   },
   "icon": {
@@ -191,7 +241,7 @@
     }
   },
   "label": {
-    "abstract": "Abstract",
+    "addTarget": "Add Target",
     "array": "Array",
     "arrayConfiguration": "Array Configuration",
     "bandWidth": "Bandwidth",
@@ -201,17 +251,12 @@
     "category": "Category",
     "centralFrequency": "Central Frequency",
     "continuumBandWidth": "Continuum BandWidth",
-    "cycle": "Cycle",
-    "declination": "Declination",
     "elevation": "Elevation",
     "effectiveResolution": "Effective Resolution",
-    "email": "Email",
     "fileName": "File name",
-    "firstName": "First Name",
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
-    "lastName": "Last Name",
     "listOfTargets": "List of Targets",
     "members": "Members",
     "noneSelected": "None selected",
@@ -220,11 +265,7 @@
     "observationType": "Observation Type",
     "observingBand": "Observing Band",
     "pdfPreview": "PDF Preview",
-    "phdThesis": "PhD Thesis",
-    "pi": "Primary Investigator",
-    "pipeline": "Pipeline",
     "proposalType": "Proposal Types",
-    "rightAscension": "Right Ascension",
     "scienceCategory": "Scientific category",
     "scienceSubCategory": "Scientific sub-category",
     "sdp": "SDP",
@@ -243,9 +284,7 @@
     "targetSelection": "Target selection",
     "targets": "Targets",
     "telescope": "Telescope",
-    "title": "Title",
     "uploadPDF": "Upload PDF",
-    "velocity": "Velocity / Redshift",
     "weather": "Weather"
   },
   "toolTip": {

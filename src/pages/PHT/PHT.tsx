@@ -115,13 +115,13 @@ export default function PHT() {
     e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
-    { field: 'id', headerName: t('column.id'), width: 100 },
+    { field: 'id', headerName: t('id.label'), width: 100 },
     { field: 'telescope', headerName: t('label.telescope'), width: 100 },
-    { field: 'cycle', headerName: t('column.cycle'), width: 150 },
-    { field: 'title', headerName: t('label.title'), width: 250 },
-    { field: 'pi', headerName: t('column.pi'), width: 150 },
-    { field: 'status', headerName: t('column.status'), width: 100 },
-    { field: 'lastUpdated', headerName: t('column.updated'), width: 150 },
+    { field: 'cycle', headerName: t('cycle.label'), width: 150 },
+    { field: 'title', headerName: t('title.label'), width: 250 },
+    { field: 'pi', headerName: t('pi.short'), width: 150 },
+    { field: 'status', headerName: t('status.label'), width: 100 },
+    { field: 'lastUpdated', headerName: t('updated.label'), width: 150 },
     {
       field: 'cpi',
       headerName: ' ',
@@ -186,11 +186,11 @@ export default function PHT() {
         </Grid>
         <Grid item xs={2}>
           <DropDown
-            options={[{ label: t('dropdown.status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+            options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
             testId="proposalType"
             value={searchType}
             setValue={setSearchType}
-            label={t('dropdown.status.0')}
+            label={t('status.0')}
           />
         </Grid>
         <Grid item xs={4} mt={-1}>

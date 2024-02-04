@@ -1,41 +1,62 @@
 Observation Page
-====================
+~~~~~~~~~~~~~~~~
 
-TODO : To be completed
+This guide explains the "Observation Page".
 
-Connection to Sensitivity Calculator API
------------------------------------------
-A temporary "TMP BUTTON" has been added on the observation page to show the connection to the Sensitivity Calculator API.
-The GetSensitivityCalculatorAPIData service acts as the entry point to the diffeent API requests to the Sensitivity Calculator and handles 
-the appropriate number of requests to the endpoints as necessary.
+.. figure:: /images/observationPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
 
-There are 2 or 3 calls to the API endpoints made every time.
+Layout and Navigation
+=====================
 
-    Continuum Modes (Low or Mid): 
-    - 1 call to getCalculate - with Continuum parameter
-    - 1 call to GetWeighting - with Continuum parameter
-    - 1 call to GetWeighting - with Zoom parameter (weightingLine)
+TO BE COMPLETED
 
-    Zoom Modes (Low or Mid): 
-    - 1 call to getCalculate - with Zoom parameter
-    - 1 call to GetWeighting - with Zoom parameter (weightingLine)
+Navigation Elements
+===================
 
-Services
---------------
-The 3 services used for the Sensitivity calculators are:
-- GetCalculate service
-- GetWeighting service
-- GetSensitivityCalculatorAPIData
+- Home: (Top left corner) Returns you to the Landing Page.
+- Title Page: (Bottom left corner) Takes you back to the Title Page.
+- Save: (Top left) Saves your progress on the Team Page.
+- Validate: (Top right) Checks if all required information is filled correctly.
+- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
+- Technical: (Bottom right corner) Moves you to the next page for Technical Justification details.
 
-Endpoints
----------------
-There a 2 main endpoints: 
-- getCalculate
-- getWeighting
+Additional Features
+===================
 
-These are called with different parameters depending on telecope (Mid, Low) and Mode (Continuum, Zoom).
+- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
+- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
 
-Responses
------------------
-In the responses, some results are used directly like the confusion noise, 
-and some are combined and used for some calculations in the Sensitivity Calculator front-end.
+.. figure:: /images/sunMoonBtn.png
+   :width: 5%
+   :alt: light/dark Button
+
+.. figure:: /images/observationPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
+   
+- A status indicator at the top shows the validation status of each page in the flow.
+- Each status indicator, when clicked, will navigate to the appropriate page
+
+.. figure:: /images/pageStatus.png
+   :width: 90%
+   :alt: page status icons/navigation
+
+Key Information and Actions
+===========================
+
+TO BE COMPLETED
+
+Next Steps
+==========
+
+TO BE COMPLETED
+
+Additional Notes
+================
+
+- This guide assumes you're already logged in to PPT.
+- The content remains the same regardless of your user context.
+- Remember to save your progress regularly using the "Save" button.
+- The "Submit" button will only become active when all required information is entered and validated.

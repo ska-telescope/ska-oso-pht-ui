@@ -55,12 +55,12 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
 
   const category = () => {
     const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`dropdown.scienceCategory.${pt}`);
+    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`scienceCategory.${pt}`);
     const st = getProposal().subCategory;
     const sName =
       !pt || pt < 1 || !st || st < 1
         ? t('label.noneSelected')
-        : t(`dropdown.scienceSubCategory.${st}`);
+        : t(`scienceSubCategory.${st}`);
     return `${pName} / ${sName}`;
   };
 
@@ -107,7 +107,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.title')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('title.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().title}</Typography>
@@ -156,7 +156,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.abstract')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('abstract.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>

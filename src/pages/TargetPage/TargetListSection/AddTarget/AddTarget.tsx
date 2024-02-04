@@ -7,6 +7,7 @@ import AddTargetButton from '../../../../components/button/AddTarget/AddTargetBu
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
+import FieldWrapper from '../../../../components/wrappers/fieldWrapper/FieldWrapper';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
@@ -88,14 +89,17 @@ export default function AddTarget() {
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid container direction="row" alignItems="center" justifyContent="space-between">
-            <Grid item xs={8}>
+            <Grid item xs={3}>
+              <Typography variant="body2"><strong>{t('name.label')}</strong></Typography>
+            </Grid>
+            <Grid item xs={5}>
               {axiosResolveError ? (
                 <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
                   <Typography>{axiosResolveError}</Typography>
                 </Alert>
               ) : null}
               <TextEntry
-                label="Name"
+                label=""
                 testId="name"
                 value={name}
                 setValue={setName}
@@ -106,27 +110,33 @@ export default function AddTarget() {
               <ResolveButton targetName={name} onClick={handleResolveClick} />
             </Grid>
           </Grid>
-          <TextEntry
-            label={t('label.rightAscension')}
-            testId="ra"
-            value={ra}
-            setValue={setRA}
-            onFocus={() => helpComponent(t('help.rightAscension'))}
-          />
-          <TextEntry
-            label={t('label.declination')}
-            testId="dec"
-            value={dec}
-            setValue={setDec}
-            onFocus={() => helpComponent(t('help.declination'))}
-          />
-          <TextEntry
-            label={t('label.velocity')}
-            testId="vel"
-            value={vel}
-            setValue={setVel}
-            onFocus={() => helpComponent(t('help.velocity'))}
-          />
+          <FieldWrapper label={t('rightAscension.label')}>
+            <TextEntry
+              label=""
+              testId="ra"
+              value={ra}
+              setValue={setRA}
+              onFocus={() => helpComponent(t('rightAscension.help'))}
+            />
+          </FieldWrapper>
+          <FieldWrapper label={t('declination.label')}>
+            <TextEntry
+              label=""
+              testId="dec"
+              value={dec}
+              setValue={setDec}
+              onFocus={() => helpComponent(t('declination.help'))}
+            />
+          </FieldWrapper>
+          <FieldWrapper label={t('velocity.label')}>
+            <TextEntry
+              label=""
+              testId="vel"
+              value={vel}
+              setValue={setVel}
+              onFocus={() => helpComponent(t('velocity.help'))}
+            />
+          </FieldWrapper>
         </Grid>
 
         <Box p={1}>

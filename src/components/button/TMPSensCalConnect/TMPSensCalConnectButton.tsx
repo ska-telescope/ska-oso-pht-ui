@@ -1,5 +1,3 @@
-'useClient';
-
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CalculateIcon from '@mui/icons-material/Calculate';

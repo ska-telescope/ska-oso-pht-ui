@@ -7,6 +7,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
+import FieldWrapper from '../wrappers/fieldWrapper/FieldWrapper';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
 import { Proposal } from '../../services/types/proposal';
@@ -196,22 +197,22 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
-    const helperFunction = (title: string) => `character count ${title?.length}/${MAX_CHAR}`;
+    const helperFunction = (title: string) => `${t('characterCount.label')  } ${  title?.length ? title.length : 0  } / ${  MAX_CHAR}`;
 
     return (
-      <TextEntry
-        label=""
-        testId="titleId"
-        value={getProposal()?.title}
-        setValue={(title: string) =>
+      <FieldWrapper big label={t('title.label')}>
+        <TextEntry
+          label=""
+          testId="titleId"
+          value={getProposal()?.title}
+          setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
-        errorText={errorText}
-        helperText={helperFunction(getProposal()?.title)}
-      />
+          errorText={errorText}
+          helperText={helperFunction(getProposal()?.title)}
+        />
+      </FieldWrapper>
     );
   };
-
-  const label = (e: string) => <Typography variant="h6">{e}</Typography>;
 
   return (
     <>
@@ -225,10 +226,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             alignItems="center"
             spacing={2}
           >
-            <Grid item xs={2}>
-              {label(t('label.title'))}
-            </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               {titleField()}
             </Grid>
             <Grid item xs={4}>

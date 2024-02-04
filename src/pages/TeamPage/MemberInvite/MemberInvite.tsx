@@ -5,6 +5,7 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
+import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import { Proposal } from '../../../services/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
@@ -81,7 +82,7 @@ export default function MemberInvite() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('help.firstName'));
+    helpComponent(t('firstName.help'));
   }, []);
 
   React.useEffect(() => {
@@ -161,44 +162,50 @@ export default function MemberInvite() {
     <>
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item xs={5}>
-          <TextEntry
-            label={t('label.firstName')}
-            testId="firstName"
-            value={firstName}
-            setValue={setFirstName}
-            onFocus={() => helpComponent(t('help.firstName'))}
-            disabled={false}
-            errorText={errorTextFirstName}
-          />
-          <TextEntry
-            label={t('label.lastName')}
-            testId="lastName"
-            value={lastName}
-            setValue={setLastName}
-            onFocus={() => helpComponent(t('help.lastName'))}
-            errorText={errorTextLastName}
-          />
-          <TextEntry
-            label={t('label.email')}
-            testId="email"
-            value={email}
-            setValue={setEmail}
-            errorText={errorTextEmail}
-            onFocus={() => helpComponent(t('help.email'))}
-          />
+          <FieldWrapper label={t('firstName.label')}>
+            <TextEntry
+              label=""
+              testId="firstName"
+              value={firstName}
+              setValue={setFirstName}
+              onFocus={() => helpComponent(t('firstName.help'))}
+              disabled={false}
+              errorText={errorTextFirstName}
+            />
+          </FieldWrapper>
+          <FieldWrapper label={t('lastName.label')}>
+            <TextEntry
+              label=""
+              testId="lastName"
+              value={lastName}
+              setValue={setLastName}
+              onFocus={() => helpComponent(t('lastName.help'))}
+              errorText={errorTextLastName}
+            />
+          </FieldWrapper>
+          <FieldWrapper label={t('email.label')}>
+            <TextEntry
+              label=""
+              testId="email"
+              value={email}
+              setValue={setEmail}
+              errorText={errorTextEmail}
+              onFocus={() => helpComponent(t('email.help'))}
+            />
+          </FieldWrapper>
           <TickBox
-            label={t('label.pi')}
+            label={t('pi.label')}
             testId="piCheckbox"
             checked={pi}
             onChange={handleCheckboxChangePI}
-            onFocus={() => helpComponent(t('help.pi'))}
+            onFocus={() => helpComponent(t('pi.help'))}
           />
           <TickBox
-            label={t('label.phdThesis')}
+            label={t('phdThesis.label')}
             testId="PhDCheckbox"
             checked={phdThesis}
             onChange={handleCheckboxChangePhD}
-            onFocus={() => helpComponent(t('help.phdThesis'))}
+            onFocus={() => helpComponent(t('phdThesis.help'))}
           />
         </Grid>
         <Grid item xs={5}>

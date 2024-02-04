@@ -6,6 +6,7 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 import HelpPanel from '../../components/helpPanel/helpPanel';
 
@@ -36,7 +37,7 @@ export default function DataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('help.pipeline'));
+    helpComponent(t('pipeline.help'));
   }, []);
 
   React.useEffect(() => {
@@ -50,21 +51,16 @@ export default function DataPage() {
   }, [validateToggle]);
 
   const pipelineField = () => (
-    <Grid container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid mt={2} item xs={2}>
-        <Typography>{t('label.pipeline')}</Typography>
-      </Grid>
-      <Grid item xs={10}>
-        <TextEntry
-          label=""
-          testId="pipelineId"
-          value={getProposal().pipeline}
-          setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-          onFocus={() => helpComponent(t('help.pipeline'))}
-          helperText="Please enter your pipeline information"
-        />
-      </Grid>
-    </Grid>
+    <FieldWrapper label={t('pipeline.label')}>
+      <TextEntry
+        label=""
+        testId="pipelineId"
+        value={getProposal().pipeline}
+        setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
+        onFocus={() => helpComponent(t('pipeline.help'))}
+        helperText={t('pipeline.helper')}
+      />
+    </FieldWrapper>
   );
 
   return (
