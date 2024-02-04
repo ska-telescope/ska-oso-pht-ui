@@ -1,8 +1,17 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
-import {MockQuerryMidWeightingContinuum, MockQuerryMidWeightingLine, MockResponseMidWeightingContinuum, MockResponseMidWeightingLine} from './mockResponseMidWeighting';
-import {MockQuerryLowWeightingContinuum, MockQuerryLowWeightingLine, MockResponseLowWeightingContinuum, MockResponseLowWeightingLine} from './mockResponseLowWeighting';
-
+import {
+  MockQuerryMidWeightingContinuum,
+  MockQuerryMidWeightingLine,
+  MockResponseMidWeightingContinuum,
+  MockResponseMidWeightingLine
+} from './mockResponseMidWeighting';
+import {
+  MockQuerryLowWeightingContinuum,
+  MockQuerryLowWeightingLine,
+  MockResponseLowWeightingContinuum,
+  MockResponseLowWeightingLine
+} from './mockResponseLowWeighting';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetWeighting(telescope, mode) {
@@ -36,8 +45,8 @@ async function GetWeighting(telescope, mode) {
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
-      URL_CONTINUUM_VALUE = "";
-      URL_ZOOM_VALUE = "";
+      URL_CONTINUUM_VALUE = '';
+      URL_ZOOM_VALUE = '';
       // Mocks queries declarations can be removed once queries passed to service
       MOCK_CONTINUUM_QUERY = MockQuerryMidWeightingContinuum;
       MOCK_ZOOM_QUERY = MockQuerryMidWeightingLine;
@@ -53,23 +62,23 @@ async function GetWeighting(telescope, mode) {
       MOCK_ZOOM_QUERY = MockQuerryLowWeightingLine;
       MOCK_RESPONSE_CONTINUUM = MockResponseLowWeightingContinuum;
       MOCK_RESPONSE_ZOOM = MockResponseLowWeightingLine;
-      break
+      break;
     default:
   }
 
   switch (mode) {
     case 'Continuum':
-        QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
-        URL_MODE = URL_CONTINUUM_VALUE;
-        // Mocks queries declarations can be removed once queries passed to service
-        MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
-        break;
+      QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
+      URL_MODE = URL_CONTINUUM_VALUE;
+      // Mocks queries declarations can be removed once queries passed to service
+      MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
+      break;
     case 'Zoom':
-        QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
-        URL_MODE = URL_ZOOM_VALUE;
-        // Mocks queries declarations can be removed once queries passed to service
-        MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
-        break
+      QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
+      URL_MODE = URL_ZOOM_VALUE;
+      // Mocks queries declarations can be removed once queries passed to service
+      MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
+      break;
     default:
   }
 
@@ -79,7 +88,10 @@ async function GetWeighting(telescope, mode) {
 
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
-    const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`, config);
+    const result = await axios.get(
+      `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`,
+      config
+    );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

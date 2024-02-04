@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import theme from '../../services/theme/theme';
 import ObservationPage from './ObservationPage';
 import { SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../utils/constants';
-import { MockQueryMidCalculate } from '../../services/axios/sensitivityCalculator/getCalculate/mockResponseMidCalculate'
+import { MockQueryMidCalculate } from '../../services/axios/sensitivityCalculator/getCalculate/mockResponseMidCalculate';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -56,9 +56,9 @@ describe('<ObservationContent />', () => {
 describe('GetCalculate good request', () => {
   beforeEach(() => {
     const queryString = new URLSearchParams(MockQueryMidCalculate).toString();
-    cy.intercept('GET', `${SKA_SENSITIVITY_CALCULATOR_API_URL}mid/calculate?${queryString}`, { fixture: 'getMidCalculateResponse.json' }).as(
-      'getCalculate'
-    );
+    cy.intercept('GET', `${SKA_SENSITIVITY_CALCULATOR_API_URL}mid/calculate?${queryString}`, {
+      fixture: 'getMidCalculateResponse.json'
+    }).as('getCalculate');
     cy.mount(
       <Router location="/" navigator={undefined}>
         <ObservationPage />

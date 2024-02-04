@@ -1,10 +1,21 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
-import {MockQueryMidCalculate, MockQueryMidCalculateZoom, MockResponseMidCalculateZoom, MockResponseMidCalculate} from './mockResponseMidCalculate';
-import {MockQueryLowCalculate, MockQueryLowCalculateZoom, MockResponseLowCalculate, MockResponseLowCalculateZoom} from './mockResponseLowCalculate';
+import {
+  MockQueryMidCalculate,
+  MockQueryMidCalculateZoom,
+  MockResponseMidCalculateZoom,
+  MockResponseMidCalculate
+} from './mockResponseMidCalculate';
+import {
+  MockQueryLowCalculate,
+  MockQueryLowCalculateZoom,
+  MockResponseLowCalculate,
+  MockResponseLowCalculateZoom
+} from './mockResponseLowCalculate';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES 
+async function GetCalculate(telescope, mode) {
+  // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
   let URL_TELESCOPE;
@@ -35,8 +46,8 @@ async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAME
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
-      URL_CONTINUUM_VALUE = "";
-      URL_ZOOM_VALUE = "";
+      URL_CONTINUUM_VALUE = '';
+      URL_ZOOM_VALUE = '';
       // Mocks queries declarations can be removed once queries passed to service
       MOCK_CONTINUUM_QUERY = MockQueryMidCalculate;
       MOCK_ZOOM_QUERY = MockQueryMidCalculateZoom;
@@ -52,33 +63,36 @@ async function GetCalculate(telescope, mode) { // TODO: send QUERY_STRING_PARAME
       MOCK_ZOOM_QUERY = MockQueryLowCalculateZoom;
       MOCK_RESPONSE_CONTINUUM = MockResponseLowCalculate;
       MOCK_RESPONSE_ZOOM = MockResponseLowCalculateZoom;
-      break
+      break;
     default:
   }
 
   switch (mode) {
     case 'Continuum':
-        QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
-        URL_MODE = URL_CONTINUUM_VALUE;
-        // Mocks queries declarations can be removed once queries passed to service
-        MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
-        break;
+      QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
+      URL_MODE = URL_CONTINUUM_VALUE;
+      // Mocks queries declarations can be removed once queries passed to service
+      MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
+      break;
     case 'Zoom':
-        QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
-        URL_MODE = URL_ZOOM_VALUE;
-        // Mocks queries declarations can be removed once queries passed to service
-        MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
-        break
+      QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
+      URL_MODE = URL_ZOOM_VALUE;
+      // Mocks queries declarations can be removed once queries passed to service
+      MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
+      break;
     default:
   }
 
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
   }
-  
+
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
-    const result = await axios.get(`${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`, config);
+    const result = await axios.get(
+      `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
+      config
+    );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

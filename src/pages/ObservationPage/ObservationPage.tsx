@@ -182,7 +182,7 @@ export default function ObservationPage() {
       setAxiosSensCalError(response.error);
       setAxiosSensCalErrorColor(AlertColorTypes.Error);
     }
-  }
+  };
 
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
@@ -208,7 +208,7 @@ export default function ObservationPage() {
         <Alert testId="alertSensCalErrorId" color={axiosSensCalErrorColor}>
           <Typography>{axiosSensCalError}</Typography>
         </Alert>
-                ) : null}
+      ) : null}
       <Grid
         spacing={1}
         p={3}
