@@ -16,6 +16,8 @@ async function GetProposalList() {
     return MockProposals;
   }
 
+  // TODO: create a conversion function to convert backend format proposals list to display in front-end
+
   try {
     const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
