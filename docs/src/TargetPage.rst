@@ -1,63 +1,62 @@
 Target Page
-===============
-This page is responsible for displaying the targets involved in a proposal with three variations
+~~~~~~~~~~~
 
-No Specific Target
-------------------
+This guide explains the "Target Page".
 
-This option is not currently available
+.. figure:: /images/targetPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
 
-Target Mosaic
--------------
+Layout and Navigation
+=====================
 
-This option is not currently available
+TO BE COMPLETED
 
-List of targets
----------------
+Navigation Elements
+===================
 
-Allows for the addition and remove of targets to the proposal
-There are three methods of adding targets to the list
+- Home: (Top left corner) Returns you to the Landing Page.
+- Title Page: (Bottom left corner) Takes you back to the Title Page.
+- Save: (Top left) Saves your progress on the Team Page.
+- Validate: (Top right) Checks if all required information is filled correctly.
+- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
+- Observation: (Bottom right corner) Moves you to the next page for Observation details.
 
-Target Table
----------------
-Displays the list of targets, with the option to remove an entry after confirmation
+Additional Features
+===================
 
-Import from file
-----------------
+- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
+- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
 
-This option is not currently available
+.. figure:: /images/sunMoonBtn.png
+   :width: 5%
+   :alt: light/dark Button
 
-Spatial Imaging
----------------
+.. figure:: /images/targetPage.png
+   :width: 90%
+   :alt: screen in light & dark mode 
+   
+- A status indicator at the top shows the validation status of each page in the flow.
+- Each status indicator, when clicked, will navigate to the appropriate page
 
-This option is not currently available
+.. figure:: /images/pageStatus.png
+   :width: 90%
+   :alt: page status icons/navigation
 
-Add Target
-----------
+Key Information and Actions
+===========================
 
-The user can add a target by filling the form. 
+TO BE COMPLETED
 
-Syntax check
---------------
-The input fields of the form are checked for correct syntax, allowing only alpha-numeric characters and some limited special characters.
+Next Steps
+==========
 
-Errors messages are displayed under the inputs in case of incorrect syntax.
+TO BE COMPLETED
 
-Form Validation
----------------
+Additional Notes
+================
 
-The form validation logic checks that there are no syntax issues and that input fields are completed as required.
-
-No error message is displayed for empty fields, however the button will stay disabled.
-
-Add Target Button
------------------
-
-The add target button is disabled by default, but is enabled if form validation is successful.
-
-Once the button has been clicked, the targets table will be updated to include the new target.
-
-The input fields are then cleared.
-
-
-
+- This guide assumes you're already logged in to PPT.
+- The content remains the same regardless of your user context.
+- Remember to save your progress regularly using the "Save" button.
+- The "Submit" button will only become active when all required information is entered and validated.
