@@ -12,7 +12,7 @@ export const helpers = {
       textType?: string
     ): boolean {
       const { t } = useTranslation('pht');
-       
+
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {

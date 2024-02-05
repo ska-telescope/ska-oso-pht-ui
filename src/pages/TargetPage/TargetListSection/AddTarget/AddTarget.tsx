@@ -90,7 +90,9 @@ export default function AddTarget() {
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid container direction="row" alignItems="center" justifyContent="space-between">
             <Grid item xs={3}>
-              <Typography variant="body2"><strong>{t('name.label')}</strong></Typography>
+              <Typography variant="body2">
+                <strong>{t('name.label')}</strong>
+              </Typography>
             </Grid>
             <Grid item xs={5}>
               {axiosResolveError ? (

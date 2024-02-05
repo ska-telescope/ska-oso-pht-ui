@@ -197,7 +197,8 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
-    const helperFunction = (title: string) => `${t('characterCount.label')  } ${  title?.length ? title.length : 0  } / ${  MAX_CHAR}`;
+    const helperFunction = (title: string) =>
+      `${t('characterCount.label')} ${title?.length ? title.length : 0} / ${MAX_CHAR}`;
 
     return (
       <FieldWrapper big label={t('title.label')}>
@@ -206,7 +207,7 @@ export default function TitleContent({ page }: TitleContentProps) {
           testId="titleId"
           value={getProposal()?.title}
           setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
+            helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
           errorText={errorText}
           helperText={helperFunction(getProposal()?.title)}
         />

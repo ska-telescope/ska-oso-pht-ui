@@ -58,9 +58,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`scienceCategory.${pt}`);
     const st = getProposal().subCategory;
     const sName =
-      !pt || pt < 1 || !st || st < 1
-        ? t('label.noneSelected')
-        : t(`scienceSubCategory.${st}`);
+      !pt || pt < 1 || !st || st < 1 ? t('label.noneSelected') : t(`scienceSubCategory.${st}`);
     return `${pName} / ${sName}`;
   };
 

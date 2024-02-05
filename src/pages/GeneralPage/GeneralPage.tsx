@@ -53,7 +53,7 @@ export default function GeneralPage() {
     if (getProposal()?.category > 0) {
       count++;
     }
-      /* TODO : Retained for future use
+    /* TODO : Retained for future use
     if (getProposal()?.subCategory > 0) {
       count++;
     }
@@ -66,7 +66,7 @@ export default function GeneralPage() {
     setProposal({ ...getProposal(), category: id, subCategory: 1 });
   };
 
-    /* TODO : Retained for future use
+  /* TODO : Retained for future use
   const getSubCategoryOptions = () => {
     if (getProposal().category) {
       return GENERAL.ScienceCategory[getProposal().category - 1].subCategory;
