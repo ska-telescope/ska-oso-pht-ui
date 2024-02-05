@@ -15,6 +15,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    Installation
    DuringDevelopment
    Services
+   SensCalc
    RunningBuilding
    Testing
 
@@ -32,3 +33,4 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    ObservationPage
    TechnicalPage
    DataPage
+   SubmitConfirmation

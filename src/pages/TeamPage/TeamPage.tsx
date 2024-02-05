@@ -61,12 +61,12 @@ export default function TeamPage() {
   };
 
   const columns = [
-    { field: 'lastName', headerName: t('label.lastName'), flex: 1 },
-    { field: 'firstName', headerName: t('label.firstName'), flex: 1 },
-    { field: 'status', headerName: t('column.status'), flex: 1 },
+    { field: 'lastName', headerName: t('lastName.label'), flex: 1 },
+    { field: 'firstName', headerName: t('firstName.label'), flex: 1 },
+    { field: 'status', headerName: t('status.label'), flex: 1 },
     {
       field: 'phdThesis',
-      headerName: t('label.phdThesis'),
+      headerName: t('phdThesis.label'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (params: { row: { pi: boolean } }) => (
@@ -75,7 +75,7 @@ export default function TeamPage() {
     },
     {
       field: 'pi',
-      headerName: t('column.pi'),
+      headerName: t('pi.short'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -83,7 +83,7 @@ export default function TeamPage() {
     },
     {
       field: 'id',
-      headerName: t('column.actions'),
+      headerName: t('actions.label'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,

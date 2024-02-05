@@ -1,5 +1,3 @@
-'useClient';
-
 import React from 'react';
 import { Status } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';

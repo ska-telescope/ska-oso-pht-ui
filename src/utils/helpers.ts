@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
 const specialChars = /[!+]/;
@@ -10,6 +11,8 @@ export const helpers = {
       setErrorText: Function,
       textType?: string
     ): boolean {
+      const { t } = useTranslation('pht');
+
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {
@@ -25,7 +28,7 @@ export const helpers = {
         }
         if (text.length > MAX_LENGTH) {
           setText(text);
-          setErrorText('Exceeded expected character count');
+          setErrorText(t('characterCount.error'));
           return false;
         }
         setText(text);

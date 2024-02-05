@@ -1,5 +1,3 @@
-'useClient';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';

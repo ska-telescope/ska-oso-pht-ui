@@ -110,7 +110,7 @@ export default function ObservationPage() {
     },
     {
       field: 'type',
-      headerName: t('column.type'),
+      headerName: t('type.label'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
@@ -119,7 +119,7 @@ export default function ObservationPage() {
     },
     {
       field: 'id',
-      headerName: t('column.actions'),
+      headerName: t('actions.label'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -135,14 +135,14 @@ export default function ObservationPage() {
   const extendedColumnsObservations = [...columns];
 
   const columnsTargets = [
-    { field: 'name', headerName: t('label.name'), width: 200 },
-    { field: 'ra', headerName: t('label.rightAscension'), width: 150 },
-    { field: 'dec', headerName: t('label.declination'), width: 150 }
+    { field: 'name', headerName: t('name.label'), width: 200 },
+    { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
+    { field: 'dec', headerName: t('declination.label'), width: 150 }
   ];
   const columnsTargetsSelected = [
-    { field: 'name', headerName: t('label.name'), width: 200 },
-    { field: 'ra', headerName: t('label.rightAscension'), width: 150 },
-    { field: 'dec', headerName: t('label.declination'), width: 150 },
+    { field: 'name', headerName: t('name.label'), width: 200 },
+    { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
+    { field: 'dec', headerName: t('declination.label'), width: 150 },
     {
       field: 'id',
       headerName: t('label.selected'),
@@ -182,7 +182,7 @@ export default function ObservationPage() {
       setAxiosSensCalError(response.error);
       setAxiosSensCalErrorColor(AlertColorTypes.Error);
     }
-  }
+  };
 
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
@@ -208,7 +208,7 @@ export default function ObservationPage() {
         <Alert testId="alertSensCalErrorId" color={axiosSensCalErrorColor}>
           <Typography>{axiosSensCalError}</Typography>
         </Alert>
-                ) : null}
+      ) : null}
       <Grid
         spacing={1}
         p={3}
