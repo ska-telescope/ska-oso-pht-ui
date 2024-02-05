@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 window.env = {
   REACT_APP_SKA_PHT_URL: 'http://localhost',
   REACT_APP_SKA_PHT_API_URL: 'http://localhost:6100',
@@ -6,3 +7,6 @@ window.env = {
   REACT_APP_DOMAIN: 'https://sdhp.stfc.skao.int',
   REACT_APP_SKA_LOGIN_APP_URL: 'http://localhost:4201'
 };
+=======
+window.env = {}
+>>>>>>> Stashed changes
