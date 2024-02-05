@@ -7,7 +7,8 @@
   "yes": "Yes",
   "no": "No",
   "button": {
-    "addObservation": "Add observation",
+    "add": "Add",
+    "addObservation": "observation setup",
     "addProposal": "Add proposal",
     "addTarget": "Add target",
     "cancel": "Cancel",
@@ -38,9 +39,9 @@
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
-          "4": "AA* (15-m antennas only)",
-          "5": "AA4 (15-m antennas only)",
-          "6": "Custom"
+          "7": "AA* (15-m antennas only)",
+          "9": "AA4 (15-m antennas only)",
+          "20": "Custom"
         }
       },
       "2": {
@@ -52,9 +53,9 @@
           "4": "AA2 (core only",
           "5": "AA*",
           "6": "AA* (core only)",
-          "7": "AA4",
-          "8": "AA4 (core only)",
-          "9": "Custom"
+          "8": "AA4",
+          "10": "AA4 (core only)",
+          "20": "Custom"
         },
         "robust": {
           "1": "n/a"
@@ -69,6 +70,13 @@
   },
   "actions": {
     "label": "Actions"
+  },
+  "arrayConfiguration": {
+    "label": "Telescope",
+    "help": "TELESCOPE HELP",
+    "0": "Not specified",
+    "1": "MID",
+    "2": "LOW"
   },
   "characterCount": {
     "label": "Character count",
@@ -90,7 +98,7 @@
     "help": "FIRST NAME HELP"
   },
   "id": {
-    "label": "ID"
+    "label": "Id"
   },
   "lastName": {
     "label": "Last Name",
@@ -113,6 +121,9 @@
     "label": "Pipeline",
     "help": "PIPELINE HELP",
     "helper": "Please enter your pipeline information"
+  },
+  "proposalId": {
+    "label": "Proposal Id"
   },
   "rightAscension": {
     "label": "Right Ascension",
@@ -140,6 +151,21 @@
     "0": "All status types",
     "label": "Status"
   },
+  "subArrayConfiguration": {
+    "label": "Array Configuration",
+    "help": "ARRAY CONFIGURATION HELP",
+    "1": "AA0.5",
+    "2": "AA1",
+    "3": "AA2",
+    "4": "AA2 (core only",
+    "5": "AA*",
+    "6": "AA* (core only)",
+    "7": "AA* (15-m antennas only)",
+    "8": "AA4",
+    "9": "AA4 (15-m antennas only)",
+    "10": "AA4 (core only)",
+    "20": "Custom"
+  },
   "title": {
     "label": "Title"
   },
@@ -154,7 +180,6 @@
     "help": "VELOCITY HELP"
   },
   "help": {
-    "arrayConfiguration": "ARRAY CONFIGURATION HELP",
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
     "continuumBandWidth": "Continuum BANDWIDTH HELP",
@@ -172,7 +197,6 @@
     "spectralAveraging": "Spectral Averaging HELP",
     "specialCharacters": "Special characters !+ not allowed",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
-    "subArrayConfiguration": "SUB-ARRAY CONFIGURATION HELP",
     "subBands": "SUB-BANDS HELP",
     "suppliedType": "SUPPLIED TIME HELP",
     "suppliedUnits": "SUPPLIED UNITS HELP",
@@ -228,7 +252,7 @@
       "desc": "ADD PROPOSAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "9": {
-      "title": "Add Observation",
+      "title": "Observation Setup",
       "desc": "ADD OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "10": {
@@ -243,7 +267,6 @@
   "label": {
     "addTarget": "Add Target",
     "array": "Array",
-    "arrayConfiguration": "Array Configuration",
     "bandWidth": "Bandwidth",
     "button": {
       "telescopeToggle": "Telescope Toggle"
@@ -276,7 +299,6 @@
     "spectralAveraging": "Spectral Averaging",
     "spectralResolution": "Spectral Resolution",
     "srcNet": "SRC Net",
-    "subArrayConfiguration": "Subarray Configuration",
     "subBands": "Number of sub bands",
     "tapering": "Tapering",
     "targetMosaic": "Target Mosaic",

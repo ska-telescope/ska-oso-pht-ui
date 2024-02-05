@@ -11,6 +11,7 @@ export const helpers = {
       setErrorText: Function,
       textType?: string
     ): boolean {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { t } = useTranslation('pht');
 
       textType = textType ?? 'DEFAULT';

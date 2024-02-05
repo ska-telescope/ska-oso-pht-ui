@@ -50,7 +50,7 @@ export default function AddObservation() {
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState(1);
   const [suppliedType, setSuppliedType] = React.useState(1);
-  const [suppliedValue, setSuppliedValue] = React.useState();
+  const [suppliedValue, setSuppliedValue] = React.useState('');
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
   const [frequencyUnits, setFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
@@ -58,7 +58,7 @@ export default function AddObservation() {
   const [subBands, setSubBands] = React.useState(0);
 
   React.useEffect(() => {
-    helpComponent(t('help.arrayConfiguration'));
+    helpComponent(t('arrayConfiguration.help'));
   }, []);
 
   const checkConfiguration = (e: number) => {
@@ -68,21 +68,42 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
 
-  const arrayConfigurationField = () => (
-    <DropDown
-      options={OBSERVATION.array}
-      testId="arrayConfig"
-      value={arrayConfig}
-      setValue={checkConfiguration}
-      label={t('label.arrayConfiguration')}
-      onFocus={() => helpComponent(t('help.arrayConfiguration'))}
-    />
-  );
+  const arrayConfigurationField = () => {
+    const getArrayOptions = () => {
+      if (arrayConfig) {
+        const res = OBSERVATION.array.map(e => {
+          return {
+            label: t('arrayConfiguration.' + e.value),
+            value: e.value
+          };
+        });
+        return res;
+      }
+      return [{ label: '', value: 0 }];
+    };
+
+    return (
+      <DropDown
+        options={getArrayOptions()}
+        testId="arrayConfig"
+        value={arrayConfig}
+        setValue={checkConfiguration}
+        label={t('arrayConfiguration.label')}
+        onFocus={() => helpComponent(t('arrayConfiguration.help'))}
+      />
+    );
+  };
 
   const subarrayConfigurationField = () => {
     const getSubArrayOptions = () => {
       if (arrayConfig) {
-        return OBSERVATION.array[arrayConfig - 1].subarray;
+        const res = OBSERVATION.array[arrayConfig - 1].subarray.map(e => {
+          return {
+            label: t('subArrayConfiguration.' + e.value),
+            value: e.value
+          };
+        });
+        return res;
       }
       return [{ label: '', value: 0 }];
     };
@@ -94,8 +115,8 @@ export default function AddObservation() {
         testId="subarrayConfig"
         value={subarrayConfig}
         setValue={setSubarrayConfig}
-        label={t('label.subArrayConfiguration')}
-        onFocus={() => helpComponent(t('help.subArrayConfiguration'))}
+        label={t('subArrayConfiguration.label')}
+        onFocus={() => helpComponent(t('subArrayConfiguration.help'))}
       />
     );
   };
@@ -130,10 +151,11 @@ export default function AddObservation() {
       }
       return [{ label: 'Not applicable', value: 0 }];
     };
+
     return (
       <DropDown
         options={getOptions()}
-        disabled={getOptions().length < 2}
+        disabled={!getOptions() || getOptions()?.length < 2}
         testId="observingBand"
         value={observingBand}
         setValue={setObservingBand}
@@ -362,7 +384,7 @@ export default function AddObservation() {
     />
   );
 
-  const subBandsField = () => {
+  const SubBandsField = () => {
     const [error, setError] = React.useState('');
     const validate = e => {
       if (e < 0 || e > 32) {
@@ -447,7 +469,7 @@ export default function AddObservation() {
       if (!elevation || !weather || !frequency || !effective) {
         return true;
       }
-      if (isContinuum && !continuumBandwidth) {
+      if (isContinuum() && !continuumBandwidth) {
         return true;
       }
       return false;
@@ -581,7 +603,7 @@ export default function AddObservation() {
                   {taperingField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {subBandsField()}
+                  {SubBandsField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeightingField()}
