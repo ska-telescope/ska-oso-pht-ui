@@ -4,7 +4,7 @@ import { helpers } from '../../../utils/helpers';
 
 async function PutProposal(proposal, status?) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_EDIT = `/proposal`;
+  const URL_EDIT = `/proposal/${  proposal.id}`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -12,12 +12,12 @@ async function PutProposal(proposal, status?) {
     }
   };
 
-  // TODO: add testing for proposal conversion format
-  const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
-
   if (USE_LOCAL_DATA) {
     return 'OK - Local DATA';
   }
+
+  // TODO: add testing for proposal conversion format
+  const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
 
   try {
     const result = await axios.put(`${apiUrl}${URL_EDIT}`, convertedProposal, config);

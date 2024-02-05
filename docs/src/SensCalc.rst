@@ -1,7 +1,7 @@
 Sensitivity Calculator API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A temporary "TMP BUTTON" has been added on the observation page to show the connection to the Sensitivity Calculator API.
+Each target that is selected in relation to an observation attempt to connect to the Sensitivity Calculator API.
 The GetSensitivityCalculatorAPIData service acts as the entry point to the different API requests to the Sensitivity Calculator and handles 
 the appropriate number of requests to the endpoints as necessary.
 

@@ -1,7 +1,7 @@
 Target Page
 ~~~~~~~~~~~
 
-This guide explains the "Target Page".
+This guide explains the "Target Page", where you provide details about your observation targets.
 
 .. figure:: /images/targetPage.png
    :width: 90%
@@ -10,13 +10,24 @@ This guide explains the "Target Page".
 Layout and Navigation
 =====================
 
-TO BE COMPLETED
+Target input area: Three distinct sections offer different ways to specify your targets:
+
+- List of targets:
+
+   - Right side: Add individual targets by providing details like name, coordinates, and velocity/redshift. Use the "Add target" button.
+   - Left side: View a list of added targets with their details and delete options.
+   - "Import from file" and "Spatial imaging" tabs: Coming soon!
+
+- Target mosaic: Using Aladin Lite Viewer
+
+- No specific target: Select this option for Target of Opportunity or Director's Discretionary Time proposals.
 
 Navigation Elements
 ===================
 
 - Home: (Top left corner) Returns you to the Landing Page.
 - Title Page: (Bottom left corner) Takes you back to the Title Page.
+- Science: (Bottom left corner) Takes you back to the previous Science Page.
 - Save: (Top left) Saves your progress on the Team Page.
 - Validate: (Top right) Checks if all required information is filled correctly.
 - Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
@@ -46,12 +57,21 @@ Additional Features
 Key Information and Actions
 ===========================
 
-TO BE COMPLETED
+- Choose one of the three methods to specify your observation targets:
+
+   - List of targets: Add individual targets with detailed information.
+   - Target mosaic: Upload and visualize your target mosaic using the integrated Aladdin Lite viewer.
+   - No specific target: Select for Target of Opportunity or Director's Discretionary Time proposals.
+
+- Review and manage your added targets in the list on the left side.
+- Remember to save your progress regularly using the "Save" button.
+- Validate your information before submission using the "Validate" button.
+- Submit your completed proposal when all pages are validated and the "Submit" button becomes active.
 
 Next Steps
 ==========
 
-TO BE COMPLETED
+After specifying your targets using one of the provided methods, click "Observation" to proceed to the next page, where you'll define your observation parameters.
 
 Additional Notes
 ================

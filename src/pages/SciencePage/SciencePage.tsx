@@ -20,7 +20,7 @@ export default function SciencePage() {
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
-    const temp = [];
+    const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
