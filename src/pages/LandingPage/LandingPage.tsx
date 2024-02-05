@@ -109,7 +109,7 @@ export default function LandingPage() {
   const canEdit = () => true;
 
   const COLUMNS = [
-    { field: 'id', headerName: t('id.label'), width: 100 },
+    { field: 'id', headerName: t('proposalId.label'), width: 100 },
     { field: 'telescope', headerName: t('label.telescope'), width: 100 },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 200 },

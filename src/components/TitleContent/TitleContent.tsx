@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
@@ -120,7 +118,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -132,14 +130,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div" maxWidth={200}>
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -163,7 +161,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -175,14 +173,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div">
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -207,7 +205,8 @@ export default function TitleContent({ page }: TitleContentProps) {
           testId="titleId"
           value={getProposal()?.title}
           setValue={(title: string) =>
-            helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
+            helpers.validate.validateTextEntry(title, setTitle, setErrorText)
+          }
           errorText={errorText}
           helperText={helperFunction(getProposal()?.title)}
         />

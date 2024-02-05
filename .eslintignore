@@ -9,4 +9,5 @@ dist
 **/*.py
 **/*.svg
 **/*.html
-jest.config.js
+**/*.txt
+**/*.xml
