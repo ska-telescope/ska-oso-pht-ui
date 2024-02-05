@@ -6,8 +6,6 @@ import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import PageBanner from './PageBanner';
-import {SKA_PHT_API_URL} from "../../../utils/constants";
-import AddProposal from "../../../pages/AddProposal/AddProposal";
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
