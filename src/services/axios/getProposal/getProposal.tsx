@@ -5,7 +5,7 @@ import MockProposal from './mockProposal';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetProposal(id: number) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_GET = `/proposal/${  id}`;
+  const URL_GET = `/proposal/${id}`;
   const config = {
     headers: {
       Accept: 'application/json',
