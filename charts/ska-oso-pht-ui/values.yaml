@@ -1,33 +1,27 @@
-# Default values for oet.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-minikube: true
-
-system: oso
-subsystem: oso
-
-global:
-  minikube: true
 
 # Configure Ingress
 ingress:
   enabled: true
 
-ui:
-  runtime:
-    backendUrl: "/api"
-    useLocalData: true
-    loginAppUrl: "/login"
-  ingress:
-    dummyUrl: http://dummy-url.tld
-    contextUrl: http://localhost
-  component: pht-ui
-  function: ui
-  domain: operations
-  enabled: true
-  image:
-    registry: artefact.skao.int
-    image: ska-oso-pht-ui
-    tag: 0.0.1
-    pullPolicy: IfNotPresent
-    
+runtimeEnv:
+  skipPreflightCheck: "true"
+  skaPhtUrl: ""
+  skaPhtApiUrl: ""
+  apiRefreshRate: 1000
+  useLocalData: "false"
+  domain: ""
+  skaSensitivityCalcUrl: ""
+  skaLoginAppUrl: ""
+
+component: pht-ui
+function: ui
+domain: operations
+enabled: true
+image:
+  # registry: artefact.skao.int
+  # image: ska-oso-pht-ui
+  # tag: 0.0.1
+  registry: registry.gitlab.com/ska-telescope/oso
+  image: ska-oso-pht-ui/ska-oso-pht-ui
+  tag: 0.0.1-dev.c7f33912a
+  pullPolicy: IfNotPresent

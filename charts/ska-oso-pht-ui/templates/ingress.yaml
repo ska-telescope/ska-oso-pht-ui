@@ -1,75 +1,23 @@
 {{- if $.Values.ingress.enabled }}
-{{- if $.Values.dashboard.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: {{ include "ska-oso-pht-ui.name" . }}
   annotations:
     kubernetes.io/ingress.class: nginx
-{{ include "ska-oso-pht.dashboard.labels" . | indent 4 }}
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
-{{ include "ska-oso-pht.dashboard.labels" . | indent 4 }}
-  name: {{ $.Chart.Name }}-dashboard-ingress
-  namespace: {{ .Release.Namespace }}
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 spec:
   rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: {{ $.Chart.Name }}-dashboard-service
-            port:
-              number: 80
-        path: "{{ include "ingress_path_prepend" . }}/dashboard/?(.*)"
-        pathType: ImplementationSpecific
-{{- end }}
-{{- if $.Values.api.enabled }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-{{ include "ska-oso-pht.api.labels" . | indent 4 }}
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-  labels:
-{{ include "ska-oso-pht.api.labels" . | indent 4 }}
-  name: {{ $.Chart.Name }}-api-ingress
-  namespace: {{ .Release.Namespace }}
-spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: {{ $.Chart.Name }}-api-service
-            port:
-              number: 8000
-        path: "{{ include "ingress_path_prepend" . }}/api/?(.*)"
-        pathType: ImplementationSpecific
-{{- end }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-{{ include "ska-oso-pht.login.labels" . | indent 4 }}
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-  labels:
-{{ include "ska-oso-pht.login.labels" . | indent 4 }}
-  name: {{ $.Chart.Name }}-login-page
-  namespace: {{ .Release.Namespace }}
-spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: {{ $.Chart.Name }}-login-page-service
-            port:
-              number: 80
-        path: "{{ include "ingress_path_prepend" . }}/{{ .Values.ingress.loginpath }}/?(.*)"
-        pathType: ImplementationSpecific
+    - http:
+        paths:
+          - path: /{{ .Release.Namespace }}/pht/ui/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "ska-oso-pht-ui.name" . }}
+                port:
+                  number: 80
 {{- end }}

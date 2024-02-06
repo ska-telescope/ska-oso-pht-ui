@@ -1,49 +1,42 @@
-{{/*
-Selector labels
-*/}}
-{{- define "ska-oso-pht.labels" -}}
+{{- define "ska-oso-pht-ui.name" -}}
+{{ .Chart.Name }}-{{ .Release.Name }}-ui
+{{- end }}
+
+{{- define "ska-oso-pht-ui.labels" -}}
 app.kubernetes.io/name: {{ $.Chart.Name }}
+component: pht-ui
+function: ui
+domain: operations
 {{- end }}
 
-{{- define "ska-oso-pht.dashboard.labels" -}}
-{{ include "ska-oso-pht.labels" . }}
-app: {{ $.Chart.Name }}-dashboard
+{{- define "ska-oso-pht-ui.urls-skaPhtUrl" -}}
+{{- if .Values.runtimeEnv.skaPhtUrl -}}
+{{ .Values.runtimeEnv.skaPhtUrl }}
+{{- else -}}
+/{{ .Release.Namespace }}/pht/ui/
+{{- end }}
 {{- end }}
 
-{{- define "ska-oso-pht.api.labels" -}}
-{{ include "ska-oso-pht.labels" . }}
-app: {{ $.Chart.Name }}-api
+{{- define "ska-oso-pht-ui.urls-skaPhtApiUrl" -}}
+{{- if .Values.runtimeEnv.skaPhtApiUrl -}}
+{{ .Values.runtimeEnv.skaPhtApiUrl }}
+{{- else -}}
+/{{ .Release.Namespace }}/pht/api/
+{{- end }}
 {{- end }}
 
-{{- define "ska-oso-pht.login.labels" -}}
-{{ include "ska-oso-pht.labels" . }}
-app: {{ $.Chart.Name }}-login-page
+{{- define "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" -}}
+{{- if .Values.runtimeEnv.skaSensitivityCalcUrl -}}
+{{ .Values.runtimeEnv.skaSensitivityCalcUrl }}
+{{- else -}}
+/{{ .Release.Namespace }}/sensitivity/
+{{- end }}
 {{- end }}
 
-{{- define "ingress_path_prepend" }}
-    {{- if $.Values.ingress.namespaced }}
-        {{- printf "/%s%s" .Release.Namespace .Values.ingress.pathStart }}
-    {{- else }}
-        {{- printf "%s" $.Values.ingress.pathStart }}
-    {{- end }}
+{{- define "ska-oso-pht-ui.urls-skaLoginAppUrl" -}}
+{{- if .Values.runtimeEnv.skaLoginAppUrl -}}
+{{ .Values.runtimeEnv.skaLoginAppUrl }}
+{{- else -}}
+/{{ .Release.Namespace }}/login/
 {{- end }}
-
-{{- define "api_chart" }}
-    {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{- define "dashboard_url" }}
-    {{- if $.Values.urls.override }}
-        {{- printf "%s" $.Values.urls.dashboardurl }}
-    {{- else }}
-        {{- printf "%s/dashboard" (include "ingress_path_prepend" .) }}
-    {{- end }}
-{{- end }}
-
-{{- define "api_url" }}
-    {{- if $.Values.urls.override }}
-        {{- printf "%s" $.Values.urls.apiUrl }}
-    {{- else }}
-        {{- printf "%s/api" (include "ingress_path_prepend" .) }}
-    {{- end }}
 {{- end }}
