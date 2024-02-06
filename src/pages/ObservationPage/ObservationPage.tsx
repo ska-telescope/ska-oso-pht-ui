@@ -2,13 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, TickBox, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
-import TMPSensCalConnectButton from '../../components/button/TMPSensCalConnect/TMPSensCalConnectButton';
 import { Proposal } from '../../services/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
 
 const PAGE = 5;
 
@@ -20,15 +20,13 @@ export default function ObservationPage() {
   const [currentObservation, setCurrentObservation] = React.useState(0);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
-  const [axiosSensCalError, setAxiosSensCalError] = React.useState('');
-  const [axiosSensCalErrorColor, setAxiosSensCalErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
-    const temp = [];
+    const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
@@ -150,13 +148,35 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
+        const isSelected = isTargetSelected(e.row.id);
+
         if (currentObservation > 0) {
           return (
             <TickBox
               label=""
               testId="linkedTickBox"
-              checked={isTargetSelected(e.row.id)}
+              checked={isSelected}
               onChange={() => targetSelectedToggle(e.row.id)}
+            />
+          );
+        }
+        return '';
+      }
+    },
+    {
+      field: 'vel',
+      headerName: '',
+      sortable: false,
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        const isSelected = isTargetSelected(e.row.id);
+
+        if (currentObservation > 0) {
+          return (
+            <SensCalcDisplay
+              observation={getProposal().observations[currentObservation]}
+              selected={isSelected}
             />
           );
         }
@@ -169,19 +189,6 @@ export default function ObservationPage() {
 
   const clickFunction = () => {
     // TODO
-  };
-
-  const handleSensCalConnectClick = response => {
-    // TODO: use response
-    if (response && !response.error) {
-      // Handle successful response
-      setAxiosSensCalError(`Success`);
-      setAxiosSensCalErrorColor(AlertColorTypes.Success);
-    } else {
-      // Handle error response
-      setAxiosSensCalError(response.error);
-      setAxiosSensCalErrorColor(AlertColorTypes.Error);
-    }
   };
 
   const ClickObservationRow = (e: { id: number }) => {
@@ -204,11 +211,6 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      {axiosSensCalError ? (
-        <Alert testId="alertSensCalErrorId" color={axiosSensCalErrorColor}>
-          <Typography>{axiosSensCalError}</Typography>
-        </Alert>
-      ) : null}
       <Grid
         spacing={1}
         p={3}
@@ -222,9 +224,6 @@ export default function ObservationPage() {
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
                 <AddObservationButton />
-              </Grid>
-              <Grid item pb={1}>
-                <TMPSensCalConnectButton onClick={handleSensCalConnectClick} />
               </Grid>
             </Grid>
             <DataGrid
@@ -257,7 +256,7 @@ export default function ObservationPage() {
               <Grid item>
                 <TickBox
                   disabled={currentObservation === 0}
-                  label="Unlinked"
+                  label="Not selected"
                   testId="unlinkedTickBox"
                   checked={notSelected}
                   onChange={() => setNotSelected(!notSelected)}

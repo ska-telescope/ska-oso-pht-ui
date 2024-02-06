@@ -7,6 +7,7 @@ export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
+export const STATUS_INITIAL = 5;
 
 export const LAST_PAGE = 8;
 

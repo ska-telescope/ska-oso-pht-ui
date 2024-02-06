@@ -29,7 +29,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       justifyContent="center"
       onClick={ClickFunction}
     >
-      <StatusIcon testId="statusId" icon level={getLevel()} size={SIZE} />
+      <StatusIcon ariaTitle="Page Status" testId="statusId" icon level={getLevel()} size={SIZE} />
       <Typography variant="caption">{t(`page.${page}.title`)}</Typography>
     </Grid>
   );
