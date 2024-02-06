@@ -1,0 +1,49 @@
+{{- if $.Values.dashboard.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Chart.Name }}-dashboard-service
+  labels:
+{{ include "ska-oso-pht.dashboard.labels" . | indent 4 }}
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  clusterIP: None
+  selector:
+{{ include "ska-oso-pht.dashboard.labels" . | indent 4 }}
+{{- end }}
+{{- if $.Values.api.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Chart.Name }}-api-service
+  labels:
+{{ include "ska-oso-pht.api.labels" . | indent 4 }}
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+  clusterIP: None
+  selector:
+{{ include "ska-oso-pht.api.labels" . | indent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Chart.Name }}-login-page-service
+  labels:
+{{ include "ska-oso-pht.login.labels" . | indent 4 }}
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  clusterIP: None
+  selector:
+{{ include "ska-oso-pht.login.labels" . | indent 4 }}

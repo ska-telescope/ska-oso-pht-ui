@@ -1,0 +1,31 @@
+---
+urls:
+  override: true
+
+api:
+  container: docker.io/library/ska-oso-pht-services
+  storagePath: "/mnt/"
+  version: 0.6.2
+
+dashboard:
+  container: docker.io/library/ska-oso-pht-ui
+  version: 0.6.2
+
+elasticsearch:
+  enabled: false
+  storageClass: standard
+  master:
+    replicaCount: 1
+  data:
+    replicaCount: 1
+
+dataProductPVC:
+  name: test-pvc
+  create:
+    enabled: true
+    size: 1Gi
+    storageClassName: standard
+
+loginpage:
+  container: artefact.skao.int/ska-login-page
+  version: 0.2.0
