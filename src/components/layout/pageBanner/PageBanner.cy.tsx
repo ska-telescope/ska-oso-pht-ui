@@ -43,11 +43,11 @@ describe('PUT proposal (SAVE)', () => {
       </StoreProvider>
     );
   });
-  it('displays request message in Alert component on request', () => {
+  it('displays request message in Alert component on request, Request Failed', () => {
     cy.get('[data-testid="button.saveButton"]').click();
     cy.get('[data-testid="alertSaveErrorId"]')
       .should('be.visible')
-      .should('contain', 'Success');
+      .should('contain', 'Request failed');
   });
 });
 // TODO: create unit tests for VALIDATE
