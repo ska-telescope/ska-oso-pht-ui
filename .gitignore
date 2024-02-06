@@ -7,12 +7,15 @@
 
 # testing
 /coverage
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
 
 # production
 /build
+/dist
 
 # misc
-.nyc_output/*
 .DS_Store
 .env.local
 .env.development.local
@@ -23,18 +26,17 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+/.nyc_output/*
+
+public/env.js
+
 # built docs
 /docs/build
 
 /.vs
 /.vscode
 .idea/
-dist/
 junit.xml
 linting.xml
-cypress/screenshots
-
-package-lock.json
-
+unit-tests.xml
 PrivateRules.mak
-node_modules

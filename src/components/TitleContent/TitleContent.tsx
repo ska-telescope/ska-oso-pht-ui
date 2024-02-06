@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
@@ -40,7 +38,7 @@ export default function TitleContent({ page }: TitleContentProps) {
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
-    const temp = [];
+    const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
       temp.push(page === i ? value : getProposalState()[i]);
     }
@@ -61,6 +59,8 @@ export default function TitleContent({ page }: TitleContentProps) {
     }
     setTheProposalState(result[count]);
   }, [validateToggle]);
+
+  const setTheErrorText = (str: string) => setErrorText(t(str));
 
   const handleDialogResponse = response => {
     if (response === 'continue') {
@@ -120,7 +120,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -132,14 +132,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div" maxWidth={200}>
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -163,7 +163,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={(
+              avatar={
                 <Avatar
                   variant="rounded"
                   style={{
@@ -175,14 +175,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              )}
-              title={(
+              }
+              title={
                 <Typography variant="h6" component="div">
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              )}
+              }
             />
           </CardActionArea>
         </Card>
@@ -207,7 +207,8 @@ export default function TitleContent({ page }: TitleContentProps) {
           testId="titleId"
           value={getProposal()?.title}
           setValue={(title: string) =>
-            helpers.validate.validateTextEntry(title, setTitle, setErrorText)}
+            helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
+          }
           errorText={errorText}
           helperText={helperFunction(getProposal()?.title)}
         />

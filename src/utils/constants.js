@@ -1,4 +1,4 @@
-import { env } from '../../env';
+import { env } from '../env';
 
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA;
@@ -7,21 +7,9 @@ export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
+export const STATUS_INITIAL = 5;
 
 export const LAST_PAGE = 8;
-
-export const PAGES = [
-  'Title',
-  'Team',
-  'General',
-  'Science',
-  'Target',
-  'Observation',
-  'Technical',
-  'Data',
-  'Add Proposal',
-  'Add Observation'
-];
 
 export const NAV = [
   '/proposal/title',
@@ -97,7 +85,7 @@ export const OBSERVATION = {
         { value: 1 },
         { value: 2 },
         { value: 3 },
-        { lvalue: 4 },
+        { value: 4 },
         { value: 5 },
         { value: 6 }
       ],
@@ -147,7 +135,7 @@ export const OBSERVATION = {
         { value: 9 }
       ],
       robust: [{ value: 1 }],
-      band: null,
+      band: [{ label: 'Not applicable', value: 0 }],
       bandWidth: [
         { label: '24.4 KHz', value: 1 },
         { label: '48.8 KHz', value: 2 },

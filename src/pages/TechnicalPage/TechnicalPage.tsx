@@ -19,7 +19,7 @@ export default function TechnicalPage() {
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
-    const temp = [];
+    const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
@@ -75,11 +75,11 @@ export default function TechnicalPage() {
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
             <CardHeader
-              title={(
+              title={
                 <Typography variant="h6" data-testid="pdfPreviewLabel">
                   {t('label.pdfPreview')}
                 </Typography>
-              )}
+              }
             />
             <CardContent sx={{ height: '55vh' }}>
               <object

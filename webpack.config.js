@@ -2,8 +2,11 @@ const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 const deps = require('./package.json').dependencies;
+const version = require('./package.json').version;
 
 module.exports = () => {
   return {
@@ -17,7 +20,16 @@ module.exports = () => {
     },
 
     resolve: {
-      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+      alias: {
+        '@components': path.resolve(__dirname, 'src/components'),
+        '@services': path.resolve(__dirname, 'src/services'),
+        '@pages': path.resolve(__dirname, 'src/pages'),
+        '@utils': path.resolve(__dirname, 'src/utils')
+      },
+      extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+      fallback: {
+        path: require.resolve('path-browserify')
+      }
     },
 
     devServer: {
@@ -60,9 +72,6 @@ module.exports = () => {
     devtool: 'source-map',
 
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env.VERSION': JSON.stringify(process.env.npm_package_version)
-      }),
       new ModuleFederationPlugin({
         name: 'pht',
         filename: 'remoteEntry.js',
@@ -149,6 +158,9 @@ module.exports = () => {
       new HtmlWebPackPlugin({
         template: './public/index.html'
       }),
+      new webpack.EnvironmentPlugin({
+        REACT_APP_VERSION: version
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -160,6 +172,9 @@ module.exports = () => {
             }
           }
         ]
+      }),
+      new Dotenv({
+        path: '.env'
       })
     ]
   };
