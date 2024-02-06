@@ -11,6 +11,8 @@ import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
+import PutProposal from '../../../services/axios/putProposal/putProposal';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
 interface SubmitConfirmationProps {
   open: boolean;
@@ -28,14 +30,24 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
   const theme = useTheme();
   const { application } = storageObject.useStore();
 
+  const [axiosSaveError, setAxiosSaveError] = React.useState('');
+  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+
   const getProposal = () => {
     const p = application.content2 as Proposal;
     return p;
   };
 
-  const handleConfirm = () => {
-    onConfirm();
-    onClose();
+  const handleConfirm = response => {
+    if (response && !response.error) {
+      // Handle successful response
+      setAxiosSaveError(`Success: ${response}`);
+      setAxiosSaveErrorColor(AlertColorTypes.Success);
+    } else {
+      // Handle error response
+      setAxiosSaveError(response.error);
+      setAxiosSaveErrorColor(AlertColorTypes.Error);
+    }
   };
 
   const handleCancel = () => {
@@ -334,6 +346,11 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           {technicalContent()}
           {sectionTitle()}
           {dataContent()}
+          {axiosSaveError ? (
+            <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
+              <Typography>{axiosSaveError}</Typography>
+            </Alert>
+          ) : null}
         </Grid>
       </DialogContent>
       <DialogActions>{pageFooter()}</DialogActions>
