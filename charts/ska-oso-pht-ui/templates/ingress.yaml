@@ -14,7 +14,7 @@ spec:
     - http:
         paths:
           - path: /{{ .Release.Namespace }}/pht/ui/(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ template "ska-oso-pht-ui.name" . }}
