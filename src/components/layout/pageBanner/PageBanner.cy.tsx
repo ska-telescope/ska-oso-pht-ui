@@ -34,20 +34,20 @@ describe('POST proposal/ bad request', () => {
 });
 
 describe('PUT proposal (SAVE)', () => {
-    beforeEach(() => {
-        cy.mount(
-          <StoreProvider>
-            <Router location="/" navigator={undefined}>
-              <PageBanner pageNo={0} />
-            </Router>
-          </StoreProvider>
-        );
-    });
-    it('displays request message in Alert component on request', () => {
-        cy.get('[data-testid="button.saveButton"]').click();
-        cy.get('[data-testid="alertSaveErrorId"]')
-            .should('be.visible')
-            .should('contain', 'Success')
-    });
+  beforeEach(() => {
+    cy.mount(
+      <StoreProvider>
+        <Router location="/" navigator={undefined}>
+          <PageBanner pageNo={0} />
+        </Router>
+      </StoreProvider>
+    );
+  });
+  it('displays request message in Alert component on request', () => {
+    cy.get('[data-testid="button.saveButton"]').click();
+    cy.get('[data-testid="alertSaveErrorId"]')
+      .should('be.visible')
+      .should('contain', 'Success');
+  });
 });
 // TODO: create unit tests for VALIDATE
