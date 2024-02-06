@@ -11,7 +11,6 @@ import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
-import PutProposal from '../../../services/axios/putProposal/putProposal';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
 interface SubmitConfirmationProps {

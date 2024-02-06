@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CheckIcon from '@mui/icons-material/Check';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-import {Proposal} from "../../../services/types/proposal";
+import { Proposal } from '../../../services/types/proposal';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 interface ConfirmButtonProps {
