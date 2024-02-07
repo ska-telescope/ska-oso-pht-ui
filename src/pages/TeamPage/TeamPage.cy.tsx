@@ -5,7 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 import theme from '../../services/theme/theme';
 import TeamPage from './TeamPage';
-import { TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../utils/constants';
+import { TEAM_STATUS_TYPE_OPTIONS } from '../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];

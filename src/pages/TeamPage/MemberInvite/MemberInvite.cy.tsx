@@ -4,18 +4,13 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import theme from '../../../services/theme/theme';
-import MemberInvite, {
-  HELP_EMAIL,
-  HELP_FIRST_NAME,
-  HELP_LAST_NAME,
-  HELP_PHD
-} from './MemberInvite';
 import {
   DEFAULT_HELP,
   TEAM_STATUS_TYPE_OPTIONS,
   TEXT_ENTRY_PARAMS
 } from '../../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import MemberInvite from './MemberInvite';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -241,7 +236,6 @@ describe('Content', () => {
     it('Contextual help displayed when Last Name input field on focus', () => {
       cy.get('[data-testid="lastName"] input').focus();
       cy.get('[data-testid="helpPanelId"]').contains('lastName.help');
-
     });
     it('Contextual help displayed when Email input field on focus', () => {
       cy.get('[data-testid="email"] input').focus();

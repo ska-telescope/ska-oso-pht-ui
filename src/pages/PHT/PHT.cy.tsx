@@ -3,7 +3,6 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
-import MockProposals from '../../services/axios/getProposalList/mockProposals';
 import theme from '../../services/theme/theme';
 import PHT from './PHT';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
