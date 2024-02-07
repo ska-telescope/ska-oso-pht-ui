@@ -2,13 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
+import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import { Proposal } from '../../services/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
+import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const PAGE = 5;
 
@@ -20,6 +22,7 @@ export default function ObservationPage() {
   const [currentObservation, setCurrentObservation] = React.useState(0);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -34,7 +37,45 @@ export default function ObservationPage() {
   };
 
   const deleteIconClicked = () => {
-    // TODO : Display confirmation and if confirm, delete
+    setOpenDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const deleteConfirmed = () => {
+    const obs1 = getProposal().observations.filter(e => e.id !== currentObservation);
+    const obs2 = getProposal().targetObservation.filter(
+      e => e.observationId !== currentObservation
+    );
+    setProposal({ ...getProposal(), observations: obs1, targetObservation: obs2 });
+    setCurrentObservation(0);
+    closeDeleteDialog();
+  };
+
+  const alertContent = () => {
+    const LABEL_WIDTH = 6;
+    const rec = getProposal().observations.find(p => p.id === currentObservation);
+    return (
+      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
+        <FieldWrapper label={t('arrayConfiguration.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t('arrayConfiguration.' + rec.telescope)}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t('subArrayConfiguration.' + rec.subarray)}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t('observationType.' + rec.type)}</Typography>
+        </FieldWrapper>
+
+        <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
+          <Grid item>
+            <Typography variant="caption">{t('deleteObservation.content1')}</Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+    );
   };
 
   const AddObservationTarget = (id: number) => {
@@ -65,6 +106,8 @@ export default function ObservationPage() {
     }
   };
 
+  const getRows = () => getProposal().observations;
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -75,8 +118,8 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = getProposal().observations.length > 0 ? 1 : 0;
-    count += getProposal().targets.length > 0 ? 1 : 0;
+    let count = getRows().length > 0 ? 1 : 0;
+    count += getProposal().targetObservation.length > 0 ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
@@ -92,7 +135,7 @@ export default function ObservationPage() {
     },
     {
       field: 'subarray',
-      headerName: t('label.array'),
+      headerName: t('subArrayConfiguration.short'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => {
@@ -112,7 +155,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
-        <Typography>{t(`dropdown.observationType.${e.row.type}`)}</Typography>
+        <Typography>{t(`observationType.${e.row.type}`)}</Typography>
       )
     },
     {
@@ -122,11 +165,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => (
-        <TrashIcon
-          onClick={deleteIconClicked}
-          selected={e.row.id === currentObservation}
-          toolTip="Delete target"
-        />
+        <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
       )
     }
   ];
@@ -187,10 +226,6 @@ export default function ObservationPage() {
   const extendedColumnsTargets = [...columnsTargets];
   const extendedColumnsTargetsSelected = [...columnsTargetsSelected];
 
-  const clickFunction = () => {
-    // TODO
-  };
-
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
   };
@@ -226,14 +261,24 @@ export default function ObservationPage() {
                 <AddObservationButton />
               </Grid>
             </Grid>
-            <DataGrid
-              rows={getProposal().observations}
-              columns={extendedColumnsObservations}
-              height={450}
-              onRowClick={ClickObservationRow}
-              showBorder={false}
-              testId="observationDetails"
-            />
+            {getRows().length > 0 && (
+              <DataGrid
+                rows={getRows()}
+                columns={extendedColumnsObservations}
+                height={450}
+                onRowClick={ClickObservationRow}
+                showBorder={false}
+                testId="observationDetails"
+              />
+            )}
+            {getRows().length === 0 && (
+              <InfoCard
+                color={InfoCardColorTypes.Error}
+                fontSize={20}
+                message={t('error.noObservations')}
+                testId="helpPanelId"
+              />
+            )}
           </Grid>
         </Grid>
         <Grid item xs={6}>
@@ -264,20 +309,39 @@ export default function ObservationPage() {
               </Grid>
             </Grid>
             <CardContent>
-              <DataGrid
-                rows={filteredTargets()}
-                columns={
-                  currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
-                }
-                height={390}
-                onColumnVisibilityModelChange={clickFunction}
-                showBorder={false}
-                testId="linkedTargetDetails"
-              />
+              {getProposal().targets.length > 0 && (
+                <DataGrid
+                  rows={filteredTargets()}
+                  columns={
+                    currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
+                  }
+                  height={390}
+                  showBorder={false}
+                  testId="linkedTargetDetails"
+                />
+              )}
+              {getProposal().targets.length === 0 && (
+                <InfoCard
+                  color={InfoCardColorTypes.Error}
+                  fontSize={20}
+                  message={t('targets.empty')}
+                  testId="helpPanelId"
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>
       </Grid>
+      {openDialog && (
+        <AlertDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onDialogResponse={deleteConfirmed}
+          title="deleteObservation.label"
+        >
+          {alertContent()}
+        </AlertDialog>
+      )}
     </Shell>
   );
 }

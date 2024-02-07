@@ -11,12 +11,12 @@ import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
-interface SubmitConfirmationProps {
+interface ProposalDisplayProps {
   open: boolean;
   onClose: Function;
   onConfirm: Function;
+  onConfirmLabel: string;
 }
 
 const LABEL_WIDTH = 3;
@@ -24,29 +24,20 @@ const LABEL_STYLE = 'subtitle1';
 const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
 
-export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitConfirmationProps) {
+export default function ProposalDisplay({
+  open,
+  onClose,
+  onConfirm,
+  onConfirmLabel
+}: ProposalDisplayProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const { application } = storageObject.useStore();
 
-  const [axiosSaveError, setAxiosSaveError] = React.useState('');
-  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+  const getProposal = () => application.content2 as Proposal;
 
-  const getProposal = () => {
-    const p = application.content2 as Proposal;
-    return p;
-  };
-
-  const handleConfirm = response => {
-    if (response && !response.error) {
-      // Handle successful response
-      setAxiosSaveError(`Success: ${response}`);
-      setAxiosSaveErrorColor(AlertColorTypes.Success);
-    } else {
-      // Handle error response
-      setAxiosSaveError(response.error);
-      setAxiosSaveErrorColor(AlertColorTypes.Error);
-    }
+  const handleConfirm = () => {
+    onConfirm();
   };
 
   const handleCancel = () => {
@@ -75,7 +66,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
 
   const telescope = (tel: number) => t(`dropdown.telescope.${tel}.title`);
   const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${tel}.array.${arr}`);
-  const observationType = (type: number) => t(`dropdown.observationType.${type}`);
+  const observationType = (type: number) => t(`observationType.${type}`);
 
   const pageTitle = (title: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
@@ -107,7 +98,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
         <CancelButton onClick={handleCancel} />
       </Grid>
       <Grid item>
-        <ConfirmButton onClick={handleConfirm} />
+        <ConfirmButton onClick={handleConfirm} label={onConfirmLabel} />
       </Grid>
     </Grid>
   );
@@ -199,7 +190,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.targets')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('targets.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().targets.map((rec: Target) => (
@@ -299,7 +290,7 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.pipeline')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('pipeline.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
@@ -345,11 +336,6 @@ export default function SubmitConfirmation({ open, onClose, onConfirm }: SubmitC
           {technicalContent()}
           {sectionTitle()}
           {dataContent()}
-          {axiosSaveError ? (
-            <Alert testId="alertSaveErrorId" color={axiosSaveErrorColor}>
-              <Typography>{axiosSaveError}</Typography>
-            </Alert>
-          ) : null}
         </Grid>
       </DialogContent>
       <DialogActions>{pageFooter()}</DialogActions>

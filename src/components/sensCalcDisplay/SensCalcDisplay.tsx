@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensitivityCalculatorAPIData from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { IconButton } from '@mui/material';
 
 const SIZE = 20;
 
@@ -31,5 +32,9 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
     }
   }, [selected]);
 
-  return <StatusIcon ariaTitle="SensCalc Status" testId="statusId" icon level={lvl} size={SIZE} />;
+  return (
+    <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }}>
+      <StatusIcon ariaTitle="" testId="statusId" icon level={lvl} size={SIZE} />
+    </IconButton>
+  );
 }
