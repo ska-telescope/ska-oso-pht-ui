@@ -3,16 +3,24 @@ import { IconButton, Tooltip } from '@mui/material';
 import { EditRounded } from '@mui/icons-material';
 
 interface EditIconProps {
-  toolTip: string;
+  disabled?: boolean;
   onClick: Function;
+  toolTip: string;
 }
 
-export default function EditIcon({ toolTip = '', onClick }: EditIconProps) {
+export default function EditIcon({ disabled = false, onClick, toolTip = '' }: EditIconProps) {
   return (
     <Tooltip title={toolTip} arrow>
-      <IconButton aria-label="view" onClick={() => onClick()} style={{ cursor: 'pointer' }}>
-        <EditRounded />
-      </IconButton>
+      <span>
+        <IconButton
+          aria-label="view"
+          disabled={disabled}
+          onClick={() => onClick()}
+          style={{ cursor: 'pointer' }}
+        >
+          <EditRounded />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 }

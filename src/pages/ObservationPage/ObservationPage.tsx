@@ -126,17 +126,17 @@ export default function ObservationPage() {
   const columns = [
     {
       field: 'telescope',
-      headerName: t('label.telescope'),
-      flex: 1,
+      headerName: t('arrayConfiguration.label'),
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
-        <Typography>{t(`dropdown.telescope.${e.row.telescope}.title`)}</Typography>
+        <Typography>{t(`arrayConfiguration.${e.row.telescope}`)}</Typography>
       )
     },
     {
       field: 'subarray',
       headerName: t('subArrayConfiguration.short'),
-      flex: 1,
+      flex: 2,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => {
         if (e.row.telescope) {
@@ -146,7 +146,7 @@ export default function ObservationPage() {
             </Typography>
           );
         }
-        return <Typography>{t('dropdown.telescope.0.title')}</Typography>;
+        return <Typography>{t('arrayConfiguration.0')}</Typography>;
       }
     },
     {
@@ -162,7 +162,7 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('actions.label'),
       sortable: false,
-      flex: 1,
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => (
         <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
@@ -182,7 +182,7 @@ export default function ObservationPage() {
     { field: 'dec', headerName: t('declination.label'), width: 150 },
     {
       field: 'id',
-      headerName: t('label.selected'),
+      headerName: t('selected.label'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -214,7 +214,7 @@ export default function ObservationPage() {
         if (currentObservation > 0) {
           return (
             <SensCalcDisplay
-              observation={getProposal().observations[currentObservation]}
+              observation={getProposal().observations.find(p => p.id === currentObservation)}
               selected={isSelected}
             />
           );
@@ -286,13 +286,13 @@ export default function ObservationPage() {
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>
                 <Typography pt={1} variant="h6">
-                  {t('label.targetObservation')}
+                  {t('targetObservation.label')}
                 </Typography>
               </Grid>
               <Grid item>
                 <TickBox
                   disabled={currentObservation === 0}
-                  label="Selected"
+                  label={t('selected.label')}
                   testId="selectedTickBox"
                   checked={selected}
                   onChange={() => setSelected(!selected)}
@@ -301,7 +301,7 @@ export default function ObservationPage() {
               <Grid item>
                 <TickBox
                   disabled={currentObservation === 0}
-                  label="Not selected"
+                  label={t('notSelected.label')}
                   testId="unlinkedTickBox"
                   checked={notSelected}
                   onChange={() => setNotSelected(!notSelected)}

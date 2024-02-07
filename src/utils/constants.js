@@ -243,7 +243,7 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Telescope proposal',
         code: 'JTP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
@@ -277,7 +277,7 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Telescope proposal',
         code: 'JTP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
@@ -311,7 +311,7 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Telescope proposal',
         code: 'JTP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
