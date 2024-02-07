@@ -139,8 +139,8 @@ export default function AddObservation() {
       testId="observationType"
       value={observationType}
       setValue={setObservationType}
-      label={t('label.observationType')}
-      onFocus={() => helpComponent(t('help.observationType'))}
+      label={t('observationType.label')}
+      onFocus={() => helpComponent(t('observationType.help'))}
     />
   );
 

@@ -5,18 +5,18 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
-import SubmitConfirmation from './SubmitConfirmation';
+import ProposalDisplay from './ProposalDisplay';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<SubmitConfirmation />', () => {
+describe('<ProposalDisplay />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <SubmitConfirmation
+            <ProposalDisplay
               pageNo={0}
               onClose={cy.stub().as('handleCancel')}
               onConfirm={cy.stub().as('handleConfirm')}
@@ -34,7 +34,7 @@ describe('PUT proposal (SUBMIT)', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <SubmitConfirmation
+          <ProposalDisplay
             pageNo={0}
             onClose={cy.stub().as('handleCancel')}
             onConfirm={cy.stub().as('handleConfirm')}

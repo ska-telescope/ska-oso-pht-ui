@@ -45,8 +45,7 @@ export default function TargetPage() {
     let count = 0;
     switch (getProposal().targetOption) {
       case 1: {
-        count = 1;
-        count += getProposal().targets.length ? 1 : 0;
+        count += getProposal().targets.length ? 2 : 0;
         setTheProposalState(result[count]);
         return;
       }
@@ -85,9 +84,9 @@ export default function TargetPage() {
         >
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
-              <Tooltip title={t(`tooltip.${TITLE[occ]}`)} arrow>
+              <Tooltip title={t(`${TITLE[occ]}.toolTip`)} arrow>
                 <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
-                  {t(`label.${TITLE[occ]}`)}
+                  {t(`${TITLE[occ]}.label`)}
                 </Typography>
               </Tooltip>
             </CardContent>

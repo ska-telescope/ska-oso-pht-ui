@@ -22,7 +22,7 @@ export default function AddTarget() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('help.name'));
+    helpComponent(t('name.help'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
@@ -105,7 +105,7 @@ export default function AddTarget() {
                 testId="name"
                 value={name}
                 setValue={setName}
-                onFocus={() => helpComponent(t('help.name'))}
+                onFocus={() => helpComponent(t('name.help'))}
               />
             </Grid>
             <Grid item>
