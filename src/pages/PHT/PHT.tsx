@@ -21,6 +21,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
+import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
 export default function PHT() {
   const { t } = useTranslation('pht');
@@ -39,7 +40,6 @@ export default function PHT() {
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
-  const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
@@ -76,8 +76,7 @@ export default function PHT() {
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
-      setAxiosViewError(`Success`);
-      setAxiosViewErrorColor(AlertColorTypes.Success);
+      setAxiosViewError('');
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
@@ -85,7 +84,6 @@ export default function PHT() {
     } else {
       // Handle error response
       setAxiosViewError(response.error);
-      setAxiosViewErrorColor(AlertColorTypes.Error);
       updateAppContent1(null);
       updateAppContent2(null);
       updateAppContent3(null);
@@ -196,11 +194,6 @@ export default function PHT() {
 
   return (
     <>
-      {axiosViewError ? (
-        <Alert testId="alertErrorId" color={axiosViewErrorColor}>
-          <Typography>{axiosViewError}</Typography>
-        </Alert>
-      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{t('page.10.desc')}</Typography>
       </Grid>
@@ -228,23 +221,24 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-        <Grid item>
-          {axiosError ? (
-            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-              <Typography>{axiosError}</Typography>
-            </Alert>
-          ) : (
-            <DataGrid
-              testId="dataGridId"
-              rows={filteredData}
-              columns={extendedColumns}
-              showBorder={false}
-              height={500}
-            />
-          )}
+      {axiosViewError && <TimedAlert color={AlertColorTypes.Error} text={axiosViewError} />}
+      {!axiosViewError && (
+        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid item>
+            {axiosError ? (
+              <TimedAlert text={axiosError} color={AlertColorTypes.Error} />
+            ) : (
+              <DataGrid
+                testId="dataGridId"
+                rows={filteredData}
+                columns={extendedColumns}
+                showBorder={false}
+                height={500}
+              />
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       {openDeleteDialog && (
         <ProposalDisplay
           open={openDeleteDialog}

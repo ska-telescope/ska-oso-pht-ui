@@ -13,9 +13,9 @@ async function GetCoordinates(targetName) {
 
   if (USE_LOCAL_DATA) {
     if (targetName === 'M1') {
-      return '5:34:30.9 22:00:53 - Local Data';
+      return '5:34:30.9 22:00:53';
     }
-    return { error: 'Name Not Found - Local Data' };
+    return { error: 'Name Not Found' };
   }
 
   try {
