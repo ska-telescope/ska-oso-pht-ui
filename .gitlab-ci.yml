@@ -58,11 +58,15 @@ code_analysis:
 
 # run the test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
   stage: test
   tags:
     - k8srunner
-  allow_failure: true
+  cache:
+    allow_failure: true
+    paths:
+      - node_modules/
+    policy: pull
   before_script:
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
@@ -79,11 +83,21 @@ test_and_coverage:
       - build/
 
 test-counts:
-  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
   stage: scan
   tags:
     - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/tests
+    - yarn install --immutable
   script:
+    - yarn test:cypress:component:ci
+    - yarn start &
+    - yarn test:cypress:e2e:ci
     - yarn merge-reports
   artifacts:
     paths:
