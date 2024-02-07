@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import HomeButton from '../../button/Home/HomeButton';
 import SaveButton from '../../button/Save/SaveButton';
@@ -9,7 +11,9 @@ import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import { LAST_PAGE } from '../../../utils/constants';
-import SubmitConfirmation from '../../alerts/submitConfirmation/SubmitConfirmation';
+import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
+import PutProposal from '../../../services/axios/putProposal/putProposal';
+import { Proposal } from '../../../services/types/proposal';
 
 interface PageBannerProps {
   pageNo: number;
@@ -17,6 +21,8 @@ interface PageBannerProps {
 
 export default function PageBanner({ pageNo }: PageBannerProps) {
   const { t } = useTranslation('pht');
+  const navigate = useNavigate();
+  const { application } = storageObject.useStore();
 
   const [axiosValidateError, setAxiosValidateError] = React.useState('');
   const [axiosValidateErrorColor, setAxiosValidateErrorColor] = React.useState(null);
@@ -24,6 +30,8 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
   const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
+
+  const getProposal = () => application.content2 as Proposal;
 
   const handleValidateClick = response => {
     setCanSubmit(false);
@@ -55,8 +63,22 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
     setOpenDialog(true);
   };
 
-  const submitConfirmed = () => {
-    setOpenDialog(false); // TODO : Replace with the push Proposal function
+  const submitConfirmed = async () => {
+    const response = await PutProposal(getProposal(), 'Submitted');
+    if (response && !response.error) {
+      console.log('"TREVOR - SUCCESS');
+      // Handle successful response
+      setAxiosSaveError(`Success: ${response}`);
+      setAxiosSaveErrorColor(AlertColorTypes.Success);
+      setOpenDialog(false);
+      navigate('/');
+    } else {
+      console.log('"TREVOR - ERROR');
+      // Handle error response
+      setAxiosSaveError(response.error);
+      setAxiosSaveErrorColor(AlertColorTypes.Error);
+      setOpenDialog(false);
+    }
   };
 
   return (
@@ -132,10 +154,11 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
         </Grid>
       </Grid>
       {openDialog && (
-        <SubmitConfirmation
+        <ProposalDisplay
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onConfirm={submitConfirmed}
+          onConfirmLabel={t('button.confirmSubmit')}
         />
       )}
     </>

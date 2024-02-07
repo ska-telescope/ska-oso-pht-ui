@@ -13,19 +13,17 @@
     "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "confirmDeleteProposal": "Confirm Proposal Deletion",
+    "confirmDeleteMember": "Confirm Team Member Deletion",
+    "confirmSubmit": "Confirm Proposal Submission",
     "home": "Home",
     "resolve": "Resolve",
     "save": "Save",
     "submit": "Submit",
-    "sendInvite": "Sent invitation",
+    "sendInvite": "Send invitation",
     "validate": "Validate"
   },
   "dropdown": {
-    "observationType": {
-      "0": "Not specified",
-      "1": "Zoom",
-      "2": "Continuum"
-    },
     "scienceSubCategory": {
       "1": "Not specified"
     },
@@ -71,12 +69,20 @@
   "actions": {
     "label": "Actions"
   },
+  "apiVersion": {
+    "label": "API Version"
+  },
   "arrayConfiguration": {
     "label": "Telescope",
     "help": "TELESCOPE HELP",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
+  },
+  "changeProposal": {
+    "label" : "Change Proposal's type?",
+    "content1": "You are about to change the type of your proposal.",
+    "content2": "Some data specific to the proposal type may be lost."
   },
   "characterCount": {
     "label": "Character count",
@@ -88,6 +94,17 @@
   "declination": {
     "label": "Declination",
     "help": "DECLINATION HELP"
+  },
+  "deleteTarget": {
+    "label": "Delete this target ? ",
+    "content1": "NOTE : Selections to the observations will also be removed"
+  },
+  "deleteTeamMember": {
+    "label": "Delete this team member ? "
+  },
+  "deleteObservation": {
+    "label": "Delete this observation ? ",
+    "content1": "NOTE : Selections to the targets will also be removed"
   },
   "email": {
     "label": "Email",
@@ -104,9 +121,21 @@
     "label": "Last Name",
     "help": "LAST NAME HELP"
   },
+  "listOfTargets": {
+    "label" :"List of Targets",
+    "toolTip": "A list of target will be entered and/or imported from file"
+  },
   "name": {
     "label": "Name",
     "help": "NAME HELP"
+  },
+  "observationType": {
+    "label": "Observation Type",
+    "help": "OBSERVATION TYPE HELP",
+    "short": "Type",
+    "0": "Not specified",
+    "1": "Zoom",
+    "2": "Continuum"
   },
   "phdThesis": {
     "label": "PhD Thesis",
@@ -124,6 +153,10 @@
   },
   "proposalId": {
     "label": "Proposal Id"
+  },
+  "noSpecificTarget": {
+    "label": "No specific Target",
+    "toolTip": "Current functionality is not yet available"
   },
   "rightAscension": {
     "label": "Right Ascension",
@@ -147,6 +180,12 @@
     "label": "Science Category",
     "help": "CATEGORY HELP"
   },
+  "sdp": {
+    "label": "SDP"
+  },
+  "srcNet": {
+    "label": "SRC Net"
+  },
   "status": {
     "0": "All status types",
     "label": "Status"
@@ -154,6 +193,7 @@
   "subArrayConfiguration": {
     "label": "Array Configuration",
     "help": "ARRAY CONFIGURATION HELP",
+    "short": "Array",
     "1": "AA0.5",
     "2": "AA1",
     "3": "AA2",
@@ -165,6 +205,14 @@
     "9": "AA4 (15-m antennas only)",
     "10": "AA4 (core only)",
     "20": "Custom"
+  },
+  "targetMosaic": {
+    "label": "Target Mosaic",
+    "toolTip": "Current functionality is not yet available"
+  },
+  "targets": { 
+    "label": "Targets",
+    "empty": "THERE ARE NO TARGETS ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
     "label": "Title"
@@ -189,7 +237,6 @@
     "frequencyUnits": "FREQUENCY UNITS HELP",
     "imageWeighting": "IMAGE WEIGHTING HLP",
     "observingBand": "Observing Band HELP",
-    "observationType": "OBSERVATION TYPE HELP",
     "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
     "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
     "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
@@ -266,7 +313,6 @@
   },
   "label": {
     "addTarget": "Add Target",
-    "array": "Array",
     "bandWidth": "Bandwidth",
     "button": {
       "telescopeToggle": "Telescope Toggle"
@@ -280,31 +326,24 @@
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
-    "listOfTargets": "List of Targets",
     "members": "Members",
     "noneSelected": "None selected",
-    "noSpecificTarget": "No specific Target",
     "observations": "Observations",
-    "observationType": "Observation Type",
     "observingBand": "Observing Band",
     "pdfPreview": "PDF Preview",
     "proposalType": "Proposal Types",
     "scienceCategory": "Scientific category",
     "scienceSubCategory": "Scientific sub-category",
-    "sdp": "SDP",
     "search": "Search",
     "searchForMember": "Search for member",
     "selected": "Selected",
     "spatialImaging": "Spatial Imaging",
     "spectralAveraging": "Spectral Averaging",
     "spectralResolution": "Spectral Resolution",
-    "srcNet": "SRC Net",
     "subBands": "Number of sub bands",
     "tapering": "Tapering",
-    "targetMosaic": "Target Mosaic",
     "targetObservation": "Target List related to the selected Observation",
     "targetSelection": "Target selection",
-    "targets": "Targets",
     "telescope": "Telescope",
     "uploadPDF": "Upload PDF",
     "weather": "Weather"
@@ -314,16 +353,14 @@
       "mode": "Colour Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
-    },
-    "listOfTargets": "A list of target will be entered and/or imported from file",
-    "noSpecificTarget": "Current functionality is not yet available",
-    "targetMosaic": "Current functionality is not yet available"
+    }
   },
   "error": {
     "axios": {
       "format": "Unexpected data format returned from API"
     },
     "noTeamMembers": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "subBandRange": "Value must be in the range 0 - 32 inclusive"
   }

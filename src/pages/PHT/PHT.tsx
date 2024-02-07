@@ -19,6 +19,7 @@ import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
+import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
@@ -40,6 +41,7 @@ export default function PHT() {
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -69,10 +71,6 @@ export default function PHT() {
     // TODO
   };
 
-  const deleteIconClicked = () => {
-    // TODO : Display confirmation and if confirm, delete
-  };
-
   const downloadIconClicked = () => {
     // TODO : Implement
   };
@@ -90,22 +88,46 @@ export default function PHT() {
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
-      setTimeout(() => {
-        navigate(NAV[0]);
-      }, 1000);
+      return true;
     } else {
       // Handle error response
       setAxiosViewError(response.error);
       setAxiosViewErrorColor(AlertColorTypes.Error);
+      updateAppContent1(null);
+      updateAppContent2(null);
+      updateAppContent3(null);
+      return false;
+    }
+  };
+
+  const goToTitlePage = () => {
+    setTimeout(() => {
+      navigate(NAV[0]);
+    }, 1000);
+  };
+
+  const viewIconClicked = () => {
+    if (getTheProposal()) {
+      goToTitlePage();
     }
   };
 
   const editIconClicked = async () => {
-    getTheProposal();
+    if (getTheProposal()) {
+      goToTitlePage();
+    }
   };
 
-  const viewIconClicked = () => {
-    getTheProposal();
+  const deleteIconClicked = () => {
+    if (getTheProposal()) {
+      setTimeout(() => {
+        setOpenDialog(true);
+      }, 1000);
+    }
+  };
+
+  const deleteConfirmed = () => {
+    setOpenDialog(false);
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
@@ -220,6 +242,14 @@ export default function PHT() {
           )}
         </Grid>
       </Grid>
+      {openDialog && (
+        <ProposalDisplay
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onConfirm={deleteConfirmed}
+          onConfirmLabel="button.confirmDeleteProposal"
+        />
+      )}
     </>
   );
 }

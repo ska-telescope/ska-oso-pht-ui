@@ -1,46 +1,55 @@
 import * as React from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Grid, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
 
-export default function AlertDialog(props) {
-  const { open, onClose, onDialogResponse } = props;
+interface AlertDialogProps {
+  open: boolean;
+  onClose: Function;
+  onDialogResponse: Function;
+  title?: string;
+  children?: JSX.Element | JSX.Element[];
+}
+
+export default function AlertDialog({
+  open,
+  onClose,
+  onDialogResponse,
+  title = '',
+  children
+}: AlertDialogProps) {
+  const { t } = useTranslation('pht');
 
   const handleContinue = () => {
-    onDialogResponse('continue');
-    onClose();
+    onDialogResponse();
   };
 
   const handleCancel = () => {
-    onDialogResponse('cancel');
     onClose();
   };
 
+  const alertTitle = () => (
+    <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid item>
+        <Typography variant="h5">{t(title)}</Typography>
+      </Grid>
+    </Grid>
+  );
+
   return (
     <Dialog
+      fullWidth
+      maxWidth="sm"
       open={open}
       onClose={handleCancel}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
     >
-      <DialogTitle id="alert-dialog-title">Change Proposal&apos;s type?</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description" component="div">
-          <Typography variant="body1">
-            You are about to change the type of your proposal.
-          </Typography>
-          <Typography variant="body1">
-            Some data specific to the proposal type may be lost.
-          </Typography>
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions sx={{ p: '24px' }}>
+      <DialogTitle>{alertTitle()}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
             <CancelButton onClick={handleCancel} />

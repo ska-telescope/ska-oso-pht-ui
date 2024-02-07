@@ -2,22 +2,19 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import CheckIcon from '@mui/icons-material/Check';
-import PutProposal from '../../../services/axios/putProposal/putProposal';
-import { Proposal } from '../../../services/types/proposal';
-import MockProposal from '../../../services/axios/getProposal/mockProposal';
 
 interface ConfirmButtonProps {
   onClick: Function;
+  label?: string;
 }
 
-export default function ConfirmButton({ onClick }: ConfirmButtonProps) {
+export default function ConfirmButton({ onClick, label = 'button.confirm' }: ConfirmButtonProps) {
   const { t } = useTranslation('pht');
 
-  const title = t('button.confirm');
+  const title = t(label);
 
-  const ClickFunction = async () => {
-    const response = await PutProposal((MockProposal as unknown) as Proposal, 'Submitted');
-    onClick(response);
+  const ClickFunction = () => {
+    onClick();
   };
 
   return (

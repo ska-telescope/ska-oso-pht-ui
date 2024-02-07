@@ -62,14 +62,13 @@ export default function TitleContent({ page }: TitleContentProps) {
 
   const setTheErrorText = (str: string) => setErrorText(t(str));
 
-  const handleDialogResponse = response => {
-    if (response === 'continue') {
-      if (!subProposalChange) {
-        setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: 0 });
-      } else {
-        setProposal({ ...getProposal(), proposalSubType: tempValue });
-      }
+  const handleDialogResponse = () => {
+    if (!subProposalChange) {
+      setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: 0 });
+    } else {
+      setProposal({ ...getProposal(), proposalSubType: tempValue });
     }
+    setOpenDialog(false);
   };
 
   const confirmChange = (id: number, isSubType: boolean) => {
@@ -190,6 +189,21 @@ export default function TitleContent({ page }: TitleContentProps) {
     );
   }
 
+  const alertContent = () => {
+    return (
+      <Grid
+        p={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <Typography variant="body1">{t('changeProposal.content1')}</Typography>
+        <Typography variant="body1">{t('changeProposal.content2')}</Typography>
+      </Grid>
+    );
+  };
+
   const titleField = () => {
     const MAX_CHAR = 50;
 
@@ -292,7 +306,10 @@ export default function TitleContent({ page }: TitleContentProps) {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onDialogResponse={handleDialogResponse}
-      />
+        title="changeProposal.label"
+      >
+        {alertContent()}
+      </AlertDialog>
     </>
   );
 }

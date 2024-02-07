@@ -81,15 +81,12 @@ export default function DataPage() {
           alignItems="baseline"
           justifyContent="flex-start"
         >
-          <Grid item xs={7}>
-            <Typography variant="h6" m={2}>
-              {t('label.sdp')}
-            </Typography>
+          <Grid item xs={1} />
+          <Grid item xs={6}>
+            <Typography variant="h6">{t('sdp.label')}</Typography>
 
             {pipelineField()}
-            <Typography variant="h6" m={2}>
-              {t('label.srcNet')}
-            </Typography>
+            <Typography variant="h6">{t('srcNet.label')}</Typography>
           </Grid>
           <Grid item xs={1} />
           <Grid item xs={3}>

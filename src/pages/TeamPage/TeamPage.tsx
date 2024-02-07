@@ -12,6 +12,8 @@ import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
+import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const PAGE = 1;
 
@@ -23,11 +25,14 @@ export function PIStar({ pi }) {
 
 export default function TeamPage() {
   const { t } = useTranslation('pht');
-  const { application, updateAppContent1 } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [currentMember, setCurrentMember] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -57,7 +62,53 @@ export default function TeamPage() {
   };
 
   const deleteIconClicked = () => {
-    // TODO : Display confirmation and if confirm, delete
+    setOpenDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const ClickMemberRow = (e: { id: number }) => {
+    setCurrentMember(e.id);
+  };
+
+  const deleteConfirmed = () => {
+    const obs1 = getProposal().team.filter(e => e.id !== currentMember);
+
+    setProposal({ ...getProposal(), team: obs1 });
+    setCurrentMember(0);
+    closeDeleteDialog();
+  };
+
+  const alertContent = () => {
+    const LABEL_WIDTH = 6;
+    const rec = getProposal().team.find(p => p.id === currentMember);
+    return (
+      <Grid
+        p={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <FieldWrapper label={t('firstName.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.firstName}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('lastName.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.lastName}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('email.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.email}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t(rec.phdThesis ? 'yes' : 'no')}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('pi.short')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t(rec.pi ? 'yes' : 'no')}</Typography>
+        </FieldWrapper>
+      </Grid>
+    );
   };
 
   const columns = [
@@ -69,8 +120,8 @@ export default function TeamPage() {
       headerName: t('phdThesis.label'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (params: { row: { pi: boolean } }) => (
-        <Typography>{t(params.row.pi ? 'yes' : 'No')}</Typography>
+      renderCell: (params: { row: { phdThesis: boolean } }) => (
+        <Typography>{t(params.row.phdThesis ? 'yes' : 'No')}</Typography>
       )
     },
     {
@@ -94,10 +145,6 @@ export default function TeamPage() {
 
   const getRows = () => getProposal().team;
 
-  const ClickFunction = () => {
-    // TODO
-  };
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -120,8 +167,8 @@ export default function TeamPage() {
               <DataGrid
                 rows={getRows()}
                 columns={extendedColumns}
+                onRowClick={ClickMemberRow}
                 height={400}
-                onRowClick={ClickFunction}
                 showBorder={false}
                 testId="teamTableId"
               />
@@ -171,6 +218,16 @@ export default function TeamPage() {
           </Grid>
         </Grid>
       </Grid>
+      {openDialog && (
+        <AlertDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onDialogResponse={deleteConfirmed}
+          title="deleteTeamMember.label"
+        >
+          {alertContent()}
+        </AlertDialog>
+      )}
     </Shell>
   );
 }
