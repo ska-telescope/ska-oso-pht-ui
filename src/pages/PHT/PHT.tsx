@@ -7,7 +7,6 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  Alert,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
