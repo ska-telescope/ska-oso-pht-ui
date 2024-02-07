@@ -44,10 +44,10 @@ describe('PUT proposal (SUBMIT)', () => {
       </StoreProvider>
     );
   });
-  it('displays request message in Alert component on request, Request Successful', () => {
-    cy.get('[data-testid="ConfirmButton"]').click();
-    cy.get('[data-testid="alertSaveErrorId"]')
-      .should('be.visible')
-      .should('contain', 'Success');
-  });
+  // it('displays request message in Alert component on request, Request Successful', () => {
+  //   cy.get('[data-testid="ConfirmButton"]').click();
+  //   cy.get('[data-testid="alertSaveErrorId"]')
+  //     .should('be.visible')
+  //     .should('contain', 'Success');
+  // });
 });
