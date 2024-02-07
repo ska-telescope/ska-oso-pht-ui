@@ -10,7 +10,7 @@ import {
   Alert,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import GetProposals from '../../services/axios/getProposalList/getProposalList';
+import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
@@ -22,9 +22,10 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 
-export default function LandingPage() {
+export default function PHT() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+
   const {
     clearApp,
     helpComponent,
@@ -37,13 +38,13 @@ export default function LandingPage() {
   const [searchType, setSearchType] = React.useState('');
   const [dataProposals, setDataProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
-  const [, setAxiosViewError] = React.useState('');
-  const [, setAxiosViewErrorColor] = React.useState(null);
+  const [axiosViewError, setAxiosViewError] = React.useState('');
+  const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
 
   React.useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
-      const response = await GetProposals();
+      const response = await GetProposalList();
       if (isMounted) {
         if (response && !response.error) {
           if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
@@ -84,13 +85,14 @@ export default function LandingPage() {
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response
-      setAxiosViewError(`Success: ${response}`);
+      setAxiosViewError(`Success`);
       setAxiosViewErrorColor(AlertColorTypes.Success);
-      setDataProposals([]);
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
-      navigate(NAV[0]);
+      setTimeout(() => {
+        navigate(NAV[0]);
+      }, 1000);
     } else {
       // Handle error response
       setAxiosViewError(response.error);
@@ -106,13 +108,17 @@ export default function LandingPage() {
     getTheProposal();
   };
 
-  const canEdit = () => true;
+  const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
+  const canClone = () => true;
+  const canDownload = () => true;
+  const canDelete = (e: { row: { status: string } }) =>
+    e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
-    { field: 'id', headerName: t('proposalId.label'), width: 100 },
+    { field: 'id', headerName: t('id.label'), width: 100 },
     { field: 'telescope', headerName: t('label.telescope'), width: 100 },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
-    { field: 'title', headerName: t('title.label'), width: 200 },
+    { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
     { field: 'status', headerName: t('status.label'), width: 100 },
     { field: 'lastUpdated', headerName: t('updated.label'), width: 150 },
@@ -122,20 +128,29 @@ export default function LandingPage() {
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
-      renderCell: () => (
+      renderCell: (e: never) => (
         <>
-          {!canEdit && (
+          {!canEdit(e) && (
             <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />
           )}
-          {canEdit && (
+          {canEdit(e) && (
             <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />
           )}
-          <CloneIcon onClick={cloneIconClicked} toolTip={t('icon.tooltip.cloneProposal')} />
+          <CloneIcon
+            onClick={cloneIconClicked}
+            disabled={!canClone()}
+            toolTip={t('icon.tooltip.cloneProposal')}
+          />
           <DownloadIcon
             onClick={downloadIconClicked}
+            disabled={!canDownload()}
             toolTip={t('icon.tooltip.downloadProposal')}
           />
-          <TrashIcon onClick={deleteIconClicked} toolTip={t('icon.tooltip.deleteProposal')} />
+          <TrashIcon
+            onClick={deleteIconClicked}
+            disabled={!canDelete(e)}
+            toolTip={t('icon.tooltip.deleteProposal')}
+          />
         </>
       )
     }
@@ -156,18 +171,16 @@ export default function LandingPage() {
 
   return (
     <>
+      {axiosViewError ? (
+        <Alert testId="alertErrorId" color={axiosViewErrorColor}>
+          <Typography>{axiosViewError}</Typography>
+        </Alert>
+      ) : null}
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <Typography variant="h5">{t('page.10.desc')}</Typography>
       </Grid>
 
-      <Grid
-        p={1}
-        spacing={2}
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-start"
-      >
+      <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
         <Grid item xs={2}>
           <AddProposalButton />
         </Grid>
@@ -190,26 +203,22 @@ export default function LandingPage() {
         </Grid>
       </Grid>
 
-      <Grid p={1} container direction="column" alignItems="flex-left" justifyContent="space-evenly">
-        <Grid
-          p={1}
-          container
-          direction="column"
-          alignItems="flex-left"
-          justifyContent="space-evenly"
-        />
-        {axiosError ? (
-          <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-            <Typography>{axiosError}</Typography>
-          </Alert>
-        ) : (
-          <DataGrid
-            testId="dataGridId"
-            rows={filteredData}
-            columns={extendedColumns}
-            height={500}
-          />
-        )}
+      <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid item>
+          {axiosError ? (
+            <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
+              <Typography>{axiosError}</Typography>
+            </Alert>
+          ) : (
+            <DataGrid
+              testId="dataGridId"
+              rows={filteredData}
+              columns={extendedColumns}
+              showBorder={false}
+              height={500}
+            />
+          )}
+        </Grid>
       </Grid>
     </>
   );
