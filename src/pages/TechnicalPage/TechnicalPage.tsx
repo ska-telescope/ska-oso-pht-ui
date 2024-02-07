@@ -52,12 +52,12 @@ export default function TechnicalPage() {
   return (
     <Shell page={PAGE}>
       <Grid
-        container
-        p={1}
         spacing={1}
+        p={3}
+        container
         direction="row"
-        alignItems="flex-start"
-        justifyContent="flex-start"
+        alignItems="space-evenly"
+        justifyContent="space-around"
       >
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">

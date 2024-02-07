@@ -13,9 +13,9 @@
     "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "confirmDeleteProposal": "Confirm Proposal Deletion",
     "confirmDeleteMember": "Confirm Team Member Deletion",
     "confirmSubmit": "Confirm Proposal Submission",
+    "close": "Close",
     "home": "Home",
     "resolve": "Resolve",
     "save": "Save",
@@ -24,15 +24,8 @@
     "validate": "Validate"
   },
   "dropdown": {
-    "scienceSubCategory": {
-      "1": "Not specified"
-    },
     "telescope": {
-      "0": {
-        "title": "Not specified"
-      },
       "1": {
-        "title": "MID",
         "array": {
           "1": "AA0.5",
           "2": "AA1",
@@ -43,12 +36,11 @@
         }
       },
       "2": {
-        "title": "LOW",
         "array": {
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
-          "4": "AA2 (core only",
+          "4": "AA2 (core only)",
           "5": "AA*",
           "6": "AA* (core only)",
           "8": "AA4",
@@ -88,6 +80,10 @@
     "label": "Character count",
     "error": "Exceeded expected character count"
   },
+  "cloneProposal": {
+    "toolTip": "Clone proposal",
+    "confirm": "Clone this proposal"
+  },
   "cycle": {
     "label": "Cycle"
   },
@@ -105,6 +101,21 @@
   "deleteObservation": {
     "label": "Delete this observation ? ",
     "content1": "NOTE : Selections to the targets will also be removed"
+  },
+  "deleteProposal": {
+    "toolTip": "Delete proposal",
+    "confirm": "Confirm Proposal Deletion",
+    "disabled": "This function is not available"
+  },
+  "downloadBtn": {
+    "label": "Download"
+  },
+  "downloadProposal": {
+    "label": "Download proposal"
+  },
+  "editProposal": {
+    "toolTip": "Edit proposal",
+    "disabled": "This function is not available"
   },
   "email": {
     "label": "Email",
@@ -128,6 +139,9 @@
   "name": {
     "label": "Name",
     "help": "NAME HELP"
+  },
+  "notSelected": {
+    "label": "Not Selected"
   },
   "observationType": {
     "label": "Observation Type",
@@ -180,8 +194,16 @@
     "label": "Science Category",
     "help": "CATEGORY HELP"
   },
+  "scienceSubCategory": {
+    "label": "Scientific sub-category",
+    "help": "SUB-CATEGORY HELP",
+    "1": "Not specified"
+  },
   "sdp": {
     "label": "SDP"
+  },
+  "selected": {
+    "label": "Selected"
   },
   "srcNet": {
     "label": "SRC Net"
@@ -197,7 +219,7 @@
     "1": "AA0.5",
     "2": "AA1",
     "3": "AA2",
-    "4": "AA2 (core only",
+    "4": "AA2 (core only)",
     "5": "AA*",
     "6": "AA* (core only)",
     "7": "AA* (15-m antennas only)",
@@ -205,6 +227,9 @@
     "9": "AA4 (15-m antennas only)",
     "10": "AA4 (core only)",
     "20": "Custom"
+  },
+  "targetObservation": {
+    "label": "Target List related to the selected Observation"
   },
   "targetMosaic": {
     "label": "Target Mosaic",
@@ -227,6 +252,9 @@
     "label": "Velocity / Redshift",
     "help": "VELOCITY HELP"
   },
+  "viewProposal": {
+    "toolTip": "View proposal"
+  },
   "help": {
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
@@ -240,7 +268,6 @@
     "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
     "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
     "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
-    "scienceSubCategory": "SUB-CATEGORY HELP",
     "spectralAveraging": "Spectral Averaging HELP",
     "specialCharacters": "Special characters !+ not allowed",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
@@ -251,15 +278,6 @@
     "tapering": "TAPERING HELP",
     "title": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "weather": "WEATHER HELP"
-  },
-  "icon": {
-    "tooltip": {
-      "cloneProposal": "Clone proposal",
-      "downloadProposal": "Download proposal",
-      "deleteProposal": "Delete proposal",
-      "editProposal": "Edit proposal",
-      "viewProposal": "View proposal"
-    }
   },
   "page": {
     "0": {
@@ -333,18 +351,14 @@
     "pdfPreview": "PDF Preview",
     "proposalType": "Proposal Types",
     "scienceCategory": "Scientific category",
-    "scienceSubCategory": "Scientific sub-category",
     "search": "Search",
     "searchForMember": "Search for member",
-    "selected": "Selected",
     "spatialImaging": "Spatial Imaging",
     "spectralAveraging": "Spectral Averaging",
     "spectralResolution": "Spectral Resolution",
     "subBands": "Number of sub bands",
     "tapering": "Tapering",
-    "targetObservation": "Target List related to the selected Observation",
     "targetSelection": "Target selection",
-    "telescope": "Telescope",
     "uploadPDF": "Upload PDF",
     "weather": "Weather"
   },

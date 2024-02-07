@@ -55,7 +55,14 @@ export default function SciencePage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container p={1} direction="row" alignItems="flex-start" justifyContent="flex-start">
+      <Grid
+        spacing={1}
+        p={3}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
             {t('label.uploadPDF')}
