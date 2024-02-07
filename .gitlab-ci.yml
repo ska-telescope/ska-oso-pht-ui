@@ -62,8 +62,8 @@ test_and_coverage:
   stage: test
   tags:
     - k8srunner
+  allow_failure: true
   cache:
-    allow_failure: true
     paths:
       - node_modules/
     policy: pull
