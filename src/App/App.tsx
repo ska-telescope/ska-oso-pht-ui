@@ -55,17 +55,17 @@ function App() {
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />
           <Router>
             <Routes>
-              <Route path="/" element={<PHT />} />
-              <Route path={NAV[0]} element={<TitlePage />} />
-              <Route path={NAV[1]} element={<TeamPage />} />
-              <Route path={NAV[2]} element={<GeneralPage />} />
-              <Route path={NAV[3]} element={<SciencePage />} />
-              <Route path={NAV[4]} element={<TargetPage />} />
-              <Route path={NAV[5]} element={<ObservationPage />} />
-              <Route path={NAV[6]} element={<TechnicalPage />} />
-              <Route path={NAV[7]} element={<DataPage />} />
-              <Route path="/addProposal" element={<AddProposal />} />
-              <Route path="/addObservation" element={<AddObservation />} />
+              <Route path={NAV[0]} element={<PHT />} />
+              <Route path={NAV[1]} element={<TitlePage />} />
+              <Route path={NAV[2]} element={<TeamPage />} />
+              <Route path={NAV[3]} element={<GeneralPage />} />
+              <Route path={NAV[4]} element={<SciencePage />} />
+              <Route path={NAV[5]} element={<TargetPage />} />
+              <Route path={NAV[6]} element={<ObservationPage />} />
+              <Route path={NAV[7]} element={<TechnicalPage />} />
+              <Route path={NAV[8]} element={<DataPage />} />
+              <Route path={NAV[9]} element={<AddProposal />} />
+              <Route path={NAV[10]} element={<AddObservation />} />
             </Routes>
           </Router>
           <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
