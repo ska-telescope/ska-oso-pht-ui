@@ -1,124 +1,96 @@
-{{ if .Values.ingress.enabled }}
-# Check if production or development
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    {{- include "ska-oso-pht-ui.labels" . | indent 4 }}
-    component: {{ .Values.ui.component }}
-    function: {{ .Values.ui.function }}
-    domain: {{ .Values.ui.domain }}
-    intent: testing
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /{{ .Release.Namespace }}/ska-oso-pht-ui/(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
-                port:
-                  number: 80
-{{- end }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "ska-oso-pht-ui.name" . }}
   labels:
-    {{- include "ska-oso-pht-ui.labels" . | indent 4 }}
-    component: {{ .Values.ui.component }}
-    function: {{ .Values.ui.function }}
-    domain: {{ .Values.ui.domain }}
-    intent: production
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 spec:
   selector:
-    app: {{ template "ska-oso-pht-ui.name" . }}
-    component: {{ .Values.ui.component }}
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: http
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}-nginx-config
+  name: {{ template "ska-oso-pht-ui.name" . }}-nginx-config
+  labels:
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 data:
   default.conf: |-
     server {
         listen       80;
         listen  [::]:80;
-        server_name  localhost;
+        server_name  127.0.0.1;
 
         location / {
             root   /usr/share/nginx/html;
             index  index.html index.htm;
             try_files $uri $uri/ /index.html;
         }
-
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   /usr/share/nginx/html;
         }
-
     }
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ template "ska-oso-pht-ui.name" . }}
   labels:
-    {{- include "ska-oso-pht-ui.labels" . | indent 4 }}
-    component: {{ .Values.ui.component }}
-    function: {{ .Values.ui.function }}
-    domain: {{ .Values.ui.domain }}
-    intent: production
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ template "ska-oso-pht-ui.name" . }}
-      component: {{ .Values.ui.component }}
-  replicas: 1
+{{ include "ska-oso-pht-ui.labels" . | indent 6 }}
   template:
     metadata:
       labels:
-        {{- include "ska-oso-pht-ui.labels" . | indent 8 }}
-        component: {{ .Values.ui.component }}
-        function: {{ .Values.ui.function }}
-        domain: {{ .Values.ui.domain }}
-        intent: production
+{{ include "ska-oso-pht-ui.labels" . | indent 8 }}
     spec:
       containers:
-        - name: ost-senscalc-ui
-          image: "{{ .Values.ui.image.registry }}/{{ .Values.ui.image.image }}:{{ .Values.ui.image.tag }}"
-          imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
+        - name: nginx-ui
+          image: "{{ .Values.image.registry }}/{{ .Values.image.image }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: ost-senscalc-ui
+            - name: http
               containerPort: 80
+              protocol: TCP
           env:
             - name: SKIP_PREFLIGHT_CHECK
-              value: "true"
+              value: {{ .Values.runtimeEnv.skipPreflightCheck | quote }}
+            - name: REACT_APP_SKA_PHT_URL
+              value: {{ include "ska-oso-pht-ui.urls-skaPhtUrl" . | quote}}
             - name: REACT_APP_SKA_PHT_API_URL
-              value: {{ .Values.ui.runtime.backendUrl | quote }}
+              value: {{ include "ska-oso-pht-ui.urls-skaPhtApiUrl" . | quote}}
+            - name: REACT_APP_API_REFRESH_RATE
+              value: {{ .Values.runtimeEnv.apiRefreshRate | quote}}
             - name: REACT_APP_USE_LOCAL_DATA
-              value: {{ .Values.ui.runtime.useLocalData | quote }}
+              value: {{ .Values.runtimeEnv.useLocalData | quote }}
+            - name: REACT_APP_DOMAIN
+              value: {{ .Values.runtimeEnv.domain | quote }}
+            - name: REACT_APP_SKA_SENSITIVITY_CALC_URL
+              value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote}}
             - name: REACT_APP_SKA_LOGIN_APP_URL
-              value: {{ .Values.ui.runtime.loginAppUrl | quote }}
+              value: {{ include "ska-oso-pht-ui.urls-skaLoginAppUrl" . | quote}}
           volumeMounts:
-            - name: nginx-config
+            - name: config
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
       volumes:
-        - name: nginx-config
+        - name: config
           configMap:
-            name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}-nginx-config
+            name: {{ template "ska-oso-pht-ui.name" . }}-nginx-config
