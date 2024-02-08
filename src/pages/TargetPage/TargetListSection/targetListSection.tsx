@@ -112,6 +112,7 @@ export default function TargetListSection() {
             height={400}
             onRowClick={ClickTargetRow}
             showBorder={false}
+            showMild
             testId="targetListColumns"
           />
         )}

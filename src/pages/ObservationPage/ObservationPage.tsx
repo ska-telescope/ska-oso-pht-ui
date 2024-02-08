@@ -268,6 +268,7 @@ export default function ObservationPage() {
                 height={450}
                 onRowClick={ClickObservationRow}
                 showBorder={false}
+                showMild
                 testId="observationDetails"
               />
             )}
@@ -317,6 +318,7 @@ export default function ObservationPage() {
                   }
                   height={390}
                   showBorder={false}
+                  showMild
                   testId="linkedTargetDetails"
                 />
               )}

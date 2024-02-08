@@ -232,6 +232,7 @@ export default function PHT() {
                 rows={filteredData}
                 columns={extendedColumns}
                 showBorder={false}
+                showMild
                 height={500}
               />
             )}
