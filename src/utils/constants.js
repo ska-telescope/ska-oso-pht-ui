@@ -1,5 +1,6 @@
 import { env } from '../env';
 
+export const SKA_PHT_BASE_URL = env.REACT_APP_SKA_PHT_URL;
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
