@@ -11,12 +11,13 @@ import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
+import DownloadButton from '../../button/download/DownloadButton';
 
 interface ProposalDisplayProps {
   open: boolean;
   onClose: Function;
   onConfirm: Function;
-  onConfirmLabel: string;
+  onConfirmLabel?: string;
 }
 
 const LABEL_WIDTH = 3;
@@ -28,7 +29,7 @@ export default function ProposalDisplay({
   open,
   onClose,
   onConfirm,
-  onConfirmLabel
+  onConfirmLabel = ''
 }: ProposalDisplayProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
@@ -64,7 +65,7 @@ export default function ProposalDisplay({
     return `${pName} / ${sName}`;
   };
 
-  const telescope = (tel: number) => t(`dropdown.telescope.${tel}.title`);
+  const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
   const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${tel}.array.${arr}`);
   const observationType = (type: number) => t(`observationType.${type}`);
 
@@ -95,11 +96,16 @@ export default function ProposalDisplay({
   const pageFooter = () => (
     <Grid container direction="row" justifyContent="space-between" alignItems="center">
       <Grid item>
-        <CancelButton onClick={handleCancel} />
+        <CancelButton onClick={handleCancel} label="button.close" />
       </Grid>
       <Grid item>
-        <ConfirmButton onClick={handleConfirm} label={onConfirmLabel} />
+        <DownloadButton />
       </Grid>
+      {onConfirmLabel.length > 0 && (
+        <Grid item>
+          <ConfirmButton onClick={handleConfirm} label={onConfirmLabel} />
+        </Grid>
+      )}
     </Grid>
   );
 

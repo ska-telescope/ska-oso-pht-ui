@@ -15,7 +15,6 @@ import GetProposal from '../../services/axios/getProposal/getProposal';
 import { NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
@@ -41,7 +40,9 @@ export default function PHT() {
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [axiosViewErrorColor, setAxiosViewErrorColor] = React.useState(null);
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -66,14 +67,6 @@ export default function PHT() {
       isMounted = false;
     };
   }, []);
-
-  const cloneIconClicked = () => {
-    // TODO
-  };
-
-  const downloadIconClicked = () => {
-    // TODO : Implement
-  };
 
   const getTheProposal = async () => {
     helpComponent('');
@@ -108,7 +101,9 @@ export default function PHT() {
 
   const viewIconClicked = () => {
     if (getTheProposal()) {
-      goToTitlePage();
+      setTimeout(() => {
+        setOpenViewDialog(true);
+      }, 1000);
     }
   };
 
@@ -118,27 +113,40 @@ export default function PHT() {
     }
   };
 
+  const cloneIconClicked = () => {
+    if (getTheProposal()) {
+      setTimeout(() => {
+        setOpenCloneDialog(true);
+      }, 1000);
+    }
+  };
+
+  const cloneConfirmed = () => {
+    setOpenCloneDialog(false);
+    // TODO - In here we need to copy the proposal and take them to the title for processing.
+    goToTitlePage();
+  };
+
   const deleteIconClicked = () => {
     if (getTheProposal()) {
       setTimeout(() => {
-        setOpenDialog(true);
+        setOpenDeleteDialog(true);
       }, 1000);
     }
   };
 
   const deleteConfirmed = () => {
-    setOpenDialog(false);
+    setOpenDeleteDialog(false);
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
   const canClone = () => true;
-  const canDownload = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 100 },
-    { field: 'telescope', headerName: t('label.telescope'), width: 100 },
+    { field: 'telescope', headerName: t('arrayConfiguration.label'), width: 100 },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
@@ -152,26 +160,21 @@ export default function PHT() {
       disableClickEventBubbling: true,
       renderCell: (e: never) => (
         <>
-          {!canEdit(e) && (
-            <ViewIcon onClick={viewIconClicked} toolTip={t('icon.tooltip.viewProposal')} />
-          )}
-          {canEdit(e) && (
-            <EditIcon onClick={editIconClicked} toolTip={t('icon.tooltip.editProposal')} />
-          )}
+          <EditIcon
+            onClick={editIconClicked}
+            disabled={!canEdit(e)}
+            toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          />
+          <ViewIcon onClick={viewIconClicked} toolTip={t('viewProposal.toolTip')} />
           <CloneIcon
             onClick={cloneIconClicked}
             disabled={!canClone()}
-            toolTip={t('icon.tooltip.cloneProposal')}
-          />
-          <DownloadIcon
-            onClick={downloadIconClicked}
-            disabled={!canDownload()}
-            toolTip={t('icon.tooltip.downloadProposal')}
+            toolTip={t('cloneProposal.toolTip')}
           />
           <TrashIcon
             onClick={deleteIconClicked}
             disabled={!canDelete(e)}
-            toolTip={t('icon.tooltip.deleteProposal')}
+            toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
           />
         </>
       )
@@ -242,12 +245,28 @@ export default function PHT() {
           )}
         </Grid>
       </Grid>
-      {openDialog && (
+      {openDeleteDialog && (
         <ProposalDisplay
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          open={openDeleteDialog}
+          onClose={() => setOpenDeleteDialog(false)}
           onConfirm={deleteConfirmed}
-          onConfirmLabel="button.confirmDeleteProposal"
+          onConfirmLabel="deleteProposal.confirm"
+        />
+      )}
+      {openCloneDialog && (
+        <ProposalDisplay
+          open={openCloneDialog}
+          onClose={() => setOpenCloneDialog(false)}
+          onConfirm={cloneConfirmed}
+          onConfirmLabel="cloneProposal.confirm"
+        />
+      )}
+      {openViewDialog && (
+        <ProposalDisplay
+          open={openViewDialog}
+          onClose={() => setOpenViewDialog(false)}
+          onConfirm={deleteConfirmed}
+          onConfirmLabel=""
         />
       )}
     </>

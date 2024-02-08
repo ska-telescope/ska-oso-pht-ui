@@ -11,7 +11,7 @@ interface TrashIconProps {
 export default function TrashIcon({ disabled = false, onClick, toolTip = '' }: TrashIconProps) {
   return (
     <Tooltip title={toolTip} arrow>
-      <>
+      <span>
         <IconButton
           aria-label="delete"
           disabled={disabled}
@@ -20,7 +20,7 @@ export default function TrashIcon({ disabled = false, onClick, toolTip = '' }: T
         >
           <DeleteRounded />
         </IconButton>
-      </>
+      </span>
     </Tooltip>
   );
 }
