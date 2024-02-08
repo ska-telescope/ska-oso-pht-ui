@@ -134,6 +134,68 @@ build:
     - yarn install
     - yarn build
 
+# Roll up the application
+distribution:
+  stage: build
+  tags:
+  - k8srunner
+  before_script:
+  - yarn install
+  script:
+  - yarn rollup
+  artifacts:
+    paths:
+      - dist/
+
+# Publish the artifacts to CAR
+publish-to-car:
+  stage: publish
+  tags:
+  - k8srunner
+  before_script:
+    - npm config set registry $CAR_NPM_REPOSITORY_URL
+    # npm config set always-auth true
+    - echo $CAR_NPM_REPOSITORY_URL | awk -F '://' '{ cmd="npm config set -- //"$2":_auth \"${CAR_NPM_TOKEN}\" ";system(cmd) }'
+    - npm config get
+  script:
+    - npm publish
+  rules:
+    # Publish from a tag for a release
+    - if: $CI_COMMIT_TAG
+
+# Publish the artifacts to gitlab registry
+publish-to-gitlab:
+  stage: publish
+  tags:
+  - k8srunner
+  before_script:
+    - npm config set @ska-telescope:registry https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+    - npm config set -- '//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken' "${CI_JOB_TOKEN}"
+  script:
+    - npm version --no-git-tag-version $(npm show latest version)-dev.$CI_COMMIT_SHORT_SHA
+    - npm publish
+  rules:
+    # Do not publish on a tag pipeline, note this shouldn't transfer over to SKAO templates
+    - if: $CI_COMMIT_TAG
+      when: never
+
+# export the report
+pages:
+  stage: pages
+  tags:
+  - k8srunner
+  dependencies:
+      - test_and_coverage
+      - test-counts
+      - list_dependencies
+  script:
+      - mv public/* .
+      - cp -r .public/* public
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+
 include:
   - template: Code-Quality.gitlab-ci.yml
   # Docs pages
@@ -154,6 +216,12 @@ include:
     # .post step finalisers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+    # .post step finalizers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+    # deploy
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
 
 k8s-test:
   script:
