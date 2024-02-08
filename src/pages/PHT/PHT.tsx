@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { NAV, SKA_PHT_BASE_URL } from '../../utils/constants';
+import { NAV } from '../../utils/constants';
 import AddObservation from '../AddObservation/AddObservation';
 import AddProposal from '../AddProposal/AddProposal';
 import DataPage from '../DataPage/DataPage';
