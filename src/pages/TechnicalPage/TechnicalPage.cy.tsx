@@ -3,19 +3,19 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
-import SciencePage from './SciencePage';
+import TechnicalPage from './TechnicalPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<ScienceContent />', () => {
+describe('<TechnicalPage />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <SciencePage />
+            <TechnicalPage />
           </ThemeProvider>
         </StoreProvider>
       );
@@ -24,7 +24,7 @@ describe('<ScienceContent />', () => {
   it(`Verify upload file elements`, () => {
     cy.mount(
       <StoreProvider>
-        <SciencePage />
+        <TechnicalPage />
       </StoreProvider>
     );
     // cy.get('[data-testid="uploadPdfLabel"]').contains('Upload PDF');
@@ -34,7 +34,7 @@ describe('<ScienceContent />', () => {
   it(`Verify pdf preview elements`, () => {
     cy.mount(
       <StoreProvider>
-        <SciencePage />
+        <TechnicalPage />
       </StoreProvider>
     );
     // cy.get('[data-testid="pdfPreviewLabel"]').contains('PDF Preview');
