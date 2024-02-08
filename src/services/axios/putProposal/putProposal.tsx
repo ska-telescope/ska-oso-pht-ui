@@ -13,7 +13,7 @@ async function PutProposal(proposal, status?) {
   };
 
   if (USE_LOCAL_DATA) {
-    return 'OK - Local DATA';
+    return 'success';
   }
 
   // TODO: add testing for proposal conversion format

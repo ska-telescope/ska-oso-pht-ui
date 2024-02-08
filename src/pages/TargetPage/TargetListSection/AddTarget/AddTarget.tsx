@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
@@ -13,6 +13,7 @@ export default function AddTarget() {
   const { t } = useTranslation('pht');
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const [nameFieldError, setNameFieldError] = React.useState('');
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
@@ -73,14 +74,14 @@ export default function AddTarget() {
     clearForm();
   };
 
-  const [axiosResolveError, setAxiosResolveError] = React.useState('');
-
   const handleResolveClick = response => {
     if (response && !response.error) {
-      // TODO: set coordinates in fields properly
-      setRA(response);
+      const values = response.split(' ');
+      setRA(values[0]);
+      setDec(values[1]);
+      setNameFieldError('');
     } else {
-      setAxiosResolveError(response.error);
+      setNameFieldError(response.error);
     }
   };
 
@@ -95,17 +96,13 @@ export default function AddTarget() {
               </Typography>
             </Grid>
             <Grid item xs={5}>
-              {axiosResolveError ? (
-                <Alert testId="alertErrorId" color={AlertColorTypes.Error}>
-                  <Typography>{axiosResolveError}</Typography>
-                </Alert>
-              ) : null}
               <TextEntry
                 label=""
                 testId="name"
                 value={name}
                 setValue={setName}
                 onFocus={() => helpComponent(t('name.help'))}
+                errorText={nameFieldError}
               />
             </Grid>
             <Grid item>
