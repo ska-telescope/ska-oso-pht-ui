@@ -255,6 +255,10 @@
   "viewProposal": {
     "toolTip": "View proposal"
   },
+  "wordCount": {
+    "label": "Word count",
+    "error": "Exceeded expected word count"
+  },
   "help": {
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",

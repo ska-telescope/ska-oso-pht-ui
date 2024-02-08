@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
@@ -10,6 +10,7 @@ import { EMPTY_PROPOSAL, NAV } from '../../utils/constants';
 import PostProposal from '../../services/axios/postProposal/postProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
+import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
 const PAGE = 8;
 
@@ -28,10 +29,9 @@ export default function AddProposal() {
   const navigate = useNavigate();
 
   const createProposal = async () => {
-    // TODO : Make sure we go to Page 2 of the proposal
     const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
     if (response && !response.error) {
-      setAxiosCreateError(`Success: ${response}`);
+      setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
@@ -60,9 +60,7 @@ export default function AddProposal() {
       </Grid>
       <Grid item>
         {axiosCreateError ? (
-          <Alert testId="alertCreateErrorId" color={axiosCreateErrorColor}>
-            <Typography>{axiosCreateError}</Typography>
-          </Alert>
+          <TimedAlert color={axiosCreateErrorColor} text={axiosCreateError} />
         ) : null}
         <PageFooter pageNo={-1} buttonDisabled={contentValid()} buttonFunc={createProposal} />
       </Grid>
