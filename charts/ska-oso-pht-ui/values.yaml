@@ -9,9 +9,15 @@ subsystem: oso
 global:
   minikube: true
 
+# Configure Ingress
+ingress:
+  enabled: true
+
 ui:
   runtime:
-    backendURL:
+    backendUrl: "/api"
+    useLocalData: true
+    loginAppUrl: "/login"
   ingress:
     dummyUrl: http://dummy-url.tld
     contextUrl: http://localhost
@@ -22,20 +28,5 @@ ui:
   image:
     registry: artefact.skao.int
     image: ska-oso-pht-ui
-    tag: 0.0.0
+    tag: 0.0.1
     pullPolicy: IfNotPresent
-
-# Configure Ingress
-ingress:
-  enabled: true
-  production: false
-  hostname: # Only used in production
-
-  # Ingress annotations
-  annotations: {}
-
-nodeSelector: {}
-
-affinity: {}
-
-tolerations: []

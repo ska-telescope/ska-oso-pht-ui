@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+charts/*/Chart.lock
+charts/*/charts
+
 # testing
 /coverage
 /cypress/screenshots
@@ -21,6 +24,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+/public/env.js
 
 npm-debug.log*
 yarn-debug.log*
