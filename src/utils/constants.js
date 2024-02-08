@@ -329,13 +329,12 @@ export const Projects = [
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
     MAX_LENGTH: 50,
-    ERROR_TEXT:
-      'Invalid input: only alphanumeric characters, spaces, and some special characters are allowed.',
+    ERROR_TEXT: 'specialCharacters.invalid',
     PATTERN: /^[a-zA-Z0-9\s\-_:;&><#.,!"%*+='/]*$/
   },
   EMAIL: {
     MAX_LENGTH: 25,
-    ERROR_TEXT: 'Please enter a valid email address.',
+    ERROR_TEXT: 'specialCharacters.email',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   }

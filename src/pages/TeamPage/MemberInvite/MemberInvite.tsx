@@ -189,7 +189,7 @@ export default function MemberInvite() {
               testId="email"
               value={email}
               setValue={setEmail}
-              errorText={errorTextEmail}
+              errorText={t(errorTextEmail)}
               onFocus={() => helpComponent(t('email.help'))}
             />
           </FieldWrapper>

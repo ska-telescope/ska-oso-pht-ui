@@ -136,7 +136,7 @@ export default function ObservationPage() {
     {
       field: 'subarray',
       headerName: t('subArrayConfiguration.short'),
-      flex: 2,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => {
         if (e.row.telescope) {
