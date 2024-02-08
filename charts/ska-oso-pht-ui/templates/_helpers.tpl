@@ -21,7 +21,7 @@ domain: operations
 {{- if .Values.runtimeEnv.skaPhtApiUrl -}}
 {{ .Values.runtimeEnv.skaPhtApiUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/pht/api/v1/
+/{{ .Release.Namespace }}/pht/api/v1
 {{- end }}
 {{- end }}
 
