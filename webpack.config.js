@@ -13,7 +13,7 @@ module.exports = () => {
   return {
     entry: './src/index.jsx',
     output: {
-      publicPath: ASSET_PATH,
+      publicPath: ASSET_PATH
     },
 
     performance: {
@@ -165,8 +165,8 @@ module.exports = () => {
         REACT_APP_VERSION: version
       }),
       new webpack.DefinePlugin({
-      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
-    }),
+        'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH)
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {
