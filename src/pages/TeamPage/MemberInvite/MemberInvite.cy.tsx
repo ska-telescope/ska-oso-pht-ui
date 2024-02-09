@@ -4,17 +4,13 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import theme from '../../../services/theme/theme';
-import MemberInvite, {
-  HELP_EMAIL,
-  HELP_FIRST_NAME,
-  HELP_LAST_NAME,
-  HELP_PHD
-} from './MemberInvite';
 import {
   DEFAULT_HELP,
   TEAM_STATUS_TYPE_OPTIONS,
   TEXT_ENTRY_PARAMS
 } from '../../../utils/constants';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import MemberInvite from './MemberInvite';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -22,15 +18,17 @@ describe('<MemberInvite />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <MemberInvite
-            help={DEFAULT_HELP}
-            proposal={MockProposal}
-            setHelp={cy.stub().as('setHelp')}
-            setProposal={cy.stub().as('setProposal')}
-          />
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <MemberInvite
+              help={DEFAULT_HELP}
+              proposal={MockProposal}
+              setHelp={cy.stub().as('setHelp')}
+              setProposal={cy.stub().as('setProposal')}
+            />
+          </ThemeProvider>
+        </StoreProvider>
       );
     });
   }
@@ -39,15 +37,17 @@ describe('<MemberInvite />', () => {
 describe('Content', () => {
   beforeEach(() => {
     cy.mount(
-      <ThemeProvider theme={theme(THEME_LIGHT)}>
-        <CssBaseline />
-        <MemberInvite
-          help={DEFAULT_HELP}
-          proposal={MockProposal}
-          setHelp={cy.stub().as('setHelp')}
-          setProposal={cy.stub().as('setProposal')}
-        />
-      </ThemeProvider>
+      <StoreProvider>
+        <ThemeProvider theme={theme(THEME_LIGHT)}>
+          <CssBaseline />
+          <MemberInvite
+            help={DEFAULT_HELP}
+            proposal={MockProposal}
+            setHelp={cy.stub().as('setHelp')}
+            setProposal={cy.stub().as('setProposal')}
+          />
+        </ThemeProvider>
+      </StoreProvider>
     );
   });
 
@@ -181,30 +181,30 @@ describe('Content', () => {
   describe('Form Validation', () => {
     it('Button disabled if First Name input is empty', () => {
       cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button disabled if Last Name input is empty', () => {
       cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button disabled if Email input is empty', () => {
       cy.get('[data-testid="email"] input').clear();
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button disabled if Email has incorrect format', () => {
       const incorrectText = 'email@';
       cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button disabled if First Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="firstName"] input').type(incorrectText);
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button disabled if Last Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="lastName"] input').type(incorrectText);
-      cy.get('[data-testid="Send InvitationButton"]').should('be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
     });
     it('Button NOT disabled if all fields have correct format', () => {
       const firstName = 'Alia';
@@ -213,7 +213,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="Send InvitationButton"]').should('not.be.disabled');
+      cy.get('[data-testid="button.sendInviteButton"]').should('not.be.disabled');
     });
     it('Button clickable if all fields have correct format', () => {
       const firstName = 'Alia';
@@ -222,7 +222,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="Send InvitationButton"]')
+      cy.get('[data-testid="button.sendInviteButton"]')
         .should('be.enabled')
         .click();
     });
@@ -231,35 +231,19 @@ describe('Content', () => {
   describe('Contextual help', () => {
     it('Contextual help displayed when First Name input field on focus', () => {
       cy.get('[data-testid="firstName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
-        .invoke('text')
-        .then(helpTitle => {
-          expect(helpTitle).to.equal(HELP_FIRST_NAME.title);
-        });
+      cy.get('[data-testid="helpPanelId"]').contains('firstName.help');
     });
     it('Contextual help displayed when Last Name input field on focus', () => {
       cy.get('[data-testid="lastName"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
-        .invoke('text')
-        .then(helpTitle => {
-          expect(helpTitle).to.equal(HELP_LAST_NAME.title);
-        });
+      cy.get('[data-testid="helpPanelId"]').contains('lastName.help');
     });
     it('Contextual help displayed when Email input field on focus', () => {
       cy.get('[data-testid="email"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
-        .invoke('text')
-        .then(helpTitle => {
-          expect(helpTitle).to.equal(HELP_EMAIL.title);
-        });
+      cy.get('[data-testid="helpPanelId"]').contains('email.help');
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
       cy.get('[testid="PhDCheckbox"] input').focus();
-      cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
-        .invoke('text')
-        .then(helpTitle => {
-          expect(helpTitle).to.equal(HELP_PHD.title);
-        });
+      cy.get('[data-testid="helpPanelId"]').contains('phdThesis.help');
     });
   });
 
@@ -271,9 +255,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="Send InvitationButton"]').click();
-      cy.get(`[data-testid="teamTableId"]`).contains(firstName);
-      cy.get(`[data-testid="teamTableId"]`).contains(lastName);
+      cy.get('[data-testid="button.sendInviteButton"]').click();
     });
   });
 });

@@ -85,10 +85,23 @@ export default function GeneralPage() {
 
   const abstractField = () => {
     const MAX_CHAR = 250;
+    const MAX_WORD = 50;
 
     const setValue = (e: string) => {
       setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
     };
+
+    const countWords = (text: string) => {
+      return text
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+    };
+
+    const helperFunction = (title: string) =>
+      `${t('abstract.helper')} - ${t('characterCount.label')} ${
+        title?.length ? title.length : 0
+      } / ${MAX_CHAR} - ${t('wordCount.label')} ${countWords(title)} / ${MAX_WORD}`;
 
     return (
       <FieldWrapper label={t('abstract.label')}>
@@ -99,7 +112,7 @@ export default function GeneralPage() {
           value={getProposal().abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => helpComponent(t('abstract.help'))}
-          helperText={t('abstract.helper')}
+          helperText={helperFunction(getProposal().abstract)}
         />
       </FieldWrapper>
     );

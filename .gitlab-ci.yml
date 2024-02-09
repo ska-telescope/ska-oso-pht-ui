@@ -58,11 +58,15 @@ code_analysis:
 
 # run the test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
   stage: test
   tags:
     - k8srunner
   allow_failure: true
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
   before_script:
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
@@ -79,11 +83,21 @@ test_and_coverage:
       - build/
 
 test-counts:
-  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
   stage: scan
   tags:
     - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/tests
+    - yarn install --immutable
   script:
+    - yarn test:cypress:component:ci
+    - yarn start &
+    - yarn test:cypress:e2e:ci
     - yarn merge-reports
   artifacts:
     paths:
@@ -120,6 +134,68 @@ build:
     - yarn install
     - yarn build
 
+# Roll up the application
+distribution:
+  stage: build
+  tags:
+  - k8srunner
+  before_script:
+  - yarn install
+  script:
+  - yarn rollup
+  artifacts:
+    paths:
+      - dist/
+
+# Publish the artifacts to CAR
+publish-to-car:
+  stage: publish
+  tags:
+  - k8srunner
+  before_script:
+    - npm config set registry $CAR_NPM_REPOSITORY_URL
+    # npm config set always-auth true
+    - echo $CAR_NPM_REPOSITORY_URL | awk -F '://' '{ cmd="npm config set -- //"$2":_auth \"${CAR_NPM_TOKEN}\" ";system(cmd) }'
+    - npm config get
+  script:
+    - npm publish
+  rules:
+    # Publish from a tag for a release
+    - if: $CI_COMMIT_TAG
+
+# Publish the artifacts to gitlab registry
+publish-to-gitlab:
+  stage: publish
+  tags:
+  - k8srunner
+  before_script:
+    - npm config set @ska-telescope:registry https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+    - npm config set -- '//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken' "${CI_JOB_TOKEN}"
+  script:
+    - npm version --no-git-tag-version $(npm show latest version)-dev.$CI_COMMIT_SHORT_SHA
+    - npm publish
+  rules:
+    # Do not publish on a tag pipeline, note this shouldn't transfer over to SKAO templates
+    - if: $CI_COMMIT_TAG
+      when: never
+
+# export the report
+pages:
+  stage: pages
+  tags:
+  - k8srunner
+  dependencies:
+      - test_and_coverage
+      - test-counts
+      - list_dependencies
+  script:
+      - mv public/* .
+      - cp -r .public/* public
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+
 include:
   - template: Code-Quality.gitlab-ci.yml
   # Docs pages
@@ -140,6 +216,12 @@ include:
     # .post step finalisers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+    # .post step finalizers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+    # deploy
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
 
 k8s-test:
   script:

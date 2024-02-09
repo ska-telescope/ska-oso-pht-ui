@@ -5,34 +5,35 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { BrowserRouter } from 'react-router-dom';
 import theme from '../../services/theme/theme';
 import AddObservation from './AddObservation';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-function verifyMidArrayAndSubArrayConfig() {
-  cy.get('[data-testid="arrayConfiguration"]').contains('MID');
+function verifyArrayConfiguration1AndSubArrayConfig() {
+  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.1');
   cy.get('[data-testid="arrayConfiguration"]').click();
   cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="helpPanel"]').contains('ARRAY DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('arrayConfiguration.help');
 
-  cy.get('[data-testid="subarrayConfiguration"]').contains('AA0.5');
+  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.1');
   cy.get('[data-testid="subarrayConfiguration"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="subarrayConfiguration"]').contains('AA1');
-  cy.get('[data-testid="helpPanel"]').contains('SUBARRAY DESCRIPTION');
+  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.2');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
-function verifyLowArrayAndSubArrayConfig() {
-  cy.get('[data-testid="arrayConfiguration"]').contains('MID');
+function verifyArrayConfiguration2AndSubArrayConfig() {
+  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.1');
   cy.get('[data-testid="arrayConfiguration"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="arrayConfiguration"]').contains('LOW');
-  cy.get('[data-testid="helpPanel"]').contains('ARRAY DESCRIPTION');
+  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.2');
+  cy.get('[data-testid="helpPanelId"]').contains('arrayConfiguration.help');
 
-  cy.get('[data-testid="subarrayConfiguration"]').contains('AA0.5');
+  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.1');
   cy.get('[data-testid="subarrayConfiguration"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="subarrayConfiguration"]').contains('AA1');
-  cy.get('[data-testid="helpPanel"]').contains('SUBARRAY DESCRIPTION');
+  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.2');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
 function verifySuppliedTypeValueAndUnits() {
@@ -40,26 +41,26 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="suppliedType"]').contains('Sensitivity');
-  cy.get('[data-testid="helpPanel"]').contains('SUPPLIED TYPE DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.suppliedType');
 
   cy.get('[data-testid="suppliedValue"]').click();
-  cy.get('[data-testid="helpPanel"]').contains('SUPPLIED VALUE DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.suppliedValue');
 
   cy.get('[data-testid="suppliedUnits"]').contains('jy/beam');
   cy.get('[data-testid="suppliedUnits"]').click();
   cy.get('[data-value="5"]').click();
   cy.get('[data-testid="suppliedUnits"]').contains('K');
-  cy.get('[data-testid="helpPanel"]').contains('SUPPLIED UNITS DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.suppliedUnits');
 }
 
 function verifyElevationField() {
   cy.get('[data-testid="elevation"]').type('test elevation');
-  cy.get('[data-testid="helpPanel"]').contains('ELEVATION DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.elevation');
 }
 
 function verifyWeatherField() {
   cy.get('[data-testid="weather"]').type('test weather');
-  cy.get('[data-testid="helpPanel"]').contains('WEATHER DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.weather');
 }
 
 function verifyObservationTypeZoom() {
@@ -67,19 +68,19 @@ function verifyObservationTypeZoom() {
   cy.get('[data-testid="observationType"]').click();
   cy.get('[data-value="0"]').click();
   cy.get('[data-testid="observationType"]').contains('Zoom');
-  cy.get('[data-testid="helpPanel"]').contains('TYPE DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
 function verifyObservationTypeContinuum() {
   cy.get('[data-testid="observationType"]').contains('Continuum');
   cy.get('[data-testid="observationType"]').click();
   cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="helpPanel"]').contains('TYPE DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
 function verifyCentralFrequency() {
   cy.get('[data-testid="centralFrequency"]').type('test central frequency');
-  cy.get('[data-testid="helpPanel"]').contains('FREQUENCY DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.centralFrequency');
 }
 
 function verifyObservingBand() {
@@ -87,7 +88,7 @@ function verifyObservingBand() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 2 (0.95 - 1.76 GHz)');
-  cy.get('[data-testid="helpPanel"]').contains('BAND DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.observingBand');
 }
 
 function verifyFrequencyUnits() {
@@ -95,12 +96,12 @@ function verifyFrequencyUnits() {
   cy.get('[data-testid="frequencyUnits"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="helpPanel"]').contains('FREQUENCY UNITS DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.frequencyUnits');
 }
 
 function verifyContinuumBandwidth() {
   cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
-  cy.get('[data-testid="helpPanel"]').contains('CONTINUUM BANDWIDTH DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.continuum');
 }
 
 function verifyContinuumUnits() {
@@ -108,7 +109,7 @@ function verifyContinuumUnits() {
   cy.get('[data-testid="continuumUnits"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="helpPanel"]').contains('CONTINUUM UNITS DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.continuumUnits');
 }
 
 function verifyMidBandwidthFrequency() {
@@ -116,7 +117,7 @@ function verifyMidBandwidthFrequency() {
   cy.get('[data-testid="bandwidth"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="bandwidth"]').contains('6.25 MHz');
-  cy.get('[data-testid="helpPanel"]').contains('BANDWIDTH DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.bandWidth');
 }
 
 function verifyLowBandwidthFrequency() {
@@ -124,7 +125,7 @@ function verifyLowBandwidthFrequency() {
   cy.get('[data-testid="bandwidth"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="bandwidth"]').contains('48.8 KHz');
-  cy.get('[data-testid="helpPanel"]').contains('BANDWIDTH DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.bandWidth');
 }
 
 function verifySpectralResolutionLow() {
@@ -132,7 +133,7 @@ function verifySpectralResolutionLow() {
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="spectralResolution"]').contains('28.3 Hz');
-  cy.get('[data-testid="helpPanel"]').contains('SPECTRAL RESOLUTION DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.spectralResolution');
 }
 
 function verifySpectralResolutionMid() {
@@ -140,7 +141,7 @@ function verifySpectralResolutionMid() {
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="spectralResolution"]').contains('0.42 KHz');
-  cy.get('[data-testid="helpPanel"]').contains('SPECTRAL RESOLUTION DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.spectralResolution');
 }
 
 function verifySpectralAveraging() {
@@ -148,12 +149,12 @@ function verifySpectralAveraging() {
   cy.get('[data-testid="spectral"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="spectral"]').contains('2');
-  cy.get('[data-testid="helpPanel"]').contains('SPECTRAL AVERAGING DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.spectralAveraging');
 }
 
 function verifyEffectiveResolution() {
   cy.get('[data-testid="effective"]').type('test effective resolution');
-  cy.get('[data-testid="helpPanel"]').contains('EFFECTIVE RESOLUTION DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.effectiveResolution');
 }
 
 function verifyTapering() {
@@ -161,7 +162,7 @@ function verifyTapering() {
   cy.get('[data-testid="tapering"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="tapering"]').contains('0.250"');
-  cy.get('[data-testid="helpPanel"]').contains('TAPERING DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.tapering');
 }
 
 function verifyImageWeighting() {
@@ -169,35 +170,40 @@ function verifyImageWeighting() {
   cy.get('[data-testid="imageWeighting"]').click();
   cy.get('[data-value="0"]').click();
   cy.get('[data-testid="imageWeighting"]').contains('Natural');
-  cy.get('[data-testid="helpPanel"]').contains('IMAGE DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.imageWeighting');
 }
 
 function verifySubBands() {
   cy.get('[data-testid="subBands"]').click();
   cy.get('[data-testid="subBands"]').type('2');
-  cy.get('[data-testid="helpPanel"]').contains('SUB-BANDS DESCRIPTION');
+  cy.get('[data-testid="helpPanelId"]').contains('help.subBands');
 }
 
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <BrowserRouter>
-            <AddObservation />
-          </BrowserRouter>
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <BrowserRouter>
+              <AddObservation />
+            </BrowserRouter>
+          </ThemeProvider>
+        </StoreProvider>
       );
     });
   }
+
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
     cy.mount(
-      <BrowserRouter>
-        <AddObservation />
-      </BrowserRouter>
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
     );
-    verifyMidArrayAndSubArrayConfig();
+    verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifyElevationField();
     verifyWeatherField();
@@ -218,11 +224,13 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     cy.mount(
-      <BrowserRouter>
-        <AddObservation />
-      </BrowserRouter>
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
     );
-    verifyMidArrayAndSubArrayConfig();
+    verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifyElevationField();
     verifyWeatherField();
@@ -239,11 +247,13 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     cy.mount(
-      <BrowserRouter>
-        <AddObservation />
-      </BrowserRouter>
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
     );
-    verifyLowArrayAndSubArrayConfig();
+    verifyArrayConfiguration2AndSubArrayConfig();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
@@ -259,11 +269,13 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
     cy.mount(
-      <BrowserRouter>
-        <AddObservation />
-      </BrowserRouter>
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
     );
-    verifyLowArrayAndSubArrayConfig();
+    verifyArrayConfiguration2AndSubArrayConfig();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();

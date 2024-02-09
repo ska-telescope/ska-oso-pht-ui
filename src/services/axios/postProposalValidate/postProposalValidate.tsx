@@ -12,7 +12,7 @@ async function PostProposalValidate(proposal) {
   };
 
   if (USE_LOCAL_DATA) {
-    return 'OK - Local DATA';
+    return 'success';
   }
 
   try {
