@@ -138,11 +138,11 @@ build:
 distribution:
   stage: build
   tags:
-  - k8srunner
+    - k8srunner
   before_script:
-  - yarn install
+    - yarn install
   script:
-  - yarn rollup
+    - yarn rollup
   artifacts:
     paths:
       - dist/
@@ -151,7 +151,7 @@ distribution:
 publish-to-car:
   stage: publish
   tags:
-  - k8srunner
+    - k8srunner
   before_script:
     - npm config set registry $CAR_NPM_REPOSITORY_URL
     # npm config set always-auth true
@@ -167,7 +167,7 @@ publish-to-car:
 publish-to-gitlab:
   stage: publish
   tags:
-  - k8srunner
+    - k8srunner
   before_script:
     - npm config set @ska-telescope:registry https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
     - npm config set -- '//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken' "${CI_JOB_TOKEN}"
@@ -183,14 +183,14 @@ publish-to-gitlab:
 pages:
   stage: pages
   tags:
-  - k8srunner
+    - k8srunner
   dependencies:
-      - test_and_coverage
-      - test-counts
-      - list_dependencies
+    - test_and_coverage
+    - test-counts
+    - list_dependencies
   script:
-      - mv public/* .
-      - cp -r .public/* public
+    - mv public/* .
+    - cp -r .public/* public
   artifacts:
     paths:
       - public
