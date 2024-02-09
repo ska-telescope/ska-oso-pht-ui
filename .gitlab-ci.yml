@@ -76,7 +76,8 @@ test_and_coverage:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
-    - yarn storybook &
+    - yarn start &
+    - yarn test:e2e:headless
     - yarn test:component:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
