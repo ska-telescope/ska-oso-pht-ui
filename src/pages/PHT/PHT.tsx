@@ -36,7 +36,7 @@ export default function PHT() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  const [dataProposals, setDataProposals] = React.useState([]);
+  const [proposals, setProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -51,7 +51,7 @@ export default function PHT() {
         if (response && !response.error) {
           if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
             setAxiosError('');
-            setDataProposals(response as Proposal[]);
+            setProposals(response as Proposal[]);
           } else {
             setAxiosError(t('error.axios.format'));
           }
@@ -180,16 +180,16 @@ export default function PHT() {
   const extendedColumns = [...COLUMNS];
 
   function filterProposals() {
-    return dataProposals.filter(
+    return proposals.filter(
       item =>
-        ['title', 'cycle'].some(field =>
+        ['title', 'cycle', 'pi'].some(field =>
           item[field].toLowerCase().includes(searchTerm.toLowerCase())
         ) &&
         (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
     );
   }
 
-  const filteredData = dataProposals ? filterProposals() : [];
+  const filteredData = proposals ? filterProposals() : [];
 
   return (
     <>
@@ -232,6 +232,7 @@ export default function PHT() {
                 rows={filteredData}
                 columns={extendedColumns}
                 showBorder={false}
+                showMild
                 height={500}
               />
             )}

@@ -59,6 +59,7 @@ export default function TechnicalPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
+        <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
             {t('label.uploadPDF')}
@@ -69,6 +70,8 @@ export default function TechnicalPage() {
             file={getProposal().technicalPDF}
             setFile={setFile}
             setStatus={setUploadStatus}
+            clearLabel={t('clearBtn.label')}
+            clearToolTip={t('clearBtn.toolTip')}
             uploadURL="https://httpbin.org/post"
           />
         </Grid>
@@ -93,6 +96,7 @@ export default function TechnicalPage() {
             </CardContent>
           </Card>
         </Grid>
+        <Grid item xs={2} />
       </Grid>
     </Shell>
   );

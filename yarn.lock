@@ -2233,10 +2233,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^0.1.91":
-  version "0.1.91"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-0.1.91.tgz#6d2b4f7219c137291859b2de9d646a227e0df9ec"
-  integrity sha512-m6KgNGLS9XIYCa/bPf1XlIIab6iRr15QoSuVVlA7wZjFUYTyJcoI8D2zlI/6p1eXMyd9qRcTNm5hBSY7+xGYLQ==
+"@ska-telescope/ska-gui-components@^0.1.94":
+  version "0.1.94"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-0.1.94.tgz#a13398c22b4a93f3b57ecb2d745c08b831feed2d"
+  integrity sha512-lnBM8knY/7C0oIoZJOGUt6zr38V94xp+nAt+0CXvxqO3hVXOpC1OKvuMO/GB0cgCP9W2r0o+dSJdtqvUHaiZ9A==
   dependencies:
     "@mui/lab" "^5.0.0-alpha.135"
     "@mui/system" "^5.13.7"
@@ -2244,7 +2244,7 @@
     "@mui/x-tree-view" "^6.17.0"
     "@react-spring/web" "^9.7.3"
     "@ska-telescope/ska-gui-local-storage" "^0.0.14"
-    "@ska-telescope/ska-javascript-components" "^1.0.1"
+    "@ska-telescope/ska-javascript-components" "^1.0.2"
     "@types/uuid" "^9.0.4"
     junit-report-merger "^6.0.2"
 
@@ -2283,10 +2283,10 @@
     react-refresh "^0.14.0"
     react-scripts "^5.0.1"
 
-"@ska-telescope/ska-javascript-components@^1.0.1":
-  version "1.0.1"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-1.0.1.tgz#851b6e4b1c8daac9ddcecd4d09a27445f9aca508"
-  integrity sha512-tUrX7/sJ3fEEbbEzLIwnBaCwdry83FoB/GOD8jkrU1IstuIIdprGakkOh4SRZtOEjIO+j2g5Lu7ti/rW1EYhMw==
+"@ska-telescope/ska-javascript-components@^1.0.2":
+  version "1.0.2"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-1.0.2.tgz#d28fc8b5e07f76e338e0c500b524919c0039647f"
+  integrity sha512-xH+bjVFCrSyarbOPRFQUK1kgasDNQL+i1plWj+d+UzRoHsuHx0jB3PfXCDpmUYIAUuaYPzZcr7p+tXr8aUtAqA==
   dependencies:
     babel-jest "^29.5.0"
     babel-plugin-import "^1.13.5"

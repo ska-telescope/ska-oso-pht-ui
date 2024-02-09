@@ -170,6 +170,7 @@ export default function TeamPage() {
                 onRowClick={ClickMemberRow}
                 height={400}
                 showBorder={false}
+                showMild
                 testId="teamTableId"
               />
             )}
