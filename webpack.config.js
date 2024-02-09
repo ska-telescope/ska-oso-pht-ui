@@ -7,11 +7,14 @@ const Dotenv = require('dotenv-webpack');
 
 const deps = require('./package.json').dependencies;
 const version = require('./package.json').version;
+const ASSET_PATH = process.env.REACT_APP_SKA_PHT_URL || '/';
 
 module.exports = () => {
   return {
     entry: './src/index.jsx',
-    output: {},
+    output: {
+      publicPath: ASSET_PATH,
+    },
 
     performance: {
       hints: false,
@@ -161,6 +164,9 @@ module.exports = () => {
       new webpack.EnvironmentPlugin({
         REACT_APP_VERSION: version
       }),
+      new webpack.DefinePlugin({
+      'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
+    }),
       new CopyWebpackPlugin({
         patterns: [
           {

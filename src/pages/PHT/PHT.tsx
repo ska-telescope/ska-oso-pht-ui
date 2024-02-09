@@ -7,7 +7,9 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  AlertColorTypes,
+  InfoCard,
+  InfoCardColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
@@ -220,13 +222,24 @@ export default function PHT() {
         </Grid>
       </Grid>
 
-      {axiosViewError && <TimedAlert color={AlertColorTypes.Error} text={axiosViewError} />}
+      {axiosViewError && (
+        <TimedAlert clear={setAxiosViewError} color={AlertColorTypes.Error} text={axiosViewError} />
+      )}
       {!axiosViewError && (
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid item>
-            {axiosError ? (
-              <TimedAlert text={axiosError} color={AlertColorTypes.Error} />
-            ) : (
+            {axiosError && (
+              <TimedAlert clear={setAxiosError} text={axiosError} color={AlertColorTypes.Error} />
+            )}
+            {!axiosError && (!filteredData || filteredData.length === 0) && (
+              <InfoCard
+                color={InfoCardColorTypes.Info}
+                fontSize={20}
+                message={t('page.10.empty')}
+                testId="helpPanelId"
+              />
+            )}
+            {!axiosError && filteredData.length > 0 && (
               <DataGrid
                 testId="dataGridId"
                 rows={filteredData}

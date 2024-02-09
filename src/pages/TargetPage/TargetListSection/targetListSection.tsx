@@ -21,8 +21,6 @@ export default function TargetListSection() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
 
-  const getRows = () => getProposal().targets;
-
   const deleteIconClicked = () => {
     setOpenDialog(true);
   };
@@ -105,7 +103,7 @@ export default function TargetListSection() {
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       <Grid item md={5} xs={11}>
-        {getRows().length > 0 && (
+        {getProposal().targets.length > 0 && (
           <DataGrid
             rows={getProposal().targets}
             columns={extendedColumns}
@@ -115,7 +113,7 @@ export default function TargetListSection() {
             testId="targetListColumns"
           />
         )}
-        {getRows().length === 0 && (
+        {getProposal().targets.length === 0 && (
           <InfoCard
             color={InfoCardColorTypes.Error}
             fontSize={20}

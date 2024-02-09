@@ -326,7 +326,8 @@
     },
     "10": {
       "title": "Landing page",
-      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator."
+      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.",
+      "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "11": {
       "title": "SKAO Cycle",
