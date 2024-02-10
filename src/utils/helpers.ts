@@ -1,6 +1,6 @@
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
-const specialChars = /[!+]/;
+const specialChars = /[!]/;
 
 export const helpers = {
   validate: {
@@ -27,7 +27,7 @@ export const helpers = {
         }
         if (text.length > MAX_LENGTH) {
           setText(text);
-          setErrorText('characterCount.error');
+          setErrorText('specialCharacters.numChar');
           return false;
         }
         setText(text);

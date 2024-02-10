@@ -63,6 +63,7 @@ export default function SciencePage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
+        <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
             {t('label.uploadPDF')}
@@ -74,6 +75,8 @@ export default function SciencePage() {
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}
+            clearLabel={t('clearBtn.label')}
+            clearToolTip={t('clearBtn.toolTip')}
             uploadURL={PostUploadPDF()}
           />
         </Grid>
@@ -98,6 +101,7 @@ export default function SciencePage() {
             </CardContent>
           </Card>
         </Grid>
+        <Grid item xs={2} />
       </Grid>
     </Shell>
   );

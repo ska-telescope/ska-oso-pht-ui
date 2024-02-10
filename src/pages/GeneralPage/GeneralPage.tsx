@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Card, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
@@ -99,21 +99,23 @@ export default function GeneralPage() {
     };
 
     const helperFunction = (title: string) =>
-      `${t('abstract.helper')} - ${t('characterCount.label')} ${
+      `${t('abstract.helper')} - ${t('specialCharacters.cntChar')} ${
         title?.length ? title.length : 0
-      } / ${MAX_CHAR} - ${t('wordCount.label')} ${countWords(title)} / ${MAX_WORD}`;
+      } / ${MAX_CHAR} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
 
     return (
       <FieldWrapper label={t('abstract.label')}>
-        <TextEntry
-          label=""
-          testId="abstractId"
-          rows={10}
-          value={getProposal().abstract}
-          setValue={(e: string) => setValue(e)}
-          onFocus={() => helpComponent(t('abstract.help'))}
-          helperText={helperFunction(getProposal().abstract)}
-        />
+        <Card variant="outlined">
+          <TextEntry
+            label=""
+            testId="abstractId"
+            rows={10}
+            value={getProposal().abstract}
+            setValue={(e: string) => setValue(e)}
+            onFocus={() => helpComponent(t('abstract.help'))}
+            helperText={helperFunction(getProposal().abstract)}
+          />
+        </Card>
       </FieldWrapper>
     );
   };

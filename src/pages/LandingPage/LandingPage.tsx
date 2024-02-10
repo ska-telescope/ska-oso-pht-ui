@@ -38,7 +38,7 @@ export default function LandingPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  const [dataProposals, setDataProposals] = React.useState([]);
+  const [proposals, setProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -53,7 +53,7 @@ export default function LandingPage() {
         if (response && !response.error) {
           if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
             setAxiosError('');
-            setDataProposals(response as Proposal[]);
+            setProposals(response as Proposal[]);
           } else {
             setAxiosError(t('error.axios.format'));
           }
@@ -182,16 +182,16 @@ export default function LandingPage() {
   const extendedColumns = [...COLUMNS];
 
   function filterProposals() {
-    return dataProposals.filter(
+    return proposals.filter(
       item =>
-        ['title', 'cycle'].some(field =>
+        ['title', 'cycle', 'pi'].some(field =>
           item[field].toLowerCase().includes(searchTerm.toLowerCase())
         ) &&
         (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
     );
   }
 
-  const filteredData = dataProposals ? filterProposals() : [];
+  const filteredData = proposals ? filterProposals() : [];
 
   return (
     <>
@@ -222,20 +222,18 @@ export default function LandingPage() {
         </Grid>
       </Grid>
 
-      {axiosViewError && (
-        <TimedAlert clear={setAxiosViewError} color={AlertColorTypes.Error} text={axiosViewError} />
-      )}
+      {axiosViewError && <TimedAlert color={AlertColorTypes.Error} text={axiosViewError} />}
       {!axiosViewError && (
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid item>
             {axiosError && (
-              <TimedAlert clear={setAxiosError} text={axiosError} color={AlertColorTypes.Error} />
+              <TimedAlert clear={setAxiosError} color={AlertColorTypes.Error} text={axiosError} />
             )}
             {!axiosError && (!filteredData || filteredData.length === 0) && (
               <InfoCard
                 color={InfoCardColorTypes.Info}
                 fontSize={20}
-                message={t('page.10.empty')}
+                message={t('proposals.empty')}
                 testId="helpPanelId"
               />
             )}
@@ -245,6 +243,7 @@ export default function LandingPage() {
                 rows={filteredData}
                 columns={extendedColumns}
                 showBorder={false}
+                showMild
                 height={500}
               />
             )}

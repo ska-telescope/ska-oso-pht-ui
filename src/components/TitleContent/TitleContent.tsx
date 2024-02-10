@@ -212,7 +212,7 @@ export default function TitleContent({ page }: TitleContentProps) {
     };
 
     const helperFunction = (title: string) =>
-      `${t('characterCount.label')} ${title?.length ? title.length : 0} / ${MAX_CHAR}`;
+      `${t('specialCharacters.cntChar')} ${title?.length ? title.length : 0} / ${MAX_CHAR}`;
 
     return (
       <FieldWrapper big label={t('title.label')}>
@@ -248,7 +248,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             <Grid item xs={4}>
               <Typography variant="body2">{t('help.title')}</Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                {t('help.specialCharacters')}
+                {t('specialCharacters.help')}
               </Typography>
             </Grid>
           </Grid>

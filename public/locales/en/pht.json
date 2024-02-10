@@ -76,9 +76,9 @@
     "content1": "You are about to change the type of your proposal.",
     "content2": "Some data specific to the proposal type may be lost."
   },
-  "characterCount": {
-    "label": "Character count",
-    "error": "Exceeded expected character count"
+  "clearBtn": {
+    "label": "Clear",
+    "toolTip": "This will clear the file upload selection"
   },
   "cloneProposal": {
     "toolTip": "Clone proposal",
@@ -151,6 +151,9 @@
     "1": "Zoom",
     "2": "Continuum"
   },
+  "pageStatus": {
+    "toolTip": "This is the status of the page"
+  },
   "phdThesis": {
     "label": "PhD Thesis",
     "help": "PHD THESIS HELP"
@@ -167,6 +170,13 @@
   },
   "proposalId": {
     "label": "Proposal Id"
+  },
+  "proposals": {
+    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
+  },
+  "members": {
+    "label": "Members",
+    "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
   },
   "noSpecificTarget": {
     "label": "No specific Target",
@@ -204,6 +214,15 @@
   },
   "selected": {
     "label": "Selected"
+  },
+  "specialCharacters": {
+    "help": "Character exclamation mark ( ! )  not allowed",
+    "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
+    "numChar": "Exceeded expected character count",
+    "cntChar": "Character count",
+    "cntWord": "Word count",
+    "numWord": "Exceeded expected word count",
+    "email": "Please enter a valid email address."
   },
   "srcNet": {
     "label": "SRC Net"
@@ -255,10 +274,6 @@
   "viewProposal": {
     "toolTip": "View proposal"
   },
-  "wordCount": {
-    "label": "Word count",
-    "error": "Exceeded expected word count"
-  },
   "help": {
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
@@ -273,7 +288,6 @@
     "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
     "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
     "spectralAveraging": "Spectral Averaging HELP",
-    "specialCharacters": "Special characters !+ not allowed",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
     "subBands": "SUB-BANDS HELP",
     "suppliedType": "SUPPLIED TIME HELP",
@@ -349,7 +363,6 @@
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
-    "members": "Members",
     "noneSelected": "None selected",
     "observations": "Observations",
     "observingBand": "Observing Band",
@@ -378,7 +391,6 @@
     "axios": {
       "format": "Unexpected data format returned from API"
     },
-    "noTeamMembers": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL",
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "subBandRange": "Value must be in the range 0 - 32 inclusive"

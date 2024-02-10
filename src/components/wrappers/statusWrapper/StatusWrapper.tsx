@@ -24,7 +24,14 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   return (
     <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
       <Grid container direction="column" alignItems="center" justifyContent="center">
-        <StatusIcon ariaTitle="" testId="statusId" icon level={getLevel()} size={SIZE} />
+        <StatusIcon
+          ariaTitle={t('pageStatus.toolTip')}
+          ariaDescription={t('pageStatus.toolTip')}
+          testId="statusId"
+          icon
+          level={getLevel()}
+          size={SIZE}
+        />
         <Typography variant="caption">{t(`page.${page}.title`)}</Typography>
       </Grid>
     </IconButton>
