@@ -155,7 +155,7 @@ pages:
 
 include:
   - template: Code-Quality.gitlab-ci.yml
-    # Docs pages
+  # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
     # OCI Images
