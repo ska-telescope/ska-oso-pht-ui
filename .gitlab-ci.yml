@@ -79,7 +79,6 @@ test_and_coverage:
     paths:
       - build/
 
-
 # list the current top level dependencies for the project
 list_dependencies:
   stage: test
@@ -122,7 +121,6 @@ test-counts:
   artifacts:
     paths:
       - build/
-
 
 # Build the application
 build:
