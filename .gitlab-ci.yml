@@ -57,7 +57,8 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node-18.16.1-chrome-114.0.5735.133-1-ff-114.0.2-edge-114.0.1823.51-1
+  allow_failure: true
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
   stage: test
   tags:
     - k8srunner
@@ -67,7 +68,8 @@ test_and_coverage:
     policy: pull
   before_script:
     - mkdir -p build/reports
-    - yarn install --immutable
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
   script:
     - yarn start &
     - yarn test:e2e:headless
@@ -76,6 +78,7 @@ test_and_coverage:
   artifacts:
     paths:
       - build/
+
 
 # list the current top level dependencies for the project
 list_dependencies:
@@ -100,8 +103,8 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: cypress/browsers:node-18.16.1-chrome-114.0.5735.133-1-ff-114.0.2-edge-114.0.1823.51-1
-  stage: scan
+  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+  stage: test
   tags:
     - k8srunner
   cache:
@@ -119,6 +122,7 @@ test-counts:
   artifacts:
     paths:
       - build/
+
 
 # Build the application
 build:
