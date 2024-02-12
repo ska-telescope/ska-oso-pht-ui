@@ -33,4 +33,5 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    ObservationPage
    TechnicalPage
    DataPage
+   SrcNetPage
    SubmitConfirmation

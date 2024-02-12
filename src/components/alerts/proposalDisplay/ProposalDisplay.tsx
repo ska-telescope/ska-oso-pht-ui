@@ -315,7 +315,7 @@ export default function ProposalDisplay({
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
     >
-      {pageTitle(t('page.11.title'))}
+      {pageTitle(t('page.12.title'))}
       <DialogContent>
         <Grid
           p={2}

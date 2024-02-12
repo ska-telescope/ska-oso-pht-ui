@@ -23,7 +23,7 @@ Layout and Navigation
    :width: 20%
    :alt: Page filter
 
-- Search bar : Search for specific proposals by title.
+- Search bar : Search for specific proposals by title and proposal ID.
 
 .. figure:: /images/landingPageSearch.png
    :width: 30%
@@ -50,13 +50,12 @@ Table Actions
 =============
    
 .. csv-table:: Actions
-   :header: "Icon", "Active Status", "Purpose"
+   :header: "Icon", "Purpose"
 
-    "View", "Submitted, Accepted, Withdrawn", "View the selected proposal only"
-    "Edit", "Draft", "View and edit the selected proposal"
-    "Clone", "", "Create a new proposal using the selected proposal as a starting point"
-    "Download", "", "Export the proposal from the application in PDF format"
-    "Delete", "Draft, Withdrawn", "Selected proposal is removed from the application after removal confirmation"
+    "Edit", "Click the pencil icon to edit the details of a proposal"
+    "View", "Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal"
+    "Clone", "Click the clone icon to see a summary of a proposal, with options to download and confirm the clone"
+    "Delete", "Click the delete icon to see a summary of a proposal, with options to download and confirm the deletion"
     
 Key Information and Actions
 ===========================

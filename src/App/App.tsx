@@ -21,7 +21,8 @@ import SciencePage from '../pages/SciencePage/SciencePage';
 import TargetPage from '../pages/TargetPage/TargetPage';
 import ObservationPage from '../pages/ObservationPage/ObservationPage';
 import TechnicalPage from '../pages/TechnicalPage/TechnicalPage';
-import DataPage from '../pages/DataPage/DataPage';
+import SdpDataPage from '../pages/SdpDataPage/SdpDataPage';
+import SrcDataPage from '../pages/SrcDataPage/SrcDataPage';
 import theme from '../services/theme/theme';
 import { NAV, USE_LOCAL_DATA } from '../utils/constants';
 
@@ -63,7 +64,8 @@ function App() {
               <Route path={NAV[4]} element={<TargetPage />} />
               <Route path={NAV[5]} element={<ObservationPage />} />
               <Route path={NAV[6]} element={<TechnicalPage />} />
-              <Route path={NAV[7]} element={<DataPage />} />
+              <Route path={NAV[7]} element={<SdpDataPage />} />
+              <Route path={NAV[8]} element={<SrcDataPage />} />
               <Route path="/addProposal" element={<AddProposal />} />
               <Route path="/addObservation" element={<AddObservation />} />
             </Routes>
