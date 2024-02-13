@@ -9,7 +9,6 @@ import SaveButton from '../../button/Save/SaveButton';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
-import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import { LAST_PAGE, PATH } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
@@ -133,7 +132,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
               >
                 <Grid item>
                   {!axiosValidateError && pageNo < LAST_PAGE && (
-                    <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                    <ValidateButton onClick={handleValidateClick} />
                   )}
                   {axiosValidateError && (
                     <TimedAlert
