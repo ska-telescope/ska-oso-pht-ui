@@ -33,6 +33,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -82,3 +83,4 @@ error.log
 
 .next
 out
+/public/env.js

@@ -1,0 +1,11 @@
+{{- if $.Values.ingress.enabled }}
+The OSO PHT UI can be found at: <host>/{{ .Release.Namespace }}/pht/ui/
+
+<host> is whatever the cluster domain name is. Common links:
+1. http://<cluster IP>/{{ .Release.Namespace }}/pht/ui/ if on your local minikube
+2. https://sdhp.stfc.skao.int/{{ .Release.Namespace }}/pht/ui/ if on the shared cluster
+{{- else }}
+The OSO PHT UI has no external ingress configured.
+
+However you can use the service name: "{{ template "ska-oso-pht-ui.name" . }}" on port 80.
+{{- end }}

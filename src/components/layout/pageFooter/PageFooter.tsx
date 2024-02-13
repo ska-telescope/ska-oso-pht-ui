@@ -5,6 +5,7 @@ import { Grid, Paper } from '@mui/material';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
 import { LAST_PAGE, NAV } from '../../../utils/constants';
+import { env } from '../../../env';
 
 interface PageFooterProps {
   pageNo: number;
@@ -32,9 +33,11 @@ export default function PageFooter({
 
   const prevLabel = () => t(`page.${pageNo - 1}.title`);
 
-  const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
+  const prevPageNav = () =>
+    pageNo > 0 ? navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[pageNo - 1]) : '';
 
-  const nextPageNav = () => (pageNo < NAV.length ? navigate(NAV[pageNo + 1]) : '');
+  const nextPageNav = () =>
+    pageNo < NAV.length ? navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[pageNo + 1]) : '';
 
   const nextPageClicked = () => {
     if (buttonFunc) {

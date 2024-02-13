@@ -178,7 +178,7 @@ export default function TeamPage() {
               <InfoCard
                 color={InfoCardColorTypes.Error}
                 fontSize={20}
-                message={t('error.noTeamMembers')}
+                message={t('members.empty')}
                 testId="helpPanelId"
               />
             )}
