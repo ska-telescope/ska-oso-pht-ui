@@ -16,7 +16,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import { Proposal } from '../../services/types/proposal';
-import { env } from '../../../env';
+import { env } from '../../env';
 
 // TODO : Cypress Testing
 // TODO : Documentation
