@@ -11,7 +11,7 @@ const version = require('./package.json').version;
 module.exports = () => {
   return {
     entry: './src/index.jsx',
-    output: [],
+    output: {},
 
     performance: {
       hints: false,
