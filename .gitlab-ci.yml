@@ -72,6 +72,7 @@ test_and_coverage:
     - yarn install --frozen-lockfile
   script:
     - yarn start &
+    - yarn test:component:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
   artifacts:
