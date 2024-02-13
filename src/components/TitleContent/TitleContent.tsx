@@ -213,10 +213,12 @@ export default function TitleContent({ page }: TitleContentProps) {
     };
 
     const countWords = (text: string) => {
-      return text
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean).length;
+      return !text
+        ? 0
+        : text
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean).length;
     };
 
     const helperFunction = (title: string) =>
@@ -229,12 +231,12 @@ export default function TitleContent({ page }: TitleContentProps) {
         <TextEntry
           label=""
           testId="titleId"
-          value={getProposal()?.title}
+          value={getProposal().title}
           setValue={(title: string) =>
             helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
           }
           errorText={errorText}
-          helperText={helperFunction(getProposal()?.title)}
+          helperText={helperFunction(getProposal().title)}
         />
       </FieldWrapper>
     );

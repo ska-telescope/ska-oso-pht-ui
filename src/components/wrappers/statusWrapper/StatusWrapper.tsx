@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { NAV } from '../../../utils/constants';
+import { env } from '../../../env';
 
 interface StatusWrapperProps {
   level?: number;
@@ -16,7 +17,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const SIZE = 35;
 
   const ClickFunction = () => {
-    navigate(NAV[page]);
+    navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[page]);
   };
 
   const getLevel = () => (level > 5 ? 0 : level);

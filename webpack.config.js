@@ -165,6 +165,7 @@ module.exports = () => {
         patterns: [
           {
             from: 'public',
+            to: 'dist',
             globOptions: {
               dot: true,
               gitignore: true,

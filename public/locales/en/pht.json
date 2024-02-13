@@ -173,6 +173,13 @@
   "proposalId": {
     "label": "Proposal Id"
   },
+  "proposals": {
+    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
+  },
+  "members": {
+    "label": "Members",
+    "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
+  },
   "noSpecificTarget": {
     "label": "No specific Target",
     "toolTip": "Current functionality is not yet available"
@@ -339,7 +346,8 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator."
+      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.",
+      "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "12": {
       "title": "SKAO Cycle",
@@ -361,7 +369,6 @@
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
-    "members": "Members",
     "noneSelected": "None selected",
     "observations": "Observations",
     "observingBand": "Observing Band",
@@ -390,7 +397,6 @@
     "axios": {
       "format": "Unexpected data format returned from API"
     },
-    "noTeamMembers": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL",
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "subBandRange": "Value must be in the range 0 - 32 inclusive"
