@@ -19,8 +19,6 @@ export default function AddProposal() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [axiosCreateError, setAxiosCreateError] = React.useState('');
   const [axiosCreateErrorColor, setAxiosCreateErrorColor] = React.useState(null);
-  const [id, setId] = React.useState(null);
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -30,15 +28,6 @@ export default function AddProposal() {
   }, []);
 
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    console.log('setProposalId object ', { ...getProposal(), id: id });
-    setProposal({ ...getProposal(), id: id });
-
-    setTimeout(() => {
-      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
-    }, 1000);
-  }, [id]);
 
   const createProposal = async () => {
     console.log('createProposal before application', application);
@@ -51,7 +40,10 @@ export default function AddProposal() {
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
 
-      setId(response);
+      setTimeout(() => {
+        setProposal({ ...getProposal(), id: response });
+        navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
+      }, 1000);
       console.log('createProposal inside application', application);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
     } else {
