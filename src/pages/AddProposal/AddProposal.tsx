@@ -19,6 +19,7 @@ export default function AddProposal() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [axiosCreateError, setAxiosCreateError] = React.useState('');
   const [axiosCreateErrorColor, setAxiosCreateErrorColor] = React.useState(null);
+  const [id, setId] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -28,40 +29,36 @@ export default function AddProposal() {
     updateAppContent2(EMPTY_PROPOSAL);
   }, []);
 
-  
-  
-  const setProposalId = (id: string) => {
-    console.log('setProposalId object ', { ...getProposal(), id: id })
-    setProposal({ ...getProposal(), id: id });
-  };
-
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    console.log('setProposalId object ', { ...getProposal(), id: id });
+    setProposal({ ...getProposal(), id: id });
+
+    setTimeout(() => {
+      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
+    }, 1000);
+  }, [id]);
+
   const createProposal = async () => {
-    console.log('createProposal before application', application)
+    console.log('createProposal before application', application);
     const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
     if (response && !response.error) {
-      console.log('response', response)
-      console.log('typeof(response)', typeof(response))
-      console.log('response.data', response.data)
-      console.log('typeof(response.data)', typeof(response.data))
+      console.log('response', response);
+      console.log('typeof(response)', typeof response);
+      console.log('response.data', response.data);
+      console.log('typeof(response.data)', typeof response.data);
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
 
-      setProposalId(response)
-      console.log('createProposal inside application', application)
+      setId(response);
+      console.log('createProposal inside application', application);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
-      setTimeout(() => {
-        navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
-      }, 1000);
     } else {
       setAxiosCreateError(response.error);
       setAxiosCreateErrorColor(AlertColorTypes.Error);
-
-      
     }
-
-    console.log('createProposal after application', application)
+    console.log('createProposal after application', application);
   };
 
   const contentValid = () =>
