@@ -8,7 +8,6 @@ import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
 import { EMPTY_PROPOSAL, NAV } from '../../utils/constants';
 import PostProposal from '../../services/axios/postProposal/postProposal';
-import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 import { env } from '../../env';
@@ -30,7 +29,7 @@ export default function AddProposal() {
   const navigate = useNavigate();
 
   const createProposal = async () => {
-    const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
+    const response = await PostProposal(getProposal(), 'Draft');
     if (response && !response.error) {
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);

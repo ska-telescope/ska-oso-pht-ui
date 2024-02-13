@@ -16,7 +16,7 @@ context('PROPOSAL HANDLING TOOL', () => {
   //
   // it('Footer : Verify Version', () => {
   //   cy.get('[data-testid="footerId"]')
-  //     .contains('0.0.1')
+  //     .contains('0.1.0')
   //     .should('be.visible');
   // });
 });

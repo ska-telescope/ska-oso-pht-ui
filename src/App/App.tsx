@@ -21,7 +21,7 @@ function App() {
   const { t } = useTranslation('pht');
   const { themeMode } = storageObject.useStore();
   const [showCopyright, setShowCopyright] = React.useState(false);
-  const [apiVersion] = React.useState('0.0.1'); // TODO : Obtain real api version number
+  const [apiVersion] = React.useState('0.1.0'); // TODO : Obtain real api version number
 
   const skao = t('toolTip.button.skao');
   const mode = t('toolTip.button.mode');
