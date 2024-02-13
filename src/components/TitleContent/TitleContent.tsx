@@ -205,14 +205,24 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   const titleField = () => {
-    const MAX_CHAR = 50;
+    const MAX_CHAR = Number(t('title.maxChar'));
+    const MAX_WORD = Number(t('title.maxWord'));
 
     const setTitle = (e: string) => {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
+    const countWords = (text: string) => {
+      return text
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+    };
+
     const helperFunction = (title: string) =>
-      `${t('specialCharacters.cntChar')} ${title?.length ? title.length : 0} / ${MAX_CHAR}`;
+      `${t('abstract.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
+        title
+      )} / ${MAX_WORD}`;
 
     return (
       <FieldWrapper big label={t('title.label')}>

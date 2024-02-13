@@ -84,8 +84,8 @@ export default function GeneralPage() {
   );
 
   const abstractField = () => {
-    const MAX_CHAR = 250;
-    const MAX_WORD = 50;
+    const MAX_CHAR = Number(t('abstract.maxChar'));
+    const MAX_WORD = Number(t('abstract.maxWord'));
 
     const setValue = (e: string) => {
       setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
@@ -99,9 +99,9 @@ export default function GeneralPage() {
     };
 
     const helperFunction = (title: string) =>
-      `${t('abstract.helper')} - ${t('specialCharacters.cntChar')} ${
-        title?.length ? title.length : 0
-      } / ${MAX_CHAR} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
+      `${t('abstract.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
+        title
+      )} / ${MAX_WORD}`;
 
     return (
       <FieldWrapper label={t('abstract.label')}>

@@ -56,7 +56,9 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT HELP",
-    "helper": "Please enter your abstract information"
+    "helper": "Please enter your abstract information",
+    "maxChar": "250",
+    "maxWord": "50"
   },
   "actions": {
     "label": "Actions"
@@ -218,8 +220,6 @@
   "specialCharacters": {
     "help": "Character exclamation mark ( ! )  not allowed",
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
-    "numChar": "Exceeded expected character count",
-    "cntChar": "Character count",
     "cntWord": "Word count",
     "numWord": "Exceeded expected word count",
     "email": "Please enter a valid email address."
@@ -259,7 +259,9 @@
     "empty": "THERE ARE NO TARGETS ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
-    "label": "Title"
+    "label": "Title",
+    "maxChar": "50",
+    "maxWord": "20"
   },
   "type": {
     "label": "Type"
@@ -331,19 +333,23 @@
       "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
+      "title": "SRC Net",
+      "desc": "SRC Net. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+    },
+    "9": {
       "title": "Add Proposal",
       "desc": "ADD PROPOSAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
-    "9": {
+    "10": {
       "title": "Observation Setup",
       "desc": "ADD OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
-    "10": {
+    "11": {
       "title": "Landing page",
       "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.",
       "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
-    "11": {
+    "12": {
       "title": "SKAO Cycle",
       "desc": ""
     }

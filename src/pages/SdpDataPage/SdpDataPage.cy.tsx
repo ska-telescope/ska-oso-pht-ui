@@ -3,7 +3,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
-import DataPage from './DataPage';
+import SdpDataPage from './SdpDataPage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -13,7 +13,7 @@ describe('<DataPage />', () => {
       cy.mount(
         <ThemeProvider theme={theme(theTheme)}>
           <CssBaseline />
-          <DataPage />
+          <SdpDataPage />
         </ThemeProvider>
       );
     });

@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { NAV, PATH } from '../../utils/constants';
 import AddObservation from '../AddObservation/AddObservation';
 import AddProposal from '../AddProposal/AddProposal';
-import DataPage from '../DataPage/DataPage';
+import SdpDataPage from '../SdpDataPage/SdpDataPage';
+import SrcDataPage from '../SrcDataPage/SrcDataPage';
 import GeneralPage from '../GeneralPage/GeneralPage';
 import ObservationPage from '../ObservationPage/ObservationPage';
 import SciencePage from '../SciencePage/SciencePage';
@@ -23,7 +24,8 @@ const ROUTES = [
   { path: NAV[4], element: <TargetPage /> },
   { path: NAV[5], element: <ObservationPage /> },
   { path: NAV[6], element: <TechnicalPage /> },
-  { path: NAV[7], element: <DataPage /> },
+  { path: NAV[7], element: <SdpDataPage /> },
+  { path: NAV[8], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <AddObservation /> }
 ];

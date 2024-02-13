@@ -10,7 +10,29 @@ This guide explains the "Observation Page".
 Layout and Navigation
 =====================
 
-TO BE COMPLETED
+The Observation Page consists of two distinct sections:
+
+1. Observation List and Target Selection:
+
+- Left side:
+  - Add Observation: Click this button to create a new observation entry.
+  - Observation List: View a table summarizing existing observations with details like telescope, array, type, and actions (delete).
+- Right side:
+  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for bulk actions.
+
+2. Observation Mode Details:
+
+- This section appears upon clicking "Add Observation".
+
+.. figure:: /images/observationSetup.png
+   :width: 90%
+   :alt: screen in light & dark mode 
+
+- Enter specific parameters including:
+  - Array Configuration: Dropdown menu to choose available configurations.
+  - Observation Type: Select either "Continuum" or "Zoom" mode.
+  - Other fields: Additional details may appear based on your selections, influenced by the Sensitivity Calculator.
+  - Add: Once finished, click this button to add the defined observation to the list.
 
 Navigation Elements
 ===================
@@ -46,12 +68,17 @@ Additional Features
 Key Information and Actions
 ===========================
 
-TO BE COMPLETED
+The Observation Page allows you to:
+- Create new observation entries.
+- Link observations to specific targets.
+- Define key parameters like array configuration, observation type, and additional details.
+- View and manage your observation list.
+- Utilize dynamic help for field descriptions.
 
 Next Steps
 ==========
 
-TO BE COMPLETED
+After specifying your observation details using the provided methods, click "Technical" to proceed to the next page, where you'll provide more specific technical information about your proposal.
 
 Additional Notes
 ================
