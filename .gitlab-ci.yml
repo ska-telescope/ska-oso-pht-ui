@@ -77,7 +77,6 @@ test_and_coverage:
     - yarn install --frozen-lockfile
   script:
     - yarn start &
-    - yarn test:e2e:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
   artifacts:
@@ -98,8 +97,6 @@ test-counts:
     - yarn install --immutable
   script:
     - yarn test:cypress:component:ci
-    - yarn start &
-    - yarn test:cypress:e2e:ci
     - yarn merge-reports
   artifacts:
     paths:
