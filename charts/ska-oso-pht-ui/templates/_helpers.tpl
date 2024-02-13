@@ -22,14 +22,6 @@ set the ingress url path
 {{- end }}
 {{- end }}
 
-{{- define "ska-oso-pht-ui.urls-skaPhtUrl" -}}
-{{- if .Values.runtimeEnv.skaPhtUrl -}}
-{{ .Values.runtimeEnv.skaPhtUrl }}
-{{- else -}}
-/{{ .Release.Namespace }}/pht/ui/
-{{- end }}
-{{- end }}
-
 {{- define "ska-oso-pht-ui.urls-skaPhtApiUrl" -}}
 {{- if .Values.runtimeEnv.skaPhtApiUrl -}}
 {{ .Values.runtimeEnv.skaPhtApiUrl }}
