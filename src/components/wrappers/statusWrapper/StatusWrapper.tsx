@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { NAV } from '../../../utils/constants';
-import { env } from 'env';
+import { env } from '../../../env';
 
 interface StatusWrapperProps {
   level?: number;

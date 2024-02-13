@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
 import { PATH } from '../../../utils/constants';
-import { env } from 'env';
+import { env } from '../../../env';
 
 export default function AddObservationButton() {
   const { t } = useTranslation('pht');

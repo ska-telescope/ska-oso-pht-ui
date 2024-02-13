@@ -5,7 +5,7 @@ import { Grid, Paper } from '@mui/material';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
 import { LAST_PAGE, NAV } from '../../../utils/constants';
-import { env } from 'env';
+import { env } from '../../../env';
 
 interface PageFooterProps {
   pageNo: number;

@@ -23,7 +23,7 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
-import { env } from 'env';
+import { env } from '../../env';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');

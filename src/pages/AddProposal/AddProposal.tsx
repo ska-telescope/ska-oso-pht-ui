@@ -11,7 +11,7 @@ import PostProposal from '../../services/axios/postProposal/postProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
-import { env } from 'env';
+import { env } from '../../env';
 
 const PAGE = 8;
 
