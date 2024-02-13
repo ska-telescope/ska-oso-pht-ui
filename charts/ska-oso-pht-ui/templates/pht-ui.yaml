@@ -31,19 +31,21 @@ spec:
             - name: SKIP_PREFLIGHT_CHECK
               value: {{ .Values.runtimeEnv.skipPreflightCheck | quote }}
             - name: REACT_APP_SKA_PHT_URL
-              value: {{ include "ska-oso-pht-ui.urls-skaPhtUrl" . | quote}}
+              value: {{ include "ska-oso-pht-ui.ingress.path" . | quote }}
             - name: REACT_APP_SKA_PHT_API_URL
-              value: {{ include "ska-oso-pht-ui.urls-skaPhtApiUrl" . | quote}}
+              value: {{ include "ska-oso-pht-ui.urls-skaPhtApiUrl" . | quote }}
             - name: REACT_APP_API_REFRESH_RATE
-              value: {{ .Values.runtimeEnv.apiRefreshRate | quote}}
+              value: {{ .Values.runtimeEnv.apiRefreshRate | quote }}
             - name: REACT_APP_USE_LOCAL_DATA
               value: {{ .Values.runtimeEnv.useLocalData | quote }}
             - name: REACT_APP_DOMAIN
               value: {{ .Values.runtimeEnv.domain | quote }}
             - name: REACT_APP_SKA_SENSITIVITY_CALC_URL
-              value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote}}
+              value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
             - name: REACT_APP_SKA_LOGIN_APP_URL
-              value: {{ include "ska-oso-pht-ui.urls-skaLoginAppUrl" . | quote}}
+              value: {{ include "ska-oso-pht-ui.urls-skaLoginAppUrl" . | quote }}
+            - name: REACT_APP_SKA_PHT_BASE_URL
+              value: {{ include "ska-oso-pht-ui.ingress.path" . | quote }}
           livenessProbe:
             httpGet:
               path: /
