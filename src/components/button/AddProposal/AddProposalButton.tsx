@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
+import { PATH } from '../../../utils/constants';
 
 export default function AddProposalButton() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const ClickFunction = () => {
-    navigate('/addProposal');
+    navigate(PATH[1]);
   };
 
   const title = t('button.addProposal');

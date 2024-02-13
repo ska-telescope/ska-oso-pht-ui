@@ -24,6 +24,8 @@ export const NAV = [
   '/proposal/data'
 ];
 
+export const PATH = ['/', '/addProposal', '/addObservation'];
+
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },

@@ -10,7 +10,7 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
 import MockProposal from '../../../services/axios/getProposal/mockProposal';
-import { LAST_PAGE } from '../../../utils/constants';
+import { LAST_PAGE, PATH } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import { Proposal } from '../../../services/types/proposal';
@@ -30,7 +30,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
     AlertColorTypes.Success
   );
   const [axiosSaveError, setAxiosSaveError] = React.useState('');
-  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(null);
+  const [axiosSaveErrorColor, setAxiosSaveErrorColor] = React.useState(AlertColorTypes.Info);
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -73,7 +73,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
       setAxiosSaveError(response);
       setAxiosSaveErrorColor(AlertColorTypes.Success);
       setOpenDialog(false);
-      navigate('/');
+      navigate(PATH[0]);
     } else {
       // Handle error response
       setAxiosSaveError(response.error);

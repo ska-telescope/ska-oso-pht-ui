@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import HomeIcon from '@mui/icons-material/Home';
+import { PATH } from '../../../utils/constants';
 
 export default function HomeButton() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const ClickFunction = () => {
-    navigate('/');
+    navigate(PATH[0]);
   };
 
   const title = t('button.home');
