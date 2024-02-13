@@ -54,7 +54,10 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
   const handleSaveClick = response => {
     if (response && !response.error) {
       // Handle successful response
-      setAxiosSaveError(response);
+      console.log('PageBanner handleSaveClick response', response)
+      // setAxiosSaveError(response);
+      const successMsg = 'Proposal '+ response.prsl_id + ' Saved'
+      setAxiosSaveError(successMsg);
       setAxiosSaveErrorColor(AlertColorTypes.Success);
     } else {
       // Handle error response

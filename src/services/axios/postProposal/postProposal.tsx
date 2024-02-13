@@ -17,9 +17,9 @@ async function PostProposal(proposal: Proposal, status?) {
 
   const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
 
-  if (USE_LOCAL_DATA) {
-    return 'PROPOSAL-ID-001';
-  }
+  // if (USE_LOCAL_DATA) {
+  //   return 'PROPOSAL-ID-001';
+  // }
 
   try {
     const result = await axios.post(`${apiUrl}${URL_NEW}`, convertedProposal, config);

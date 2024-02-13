@@ -3,8 +3,9 @@ import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import { helpers } from '../../../utils/helpers';
 
 async function PutProposal(proposal, status?) {
-  const apiUrl = SKA_PHT_API_URL;
-  const URL_EDIT = `/proposal/${proposal.id}`;
+  // const apiUrl = SKA_PHT_API_URL;
+  const apiUrl = 'http://192.168.49.2/ska-oso-pht-services/pht/api/v1';
+  const URL_EDIT = `/proposals/${proposal.id}`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -12,13 +13,14 @@ async function PutProposal(proposal, status?) {
     }
   };
 
-  if (USE_LOCAL_DATA) {
-    return 'success';
-  }
+  // if (USE_LOCAL_DATA) {
+  //   return 'success';
+  // }
 
   // TODO: add testing for proposal conversion format
   const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
 
+  console.log('putProposal convertedProposal', convertedProposal)
   try {
     const result = await axios.put(`${apiUrl}${URL_EDIT}`, convertedProposal, config);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
