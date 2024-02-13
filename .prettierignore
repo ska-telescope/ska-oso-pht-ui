@@ -82,3 +82,4 @@ error.log
 
 .next
 out
+/public/env.js
