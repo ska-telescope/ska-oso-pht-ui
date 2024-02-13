@@ -7,12 +7,10 @@ ingress:
 
 runtimeEnv:
   skipPreflightCheck: "true"
-  skaPhtUrl: ""
   skaPhtApiUrl: ""
-  apiRefreshRate: 1000
+  skaSensitivityCalcUrl: ""
   useLocalData: "false"
   domain: ""
-  skaSensitivityCalcUrl: ""
   skaLoginAppUrl: ""
 
 component: pht-ui
