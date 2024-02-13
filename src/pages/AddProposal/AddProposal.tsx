@@ -21,19 +21,35 @@ export default function AddProposal() {
   const [axiosCreateErrorColor, setAxiosCreateErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5, 5]);
     updateAppContent2(EMPTY_PROPOSAL);
   }, []);
 
+  
+  
+  const setProposalId = (id: string) => {
+    console.log('setProposalId object ', { ...getProposal(), id: id })
+    setProposal({ ...getProposal(), id: id });
+  };
+
   const navigate = useNavigate();
 
   const createProposal = async () => {
+    console.log('createProposal before application', application)
     const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
     if (response && !response.error) {
+      console.log('response', response)
+      console.log('typeof(response)', typeof(response))
+      console.log('response.data', response.data)
+      console.log('typeof(response.data)', typeof(response.data))
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
+
+      setProposalId(response)
+      console.log('createProposal inside application', application)
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
         navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
@@ -41,7 +57,11 @@ export default function AddProposal() {
     } else {
       setAxiosCreateError(response.error);
       setAxiosCreateErrorColor(AlertColorTypes.Error);
+
+      
     }
+
+    console.log('createProposal after application', application)
   };
 
   const contentValid = () =>
