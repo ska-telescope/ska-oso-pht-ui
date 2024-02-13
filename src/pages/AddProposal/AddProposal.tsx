@@ -12,7 +12,7 @@ import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
-const PAGE = 8;
+const PAGE = 9;
 
 export default function AddProposal() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
@@ -22,7 +22,7 @@ export default function AddProposal() {
   const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
-    updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
+    updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5, 5]);
     updateAppContent2(EMPTY_PROPOSAL);
   }, []);
 

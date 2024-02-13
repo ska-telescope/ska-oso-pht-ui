@@ -18,16 +18,11 @@ export const helpers = {
         // handle invalid textType (no match in TEXT_ENTRY_PARAMS)
         throw new Error(`Invalid text type: ${textType}`);
       }
-      const { MAX_LENGTH, ERROR_TEXT, PATTERN } = textEntryParams;
+      const { ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
         if (specialChars.test(text)) {
           setText(text);
           setErrorText(ERROR_TEXT);
-          return false;
-        }
-        if (text.length > MAX_LENGTH) {
-          setText(text);
-          setErrorText('specialCharacters.numChar');
           return false;
         }
         setText(text);

@@ -76,7 +76,7 @@ export default function PHT() {
     if (response && !response.error) {
       // Handle successful response
       setAxiosViewError('');
-      updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
+      updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5, 5]);
       updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
       updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
       return true;
@@ -194,7 +194,7 @@ export default function PHT() {
   return (
     <>
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
-        <Typography variant="h5">{t('page.10.desc')}</Typography>
+        <Typography variant="h5">{t('page.11.desc')}</Typography>
       </Grid>
 
       <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">

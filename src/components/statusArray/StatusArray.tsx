@@ -10,7 +10,7 @@ export default function StatusArray() {
   const generateDivider = (index: number) => {
     if (index < NAV.length - 1) {
       return (
-        <Grid item mt={-2} sx={{ width: '6%' }}>
+        <Grid item mt={-2} sx={{ width: '3%' }}>
           <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
         </Grid>
       );

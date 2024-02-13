@@ -1,7 +1,7 @@
 import { env } from '../env';
 
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
-export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA;
+export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
 export const STATUS_OK = 0;
@@ -9,7 +9,7 @@ export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 
-export const LAST_PAGE = 8;
+export const LAST_PAGE = 9;
 
 export const NAV = [
   '/proposal/title',
@@ -19,7 +19,8 @@ export const NAV = [
   '/proposal/target',
   '/proposal/observation',
   '/proposal/technical',
-  '/proposal/data'
+  '/proposal/data',
+  '/proposal/src'
 ];
 
 export const SEARCH_TYPE_OPTIONS = [

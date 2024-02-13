@@ -25,7 +25,7 @@ import { Proposal } from '../../services/types/proposal';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
-const PAGE = 9;
+const PAGE = 10;
 
 export default function AddObservation() {
   const { t } = useTranslation('pht');

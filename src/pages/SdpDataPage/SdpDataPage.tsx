@@ -12,7 +12,7 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 
 const PAGE = 7;
 
-export default function DataPage() {
+export default function SdpDataPage() {
   const { t } = useTranslation('pht');
 
   const {
@@ -86,7 +86,6 @@ export default function DataPage() {
             <Typography variant="h6">{t('sdp.label')}</Typography>
 
             {pipelineField()}
-            <Typography variant="h6">{t('srcNet.label')}</Typography>
           </Grid>
           <Grid item xs={1} />
           <Grid item xs={3}>
