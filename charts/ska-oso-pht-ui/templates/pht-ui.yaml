@@ -1,66 +1,32 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}
-  labels:
-{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
-spec:
-  selector:
-{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: http
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-nginx-config
-  labels:
-{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
-data:
-  default.conf: |-
-    server {
-        listen       80;
-        listen  [::]:80;
-        server_name  127.0.0.1;
-
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
-            try_files $uri $uri/ /index.html;
-        }
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
-    }
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}
+  name: {{ $.Chart.Name }}-nginx
   labels:
 {{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-{{ include "ska-oso-pht-ui.labels" . | indent 6 }}
+      app.kubernetes.io/name: {{ $.Chart.Name }}
   template:
     metadata:
       labels:
 {{ include "ska-oso-pht-ui.labels" . | indent 8 }}
+      annotations:
     spec:
       containers:
-        - name: nginx-ui
+        - name: nginx
           image: "{{ .Values.image.registry }}/{{ .Values.image.image }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
           env:
             - name: SKIP_PREFLIGHT_CHECK
               value: {{ .Values.runtimeEnv.skipPreflightCheck | quote }}
@@ -78,19 +44,18 @@ spec:
               value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote}}
             - name: REACT_APP_SKA_LOGIN_APP_URL
               value: {{ include "ska-oso-pht-ui.urls-skaLoginAppUrl" . | quote}}
-          volumeMounts:
-            - name: config
-              mountPath: /etc/nginx/conf.d/default.conf
-              subPath: default.conf
           livenessProbe:
             httpGet:
               path: /
               port: http
+            periodSeconds: 60
           readinessProbe:
             httpGet:
               path: /
               port: http
+            periodSeconds: 60
       volumes:
         - name: config
           configMap:
-            name: {{ template "ska-oso-pht-ui.name" . }}-nginx-config
+            name: {{ $.Chart.Name }}-nginx-config
+

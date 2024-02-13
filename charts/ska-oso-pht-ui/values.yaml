@@ -2,6 +2,8 @@
 # Configure Ingress
 ingress:
   enabled: true
+  prependByNamespace: true
+  path: pht/ui
 
 runtimeEnv:
   skipPreflightCheck: "true"

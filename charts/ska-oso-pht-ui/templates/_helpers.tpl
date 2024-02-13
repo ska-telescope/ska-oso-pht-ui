@@ -9,6 +9,19 @@ function: ui
 domain: operations
 {{- end }}
 
+{{/*
+set the ingress url path
+*/}}
+{{- define "ska-oso-pht-ui.ingress.path" }}
+{{- if .Values.ingress.prependByNamespace -}}
+/{{ .Release.Namespace }}/{{ .Values.ingress.path }}
+{{- else if .Values.ingress.path -}}
+/{{ .Values.ingress.path }}
+{{- else -}}
+
+{{- end }}
+{{- end }}
+
 {{- define "ska-oso-pht-ui.urls-skaPhtUrl" -}}
 {{- if .Values.runtimeEnv.skaPhtUrl -}}
 {{ .Values.runtimeEnv.skaPhtUrl }}

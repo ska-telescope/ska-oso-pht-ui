@@ -3,21 +3,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "ska-oso-pht-ui.name" . }}
   annotations:
     kubernetes.io/ingress.class: nginx
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
 {{ include "ska-oso-pht-ui.labels" . | indent 4 }}
+  name: {{ $.Chart.Name }}-ingress
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
-    - http:
-        paths:
-          - path: /{{ .Release.Namespace }}/pht/ui/(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ template "ska-oso-pht-ui.name" . }}
-                port:
-                  number: 80
+  - http:
+      paths:
+      - backend:
+          service:
+            name: {{ $.Chart.Name }}-service
+            port:
+              number: 80
+        path: "{{ include "ska-oso-pht-ui.ingress.path" . }}/(.*)"
+        pathType: ImplementationSpecific
+
 {{- end }}

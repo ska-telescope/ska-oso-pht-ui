@@ -12,9 +12,9 @@ const ASSET_PATH = process.env.REACT_APP_SKA_PHT_URL || '/';
 module.exports = () => {
   return {
     entry: './src/index.jsx',
-    output: {
-      publicPath: ASSET_PATH
-    },
+    // output: {
+    //   publicPath: ASSET_PATH
+    // },
 
     performance: {
       hints: false,

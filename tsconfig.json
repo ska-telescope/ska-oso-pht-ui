@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "src/",
     "target": "es6",
     "lib": ["dom", "ES6", "dom.iterable", "ScriptHost", "ES2016.Array.Include"],
     "allowJs": true,
@@ -16,7 +16,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "outDir": "dist"
   },
   "include": [
     "src",

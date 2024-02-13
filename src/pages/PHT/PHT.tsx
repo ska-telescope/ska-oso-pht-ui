@@ -12,22 +12,25 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
+import { SKA_PHT_URL } from '../../utils/constants';
 
 export default function PHT() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path={NAV[0]} element={<TitlePage />} />
-        <Route path={NAV[1]} element={<TeamPage />} />
-        <Route path={NAV[2]} element={<GeneralPage />} />
-        <Route path={NAV[3]} element={<SciencePage />} />
-        <Route path={NAV[4]} element={<TargetPage />} />
-        <Route path={NAV[5]} element={<ObservationPage />} />
-        <Route path={NAV[6]} element={<TechnicalPage />} />
-        <Route path={NAV[7]} element={<DataPage />} />
-        <Route path="/addProposal" element={<AddProposal />} />
-        <Route path="/addObservation" element={<AddObservation />} />
+        <Route path="/">
+          <Route path={SKA_PHT_URL} element={<LandingPage />} />
+          <Route path={NAV[0]} element={<TitlePage />} />
+          <Route path={NAV[1]} element={<TeamPage />} />
+          <Route path={NAV[2]} element={<GeneralPage />} />
+          <Route path={NAV[3]} element={<SciencePage />} />
+          <Route path={NAV[4]} element={<TargetPage />} />
+          <Route path={NAV[5]} element={<ObservationPage />} />
+          <Route path={NAV[6]} element={<TechnicalPage />} />
+          <Route path={NAV[7]} element={<DataPage />} />
+          <Route path="/addProposal" element={<AddProposal />} />
+          <Route path="/addObservation" element={<AddObservation />} />
+        </Route>
       </Routes>
     </Router>
   );
