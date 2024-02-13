@@ -23,6 +23,7 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import { Proposal } from '../../services/types/proposal';
 import MockProposal from '../../services/axios/getProposal/mockProposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
+import { env } from 'env';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -94,7 +95,7 @@ export default function LandingPage() {
 
   const goToTitlePage = () => {
     setTimeout(() => {
-      navigate(NAV[0]);
+      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[0]);
     }, 1000);
   };
 

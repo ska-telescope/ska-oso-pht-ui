@@ -11,6 +11,7 @@ import PostProposal from '../../services/axios/postProposal/postProposal';
 import mockProposal from '../../services/axios/getProposal/getProposal';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
+import { env } from 'env';
 
 const PAGE = 8;
 
@@ -35,7 +36,7 @@ export default function AddProposal() {
       setAxiosCreateErrorColor(AlertColorTypes.Success);
       // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
       setTimeout(() => {
-        navigate(NAV[1]);
+        navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[1]);
       }, 1000);
     } else {
       setAxiosCreateError(response.error);

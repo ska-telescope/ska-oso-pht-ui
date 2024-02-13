@@ -15,6 +15,7 @@ import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import { Proposal } from '../../../services/types/proposal';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
+import { env } from 'env';
 
 interface PageBannerProps {
   pageNo: number;
@@ -73,7 +74,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
       setAxiosSaveError(response);
       setAxiosSaveErrorColor(AlertColorTypes.Success);
       setOpenDialog(false);
-      navigate(PATH[0]);
+      navigate(env.REACT_APP_SKA_PHT_BASE_URL + PATH[0]);
     } else {
       // Handle error response
       setAxiosSaveError(response.error);
