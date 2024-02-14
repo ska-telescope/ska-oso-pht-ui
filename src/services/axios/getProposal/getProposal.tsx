@@ -13,7 +13,9 @@ async function GetProposal(id: number) {
     }
   };
 
-  if (USE_LOCAL_DATA) {
+  // TODO - Need to strip out the true from this if statement
+
+  if (true || USE_LOCAL_DATA) {
     return MockProposal;
   }
 

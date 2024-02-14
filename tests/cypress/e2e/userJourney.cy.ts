@@ -24,7 +24,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="Add proposalButton"]').click();
     //Complete title page
     cy.get('[data-testid="titleId"]').type('Test Proposal');
-    cy.get('[aria-label="Standard Observing Proposal"]').click();
+    cy.get('[id="ProposalType-1"]').click({ force: true });
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').click();
     //Complete team page
@@ -106,7 +106,7 @@ context('PROPOSAL HANDLING TOOL', () => {
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
     cy.get('[data-testid="Add proposalButton"]').click();
     //Partially complete title page
-    cy.get('[aria-label="Standard Observing Proposal"]').click();
+    cy.get('[id="ProposalType-1"]').click({ force: true });
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').should('not.be.selected');
   });

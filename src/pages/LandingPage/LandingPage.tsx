@@ -21,9 +21,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import { Proposal } from '../../services/types/proposal';
-import MockProposal from '../../services/axios/getProposal/mockProposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
-import { env } from '../../env';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -80,8 +78,8 @@ export default function LandingPage() {
       // Handle successful response
       setAxiosViewError('');
       updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
-      updateAppContent2(MockProposal); // TODO Replace with axios/GetProposal();
-      updateAppContent3(MockProposal); // TODO Replace with axios/GetProposal();
+      updateAppContent2(response);
+      updateAppContent3(response);
       return true;
     } else {
       // Handle error response
@@ -95,7 +93,7 @@ export default function LandingPage() {
 
   const goToTitlePage = () => {
     setTimeout(() => {
-      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[0]);
+      navigate(NAV[0]);
     }, 1000);
   };
 
@@ -197,7 +195,7 @@ export default function LandingPage() {
   return (
     <>
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
-        <Typography variant="h5">{t('page.10.desc')}</Typography>
+        <Typography variant="h5">{t('page.11.desc')}</Typography>
       </Grid>
 
       <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">

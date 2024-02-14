@@ -9,13 +9,11 @@ import SaveButton from '../../button/Save/SaveButton';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
-import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import { LAST_PAGE, PATH } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import { Proposal } from '../../../services/types/proposal';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
-import { env } from '../../../env';
 
 interface PageBannerProps {
   pageNo: number;
@@ -74,7 +72,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
       setAxiosSaveError(response);
       setAxiosSaveErrorColor(AlertColorTypes.Success);
       setOpenDialog(false);
-      navigate(env.REACT_APP_SKA_PHT_BASE_URL + PATH[0]);
+      navigate(PATH[0]);
     } else {
       // Handle error response
       setAxiosSaveError(response.error);
@@ -133,7 +131,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
               >
                 <Grid item>
                   {!axiosValidateError && pageNo < LAST_PAGE && (
-                    <ValidateButton onClick={handleValidateClick} proposal={MockProposal} />
+                    <ValidateButton onClick={handleValidateClick} />
                   )}
                   {axiosValidateError && (
                     <TimedAlert

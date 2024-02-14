@@ -16,7 +16,6 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import { Proposal } from '../../services/types/proposal';
-import { env } from '../../env';
 
 // TODO : Cypress Testing
 // TODO : Documentation
@@ -496,7 +495,7 @@ export default function AddObservation() {
 
     const buttonClicked = () => {
       addObservationToProposal();
-      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[5]);
+      navigate(NAV[5]);
     };
 
     return (
