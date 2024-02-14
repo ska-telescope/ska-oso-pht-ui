@@ -222,7 +222,7 @@ export default function TitleContent({ page }: TitleContentProps) {
     };
 
     const helperFunction = (title: string) =>
-      `${t('abstract.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
+      `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
         title
       )} / ${MAX_WORD}`;
 
