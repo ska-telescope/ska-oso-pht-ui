@@ -3,7 +3,7 @@
 {{- end }}
 
 {{- define "ska-oso-pht-ui.labels" -}}
-app.kubernetes.io/name: {{ $.Chart.Name }}
+app: {{ $.Chart.Name }}
 component: pht-ui
 function: ui
 domain: operations
