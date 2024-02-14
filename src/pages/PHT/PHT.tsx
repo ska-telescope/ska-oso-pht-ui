@@ -31,15 +31,11 @@ const ROUTES = [
 ];
 
 export default function PHT() {
-  const getPath = (inValue: string) => {
-    return env.REACT_APP_SKA_PHT_BASE_URL + inValue;
-  };
-
   return (
-    <Router>
+    <Router basename={env.REACT_APP_SKA_PHT_BASE_URL || '/'}>
       <Routes>
         {ROUTES.map((ROUTE, index) => {
-          return <Route key={index} path={getPath(ROUTE.path)} element={ROUTE.element} />;
+          return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
         })}
       </Routes>
     </Router>
