@@ -52,7 +52,7 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
   const handleSaveClick = response => {
     if (response && !response.error) {
       // Handle successful response
-      setAxiosSaveError(response);
+      setAxiosSaveError('Success');
       setAxiosSaveErrorColor(AlertColorTypes.Success);
     } else {
       // Handle error response

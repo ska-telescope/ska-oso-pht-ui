@@ -4,7 +4,7 @@ import { helpers } from '../../../utils/helpers';
 
 async function PutProposal(proposal, status?) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_EDIT = `/proposal/${proposal.id}`;
+  const URL_EDIT = `/proposals/${proposal.id}`;
   const config = {
     headers: {
       Accept: 'application/json',
