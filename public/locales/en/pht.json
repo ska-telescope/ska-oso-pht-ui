@@ -261,7 +261,8 @@
   "title": {
     "label": "Title",
     "maxChar": "50",
-    "maxWord": "20"
+    "maxWord": "20",
+    "helper": "Please enter your title information"
   },
   "type": {
     "label": "Type"
