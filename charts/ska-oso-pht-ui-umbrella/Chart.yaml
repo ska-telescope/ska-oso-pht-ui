@@ -5,25 +5,26 @@ type: application
 version: 0.2.0
 appVersion: 0.2.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
-dependencies:
-- name: ska-oso-pht-ui
-  version: 0.2.0
-  repository: file://../ska-oso-pht-ui
+#dependencies:
+#- name: ska-oso-pht-ui
+#  version: 0.2.0
+#  repository: file://../ska-oso-pht-ui
 
 # PHT services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load SBD, save SBD, etc.)
-- name: ska-oso-pht-services
-  version: 1.0.2
-  repository: https://artefact.skao.int/repository/helm-internal
+
+#- name: ska-oso-pht-services
+#  version: 1.0.2
+#  repository: https://artefact.skao.int/repository/helm-internal
 
 # SKUID is a dependency of PHT services. Include it to get real SBD IDs.
-- name: ska-ser-skuid
-  version: 3.3.3
-  repository: https://artefact.skao.int/repository/helm-internal
+#- name: ska-ser-skuid
+#  version: 3.3.3
+#  repository: https://artefact.skao.int/repository/helm-internal
 
 # ODA is a dependency of PHT services. Include it for data persistence
-- name: ska-db-oda
-  version: 2.1.3
-  repository: https://artefact.skao.int/repository/helm-internal
-  condition: ska-db-oda.enabled
+#- name: ska-db-oda
+#  version: 2.1.3
+#  repository: https://artefact.skao.int/repository/helm-internal
+#  condition: ska-db-oda.enabled
 
