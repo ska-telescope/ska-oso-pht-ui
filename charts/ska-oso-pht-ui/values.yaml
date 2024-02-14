@@ -3,7 +3,7 @@
 ingress:
   enabled: true
   prependByNamespace: true
-  path: pht/ui
+  path: pht
 
 runtimeEnv:
   skipPreflightCheck: "true"
