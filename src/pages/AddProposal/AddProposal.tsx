@@ -19,6 +19,7 @@ export default function AddProposal() {
   const [axiosCreateErrorColor, setAxiosCreateErrorColor] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5, 5]);
@@ -30,10 +31,15 @@ export default function AddProposal() {
   const createProposal = async () => {
     const response = await PostProposal(getProposal(), 'Draft');
     if (response && !response.error) {
+      console.log('response', response);
+      console.log('typeof(response)', typeof response);
+      console.log('response.data', response.data);
+      console.log('typeof(response.data)', typeof response.data);
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
-      // wrapped in a set time out so that the user can see the confirmation -> TODO: make this better later
+
       setTimeout(() => {
+        setProposal({ ...getProposal(), id: response });
         navigate(NAV[1]);
       }, 1000);
     } else {

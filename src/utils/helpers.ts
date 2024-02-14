@@ -1,6 +1,9 @@
+import { Proposal } from 'services/types/proposal';
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
 const specialChars = /[!]/;
+
+// TODO : Ensure that we remove all hard-coded values
 
 export const helpers = {
   validate: {
@@ -54,19 +57,11 @@ export const helpers = {
     SAVE = proposal with or without observations, etc. STATUS: draft
     SUBMIT = STATUS: submitted
     */
-    convertProposalToBackendFormat(mockProposal, status) {
-      const project = Projects.find(p => p.id === mockProposal.proposalType);
-      const subProject = project?.subProjects.find(sp => sp.id === mockProposal.proposalSubType);
+    convertProposalToBackendFormat(proposal: Proposal, status: string) {
+      const project = Projects.find(p => p.id === proposal.proposalType);
+      const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType);
 
-      // add a team member as PI if none => this is to ensure we have at least 1 team member/PI upon proposal creation
-      // TODO: use logged in user instead of hardcoded team member
-      if (!('team' in mockProposal)) {
-        mockProposal.team = [DEFAULT_PI];
-      } else if (mockProposal.team?.length === 0) {
-        mockProposal.team.push(DEFAULT_PI);
-      }
-
-      const targetObservationsByObservation = mockProposal.targetObservation?.reduce((acc, to) => {
+      const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {
           acc[to.observationId] = [];
         }
@@ -74,9 +69,9 @@ export const helpers = {
         return acc;
       }, {});
 
-      const scienceProgrammes = mockProposal.observations?.map(observation => {
+      const scienceProgrammes = proposal.observations?.map(observation => {
         const targetIds = targetObservationsByObservation[observation.id] || [];
-        const targets = mockProposal?.targets?.filter(target =>
+        const targets = proposal?.targets?.filter(target =>
           targetIds.includes(target.id.toString())
         );
         const array = OBSERVATION.array.find(p => p.value === observation.telescope);
@@ -90,23 +85,23 @@ export const helpers = {
       });
 
       const transformedProposal = {
-        prsl_id: mockProposal?.id?.toString(),
+        prsl_id: proposal?.id?.toString(),
         status,
         submitted_by:
           status === 'Submitted' ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
         submitted_on: status === 'Submitted' ? new Date().toISOString() : '',
         proposal_info: {
-          title: mockProposal?.title,
-          cycle: mockProposal?.cycle,
-          abstract: mockProposal?.abstract,
+          title: proposal?.title,
+          cycle: GENERAL.Cycle,
+          abstract: proposal?.abstract,
           proposal_type: {
             type: project?.title,
             sub_type: subProject?.title
           },
           science_category: GENERAL.ScienceCategory?.find(
-            category => category.value === mockProposal?.category
+            category => category.value === proposal?.category
           )?.label,
-          targets: mockProposal?.targets?.map(target => ({
+          targets: proposal?.targets?.map(target => ({
             name: target?.name,
             right_ascension: target?.ra,
             declination: target?.dec,
@@ -115,7 +110,7 @@ export const helpers = {
             right_ascension_unit: '', // TODO: confirm what units should be expected
             declination_unit: '' // TODO: confirm what units should be expected
           })),
-          investigator: mockProposal.team?.map(teamMember => ({
+          investigator: proposal.team?.map(teamMember => ({
             investigator_id: teamMember.id?.toString(),
             first_name: teamMember?.firstName,
             last_name: teamMember?.lastName,

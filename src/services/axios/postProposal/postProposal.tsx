@@ -16,7 +16,7 @@ async function PostProposal(proposal: Proposal, status?) {
   const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
 
   if (USE_LOCAL_DATA) {
-    return 'Success';
+    return 'PROPOSAL-ID-001';
   }
 
   try {
