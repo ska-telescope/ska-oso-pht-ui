@@ -22,7 +22,6 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
-import { env } from '../../env';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -94,7 +93,7 @@ export default function LandingPage() {
 
   const goToTitlePage = () => {
     setTimeout(() => {
-      navigate(env.REACT_APP_SKA_PHT_BASE_URL + NAV[0]);
+      navigate(NAV[0]);
     }, 1000);
   };
 
