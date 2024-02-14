@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}
+  name: {{ $.Chart.Name }}-nginx
   labels:
 {{ include "ska-oso-pht-ui.labels" . | indent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ $.Chart.Name }}
+      app.kubernetes.io/name: {{ $.Chart.Name }}
   template:
     metadata:
       labels:
@@ -55,5 +55,5 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "ska-oso-pht-ui.name" . }}-{{ .Values.ui.component }}-{{ .Release.Name }}-conf
+            name: {{ $.Chart.Name }}-nginx-config
 
