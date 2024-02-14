@@ -31,7 +31,7 @@ export default function AddProposal() {
 
   const createProposal = async () => {
     console.log('createProposal before application', application);
-    const response = await PostProposal((mockProposal as unknown) as Proposal, 'Draft');
+    const response = await PostProposal(getProposal() as Proposal, 'Draft');
     if (response && !response.error) {
       console.log('response', response);
       console.log('typeof(response)', typeof response);
