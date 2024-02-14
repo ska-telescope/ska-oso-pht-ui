@@ -1,0 +1,39 @@
+global:
+  annotations:
+    app.gitlab.com/app: CI_PROJECT_PATH_SLUG
+    app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+  minikube: true
+
+# This default `make k8s-install-chart` will deploy all of the dependencies: the UI will access an
+# PHT backend, which will use the RESTRepository backend to access the ODA REST API, which will connect
+# with the PostgreSQL instance.
+# The configuration can be changed using the parameters below, or see the `make dev-up` target.
+
+
+# Note: the PHT url, ODA url and Postgres host are only known at runtime, so are set in the Makefile
+ska-oso-pht-services:
+  rest:
+    logLevel: debug
+    enabled: true
+    use_skuid: true
+    oda:
+      backendType: rest
+      url:
+    ingress:
+      enabled: true
+
+ska-ser-skuid:
+  skuid:
+    enabled: true
+
+ska-db-oda:
+  enabled: true
+  rest:
+    logLevel: debug
+    enabled: true
+    ingress:
+      enabled: true
+    postgres:
+      host:
+  postgresql:
+    enabled: true
