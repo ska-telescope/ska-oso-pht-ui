@@ -222,9 +222,7 @@ export default function TitleContent({ page }: TitleContentProps) {
     };
 
     const helperFunction = (title: string) =>
-      `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
-        title
-      )} / ${MAX_WORD}`;
+      `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
 
     return (
       <FieldWrapper big label={t('title.label')}>
