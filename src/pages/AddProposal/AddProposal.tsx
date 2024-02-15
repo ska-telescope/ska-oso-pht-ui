@@ -31,13 +31,8 @@ export default function AddProposal() {
   const createProposal = async () => {
     const response = await PostProposal(getProposal(), 'Draft');
     if (response && !response.error) {
-      console.log('response', response);
-      console.log('typeof(response)', typeof response);
-      console.log('response.data', response.data);
-      console.log('typeof(response.data)', typeof response.data);
       setAxiosCreateError(response);
       setAxiosCreateErrorColor(AlertColorTypes.Success);
-
       setTimeout(() => {
         setProposal({ ...getProposal(), id: response });
         navigate(NAV[1]);

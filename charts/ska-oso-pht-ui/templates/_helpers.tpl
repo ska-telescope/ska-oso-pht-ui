@@ -4,6 +4,9 @@
 
 {{- define "ska-oso-pht-ui.labels" -}}
 app.kubernetes.io/name: {{ $.Chart.Name }}
+app: {{ .Chart.Name }}
+chart: {{ template "ska-oso-pht-ui.chart" . }}
+release: {{ .Release.Name }}
 component: pht-ui
 function: ui
 domain: operations
@@ -21,6 +24,13 @@ set the ingress url path
 
 {{- end }}
 {{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "ska-oso-pht-ui.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{- define "ska-oso-pht-ui.urls-skaPhtApiUrl" -}}
 {{- if .Values.runtimeEnv.skaPhtApiUrl -}}
