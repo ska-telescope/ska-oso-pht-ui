@@ -43,6 +43,7 @@ export const helpers = {
       Object.keys(obj).forEach(key => {
         const value = obj[key];
         if (value === undefined || value === '') {
+          if (key === 'submitted_by' || key === 'submitted_on') return;
           delete obj[key];
         } else if (typeof value === 'object') {
           this.trimObject(value);

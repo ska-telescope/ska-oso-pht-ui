@@ -5,7 +5,7 @@ import { Proposal } from '../../types/proposal';
 
 async function PostProposal(proposal: Proposal, status?) {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_NEW = `/proposal`;
+  const URL_NEW = `/proposals`;
   const config = {
     headers: {
       Accept: 'application/json',
