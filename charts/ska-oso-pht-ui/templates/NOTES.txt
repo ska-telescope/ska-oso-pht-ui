@@ -2,7 +2,7 @@
 The OSO PHT UI can be found at: <host>/{{ .Release.Namespace }}/pht/
 
 <host> is whatever the cluster domain name is. Common links:
-1. http://<cluster IP>/{{ .Release.Namespace }}/pht/if on your local minikube
+1. http://<cluster IP>/{{ .Release.Namespace }}/pht/ if on your local minikube
 2. https://sdhp.stfc.skao.int/{{ .Release.Namespace }}/pht if on the shared cluster
 {{- else }}
 The OSO PHT UI has no external ingress configured.
