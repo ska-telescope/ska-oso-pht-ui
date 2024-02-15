@@ -18,10 +18,7 @@ function: ui
 domain: operations
 enabled: true
 image:
-  # registry: artefact.skao.int
-  # image: ska-oso-pht-ui
-  # tag: 0.1.0
-  registry: registry.gitlab.com/ska-telescope/oso
-  image: ska-oso-pht-ui/ska-oso-pht-ui
-  tag: 0.0.1-dev.c7f33912a
+  registry: artefact.skao.int
+  image: ska-oso-pht-ui
+  tag: 0.1.0
   pullPolicy: IfNotPresent
