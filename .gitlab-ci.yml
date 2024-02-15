@@ -3,6 +3,7 @@ default:
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  KUBE_HOST: 'https://k8s.stfc.skao.int'
 
 stages:
   - dependencies
@@ -156,9 +157,9 @@ pages:
     echo "Status of pods in $KUBE_NAMESPACE namespace:"
     kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
     echo "Addresses to connect to the deployment of the PHT: "
-    echo "  https://sdhp.stfc.skao.int/$KUBE_NAMESPACE/pht"
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
     echo "Backend API:"
-    echo "  https://sdhp.stfc.skao.int/$KUBE_NAMESPACE/pht/services/"
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v1/ui/"
 
 .dev_env: &dev_env
   variables:
@@ -181,8 +182,6 @@ info-staging:
 
 deploy-dev-environment:
   <<: *dev_env
-  before_script:
-    - KUBE_HOST=https://k8s.stfc.skao.int
 
 test-dev-environment:
   <<: *dev_env
@@ -190,13 +189,6 @@ test-dev-environment:
 stop-dev-environment:
   <<: *dev_env
 
-deploy-integration:
-  before_script:
-    - KUBE_HOST=https://k8s.stfc.skao.int
-
-deploy-staging:
-  before_script:
-    - KUBE_HOST=https://k8s.stfc.skao.int
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 

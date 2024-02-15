@@ -2,11 +2,16 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
+KUBE_HOST ?= http://`minikube ip`
+RELEASE_NAME ?= test
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v1/sbds
+POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
+
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
+  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL) \
+  --set ska-db-oda-umbrella.pgadmin4.serverDefinitions.servers.firstServer.Host=$(POSTGRES_HOST)
 
 # include core makefile targets for release management
 -include .make/base.mk

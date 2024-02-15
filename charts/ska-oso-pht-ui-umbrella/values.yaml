@@ -9,31 +9,29 @@ global:
 # with the PostgreSQL instance.
 # The configuration can be changed using the parameters below, or see the `make dev-up` target.
 
-
-# Note: the PHT url, ODA url and Postgres host are only known at runtime, so are set in the Makefile
 ska-oso-pht-services:
   rest:
     logLevel: debug
-    enabled: true
-    use_skuid: true
-    oda:
-      backendType: rest
-      url:
-    ingress:
-      enabled: true
+    # Use the ska-oso-pht-services default values which is configured to use the remote ska-db-oda deployment.
+    # To override this and store in the PHT Services filesystem for example, use the values below
+#    oda:
+#      backendType: filesystem
 
-ska-ser-skuid:
-  skuid:
+ska-db-oda-umbrella:
+  ska-db-oda:
     enabled: true
-
-ska-db-oda:
-  enabled: true
-  rest:
-    logLevel: debug
-    enabled: true
-    ingress:
+    logLevel: info
+    rest:
       enabled: true
-    postgres:
-      host:
+      ingress:
+        enabled: true
+      backend:
+        postgres:
+          host:
   postgresql:
     enabled: true
+  pgadmin4:
+    enabled: true
+  ska-ser-skuid:
+    skuid:
+      enabled: true
