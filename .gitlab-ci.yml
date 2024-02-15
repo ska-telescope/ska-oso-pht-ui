@@ -193,11 +193,11 @@ stop-dev-environment:
 deploy-integration:
   before_script:
     - KUBE_HOST=https://k8s.stfc.skao.int
-  
+
 deploy-staging:
   before_script:
     - KUBE_HOST=https://k8s.stfc.skao.int
-  
+
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 include:
