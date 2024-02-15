@@ -349,7 +349,17 @@ export const EMPTY_PROPOSAL = {
   proposalType: 0,
   proposalSubType: 0,
   cycle: '',
-  team: [],
+  team: [{
+    id: 1,
+    firstName: 'Van Loo',
+    lastName: 'Cheng',
+    email: 'ask.lop@map.com',
+    country: 'Lagoon',
+    affiliation: 'University of Free Town',
+    phdThesis: false,
+    status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+    pi: true
+  }],
   abstract: '',
   category: 0,
   subCategory: 0,
