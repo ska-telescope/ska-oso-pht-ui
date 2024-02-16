@@ -35,3 +35,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    DataPage
    SrcNetPage
    SubmitConfirmation
+   UserQuestions
+   UserTroubleshooting
+   UserFeedback
+   UserFuture

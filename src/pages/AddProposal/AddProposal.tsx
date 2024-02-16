@@ -6,7 +6,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
-import { EMPTY_PROPOSAL, NAV } from '../../utils/constants';
+import { EMPTY_PROPOSAL, EMPTY_STATUS, NAV } from '../../utils/constants';
 import PostProposal from '../../services/axios/postProposal/postProposal';
 import { Proposal } from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
@@ -22,7 +22,7 @@ export default function AddProposal() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5, 5]);
+    updateAppContent1(EMPTY_STATUS);
     updateAppContent2(EMPTY_PROPOSAL);
   }, []);
 

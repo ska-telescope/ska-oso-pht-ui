@@ -13,7 +13,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -77,7 +77,7 @@ export default function LandingPage() {
     if (response && !response.error) {
       // Handle successful response
       setAxiosViewError('');
-      updateAppContent1([5, 5, 5, 5, 5, 5, 5, 5]);
+      updateAppContent1(EMPTY_STATUS);
       updateAppContent2(response);
       updateAppContent3(response);
       return true;

@@ -343,6 +343,8 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+
 export const EMPTY_PROPOSAL = {
   id: null,
   title: '',

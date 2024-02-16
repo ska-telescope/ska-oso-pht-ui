@@ -12,21 +12,19 @@ Layout and Navigation
 
 The Team Page has two main sections:
 
-Team Member List (Left)
-=======================
+1. Team Member List (Left)
 
-Displays a table with information about each team member
+- Displays a table with information about each team member
 
-- Last Name, First Name
-- Status (e.g., Invited, Accepted)
-- PhD Thesis checkbox
-- PI star icon (filled: Principal Investigator, hollow: not PI, missing: invitation not accepted)
-- "Actions" (delete)
+  - Last Name, First Name
+  - Status (e.g., Invited, Accepted)
+  - PhD Thesis checkbox
+  - PI star icon (filled: Principal Investigator, hollow: not PI, missing: invitation not accepted)
+  - "Actions" (delete)
+  
+- Click the star icon to make someone a PI or remove the PI role.
 
-Click the star icon to make someone a PI or remove the PI role.
-
-Team Management Options (Right)
-===============================
+2. Team Management Options (Right)
 
 - Invite Team Members: Add collaborators by entering their email and selecting PI, PhD Thesis options.
 - Import from File: Upload a file containing team member details.
@@ -83,4 +81,10 @@ Additional Notes
 
 - This guide assumes you're already logged in to PPT.
 - The content remains the same regardless of your user context.
+- Dynamic help is available, when you hover over fields, for descriptions. 
 - Remember to save your progress regularly using the "Save" button.
+- The "Submit" button will only become active when all required information is entered and validated.
+
+.. admonition:: Confirmation Summary
+
+   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.

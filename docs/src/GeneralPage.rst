@@ -40,8 +40,8 @@ Navigation Elements
 ===================
 
 - Home: (Top left corner) Returns you to the Landing Page.
-- Title Page: (Bottom left corner) Takes you back to the Title Page.
-- Save: (Top left) Saves your progress on the Team Page.
+- Team Page: (Bottom left corner) Takes you back to the Team Page.
+- Save: (Top left) Saves your progress on the General Page.
 - Validate: (Top right) Checks if all required information is filled correctly.
 - Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
 - Science: (Bottom right corner) Moves you to the next page for science details.
@@ -75,7 +75,6 @@ Key Information and Actions
 - Choose the relevant scientific category and subcategory.
 - Save your progress regularly.
 - Validate your information before submission.
-- Submit your completed proposal.
 
 Next Steps
 ==========
@@ -88,5 +87,10 @@ Additional Notes
 
 - This guide assumes you're already logged in to PPT.
 - The content remains the same regardless of your user context.
+- Dynamic help is available, when you hover over fields, for descriptions. 
 - Remember to save your progress regularly using the "Save" button.
 - The "Submit" button will only become active when all required information is entered and validated.
+
+.. admonition:: Confirmation Summary
+
+   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.
