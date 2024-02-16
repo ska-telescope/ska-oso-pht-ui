@@ -41,7 +41,7 @@ Clicking a main proposal type reveals relevant sub-proposal types like Target of
 Entering Title and Creating proposal
 ====================================
 
-- Enter your proposal's title in the provided text field.
+- Enter your proposal's title in the provided text field ( maximum 20 words )
 - Select your chosen main and sub-proposal types from the menus.
 - Once selected, a "Create" button with a plus sign appears at the bottom right.
 - Click "Create" to proceed to the next page.
@@ -95,3 +95,7 @@ Additional Notes
 - The content remains the same regardless of your user context.
 - Remember to save your progress regularly using the "Save" button.
 - The "Submit" button will only become active when all required information is entered and validated.
+
+.. admonition:: Confirmation Summary
+
+   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.

@@ -10,12 +10,14 @@ This guide explains the "Target Page", where you provide details about your obse
 Layout and Navigation
 =====================
 
+The Target Page has a clear and consistent layout:
+
 Target input area: Three distinct sections offer different ways to specify your targets:
 
 - List of targets:
 
-   - Right side: Add individual targets by providing details like name, coordinates, and velocity/redshift. Use the "Add target" button.
-   - Left side: View a list of added targets with their details and delete options.
+   - Right side: Add individual targets by providing details like name, coordinates, and velocity/redshift. Use the "Add target" button. There is also an additional button "Resolve" when clicked, will automatically populate coordinates from SIMBAD & NED databases.
+   - Left side: View a list of added targets with their details to edit and delete options.
    - "Import from file" and "Spatial imaging" tabs: Coming soon!
 
 - Target mosaic: Using Aladin Lite Viewer
@@ -66,7 +68,6 @@ Key Information and Actions
 - Review and manage your added targets in the list on the left side.
 - Remember to save your progress regularly using the "Save" button.
 - Validate your information before submission using the "Validate" button.
-- Submit your completed proposal when all pages are validated and the "Submit" button becomes active.
 
 Next Steps
 ==========
@@ -78,5 +79,10 @@ Additional Notes
 
 - This guide assumes you're already logged in to PPT.
 - The content remains the same regardless of your user context.
+- Dynamic help is available, when you hover over fields, for descriptions. 
 - Remember to save your progress regularly using the "Save" button.
 - The "Submit" button will only become active when all required information is entered and validated.
+
+.. admonition:: Confirmation Summary
+
+   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.

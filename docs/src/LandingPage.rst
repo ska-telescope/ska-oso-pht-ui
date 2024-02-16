@@ -23,7 +23,7 @@ Layout and Navigation
    :width: 20%
    :alt: Page filter
 
-- Search bar : Search for specific proposals by title and proposal ID.
+- Search bar : Search for specific proposals by title, PI and proposal ID.
 
 .. figure:: /images/landingPageSearch.png
    :width: 30%

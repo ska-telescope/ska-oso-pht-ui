@@ -13,7 +13,7 @@ interface StatusWrapperProps {
 export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
-  const SIZE = 35;
+  const SIZE = 30;
 
   const ClickFunction = () => {
     navigate(NAV[page]);
