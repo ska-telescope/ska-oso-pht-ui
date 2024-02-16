@@ -18,6 +18,7 @@ K8S_CHART_PARAMS += \
 -include .make/oci.mk
 -include .make/helm.mk
 -include .make/k8s.mk
+-include .make/release.mk
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')

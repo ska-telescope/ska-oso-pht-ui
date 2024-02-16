@@ -28,9 +28,8 @@ Navigation Elements
 ===================
 
 - Home: (Top left corner) Returns you to the Landing Page.
-- Title Page: (Bottom left corner) Takes you back to the Title Page.
 - Science: (Bottom left corner) Takes you back to the previous Science Page.
-- Save: (Top left) Saves your progress on the Team Page.
+- Save: (Top left) Saves your progress on the Target Page.
 - Validate: (Top right) Checks if all required information is filled correctly.
 - Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
 - Observation: (Bottom right corner) Moves you to the next page for Observation details.

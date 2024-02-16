@@ -20,7 +20,7 @@ Navigation Elements
 
 - Home: (Top left corner) Returns you to the Landing Page.
 - General Page: (Bottom left corner) Takes you back to the General Page.
-- Save: (Top left) Saves your progress on the General Page.
+- Save: (Top left) Saves your progress on the Science Page.
 - Validate: (Top right) Checks if all required information is filled correctly.
 - Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
 - Target: (Bottom right corner) Moves you to the next page for target details.
