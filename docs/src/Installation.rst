@@ -35,9 +35,9 @@ Here are the steps required to migrate this application for use within the Porta
 1. Clone the application into the appropriate folder
 2. Follow the installation instructions in the previous paragraph
 3. ReactSkeleton.tsx : Change `ReactSkeleton` to `NewApp` in 2 locations
-4. ReactSkeleton.tsx : Change filename to `NewApp.tsx
+4. ReactSkeleton.tsx : Change filename to `NewApp.tsx`
 5. ReactSkeleton.cy.tsx : Change `ReactSkeleton` to `NewApp` in 4 locations
-6. ReactSkeleton.cy.tsx : Change filename to `NewApp.cy.tsx
+6. ReactSkeleton.cy.tsx : Change filename to `NewApp.cy.tsx`
 7. Change Folder name from ReactSkeleton to NewApp
 8. App.tsx : Change `ReactSkeleton` to `NewApp` in 4 locations
 9. webPack.config.js : Change path for `ReactSkeleton` so it points to `NewApp\NewApp`.
