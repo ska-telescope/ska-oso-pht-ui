@@ -21,12 +21,11 @@ async function getSensitivityCalculatorAPIData(telescope: number, mode: number) 
     */
 
   const isZoom = mode === 1;
-
   const calculate = await GetCalculate(TEL[telescope], MODE[mode]);
-  const weighting = await GetWeighting(telescope, mode);
+  const weighting = await GetWeighting(TEL[telescope], MODE[mode]);
   let weightingLine;
   if (!isZoom) {
-    weightingLine = await GetWeighting(telescope, MODE[1]);
+    weightingLine = await GetWeighting(TEL[telescope], MODE[1]);
   } // 2nd weighting call with Zoom - Continuum Mode only
 
   const response = {
