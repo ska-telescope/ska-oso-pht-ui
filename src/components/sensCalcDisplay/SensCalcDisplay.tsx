@@ -17,8 +17,6 @@ interface SensCalcDisplayProps {
 export default function SensCalcDisplay({ selected, observation }: SensCalcDisplayProps) {
   const [lvl, setLvl] = React.useState(STATUS_PARTIAL);
 
-  console.log('observation', observation);
-
   React.useEffect(() => {
     const getSensCalc = async () => {
       const response = await getSensitivityCalculatorAPIData(

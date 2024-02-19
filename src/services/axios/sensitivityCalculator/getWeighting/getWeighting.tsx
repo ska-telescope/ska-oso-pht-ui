@@ -88,7 +88,6 @@ async function GetWeighting(telescope, mode) {
 
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
-    console.log(`TEST URL  ${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`);
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`,
       config
