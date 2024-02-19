@@ -88,6 +88,7 @@ async function GetCalculate(telescope, mode) {
   }
 
   try {
+    console.log('NOT USE LOCAL DATA');
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
