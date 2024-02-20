@@ -150,6 +150,12 @@ pages:
       - public
     expire_in: 30 days
 
+########################## SYSTEM TEAM WORKAROUND BELOW ##################################
+
+deploy-staging:
+  script:
+    - echo "Do not Deploy due to STS-505"
+
 ########################## PHT SPECIFIC STUFF BELOW HERE #################################
 
 .info_script: &info_script
