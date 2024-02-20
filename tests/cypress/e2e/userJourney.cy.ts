@@ -118,7 +118,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     //open draft proposal
     cy.get('[data-testid="EditRoundedIcon"]').click();
     //navigate to target page
-    cy.get('[testid="Target"]').click();
+    cy.get('[testid="pageTitle-4"]').click();
     //add target
     cy.get('[data-testid="name"]').type('M1');
     cy.get('[data-testid="ra"]').type('0:0:0');
@@ -142,7 +142,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     //open draft proposal
     cy.get('[data-testid="EditRoundedIcon"]').click();
     //navigate to team page
-    cy.get('[testid="Team"]').click();
+    cy.get('[testid="pageTitle-1"]').click();
     //add team member as PI and select PhD thesis
     cy.get('[data-testid="firstName"]').type('User');
     cy.get('[data-testid="lastName"]').type('Name');

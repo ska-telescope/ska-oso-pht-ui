@@ -14,7 +14,6 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const SIZE = 30;
-  const pageTitle : string = t(`page.${page}.title`);
 
   const ClickFunction = () => {
     navigate(NAV[page]);
@@ -33,8 +32,8 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
           level={getLevel()}
           size={SIZE}
         />
-        <Typography testId={pageTitle} variant="caption">
-          {pageTitle}
+        <Typography testId={'pageTitle-' + `${page}`} variant="caption">
+          {t(`page.${page}.title`)}
         </Typography>
       </Grid>
     </IconButton>
