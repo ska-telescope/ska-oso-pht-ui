@@ -4,7 +4,7 @@ import TargetObservation from './targetObservation';
 import TeamMember from './teamMember';
 
 export type Proposal = {
-  id: number;
+  id: string;
   title: string;
   proposalType: number;
   proposalSubType: number;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import CancelButton from '../../button/cancel/CancelButton';
-import { Calculate } from '@mui/icons-material';
 
 interface ObservationTargetResultsDisplayProps {
   open: boolean;

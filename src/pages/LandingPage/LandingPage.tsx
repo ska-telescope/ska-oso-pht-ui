@@ -28,12 +28,15 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const {
+    application,
     clearApp,
     helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent3
   } = storageObject.useStore();
+
+  const getProposal = () => application.content2 as Proposal;
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -72,7 +75,7 @@ export default function LandingPage() {
     helpComponent('');
     clearApp();
 
-    const proposalId = 1; // TODO replace with id from the list
+    const proposalId = getProposal().id ? getProposal().id : 'fake-prsl-id'; // TODO replace with id from the list, currently using previously created prsl_id
     const response = await GetProposal(proposalId);
     if (response && !response.error) {
       // Handle successful response

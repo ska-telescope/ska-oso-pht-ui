@@ -96,7 +96,7 @@ export const helpers = {
           cycle: GENERAL.Cycle,
           abstract: proposal?.abstract,
           proposal_type: {
-            type: project?.title,
+            main_type: project?.title,
             sub_type: subProject?.title
           },
           science_category: GENERAL.ScienceCategory?.find(
