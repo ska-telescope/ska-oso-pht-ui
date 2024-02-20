@@ -26,6 +26,8 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
         observation.telescope,
         observation.subarray
       );
+      // Calculate response for LOW doesn't have a status returned
+      // TODO: handle response error differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       setResponse(response);
     };
