@@ -41,6 +41,8 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
     setOpenDialog(true);
   };
 
+  console.log('response', response);
+
   return (
     <>
       <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
@@ -50,6 +52,7 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         data={response}
+        lvl={lvl}
       />
     </>
   );
