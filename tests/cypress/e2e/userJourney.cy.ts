@@ -110,4 +110,60 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').should('not.be.selected');
   });
+
+  it('Content : Update existing proposal, add and delete target', () => {
+    //filter by draft status
+    cy.get('[data-testid="proposalType"]').click();
+    cy.get('[data-value="draft"]').click();
+    //open draft proposal
+    cy.get('[data-testid="EditRoundedIcon"]').click();
+    //navigate to target page
+    cy.get('[testid="pageTitle-4"]').click();
+    //add target
+    cy.get('[data-testid="name"]').type('M1');
+    cy.get('[data-testid="ra"]').type('0:0:0');
+    cy.get('[data-testid="dec"]').type('0:0:0');
+    cy.get('[data-testid="vel"]').type('1');
+    cy.get('[data-testid="Add targetButton"]').click({ force: true });
+    //delete target - TODO: Refactor below selector once test data is available
+    cy.get(
+      `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-jmdt0k-MuiGrid-root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-372aq-MuiGrid-root > div.MuiGrid-root.MuiGrid-item.css-1mum6ye-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div.MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-withBorderColor > span > button > svg > path`
+    )
+      .should('exist')
+      .click();
+    //confirm deletion
+    cy.get('[data-testid="ConfirmButton"]').click();
+  });
+
+  it('Content : Update existing proposal, add and delete team member ', () => {
+    //filter by draft status
+    cy.get('[data-testid="proposalType"]').click();
+    cy.get('[data-value="draft"]').click();
+    //open draft proposal
+    cy.get('[data-testid="EditRoundedIcon"]').click();
+    //navigate to team page
+    cy.get('[testid="pageTitle-1"]').click();
+    //add team member as PI and select PhD thesis
+    cy.get('[data-testid="firstName"]').type('User');
+    cy.get('[data-testid="lastName"]').type('Name');
+    cy.get('[data-testid="email"]').type('username@test.com');
+    cy.get('[testid="piCheckbox"]').click();
+    cy.get('[testid="PhDCheckbox"]').click();
+    cy.get('[data-testid="Send invitationButton"]').click({ force: true });
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'User')
+      .should('contain', 'Name')
+      .should('contain', 'Pending')
+      .should('contain', 'No')
+      .should('have.length', 2);
+    //delete team member - TODO: Refactor below selector once test data is available
+    cy.get(
+      `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-11q92mh-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div:nth-child(6) > span > button`
+    )
+      .should('exist')
+      .click();
+    //confirm deletion
+    cy.get('[data-testid="ConfirmButton"]').click();
+  });
 });
