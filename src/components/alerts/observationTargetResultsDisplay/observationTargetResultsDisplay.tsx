@@ -13,7 +13,7 @@ interface ObservationTargetResultsDisplayProps {
   observation: any;
 }
 
-const SIZE = 20;
+const SIZE = 30;
 
 export default function ObservationTargetResultsDisplay({
   open,
@@ -42,7 +42,13 @@ export default function ObservationTargetResultsDisplay({
   };
 
   const pageFooter = () => (
-    <Grid container direction="row" justifyContent="space-between" alignItems="center">
+    <Grid
+      container
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{ mb: 3, ml: 3 }}
+    >
       <Grid item>
         <CancelButton onClick={handleClose} label="button.close" />
       </Grid>
@@ -89,8 +95,9 @@ export default function ObservationTargetResultsDisplay({
           p={2}
           container
           direction="row"
-          alignItems="flex-start"
+          alignItems="center"
           justifyContent="space-between"
+          sx={{ mt: -1 }}
         >
           {'Sensitivity Calculator Results'}
           <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }}>
