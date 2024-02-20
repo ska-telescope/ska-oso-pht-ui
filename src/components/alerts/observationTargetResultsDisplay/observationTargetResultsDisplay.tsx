@@ -10,6 +10,7 @@ interface ObservationTargetResultsDisplayProps {
   onClose: Function;
   data: any;
   lvl: number;
+  observation: any;
 }
 
 const SIZE = 20;
@@ -18,10 +19,26 @@ export default function ObservationTargetResultsDisplay({
   open,
   onClose,
   data,
-  lvl
+  lvl,
+  observation
 }: ObservationTargetResultsDisplayProps) {
   const handleClose = () => {
     onClose();
+  };
+
+  // Sens Cal API returns differenty format for Mid and Low endpoints
+  const getsensitivity = () => {
+    if (observation.telescope === 1) {
+      return data?.calculate?.data?.result?.sensitivity;
+    }
+    return data?.calculate?.sensitivity;
+  };
+
+  const getweightingFactor = () => {
+    if (observation.telescope === 1) {
+      return data?.weighting?.data?.weighting_factor;
+    }
+    return data?.weighting?.weighting_factor;
   };
 
   const pageFooter = () => (
@@ -45,13 +62,13 @@ export default function ObservationTargetResultsDisplay({
           <Typography variant="subtitle2">Sensitivity:</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="body2">{data?.calculate?.data?.result?.sensitivity}</Typography>
+          <Typography variant="body2">{getsensitivity()}</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="subtitle2">SBS Conv Factor:</Typography>
+          <Typography variant="subtitle2">Weighting Factor:</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="body2">{data?.weighting?.data?.weighting_factor}</Typography>
+          <Typography variant="body2">{getweightingFactor()}</Typography>
         </Grid>
       </Grid>
     </Grid>
