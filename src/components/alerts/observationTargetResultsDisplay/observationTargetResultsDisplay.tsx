@@ -4,6 +4,7 @@ import CancelButton from '../../button/cancel/CancelButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { IconButton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface ObservationTargetResultsDisplayProps {
   open: boolean;
@@ -25,6 +26,8 @@ export default function ObservationTargetResultsDisplay({
   const handleClose = () => {
     onClose();
   };
+
+  const { t } = useTranslation('pht');
 
   // Sens Cal API returns differenty format for Mid and Low endpoints
   const getsensitivity = () => {
@@ -117,7 +120,7 @@ export default function ObservationTargetResultsDisplay({
             results()
           ) : (
             <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-              <Typography>No data available</Typography>
+              <Typography>{t('sensivityCalculatorResults.noData')}</Typography>
             </Alert>
           )}
         </Grid>
