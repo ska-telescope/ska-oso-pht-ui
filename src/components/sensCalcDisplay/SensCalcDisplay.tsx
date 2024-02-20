@@ -12,7 +12,6 @@ interface SensCalcDisplayProps {
   observation: { telescope: number; subarray: number };
 }
 
-// TODO : Need to add a modal
 // TODO : pass querry parameters from observation instead of mock query parameters in service
 
 export default function SensCalcDisplay({ selected, observation }: SensCalcDisplayProps) {
