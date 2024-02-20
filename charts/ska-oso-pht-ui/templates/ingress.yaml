@@ -20,7 +20,8 @@ spec:
             name: {{ $.Chart.Name }}-service
             port:
               number: 80
-        path: "{{ include "ska-oso-pht-ui.ingress.path" . }}/(.*)"
+        # Match everything but '/api' which is reserved for back-end
+        path: {{ include "ska-oso-pht-ui.ingress.path" . }}/(?!api)(.*)
         pathType: ImplementationSpecific
 
 {{- end }}
