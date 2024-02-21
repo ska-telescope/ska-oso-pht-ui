@@ -20,7 +20,7 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
-import { Proposal } from '../../services/types/proposal';
+import Proposal from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
 export default function LandingPage() {
@@ -72,54 +72,51 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async () => {
-    console.log('getTheProposal');
     helpComponent('');
     clearApp();
 
     const proposalId = getProposal().id ? getProposal().id : 'fake-prsl-id'; // TODO replace with id from the list, currently using previously created prsl_id
     const response = await GetProposal(proposalId);
-    if (response && !response.error) {
-      // Handle successful response
-      setAxiosViewError('');
-      updateAppContent1(EMPTY_STATUS);
-      updateAppContent2(response);
-      updateAppContent3(response);
-      return true;
-    } else {
-      // Handle error response
+    if (response?.error) {
       setAxiosViewError(response.error);
       updateAppContent1(null);
       updateAppContent2(null);
       updateAppContent3(null);
       return false;
+    } else {
+      setAxiosViewError('');
+      updateAppContent1(EMPTY_STATUS);
+      updateAppContent2(response);
+      updateAppContent3(response);
+      return true;
     }
   };
 
   const goToTitlePage = () => {
-    setTimeout(() => {
-      navigate(NAV[0]);
-    }, 1000);
+    navigate(NAV[0]);
   };
 
-  const viewIconClicked = () => {
-    if (getTheProposal()) {
-      setTimeout(() => {
-        setOpenViewDialog(true);
-      }, 1000);
+  const viewIconClicked = async () => {
+    if (await getTheProposal()) {
+      setOpenViewDialog(true);
+    } else {
+      alert('SOME ERROR WAS ENCOUNTERED');
     }
   };
 
   const editIconClicked = async () => {
-    if (getTheProposal()) {
+    if (await getTheProposal()) {
       goToTitlePage();
+    } else {
+      alert('SOME ERROR WAS ENCOUNTERED');
     }
   };
 
-  const cloneIconClicked = () => {
-    if (getTheProposal()) {
-      setTimeout(() => {
-        setOpenCloneDialog(true);
-      }, 1000);
+  const cloneIconClicked = async () => {
+    if (await getTheProposal()) {
+      setOpenCloneDialog(true);
+    } else {
+      alert('SOME ERROR WAS ENCOUNTERED');
     }
   };
 

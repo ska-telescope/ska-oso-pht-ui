@@ -32,7 +32,7 @@ export type ProposalIN = {
 };
 
 type Proposal = {
-  id: number;
+  id: string;
   title: string;
   proposalType: number;
   proposalSubType: number;
