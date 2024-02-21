@@ -12,7 +12,6 @@ interface SensCalcDisplayProps {
   observation: { telescope: number; subarray: number };
 }
 
-// TODO : Need to add a modal
 // TODO : pass querry parameters from observation instead of mock query parameters in service
 
 export default function SensCalcDisplay({ selected, observation }: SensCalcDisplayProps) {
@@ -26,6 +25,8 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
         observation.telescope,
         observation.subarray
       );
+      // Calculate response for LOW doesn't have a status property: this will cause the error icon to be wrongly displayed for LOW responses
+      // TODO: handle response errors differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       setResponse(response);
     };
@@ -50,6 +51,8 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         data={response}
+        lvl={lvl}
+        observation={observation}
       />
     </>
   );

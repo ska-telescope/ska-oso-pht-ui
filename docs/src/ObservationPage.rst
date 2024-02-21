@@ -22,6 +22,7 @@ The Observation Page consists of two distinct sections:
 - Right side:
 
   - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for bulk actions.
+  - The status icon next to each linked target-observation shows the status of the Sensitivity Calculator API request.
 
 2. Observation Mode Details:
 
@@ -37,6 +38,15 @@ The Observation Page consists of two distinct sections:
   - Observation Type: Select either "Continuum" or "Zoom" mode.
   - Other fields: Additional details may appear based on your selections, influenced by the Sensitivity Calculator.
   - Add: Once finished, click this button to add the defined observation to the list.
+
+3. Sensitivity Calculator results
+
+- This modal appears upon clicking on the status icon at the right of the linked target-observation
+- This displays the results returned from the Sensitivity Calculator API.
+
+.. figure:: /images/sensitivityCalculatorModal.png
+   :width: 90%
+   :alt: screen in light & dark mode 
 
 Navigation Elements
 ===================
@@ -79,6 +89,7 @@ Key Information and Actions
   - Define key parameters like array configuration, observation type, and additional details.
   - View and manage your observation list.
   - Utilize dynamic help for field descriptions.
+  - View the Sensitivity Calculator results for each linked observation-target.
 
 Next Steps
 ==========

@@ -1,10 +1,38 @@
 import Observation from './observation';
-import Target from './target';
+import Target, { TargetIN } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember from './teamMember';
+import TeamMember, { TeamMemberIN } from './teamMember';
 
-export type Proposal = {
-  id: string;
+// Science Programme. Part of the incoming proposal
+export type SP = {
+  array: string;
+  subarray: string;
+  linked_sources: string[];
+  observation_type: string;
+};
+
+export type ProposalIN = {
+  prsl_id: string;
+  status: string;
+  submitted_by: string;
+  submitted_on: string;
+  proposal_info: {
+    title: string;
+    cycle: string;
+    abstract: string;
+    proposal_type: {
+      type: string;
+      sub_type: string;
+    };
+    science_category: string;
+    targets: TargetIN[];
+    investigator: TeamMemberIN[];
+    science_programmes: SP[];
+  };
+};
+
+type Proposal = {
+  id: number;
   title: string;
   proposalType: number;
   proposalSubType: number;
@@ -22,3 +50,5 @@ export type Proposal = {
   technicalLoadStatus: number;
   pipeline: string;
 };
+
+export default Proposal;

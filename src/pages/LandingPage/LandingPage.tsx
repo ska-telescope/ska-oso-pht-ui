@@ -72,6 +72,7 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async () => {
+    console.log('getTheProposal')
     helpComponent('');
     clearApp();
 
