@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import {
   EMPTY_PROPOSAL,
   GENERAL,
@@ -109,7 +108,6 @@ export function GetMockProposal() {
 }
 
 async function GetProposal(id: string) {
-  const { t } = useTranslation('pht');
   const apiUrl = SKA_PHT_API_URL;
   const URL_GET = `/proposals/`;
   const config = {
@@ -126,7 +124,7 @@ async function GetProposal(id: string) {
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
     return typeof result === 'undefined'
-      ? { error: t('error.API_UNKNOWN_ERROR') }
+      ? { error: 'error.API_UNKNOWN_ERROR' }
       : mapping(result.data.proposal_info);
   } catch (e) {
     return { error: e.message };
