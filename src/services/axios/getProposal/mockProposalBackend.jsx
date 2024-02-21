@@ -1,69 +1,29 @@
 const MockProposalBackend = {
-  prsl_id: '',
-  status: 'draft',
-  submitted_by: '',
-  submitted_on: '',
+  investigators: null,
+  metadata: {
+    created_by: 'DefaultUser',
+    created_on: '2024-02-21T09:18:19.500817+00:00',
+    last_modified_by: 'DefaultUser',
+    last_modified_on: '2024-02-21T09:18:19.500817+00:00',
+    version: 1
+  },
   proposal_info: {
-    title: 'The Milky Way View Backend Format',
-    cycle: 'SKA_5000_2023',
-    abstract: 'Prettyllll llklkl',
-    proposal_type: { type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
-    science_category: 'gjhjkhklj',
-    targets: [
-      {
-        name: 'M28',
-        right_ascension: '22:33:55',
-        declination: '22:33:55',
-        velocity: 34.6,
-        velocity_unit: 'km/s',
-        right_ascension_unit: 'degrees',
-        declination_unit: 'dd:mm:ss'
-      },
-      {
-        name: 'M1',
-        right_ascension: '22:33:55',
-        declination: '22:33:55',
-        velocity: 34.6,
-        velocity_unit: 'km/s',
-        right_ascension_unit: 'hh:mm:ss',
-        declination_unit: 'dd:mm:ss'
-      }
-    ],
-    investigator: [
-      {
-        investigator_id: 'user1',
-        first_name: 'Van Loo',
-        last_name: 'Cheng',
-        email: 'ask.lop@map.com',
-        organization: 'University of Free',
-        for_phd: true,
-        principal_investigator: true
-      },
-      {
-        investigator_id: 'user2',
-        first_name: 'Van Loo',
-        last_name: 'Cheng',
-        country: 'Lagoon',
-        organization: 'University of Free',
-        for_phd: false,
-        principal_investigator: false
-      }
-    ],
-    science_programmes: [
-      {
-        array: 'MID',
-        subarray: 'subarray 1',
-        linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
-      },
-      {
-        array: 'MID',
-        subarray: 'subarray 1',
-        linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
-      }
-    ]
-  }
+    abstract: null,
+    cycle: null,
+    investigators: null,
+    proposal_type: {
+      main_type: null,
+      sub_type: null
+    },
+    science_category: null,
+    science_programmes: null,
+    targets: null,
+    title: null
+  },
+  prsl_id: 'prsl-t0001-20240221-00004',
+  status: 'draft',
+  submitted_by: null,
+  submitted_on: null
 };
 
 export default MockProposalBackend;
