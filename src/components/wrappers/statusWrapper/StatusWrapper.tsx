@@ -32,7 +32,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
           level={getLevel()}
           size={SIZE}
         />
-        <Typography testId={'pageTitle-' + `${page}`} variant="caption">
+        <Typography testId={`pageTitle-${page}`} variant="caption">
           {t(`page.${page}.title`)}
         </Typography>
       </Grid>
