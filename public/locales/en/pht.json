@@ -217,7 +217,7 @@
   "selected": {
     "label": "Selected"
   },
-  "sensivityCalculatorResults":{"noData": "No data available"},
+  "sensitivityCalculatorResults":{"noData": "No data available"},
   "specialCharacters": {
     "help": "Character exclamation mark ( ! )  not allowed",
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",

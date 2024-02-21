@@ -71,13 +71,17 @@ export default function ObservationTargetResultsDisplay({
           <Typography variant="subtitle2">Sensitivity:</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="body2">{getsensitivity()}</Typography>
+          <Typography variant="body2" id="sensitivityId">
+            {getsensitivity()}
+          </Typography>
         </Grid>
         <Grid item>
           <Typography variant="subtitle2">Weighting Factor:</Typography>
         </Grid>
         <Grid item>
-          <Typography variant="body2">{getweightingFactor()}</Typography>
+          <Typography variant="body2" id="weightingFactorId">
+            {getweightingFactor()}
+          </Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -120,7 +124,7 @@ export default function ObservationTargetResultsDisplay({
             results()
           ) : (
             <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-              <Typography>{t('sensivityCalculatorResults.noData')}</Typography>
+              <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>
             </Alert>
           )}
         </Grid>
