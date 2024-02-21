@@ -2,7 +2,7 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Router } from 'react-router-dom';
 import theme from '../../services/theme/theme';
 import AddProposal from './AddProposal';
 import { SKA_PHT_API_URL } from '../../utils/constants';
@@ -14,10 +14,14 @@ describe('<AddProposal />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <AddProposal />
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <BrowserRouter>
+              <AddProposal />
+            </BrowserRouter>
+          </ThemeProvider>
+        </StoreProvider>
       );
     });
   }
