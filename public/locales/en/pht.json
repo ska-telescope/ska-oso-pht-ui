@@ -27,7 +27,7 @@
     "telescope": {
       "1": {
         "array": {
-          "0":"DATA ERROR",
+          "0": "DATA ERROR",
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
@@ -38,7 +38,7 @@
       },
       "2": {
         "array": {
-          "0":"DATA ERROR",
+          "0": "DATA ERROR",
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
