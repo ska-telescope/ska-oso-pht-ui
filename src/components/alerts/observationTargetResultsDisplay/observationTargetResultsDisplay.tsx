@@ -29,7 +29,7 @@ export default function ObservationTargetResultsDisplay({
 
   const { t } = useTranslation('pht');
 
-  // Sens Cal API returns differenty format for Mid and Low endpoints
+  // Sens Cal API returns different format for Mid and Low endpoints
   const getsensitivity = () => {
     if (observation.telescope === 1) {
       return data?.calculate?.data?.result?.sensitivity;
