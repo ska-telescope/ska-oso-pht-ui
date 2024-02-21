@@ -14,14 +14,14 @@ describe('<DataPage />', () => {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <StoreProvider>
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <Router location="/" navigator={undefined}>
-          <SrcDataPage />
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <Router location="/" navigator={undefined}>
+              <SrcDataPage />
             </Router>
-        </ThemeProvider>
-          </StoreProvider>
-          );
+          </ThemeProvider>
+        </StoreProvider>
+      );
     });
   }
 });
