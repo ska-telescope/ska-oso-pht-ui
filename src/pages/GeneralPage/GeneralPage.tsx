@@ -92,14 +92,12 @@ export default function GeneralPage() {
     };
 
     const countWords = (text: string) => {
-      try {
-        return text
-          .trim()
-          .split(/\s+/)
-          .filter(Boolean).length;
-      } catch (e) {
-        console.log('Something went wrong', e);
-      }
+       if(text!== undefined){
+         return text
+           .trim()
+           .split(/\s+/)
+           .filter(Boolean).length;
+       }
     };
 
     const helperFunction = (title: string) =>
