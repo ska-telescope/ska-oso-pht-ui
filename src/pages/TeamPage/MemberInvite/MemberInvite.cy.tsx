@@ -2,15 +2,11 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import MockProposal from '../../../services/axios/getProposal/mockProposal';
 import theme from '../../../services/theme/theme';
-import {
-  DEFAULT_HELP,
-  TEAM_STATUS_TYPE_OPTIONS,
-  TEXT_ENTRY_PARAMS
-} from '../../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import MemberInvite from './MemberInvite';
+import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
+import { TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -21,12 +17,7 @@ describe('<MemberInvite />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <MemberInvite
-              help={DEFAULT_HELP}
-              proposal={MockProposal}
-              setHelp={cy.stub().as('setHelp')}
-              setProposal={cy.stub().as('setProposal')}
-            />
+            <MemberInvite />
           </ThemeProvider>
         </StoreProvider>
       );
@@ -40,12 +31,7 @@ describe('Content', () => {
       <StoreProvider>
         <ThemeProvider theme={theme(THEME_LIGHT)}>
           <CssBaseline />
-          <MemberInvite
-            help={DEFAULT_HELP}
-            proposal={MockProposal}
-            setHelp={cy.stub().as('setHelp')}
-            setProposal={cy.stub().as('setProposal')}
-          />
+          <MemberInvite />
         </ThemeProvider>
       </StoreProvider>
     );
@@ -53,7 +39,7 @@ describe('Content', () => {
 
   describe('Stars', () => {
     it('Displays filled star for PI', () => {
-      const index = MockProposal.team.findIndex(teamMember => teamMember.PI);
+      const index = GetMockProposal().team.findIndex(teamMember => teamMember.PI);
       if (index !== -1) {
         cy.get(
           `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
@@ -61,7 +47,7 @@ describe('Content', () => {
       }
     });
     it('Displays border star for non PI accepted invitation', () => {
-      const index = MockProposal.team.findIndex(
+      const index = GetMockProposal().team.findIndex(
         teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
       );
       if (index !== -1) {
@@ -71,7 +57,7 @@ describe('Content', () => {
       }
     });
     it('Displays no star for pending invitation', () => {
-      const index = MockProposal.team.findIndex(
+      const index = GetMockProposal().team.findIndex(
         teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
       );
       if (index !== -1) {

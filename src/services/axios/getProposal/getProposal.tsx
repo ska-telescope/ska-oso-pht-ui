@@ -103,7 +103,10 @@ function mapping(inRec: ProposalIN) {
   return outRec;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function GetMockProposal() {
+  return mapping(MockProposal);
+}
+
 async function GetProposal(id: number) {
   const apiUrl = SKA_PHT_API_URL;
   const URL_GET = `/proposal/${id}`;
@@ -117,7 +120,7 @@ async function GetProposal(id: number) {
   // TODO - Need to strip out the true from this if statement
 
   if (true || USE_LOCAL_DATA) {
-    return mapping(MockProposal);
+    return GetMockProposal();
   }
 
   try {
