@@ -13,12 +13,12 @@ describe('<PHT />', () => {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
         <StoreProvider>
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-          </StoreProvider>
-          );
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </StoreProvider>
+      );
     });
   }
 });
