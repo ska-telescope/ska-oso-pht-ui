@@ -103,7 +103,10 @@ function mapping(inRec: ProposalIN) {
   return outRec;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function GetMockProposal() {
+  return mapping(MockProposal);
+}
+
 async function GetProposal(id: string) {
   const apiUrl = SKA_PHT_API_URL;
   const URL_GET = `/proposals/`;
