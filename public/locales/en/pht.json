@@ -27,6 +27,7 @@
     "telescope": {
       "1": {
         "array": {
+          "0": "DATA ERROR",
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
@@ -37,6 +38,7 @@
       },
       "2": {
         "array": {
+          "0": "DATA ERROR",
           "1": "AA0.5",
           "2": "AA1",
           "3": "AA2",
@@ -150,8 +152,8 @@
     "help": "OBSERVATION TYPE HELP",
     "short": "Type",
     "0": "Not specified",
-    "1": "Zoom",
-    "2": "Continuum"
+    "1": "Continuum",
+    "2": "Zoom"
   },
   "pageStatus": {
     "toolTip": "This is the status of the page"

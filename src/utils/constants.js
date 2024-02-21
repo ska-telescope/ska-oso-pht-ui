@@ -85,12 +85,12 @@ export const OBSERVATION = {
     {
       value: 1,
       subarray: [
-        { value: 1 },
-        { value: 2 },
-        { value: 3 },
-        { value: 4 },
-        { value: 5 },
-        { value: 6 }
+        { value: 1, label: 'AA0.5' },
+        { value: 2, label: 'AA1' },
+        { value: 3, label: 'AA2' },
+        { value: 4, label: 'AA2 (core only)' },
+        { value: 5, label: 'AA*' },
+        { value: 6, label: 'AA* (core only)' }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -127,15 +127,15 @@ export const OBSERVATION = {
     {
       value: 2,
       subarray: [
-        { value: 1 },
-        { value: 2 },
-        { value: 3 },
-        { value: 4 },
-        { value: 5 },
-        { value: 6 },
-        { value: 7 },
-        { value: 8 },
-        { value: 9 }
+        { value: 1, label: 'AA0.5' },
+        { value: 2, label: 'AA1' },
+        { value: 3, label: 'AA2' },
+        { value: 4, label: 'AA2 (core only)' },
+        { value: 5, label: 'AA*' },
+        { value: 6, label: 'AA* (core only)' },
+        { value: 7, label: 'AA* (15-m antennas only)' },
+        { value: 8, label: 'AA4' },
+        { value: 9, label: 'AA4 (15-m antennas only)' }
       ],
       robust: [{ value: 1 }],
       band: [{ label: 'Not applicable', value: 0 }],
