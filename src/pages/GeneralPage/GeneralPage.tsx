@@ -92,7 +92,8 @@ export default function GeneralPage() {
     };
 
     const countWords = (text: string) => {
-      return text?.trim()
+      return text
+        ?.trim()
         .split(/\s+/)
         .filter(Boolean).length;
     };
