@@ -89,6 +89,7 @@ function mapping(inRec: ProposalIN) {
   console.log('getProposal mapping inRec', inRec);
 
   outRec.id = inRec.prsl_id;
+  console.log('getProposal mapping outRec', outRec);
   outRec.title = inRec.proposal_info.title;
   outRec.proposalType = getProposalType(inRec.proposal_info.proposal_type);
   outRec.proposalSubType = getProposalSubTypeType(inRec.proposal_info.proposal_type);

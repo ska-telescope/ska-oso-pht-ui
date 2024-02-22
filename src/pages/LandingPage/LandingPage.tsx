@@ -143,7 +143,7 @@ export default function LandingPage() {
     setOpenDeleteDialog(false);
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
+  const canEdit = (e: { row: { status: string } }) => e.row.status === 'draft';
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === 'Draft' || e.row.status === 'Withdrawn';
