@@ -31,7 +31,7 @@ export type ProposalIN = {
   };
 };
 
-type Proposal = {
+export type Proposal = {
   id: string;
   title: string;
   proposalType: number;
