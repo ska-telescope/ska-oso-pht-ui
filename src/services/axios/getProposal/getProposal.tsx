@@ -26,7 +26,7 @@ const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }
 
 const getTeamMembers = (inValue: TeamMemberIN[]) => {
   let results = [];
-  console.log('getProposal getTeamMembers inValue', inValue)
+  console.log('getProposal getTeamMembers inValue', inValue);
   for (let i = 0; i < inValue.length; i++) {
     results.push({
       id: i + 1,
@@ -102,8 +102,7 @@ function mapping(inRec: ProposalIN) {
   outRec.technicalLoadStatus = false;
   outRec.pipeline = '';
 
-
-  console.log('getProposal mapping outRec', outRec)
+  console.log('getProposal mapping outRec', outRec);
   return outRec;
 }
 
@@ -127,12 +126,12 @@ async function GetProposal(id: string) {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
-    console.log('axios GetProposal result', result)
+    console.log('axios GetProposal result', result);
     return typeof result === 'undefined'
       ? { error: 'error.API_UNKNOWN_ERROR' }
       : mapping(result.data);
   } catch (e) {
-    console.log('getProposal error')
+    console.log('getProposal error');
     return { error: e.message };
   }
 }
