@@ -84,6 +84,10 @@ const getObservations = (inValue: SP[]) => {
 
 function mapping(inRec: ProposalIN) {
   let outRec = EMPTY_PROPOSAL_TEMPLATE;
+
+  console.log('getProposal mapping outRec', outRec);
+  console.log('getProposal mapping inRec', inRec);
+
   outRec.id = inRec.prsl_id;
   outRec.title = inRec.proposal_info.title;
   outRec.proposalType = getProposalType(inRec.proposal_info.proposal_type);

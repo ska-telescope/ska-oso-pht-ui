@@ -40,6 +40,7 @@ export const helpers = {
   transform: {
     // trim undefined and empty properties of an object
     trimObject(obj) {
+      console.log('helpers transform obj', obj);
       Object.keys(obj).forEach(key => {
         const value = obj[key];
         if (value === undefined || value === '') {
