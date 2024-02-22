@@ -29,9 +29,9 @@ const MockProposal = {
         declination_unit: 'dd:mm:ss'
       }
     ],
-    investigator: [
+    investigators: [
       {
-        investigator_id: 'user1',
+        investigator_id: 1,
         first_name: 'Van Loo',
         last_name: 'Cheng',
         email: 'ask.lop@map.com',
@@ -40,7 +40,7 @@ const MockProposal = {
         principal_investigator: true
       },
       {
-        investigator_id: 'user2',
+        investigator_id: 2,
         first_name: 'Van Loo',
         last_name: 'Cheng',
         country: 'Lagoon',

@@ -101,7 +101,7 @@ function mapping(inRec: ProposalIN) {
   outRec.targetOption = 1;
   outRec.targets = getTargets(inRec.proposal_info.targets);
   outRec.observations = getObservations(inRec.proposal_info.science_programmes);
-  // targetObservation: TargetObservation[];
+  outRec.targetObservation = [];
   outRec.technicalPDF = null;
   outRec.technicalLoadStatus = false;
   outRec.pipeline = '';
