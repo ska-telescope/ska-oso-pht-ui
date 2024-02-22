@@ -111,7 +111,7 @@ export const helpers = {
             right_ascension_unit: '', // TODO: confirm what units should be expected
             declination_unit: '' // TODO: confirm what units should be expected
           })),
-          investigator: proposal.team?.map(teamMember => ({
+          investigators: proposal.team?.map(teamMember => ({
             investigator_id: teamMember.id?.toString(),
             first_name: teamMember?.firstName,
             last_name: teamMember?.lastName,

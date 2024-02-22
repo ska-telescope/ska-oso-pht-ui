@@ -21,12 +21,12 @@ export type ProposalIN = {
     cycle: string;
     abstract: string;
     proposal_type: {
-      type: string;
+      main_type: string;
       sub_type: string;
     };
     science_category: string;
     targets: TargetIN[];
-    investigator: TeamMemberIN[];
+    investigators: TeamMemberIN[];
     science_programmes: SP[];
   };
 };

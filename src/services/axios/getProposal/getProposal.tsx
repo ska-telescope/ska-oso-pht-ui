@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  EMPTY_PROPOSAL,
+  EMPTY_PROPOSAL_TEMPLATE,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -13,20 +13,21 @@ import { ProposalIN, SP } from '../../types/proposal';
 import { TeamMemberIN } from '../../types/teamMember';
 import { TargetIN } from 'services/types/target';
 
-const getProposalType = (inValue: { type: string; sub_type: string }) => {
-  const rec = Projects.find(p => p.title === inValue.type);
+const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
+  const rec = Projects.find(p => p.title === inValue.main_type);
   return rec.id;
 };
 
-const getProposalSubTypeType = (inValue: { type: string; sub_type: string }) => {
-  const rec = Projects.find(p => p.title === inValue.type);
+const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
+  const rec = Projects.find(p => p.title === inValue.main_type);
   const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
   return rec2.id;
 };
 
 const getTeamMembers = (inValue: TeamMemberIN[]) => {
   let results = [];
-  for (let i = 0; i < inValue.length - 1; i++) {
+  console.log('getProposal getTeamMembers inValue', inValue)
+  for (let i = 0; i < inValue.length; i++) {
     results.push({
       id: i + 1,
       firstName: inValue[i].first_name,
@@ -82,12 +83,12 @@ const getObservations = (inValue: SP[]) => {
 };
 
 function mapping(inRec: ProposalIN) {
-  let outRec = EMPTY_PROPOSAL;
+  let outRec = EMPTY_PROPOSAL_TEMPLATE;
   outRec.id = inRec.prsl_id;
   outRec.title = inRec.proposal_info.title;
   outRec.proposalType = getProposalType(inRec.proposal_info.proposal_type);
   outRec.proposalSubType = getProposalSubTypeType(inRec.proposal_info.proposal_type);
-  outRec.team = getTeamMembers(inRec.proposal_info.investigator);
+  outRec.team = getTeamMembers(inRec.proposal_info.investigators);
   outRec.abstract = inRec.proposal_info.abstract;
   outRec.category = getCategory(inRec.proposal_info.science_category);
   outRec.subCategory = getSubCategory();
@@ -100,6 +101,9 @@ function mapping(inRec: ProposalIN) {
   outRec.technicalPDF = null;
   outRec.technicalLoadStatus = false;
   outRec.pipeline = '';
+
+
+  console.log('getProposal mapping outRec', outRec)
   return outRec;
 }
 
@@ -123,10 +127,12 @@ async function GetProposal(id: string) {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
+    console.log('axios GetProposal result', result)
     return typeof result === 'undefined'
       ? { error: 'error.API_UNKNOWN_ERROR' }
-      : mapping(result.data.proposal_info);
+      : mapping(result.data);
   } catch (e) {
+    console.log('getProposal error')
     return { error: e.message };
   }
 }

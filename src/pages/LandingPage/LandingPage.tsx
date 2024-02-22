@@ -77,6 +77,7 @@ export default function LandingPage() {
 
     const proposalId = getProposal().id ? getProposal().id : 'fake-prsl-id'; // TODO replace with id from the list, currently using previously created prsl_id
     const response = await GetProposal(proposalId);
+    console.log('getTheProposal response', response)
     if (response?.error) {
       setAxiosViewError(response.error);
       updateAppContent1(null);
@@ -93,10 +94,12 @@ export default function LandingPage() {
   };
 
   const goToTitlePage = () => {
+    console.log('goToTitlePage')
     navigate(NAV[0]);
   };
 
   const viewIconClicked = async () => {
+    console.log('viewIconClicked')
     if (await getTheProposal()) {
       setOpenViewDialog(true);
     } else {
@@ -105,6 +108,7 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async () => {
+    console.log('editIconClicked')
     if (await getTheProposal()) {
       goToTitlePage();
     } else {
@@ -113,6 +117,7 @@ export default function LandingPage() {
   };
 
   const cloneIconClicked = async () => {
+    console.log('cloneIconClicked')
     if (await getTheProposal()) {
       setOpenCloneDialog(true);
     } else {

@@ -377,3 +377,24 @@ export const DEFAULT_PI = {
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
 };
+
+export let EMPTY_PROPOSAL_TEMPLATE = {
+  id: null,
+  title: '',
+  proposalType: 0,
+  proposalSubType: 0,
+  cycle: '',
+  team: [],
+  abstract: '',
+  category: 0,
+  subCategory: 0,
+  sciencePDF: null,
+  scienceLoadStatus: false,
+  targetOption: 1,
+  targets: [],
+  observations: [],
+  targetObservation: [],
+  technicalPDF: null,
+  technicalLoadStatus: false,
+  pipeline: ''
+};
