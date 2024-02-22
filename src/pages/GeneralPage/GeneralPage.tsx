@@ -92,12 +92,9 @@ export default function GeneralPage() {
     };
 
     const countWords = (text: string) => {
-      if (text !== undefined) {
-        return text
-          .trim()
-          .split(/\s+/)
-          .filter(Boolean).length;
-      }
+      return text?.trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
     };
 
     const helperFunction = (title: string) =>

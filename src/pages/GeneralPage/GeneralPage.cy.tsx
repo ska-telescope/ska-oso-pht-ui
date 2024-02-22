@@ -32,7 +32,6 @@ describe('<GeneralPage />', () => {
       cy.mount(
         <StoreProvider>
           <Router location="/" navigator={undefined}>
-            s
             <GeneralPage />
           </Router>
         </StoreProvider>
