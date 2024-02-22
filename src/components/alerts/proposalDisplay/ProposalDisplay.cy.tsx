@@ -32,7 +32,9 @@ describe('<ProposalDisplay />', () => {
 
 describe('Content', () => {
   beforeEach(() => {
-    cy.stub().as('getProposal').returns(GetMockProposal);
+    cy.stub()
+      .as('getProposal')
+      .returns(GetMockProposal);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -44,7 +46,7 @@ describe('Content', () => {
           />
         </Router>
       </StoreProvider>
-  );
+    );
   });
   it('verify content', () => {
     cy.get('[data-testid="button.closeButton"]').click();
@@ -67,10 +69,10 @@ describe('Content', () => {
 //       </StoreProvider>
 //     );
 //   });
-  // it('displays request message in Alert component on request, Request Successful', () => {
-  //   cy.get('[data-testid="ConfirmButton"]').click();
-  //   cy.get('[data-testid="alertSaveErrorId"]')
-  //     .should('be.visible')
-  //     .should('contain', 'Success');
-  // });
+// it('displays request message in Alert component on request, Request Successful', () => {
+//   cy.get('[data-testid="ConfirmButton"]').click();
+//   cy.get('[data-testid="alertSaveErrorId"]')
+//     .should('be.visible')
+//     .should('contain', 'Success');
+// });
 // });

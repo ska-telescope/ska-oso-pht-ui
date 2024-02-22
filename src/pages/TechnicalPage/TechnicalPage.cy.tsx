@@ -5,6 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import TechnicalPage from './TechnicalPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -15,7 +16,9 @@ describe('<TechnicalPage />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <TechnicalPage />
+            <Router location="/" navigator={undefined}>
+              <TechnicalPage />
+            </Router>
           </ThemeProvider>
         </StoreProvider>
       );
@@ -24,7 +27,9 @@ describe('<TechnicalPage />', () => {
   it(`Verify upload file elements`, () => {
     cy.mount(
       <StoreProvider>
-        <TechnicalPage />
+        <Router location="/" navigator={undefined}>
+          <TechnicalPage />
+        </Router>
       </StoreProvider>
     );
     // cy.get('[data-testid="uploadPdfLabel"]').contains('Upload PDF');
@@ -34,7 +39,9 @@ describe('<TechnicalPage />', () => {
   it(`Verify pdf preview elements`, () => {
     cy.mount(
       <StoreProvider>
-        <TechnicalPage />
+        <Router location="/" navigator={undefined}>
+          <TechnicalPage />
+        </Router>
       </StoreProvider>
     );
     // cy.get('[data-testid="pdfPreviewLabel"]').contains('PDF Preview');
