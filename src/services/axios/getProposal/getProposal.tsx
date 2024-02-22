@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  EMPTY_PROPOSAL_TEMPLATE,
+  EMPTY_PROPOSAL,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -83,7 +83,7 @@ const getObservations = (inValue: SP[]) => {
 };
 
 function mapping(inRec: ProposalIN) {
-  let outRec = EMPTY_PROPOSAL_TEMPLATE;
+  let outRec = EMPTY_PROPOSAL;
 
   console.log('getProposal mapping outRec', outRec);
   console.log('getProposal mapping inRec', inRec);
@@ -125,7 +125,7 @@ async function GetProposal(id: string) {
   };
 
   if (USE_LOCAL_DATA) {
-    return mapping(MockProposal);
+    return GetMockProposal();
   }
 
   try {

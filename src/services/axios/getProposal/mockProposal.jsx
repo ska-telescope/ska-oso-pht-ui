@@ -6,9 +6,9 @@ const MockProposal = {
   proposal_info: {
     title: 'The Milky Way View Backend Format',
     cycle: 'SKA_5000_2023',
-    abstract: 'Prettyllll llklkl',
-    proposal_type: { type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
-    science_category: 'gjhjkhklj',
+    abstract: 'This is the Abstract',
+    proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+    science_category: 'Science Category',
     targets: [
       {
         name: 'M28',

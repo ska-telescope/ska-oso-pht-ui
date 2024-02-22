@@ -1,53 +1,145 @@
 const MockProposals = [
   {
-    id: 'SKA2388',
-    title: 'The Milky Way View',
-    cycle: 'SKA_5000_2023',
-    pi: 'Van Loo Cheng',
-    cpi: 'Keeper Sung',
-    status: 'Submitted',
-    lastUpdated: '2023-12-21 00:00:15',
-    telescope: 'LOW'
+    prsl_id: 1,
+    status: 'draft',
+    submitted_by: '',
+    submitted_on: '',
+    proposal_info: {
+      title: 'The Milky Way View',
+      cycle: 'SKA_5000_2023',
+      abstract: 'Prettyllll llklkl',
+      proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+      science_category: 'gjhjkhklj',
+      targets: [
+        {
+          name: 'M28',
+          right_ascension: '22:33:55',
+          declination: '22:33:55',
+          velocity: 34.6,
+          velocity_unit: 'km/s',
+          right_ascension_unit: 'degrees',
+          declination_unit: 'dd:mm:ss'
+        },
+        {
+          name: 'M1',
+          right_ascension: '22:33:55',
+          declination: '22:33:55',
+          velocity: 34.6,
+          velocity_unit: 'km/s',
+          right_ascension_unit: 'hh:mm:ss',
+          declination_unit: 'dd:mm:ss'
+        }
+      ],
+      investigator: [
+        {
+          investigator_id: 1,
+          first_name: 'Van Loo',
+          last_name: 'Cheng',
+          email: 'ask.lop@map.com',
+          country: 'Lagoon',
+          organization: 'University of Free',
+          for_phd: true,
+          principal_investigator: true
+        },
+        {
+          investigator_id: 2,
+          first_name: 'Van Loo',
+          last_name: 'Cheng',
+          email: 'ask.lop@map.com',
+          country: 'Lagoon',
+          organization: 'University of Free',
+          for_phd: false,
+          principal_investigator: false
+        }
+      ],
+      science_programmes: [
+        {
+          science_goal_id: 'goal1',
+          array: 'MID',
+          subarray: 'subarray 1',
+          linked_sources: ['M1', 'M2'],
+          observation_type: 'Continuum'
+        },
+        {
+          science_goal_id: 'goal2',
+          array: 'MID',
+          subarray: 'subarray 1',
+          linked_sources: ['M1', 'M2'],
+          observation_type: 'Continuum'
+        }
+      ]
+    }
   },
   {
-    id: 'SKA2311',
-    title: 'The Milky Way View',
-    cycle: 'SKA_5000_2022',
-    pi: 'Van Loo Cheng',
-    cpi: '',
-    status: 'Submitted',
-    lastUpdated: '2023-12-20 00:00:15',
-    telescope: 'LOW'
-  },
-  {
-    id: 'SKA2399',
-    title: 'The Giant HII in the Orion',
-    cycle: 'SKA_5000_2023',
-    pi: 'Keeper Sung',
-    cpi: 'Van Loo Cheng',
-    status: 'Accepted',
-    lastUpdated: '2023-12-21 00:00:15',
-    telescope: 'MID'
-  },
-  {
-    id: 'SKA2319',
-    title: 'The Dancing Star',
-    cycle: 'SKA_5000_2023',
-    pi: 'Precious Luthan',
-    cpi: '',
-    status: 'Draft',
-    lastUpdated: '2023-12-21 00:00:15',
-    telescope: 'MID'
-  },
-  {
-    id: 'SKA2317',
-    title: 'Ionization in the Spiral galaxy',
-    cycle: 'SKA_5000_2023',
-    pi: 'Ma James Nuka',
-    cpi: '',
-    status: 'Withdrawn',
-    lastUpdated: '2023-12-21 00:00:15',
-    telescope: 'LOW'
+    prsl_id: 2,
+    status: 'draft',
+    submitted_by: '',
+    submitted_on: '',
+    proposal_info: {
+      title: 'The Milky Way View',
+      cycle: 'SKA_5000_2023',
+      abstract: 'Prettyllll llklkl',
+      proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+      science_category: 'gjhjkhklj',
+      targets: [
+        {
+          name: 'M28',
+          right_ascension: '22:33:55',
+          declination: '22:33:55',
+          velocity: 34.6,
+          velocity_unit: 'km/s',
+          right_ascension_unit: 'degrees',
+          declination_unit: 'dd:mm:ss'
+        },
+        {
+          name: 'M1',
+          right_ascension: '22:33:55',
+          declination: '22:33:55',
+          velocity: 34.6,
+          velocity_unit: 'km/s',
+          right_ascension_unit: 'hh:mm:ss',
+          declination_unit: 'dd:mm:ss'
+        }
+      ],
+      investigator: [
+        {
+          investigator_id: 1,
+          first_name: 'Van Loo',
+          last_name: 'Cheng',
+          email: 'ask.lop@map.com',
+          country: 'Lagoon',
+          organization: 'University of Free',
+          for_phd: true,
+          principal_investigator: true
+        },
+        {
+          investigator_id: 2,
+          first_name: 'Van Loo',
+          last_name: 'Cheng',
+          email: 'ask.lop@map.com',
+          country: 'Lagoon',
+          organization: 'University of Free',
+          for_phd: false,
+          principal_investigator: false
+        }
+      ],
+      science_programmes: [
+        {
+          science_goal_id: 'goal1',
+          array: 'MID',
+          subarray: 'subarray 1',
+          linked_sources: ['M1', 'M2'],
+          observation_type: 'Continuum'
+        },
+        {
+          science_goal_id: 'goal2',
+          array: 'MID',
+          subarray: 'subarray 1',
+          linked_sources: ['M1', 'M2'],
+          observation_type: 'Continuum'
+        }
+      ]
+    }
   }
 ];
 
