@@ -1,97 +1,69 @@
-const TEAM_STATUS_TYPE_OPTIONS = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  rejected: 'Rejected'
-};
-
 const MockProposal = {
-  id: 1,
-  title: 'MOCK PROPOSAL',
-  proposalType: 1,
-  proposalSubType: 4,
-  cycle: 'SKA_5000_2023',
-  team: [
-    {
-      id: 1,
-      firstName: 'Van Loo',
-      lastName: 'Cheng',
-      email: 'ask.lop@map.com',
-      country: 'Lagoon',
-      affiliation: 'University of Free Town',
-      phdThesis: false,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      pi: true
-    }
-  ],
-  abstract: '',
-  category: 1,
-  subCategory: 1,
-  sciencePDF: null,
-  scienceLoadStatus: false,
-  targetOption: 1,
-  targets: [
-    {
-      id: 1,
-      name: 'Target 1',
-      ra: '01:00:00',
-      dec: '00:00:00',
-      vel: '82.48'
-    },
-    {
-      id: 2,
-      name: 'Target 2',
-      ra: '03:00:00',
-      dec: '-10:00:00',
-      vel: '82.48'
-    },
-    {
-      id: 3,
-      name: 'Target 3',
-      ra: '05:30:00',
-      dec: '-10:00:00',
-      vel: '82.48'
-    }
-  ],
-  observations: [
-    {
-      id: 1,
-      telescope: 1,
-      subarray: 1,
-      type: 2
-    },
-    {
-      id: 2,
-      telescope: 1,
-      subarray: 2,
-      type: 1
-    },
-    {
-      id: 3,
-      telescope: 2,
-      subarray: 2,
-      type: 1
-    },
-    {
-      id: 4,
-      telescope: 2,
-      subarray: 3,
-      type: 2
-    },
-    {
-      id: 5,
-      telescope: 2,
-      subarray: 4,
-      type: 1
-    }
-  ],
-  targetObservation: [
-    { targetId: 1, observationId: 1 },
-    { targetId: 3, observationId: 2 },
-    { targetId: 3, observationId: 1 }
-  ],
-  technicalPDF: null,
-  technicalLoadStatus: false,
-  pipeline: ''
+  prsl_id: '',
+  status: 'draft',
+  submitted_by: '',
+  submitted_on: '',
+  proposal_info: {
+    title: 'The Milky Way View Backend Format',
+    cycle: 'SKA_5000_2023',
+    abstract: 'Prettyllll llklkl',
+    proposal_type: { type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+    science_category: 'gjhjkhklj',
+    targets: [
+      {
+        name: 'M28',
+        right_ascension: '22:33:55',
+        declination: '22:33:55',
+        velocity: 34.6,
+        velocity_unit: 'km/s',
+        right_ascension_unit: 'degrees',
+        declination_unit: 'dd:mm:ss'
+      },
+      {
+        name: 'M1',
+        right_ascension: '22:33:55',
+        declination: '22:33:55',
+        velocity: 34.6,
+        velocity_unit: 'km/s',
+        right_ascension_unit: 'hh:mm:ss',
+        declination_unit: 'dd:mm:ss'
+      }
+    ],
+    investigator: [
+      {
+        investigator_id: 'user1',
+        first_name: 'Van Loo',
+        last_name: 'Cheng',
+        email: 'ask.lop@map.com',
+        organization: 'University of Free',
+        for_phd: true,
+        principal_investigator: true
+      },
+      {
+        investigator_id: 'user2',
+        first_name: 'Van Loo',
+        last_name: 'Cheng',
+        country: 'Lagoon',
+        organization: 'University of Free',
+        for_phd: false,
+        principal_investigator: false
+      }
+    ],
+    science_programmes: [
+      {
+        array: 'MID',
+        subarray: 'subarray 1',
+        linked_sources: ['M1', 'M2'],
+        observation_type: 'Continuum'
+      },
+      {
+        array: 'MID',
+        subarray: 'subarray 1',
+        linked_sources: ['M1', 'M2'],
+        observation_type: 'Continuum'
+      }
+    ]
+  }
 };
 
 export default MockProposal;
