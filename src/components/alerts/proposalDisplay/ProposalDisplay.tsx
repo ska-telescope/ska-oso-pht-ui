@@ -135,7 +135,7 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('members.empty')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().team.map((rec: TeamMember) => (
+          {getProposal().team?.map((rec: TeamMember) => (
             <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
@@ -199,7 +199,7 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targets.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targets.map((rec: Target) => (
+          {getProposal().targets?.map((rec: Target) => (
             <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
@@ -230,7 +230,7 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('label.observations')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().observations.map((rec: Observation) => (
+          {getProposal().observations?.map((rec: Observation) => (
             <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
@@ -260,7 +260,7 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('label.targetSelection')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation.map(
+          {getProposal().targetObservation?.map(
             (rec: { targetId: number; observationId: number }) => (
               <Grid container direction="row" justifyContent="space-between" alignItems="center">
                 <Grid item xs={2}>
