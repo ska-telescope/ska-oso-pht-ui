@@ -6,12 +6,13 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
-import { Proposal } from '../../../services/types/proposal';
+import Proposal from '../../../services/types/proposal';
 import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../services/types/teamMember';
 import Target from '../../../services/types/target';
 import Observation from '../../../services/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -47,21 +48,23 @@ export default function ProposalDisplay({
 
   const proposalType = () => {
     const pt = getProposal().proposalType;
-    const pName = !pt || pt < 1 ? t('label.noneSelected') : Projects[pt - 1].title;
+    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : Projects[pt - 1].title;
     const st = getProposal().proposalSubType;
     const sName =
       !pt || pt < 1 || !st || st < 1
-        ? t('label.noneSelected')
+        ? t('displayProposal.noneSelected')
         : Projects[pt - 1].subProjects[st - 1].title;
     return `${pName} / ${sName}`;
   };
 
   const category = () => {
     const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('label.noneSelected') : t(`scienceCategory.${pt}`);
+    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : t(`scienceCategory.${pt}`);
     const st = getProposal().subCategory;
     const sName =
-      !pt || pt < 1 || !st || st < 1 ? t('label.noneSelected') : t(`scienceSubCategory.${st}`);
+      !pt || pt < 1 || !st || st < 1
+        ? t('displayProposal.noneSelected')
+        : t(`scienceSubCategory.${st}`);
     return `${pName} / ${sName}`;
   };
 
@@ -316,35 +319,42 @@ export default function ProposalDisplay({
       id="alert-dialog-proposal-change"
     >
       {pageTitle(t('page.12.title'))}
-      <DialogContent>
-        <Grid
-          p={2}
-          container
-          direction="column"
-          alignItems="space-evenly"
-          justifyContent="space-around"
-        >
-          {sectionTitle()}
-          {titleContent()}
-          {sectionTitle()}
-          {teamContent()}
-          {sectionTitle()}
-          {generalContent()}
-          {sectionTitle()}
-          {scienceContent()}
-          {sectionTitle()}
-          {targetContent()}
-          {sectionTitle()}
-          {observationsContent()}
-          {sectionTitle()}
-          {targetObservationContent()}
-          {sectionTitle()}
-          {technicalContent()}
-          {sectionTitle()}
-          {dataContent()}
-        </Grid>
-      </DialogContent>
-      <DialogActions>{pageFooter()}</DialogActions>
+      {getProposal() === null && (
+        <Alert testId="timedAlertId" color={AlertColorTypes.Warning}>
+          <Typography>{t('displayProposal.warning')}</Typography>
+        </Alert>
+      )}
+      {getProposal() !== null && (
+        <DialogContent>
+          <Grid
+            p={2}
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="space-around"
+          >
+            {sectionTitle()}
+            {titleContent()}
+            {sectionTitle()}
+            {teamContent()}
+            {sectionTitle()}
+            {generalContent()}
+            {sectionTitle()}
+            {scienceContent()}
+            {sectionTitle()}
+            {targetContent()}
+            {sectionTitle()}
+            {observationsContent()}
+            {sectionTitle()}
+            {targetObservationContent()}
+            {sectionTitle()}
+            {technicalContent()}
+            {sectionTitle()}
+            {dataContent()}
+          </Grid>
+        </DialogContent>
+      )}
+      {getProposal() !== null && <DialogActions>{pageFooter()}</DialogActions>}
     </Dialog>
   );
 }
