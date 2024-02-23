@@ -36,7 +36,6 @@ export default function LandingPage() {
     updateAppContent3
   } = storageObject.useStore();
 
-  const getProposal = () => application.content2 as Proposal;
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -49,6 +48,10 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     let isMounted = true;
+
+    // Empty previous proposal
+    updateAppContent2(null);
+
     const fetchData = async () => {
       const response = await GetProposalList();
       if (isMounted) {
@@ -71,12 +74,11 @@ export default function LandingPage() {
     };
   }, []);
 
-  const getTheProposal = async () => {
+  const getTheProposal = async (id?:string = 'fake_prsl_id') => {
     helpComponent('');
     clearApp();
 
-    const proposalId = getProposal().id ? getProposal().id : 'fake-prsl-id'; // TODO replace with id from the list, currently using previously created prsl_id
-    const response = await GetProposal(proposalId);
+    const response = await GetProposal(id);
     console.log('getTheProposal response', response);
     if (response?.error) {
       setAxiosViewError(response.error);
@@ -107,9 +109,11 @@ export default function LandingPage() {
     }
   };
 
-  const editIconClicked = async () => {
+  const editIconClicked = async (id: string) => {
     console.log('editIconClicked');
-    if (await getTheProposal()) {
+    
+    console.log('editIconClicked id',id)
+    if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
       alert('SOME ERROR WAS ENCOUNTERED');
@@ -165,7 +169,7 @@ export default function LandingPage() {
       renderCell: (e: never) => (
         <>
           <EditIcon
-            onClick={editIconClicked}
+            onClick={() => editIconClicked(e.row.id)}
             disabled={!canEdit(e)}
             toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
           />

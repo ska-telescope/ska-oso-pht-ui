@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   EMPTY_PROPOSAL,
+  EMPTY_PROPOSAL_TEMPLATE,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -83,7 +84,7 @@ const getObservations = (inValue: SP[]) => {
 };
 
 function mapping(inRec: ProposalIN) {
-  let outRec = EMPTY_PROPOSAL;
+  let outRec = EMPTY_PROPOSAL_TEMPLATE;
 
   console.log('getProposal mapping outRec', outRec);
   console.log('getProposal mapping inRec', inRec);

@@ -32,7 +32,8 @@ export function GetMockProposalList() {
 
 async function GetProposalList() {
   const apiUrl = SKA_PHT_API_URL;
-  const URL_LIST = '/proposal/list';
+  const LIST_QUERY = 'DefaultUser'
+  const URL_LIST = `/proposals/list/${LIST_QUERY}`;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -40,17 +41,13 @@ async function GetProposalList() {
     }
   };
 
-  // TODO - Need to strip out the true from this if statement
-
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
 
-  // TODO: create a conversion function to convert backend format proposals list to display in front-end
-
   try {
     const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return { error: e.message };
   }
