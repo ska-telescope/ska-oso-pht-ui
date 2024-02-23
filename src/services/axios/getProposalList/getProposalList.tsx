@@ -42,7 +42,7 @@ async function GetProposalList() {
 
   // TODO - Need to strip out the true from this if statement
 
-  if (true || USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
 

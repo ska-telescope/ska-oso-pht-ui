@@ -12,7 +12,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
 import theme from '../services/theme/theme';
-import { USE_LOCAL_DATA } from '../utils/constants';
+import { USE_LOCAL_DATA, SKA_PHT_API_URL } from '../utils/constants';
 
 const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
@@ -28,6 +28,13 @@ function App() {
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? 'LOCAL DATA' : '';
+
+  React.useEffect(()=>{
+    console.log('App process.env', process.env)
+    console.log('App USE_LOCAL_DATA', USE_LOCAL_DATA)
+    console.log('App SKA_PHT_API_URL', SKA_PHT_API_URL)
+    
+  }, [])
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>
