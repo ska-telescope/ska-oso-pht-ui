@@ -32,7 +32,7 @@ export function GetMockProposalList() {
 
 async function GetProposalList() {
   const apiUrl = SKA_PHT_API_URL;
-  const LIST_QUERY = 'DefaultUser'
+  const LIST_QUERY = 'DefaultUser';
   const URL_LIST = `/proposals/list/${LIST_QUERY}`;
   const config = {
     headers: {

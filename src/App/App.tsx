@@ -29,12 +29,11 @@ function App() {
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? 'LOCAL DATA' : '';
 
-  React.useEffect(()=>{
-    console.log('App process.env', process.env)
-    console.log('App USE_LOCAL_DATA', USE_LOCAL_DATA)
-    console.log('App SKA_PHT_API_URL', SKA_PHT_API_URL)
-    
-  }, [])
+  React.useEffect(() => {
+    console.log('App process.env', process.env);
+    console.log('App USE_LOCAL_DATA', USE_LOCAL_DATA);
+    console.log('App SKA_PHT_API_URL', SKA_PHT_API_URL);
+  }, []);
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>

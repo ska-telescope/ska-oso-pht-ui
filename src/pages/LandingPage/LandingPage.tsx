@@ -28,14 +28,12 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const {
-    application,
     clearApp,
     helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent3
   } = storageObject.useStore();
-
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -74,7 +72,7 @@ export default function LandingPage() {
     };
   }, []);
 
-  const getTheProposal = async (id?:string = 'fake_prsl_id') => {
+  const getTheProposal = async (id?: string = 'fake_prsl_id') => {
     helpComponent('');
     clearApp();
 
@@ -111,8 +109,8 @@ export default function LandingPage() {
 
   const editIconClicked = async (id: string) => {
     console.log('editIconClicked');
-    
-    console.log('editIconClicked id',id)
+
+    console.log('editIconClicked id', id);
     if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
