@@ -13,7 +13,8 @@ export default function AddProposalButton() {
     navigate(PATH[1]);
   };
 
-  const title = t('button.addProposal');
+  const title = t('addProposal.label');
+  const toolTip = t('addProposal.toolTip');
 
   return (
     <Button
@@ -23,6 +24,7 @@ export default function AddProposalButton() {
       label={title}
       onClick={ClickFunction}
       testId={`${title}Button`}
+      toolTip={toolTip}
       variant={ButtonVariantTypes.Contained}
     />
   );
