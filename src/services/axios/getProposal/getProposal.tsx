@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  EMPTY_PROPOSAL,
   GENERAL,
   OBSERVATION,
   Projects,
