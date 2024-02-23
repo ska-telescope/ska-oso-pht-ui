@@ -5,6 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import SciencePage from './SciencePage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -15,7 +16,9 @@ describe('<ScienceContent />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <SciencePage />
+            <Router location="/" navigator={undefined}>
+              <SciencePage />
+            </Router>
           </ThemeProvider>
         </StoreProvider>
       );
@@ -24,19 +27,23 @@ describe('<ScienceContent />', () => {
   it(`Verify upload file elements`, () => {
     cy.mount(
       <StoreProvider>
-        <SciencePage />
+        <Router location="/" navigator={undefined}>
+          <SciencePage />
+        </Router>
       </StoreProvider>
     );
-    // cy.get('[data-testid="uploadPdfLabel"]').contains('Upload PDF');
-    // cy.get('[data-testid="SearchIcon"]').click();
+    cy.get('[data-testid="fileUpload,ChooseButton"]').contains('Choose file');
+    cy.get('[data-testid="SearchIcon"]').click();
   });
 
   it(`Verify pdf preview elements`, () => {
     cy.mount(
       <StoreProvider>
-        <SciencePage />
+        <Router location="/" navigator={undefined}>
+          <SciencePage />
+        </Router>
       </StoreProvider>
     );
-    // cy.get('[data-testid="pdfPreviewLabel"]').contains('PDF Preview');
+    cy.get('[data-testid="pdfPreviewLabel"]').contains('pdfPreview');
   });
 });

@@ -53,7 +53,7 @@ export default function TeamPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().team.length > 0 ? 1 : 0;
+    const count = getProposal().team?.length > 0 ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
@@ -163,7 +163,7 @@ export default function TeamPage() {
           justifyContent="space-around"
         >
           <Grid item md={5} xs={11}>
-            {getRows().length > 0 && (
+            {getRows()?.length > 0 && (
               <DataGrid
                 rows={getRows()}
                 columns={extendedColumns}
@@ -174,7 +174,7 @@ export default function TeamPage() {
                 testId="teamTableId"
               />
             )}
-            {getRows().length === 0 && (
+            {getRows()?.length === 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Error}
                 fontSize={20}
