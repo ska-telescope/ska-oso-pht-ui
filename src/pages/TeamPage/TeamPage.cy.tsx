@@ -19,8 +19,8 @@ describe('<TeamPage />', () => {
           <ThemeProvider theme={theme(THEME_LIGHT)}>
             <CssBaseline />
             <Router location="/" navigator={undefined}>
-            <TeamPage />
-              </Router>
+              <TeamPage />
+            </Router>
           </ThemeProvider>
         </StoreProvider>
       );
@@ -32,9 +32,9 @@ describe('Content', () => {
   beforeEach(() => {
     cy.mount(
       <StoreProvider>
-          <Router location="/" navigator={undefined}>
-            <TeamPage />
-          </Router>
+        <Router location="/" navigator={undefined}>
+          <TeamPage />
+        </Router>
       </StoreProvider>
     );
   });
