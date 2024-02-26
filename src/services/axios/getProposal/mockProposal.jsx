@@ -1,14 +1,14 @@
 const MockProposal = {
-  prsl_id: '',
+  prsl_id: '1',
   status: 'draft',
   submitted_by: '',
   submitted_on: '',
   proposal_info: {
     title: 'The Milky Way View Backend Format',
     cycle: 'SKA_5000_2023',
-    abstract: 'Prettyllll llklkl',
-    proposal_type: { type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
-    science_category: 'gjhjkhklj',
+    abstract: 'This is the Abstract',
+    proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+    science_category: 'Science Category',
     targets: [
       {
         name: 'M28',
@@ -29,9 +29,9 @@ const MockProposal = {
         declination_unit: 'dd:mm:ss'
       }
     ],
-    investigator: [
+    investigators: [
       {
-        investigator_id: 'user1',
+        investigator_id: 1,
         first_name: 'Van Loo',
         last_name: 'Cheng',
         email: 'ask.lop@map.com',
@@ -40,7 +40,7 @@ const MockProposal = {
         principal_investigator: true
       },
       {
-        investigator_id: 'user2',
+        investigator_id: 2,
         first_name: 'Van Loo',
         last_name: 'Cheng',
         country: 'Lagoon',

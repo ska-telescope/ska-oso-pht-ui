@@ -43,7 +43,7 @@ export const helpers = {
       Object.keys(obj).forEach(key => {
         const value = obj[key];
         if (value === undefined || value === '') {
-          if (key === 'submitted_by' || key === 'submitted_on') return;
+          if (key === 'submitted_by' || key === 'submitted_on' || key === 'abstract') return; //TODO: review null values in data model
           delete obj[key];
         } else if (typeof value === 'object') {
           this.trimObject(value);
@@ -96,7 +96,7 @@ export const helpers = {
           cycle: GENERAL.Cycle,
           abstract: proposal?.abstract,
           proposal_type: {
-            type: project?.title,
+            main_type: project?.title,
             sub_type: subProject?.title
           },
           science_category: GENERAL.ScienceCategory?.find(
@@ -111,7 +111,7 @@ export const helpers = {
             right_ascension_unit: '', // TODO: confirm what units should be expected
             declination_unit: '' // TODO: confirm what units should be expected
           })),
-          investigator: proposal.team?.map(teamMember => ({
+          investigators: proposal.team?.map(teamMember => ({
             investigator_id: teamMember.id?.toString(),
             first_name: teamMember?.firstName,
             last_name: teamMember?.lastName,
