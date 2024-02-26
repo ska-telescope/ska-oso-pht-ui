@@ -99,6 +99,8 @@ export default function LandingPage() {
   };
 
   const viewIconClicked = async () => {
+    alert('View Proposal Icon Clicked');
+    return; //TODO: connect viewIcon click to GET endpoint
     console.log('viewIconClicked');
     if (await getTheProposal()) {
       setOpenViewDialog(true);
@@ -146,7 +148,7 @@ export default function LandingPage() {
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === 'draft';
-  const canClone = () => true;
+  const canClone = () => false; //TODO: set canClone true after endpoint is implemented
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === 'Draft' || e.row.status === 'Withdrawn';
 
