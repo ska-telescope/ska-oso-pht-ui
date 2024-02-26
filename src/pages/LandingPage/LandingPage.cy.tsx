@@ -223,3 +223,18 @@ describe('Get proposal good request', () => {
     });
     */
 });
+describe('test mock data', () => {
+  beforeEach(() => {
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, {
+      fixture: 'mockProposal.ts'
+    }).as('getProposalList');
+    cy.mount(
+      <StoreProvider>
+        <Router location="/" navigator={undefined}>
+          <LandingPage />
+        </Router>
+      </StoreProvider>
+    );
+  });
+  it('test mockData', () => {});
+});
