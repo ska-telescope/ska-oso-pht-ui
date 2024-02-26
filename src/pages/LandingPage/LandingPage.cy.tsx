@@ -71,7 +71,7 @@ describe('search functionality', () => {
   it('returns 0 results when searching for "xxx"', () => {
     cy.get('[data-testid="searchId"]').type('xxx');
     cy.get('[data-testid="SearchIcon"]').click();
-    cy.get('[data-testid="helpPanelId"]').should('contain', 'proposals.empty')
+    cy.get('[data-testid="helpPanelId"]').should('contain', 'proposals.empty');
   });
 });
 
@@ -131,7 +131,7 @@ describe('filtering by proposal type', () => {
   it('filters by proposal type "Rejected"', () => {
     cy.get('[data-testid="proposalType"]').click();
     cy.get('[data-value="rejected"]').click();
-    cy.get('[data-testid="helpPanelId"]').should('contain', 'proposals.empty')
+    cy.get('[data-testid="helpPanelId"]').should('contain', 'proposals.empty');
   });
   it('shows all proposals when "All Status Types"', () => {
     cy.get('[data-testid="proposalType"]').click();
