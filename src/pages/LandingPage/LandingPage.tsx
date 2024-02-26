@@ -77,7 +77,6 @@ export default function LandingPage() {
     clearApp();
 
     const response = await GetProposal(id);
-    console.log('getTheProposal response', response);
     if (response?.error) {
       setAxiosViewError(response.error);
       updateAppContent1(null);
@@ -94,14 +93,12 @@ export default function LandingPage() {
   };
 
   const goToTitlePage = () => {
-    console.log('goToTitlePage');
     navigate(NAV[0]);
   };
 
   const viewIconClicked = async () => {
     alert('View Proposal Icon Clicked');
     return; //TODO: connect viewIcon click to GET endpoint
-    console.log('viewIconClicked');
     if (await getTheProposal()) {
       setOpenViewDialog(true);
     } else {
@@ -110,9 +107,6 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async (id: string) => {
-    console.log('editIconClicked');
-
-    console.log('editIconClicked id', id);
     if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
@@ -121,7 +115,6 @@ export default function LandingPage() {
   };
 
   const cloneIconClicked = async () => {
-    console.log('cloneIconClicked');
     if (await getTheProposal()) {
       setOpenCloneDialog(true);
     } else {
