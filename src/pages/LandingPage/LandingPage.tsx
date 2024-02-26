@@ -20,7 +20,7 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
-import { Proposal } from '../../services/types/proposal';
+import Proposal from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
 export default function LandingPage() {
@@ -98,10 +98,9 @@ export default function LandingPage() {
   };
 
   const viewIconClicked = () => {
-    if (getTheProposal()) {
-      setTimeout(() => {
-        setOpenViewDialog(true);
-      }, 1000);
+    setOpenViewDialog(true);
+    if (!getTheProposal()) {
+      setOpenViewDialog(false);
     }
   };
 
