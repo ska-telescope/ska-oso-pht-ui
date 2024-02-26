@@ -18,7 +18,9 @@ describe('<PHT />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
+            <Router location="/" navigator={undefined}>
             <LandingPage />
+            </Router>
           </ThemeProvider>
         </StoreProvider>
       );
