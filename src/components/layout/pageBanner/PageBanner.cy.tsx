@@ -13,10 +13,14 @@ describe('<AddProposal />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <PageBanner pageNo={0} />
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <Router location="/" navigator={undefined}>
+              <PageBanner pageNo={0} />
+            </Router>
+          </ThemeProvider>
+        </StoreProvider>
       );
     });
   }
@@ -26,9 +30,11 @@ describe('POST proposal/ bad request', () => {
   beforeEach(() => {
     // cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
     cy.mount(
-      <Router location="/" navigator={undefined}>
-        <PageBanner pageNo={0} />
-      </Router>
+      <StoreProvider>
+        <Router location="/" navigator={undefined}>
+          <PageBanner pageNo={0} />
+        </Router>
+      </StoreProvider>
     );
   });
 });

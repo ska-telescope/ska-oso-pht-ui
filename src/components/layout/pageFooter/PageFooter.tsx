@@ -10,12 +10,14 @@ interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
   buttonFunc?: Function;
+  children?: JSX.Element;
 }
 
 export default function PageFooter({
   pageNo,
   buttonDisabled = false,
-  buttonFunc = null
+  buttonFunc = null,
+  children
 }: PageFooterProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ export default function PageFooter({
       return 'Add';
     }
     if (pageNo === -1) {
-      return 'Create';
+      return t(`button.create`);
     }
     return t(`page.${pageNo + 1}.title`);
   };
@@ -39,8 +41,9 @@ export default function PageFooter({
   const nextPageClicked = () => {
     if (buttonFunc) {
       buttonFunc();
+    } else {
+      nextPageNav();
     }
-    nextPageNav();
   };
 
   return (
@@ -48,19 +51,13 @@ export default function PageFooter({
       sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
       elevation={0}
     >
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-between"
-        justifyContent="space-between"
-      >
+      <Grid p={1} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
           {pageNo > 0 && (
             <PreviousPageButton label={prevLabel()} page={pageNo} func={prevPageNav} />
           )}
         </Grid>
-        <Grid item />
+        <Grid item>{children}</Grid>
         <Grid item>
           {pageNo < LAST_PAGE - 1 && (
             <NextPageButton

@@ -9,13 +9,13 @@
   "button": {
     "add": "Add",
     "addObservation": "observation setup",
-    "addProposal": "Add proposal",
     "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirmDeleteMember": "Confirm Team Member Deletion",
     "confirmSubmit": "Confirm Proposal Submission",
     "close": "Close",
+    "create": "Create",
     "home": "Home",
     "resolve": "Resolve",
     "save": "Save",
@@ -65,6 +65,12 @@
   "actions": {
     "label": "Actions"
   },
+  "addProposal": {
+    "label": "Add Proposal",
+    "success": "Proposal added with unique identifier ",
+    "toolTip": "",
+    "warning": "Please wait whilst we create a new proposal"
+  },
   "apiVersion": {
     "label": "API Version"
   },
@@ -110,6 +116,10 @@
     "toolTip": "Delete proposal",
     "confirm": "Confirm Proposal Deletion",
     "disabled": "This function is not available"
+  },
+  "displayProposal": {
+    "noneSelected": "None selected",
+    "warning": "Please wait whilst we load the selected proposal"
   },
   "downloadBtn": {
     "label": "Download"
@@ -373,7 +383,6 @@
     "imageWeighting": "Image Weighting",
     "importFromFile": "Import from file",
     "inviteTeamMember": "Invite Team Member",
-    "noneSelected": "None selected",
     "observations": "Observations",
     "observingBand": "Observing Band",
     "pdfPreview": "PDF Preview",

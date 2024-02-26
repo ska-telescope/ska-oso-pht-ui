@@ -7,6 +7,7 @@ import TeamPage from './TeamPage';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { GetMockProposal } from '../../services/axios/getProposal/getProposal';
+import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -17,7 +18,9 @@ describe('<TeamPage />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(THEME_LIGHT)}>
             <CssBaseline />
-            <TeamPage />
+            <Router location="/" navigator={undefined}>
+              <TeamPage />
+            </Router>
           </ThemeProvider>
         </StoreProvider>
       );
@@ -29,10 +32,9 @@ describe('Content', () => {
   beforeEach(() => {
     cy.mount(
       <StoreProvider>
-        <ThemeProvider theme={theme(THEME_LIGHT)}>
-          <CssBaseline />
+        <Router location="/" navigator={undefined}>
           <TeamPage />
-        </ThemeProvider>
+        </Router>
       </StoreProvider>
     );
   });

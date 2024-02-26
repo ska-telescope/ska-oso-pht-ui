@@ -95,7 +95,7 @@ export default function GeneralPage() {
       if (text === 'undefined' || text === null) return 0;
 
       return text
-        .trim()
+        ?.trim()
         .split(/\s+/)
         .filter(Boolean).length;
     };
