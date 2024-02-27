@@ -117,9 +117,6 @@ export default function ObservationPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const consoleProposal = getProposal();
-    console.error('ObservationPage useEffect getProposal', consoleProposal);
-
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = getRows().length > 0 ? 1 : 0;
     count += getProposal().targetObservation.length > 0 ? 1 : 0;

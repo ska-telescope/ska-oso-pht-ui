@@ -13,7 +13,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -73,6 +73,7 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async (id?: string = 'fake_prsl_id') => {
+    //TODO: remove default value after clone and delete button have been implemented
     helpComponent('');
     clearApp();
 
@@ -97,12 +98,13 @@ export default function LandingPage() {
   };
 
   const viewIconClicked = async () => {
-    alert('View Proposal Icon Clicked');
+    //TODO: pass prsl_id when backend connection is added
+    alert(t('viewProposalIcon.clicked'));
     return; //TODO: connect viewIcon click to GET endpoint
     if (await getTheProposal()) {
       setOpenViewDialog(true);
     } else {
-      alert('SOME ERROR WAS ENCOUNTERED');
+      alert(t('error.iconClicked'));
     }
   };
 
@@ -110,15 +112,16 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
-      alert('SOME ERROR WAS ENCOUNTERED');
+      alert(t('error.iconClicked'));
     }
   };
 
   const cloneIconClicked = async () => {
+    //TODO: pass prsl_id when backend connection is added
     if (await getTheProposal()) {
       setOpenCloneDialog(true);
     } else {
-      alert('SOME ERROR WAS ENCOUNTERED');
+      alert(t('error.iconClicked'));
     }
   };
 
@@ -140,10 +143,10 @@ export default function LandingPage() {
     setOpenDeleteDialog(false);
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === 'draft';
+  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => false; //TODO: set canClone true after endpoint is implemented
   const canDelete = (e: { row: { status: string } }) =>
-    e.row.status === 'Draft' || e.row.status === 'Withdrawn';
+    e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 100 },

@@ -33,6 +33,14 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Rejected', value: 'rejected' }
 ];
 
+export const PROPOSAL_STATUS = {
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  ACCEPTED: 'accepted',
+  WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected'
+};
+
 export const TEAM_STATUS_TYPE_OPTIONS = {
   pending: 'Pending',
   accepted: 'Accepted',

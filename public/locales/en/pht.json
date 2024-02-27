@@ -290,6 +290,9 @@
   "viewProposal": {
     "toolTip": "View proposal"
   },
+  "viewProposalIcon": {
+    "clicked": "View Proposal Icon clicked"
+  },
   "help": {
     "bandWidth": "BANDWIDTH HELP",
     "centralFrequency": "CENTRAL FREQUENCY HELP",
@@ -412,6 +415,7 @@
     },
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
-    "subBandRange": "Value must be in the range 0 - 32 inclusive"
+    "subBandRange": "Value must be in the range 0 - 32 inclusive",
+    "iconClicked": "Some error was encountered, please refresh page to continue"
   }
 }
