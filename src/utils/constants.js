@@ -33,6 +33,14 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Rejected', value: 'rejected' }
 ];
 
+export const PROPOSAL_STATUS = {
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  ACCEPTED: 'accepted',
+  WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected'
+};
+
 export const TEAM_STATUS_TYPE_OPTIONS = {
   pending: 'Pending',
   accepted: 'Accepted',
@@ -345,13 +353,25 @@ export const TEXT_ENTRY_PARAMS = {
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 
+export const DEFAULT_PI = {
+  id: 1,
+  firstName: 'Van Loo',
+  lastName: 'Cheng',
+  email: 'ask.lop@map.com',
+  country: 'Lagoon',
+  affiliation: 'University of Free Town',
+  phdThesis: false,
+  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+  pi: true
+};
+
 export const EMPTY_PROPOSAL = {
   id: null,
   title: '',
   proposalType: 0,
   proposalSubType: 0,
   cycle: '',
-  team: [],
+  team: [DEFAULT_PI],
   abstract: '',
   category: 0,
   subCategory: 0,
@@ -366,14 +386,25 @@ export const EMPTY_PROPOSAL = {
   pipeline: ''
 };
 
-export const DEFAULT_PI = {
-  id: 1,
-  firstName: 'Van Loo',
-  lastName: 'Cheng',
-  email: 'ask.lop@map.com',
-  country: 'Lagoon',
-  affiliation: 'University of Free Town',
-  phdThesis: false,
-  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-  pi: true
+export const EMPTY_PROPOSAL_TEMPLATE = () => {
+  return {
+    id: null,
+    title: '',
+    proposalType: 0,
+    proposalSubType: 0,
+    cycle: '',
+    team: [],
+    abstract: '',
+    category: 0,
+    subCategory: 0,
+    sciencePDF: null,
+    scienceLoadStatus: false,
+    targetOption: 1,
+    targets: [],
+    observations: [],
+    targetObservation: [],
+    technicalPDF: null,
+    technicalLoadStatus: false,
+    pipeline: ''
+  };
 };

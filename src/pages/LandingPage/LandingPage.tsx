@@ -13,7 +13,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS } from '../../utils/constants';
+import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS } from '../../utils/constants';
 import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -46,6 +46,10 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     let isMounted = true;
+
+    // Empty previous proposal
+    updateAppContent2(null);
+
     const fetchData = async () => {
       const response = await GetProposalList();
       if (isMounted) {
@@ -68,53 +72,56 @@ export default function LandingPage() {
     };
   }, []);
 
-  const getTheProposal = async () => {
+  const getTheProposal = async (id?: string = 'fake_prsl_id') => {
+    //TODO: remove default value after clone and delete button have been implemented
     helpComponent('');
     clearApp();
 
-    const proposalId = 1; // TODO replace with id from the list
-    const response = await GetProposal(proposalId);
-    if (response && !response.error) {
-      // Handle successful response
-      setAxiosViewError('');
-      updateAppContent1(EMPTY_STATUS);
-      updateAppContent2(response);
-      updateAppContent3(response);
-      return true;
-    } else {
-      // Handle error response
+    const response = await GetProposal(id);
+    if (response?.error) {
       setAxiosViewError(response.error);
       updateAppContent1(null);
       updateAppContent2(null);
       updateAppContent3(null);
       return false;
+    } else {
+      setAxiosViewError('');
+      updateAppContent1(EMPTY_STATUS);
+      updateAppContent2(response);
+      updateAppContent3(response);
+      return true;
     }
   };
 
   const goToTitlePage = () => {
-    setTimeout(() => {
-      navigate(NAV[0]);
-    }, 1000);
+    navigate(NAV[0]);
   };
 
-  const viewIconClicked = () => {
-    setOpenViewDialog(true);
-    if (!getTheProposal()) {
-      setOpenViewDialog(false);
+  const viewIconClicked = async () => {
+    //TODO: pass prsl_id when backend connection is added
+    alert(t('viewProposalIcon.clicked'));
+    return; //TODO: connect viewIcon click to GET endpoint
+    if (await getTheProposal()) {
+      setOpenViewDialog(true);
+    } else {
+      alert(t('error.iconClicked'));
     }
   };
 
-  const editIconClicked = async () => {
-    if (getTheProposal()) {
+  const editIconClicked = async (id: string) => {
+    if (await getTheProposal(id)) {
       goToTitlePage();
+    } else {
+      alert(t('error.iconClicked'));
     }
   };
 
-  const cloneIconClicked = () => {
-    if (getTheProposal()) {
-      setTimeout(() => {
-        setOpenCloneDialog(true);
-      }, 1000);
+  const cloneIconClicked = async () => {
+    //TODO: pass prsl_id when backend connection is added
+    if (await getTheProposal()) {
+      setOpenCloneDialog(true);
+    } else {
+      alert(t('error.iconClicked'));
     }
   };
 
@@ -136,10 +143,10 @@ export default function LandingPage() {
     setOpenDeleteDialog(false);
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === 'Draft';
-  const canClone = () => true;
+  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
+  const canClone = () => false; //TODO: set canClone true after endpoint is implemented
   const canDelete = (e: { row: { status: string } }) =>
-    e.row.status === 'Draft' || e.row.status === 'Withdrawn';
+    e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 100 },
@@ -158,7 +165,7 @@ export default function LandingPage() {
       renderCell: (e: never) => (
         <>
           <EditIcon
-            onClick={editIconClicked}
+            onClick={() => editIconClicked(e.row.id)}
             disabled={!canEdit(e)}
             toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
           />
