@@ -376,35 +376,12 @@ export const EMPTY_PROPOSAL = {
   category: 0,
   subCategory: 0,
   sciencePDF: null,
-  scienceLoadStatus: false,
+  scienceLoadStatus: 0,
   targetOption: 1,
   targets: [],
   observations: [],
   targetObservation: [],
   technicalPDF: null,
-  technicalLoadStatus: false,
+  technicalLoadStatus: 0,
   pipeline: ''
-};
-
-export const EMPTY_PROPOSAL_TEMPLATE = () => {
-  return {
-    id: null,
-    title: '',
-    proposalType: 0,
-    proposalSubType: 0,
-    cycle: '',
-    team: [],
-    abstract: '',
-    category: 0,
-    subCategory: 0,
-    sciencePDF: null,
-    scienceLoadStatus: false,
-    targetOption: 1,
-    targets: [],
-    observations: [],
-    targetObservation: [],
-    technicalPDF: null,
-    technicalLoadStatus: false,
-    pipeline: ''
-  };
 };

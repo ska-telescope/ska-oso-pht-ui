@@ -20,7 +20,6 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
-import Proposal from '../../services/types/proposal';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
 
 export default function LandingPage() {
@@ -53,15 +52,10 @@ export default function LandingPage() {
     const fetchData = async () => {
       const response = await GetProposalList();
       if (isMounted) {
-        if (response && !response.error) {
-          if (response.every((item: { id: number; title: string }) => item.id && item.title)) {
-            setAxiosError('');
-            setProposals(response as Proposal[]);
-          } else {
-            setAxiosError(t('error.axios.format'));
-          }
+        if (typeof response === 'string') {
+          setAxiosError(response);
         } else {
-          setAxiosError(response.error);
+          setProposals(response);
         }
       }
     };
@@ -72,14 +66,13 @@ export default function LandingPage() {
     };
   }, []);
 
-  const getTheProposal = async (id?: string = 'fake_prsl_id') => {
-    //TODO: remove default value after clone and delete button have been implemented
+  const getTheProposal = async (id: string) => {
     helpComponent('');
     clearApp();
 
     const response = await GetProposal(id);
-    if (response?.error) {
-      setAxiosViewError(response.error);
+    if (typeof response === 'string') {
+      setAxiosViewError(response);
       updateAppContent1(null);
       updateAppContent2(null);
       updateAppContent3(null);
@@ -98,10 +91,7 @@ export default function LandingPage() {
   };
 
   const viewIconClicked = async () => {
-    //TODO: pass prsl_id when backend connection is added
-    alert(t('viewProposalIcon.clicked'));
-    return; //TODO: connect viewIcon click to GET endpoint
-    if (await getTheProposal()) {
+    if (await getTheProposal('fake_prsl_id')) {
       setOpenViewDialog(true);
     } else {
       alert(t('error.iconClicked'));
@@ -118,7 +108,7 @@ export default function LandingPage() {
 
   const cloneIconClicked = async () => {
     //TODO: pass prsl_id when backend connection is added
-    if (await getTheProposal()) {
+    if (await getTheProposal('fake_prsl_id')) {
       setOpenCloneDialog(true);
     } else {
       alert(t('error.iconClicked'));
@@ -132,7 +122,7 @@ export default function LandingPage() {
   };
 
   const deleteIconClicked = () => {
-    if (getTheProposal()) {
+    if (getTheProposal('fake_prsl_id')) {
       setTimeout(() => {
         setOpenDeleteDialog(true);
       }, 1000);
@@ -162,7 +152,7 @@ export default function LandingPage() {
       sortable: false,
       width: 250,
       disableClickEventBubbling: true,
-      renderCell: (e: never) => (
+      renderCell: (e: { row: any }) => (
         <>
           <EditIcon
             onClick={() => editIconClicked(e.row.id)}

@@ -196,7 +196,7 @@ stop-dev-environment:
 
 include:
   - template: Code-Quality.gitlab-ci.yml
-  - template: "Verify/Accessibility.gitlab-ci.yml"
+  - template: 'Verify/Accessibility.gitlab-ci.yml'
   # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  EMPTY_PROPOSAL_TEMPLATE,
+  EMPTY_PROPOSAL,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -9,7 +9,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
-import { ProposalIN, SP } from '../../types/proposal';
+import Proposal, { ProposalIN, SP } from '../../types/proposal';
 import { TeamMemberIN } from '../../types/teamMember';
 import { TargetIN } from 'services/types/target';
 
@@ -82,7 +82,7 @@ const getObservations = (inValue: SP[]) => {
 };
 
 function mapping(inRec: ProposalIN) {
-  let outRec = EMPTY_PROPOSAL_TEMPLATE;
+  let outRec: Proposal = EMPTY_PROPOSAL;
 
   outRec.id = inRec.prsl_id;
   outRec.title = inRec.proposal_info.title;
@@ -93,23 +93,23 @@ function mapping(inRec: ProposalIN) {
   outRec.category = getCategory(inRec.proposal_info.science_category);
   outRec.subCategory = getSubCategory();
   outRec.sciencePDF = null;
-  outRec.scienceLoadStatus = false;
+  outRec.scienceLoadStatus = 0;
   outRec.targetOption = 1;
   outRec.targets = getTargets(inRec.proposal_info.targets);
   outRec.observations = getObservations(inRec.proposal_info.science_programmes);
   outRec.targetObservation = [];
   outRec.technicalPDF = null;
-  outRec.technicalLoadStatus = false;
+  outRec.technicalLoadStatus = 0;
   outRec.pipeline = '';
 
   return outRec;
 }
 
-export function GetMockProposal() {
+export function GetMockProposal(): Proposal {
   return mapping(MockProposal);
 }
 
-async function GetProposal(id: string) {
+async function GetProposal(id: string): Promise<Proposal | string> {
   const apiUrl = SKA_PHT_API_URL;
   const URL_GET = `/proposals/`;
   const config = {
@@ -125,11 +125,9 @@ async function GetProposal(id: string) {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
-    return typeof result === 'undefined'
-      ? { error: 'error.API_UNKNOWN_ERROR' }
-      : mapping(result.data);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 
