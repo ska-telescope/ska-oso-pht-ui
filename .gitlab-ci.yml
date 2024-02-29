@@ -4,6 +4,7 @@ default:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   KUBE_HOST: 'https://k8s.stfc.skao.int'
+  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
 
 stages:
   - dependencies
@@ -15,6 +16,7 @@ stages:
   - deploy
   - integration
   - staging
+  - accessibility
   - publish
 
 #Install basic dependencies using yarn
@@ -164,6 +166,7 @@ pages:
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
+    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
 
@@ -193,6 +196,7 @@ stop-dev-environment:
 
 include:
   - template: Code-Quality.gitlab-ci.yml
+  - template: "Verify/Accessibility.gitlab-ci.yml"
   # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
