@@ -25,9 +25,12 @@ function App() {
 
   const skao = t('toolTip.button.skao');
   const mode = t('toolTip.button.mode');
+  // const headerTip = t('toolTip.button.docs');
+  // const headerURL = t('toolTip.button.docsURL');
+  // const docs = { tooltip: headerTip, url: headerURL };
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
-  const LOCAL_DATA = USE_LOCAL_DATA ? 'LOCAL DATA' : '';
+  const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>
@@ -35,8 +38,9 @@ function App() {
       <React.Suspense fallback={<Loader />}>
         <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />
         <Header
+          // docs={docs}       TODO : Need to get the libraries updated for this
           testId="headerId"
-          title="Proposal Handling Tool"
+          title={t('pht.title')}
           toolTip={toolTip}
           selectTelescope={false}
         />

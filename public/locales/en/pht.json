@@ -4,6 +4,7 @@
   "date_format_two": "{{date, DD-MM-YYYY}}",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
+  "localData": "LOCAL DATA",
   "yes": "Yes",
   "no": "No",
   "button": {
@@ -171,6 +172,10 @@
   "phdThesis": {
     "label": "PhD Thesis",
     "help": "PHD THESIS HELP"
+  },
+  "pht": { 
+    "short": "PHT",
+    "title": "Proposal Handling Tool"
   },
   "pi": {
     "label": "Primary Investigator",
@@ -404,6 +409,8 @@
   },
   "toolTip": {
     "button": {
+      "docs": "Click here for PHT documentation",
+      "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/latest/UserIntroduction.html",
       "mode": "Colour Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
