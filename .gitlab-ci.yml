@@ -56,8 +56,7 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  allow_failure: true
-  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
@@ -101,7 +100,7 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: cypress/browsers:node16.14.2-slim-chrome100-ff99-edge
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
