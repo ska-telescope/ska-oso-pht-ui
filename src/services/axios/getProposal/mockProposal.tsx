@@ -1,4 +1,6 @@
-const MockProposal = {
+import { ProposalIN } from '../../types/proposal';
+
+const MockProposal: ProposalIN = {
   prsl_id: '1',
   status: 'draft',
   submitted_by: '',

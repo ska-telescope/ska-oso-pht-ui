@@ -1,4 +1,6 @@
-const MockProposals = [
+import { ProposalsIN } from '../../types/proposals';
+
+const MockProposals: ProposalsIN[] = [
   {
     prsl_id: 1,
     status: 'draft',
@@ -7,9 +9,9 @@ const MockProposals = [
     proposal_info: {
       title: 'The Milky Way View',
       cycle: 'SKA_5000_2023',
-      abstract: 'Prettyllll llklkl',
+      abstract: 'Abstract content',
       proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
-      science_category: 'gjhjkhklj',
+      science_category: 'ScienceCategory',
       targets: [
         {
           name: 'M28',
@@ -32,7 +34,7 @@ const MockProposals = [
       ],
       investigator: [
         {
-          investigator_id: 1,
+          investigator_id: '1',
           first_name: 'Van Loo',
           last_name: 'Cheng',
           email: 'ask.lop@map.com',
@@ -42,7 +44,7 @@ const MockProposals = [
           principal_investigator: true
         },
         {
-          investigator_id: 2,
+          investigator_id: '2',
           first_name: 'Van Loo',
           last_name: 'Cheng',
           email: 'ask.lop@map.com',
@@ -78,9 +80,9 @@ const MockProposals = [
     proposal_info: {
       title: 'The Milky Way View',
       cycle: 'SKA_5000_2023',
-      abstract: 'Prettyllll llklkl',
+      abstract: 'Abstract content 2',
       proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
-      science_category: 'gjhjkhklj',
+      science_category: 'ScienceCategory',
       targets: [
         {
           name: 'M28',
