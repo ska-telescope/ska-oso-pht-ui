@@ -77,7 +77,7 @@ test_and_coverage:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: coverage/cobertura-coverage.xml
+        path: build/reports/cobertura-coverage.xml
     paths:
       - build/
 
