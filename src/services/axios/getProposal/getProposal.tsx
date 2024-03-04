@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  EMPTY_PROPOSAL_TEMPLATE,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -9,7 +8,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
-import { ProposalIN, SP } from '../../types/proposal';
+import Proposal, { ProposalIN, SP } from '../../types/proposal';
 import { TeamMemberIN } from '../../types/teamMember';
 import { TargetIN } from 'services/types/target';
 
@@ -82,34 +81,32 @@ const getObservations = (inValue: SP[]) => {
 };
 
 function mapping(inRec: ProposalIN) {
-  let outRec = EMPTY_PROPOSAL_TEMPLATE;
-
-  outRec.id = inRec.prsl_id;
-  outRec.title = inRec.proposal_info.title;
-  outRec.proposalType = getProposalType(inRec.proposal_info.proposal_type);
-  outRec.proposalSubType = getProposalSubTypeType(inRec.proposal_info.proposal_type);
-  outRec.team = getTeamMembers(inRec.proposal_info.investigators);
-  outRec.abstract = inRec.proposal_info.abstract;
-  outRec.category = getCategory(inRec.proposal_info.science_category);
-  outRec.subCategory = getSubCategory();
-  outRec.sciencePDF = null;
-  outRec.scienceLoadStatus = false;
-  outRec.targetOption = 1;
-  outRec.targets = getTargets(inRec.proposal_info.targets);
-  outRec.observations = getObservations(inRec.proposal_info.science_programmes);
-  outRec.targetObservation = [];
-  outRec.technicalPDF = null;
-  outRec.technicalLoadStatus = false;
-  outRec.pipeline = '';
-
-  return outRec;
+  return {
+    id: inRec.prsl_id,
+    title: inRec.proposal_info.title,
+    proposalType: getProposalType(inRec.proposal_info.proposal_type),
+    proposalSubType: getProposalSubTypeType(inRec.proposal_info.proposal_type),
+    team: getTeamMembers(inRec.proposal_info.investigators),
+    abstract: inRec.proposal_info.abstract,
+    category: getCategory(inRec.proposal_info.science_category),
+    subCategory: getSubCategory(),
+    sciencePDF: null,
+    scienceLoadStatus: 0,
+    targetOption: 1,
+    targets: getTargets(inRec.proposal_info.targets),
+    observations: getObservations(inRec.proposal_info.science_programmes),
+    targetObservation: [],
+    technicalPDF: null,
+    technicalLoadStatus: 0,
+    pipeline: ''
+  } as Proposal;
 }
 
-export function GetMockProposal() {
+export function GetMockProposal(): Proposal {
   return mapping(MockProposal);
 }
 
-async function GetProposal(id: string) {
+async function GetProposal(id: string): Promise<Proposal | string> {
   const apiUrl = SKA_PHT_API_URL;
   const URL_GET = `/proposals/`;
   const config = {
@@ -125,11 +122,9 @@ async function GetProposal(id: string) {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
-    return typeof result === 'undefined'
-      ? { error: 'error.API_UNKNOWN_ERROR' }
-      : mapping(result.data);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 

@@ -25,8 +25,8 @@ export type ProposalsIN = {
       country: string;
       email: string;
       organization: string;
-      for_phd: true;
-      principal_investigator: true;
+      for_phd: boolean;
+      principal_investigator: boolean;
     }[];
     science_programmes: {
       science_goal_id: string;
