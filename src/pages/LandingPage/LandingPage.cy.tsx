@@ -19,7 +19,7 @@ describe('<PHT />', () => {
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
             <Router location="/" navigator={undefined}>
-            <LandingPage />
+              <LandingPage />
             </Router>
           </ThemeProvider>
         </StoreProvider>
@@ -190,7 +190,6 @@ describe('Get proposal good request', () => {
     });
     */
 });
-
 
 describe('test mock data', () => {
   beforeEach(() => {
