@@ -30,9 +30,9 @@ describe('<PHT />', () => {
 
 describe('search functionality', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
-      'getProposalList'
-    );
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, {
+      fixture: 'mockProposal.ts'
+    }).as('getProposalList');
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -79,9 +79,9 @@ describe('search functionality', () => {
 
 describe('filtering by proposal type', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
-      'getProposalList'
-    );
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, {
+      fixture: 'mockProposal.ts'
+    }).as('getProposalList');
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -189,4 +189,21 @@ describe('Get proposal good request', () => {
       // cy.get('[data-testid="alertViewErrorId"]').should('be.visible').should('have.text', 'The Milky Way View');
     });
     */
+});
+
+
+describe('test mock data', () => {
+  beforeEach(() => {
+    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, {
+      fixture: 'mockProposal.ts'
+    }).as('getProposalList');
+    cy.mount(
+      <StoreProvider>
+        <Router location="/" navigator={undefined}>
+          <LandingPage />
+        </Router>
+      </StoreProvider>
+    );
+  });
+  it('test mockData', () => {});
 });
