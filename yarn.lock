@@ -2244,7 +2244,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^1.0.3":
+"@ska-telescope/ska-gui-components@^1.0.2":
   version "1.0.3"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.3.tgz#92b295cb1e203f89c8502eabed0edd29d974e96f"
   integrity sha512-3hPOigt5KMhW77ObMRhPeJ49bKCOijJx4eD+ZCXNTZsLa9CJ47aEt3tV32Nc284geTzSykcgGWyU9APCUMxujg==
