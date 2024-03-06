@@ -5,10 +5,11 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router';
 import theme from '../../services/theme/theme';
 import LandingPage from './LandingPage';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
+import { ENDPOINT_GET_PROPOSALS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
+const ENDPOINT = `${ENDPOINT_GET_PROPOSALS}/DefaultUser`;
 
 describe('<PHT />', () => {
   for (const theTheme of THEME) {
@@ -27,9 +28,9 @@ describe('<PHT />', () => {
 
 describe('search functionality', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
-      'getProposalList'
-    );
+    cy.intercept('GET', `${SKA_PHT_API_URL}/${ENDPOINT}`, {
+      fixture: 'proposalsOldFormat.json'
+    }).as('getProposalList');
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -37,6 +38,11 @@ describe('search functionality', () => {
         </Router>
       </StoreProvider>
     );
+  });
+  it('Mock API Tags, and then validate on UI', () => {
+    cy.get('getProposalList', { timeout: 1000 })
+      .should('contain', 'Cypress')
+      .and('contain', 'Playwright');
   });
   it('returns 2 results when searching for "Milky Way"', () => {
     cy.get('[data-testid="searchId"]').type('Milky Way');

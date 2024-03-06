@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { ENDPOINT_GET_PROPOSALS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
 import Proposals, { ProposalsIN } from '../../../services/types/proposals';
 
@@ -33,7 +33,7 @@ export function GetMockProposalList(): Proposals[] {
 async function GetProposalList(): Promise<Proposals[] | string> {
   const apiUrl = SKA_PHT_API_URL;
   const LIST_QUERY = 'DefaultUser';
-  const URL_LIST = `/proposals/list/${LIST_QUERY}`;
+  const URL_LIST = `${ENDPOINT_GET_PROPOSALS}/${LIST_QUERY}`;
   const config = {
     headers: {
       Accept: 'application/json',
