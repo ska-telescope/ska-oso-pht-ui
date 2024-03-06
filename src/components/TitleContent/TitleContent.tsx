@@ -224,16 +224,16 @@ export default function TitleContent({ page }: TitleContentProps) {
       `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
 
     return (
-        <TextEntry
-          label={t('title.label')}
-          testId="titleId"
-          value={getProposal().title}
-          setValue={(title: string) =>
-            helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
-          }
-          errorText={errorText}
-          helperText={helperFunction(getProposal().title)}
-        />
+      <TextEntry
+        label={t('title.label')}
+        testId="titleId"
+        value={getProposal().title}
+        setValue={(title: string) =>
+          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
+        }
+        errorText={errorText}
+        helperText={helperFunction(getProposal().title)}
+      />
     );
   };
 
