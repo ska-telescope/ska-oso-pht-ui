@@ -5,7 +5,6 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
-import FieldWrapper from '../wrappers/fieldWrapper/FieldWrapper';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
 import { Proposal } from '../../services/types/proposal';
@@ -225,9 +224,8 @@ export default function TitleContent({ page }: TitleContentProps) {
       `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
 
     return (
-      <FieldWrapper big label={t('title.label')}>
         <TextEntry
-          label=""
+          label={t('title.label')}
           testId="titleId"
           value={getProposal().title}
           setValue={(title: string) =>
@@ -236,7 +234,6 @@ export default function TitleContent({ page }: TitleContentProps) {
           errorText={errorText}
           helperText={helperFunction(getProposal().title)}
         />
-      </FieldWrapper>
     );
   };
 
