@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
@@ -76,11 +75,7 @@ export default function GeneralPage() {
   */
 
   const cycleField = () => (
-    <FieldWrapper label={t('cycle.label')}>
-      <Typography>
-        <strong>{GENERAL.Cycle}</strong>
-      </Typography>
-    </FieldWrapper>
+    <TextEntry label={t('cycle.label')} testId="cycleId" value={GENERAL.Cycle} disabled />
   );
 
   const abstractField = () => {
@@ -106,33 +101,27 @@ export default function GeneralPage() {
       )} / ${MAX_WORD}`;
 
     return (
-      <FieldWrapper label={t('abstract.label')}>
-        <Card variant="outlined">
-          <TextEntry
-            label=""
-            testId="abstractId"
-            rows={10}
-            value={getProposal().abstract}
-            setValue={(e: string) => setValue(e)}
-            onFocus={() => helpComponent(t('abstract.help'))}
-            helperText={helperFunction(getProposal().abstract)}
-          />
-        </Card>
-      </FieldWrapper>
+      <TextEntry
+        label={t('abstract.label')}
+        testId="abstractId"
+        rows={t('abstract.rows')}
+        value={getProposal().abstract}
+        setValue={(e: string) => setValue(e)}
+        onFocus={() => helpComponent(t('abstract.help'))}
+        helperText={helperFunction(getProposal().abstract)}
+      />
     );
   };
 
   const categoryField = () => (
-    <FieldWrapper label={t('scienceCategory.label')}>
-      <DropDown
-        options={GENERAL.ScienceCategory}
-        testId="categoryId"
-        value={getProposal().category}
-        setValue={checkCategory}
-        label=""
-        onFocus={() => helpComponent(t('scienceCategory.help'))}
-      />
-    </FieldWrapper>
+    <DropDown
+      options={GENERAL.ScienceCategory}
+      testId="categoryId"
+      value={getProposal().category}
+      setValue={checkCategory}
+      label={t('scienceCategory.label')}
+      onFocus={() => helpComponent(t('scienceCategory.help'))}
+    />
   );
 
   /* TODO : Retained for future use

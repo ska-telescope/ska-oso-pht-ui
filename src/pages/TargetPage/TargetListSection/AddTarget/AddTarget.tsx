@@ -7,7 +7,6 @@ import AddTargetButton from '../../../../components/button/AddTarget/AddTargetBu
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
-import FieldWrapper from '../../../../components/wrappers/fieldWrapper/FieldWrapper';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
@@ -109,33 +108,27 @@ export default function AddTarget() {
               <ResolveButton targetName={name} onClick={handleResolveClick} />
             </Grid>
           </Grid>
-          <FieldWrapper label={t('rightAscension.label')}>
-            <TextEntry
-              label=""
-              testId="ra"
-              value={ra}
-              setValue={setRA}
-              onFocus={() => helpComponent(t('rightAscension.help'))}
-            />
-          </FieldWrapper>
-          <FieldWrapper label={t('declination.label')}>
-            <TextEntry
-              label=""
-              testId="dec"
-              value={dec}
-              setValue={setDec}
-              onFocus={() => helpComponent(t('declination.help'))}
-            />
-          </FieldWrapper>
-          <FieldWrapper label={t('velocity.label')}>
-            <TextEntry
-              label=""
-              testId="vel"
-              value={vel}
-              setValue={setVel}
-              onFocus={() => helpComponent(t('velocity.help'))}
-            />
-          </FieldWrapper>
+          <TextEntry
+            label={t('rightAscension.label')}
+            testId="ra"
+            value={ra}
+            setValue={setRA}
+            onFocus={() => helpComponent(t('rightAscension.help'))}
+          />
+          <TextEntry
+            label={t('declination.label')}
+            testId="dec"
+            value={dec}
+            setValue={setDec}
+            onFocus={() => helpComponent(t('declination.help'))}
+          />
+          <TextEntry
+            label={t('velocity.label')}
+            testId="vel"
+            value={vel}
+            setValue={setVel}
+            onFocus={() => helpComponent(t('velocity.help'))}
+          />
         </Grid>
 
         <Box p={1}>

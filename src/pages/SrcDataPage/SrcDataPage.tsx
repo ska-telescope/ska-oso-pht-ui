@@ -6,8 +6,6 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-
 import HelpPanel from '../../components/helpPanel/helpPanel';
 
 const PAGE = 8;
@@ -51,16 +49,14 @@ export default function SrcDataPage() {
   }, [validateToggle]);
 
   const pipelineField = () => (
-    <FieldWrapper label={t('pipeline.label')}>
-      <TextEntry
-        label=""
-        testId="pipelineId"
-        value={getProposal().pipeline}
-        setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-        onFocus={() => helpComponent(t('pipeline.help'))}
-        helperText={t('pipeline.helper')}
-      />
-    </FieldWrapper>
+    <TextEntry
+      label={t('pipeline.label')}
+      testId="pipelineId"
+      value={getProposal().pipeline}
+      setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
+      onFocus={() => helpComponent(t('pipeline.help'))}
+      helperText={t('pipeline.helper')}
+    />
   );
 
   return (

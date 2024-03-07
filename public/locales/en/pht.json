@@ -60,8 +60,9 @@
     "label": "Abstract",
     "help": "ABSTRACT HELP",
     "helper": "Please enter your abstract information",
-    "maxChar": "250",
-    "maxWord": "50"
+    "maxChar": "400",
+    "maxWord": "50",
+    "rows": "5"
   },
   "actions": {
     "label": "Actions"
