@@ -46,7 +46,7 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.12.1",
-    "@ska-telescope/ska-gui-components": "^1.0.2",
+    "@ska-telescope/ska-gui-components": "^1.0.4",
     "@ska-telescope/ska-gui-local-storage": "^1.0.0",
     "axios": "^1.6.3",
     "babel-core": "6",
