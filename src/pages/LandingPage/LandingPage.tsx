@@ -138,8 +138,7 @@ export default function LandingPage() {
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const COLUMNS = [
-    { field: 'id', headerName: t('id.label'), width: 100 },
-    { field: 'telescope', headerName: t('arrayConfiguration.label'), width: 100 },
+    { field: 'id', headerName: t('id.label'), width: 200 },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
