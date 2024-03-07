@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
@@ -226,6 +226,7 @@ export default function TitleContent({ page }: TitleContentProps) {
     return (
       <TextEntry
         label={t('title.label')}
+        labelPosition={LABEL_POSITION.START}
         testId="titleId"
         value={getProposal().title}
         setValue={(title: string) =>
@@ -270,7 +271,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="h6">{t('label.proposalType')}</Typography>
+              <Typography variant="body2">{t('label.proposalType')}</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="body2">{t('help.proposalType1')}</Typography>

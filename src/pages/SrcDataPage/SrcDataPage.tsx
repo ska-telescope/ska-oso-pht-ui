@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -51,6 +51,7 @@ export default function SrcDataPage() {
   const pipelineField = () => (
     <TextEntry
       label={t('pipeline.label')}
+      labelPosition={LABEL_POSITION.START}
       testId="pipelineId"
       value={getProposal().pipeline}
       setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}

@@ -2,11 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const PAGE = 2;
 
@@ -75,7 +76,13 @@ export default function GeneralPage() {
   */
 
   const cycleField = () => (
-    <TextEntry label={t('cycle.label')} testId="cycleId" value={GENERAL.Cycle} disabled />
+    <TextEntry
+      label={t('cycle.label')}
+      labelPosition={LABEL_POSITION.START}
+      testId="cycleId"
+      value={GENERAL.Cycle}
+      disabled
+    />
   );
 
   const abstractField = () => {
@@ -103,6 +110,7 @@ export default function GeneralPage() {
     return (
       <TextEntry
         label={t('abstract.label')}
+        labelPosition={LABEL_POSITION.START}
         testId="abstractId"
         rows={t('abstract.rows')}
         value={getProposal().abstract}
@@ -114,14 +122,16 @@ export default function GeneralPage() {
   };
 
   const categoryField = () => (
-    <DropDown
-      options={GENERAL.ScienceCategory}
-      testId="categoryId"
-      value={getProposal().category}
-      setValue={checkCategory}
-      label={t('scienceCategory.label')}
-      onFocus={() => helpComponent(t('scienceCategory.help'))}
-    />
+    <FieldWrapper label={t('scienceCategory.label')}>
+      <DropDown
+        options={GENERAL.ScienceCategory}
+        testId="categoryId"
+        value={getProposal().category}
+        setValue={checkCategory}
+        label=""
+        onFocus={() => helpComponent(t('scienceCategory.help'))}
+      />
+    </FieldWrapper>
   );
 
   /* TODO : Retained for future use
