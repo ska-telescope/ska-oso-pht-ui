@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
 import { Proposal } from '../../../services/types/proposal';
 import { helpers } from '../../../utils/helpers';
@@ -163,6 +163,7 @@ export default function MemberInvite() {
         <Grid item xs={5}>
           <TextEntry
             label={t('firstName.label')}
+            labelPosition={LABEL_POSITION.START}
             testId="firstName"
             value={firstName}
             setValue={setFirstName}
@@ -172,6 +173,7 @@ export default function MemberInvite() {
           />
           <TextEntry
             label={t('lastName.label')}
+            labelPosition={LABEL_POSITION.START}
             testId="lastName"
             value={lastName}
             setValue={setLastName}
@@ -180,6 +182,7 @@ export default function MemberInvite() {
           />
           <TextEntry
             label={t('email.label')}
+            labelPosition={LABEL_POSITION.START}
             testId="email"
             value={email}
             setValue={setEmail}
@@ -188,6 +191,7 @@ export default function MemberInvite() {
           />
           <TickBox
             label={t('pi.label')}
+            labelPosition={LABEL_POSITION.START}
             testId="piCheckbox"
             checked={pi}
             onChange={handleCheckboxChangePI}
@@ -195,6 +199,7 @@ export default function MemberInvite() {
           />
           <TickBox
             label={t('phdThesis.label')}
+            labelPosition={LABEL_POSITION.START}
             testId="PhDCheckbox"
             checked={phdThesis}
             onChange={handleCheckboxChangePhD}

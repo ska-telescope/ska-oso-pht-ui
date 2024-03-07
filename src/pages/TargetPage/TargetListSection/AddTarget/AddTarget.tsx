@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
@@ -10,6 +10,7 @@ import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
+  const LAB_WIDTH = 5;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -85,55 +86,54 @@ export default function AddTarget() {
   };
 
   return (
-    <Grid container direction="row" alignItems="flex-start" justifyContent="space-evenly">
+    <Grid mt={1} container direction="row" alignItems="flex-start" justifyContent="space-evenly">
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid container direction="row" alignItems="center" justifyContent="space-between">
-            <Grid item xs={3}>
-              <Typography variant="body2">
-                <strong>{t('name.label')}</strong>
-              </Typography>
-            </Grid>
-            <Grid item xs={5}>
-              <TextEntry
-                label=""
-                testId="name"
-                value={name}
-                setValue={setName}
-                onFocus={() => helpComponent(t('name.help'))}
-                errorText={nameFieldError}
-              />
-            </Grid>
-            <Grid item>
-              <ResolveButton targetName={name} onClick={handleResolveClick} />
-            </Grid>
-          </Grid>
           <TextEntry
-            label={t('rightAscension.label')}
-            testId="ra"
-            value={ra}
-            setValue={setRA}
-            onFocus={() => helpComponent(t('rightAscension.help'))}
-          />
-          <TextEntry
-            label={t('declination.label')}
-            testId="dec"
-            value={dec}
-            setValue={setDec}
-            onFocus={() => helpComponent(t('declination.help'))}
-          />
-          <TextEntry
-            label={t('velocity.label')}
-            testId="vel"
-            value={vel}
-            setValue={setVel}
-            onFocus={() => helpComponent(t('velocity.help'))}
+            label={t('name.label')}
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LAB_WIDTH}
+            testId="name"
+            value={name}
+            setValue={setName}
+            onFocus={() => helpComponent(t('name.help'))}
+            errorText={nameFieldError}
           />
         </Grid>
+        <TextEntry
+          label={t('rightAscension.label')}
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LAB_WIDTH}
+          testId="ra"
+          value={ra}
+          setValue={setRA}
+          onFocus={() => helpComponent(t('rightAscension.help'))}
+        />
+        <TextEntry
+          label={t('declination.label')}
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LAB_WIDTH}
+          testId="dec"
+          value={dec}
+          setValue={setDec}
+          onFocus={() => helpComponent(t('declination.help'))}
+        />
+        <TextEntry
+          label={t('velocity.label')}
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LAB_WIDTH}
+          testId="vel"
+          value={vel}
+          setValue={setVel}
+          onFocus={() => helpComponent(t('velocity.help'))}
+        />
 
         <Box p={1}>
           <AddTargetButton disabled={disabled()} onClick={clickFunction} />
         </Box>
+      </Grid>
+      <Grid item>
+        <ResolveButton targetName={name} onClick={handleResolveClick} />
       </Grid>
       <Grid item xs={5}>
         <HelpPanel />
