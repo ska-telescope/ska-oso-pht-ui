@@ -90,8 +90,8 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const viewIconClicked = async () => {
-    if (await getTheProposal('fake_prsl_id')) {
+  const viewIconClicked = async (id: string) => {
+    if (await getTheProposal(id)) {
       setOpenViewDialog(true);
     } else {
       alert(t('error.iconClicked'));
@@ -106,9 +106,8 @@ export default function LandingPage() {
     }
   };
 
-  const cloneIconClicked = async () => {
-    //TODO: pass prsl_id when backend connection is added
-    if (await getTheProposal('fake_prsl_id')) {
+  const cloneIconClicked = async (id: string) => {
+    if (await getTheProposal(id)) {
       setOpenCloneDialog(true);
     } else {
       alert(t('error.iconClicked'));
@@ -121,8 +120,8 @@ export default function LandingPage() {
     goToTitlePage();
   };
 
-  const deleteIconClicked = () => {
-    if (getTheProposal('fake_prsl_id')) {
+  const deleteIconClicked = (id: string) => {
+    if (getTheProposal(id)) {
       setTimeout(() => {
         setOpenDeleteDialog(true);
       }, 1000);
@@ -159,14 +158,14 @@ export default function LandingPage() {
             disabled={!canEdit(e)}
             toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
           />
-          <ViewIcon onClick={viewIconClicked} toolTip={t('viewProposal.toolTip')} />
+          <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
           <CloneIcon
-            onClick={cloneIconClicked}
+            onClick={() => cloneIconClicked(e.row.id)}
             disabled={!canClone()}
             toolTip={t('cloneProposal.toolTip')}
           />
           <TrashIcon
-            onClick={deleteIconClicked}
+            onClick={() => deleteIconClicked(e.row.id)}
             disabled={!canDelete(e)}
             toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
           />
