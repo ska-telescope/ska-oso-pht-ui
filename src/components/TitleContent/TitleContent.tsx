@@ -271,13 +271,13 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="body2">{t('label.proposalType')}</Typography>
+              <Typography variant="body2">{t('proposalType.label')}</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography variant="body2">{t('help.proposalType1')}</Typography>
-              <Typography variant="body2">{t('help.proposalType2')}</Typography>
+              <Typography variant="body2">{t('proposalType.help1')}</Typography>
+              <Typography variant="body2">{t('proposalType.help2')}</Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                {t('help.proposalType3')}
+                {t('proposalType.help3')}
               </Typography>
             </Grid>
           </Grid>

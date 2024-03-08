@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
+import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -20,6 +21,12 @@ const PAGE = 1;
 export function PIStar({ pi }) {
   if (pi) {
     return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" />;
+  }
+}
+
+export function PHDThesis({ value }) {
+  if (value) {
+    return <SvgIcon component={CheckIcon} viewBox="0 0 24 24" />;
   }
 }
 
@@ -120,8 +127,8 @@ export default function TeamPage() {
       headerName: t('phdThesis.label'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (params: { row: { phdThesis: boolean } }) => (
-        <Typography>{t(params.row.phdThesis ? 'yes' : 'No')}</Typography>
+      renderCell: (params: { row: { phdThesis: string; status: string } }) => (
+        <PHDThesis value={params.row.phdThesis} />
       )
     },
     {
