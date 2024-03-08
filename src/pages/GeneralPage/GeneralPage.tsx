@@ -7,7 +7,6 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
-import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const PAGE = 2;
 
@@ -122,16 +121,15 @@ export default function GeneralPage() {
   };
 
   const categoryField = () => (
-    <FieldWrapper label={t('scienceCategory.label')}>
-      <DropDown
-        options={GENERAL.ScienceCategory}
-        testId="categoryId"
-        value={getProposal().category}
-        setValue={checkCategory}
-        label=""
-        onFocus={() => helpComponent(t('scienceCategory.help'))}
-      />
-    </FieldWrapper>
+    <DropDown
+      options={GENERAL.ScienceCategory}
+      testId="categoryId"
+      value={getProposal().category}
+      setValue={checkCategory}
+      label={t('scienceCategory.label')}
+      labelPosition={LABEL_POSITION.START}
+      onFocus={() => helpComponent(t('scienceCategory.help'))}
+    />
   );
 
   /* TODO : Retained for future use

@@ -60,7 +60,7 @@
     "label": "Abstract",
     "help": "ABSTRACT HELP",
     "helper": "Please enter your abstract information",
-    "maxChar": "400",
+    "maxChar": "600",
     "maxWord": "50",
     "rows": "5"
   },
@@ -194,6 +194,12 @@
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
   },
+  "proposalType": {
+    "label": "Proposal Types",
+    "help1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
+    "help2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
+    "help3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
+  },
   "members": {
     "label": "Members",
     "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
@@ -309,9 +315,6 @@
     "frequencyUnits": "FREQUENCY UNITS HELP",
     "imageWeighting": "IMAGE WEIGHTING HLP",
     "observingBand": "Observing Band HELP",
-    "proposalType1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
-    "proposalType2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
-    "proposalType3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost",
     "spectralAveraging": "Spectral Averaging HELP",
     "spectralResolution": "SPECTRAL RESOLUTION HELP",
     "subBands": "SUB-BANDS HELP",
@@ -395,7 +398,6 @@
     "observations": "Observations",
     "observingBand": "Observing Band",
     "pdfPreview": "PDF Preview",
-    "proposalType": "Proposal Types",
     "scienceCategory": "Scientific category",
     "search": "Search",
     "searchForMember": "Search for member",
