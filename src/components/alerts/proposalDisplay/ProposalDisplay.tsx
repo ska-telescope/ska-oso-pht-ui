@@ -122,7 +122,7 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>{getProposal().title}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.proposalType')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('proposalType.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{proposalType()}</Typography>
@@ -171,7 +171,7 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.category')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('category.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{category()}</Typography>
@@ -184,7 +184,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.fileName')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
@@ -230,7 +230,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.observations')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('observations.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().observations?.map((rec: Observation) => (
@@ -260,7 +260,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.targetSelection')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('targetSelection.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().targetObservation?.map(
@@ -284,7 +284,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('label.fileName')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>

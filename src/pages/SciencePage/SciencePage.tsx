@@ -66,7 +66,7 @@ export default function SciencePage() {
         <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('label.uploadPDF')}
+            {t('uploadPDF.label')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"

@@ -52,6 +52,7 @@ export default function SdpDataPage() {
   const pipelineField = () => (
     <TextEntry
       label={t('pipeline.label')}
+      labelBold
       labelPosition={LABEL_POSITION.START}
       testId="pipelineId"
       value={getProposal().pipeline}

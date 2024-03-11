@@ -134,18 +134,18 @@ export default function TargetListSection() {
               aria-label="basic tabs example"
             >
               <Tab
-                label={t('label.addTarget')}
+                label={t('addTarget.label')}
                 {...a11yProps(0)}
                 sx={{ border: '1px solid grey' }}
               />
               <Tab
-                label={t('label.importFromFile')}
+                label={t('importFromFile.label')}
                 {...a11yProps(1)}
                 sx={{ border: '1px solid grey' }}
                 disabled
               />
               <Tab
-                label={t('label.spatialImaging')}
+                label={t('spatialImaging.label')}
                 {...a11yProps(2)}
                 sx={{ border: '1px solid grey' }}
                 disabled
