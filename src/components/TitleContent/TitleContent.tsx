@@ -226,7 +226,9 @@ export default function TitleContent({ page }: TitleContentProps) {
     return (
       <TextEntry
         label={t('title.label')}
+        labelBold
         labelPosition={LABEL_POSITION.START}
+        required
         testId="titleId"
         value={getProposal().title}
         setValue={(title: string) =>
@@ -254,7 +256,7 @@ export default function TitleContent({ page }: TitleContentProps) {
               {titleField()}
             </Grid>
             <Grid item xs={4}>
-              <Typography variant="body2">{t('help.title')}</Typography>
+              <Typography variant="body2">{t('title.help')}</Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
                 {t('specialCharacters.help')}
               </Typography>
@@ -271,7 +273,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="body2">{t('proposalType.label')}</Typography>
+              <Typography variant="subtitle1">{t('proposalType.label') + ' *'}</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="body2">{t('proposalType.help1')}</Typography>

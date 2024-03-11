@@ -163,6 +163,7 @@ export default function MemberInvite() {
         <Grid item xs={5}>
           <TextEntry
             label={t('firstName.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             testId="firstName"
             value={firstName}
@@ -173,6 +174,7 @@ export default function MemberInvite() {
           />
           <TextEntry
             label={t('lastName.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             testId="lastName"
             value={lastName}
@@ -182,6 +184,7 @@ export default function MemberInvite() {
           />
           <TextEntry
             label={t('email.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             testId="email"
             value={email}
@@ -191,6 +194,7 @@ export default function MemberInvite() {
           />
           <TickBox
             label={t('pi.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             testId="piCheckbox"
             checked={pi}
@@ -199,6 +203,7 @@ export default function MemberInvite() {
           />
           <TickBox
             label={t('phdThesis.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             testId="PhDCheckbox"
             checked={phdThesis}

@@ -62,7 +62,7 @@ export default function TechnicalPage() {
         <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('label.uploadPDF')}
+            {t('uploadPDF.label')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
@@ -80,7 +80,7 @@ export default function TechnicalPage() {
             <CardHeader
               title={
                 <Typography variant="h6" data-testid="pdfPreviewLabel">
-                  {t('label.pdfPreview')}
+                  {t('pdfPreview.label')}
                 </Typography>
               }
             />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/helpPanel/helpPanel';
@@ -75,13 +75,16 @@ export default function GeneralPage() {
   */
 
   const cycleField = () => (
-    <TextEntry
-      label={t('cycle.label')}
-      labelPosition={LABEL_POSITION.START}
-      testId="cycleId"
-      value={GENERAL.Cycle}
-      disabled
-    />
+    <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
+      <Grid item xs={4}>
+        <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1">
+          {t('cycle.label') + ' *'}
+        </Typography>
+      </Grid>
+      <Grid item xs={8}>
+        <Typography variant="subtitle1">{GENERAL.Cycle}</Typography>
+      </Grid>
+    </Grid>
   );
 
   const abstractField = () => {
@@ -109,6 +112,7 @@ export default function GeneralPage() {
     return (
       <TextEntry
         label={t('abstract.label')}
+        labelBold
         labelPosition={LABEL_POSITION.START}
         testId="abstractId"
         rows={t('abstract.rows')}
@@ -125,8 +129,10 @@ export default function GeneralPage() {
       options={GENERAL.ScienceCategory}
       testId="categoryId"
       value={getProposal().category}
+      select
       setValue={checkCategory}
       label={t('scienceCategory.label')}
+      labelBold
       labelPosition={LABEL_POSITION.START}
       onFocus={() => helpComponent(t('scienceCategory.help'))}
     />

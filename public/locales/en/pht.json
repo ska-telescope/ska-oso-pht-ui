@@ -73,6 +73,9 @@
     "toolTip": "",
     "warning": "Please wait whilst we create a new proposal"
   },
+  "addTarget": {
+    "label": "Add Target"
+  },
   "apiVersion": {
     "label": "API Version"
   },
@@ -82,6 +85,17 @@
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
+  },
+  "bandWidth": {
+    "help": "BANDWIDTH HELP",
+    "label": "Band Width"
+  },
+    "category": {
+      "label": "Category"
+    },
+  "centralFrequency": {
+    "help": "CENTRAL FREQUENCY HELP",
+    "label": "Central Frequency"
   },
   "changeProposal": {
     "label": "Change Proposal's type?",
@@ -95,6 +109,13 @@
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal"
+  },
+  "continuumBandWidth": {
+    "help": "Continuum BANDWIDTH HELP",
+    "label": "Continuum BandWidth"
+  },
+  "continuumUnits": {
+    "help": "CONTINUUM UNITS HELP"
   },
   "cycle": {
     "label": "Cycle"
@@ -133,16 +154,40 @@
     "toolTip": "Edit proposal",
     "disabled": "This function is not available"
   },
+  "effectiveResolution": {
+    "help": "EFFECTIVE RESOLUTION HELP",
+    "label": "Effective Resolution"
+  },
+  "elevation": {
+    "help": "ELEVATION HELP",
+    "label": "Elevation"
+  },
   "email": {
     "label": "Email",
     "help": "EMAIL HELP"
+  },
+  "fileName": {
+    "label": "File name"
   },
   "firstName": {
     "label": "First Name",
     "help": "FIRST NAME HELP"
   },
+  "frequencyUnits": {
+    "help": "FREQUENCY UNITS HELP"
+  },
   "id": {
     "label": "Id"
+  },
+  "imageWeighting": {
+    "help": "IMAGE WEIGHTING HLP",
+    "label": "Image Weighting"
+  },
+  "importFromFile": {
+    "label": "Import from file"
+  },
+  "inviteTeamMember": {
+    "label": "Invite Team Member"
   },
   "lastName": {
     "label": "Last Name",
@@ -159,6 +204,13 @@
   "notSelected": {
     "label": "Not Selected"
   },
+  "observingBand": {
+    "help": "Observing Band HELP",
+    "label": "Observing Band"
+  },
+  "observations": {
+    "label": "Observations"
+  },
   "observationType": {
     "label": "Observation Type",
     "help": "OBSERVATION TYPE HELP",
@@ -169,6 +221,9 @@
   },
   "pageStatus": {
     "toolTip": "This is the status of the page"
+  },
+  "pdfPreview": {
+    "label": "PDF Preview"
   },
   "phdThesis": {
     "label": "PhD Thesis",
@@ -212,6 +267,10 @@
     "label": "Right Ascension",
     "help": "RIGHT ASCENSION HELP"
   },
+  "robust": {
+    "help": "ROBUST HELP",
+    "label": "Robust"
+  },
   "scienceCategory": {
     "1": "Cosmology",
     "2": "Cradle of Life",
@@ -235,8 +294,17 @@
     "help": "SUB-CATEGORY HELP",
     "1": "Not specified"
   },
+  "searchForMember": {
+    "label": "Search for member"
+  },
+  "spatialImaging": {
+    "label": "Spatial Imaging"
+  },
   "sdp": {
     "label": "SDP"
+  },
+  "search": {
+    "label": "Search"
   },
   "selected": {
     "label": "Selected"
@@ -249,12 +317,25 @@
     "numWord": "Exceeded expected word count",
     "email": "Please enter a valid email address."
   },
+  "spectralAveraging": {
+    "help": "Spectral Averaging HELP",
+    "label": "Spectral Averaging"
+  },
+  "spectralResolution": {
+    "help": "SPECTRAL RESOLUTION HELP",
+    "label": "Spectral Resolution"
+
+  },
   "srcNet": {
     "label": "SRC Net"
   },
   "status": {
     "0": "All status types",
     "label": "Status"
+  },
+  "subBands": {
+    "help": "SUB-BANDS HELP",
+    "label": "Number of sub bands"
   },
   "subArrayConfiguration": {
     "label": "Array Configuration",
@@ -272,8 +353,24 @@
     "10": "AA4 (core only)",
     "20": "Custom"
   },
+  "suppliedType": {
+    "help": "SUPPLIED TIME HELP"
+  },
+  "suppliedUnits": {
+    "help": "SUPPLIED UNITS HELP"
+  },
+  "suppliedValue": {
+    "help": "SUPPLIED VALUE HELP"
+  },
+  "tapering": {
+    "help": "TAPERING HELP",
+    "label": "Tapering"
+  },
   "targetObservation": {
     "label": "Target List related to the selected Observation"
+  },
+  "targetSelection": {
+    "label": "Target selection"
   },
   "targetMosaic": {
     "label": "Target Mosaic",
@@ -287,6 +384,7 @@
     "label": "Title",
     "maxChar": "50",
     "maxWord": "20",
+    "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "helper": "Please enter your title information"
   },
   "type": {
@@ -294,6 +392,9 @@
   },
   "updated": {
     "label": "Last Updated"
+  },
+  "uploadPDF": {
+    "label": "Upload PDF"
   },
   "velocity": {
     "label": "Velocity / Redshift",
@@ -305,25 +406,9 @@
   "viewProposalIcon": {
     "clicked": "View Proposal Icon clicked"
   },
-  "help": {
-    "bandWidth": "BANDWIDTH HELP",
-    "centralFrequency": "CENTRAL FREQUENCY HELP",
-    "continuumBandWidth": "Continuum BANDWIDTH HELP",
-    "continuumUnits": "CONTINUUM UNITS HELP",
-    "effectiveResolution": "EFFECTIVE RESOLUTION HELP",
-    "elevation": "ELEVATION HELP",
-    "frequencyUnits": "FREQUENCY UNITS HELP",
-    "imageWeighting": "IMAGE WEIGHTING HLP",
-    "observingBand": "Observing Band HELP",
-    "spectralAveraging": "Spectral Averaging HELP",
-    "spectralResolution": "SPECTRAL RESOLUTION HELP",
-    "subBands": "SUB-BANDS HELP",
-    "suppliedType": "SUPPLIED TIME HELP",
-    "suppliedUnits": "SUPPLIED UNITS HELP",
-    "suppliedValue": "SUPPLIED VALUE HELP",
-    "tapering": "TAPERING HELP",
-    "title": "This title should be used to allow for the identification of this proposal in a list of proposals",
-    "weather": "WEATHER HELP"
+  "weather": {
+    "help": "WEATHER HELP",
+    "label": "Weather"
   },
   "page": {
     "0": {
@@ -381,34 +466,9 @@
     }
   },
   "label": {
-    "addTarget": "Add Target",
-    "bandWidth": "Bandwidth",
     "button": {
       "telescopeToggle": "Telescope Toggle"
-    },
-    "category": "Category",
-    "centralFrequency": "Central Frequency",
-    "continuumBandWidth": "Continuum BandWidth",
-    "elevation": "Elevation",
-    "effectiveResolution": "Effective Resolution",
-    "fileName": "File name",
-    "imageWeighting": "Image Weighting",
-    "importFromFile": "Import from file",
-    "inviteTeamMember": "Invite Team Member",
-    "observations": "Observations",
-    "observingBand": "Observing Band",
-    "pdfPreview": "PDF Preview",
-    "scienceCategory": "Scientific category",
-    "search": "Search",
-    "searchForMember": "Search for member",
-    "spatialImaging": "Spatial Imaging",
-    "spectralAveraging": "Spectral Averaging",
-    "spectralResolution": "Spectral Resolution",
-    "subBands": "Number of sub bands",
-    "tapering": "Tapering",
-    "targetSelection": "Target selection",
-    "uploadPDF": "Upload PDF",
-    "weather": "Weather"
+    }
   },
   "toolTip": {
     "button": {

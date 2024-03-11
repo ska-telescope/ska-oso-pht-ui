@@ -207,7 +207,7 @@ export default function LandingPage() {
         </Grid>
         <Grid item xs={4} mt={-1}>
           <SearchEntry
-            label={t('label.search')}
+            label={t('search.label')}
             testId="searchId"
             value={searchTerm}
             setValue={setSearchTerm}

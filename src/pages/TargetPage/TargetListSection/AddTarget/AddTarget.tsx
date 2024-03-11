@@ -91,6 +91,7 @@ export default function AddTarget() {
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <TextEntry
             label={t('name.label')}
+            labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LAB_WIDTH}
             testId="name"
@@ -102,6 +103,7 @@ export default function AddTarget() {
         </Grid>
         <TextEntry
           label={t('rightAscension.label')}
+          labelBold
           labelPosition={LABEL_POSITION.START}
           labelWidth={LAB_WIDTH}
           testId="ra"
@@ -111,6 +113,7 @@ export default function AddTarget() {
         />
         <TextEntry
           label={t('declination.label')}
+          labelBold
           labelPosition={LABEL_POSITION.START}
           labelWidth={LAB_WIDTH}
           testId="dec"
@@ -120,6 +123,7 @@ export default function AddTarget() {
         />
         <TextEntry
           label={t('velocity.label')}
+          labelBold
           labelPosition={LABEL_POSITION.START}
           labelWidth={LAB_WIDTH}
           testId="vel"

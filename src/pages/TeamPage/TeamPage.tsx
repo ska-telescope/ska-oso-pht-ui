@@ -201,18 +201,18 @@ export default function TeamPage() {
                   aria-label="basic tabs example"
                 >
                   <Tab
-                    label={t('label.inviteTeamMember')}
+                    label={t('inviteTeamMember.label')}
                     {...a11yProps(0)}
                     sx={{ border: '1px solid grey' }}
                   />
                   <Tab
-                    label={t('label.importFromFile')}
+                    label={t('importFromFile.label')}
                     {...a11yProps(1)}
                     sx={{ border: '1px solid grey' }}
                     disabled
                   />
                   <Tab
-                    label={t('label.searchForMember')}
+                    label={t('searchForMember.label')}
                     {...a11yProps(2)}
                     sx={{ border: '1px solid grey' }}
                     disabled
