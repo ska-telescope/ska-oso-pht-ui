@@ -10,29 +10,29 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 function verifyArrayConfiguration1AndSubArrayConfig() {
-  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.1');
-  cy.get('[data-testid="arrayConfiguration"]').click();
+  cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
+  cy.get('[data-testid="arrayConfig"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('arrayConfiguration.help');
 
-  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.1');
-  cy.get('[data-testid="subarrayConfiguration"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
+  cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.2');
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
 function verifyArrayConfiguration2AndSubArrayConfig() {
-  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.1');
-  cy.get('[data-testid="arrayConfiguration"]').click();
+  cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
+  cy.get('[data-testid="arrayConfig"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('arrayConfiguration.help');
 
-  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.1');
-  cy.get('[data-testid="subarrayConfiguration"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
+  cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="subarrayConfiguration"]').contains('subArrayConfiguration.2');
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
@@ -101,7 +101,7 @@ function verifyFrequencyUnits() {
 
 function verifyContinuumBandwidth() {
   cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
-  cy.get('[data-testid="helpPanelId"]').contains('continuum.help');
+  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 
 function verifyContinuumUnits() {
