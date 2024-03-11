@@ -90,9 +90,9 @@
     "help": "BANDWIDTH HELP",
     "label": "Band Width"
   },
-    "category": {
-      "label": "Category"
-    },
+  "category": {
+    "label": "Category"
+  },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY HELP",
     "label": "Central Frequency"
@@ -324,7 +324,6 @@
   "spectralResolution": {
     "help": "SPECTRAL RESOLUTION HELP",
     "label": "Spectral Resolution"
-
   },
   "srcNet": {
     "label": "SRC Net"
