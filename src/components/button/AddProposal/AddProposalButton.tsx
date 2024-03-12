@@ -19,7 +19,7 @@ export default function AddProposalButton() {
   return (
     <Button
       ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
+      color={ButtonColorTypes.Inherit}
       icon={<AddIcon />}
       label={title}
       onClick={ClickFunction}

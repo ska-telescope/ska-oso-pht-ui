@@ -10,7 +10,7 @@ import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
-  const LAB_WIDTH = 5;
+  const LAB_WIDTH = 6;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -85,22 +85,27 @@ export default function AddTarget() {
     }
   };
 
-  return (
-    <Grid mt={1} container direction="row" alignItems="flex-start" justifyContent="space-evenly">
-      <Grid item xs={6}>
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <TextEntry
-            label={t('name.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LAB_WIDTH}
-            testId="name"
-            value={name}
-            setValue={setName}
-            onFocus={() => helpComponent(t('name.help'))}
-            errorText={nameFieldError}
-          />
-        </Grid>
+  const nameField = () => {
+    return (
+      <Box p={1} sx={{ width: '100%' }}>
+        <TextEntry
+          label={t('name.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LAB_WIDTH}
+          testId="name"
+          value={name}
+          setValue={setName}
+          onFocus={() => helpComponent(t('name.help'))}
+          errorText={nameFieldError}
+        />
+      </Box>
+    );
+  };
+
+  const raField = () => {
+    return (
+      <Box p={1} sx={{ width: '100%' }}>
         <TextEntry
           label={t('rightAscension.label')}
           labelBold
@@ -111,6 +116,13 @@ export default function AddTarget() {
           setValue={setRA}
           onFocus={() => helpComponent(t('rightAscension.help'))}
         />
+      </Box>
+    );
+  };
+
+  const decField = () => {
+    return (
+      <Box p={1} sx={{ width: '100%' }}>
         <TextEntry
           label={t('declination.label')}
           labelBold
@@ -121,6 +133,13 @@ export default function AddTarget() {
           setValue={setDec}
           onFocus={() => helpComponent(t('declination.help'))}
         />
+      </Box>
+    );
+  };
+
+  const velField = () => {
+    return (
+      <Box p={1} sx={{ width: '100%' }}>
         <TextEntry
           label={t('velocity.label')}
           labelBold
@@ -131,17 +150,47 @@ export default function AddTarget() {
           setValue={setVel}
           onFocus={() => helpComponent(t('velocity.help'))}
         />
+      </Box>
+    );
+  };
 
-        <Box p={1}>
-          <AddTargetButton disabled={disabled()} onClick={clickFunction} />
-        </Box>
+  return (
+    <Grid
+      m={1}
+      spacing={1}
+      container
+      direction="row"
+      alignItems="flex-start"
+      justifyContent="space-between"
+    >
+      <Grid item xs={5}>
+        <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
+          <Grid item xs={12}>
+            {nameField()}
+          </Grid>
+          <Grid item xs={12}>
+            {raField()}
+          </Grid>
+          <Grid item xs={12}>
+            {decField()}
+          </Grid>
+          <Grid item xs={12}>
+            {velField()}
+          </Grid>
+          <Grid item xs={12}>
+            <Box p={1}>
+              <AddTargetButton disabled={disabled()} onClick={clickFunction} />
+            </Box>
+          </Grid>
+        </Grid>
       </Grid>
-      <Grid item>
+      <Grid item xs={2}>
         <ResolveButton targetName={name} onClick={handleResolveClick} />
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={4}>
         <HelpPanel />
       </Grid>
+      <Grid item xs={1}></Grid>
     </Grid>
   );
 }

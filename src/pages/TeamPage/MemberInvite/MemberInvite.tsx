@@ -12,6 +12,7 @@ import HelpPanel from '../../../components/helpPanel/helpPanel';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
+  const LABEL_WIDTH = 5;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
@@ -157,59 +158,109 @@ export default function MemberInvite() {
     clearForm();
   };
 
+  const firstNameField = () => {
+    return (
+      <Box p={1}>
+        <TextEntry
+          label={t('firstName.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH}
+          testId="firstName"
+          value={firstName}
+          setValue={setFirstName}
+          onFocus={() => helpComponent(t('firstName.help'))}
+          errorText={errorTextFirstName}
+        />
+      </Box>
+    );
+  };
+
+  const lastNameField = () => {
+    return (
+      <Box p={1}>
+        <TextEntry
+          label={t('lastName.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH}
+          testId="lastName"
+          value={lastName}
+          setValue={setLastName}
+          onFocus={() => helpComponent(t('lastName.help'))}
+          errorText={errorTextLastName}
+        />
+      </Box>
+    );
+  };
+
+  const emailField = () => {
+    return (
+      <Box p={1}>
+        <TextEntry
+          label={t('email.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH}
+          testId="email"
+          value={email}
+          setValue={setEmail}
+          errorText={t(errorTextEmail)}
+          onFocus={() => helpComponent(t('email.help'))}
+        />
+      </Box>
+    );
+  };
+
+  const piField = () => {
+    return (
+      <Box pl={1}>
+        <TickBox
+          label={t('pi.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH}
+          testId="piCheckbox"
+          checked={pi}
+          onChange={handleCheckboxChangePI}
+          onFocus={() => helpComponent(t('pi.help'))}
+        />
+      </Box>
+    );
+  };
+
+  const phdThesisField = () => {
+    return (
+      <Box pl={1}>
+        <TickBox
+          label={t('phdThesis.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH}
+          testId="PhDCheckbox"
+          checked={phdThesis}
+          onChange={handleCheckboxChangePhD}
+          onFocus={() => helpComponent(t('phdThesis.help'))}
+        />
+      </Box>
+    );
+  };
+
   return (
     <>
-      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={5}>
-          <TextEntry
-            label={t('firstName.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            testId="firstName"
-            value={firstName}
-            setValue={setFirstName}
-            onFocus={() => helpComponent(t('firstName.help'))}
-            disabled={false}
-            errorText={errorTextFirstName}
-          />
-          <TextEntry
-            label={t('lastName.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            testId="lastName"
-            value={lastName}
-            setValue={setLastName}
-            onFocus={() => helpComponent(t('lastName.help'))}
-            errorText={errorTextLastName}
-          />
-          <TextEntry
-            label={t('email.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            testId="email"
-            value={email}
-            setValue={setEmail}
-            errorText={t(errorTextEmail)}
-            onFocus={() => helpComponent(t('email.help'))}
-          />
-          <TickBox
-            label={t('pi.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            testId="piCheckbox"
-            checked={pi}
-            onChange={handleCheckboxChangePI}
-            onFocus={() => helpComponent(t('pi.help'))}
-          />
-          <TickBox
-            label={t('phdThesis.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            testId="PhDCheckbox"
-            checked={phdThesis}
-            onChange={handleCheckboxChangePhD}
-            onFocus={() => helpComponent(t('phdThesis.help'))}
-          />
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-between"
+      >
+        <Grid item xs={6}>
+          {firstNameField()}
+          {lastNameField()}
+          {emailField()}
+          {piField()}
+          {phdThesisField()}
         </Grid>
         <Grid item xs={5}>
           <HelpPanel />
