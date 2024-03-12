@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
-import { Tooltip, IconButton } from '@mui/material';
+import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 
 export default function ResolveButton({ targetName, onClick }) {
   const { t } = useTranslation('pht');
@@ -15,14 +15,14 @@ export default function ResolveButton({ targetName, onClick }) {
   const title = t('button.resolve');
 
   return (
-    <Tooltip title={title} arrow>
-      <IconButton
-        aria-label={`${title}Button`}
-        onClick={ClickFunction}
-        style={{ cursor: 'pointer' }}
-      >
-        <MyLocationIcon />
-      </IconButton>
-    </Tooltip>
+    <Button
+      ariaDescription={`${title}Button`}
+      color={ButtonColorTypes.Inherit}
+      icon={<MyLocationIcon />}
+      label={title}
+      onClick={ClickFunction}
+      testId={`${title}Button`}
+      variant={ButtonVariantTypes.Contained}
+    />
   );
 }
