@@ -4,9 +4,14 @@ local_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 valid_branch_regex="^star-[0-9]+[a-z0-9_-]*$"
 
-if [[ ! $local_branch = "main" ]] && [[ ! $local_branch =~ $valid_branch_regex ]]
+if [[ ! $local_branch = "main" ]] && [[ ! $local_branch = "dev" ]] && [[ ! $local_branch =~ $valid_branch_regex ]]
 then
     echo "Your branch name is invalid, got '$local_branch', expected '$valid_branch_regex'"
+    exit 1
+fi
+
+if ! grep REACT_APP_USE_LOCAL_DATA .env | grep -q "false"; then
+    echo "Use local data is set to not false"
     exit 1
 fi
 
