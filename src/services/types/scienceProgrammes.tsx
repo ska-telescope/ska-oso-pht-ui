@@ -1,4 +1,3 @@
-
 export type ScienceProgrammeBackend = {
   array: string;
   subarray: string;

@@ -6,6 +6,10 @@
 
 This repository contains a modular federated component that is used to handle the process of proposal submission
 
+## Invoking the checks before a git commit
+
+Run the command : git config --local core.hooksPath resources/git-hooks
+
 ## Documentation
 
 Please see the latest project documentation on RTD: https://developer.skao.int/projects/ska-oso-pht-ui/en/latest/?badge=latest
