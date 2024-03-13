@@ -8,9 +8,10 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
-import Proposal, { ProposalIN, SP } from '../../types/proposal';
-import { TeamMemberIN } from '../../types/teamMember';
-import { TargetIN } from 'services/types/target';
+import Proposal, { ProposalBackend } from '../../types/proposal';
+import { ScienceProgrammeBackend } from 'services/types/scienceProgrammes';
+import { TeamMemberBackend } from '../../types/teamMember';
+import { TargetBackend } from 'services/types/target';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
@@ -23,7 +24,7 @@ const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }
   return rec2.id;
 };
 
-const getTeamMembers = (inValue: TeamMemberIN[]) => {
+const getTeamMembers = (inValue: TeamMemberBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     results.push({
@@ -50,21 +51,24 @@ const getSubCategory = () => {
   return 1;
 };
 
-const getTargets = (inValue: TargetIN[]) => {
+const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length - 1; i++) {
     results.push({
+      dec: inValue[i].declination,
+      dec_units: inValue[i].declination_unit,
       id: i + 1,
       name: inValue[i].name,
+      vel: inValue[i].velocity,
+      vel_units: inValue[i].velocity_unit,
       ra: inValue[i].right_ascension,
-      dec: inValue[i].declination,
-      vel: inValue[i].velocity
+      ra_units: inValue[i].right_ascension_unit
     });
   }
   return results;
 };
 
-const getObservations = (inValue: SP[]) => {
+const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
@@ -80,7 +84,7 @@ const getObservations = (inValue: SP[]) => {
   return results;
 };
 
-function mapping(inRec: ProposalIN) {
+function mapping(inRec: ProposalBackend) {
   return {
     id: inRec.prsl_id,
     title: inRec.proposal_info.title,

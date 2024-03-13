@@ -1,6 +1,6 @@
-import { ProposalsIN } from '../../types/proposals';
+import { ProposalsBackend } from '../../types/proposals';
 
-const MockProposals: ProposalsIN[] = [
+const MockProposals: ProposalsBackend[] = [
   {
     prsl_id: 1,
     status: 'draft',

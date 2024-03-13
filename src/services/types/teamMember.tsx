@@ -1,4 +1,4 @@
-export type TeamMemberIN = {
+export type TeamMemberBackend = {
   investigator_id: number;
   first_name: string;
   last_name: string;
