@@ -57,7 +57,7 @@ export default function AddTarget() {
       (acc, target) => (target.id > acc ? target.id : acc),
       0
     );
-    const velocityUnits = t('velocity.unit.' + velUnit.toString());
+    const velocityUnits = velType === 0 ? t('velocity.unit.' + velUnit.toString()) : '';
     const newTarget = {
       dec,
       decUnit: '',

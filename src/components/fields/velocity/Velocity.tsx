@@ -30,7 +30,7 @@ export default function VelocityField({
 }: VelocityFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'velocity';
-  const UNIT_WIDTH = 3;
+  const UNIT_WIDTH = 2;
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
@@ -96,12 +96,14 @@ export default function VelocityField({
         <Grid item xs={labelWidth}>
           {VelocityTypeField()}
         </Grid>
-        <Grid item xs={12 - UNIT_WIDTH - labelWidth}>
+        <Grid item xs={12 - (valueType === 0 ? UNIT_WIDTH : 0) - labelWidth}>
           {VelocityValueField()}
         </Grid>
-        <Grid item xs={UNIT_WIDTH}>
-          {VelocityUnitField()}
-        </Grid>
+        {valueType === 0 && (
+          <Grid item xs={UNIT_WIDTH}>
+            {VelocityUnitField()}
+          </Grid>
+        )}
       </Grid>
     </Box>
   );
