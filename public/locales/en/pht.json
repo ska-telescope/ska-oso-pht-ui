@@ -263,6 +263,11 @@
     "label": "No specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "referenceFrame": {
+    "label": "Reference Frame",
+    "help": "REFERENCE FRAME HELP",
+    "LSR": "Heliocentric"
+  },
   "rightAscension": {
     "label": "Right Ascension",
     "help": "RIGHT ASCENSION HELP"
@@ -396,8 +401,13 @@
     "label": "Upload PDF"
   },
   "velocity": {
-    "label": "Velocity / Redshift",
-    "help": "VELOCITY HELP"
+    "label": "Velocity",
+    "help": "VELOCITY HELP",
+    "units": {
+      "0": "km/s"
+    },
+    "0": "Velocity",
+    "1": "Redshift"
   },
   "viewProposal": {
     "toolTip": "View proposal"
