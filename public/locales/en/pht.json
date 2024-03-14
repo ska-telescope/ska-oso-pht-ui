@@ -263,7 +263,7 @@
     "label": "No specific Target",
     "toolTip": "Current functionality is not yet available"
   },
-  "referenceFrame": { 
+  "referenceFrame": {
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
     "LSR": "Heliocentric"
