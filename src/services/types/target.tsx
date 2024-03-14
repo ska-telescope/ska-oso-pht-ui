@@ -9,14 +9,15 @@ export type TargetBackend = {
 };
 
 type Target = {
-  dec: number;
-  dec_unit: string;
+  dec: string;
+  decUnit: string;
   id: number;
   name: string;
-  ra: number;
-  ra_unit: string;
-  vel: number;
-  vel_unit: string;
+  ra: string;
+  raUnit: string;
+  referenceFrame: string;
+  vel: string;
+  velUnit: string;
 };
 
 export default Target;

@@ -55,14 +55,15 @@ const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length - 1; i++) {
     results.push({
-      dec: inValue[i].declination,
-      dec_units: inValue[i].declination_unit,
+      dec: inValue[i].declination.toString(),
+      decUnits: inValue[i].declination_unit,
       id: i + 1,
       name: inValue[i].name,
-      vel: inValue[i].velocity,
-      vel_units: inValue[i].velocity_unit,
-      ra: inValue[i].right_ascension,
-      ra_units: inValue[i].right_ascension_unit
+      ra: inValue[i].right_ascension.toString(),
+      raUnits: inValue[i].right_ascension_unit,
+      referenceFrame: '',
+      vel: inValue[i].velocity.toString(),
+      velUnits: inValue[i].velocity_unit
     });
   }
   return results;

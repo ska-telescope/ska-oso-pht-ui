@@ -4,20 +4,25 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
+import VelocityField from '../../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
+import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
-  const LAB_WIDTH = 6;
+  const LAB_WIDTH = 5;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
+  const [referenceFrame, setReferenceFrame] = React.useState('');
   const [vel, setVel] = React.useState('');
+  const [velUnit, setVelUnit] = React.useState(0);
+  const [velType, setVelType] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -52,12 +57,17 @@ export default function AddTarget() {
       (acc, target) => (target.id > acc ? target.id : acc),
       0
     );
+    const velocityUnits = t('velocity.unit.' + velUnit.toString());
     const newTarget = {
+      dec,
+      decUnit: '',
       id: highestId + 1,
       name,
       ra,
-      dec,
-      vel
+      raUnit: '',
+      referenceFrame,
+      vel,
+      velUnit: velocityUnits
     };
     setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
   };
@@ -122,7 +132,7 @@ export default function AddTarget() {
 
   const decField = () => {
     return (
-      <Box p={1} sx={{ width: '100%' }}>
+      <Box p={1} pb={0} sx={{ width: '100%' }}>
         <TextEntry
           label={t('declination.label')}
           labelBold
@@ -137,33 +147,16 @@ export default function AddTarget() {
     );
   };
 
-  const velField = () => {
-    return (
-      <Box p={1} sx={{ width: '100%' }}>
-        <TextEntry
-          label={t('velocity.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="vel"
-          value={vel}
-          setValue={setVel}
-          onFocus={() => helpComponent(t('velocity.help'))}
-        />
-      </Box>
-    );
-  };
-
   return (
     <Grid
-      m={1}
+      p={1}
       spacing={1}
       container
       direction="row"
       alignItems="flex-start"
       justifyContent="space-between"
     >
-      <Grid item xs={5}>
+      <Grid item xs={6}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item xs={12}>
             {nameField()}
@@ -175,8 +168,31 @@ export default function AddTarget() {
             {decField()}
           </Grid>
           <Grid item xs={12}>
-            {velField()}
+            <VelocityField
+              labelWidth={LAB_WIDTH}
+              setValue={setVel}
+              setValueType={setVelType}
+              setValueUnit={setVelUnit}
+              value={vel}
+              valueType={velType}
+              valueUnit={velUnit}
+              valueFocus={() => helpComponent(t('velocity.help'))}
+              valueTypeFocus={() => helpComponent(t('velocity.help'))}
+              valueUnitFocus={() => helpComponent(t('velocity.help'))}
+            />
           </Grid>
+          {velType === 0 && (
+            <Grid item xs={12}>
+              <ReferenceFrameField
+                labelBold={true}
+                labelPosition={LABEL_POSITION.START}
+                labelWidth={LAB_WIDTH}
+                onFocus={() => helpComponent(t('referenceFrame.help'))}
+                setValue={setReferenceFrame}
+                value={referenceFrame}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Box p={1}>
               <AddTargetButton disabled={disabled()} onClick={clickFunction} />
@@ -190,7 +206,6 @@ export default function AddTarget() {
       <Grid item xs={4}>
         <HelpPanel />
       </Grid>
-      <Grid item xs={1}></Grid>
     </Grid>
   );
 }
