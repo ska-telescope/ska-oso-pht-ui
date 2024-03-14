@@ -120,10 +120,6 @@
   "cycle": {
     "label": "Cycle"
   },
-  "declination": {
-    "label": "Declination",
-    "help": "DECLINATION HELP"
-  },
   "deleteTarget": {
     "label": "Delete this target ? ",
     "content1": "NOTE : Selections to the observations will also be removed"
@@ -268,10 +264,6 @@
     "help": "REFERENCE FRAME HELP",
     "LSR": "Heliocentric"
   },
-  "rightAscension": {
-    "label": "Right Ascension",
-    "help": "RIGHT ASCENSION HELP"
-  },
   "robust": {
     "help": "ROBUST HELP",
     "label": "Robust"
@@ -301,6 +293,23 @@
   },
   "searchForMember": {
     "label": "Search for member"
+  },
+  "skyDirection": {
+    "help": {
+      "1": {
+        "type": "SKY DIRECTION 1 TYPE HELP",
+        "value": "SKY DIRECTION 1 VALUE HELP"
+      },
+      "2": {
+        "value": "SKY DIRECTION 2 VALUE HELP"
+      }
+    },
+    "label": {
+      "0": "Declination",
+      "1": "Longitude"
+    },
+    "0": "Right Ascension",
+    "1": "Latitude"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"
@@ -401,7 +410,6 @@
     "label": "Upload PDF"
   },
   "velocity": {
-    "label": "Velocity",
     "help": "VELOCITY HELP",
     "units": {
       "0": "km/s"
