@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-syntax */
+
+/*
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
@@ -9,7 +11,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-/*
 function verifyArrayConfiguration1AndSubArrayConfig() {
   cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
   cy.get('[data-testid="arrayConfig"]').click();
