@@ -16,7 +16,7 @@ export default function SdpDataPage() {
 
   const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentRow, setCurrentRow] = React.useState(0);
+  const [, setCurrentRow] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
 
