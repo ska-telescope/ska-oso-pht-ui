@@ -18,6 +18,7 @@ export type TargetBackend = {
  *  NOTE : velUnit is currently mapped as follows:
  *   ''  : No units
  *   '0' : "km/s"
+ *   '1' : "m/s"
  ***********************************************************************************/
 
 type Target = {

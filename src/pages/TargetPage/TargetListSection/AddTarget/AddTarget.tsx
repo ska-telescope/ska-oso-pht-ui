@@ -11,6 +11,7 @@ import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
+import SkyUnits from '../../../../components/fields/skyDirection/SkyUnits';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
@@ -31,7 +32,7 @@ export default function AddTarget() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('name.help'));
+    helpComponent(t('skyUnits.help'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
@@ -127,25 +128,31 @@ export default function AddTarget() {
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item xs={12}>
+            <SkyUnits
+              labelWidth={LAB_WIDTH}
+              setValue={setRAType}
+              value={raType}
+              valueFocus={() => helpComponent(t('skyUnits.help'))}
+            />
+          </Grid>
+          <Grid item xs={12}>
             {nameField()}
           </Grid>
           <Grid item xs={12}>
             <SkyDirection1
               labelWidth={LAB_WIDTH}
               setValue={setRA}
-              setValueType={setRAType}
+              skyUnits={raType}
               value={ra}
-              valueType={raType}
               valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
-              valueTypeFocus={() => helpComponent(t('skyDirection.help.1.type'))}
             />
           </Grid>
           <Grid item xs={12}>
             <SkyDirection2
               labelWidth={LAB_WIDTH}
               setValue={setDec}
+              skyUnits={raType}
               value={dec}
-              valueType={raType}
               valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
             />
           </Grid>
@@ -183,6 +190,7 @@ export default function AddTarget() {
         </Grid>
       </Grid>
       <Grid item xs={2}>
+        <Box p={1} sx={{ height: '40px' }} />
         <ResolveButton targetName={name} onClick={handleResolveClick} />
       </Grid>
       <Grid item xs={4}>

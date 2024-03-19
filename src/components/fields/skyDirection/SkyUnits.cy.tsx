@@ -2,11 +2,11 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
-import SkyDirection2 from './SkyDirection2';
+import SkyUnits from './SkyUnits';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
-const value = '';
+const value = 0;
 
 describe('<TitleContent />', () => {
   describe('Theme', () => {
@@ -16,7 +16,7 @@ describe('<TitleContent />', () => {
           <StoreProvider>
             <ThemeProvider theme={theme(theTheme)}>
               <CssBaseline />
-              <SkyDirection2 setValue={cy.stub().as('setValue')} skyUnits={0} value={value} />
+              <SkyUnits setValue={cy.stub().as('setValue')} value={value} />
             </ThemeProvider>
           </StoreProvider>
         );

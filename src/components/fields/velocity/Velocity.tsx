@@ -64,7 +64,7 @@ export default function VelocityField({
   );
 
   const VelocityUnitField = () => {
-    const OPTIONS = [0];
+    const OPTIONS = [0, 1];
 
     const getOptions = () => {
       return OPTIONS.map(e => ({ label: t(FIELD + '.units.' + e), value: e }));
