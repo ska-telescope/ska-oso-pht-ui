@@ -120,6 +120,9 @@
   "cycle": {
     "label": "Cycle"
   },
+  "dataProduct": {
+    "button": "Add Data Product"
+  },
   "deleteTarget": {
     "label": "Delete this target ? ",
     "content1": "NOTE : Selections to the observations will also be removed"
@@ -297,7 +300,6 @@
   "skyDirection": {
     "help": {
       "1": {
-        "type": "SKY DIRECTION 1 TYPE HELP",
         "value": "SKY DIRECTION 1 VALUE HELP"
       },
       "2": {
@@ -491,6 +493,10 @@
     "12": {
       "title": "SKAO Cycle",
       "desc": ""
+    },
+    "13": {
+      "title": "Data Product",
+      "desc": "ADD DATA PRODUCT. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     }
   },
   "label": {
