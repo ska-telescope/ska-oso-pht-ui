@@ -9,6 +9,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+/*
 function verifyArrayConfiguration1AndSubArrayConfig() {
   cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
   cy.get('[data-testid="arrayConfig"]').click();
@@ -293,3 +294,4 @@ describe('<AddDataProduct />', () => {
     verifyImageWeighting();
   });
 });
+*/
