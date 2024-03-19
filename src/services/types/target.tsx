@@ -8,6 +8,19 @@ export type TargetBackend = {
   velocity_unit: string;
 };
 
+/************************************************************************************
+ *  NOTE : raUnit & decUnit are currently mapped as follows:
+ *   '0' : values are Right Ascension & Declination
+ *   "1" : values are Latitude & Longitude.
+ ***********************************************************************************/
+
+/************************************************************************************
+ *  NOTE : velUnit is currently mapped as follows:
+ *   ''  : No units
+ *   '0' : "km/s"
+ *   '1' : "m/s"
+ ***********************************************************************************/
+
 type Target = {
   dec: string;
   decUnit: string;

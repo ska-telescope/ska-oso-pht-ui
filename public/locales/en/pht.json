@@ -120,10 +120,6 @@
   "cycle": {
     "label": "Cycle"
   },
-  "declination": {
-    "label": "Declination",
-    "help": "DECLINATION HELP"
-  },
   "deleteTarget": {
     "label": "Delete this target ? ",
     "content1": "NOTE : Selections to the observations will also be removed"
@@ -268,10 +264,6 @@
     "help": "REFERENCE FRAME HELP",
     "LSR": "Heliocentric"
   },
-  "rightAscension": {
-    "label": "Right Ascension",
-    "help": "RIGHT ASCENSION HELP"
-  },
   "robust": {
     "help": "ROBUST HELP",
     "label": "Robust"
@@ -301,6 +293,33 @@
   },
   "searchForMember": {
     "label": "Search for member"
+  },
+  "skyDirection": {
+    "help": {
+      "1": {
+        "type": "SKY DIRECTION 1 TYPE HELP",
+        "value": "SKY DIRECTION 1 VALUE HELP"
+      },
+      "2": {
+        "value": "SKY DIRECTION 2 VALUE HELP"
+      }
+    },
+    "label": {
+      "1": {
+        "0": "Right Ascension",
+        "1": "Latitude"
+      },
+      "2": {
+        "0": "Declination",
+        "1": "Longitude"
+      }
+    }
+  },
+  "skyUnits": {
+    "help": "REFERENCE COORDINATE HELP",
+    "label": "Reference Coordinate",
+    "0": "Equatorial",
+    "1": "Galactic"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"
@@ -401,10 +420,10 @@
     "label": "Upload PDF"
   },
   "velocity": {
-    "label": "Velocity",
     "help": "VELOCITY HELP",
     "units": {
-      "0": "km/s"
+      "0": "km/s",
+      "1": "m/s"
     },
     "0": "Velocity",
     "1": "Redshift"

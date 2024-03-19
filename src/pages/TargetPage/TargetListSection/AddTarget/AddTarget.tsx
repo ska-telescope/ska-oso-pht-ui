@@ -9,6 +9,9 @@ import HelpPanel from '../../../../components/helpPanel/helpPanel';
 import { Proposal } from '../../../../services/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
+import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
+import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
+import SkyUnits from '../../../../components/fields/skyDirection/SkyUnits';
 
 export default function AddTarget() {
   const { t } = useTranslation('pht');
@@ -21,14 +24,15 @@ export default function AddTarget() {
   const [dec, setDec] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState('');
   const [vel, setVel] = React.useState('');
-  const [velUnit, setVelUnit] = React.useState(0);
   const [velType, setVelType] = React.useState(0);
+  const [velUnit, setVelUnit] = React.useState(0);
+  const [raType, setRAType] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('name.help'));
+    helpComponent(t('skyUnits.help'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
@@ -57,17 +61,16 @@ export default function AddTarget() {
       (acc, target) => (target.id > acc ? target.id : acc),
       0
     );
-    const velocityUnits = velType === 0 ? t('velocity.unit.' + velUnit.toString()) : '';
     const newTarget = {
       dec,
-      decUnit: '',
+      decUnit: raType.toString(),
       id: highestId + 1,
       name,
       ra,
-      raUnit: '',
+      raUnit: raType.toString(),
       referenceFrame,
       vel,
-      velUnit: velocityUnits
+      velUnit: velType.toString()
     };
     setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
   };
@@ -113,40 +116,6 @@ export default function AddTarget() {
     );
   };
 
-  const raField = () => {
-    return (
-      <Box p={1} sx={{ width: '100%' }}>
-        <TextEntry
-          label={t('rightAscension.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="ra"
-          value={ra}
-          setValue={setRA}
-          onFocus={() => helpComponent(t('rightAscension.help'))}
-        />
-      </Box>
-    );
-  };
-
-  const decField = () => {
-    return (
-      <Box p={1} pb={0} sx={{ width: '100%' }}>
-        <TextEntry
-          label={t('declination.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="dec"
-          value={dec}
-          setValue={setDec}
-          onFocus={() => helpComponent(t('declination.help'))}
-        />
-      </Box>
-    );
-  };
-
   return (
     <Grid
       p={1}
@@ -159,13 +128,33 @@ export default function AddTarget() {
       <Grid item xs={6}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item xs={12}>
+            <SkyUnits
+              labelWidth={LAB_WIDTH}
+              setValue={setRAType}
+              value={raType}
+              valueFocus={() => helpComponent(t('skyUnits.help'))}
+            />
+          </Grid>
+          <Grid item xs={12}>
             {nameField()}
           </Grid>
           <Grid item xs={12}>
-            {raField()}
+            <SkyDirection1
+              labelWidth={LAB_WIDTH}
+              setValue={setRA}
+              skyUnits={raType}
+              value={ra}
+              valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+            />
           </Grid>
           <Grid item xs={12}>
-            {decField()}
+            <SkyDirection2
+              labelWidth={LAB_WIDTH}
+              setValue={setDec}
+              skyUnits={raType}
+              value={dec}
+              valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+            />
           </Grid>
           <Grid item xs={12}>
             <VelocityField
@@ -201,6 +190,7 @@ export default function AddTarget() {
         </Grid>
       </Grid>
       <Grid item xs={2}>
+        <Box p={1} sx={{ height: '40px' }} />
         <ResolveButton targetName={name} onClick={handleResolveClick} />
       </Grid>
       <Grid item xs={4}>
