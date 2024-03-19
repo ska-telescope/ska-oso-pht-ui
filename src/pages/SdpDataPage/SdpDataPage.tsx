@@ -2,28 +2,23 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
+import AddDataProductButton from '../../components/button/AddDataProduct/AddDataProductButton';
+import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 
 const PAGE = 7;
 
 export default function SdpDataPage() {
   const { t } = useTranslation('pht');
 
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [currentRow, setCurrentRow] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -36,7 +31,6 @@ export default function SdpDataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('pipeline.help'));
   }, []);
 
   React.useEffect(() => {
@@ -45,52 +39,73 @@ export default function SdpDataPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().pipeline.length > 0 ? 1 : 0;
+    const count = 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const pipelineField = () => (
-    <TextEntry
-      label={t('pipeline.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      testId="pipelineId"
-      value={getProposal().pipeline}
-      setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-      onFocus={() => helpComponent(t('pipeline.help'))}
-      helperText={t('pipeline.helper')}
-    />
-  );
+  const columns = [
+    {
+      field: 'field1',
+      headerName: 'FIELD 1',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { field1: number } }) => <Typography>{e.row.field1}</Typography>
+    },
+    {
+      field: 'field2',
+      headerName: 'FIELD 2',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { field2: number } }) => <Typography>{e.row.field2}</Typography>
+    },
+    {
+      field: 'id',
+      headerName: t('actions.label'),
+      sortable: false,
+      flex: 0.5,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => (
+        <TrashIcon onClick={deleteIconClicked} toolTip="Delete data product" />
+      )
+    }
+  ];
+  const extendedColumnsObservations = [...columns];
+
+  const deleteIconClicked = () => {};
+
+  const getRows = () => getProposal().dataProducts;
+
+  const clickRow = (e: { id: number }) => {
+    setCurrentRow(e.id);
+  };
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        spacing={1}
-        p={3}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        <Grid item xs={1} />
-        <Grid
-          container
-          spacing={1}
-          direction="row"
-          alignItems="baseline"
-          justifyContent="flex-start"
-        >
-          <Grid item xs={1} />
-          <Grid item xs={6}>
-            <Typography variant="h6">{t('sdp.label')}</Typography>
-
-            {pipelineField()}
-          </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={3}>
-            <HelpPanel />
+      <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
+        <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
+          <Grid item pb={1}>
+            <AddDataProductButton />
           </Grid>
         </Grid>
+        {getRows().length > 0 && (
+          <DataGrid
+            rows={getRows()}
+            columns={extendedColumnsObservations}
+            height={450}
+            onRowClick={clickRow}
+            showBorder={false}
+            showMild
+            testId="observationDetails"
+          />
+        )}
+        {getRows().length === 0 && (
+          <InfoCard
+            color={InfoCardColorTypes.Error}
+            fontSize={20}
+            message={t('error.noObservations')}
+            testId="helpPanelId"
+          />
+        )}
       </Grid>
     </Shell>
   );

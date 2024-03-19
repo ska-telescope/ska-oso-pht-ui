@@ -1,3 +1,4 @@
+import DataProduct from './dataProduct';
 import Observation from './observation';
 import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
@@ -41,6 +42,7 @@ export type Proposal = {
   targetObservation: TargetObservation[];
   technicalPDF: File | null;
   technicalLoadStatus: number;
+  dataProducts: DataProduct[];
   pipeline: string;
 };
 
