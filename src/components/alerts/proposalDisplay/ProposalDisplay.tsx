@@ -308,6 +308,8 @@ export default function ProposalDisplay({
     </Grid>
   );
 
+  console.log('PROPOSAL', getProposal());
+
   return (
     <Dialog
       fullWidth

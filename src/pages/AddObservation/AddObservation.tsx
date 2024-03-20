@@ -17,6 +17,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../services/types/proposal';
+import Observation from 'services/types/observation';
 
 // TODO : Cypress Testing
 // TODO : Documentation
@@ -536,12 +537,24 @@ export default function AddObservation() {
         (acc, observation) => (observation.id > acc ? observation.id : acc),
         0
       );
-      const newObservation = {
+      const newObservation: Observation = {
         id: highestId + 1,
         telescope: arrayConfig,
         subarray: subarrayConfig,
         linked: '0',
-        type: observationType
+        type: observationType,
+        observing_band: observingBand,
+        weather: weather,
+        elevation: elevation,
+        central_frequency: frequency,
+        bandwidth: bandwidth,
+        spectral_averaging: spectralAveraging,
+        tapering: tapering,
+        image_weighting: imageWeighting,
+        integration_time: suppliedValue,
+        spectral_resolution: spectralResolution,
+        effective_resolution: 0,
+        number_of_sub_bands: subBands
       };
       console.log('OBSERVATION', newObservation);
       setProposal({
