@@ -30,7 +30,6 @@ export default function VelocityField({
 }: VelocityFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'velocity';
-  const UNIT_WIDTH = 2;
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
@@ -53,15 +52,18 @@ export default function VelocityField({
     );
   };
 
-  const VelocityValueField = () => (
-    <TextEntry
-      label=""
-      testId={FIELD + 'Value'}
-      value={value}
-      setValue={setValue}
-      onFocus={valueFocus}
-    />
-  );
+  const VelocityValueField = () => {
+    return (
+      <TextEntry
+        label=""
+        testId={FIELD + 'Value'}
+        value={value}
+        setValue={setValue}
+        suffix={valueType === 0 ? VelocityUnitField() : ''}
+        onFocus={valueFocus}
+      />
+    );
+  };
 
   const VelocityUnitField = () => {
     const OPTIONS = [0, 1];
@@ -71,16 +73,14 @@ export default function VelocityField({
     };
 
     return (
-      <Box pt={1}>
-        <DropDown
-          options={getOptions()}
-          testId={FIELD + 'Type'}
-          value={valueUnit}
-          setValue={setValueUnit}
-          label=""
-          onFocus={valueUnitFocus}
-        />
-      </Box>
+      <DropDown
+        options={getOptions()}
+        testId={FIELD + 'Type'}
+        value={valueUnit}
+        setValue={setValueUnit}
+        label=""
+        onFocus={valueUnitFocus}
+      />
     );
   };
 
@@ -96,14 +96,9 @@ export default function VelocityField({
         <Grid item xs={labelWidth}>
           {VelocityTypeField()}
         </Grid>
-        <Grid item xs={12 - (valueType === 0 ? UNIT_WIDTH : 0) - labelWidth}>
+        <Grid item xs={12 - labelWidth}>
           {VelocityValueField()}
         </Grid>
-        {valueType === 0 && (
-          <Grid item xs={UNIT_WIDTH}>
-            {VelocityUnitField()}
-          </Grid>
-        )}
       </Grid>
     </Box>
   );

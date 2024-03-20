@@ -18,7 +18,6 @@
     "close": "Close",
     "create": "Create",
     "home": "Home",
-    "resolve": "Resolve",
     "save": "Save",
     "submit": "Submit",
     "sendInvite": "Send invitation",
@@ -225,7 +224,7 @@
     "label": "PDF Preview"
   },
   "phdThesis": {
-    "label": "PhD Thesis",
+    "label": "for PhD Thesis",
     "help": "PHD THESIS HELP"
   },
   "pht": {
@@ -266,6 +265,14 @@
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
     "LSR": "Heliocentric"
+  },
+  "resolve": {
+    "label": "Resolve",
+    "toolTip": "Query SIMBAD and NED",
+    "error": {
+      "mapping": "Unable to map results from API",
+      "name": "Unable to resolve provided name"
+    }
   },
   "robust": {
     "help": "ROBUST HELP",
@@ -314,6 +321,26 @@
       "2": {
         "0": "Declination",
         "1": "Longitude"
+      }
+    },
+    "mask": {
+      "1": {
+        "0": "00:00:00.000",
+        "1": ""
+      },
+      "2": {
+        "0": "00:00:00.000",
+        "1": ""
+      }
+    },
+    "units": {
+      "1": {
+        "0": "",
+        "1": "deg"
+      },
+      "2": {
+        "0": "",
+        "1": "deg"
       }
     }
   },
