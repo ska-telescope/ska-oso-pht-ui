@@ -87,14 +87,14 @@ export default function AddTarget() {
     clearForm();
   };
 
-  const handleResolveClick = response => {
+  const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
     if (response && !response.error) {
       const values = response.split(' ');
       setRA(values[0]);
       setDec(values[1]);
       setNameFieldError('');
     } else {
-      setNameFieldError(response.error);
+      setNameFieldError(t(response.error));
     }
   };
 
@@ -109,6 +109,9 @@ export default function AddTarget() {
           testId="name"
           value={name}
           setValue={setName}
+          suffix={
+            <ResolveButton targetName={name} skyUnits={raType} onClick={handleResolveClick} />
+          }
           onFocus={() => helpComponent(t('name.help'))}
           errorText={nameFieldError}
         />
@@ -123,9 +126,9 @@ export default function AddTarget() {
       container
       direction="row"
       alignItems="flex-start"
-      justifyContent="space-between"
+      justifyContent="space-around"
     >
-      <Grid item xs={6}>
+      <Grid item xs={7}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item xs={12}>
             <SkyUnits
@@ -188,10 +191,6 @@ export default function AddTarget() {
             </Box>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={2}>
-        <Box p={1} sx={{ height: '40px' }} />
-        <ResolveButton targetName={name} onClick={handleResolveClick} />
       </Grid>
       <Grid item xs={4}>
         <HelpPanel />
