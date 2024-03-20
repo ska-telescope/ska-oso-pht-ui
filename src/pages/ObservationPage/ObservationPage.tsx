@@ -81,6 +81,7 @@ export default function ObservationPage() {
   const AddObservationTarget = (id: number) => {
     const rec = { observationId: currentObservation, targetId: id };
     setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
+    console.log('PROPOSAL WITH TARGETS', getProposal());
   };
 
   function filterRecords(id: number) {

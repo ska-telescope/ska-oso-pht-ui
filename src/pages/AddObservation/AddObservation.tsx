@@ -532,7 +532,7 @@ export default function AddObservation() {
     };
 
     const addObservationToProposal = () => {
-      const highestId = getProposal().observations.reduce(
+      const highestId = getProposal().observations?.reduce(
         (acc, observation) => (observation.id > acc ? observation.id : acc),
         0
       );
@@ -543,10 +543,12 @@ export default function AddObservation() {
         linked: '0',
         type: observationType
       };
+      console.log('OBSERVATION', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation]
       });
+      console.log('PROPOSAL', getProposal());
     };
 
     const buttonClicked = () => {
