@@ -44,9 +44,10 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
   };
 
   const units = skyUnits < 0 || skyUnits > MOCK_UNITS.length - 1 ? 0 : skyUnits;
-  console.log("TREVOR", targetName, units);
   if (USE_LOCAL_DATA) {
-    return targetName?.trim() === 'M1' ? mapping(MOCK_RESULTS[units]) : { error: 'resolve.error.name' };
+    return targetName?.trim() === 'M1'
+      ? mapping(MOCK_RESULTS[units])
+      : { error: 'resolve.error.name' };
   }
 
   try {

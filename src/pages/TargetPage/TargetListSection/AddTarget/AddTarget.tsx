@@ -88,7 +88,6 @@ export default function AddTarget() {
   };
 
   const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
-    console.error(response);
     if (response && !response.error) {
       const values = response.split(' ');
       setRA(values[0]);

@@ -2,7 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
-import { Button, ButtonColorTypes, ButtonSizeTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import {
+  Button,
+  ButtonColorTypes,
+  ButtonSizeTypes,
+  ButtonVariantTypes
+} from '@ska-telescope/ska-gui-components';
 
 export default function ResolveButton({ targetName, skyUnits, onClick }) {
   const { t } = useTranslation('pht');
