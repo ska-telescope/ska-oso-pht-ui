@@ -74,6 +74,27 @@ async function GetCalculate(telescope, mode, observation: Observation) {
 
   function mapQueryMidCalculateZoom() {
     console.log('::: in mapQueryMidCalculateZoom');
+    const query = {
+      rx_band: `Band ${observation.observing_band.toString()}`,
+      ra_str: '00:00:00.0', // TODO: get from target
+      dec_str: '00:00:00.0', // TODO: get from target
+      array_configuration: OBSERVATION.array[0].subarray.find(
+        obj => obj.value === observation.subarray
+      ).label,
+      pwv: observation.weather,
+      el: observation.elevation,
+      frequency: observation.central_frequency,
+      bandwidth: observation.bandwidth.toString(),
+      zoom_frequencies: observation.central_frequency,
+      zoom_resolutions: observation.effective_resolution.toString(),
+      weighting: OBSERVATION.ImageWeighting.find(obj => obj.value === observation.image_weighting)
+        .label,
+      calculator_mode: 'line',
+      taper: observation.tapering.toString(),
+      integration_time: observation.integration_time
+    };
+    console.log('::: query mapQueryMidCalculateZoom', query);
+    return query;
   }
 
   function mapQueryLowCalculate() {
@@ -97,8 +118,8 @@ async function GetCalculate(telescope, mode, observation: Observation) {
         case 'Zoom':
           console.log('Mid telescope in Zoom mode');
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = MockQueryMidCalculateZoom;
-          mapQueryMidCalculateZoom();
+          // QUERY_STRING_PARAMETERS = MockQueryMidCalculateZoom;
+          QUERY_STRING_PARAMETERS = mapQueryMidCalculateZoom();
           break;
         default:
           console.log('Invalid mode');
