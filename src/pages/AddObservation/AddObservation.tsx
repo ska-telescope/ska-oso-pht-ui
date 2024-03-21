@@ -59,6 +59,9 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
 
+  // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
+  // some unit conversion will also be useful
+
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
   }, []);
@@ -557,6 +560,8 @@ export default function AddObservation() {
         number_of_sub_bands: subBands
       };
       console.log('OBSERVATION in AddObservation', newObservation);
+      console.log('getProposal()', getProposal());
+      console.log('getProposal().observations', getProposal().observations);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation]

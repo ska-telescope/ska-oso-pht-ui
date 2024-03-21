@@ -13,6 +13,7 @@ import {
   MockResponseLowCalculateZoom
 } from './mockResponseLowCalculate';
 import Observation from 'services/types/observation';
+import { OBSERVATION } from '../../../../utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetCalculate(telescope, mode, observation: Observation) {
@@ -52,19 +53,23 @@ async function GetCalculate(telescope, mode, observation: Observation) {
       rx_band: `Band ${observation.observing_band.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
-      array_configuration: observation.subarray.toString(), // TODO: map number to label
+      array_configuration: OBSERVATION.array[0].subarray.find(
+        obj => obj.value === observation.subarray
+      ).label,
       pwv: observation.weather,
       el: observation.elevation,
       frequency: observation.central_frequency,
       bandwidth: observation.bandwidth.toString(),
       n_subbands: observation.number_of_sub_bands.toString(),
       resolution: observation.spectral_resolution.toString(),
-      weighting: observation.image_weighting, // TODO: map number to label
-      calculator_mode: observation.type, // TODO: map number to label
+      weighting: OBSERVATION.ImageWeighting.find(obj => obj.value === observation.image_weighting)
+        .label,
+      calculator_mode: 'continuum',
       taper: observation.tapering.toString(),
       integration_time: observation.integration_time
     };
     console.log('::: query', query);
+    return query;
   }
 
   function mapQueryMidCalculateZoom() {
@@ -86,8 +91,8 @@ async function GetCalculate(telescope, mode, observation: Observation) {
         case 'Continuum':
           console.log('Mid telescope in Continuum mode');
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = MockQueryMidCalculate;
-          mapQueryMidCalculate();
+          // QUERY_STRING_PARAMETERS = MockQueryMidCalculate;
+          QUERY_STRING_PARAMETERS = mapQueryMidCalculate();
           break;
         case 'Zoom':
           console.log('Mid telescope in Zoom mode');
@@ -130,6 +135,7 @@ async function GetCalculate(telescope, mode, observation: Observation) {
   }
 
   try {
+    console.log('QUERY_STRING_PARAMETERS', QUERY_STRING_PARAMETERS);
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
