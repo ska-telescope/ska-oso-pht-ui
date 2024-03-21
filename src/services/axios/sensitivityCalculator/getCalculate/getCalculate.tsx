@@ -15,7 +15,7 @@ import {
 import Observation from 'services/types/observation';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetCalculate(telescope, mode, observation) {
+async function GetCalculate(telescope, mode, observation: Observation) {
   // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
@@ -46,6 +46,39 @@ async function GetCalculate(telescope, mode, observation) {
     console.log('in mapping', observation);
   }
 
+  function mapQueryMidCalculate() {
+    console.log('::: in mapQueryMidCalculate');
+    const query = {
+      rx_band: `Band ${observation.observing_band.toString()}`,
+      ra_str: '00:00:00.0', // TODO: get from target
+      dec_str: '00:00:00.0', // TODO: get from target
+      array_configuration: observation.subarray.toString(), // TODO: map number to label
+      pwv: observation.weather,
+      el: observation.elevation,
+      frequency: observation.central_frequency,
+      bandwidth: observation.bandwidth.toString(),
+      n_subbands: observation.number_of_sub_bands.toString(),
+      resolution: observation.spectral_resolution.toString(),
+      weighting: observation.image_weighting, // TODO: map number to label
+      calculator_mode: observation.type, // TODO: map number to label
+      taper: observation.tapering.toString(),
+      integration_time: observation.integration_time
+    };
+    console.log('::: query', query);
+  }
+
+  function mapQueryMidCalculateZoom() {
+    console.log('::: in mapQueryMidCalculateZoom');
+  }
+
+  function mapQueryLowCalculate() {
+    console.log('::: in mapQueryLowCalculate');
+  }
+
+  function mapQueryLowCalculateZoom() {
+    console.log('::: in mapQueryLowCalculateZoom');
+  }
+
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
@@ -54,11 +87,13 @@ async function GetCalculate(telescope, mode, observation) {
           console.log('Mid telescope in Continuum mode');
           URL_MODE = '';
           QUERY_STRING_PARAMETERS = MockQueryMidCalculate;
+          mapQueryMidCalculate();
           break;
         case 'Zoom':
           console.log('Mid telescope in Zoom mode');
           URL_MODE = '';
           QUERY_STRING_PARAMETERS = MockQueryMidCalculateZoom;
+          mapQueryMidCalculateZoom();
           break;
         default:
           console.log('Invalid mode');
@@ -71,11 +106,13 @@ async function GetCalculate(telescope, mode, observation) {
           console.log('Low telescope in Continuum mode');
           URL_MODE = URL_CONTINUUM;
           QUERY_STRING_PARAMETERS = MockQueryLowCalculate;
+          mapQueryLowCalculate();
           break;
         case 'Zoom':
           console.log('Low telescope in Zoom mode');
           URL_MODE = URL_ZOOM;
           QUERY_STRING_PARAMETERS = MockQueryLowCalculateZoom;
+          mapQueryLowCalculateZoom();
           break;
         default:
           console.log('Invalid mode');
