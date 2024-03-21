@@ -16,26 +16,26 @@ import Observation from 'services/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetCalculate(telescope, mode, observation: Observation) {
+async function GetCalculate(telescope: string, mode: string, observation: Observation) {
   // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
-  let URL_TELESCOPE;
+  let URL_TELESCOPE: string;
   const URL_MID = `mid/`;
   const URL_LOW = `low/`;
   // Mode URLs
   const URL_ZOOM = `zoom/`;
   const URL_CONTINUUM = `continuum/`;
-  let URL_MODE;
+  let URL_MODE: string;
   const URL_CALCULATE = `calculate`;
   // Mocks query strings parameters
-  let QUERY_STRING_PARAMETERS;
-  let MOCK_CONTINUUM_QUERY;
-  let MOCK_ZOOM_QUERY;
+  let QUERY_STRING_PARAMETERS: string | string[][] | Record<string, string> | URLSearchParams;
+  let MOCK_CONTINUUM_QUERY: any;
+  let MOCK_ZOOM_QUERY: any;
   // Mocks responses
-  let MOCK_RESPONSE;
-  let MOCK_RESPONSE_CONTINUUM;
-  let MOCK_RESPONSE_ZOOM;
+  let MOCK_RESPONSE: any;
+  let MOCK_RESPONSE_CONTINUUM: any;
+  let MOCK_RESPONSE_ZOOM: any;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -97,8 +97,28 @@ async function GetCalculate(telescope, mode, observation: Observation) {
     return query;
   }
 
+  function getSubarrayType(_subArray: string, telescope: string) {
+    const subArray = _subArray.replace('*', '').replace('(core only)', '');
+    const star = _subArray.includes('*') ? 'star' : '';
+    const type = _subArray.includes('core') ? 'core_only' : 'all';
+    return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
+  }
+
   function mapQueryLowCalculate() {
     console.log('::: in mapQueryLowCalculate');
+    const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
+      .label;
+    const query = {
+      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'LOW_AA4_all',
+      duration: observation.integration_time,
+      pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
+      freq_centre: observation.central_frequency,
+      elevation_limit: observation.elevation,
+      bandwidth_mhz: observation.bandwidth.toString(),
+      spectral_averaging_factor: observation.spectral_averaging.toString()
+    };
+    console.log('::: query', query);
+    return query;
   }
 
   function mapQueryLowCalculateZoom() {
@@ -131,8 +151,8 @@ async function GetCalculate(telescope, mode, observation: Observation) {
         case 'Continuum':
           console.log('Low telescope in Continuum mode');
           URL_MODE = URL_CONTINUUM;
-          QUERY_STRING_PARAMETERS = MockQueryLowCalculate;
-          mapQueryLowCalculate();
+          // QUERY_STRING_PARAMETERS = MockQueryLowCalculate;
+          QUERY_STRING_PARAMETERS = mapQueryLowCalculate();
           break;
         case 'Zoom':
           console.log('Low telescope in Zoom mode');
