@@ -308,7 +308,7 @@ export default function ProposalDisplay({
     </Grid>
   );
 
-  console.log('PROPOSAL', getProposal());
+  console.log('PROPOSAL in ProposalDisplay', getProposal());
 
   return (
     <Dialog
