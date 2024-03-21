@@ -11,6 +11,7 @@ import MockProposal from './mockProposal';
 import Proposal, { ProposalIN, SP } from '../../types/proposal';
 import { TeamMemberIN } from '../../types/teamMember';
 import { TargetIN } from 'services/types/target';
+import NewMockProposal from './newMockProposal';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
@@ -65,6 +66,7 @@ const getTargets = (inValue: TargetIN[]) => {
 };
 
 const getObservations = (inValue: SP[]) => {
+  console.log('observations in getProposal Service', inValue);
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
@@ -122,6 +124,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
+    console.log('PROPOSAL in getProposal service', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

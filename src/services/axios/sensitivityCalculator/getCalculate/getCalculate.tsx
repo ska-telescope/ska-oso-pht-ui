@@ -12,9 +12,10 @@ import {
   MockResponseLowCalculate,
   MockResponseLowCalculateZoom
 } from './mockResponseLowCalculate';
+import Observation from 'services/types/observation';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetCalculate(telescope, mode) {
+async function GetCalculate(telescope, mode, observation) {
   // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
@@ -24,8 +25,6 @@ async function GetCalculate(telescope, mode) {
   // Mode URLs
   const URL_ZOOM = `zoom/`;
   const URL_CONTINUUM = `continuum/`;
-  let URL_ZOOM_VALUE;
-  let URL_CONTINUUM_VALUE;
   let URL_MODE;
   const URL_CALCULATE = `calculate`;
   // Mocks query strings parameters
@@ -43,45 +42,51 @@ async function GetCalculate(telescope, mode) {
     }
   };
 
+  function mapping(observation: Observation) {
+    console.log('in mapping', observation);
+  }
+
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
-      URL_CONTINUUM_VALUE = '';
-      URL_ZOOM_VALUE = '';
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQueryMidCalculate;
-      MOCK_ZOOM_QUERY = MockQueryMidCalculateZoom;
-      MOCK_RESPONSE_CONTINUUM = MockResponseMidCalculate;
-      MOCK_RESPONSE_ZOOM = MockResponseMidCalculateZoom;
+      switch (mode) {
+        case 'Continuum':
+          console.log('Mid telescope in Continuum mode');
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = MockQueryMidCalculate;
+          break;
+        case 'Zoom':
+          console.log('Mid telescope in Zoom mode');
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = MockQueryMidCalculateZoom;
+          break;
+        default:
+          console.log('Invalid mode');
+      }
       break;
     case 'Low':
       URL_TELESCOPE = URL_LOW;
-      URL_CONTINUUM_VALUE = URL_CONTINUUM;
-      URL_ZOOM_VALUE = URL_ZOOM;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQueryLowCalculate;
-      MOCK_ZOOM_QUERY = MockQueryLowCalculateZoom;
-      MOCK_RESPONSE_CONTINUUM = MockResponseLowCalculate;
-      MOCK_RESPONSE_ZOOM = MockResponseLowCalculateZoom;
+      switch (mode) {
+        case 'Continuum':
+          console.log('Low telescope in Continuum mode');
+          URL_MODE = URL_CONTINUUM;
+          QUERY_STRING_PARAMETERS = MockQueryLowCalculate;
+          break;
+        case 'Zoom':
+          console.log('Low telescope in Zoom mode');
+          URL_MODE = URL_ZOOM;
+          QUERY_STRING_PARAMETERS = MockQueryLowCalculateZoom;
+          break;
+        default:
+          console.log('Invalid mode');
+      }
       break;
     default:
+      console.log('Invalid telescope');
   }
 
-  switch (mode) {
-    case 'Continuum':
-      QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
-      URL_MODE = URL_CONTINUUM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
-      break;
-    case 'Zoom':
-      QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
-      URL_MODE = URL_ZOOM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
-      break;
-    default:
-  }
+  // let query = mapping(observation);
+  mapping(observation);
 
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;

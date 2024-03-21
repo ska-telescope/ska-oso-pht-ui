@@ -26,7 +26,11 @@ async function getSensitivityCalculatorAPIData(observation: Observation) {
   console.log('MODE[observation.type]', MODE[observation.type]);
 
   const isZoom = observation.type === 0;
-  const calculate = await GetCalculate(TEL[observation.telescope], MODE[observation.type]);
+  const calculate = await GetCalculate(
+    TEL[observation.telescope],
+    MODE[observation.type],
+    observation
+  );
   const weighting = await GetWeighting(TEL[observation.telescope], MODE[observation.type]);
   let weightingLine;
   if (!isZoom) {
