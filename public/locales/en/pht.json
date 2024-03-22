@@ -122,6 +122,9 @@
   "dataProduct": {
     "button": "Add Data Product"
   },
+  "deleteDataProduct": {
+    "label": "Delete this data product ? "
+  },
   "deleteTarget": {
     "label": "Delete this target ? ",
     "content1": "NOTE : Selections to the observations will also be removed"
