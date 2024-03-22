@@ -1,23 +1,11 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
-import {
-  MockQueryMidCalculate,
-  MockQueryMidCalculateZoom,
-  MockResponseMidCalculateZoom,
-  MockResponseMidCalculate
-} from './mockResponseMidCalculate';
-import {
-  MockQueryLowCalculate,
-  MockQueryLowCalculateZoom,
-  MockResponseLowCalculate,
-  MockResponseLowCalculateZoom
-} from './mockResponseLowCalculate';
+import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
+import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from 'services/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetCalculate(telescope: string, mode: string, observation: Observation) {
-  // TODO: send QUERY_STRING_PARAMETERS to service instead of using MOCK QUERIES
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
   let URL_TELESCOPE: string;
@@ -28,14 +16,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   const URL_CONTINUUM = `continuum/`;
   let URL_MODE: string;
   const URL_CALCULATE = `calculate`;
-  // Mocks query strings parameters
+
   let QUERY_STRING_PARAMETERS: string | string[][] | Record<string, string> | URLSearchParams;
-  let MOCK_CONTINUUM_QUERY: any;
-  let MOCK_ZOOM_QUERY: any;
-  // Mocks responses
   let MOCK_RESPONSE: any;
-  let MOCK_RESPONSE_CONTINUUM: any;
-  let MOCK_RESPONSE_ZOOM: any;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -43,13 +26,8 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     }
   };
 
-  function mapping(observation: Observation) {
-    console.log('in mapping', observation);
-  }
-
   function mapQueryMidCalculate() {
-    console.log('::: in mapQueryMidCalculate');
-    const query = {
+    return {
       rx_band: `Band ${observation.observing_band.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
@@ -68,13 +46,10 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       taper: observation.tapering.toString(),
       integration_time: observation.integration_time
     };
-    console.log('::: query', query);
-    return query;
   }
 
   function mapQueryMidCalculateZoom() {
-    console.log('::: in mapQueryMidCalculateZoom');
-    const query = {
+    return {
       rx_band: `Band ${observation.observing_band.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
@@ -93,8 +68,6 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       taper: observation.tapering.toString(),
       integration_time: observation.integration_time
     };
-    console.log('::: query mapQueryMidCalculateZoom', query);
-    return query;
   }
 
   function getSubarrayType(_subArray: string, telescope: string) {
@@ -105,11 +78,10 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   }
 
   function mapQueryLowCalculate() {
-    console.log('::: in mapQueryLowCalculate');
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
-    const query = {
-      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'LOW_AA4_all',
+    return {
+      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: observation.integration_time,
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,
@@ -117,12 +89,20 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       bandwidth_mhz: observation.bandwidth.toString(),
       spectral_averaging_factor: observation.spectral_averaging.toString()
     };
-    console.log('::: query', query);
-    return query;
   }
 
   function mapQueryLowCalculateZoom() {
-    console.log('::: in mapQueryLowCalculateZoom');
+    const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
+      .label;
+    return {
+      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      duration: observation.integration_time,
+      pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
+      freq_centre: observation.central_frequency,
+      elevation_limit: observation.elevation,
+      spectral_resolution_hz: observation.spectral_resolution.toString(),
+      total_bandwidth_khz: observation.bandwidth.toString()
+    };
   }
 
   switch (telescope) {
@@ -130,46 +110,39 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       URL_TELESCOPE = URL_MID;
       switch (mode) {
         case 'Continuum':
-          console.log('Mid telescope in Continuum mode');
           URL_MODE = '';
-          // QUERY_STRING_PARAMETERS = MockQueryMidCalculate;
           QUERY_STRING_PARAMETERS = mapQueryMidCalculate();
+          MOCK_RESPONSE = MockResponseMidCalculate;
           break;
         case 'Zoom':
-          console.log('Mid telescope in Zoom mode');
           URL_MODE = '';
-          // QUERY_STRING_PARAMETERS = MockQueryMidCalculateZoom;
           QUERY_STRING_PARAMETERS = mapQueryMidCalculateZoom();
+          MOCK_RESPONSE = MockResponseMidCalculateZoom;
           break;
         default:
-          console.log('Invalid mode');
+          console.log('Invalid mode'); // TODO return error properly for user
       }
       break;
     case 'Low':
       URL_TELESCOPE = URL_LOW;
       switch (mode) {
         case 'Continuum':
-          console.log('Low telescope in Continuum mode');
           URL_MODE = URL_CONTINUUM;
-          // QUERY_STRING_PARAMETERS = MockQueryLowCalculate;
           QUERY_STRING_PARAMETERS = mapQueryLowCalculate();
+          MOCK_RESPONSE = MockResponseLowCalculate;
           break;
         case 'Zoom':
-          console.log('Low telescope in Zoom mode');
           URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = MockQueryLowCalculateZoom;
-          mapQueryLowCalculateZoom();
+          QUERY_STRING_PARAMETERS = mapQueryLowCalculateZoom();
+          MOCK_RESPONSE = MockResponseLowCalculateZoom;
           break;
         default:
-          console.log('Invalid mode');
+          console.log('Invalid mode'); // TODO return error properly for user
       }
       break;
     default:
-      console.log('Invalid telescope');
+      console.log('Invalid telescope'); // TODO return error properly for user
   }
-
-  // let query = mapping(observation);
-  mapping(observation);
 
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
