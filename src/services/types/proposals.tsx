@@ -1,4 +1,8 @@
-export type ProposalsIN = {
+import { ScienceProgrammeBackend } from './scienceProgrammes';
+import { TargetBackend } from './target';
+import { TeamMemberBackend } from './teamMember';
+
+export type ProposalsBackend = {
   prsl_id: number;
   status: string;
   submitted_by: string;
@@ -9,32 +13,9 @@ export type ProposalsIN = {
     abstract: string;
     proposal_type: { main_type: string; sub_type: string };
     science_category: string;
-    targets: {
-      name: string;
-      right_ascension: string;
-      declination: string;
-      velocity: number;
-      velocity_unit: string;
-      right_ascension_unit: string;
-      declination_unit: string;
-    }[];
-    investigator: {
-      investigator_id: string;
-      first_name: string;
-      last_name: string;
-      country: string;
-      email: string;
-      organization: string;
-      for_phd: boolean;
-      principal_investigator: boolean;
-    }[];
-    science_programmes: {
-      science_goal_id: string;
-      array: string;
-      subarray: string;
-      linked_sources: string[];
-      observation_type: string;
-    }[];
+    targets: TargetBackend[];
+    investigator: TeamMemberBackend[];
+    science_programmes: ScienceProgrammeBackend[];
   };
 };
 

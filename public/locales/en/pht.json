@@ -18,7 +18,6 @@
     "close": "Close",
     "create": "Create",
     "home": "Home",
-    "resolve": "Resolve",
     "save": "Save",
     "submit": "Submit",
     "sendInvite": "Send invitation",
@@ -120,9 +119,8 @@
   "cycle": {
     "label": "Cycle"
   },
-  "declination": {
-    "label": "Declination",
-    "help": "DECLINATION HELP"
+  "dataProduct": {
+    "button": "Add Data Product"
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
@@ -226,7 +224,7 @@
     "label": "PDF Preview"
   },
   "phdThesis": {
-    "label": "PhD Thesis",
+    "label": "for PhD Thesis",
     "help": "PHD THESIS HELP"
   },
   "pht": {
@@ -263,9 +261,18 @@
     "label": "No specific Target",
     "toolTip": "Current functionality is not yet available"
   },
-  "rightAscension": {
-    "label": "Right Ascension",
-    "help": "RIGHT ASCENSION HELP"
+  "referenceFrame": {
+    "label": "Reference Frame",
+    "help": "REFERENCE FRAME HELP",
+    "LSR": "Heliocentric"
+  },
+  "resolve": {
+    "label": "Resolve",
+    "toolTip": "Query SIMBAD and NED",
+    "error": {
+      "mapping": "Unable to map results from API",
+      "name": "Unable to resolve provided name"
+    }
   },
   "robust": {
     "help": "ROBUST HELP",
@@ -296,6 +303,52 @@
   },
   "searchForMember": {
     "label": "Search for member"
+  },
+  "skyDirection": {
+    "help": {
+      "1": {
+        "value": "SKY DIRECTION 1 VALUE HELP"
+      },
+      "2": {
+        "value": "SKY DIRECTION 2 VALUE HELP"
+      }
+    },
+    "label": {
+      "1": {
+        "0": "Right Ascension",
+        "1": "Latitude"
+      },
+      "2": {
+        "0": "Declination",
+        "1": "Longitude"
+      }
+    },
+    "mask": {
+      "1": {
+        "0": "00:00:00.000",
+        "1": ""
+      },
+      "2": {
+        "0": "00:00:00.000",
+        "1": ""
+      }
+    },
+    "units": {
+      "1": {
+        "0": "",
+        "1": "deg"
+      },
+      "2": {
+        "0": "",
+        "1": "deg"
+      }
+    }
+  },
+  "skyUnits": {
+    "help": "REFERENCE COORDINATE HELP",
+    "label": "Reference Coordinate",
+    "0": "Equatorial",
+    "1": "Galactic"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"
@@ -396,8 +449,13 @@
     "label": "Upload PDF"
   },
   "velocity": {
-    "label": "Velocity / Redshift",
-    "help": "VELOCITY HELP"
+    "help": "VELOCITY HELP",
+    "units": {
+      "0": "km/s",
+      "1": "m/s"
+    },
+    "0": "Velocity",
+    "1": "Redshift"
   },
   "viewProposal": {
     "toolTip": "View proposal"
@@ -462,6 +520,10 @@
     "12": {
       "title": "SKAO Cycle",
       "desc": ""
+    },
+    "13": {
+      "title": "Data Product",
+      "desc": "ADD DATA PRODUCT. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     }
   },
   "label": {
