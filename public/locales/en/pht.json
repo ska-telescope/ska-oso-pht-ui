@@ -479,6 +479,9 @@
     "help": "WEATHER HELP",
     "label": "Weather"
   },
+  "weighting": {
+    "label": "Weighting"
+  },
   "page": {
     "0": {
       "title": "Title",
@@ -560,8 +563,5 @@
     "pdf": "Syntax error or PDF not available ",
     "subBandRange": "Value must be in the range 0 - 32 inclusive",
     "iconClicked": "Some error was encountered, please refresh page to continue"
-  },
-  "weighting": {
-    "label": "Weighting"
   }
 }
