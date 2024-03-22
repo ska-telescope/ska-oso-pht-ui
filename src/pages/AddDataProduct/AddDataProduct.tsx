@@ -32,34 +32,73 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [field1, setField1] = React.useState('');
-  const [field2, setField2] = React.useState('');
+  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState('');
+  const [pipeline, setPipeline] = React.useState('');
+  const [imageSize, setImageSize] = React.useState('');
+  const [pixelSize, setPixelSize] = React.useState('');
+  const [weighting, setWeighting] = React.useState('');
 
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
   }, []);
 
-  const field1Field = () => (
+  const obsDataProductField = () => (
     <TextEntry
-      label="FIELD 1"
+      label="Observatory Data Product"
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="field1"
-      value={field1}
-      setValue={setField1}
-      onFocus={() => helpComponent('FIELD1 HELP')}
+      testId="observatoryDataProduct"
+      value={observatoryDataProduct}
+      setValue={setObservatoryDataProduct}
+      onFocus={() => helpComponent('OBS DATA PRODUCT HELP')}
     />
   );
 
-  const field2Field = () => (
+  const pipelineField = () => (
     <TextEntry
-      label="FIELD 2"
+      label="Pipeline"
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="field2"
-      value={field2}
-      setValue={setField2}
-      onFocus={() => helpComponent('FIELD2 HELP')}
+      testId="pipeline"
+      value={pipeline}
+      setValue={setPipeline}
+      onFocus={() => helpComponent('PIPELINE HELP')}
+    />
+  );
+
+  const imageSizeField = () => (
+    <TextEntry
+      label="Image size"
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      testId="imageSize"
+      value={imageSize}
+      setValue={setImageSize}
+      onFocus={() => helpComponent('IMAGE SIZE HELP')}
+    />
+  );
+
+  const pixelSizeField = () => (
+    <TextEntry
+      label="Pixel Size"
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      testId="pixelSize"
+      value={pixelSize}
+      setValue={setPixelSize}
+      onFocus={() => helpComponent('PIXEL SIZE HELP')}
+    />
+  );
+
+  const weightingField = () => (
+    <TextEntry
+      label="Weighting"
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      testId="weighting"
+      value={weighting}
+      setValue={setWeighting}
+      onFocus={() => helpComponent('WEIGHTING HELP')}
     />
   );
 
@@ -77,8 +116,11 @@ export default function AddDataProduct() {
       );
       const newDataProduct = {
         id: highestId + 1,
-        field1,
-        field2
+        observatoryDataProduct,
+        pipeline,
+        imageSize: parseFloat(imageSize),
+        pixelSize: parseFloat(pixelSize),
+        weighting
       };
       setProposal({
         ...getProposal(),
@@ -143,8 +185,11 @@ export default function AddDataProduct() {
             alignItems="space-evenly"
             justifyContent="space-around"
           >
-            <Grid item>{field1Field()}</Grid>
-            <Grid item>{field2Field()}</Grid>
+            <Grid item>{obsDataProductField()}</Grid>
+            <Grid item>{pipelineField()}</Grid>
+            <Grid item>{imageSizeField()}</Grid>
+            <Grid item>{pixelSizeField()}</Grid>
+            <Grid item>{weightingField()}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={3}>

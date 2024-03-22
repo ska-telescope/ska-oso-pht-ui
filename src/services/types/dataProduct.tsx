@@ -1,7 +1,10 @@
 type DataProduct = {
   id: number;
-  field1: string;
-  field2: string;
+  observatoryDataProduct: string;
+  pipeline: string;
+  imageSize: number;
+  pixelSize: number;
+  weighting: string;
 };
 
 export default DataProduct;

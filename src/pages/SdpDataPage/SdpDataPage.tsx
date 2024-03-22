@@ -49,18 +49,41 @@ export default function SdpDataPage() {
 
   const columns = [
     {
-      field: 'field1',
-      headerName: 'FIELD 1',
+      field: 'observatoryDataProduct',
+      headerName: 'OBSERVATORY DATA PRODUCT',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { field1: number } }) => <Typography>{e.row.field1}</Typography>
+      renderCell: (e: { row: { observatoryDataProduct: number } }) => (
+        <Typography>{e.row.observatoryDataProduct}</Typography>
+      )
     },
     {
-      field: 'field2',
-      headerName: 'FIELD 2',
+      field: 'pipeline',
+      headerName: 'PIPELINE',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { field2: number } }) => <Typography>{e.row.field2}</Typography>
+      renderCell: (e: { row: { pipeline: number } }) => <Typography>{e.row.pipeline}</Typography>
+    },
+    {
+      field: 'imageSize',
+      headerName: 'IMAGE SIZE',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { imageSize: number } }) => <Typography>{e.row.imageSize}</Typography>
+    },
+    {
+      field: 'pixelSize',
+      headerName: 'PIXEL SIZE',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { pixelSize: number } }) => <Typography>{e.row.pixelSize}</Typography>
+    },
+    {
+      field: 'weighting',
+      headerName: 'WEIGHTING',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { weighting: number } }) => <Typography>{e.row.weighting}</Typography>
     },
     {
       field: 'id',
@@ -102,11 +125,20 @@ export default function SdpDataPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <FieldWrapper label={t('field1.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.field1}</Typography>
+        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.observatoryDataProduct}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('field2.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.field2}</Typography>
+        <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.pipeline}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.imageSize}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.pixelSize}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.weighting}</Typography>
         </FieldWrapper>
       </Grid>
     );
