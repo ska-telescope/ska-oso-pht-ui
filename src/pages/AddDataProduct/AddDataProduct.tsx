@@ -39,6 +39,9 @@ export default function AddDataProduct() {
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
 
+  // TODO: syntax validation
+  // TODO: data product validation
+
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
   }, []);
