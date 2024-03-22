@@ -12,10 +12,9 @@ global:
 ska-oso-pht-services:
   rest:
     logLevel: debug
-    # Use the ska-oso-pht-services default values which is configured to use the remote ska-db-oda deployment.
-    # To override this and store in the PHT Services filesystem for example, use the values below
-#    oda:
-#      backendType: filesystem
+    # oda:
+    #   backendType: rest
+    #   url: ~ # Use the default value in the chart, which is the ODA service address
 
 ska-db-oda-umbrella:
   ska-db-oda:

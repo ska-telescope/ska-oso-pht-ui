@@ -8,17 +8,21 @@ import Shell from '../../components/layout/Shell/Shell';
 import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
 import AddDataProductButton from '../../components/button/AddDataProduct/AddDataProductButton';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const PAGE = 7;
 
 export default function SdpDataPage() {
   const { t } = useTranslation('pht');
 
-  const { application, updateAppContent1 } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [, setCurrentRow] = React.useState(0);
+  const [currentRow, setCurrentRow] = React.useState(0);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -71,7 +75,42 @@ export default function SdpDataPage() {
   ];
   const extendedColumnsObservations = [...columns];
 
-  const deleteIconClicked = () => {};
+  const deleteIconClicked = () => {
+    setOpenDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const deleteConfirmed = () => {
+    const obs1 = getProposal().dataProducts.filter(e => e.id !== currentRow);
+
+    setProposal({ ...getProposal(), dataProducts: obs1 });
+    setCurrentRow(0);
+    closeDeleteDialog();
+  };
+
+  const alertContent = () => {
+    const LABEL_WIDTH = 6;
+    const rec = getProposal().dataProducts.find(p => p.id === currentRow);
+    return (
+      <Grid
+        p={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <FieldWrapper label={t('field1.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.field1}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('field2.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.field2}</Typography>
+        </FieldWrapper>
+      </Grid>
+    );
+  };
 
   const getRows = () => getProposal().dataProducts;
 
@@ -107,6 +146,16 @@ export default function SdpDataPage() {
           />
         )}
       </Grid>
+      {openDialog && (
+        <AlertDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onDialogResponse={deleteConfirmed}
+          title="deleteDataProduct.label"
+        >
+          {alertContent()}
+        </AlertDialog>
+      )}
     </Shell>
   );
 }
