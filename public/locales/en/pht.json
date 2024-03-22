@@ -180,6 +180,9 @@
   "id": {
     "label": "Id"
   },
+  "imageSize": {
+    "label": "Image Size"
+  },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",
     "label": "Image Weighting"
@@ -220,6 +223,9 @@
     "1": "Continuum",
     "2": "Zoom"
   },
+  "observatoryDataProduct": {
+    "label": "Observatory Data Product"
+  },
   "pageStatus": {
     "toolTip": "This is the status of the page"
   },
@@ -243,6 +249,9 @@
     "label": "Pipeline",
     "help": "PIPELINE HELP",
     "helper": "Please enter your pipeline information"
+  },
+  "pixelSize": {
+    "label": "Pixel Size"
   },
   "proposalId": {
     "label": "Proposal Id"
@@ -551,5 +560,8 @@
     "pdf": "Syntax error or PDF not available ",
     "subBandRange": "Value must be in the range 0 - 32 inclusive",
     "iconClicked": "Some error was encountered, please refresh page to continue"
+  },
+  "weighting": {
+    "label": "Weighting"
   }
 }

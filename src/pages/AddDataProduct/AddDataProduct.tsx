@@ -8,11 +8,12 @@ import {
   Button,
   ButtonColorTypes,
   ButtonVariantTypes,
+  DropDown,
   LABEL_POSITION,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { NAV } from '../../utils/constants';
+import { DATA_PRODUCT, NAV } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../services/types/proposal';
 
@@ -32,7 +33,7 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState('');
+  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
   const [pipeline, setPipeline] = React.useState('');
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
@@ -43,25 +44,29 @@ export default function AddDataProduct() {
   }, []);
 
   const obsDataProductField = () => (
-    <TextEntry
+    <DropDown
+      options={DATA_PRODUCT.observatoryDataProduct}
+      testId="observatoryDataProduct"
+      value={observatoryDataProduct}
+      select
+      setValue={setObservatoryDataProduct}
       label="Observatory Data Product"
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="observatoryDataProduct"
-      value={observatoryDataProduct}
-      setValue={setObservatoryDataProduct}
       onFocus={() => helpComponent('OBS DATA PRODUCT HELP')}
     />
   );
 
   const pipelineField = () => (
-    <TextEntry
+    <DropDown
+      options={DATA_PRODUCT.pipeline}
+      testId="pipeline"
+      value={pipeline}
+      select
+      setValue={setPipeline}
       label="Pipeline"
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="pipeline"
-      value={pipeline}
-      setValue={setPipeline}
       onFocus={() => helpComponent('PIPELINE HELP')}
     />
   );
@@ -118,8 +123,8 @@ export default function AddDataProduct() {
         id: highestId + 1,
         observatoryDataProduct,
         pipeline,
-        imageSize: parseFloat(imageSize),
-        pixelSize: parseFloat(pixelSize),
+        imageSize,
+        pixelSize,
         weighting
       };
       setProposal({

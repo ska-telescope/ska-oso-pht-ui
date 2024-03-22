@@ -2,8 +2,8 @@ type DataProduct = {
   id: number;
   observatoryDataProduct: string;
   pipeline: string;
-  imageSize: number;
-  pixelSize: number;
+  imageSize: string;
+  pixelSize: string;
   weighting: string;
 };
 

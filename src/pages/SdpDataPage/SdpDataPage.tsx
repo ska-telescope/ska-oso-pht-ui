@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { DATA_PRODUCT, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
@@ -54,7 +54,13 @@ export default function SdpDataPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observatoryDataProduct: number } }) => (
-        <Typography>{e.row.observatoryDataProduct}</Typography>
+        <Typography>
+          {
+            DATA_PRODUCT.observatoryDataProduct.find(
+              item => item.value === e.row.observatoryDataProduct
+            ).label
+          }
+        </Typography>
       )
     },
     {
@@ -62,7 +68,11 @@ export default function SdpDataPage() {
       headerName: 'PIPELINE',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { pipeline: number } }) => <Typography>{e.row.pipeline}</Typography>
+      renderCell: (e: { row: { pipeline: number } }) => (
+        <Typography>
+          {DATA_PRODUCT.pipeline.find(item => item.value === e.row.pipeline).label}
+        </Typography>
+      )
     },
     {
       field: 'imageSize',
@@ -126,10 +136,18 @@ export default function SdpDataPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observatoryDataProduct}</Typography>
+          <Typography variant="body1">
+            {
+              DATA_PRODUCT.observatoryDataProduct.find(
+                item => item.value === rec.observatoryDataProduct
+              ).label
+            }
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.pipeline}</Typography>
+          <Typography variant="body1">
+            {DATA_PRODUCT.pipeline.find(item => item.value === rec.pipeline).label}
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.imageSize}</Typography>
