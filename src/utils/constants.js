@@ -339,17 +339,17 @@ export const Projects = [
 
 export const DATA_PRODUCT = {
   observatoryDataProduct: [
-    { label: 'Continuuum Image', value: 0 },
-    { label: 'Spectral Line Image', value: 1 }
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
   ],
   pipeline: [
-    { label: 'Visibility receive', value: 0 },
-    { label: '‘Real-time’ pointing calibration', value: 1 },
-    { label: 'Visibility pre-processing', value: 2 },
-    { label: 'Mid self-cal / ICal', value: 3 },
-    { label: 'Low self-cal / ICal', value: 4 },
-    { label: '‘Real-time’ gain calibration', value: 5 },
-    { label: 'Distributed Gridding/Imaging', value: 6 }
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
   ]
 };
 

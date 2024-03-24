@@ -17,10 +17,8 @@ import { DATA_PRODUCT, NAV } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../services/types/proposal';
 
-// TODO : Cypress Testing
 // TODO : Documentation
 // TODO : Improved validation
-// TODO : Add functionality
 // TODO : Combine Bandwidth & Spectral Resolution ( SensCalc )
 
 const PAGE = 13;
@@ -34,13 +32,10 @@ export default function AddDataProduct() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
-  const [pipeline, setPipeline] = React.useState('');
+  const [pipeline, setPipeline] = React.useState();
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
-
-  // TODO: syntax validation
-  // TODO: data product validation
 
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
@@ -53,10 +48,10 @@ export default function AddDataProduct() {
       value={observatoryDataProduct}
       select
       setValue={setObservatoryDataProduct}
-      label="Observatory Data Product"
+      label={t('observatoryDataProductConfig.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
-      onFocus={() => helpComponent('OBS DATA PRODUCT HELP')}
+      onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
     />
   );
 
@@ -65,48 +60,47 @@ export default function AddDataProduct() {
       options={DATA_PRODUCT.pipeline}
       testId="pipeline"
       value={pipeline}
-      select
       setValue={setPipeline}
-      label="Pipeline"
+      label={t('pipeline.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
-      onFocus={() => helpComponent('PIPELINE HELP')}
+      onFocus={() => helpComponent(t('pipeline.help'))}
     />
   );
 
   const imageSizeField = () => (
     <TextEntry
-      label="Image size"
+      label={t('imageSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
       testId="imageSize"
       value={imageSize}
       setValue={setImageSize}
-      onFocus={() => helpComponent('IMAGE SIZE HELP')}
+      onFocus={() => helpComponent(t('imageSize.help'))}
     />
   );
 
   const pixelSizeField = () => (
     <TextEntry
-      label="Pixel Size"
+      label={t('pixelSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
       testId="pixelSize"
       value={pixelSize}
       setValue={setPixelSize}
-      onFocus={() => helpComponent('PIXEL SIZE HELP')}
+      onFocus={() => helpComponent(t('pixelSize.help'))}
     />
   );
 
   const weightingField = () => (
     <TextEntry
-      label="Weighting"
+      label={t('weighting.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
       testId="weighting"
       value={weighting}
       setValue={setWeighting}
-      onFocus={() => helpComponent('WEIGHTING HELP')}
+      onFocus={() => helpComponent(t('weighting.help'))}
     />
   );
 

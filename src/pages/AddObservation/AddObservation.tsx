@@ -119,6 +119,7 @@ export default function AddObservation() {
         disabled={!arrayConfig || OBSERVATION.array[arrayConfig - 1].subarray.length < 2}
         testId="subarrayConfig"
         value={subarrayConfig}
+        select
         setValue={setSubarrayConfig}
         label={t('subArrayConfiguration.label')}
         labelBold
