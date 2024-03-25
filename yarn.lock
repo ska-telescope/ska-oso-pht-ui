@@ -2244,25 +2244,25 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@1.0.9":
-  version "1.0.9"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.9.tgz#dbe76b2262233a9dd13f55d242cb63e4f7574531"
-  integrity sha512-2nlhBkatCdJsw5i8w6Sa9IFMghEMvj1E/vxAJmBlHqVD4pR99xAoivir3juVW2emob6X++qkaVeY1zFQ1CcTTw==
+"@ska-telescope/ska-gui-components@^1.0.11":
+  version "1.0.11"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.11.tgz#4861c543ac16022f56735375a4a1724d336dd842"
+  integrity sha512-8sBF5xnc6IBWot5OBRslULyeu60egdOom/GPGAfXlKdbIZYu0ouMLo4PQV1TXpGJxRyLNq/GKscnWt8gfFefyQ==
   dependencies:
     "@mui/lab" "^5.0.0-alpha.166"
     "@mui/system" "^5.15.11"
     "@mui/x-data-grid" "^6.19.5"
     "@mui/x-tree-view" "^6.17.0"
     "@react-spring/web" "^9.7.3"
-    "@ska-telescope/ska-gui-local-storage" "^1.0.0"
-    "@ska-telescope/ska-javascript-components" "^1.0.6"
+    "@ska-telescope/ska-gui-local-storage" "^1.0.1"
+    "@ska-telescope/ska-javascript-components" "^1.0.7"
     "@types/uuid" "^9.0.4"
     junit-report-merger "^6.0.2"
 
-"@ska-telescope/ska-gui-local-storage@^1.0.0":
-  version "1.0.0"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-local-storage/-/ska-gui-local-storage-1.0.0.tgz#8a790b18af2d2dbb5ffd8383ca43070baf8268f3"
-  integrity sha512-zFdYqxURxDJiusJ4eHK2ORGq0EoCp313DsXS1S6IjIoFawBuEz4xMC3heUk6ullKsjn15KhbrEfTDxJXDv69lQ==
+"@ska-telescope/ska-gui-local-storage@^1.0.1":
+  version "1.0.1"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-local-storage/-/ska-gui-local-storage-1.0.1.tgz#f8d8526374764e4cdb07c4de00398047992b1b96"
+  integrity sha512-LF7Bo3tJsWGkITUvBdWLh2+p33Rb2mV3T15R6gmuBBumYHqIysl6cbqaUzSR6Urc2mYj/Vgoat8+y01HTganxw==
   dependencies:
     "@react-spring/web" "^9.7.3"
     "@reduxjs/toolkit" "^2.2.1"
@@ -2281,6 +2281,29 @@
   version "1.0.6"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-1.0.6.tgz#d67e9eb6cd2429842e638e21ca6f36147889a44f"
   integrity sha512-Zqe4sReSNWT3F/oSvQ0YpUxLXmpZSgqE/hhAxayTvKezCbAB/2F/IgKHXm+PZsZwccFKM/0HcIuPfu49NGPEFw==
+  dependencies:
+    "@rollup/plugin-terser" "^0.4.4"
+    babel-jest "^29.5.0"
+    babel-plugin-import "^1.13.5"
+    babel-plugin-istanbul "^6.1.1"
+    babel-plugin-transform-class-properties "^6.24.1"
+    babel-preset-react-app "^10.0.1"
+    copy-webpack-plugin "^12.0.2"
+    istanbul-lib-coverage "^3.2.0"
+    minimatch "9.0.3"
+    nth-check "^2.1.1"
+    postcss "^8.4.35"
+    react "^18.2.0"
+    react-dom "^18.2.0"
+    react-refresh "^0.14.0"
+    react-script "^2.0.5"
+    react-scripts "^5.0.1"
+    svgo "^3.2.0"
+
+"@ska-telescope/ska-javascript-components@^1.0.7":
+  version "1.0.9"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-1.0.9.tgz#1b71d1f241f9a0c1665e7e0ec3ebe81ff3db6420"
+  integrity sha512-l+52ieDtZNljFUBxMjMf7psa8kiq6PzAuZ0pmEyNhfCgBdOeu+yN8byixTyNNDY52WEduy+ncTHoEWsTh8ddXQ==
   dependencies:
     "@rollup/plugin-terser" "^0.4.4"
     babel-jest "^29.5.0"

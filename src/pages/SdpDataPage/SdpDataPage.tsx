@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DATA_PRODUCT, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../services/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
@@ -53,26 +53,22 @@ export default function SdpDataPage() {
       headerName: 'OBSERVATORY DATA PRODUCT',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observatoryDataProduct: number } }) => (
-        <Typography>
-          {
-            DATA_PRODUCT.observatoryDataProduct.find(
-              item => item.value === e.row.observatoryDataProduct
-            ).label
-          }
-        </Typography>
-      )
+      renderCell: (e: { row: { observatoryDataProduct: number } }) => {
+        const obsDataLabel = t(
+          `observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`
+        );
+        return <Typography>{obsDataLabel}</Typography>;
+      }
     },
     {
       field: 'pipeline',
       headerName: 'PIPELINE',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { pipeline: number } }) => (
-        <Typography>
-          {DATA_PRODUCT.pipeline.find(item => item.value === e.row.pipeline).label}
-        </Typography>
-      )
+      renderCell: (e: { row: { pipeline: number } }) => {
+        const pipelineLabel = t(`pipeline.options.${e.row.pipeline}`);
+        return <Typography>{pipelineLabel}</Typography>;
+      }
     },
     {
       field: 'imageSize',
@@ -137,17 +133,11 @@ export default function SdpDataPage() {
       >
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {
-              DATA_PRODUCT.observatoryDataProduct.find(
-                item => item.value === rec.observatoryDataProduct
-              ).label
-            }
+            {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {DATA_PRODUCT.pipeline.find(item => item.value === rec.pipeline).label}
-          </Typography>
+          <Typography variant="body1">{t(`pipeline.options.${rec.pipeline}`)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.imageSize}</Typography>

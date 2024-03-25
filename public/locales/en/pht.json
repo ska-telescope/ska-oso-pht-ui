@@ -227,8 +227,10 @@
   "observatoryDataProductConfig": {
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
-    "1": "Continuum Image",
-    "2": "Spectral Line Image"
+    "options": {
+      "1": "Continuum Image",
+      "2": "Spectral Line Image"
+    }
   },
   "pageStatus": {
     "toolTip": "This is the status of the page"
@@ -253,13 +255,15 @@
     "label": "Pipeline",
     "help": "PIPELINE HELP",
     "helper": "Please enter your pipeline information",
-    "1": "Visibility receive",
-    "2": "‘Real-time’ pointing calibration'",
-    "3": "Visibility pre-processing",
-    "4": "Mid self-cal / ICal",
-    "5": "Low self-cal / ICal",
-    "6": "‘Real-time’ gain calibration",
-    "7": "Distributed Gridding/Imaging'"
+    "options":{
+      "1": "Visibility receive",
+      "2": "‘Real-time’ pointing calibration'",
+      "3": "Visibility pre-processing",
+      "4": "Mid self-cal / ICal",
+      "5": "Low self-cal / ICal",
+      "6": "‘Real-time’ gain calibration",
+      "7": "Distributed Gridding/Imaging"
+    }
   },
   "pixelSize": {
     "label": "Pixel Size",

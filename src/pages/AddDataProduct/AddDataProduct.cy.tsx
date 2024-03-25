@@ -13,22 +13,26 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 function verifyObsDataProduct() {
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(' Image');
+  cy.get('[data-testid="observatoryDataProduct"]').contains(
+    'observatoryDataProductConfig.options.1'
+  );
 
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('Spectral');
+  cy.get('[data-testid="observatoryDataProduct"]').contains(
+    'observatoryDataProductConfig.options.2'
+  );
   cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProductConfig.help');
 }
 
 function verifyPipeline() {
   cy.get('[data-testid="pipeline"]').click();
   cy.get('[data-value="5"]').click();
-  cy.get('[data-testid="pipeline"]').contains('Low self-cal / ICal');
+  cy.get('[data-testid="pipeline"]').contains('pipeline.options.5');
 
   cy.get('[data-testid="pipeline"]').click();
   cy.get('[data-value="3"]').click();
-  cy.get('[data-testid="pipeline"]').contains('Visibility pre-processing');
+  cy.get('[data-testid="pipeline"]').contains('pipeline.options.3');
   cy.get('[data-testid="helpPanelId"]').contains('pipeline.help');
 }
 
