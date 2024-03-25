@@ -1,17 +1,11 @@
+import DataProduct from './dataProduct';
 import Observation from './observation';
-import Target, { TargetIN } from './target';
+import { ScienceProgrammeBackend } from './scienceProgrammes';
+import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember, { TeamMemberIN } from './teamMember';
+import TeamMember, { TeamMemberBackend } from './teamMember';
 
-// Science Programme. Part of the incoming proposal
-export type SP = {
-  array: string;
-  subarray: string;
-  linked_sources: string[];
-  observation_type: string;
-};
-
-export type ProposalIN = {
+export type ProposalBackend = {
   prsl_id: string;
   status: string;
   submitted_by: string;
@@ -25,9 +19,9 @@ export type ProposalIN = {
       sub_type: string;
     };
     science_category: string;
-    targets: TargetIN[];
-    investigators: TeamMemberIN[];
-    science_programmes: SP[];
+    targets: TargetBackend[];
+    investigators: TeamMemberBackend[];
+    science_programmes: ScienceProgrammeBackend[];
   };
 };
 
@@ -48,6 +42,7 @@ export type Proposal = {
   targetObservation: TargetObservation[];
   technicalPDF: File | null;
   technicalLoadStatus: number;
+  dataProducts: DataProduct[];
   pipeline: string;
 };
 

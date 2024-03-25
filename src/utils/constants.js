@@ -23,7 +23,7 @@ export const NAV = [
   '/proposal/src'
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation'];
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct'];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
@@ -389,5 +389,6 @@ export const EMPTY_PROPOSAL = {
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: 0,
+  dataProducts: [],
   pipeline: ''
 };

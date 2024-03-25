@@ -1,4 +1,4 @@
-import { Proposal } from 'services/types/proposal';
+import { Proposal } from 'utils/types/proposal';
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
