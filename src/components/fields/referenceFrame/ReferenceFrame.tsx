@@ -9,7 +9,7 @@ interface ReferenceFrameFieldProps {
   labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
-  value: string;
+  value: number;
 }
 
 export default function ReferenceFrameField({
@@ -23,7 +23,7 @@ export default function ReferenceFrameField({
   const { t } = useTranslation('pht');
   const FIELD = 'referenceFrame';
 
-  const OPTIONS = ['LSR'];
+  const OPTIONS = [0, 1];
 
   const getOptions = () => {
     return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
