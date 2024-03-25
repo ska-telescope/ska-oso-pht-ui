@@ -6,7 +6,7 @@ import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../../components/helpPanel/helpPanel';
-import { Proposal } from '../../../../services/types/proposal';
+import { Proposal } from '../../../../utils/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
@@ -22,7 +22,7 @@ export default function AddTarget() {
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState('');
+  const [referenceFrame, setReferenceFrame] = React.useState(0);
   const [vel, setVel] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [velUnit, setVelUnit] = React.useState(0);

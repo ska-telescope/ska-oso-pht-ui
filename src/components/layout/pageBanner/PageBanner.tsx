@@ -12,7 +12,7 @@ import ValidateButton from '../../button/Validate/ValidateButton';
 import { LAST_PAGE, PATH } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-import { Proposal } from '../../../services/types/proposal';
+import { Proposal } from '../../../utils/types/proposal';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
 
 interface PageBannerProps {

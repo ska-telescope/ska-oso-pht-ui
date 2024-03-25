@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import SaveIcon from '@mui/icons-material/Save';
-import { Proposal } from '../../../services/types/proposal';
+import { Proposal } from '../../../utils/types/proposal';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 
 export default function SaveButton({ onClick }) {

@@ -15,7 +15,7 @@ import {
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
-import Proposal from '../../services/types/proposal';
+import Proposal from '../../utils/types/proposal';
 
 // TODO : Improved validation
 
