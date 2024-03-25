@@ -172,30 +172,35 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
         <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-          <Grid item pb={1}>
+          <Grid item pb={1} ml={20}>
             <AddDataProductButton />
           </Grid>
         </Grid>
-        {getRows().length > 0 && (
-          <DataGrid
-            rows={getRows()}
-            columns={extendedColumnsObservations}
-            height={450}
-            onRowClick={clickRow}
-            showBorder={false}
-            showMild
-            testId="observationDetails"
-          />
-        )}
-        {getRows().length === 0 && (
-          <InfoCard
-            color={InfoCardColorTypes.Error}
-            fontSize={20}
-            message={t('error.noObservations')}
-            testId="helpPanelId"
-          />
-        )}
+        <Grid container direction="row" alignItems="center" justifyContent="space-around">
+          <Grid item md={10}>
+            {getRows().length > 0 && (
+              <DataGrid
+                rows={getRows()}
+                columns={extendedColumnsObservations}
+                height={450}
+                onRowClick={clickRow}
+                showBorder={false}
+                showMild
+                testId="observationDetails"
+              />
+            )}
+            {getRows().length === 0 && (
+              <InfoCard
+                color={InfoCardColorTypes.Error}
+                fontSize={20}
+                message={t('error.noObservations')}
+                testId="helpPanelId"
+              />
+            )}
+          </Grid>
+        </Grid>
       </Grid>
+
       {openDialog && (
         <AlertDialog
           open={openDialog}
