@@ -144,11 +144,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       console.log('Invalid telescope'); // TODO return error properly for user
   }
 
-  /*
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
   }
-  */
 
   try {
     console.log('QUERY_STRING_PARAMETERS', QUERY_STRING_PARAMETERS);
