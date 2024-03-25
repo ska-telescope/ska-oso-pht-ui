@@ -162,9 +162,11 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
         <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-          <Grid item pb={1} ml={20}>
+          <Grid item xs={1}></Grid>
+          <Grid item xs={10} pb={1}>
             <AddDataProductButton />
           </Grid>
+          <Grid item xs={1}></Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" justifyContent="space-around">
           <Grid item md={10}>
