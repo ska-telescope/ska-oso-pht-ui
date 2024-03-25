@@ -18,6 +18,7 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 
 // TODO : Improved validation
+// TODO : Add documentation page specifically for Adding a Data product
 
 const PAGE = 13;
 
