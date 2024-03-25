@@ -8,10 +8,10 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
-import Proposal, { ProposalBackend } from '../../types/proposal';
-import { ScienceProgrammeBackend } from 'services/types/scienceProgrammes';
-import { TeamMemberBackend } from '../../types/teamMember';
-import { TargetBackend } from 'services/types/target';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
+import { TeamMemberBackend } from '../../../utils/types/teamMember';
+import { TargetBackend } from 'utils/types/target';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);

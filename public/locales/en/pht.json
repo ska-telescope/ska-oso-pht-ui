@@ -267,7 +267,8 @@
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
-    "LSR": "Heliocentric"
+    "0": "Heliocentric",
+    "1": "Local Standard of Rest"
   },
   "resolve": {
     "label": "Resolve",
