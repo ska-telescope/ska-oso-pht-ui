@@ -4,7 +4,7 @@ import getSensitivityCalculatorAPIData from '../../services/axios/sensitivityCal
 import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { IconButton } from '@mui/material';
 import ObservationTargetResultsDisplay from '../alerts/observationTargetResultsDisplay/observationTargetResultsDisplay';
-import Observation from 'services/types/observation';
+import Observation from '../../utils/types/observation';
 
 const SIZE = 20;
 

@@ -1,7 +1,7 @@
 import GetCalculate from './getCalculate/getCalculate';
 import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
-import Observation from 'services/types/observation';
+import Observation from '../../../utils/types/observation';
 
 const TEL = ['', 'Mid', 'Low'];
 const MODE = ['Zoom', 'Continuum'];

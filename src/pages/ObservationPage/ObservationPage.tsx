@@ -11,7 +11,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import Observation from 'services/types/observation';
+import Observation from '../../utils/types/observation';
 
 const PAGE = 5;
 
