@@ -257,8 +257,10 @@ export default function TitleContent({ page }: TitleContentProps) {
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body2">{t('title.help')}</Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ paddingTop: '20px', fontStyle: 'italic' }}
+              ></Typography>
             </Grid>
           </Grid>
 
