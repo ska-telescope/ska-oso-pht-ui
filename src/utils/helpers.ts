@@ -53,6 +53,15 @@ export const helpers = {
 
     /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
     // TODO: handle save/submit/create scenarios differences
+    // TODO: handle saving PDF filename as document_id and link
+    // "documents" : [
+    //   {"document_id" : "prsl-12334-science",         "link": 'download pdf'}
+      
+    //   , 
+             
+    //   {"document_id" : "prsl-12334-technical",          "link": 'download pdf'     }
+      
+    //   ]
     /*
     CREATE = proposal with no observations, etc.
     SAVE = proposal with or without observations, etc. STATUS: draft

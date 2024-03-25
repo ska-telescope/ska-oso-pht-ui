@@ -5,7 +5,8 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../services/types/proposal';
-import PostUploadPDF from '../../services/axios/postUploadPDF/postUploadPDF';
+import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
+import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 
 const PAGE = 3;
@@ -34,6 +35,31 @@ export default function SciencePage() {
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
+
+  const uploadPdftoSignedUrl = async (theFile) => {
+
+    try {
+      const proposal = getProposal()
+      const prsl_id = proposal.id
+      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`)
+
+      if(typeof signedUrl != "string") new Error('Not able to Get Upload URL');
+
+      const uploadResult = await PutUploadPDF(signedUrl, theFile)
+
+      console.log('uploadResult', uploadResult)
+      if(uploadResult.error) {
+        throw new Error('PDF Not Uploaded')
+      }
+
+      setUploadStatus(FileUploadStatus.OK);
+
+    } catch(e){
+      console.log('uploadPdftoSignedUrl catch')
+      setFile(null)
+      setUploadStatus(FileUploadStatus.ERROR);
+    }
+  }
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -77,7 +103,8 @@ export default function SciencePage() {
             setStatus={setUploadStatus}
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
-            uploadURL={PostUploadPDF()}
+            uploadFunction={uploadPdftoSignedUrl}
+            uploadURL='testuploadurl'
           />
         </Grid>
         <Grid item xs={6}>
