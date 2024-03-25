@@ -129,7 +129,6 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
-    console.log('PROPOSAL in getProposal service', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

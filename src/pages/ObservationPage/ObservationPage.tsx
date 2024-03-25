@@ -82,7 +82,6 @@ export default function ObservationPage() {
   const AddObservationTarget = (id: number) => {
     const rec = { observationId: currentObservation, targetId: id };
     setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
-    console.log('PROPOSAL WITH TARGETS', getProposal());
   };
 
   function filterRecords(id: number) {
@@ -228,9 +227,6 @@ export default function ObservationPage() {
 
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
-    console.log('currentObservation on click', currentObservation);
-    const observationTEST = getProposal().observations.find(p => p.id === currentObservation);
-    console.log('observation on in ObservationPage (click observation row)', observationTEST);
   };
 
   const filteredTargets = () => {

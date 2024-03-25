@@ -59,7 +59,7 @@ async function GetWeighting(telescope, mode) {
   }
 
   /*
-  //  TODO
+  //  TO COMPLETE IN A NEW TICKET
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
@@ -75,7 +75,7 @@ async function GetWeighting(telescope, mode) {
           MOCK_RESPONSE = MockQuerryMidWeightingLine;
           break;
         default:
-          console.log('Invalid mode'); // TODO return error properly for user
+          // 'Invalid mode' // TODO return error properly for user
       }
       break;
     case 'Low':
@@ -92,11 +92,11 @@ async function GetWeighting(telescope, mode) {
           MOCK_RESPONSE = MockQuerryLowWeightingLine;
           break;
         default:
-          console.log('Invalid mode'); // TODO return error properly for user
+          // 'Invalid mode' // TODO return error properly for user
       }
       break;
     default:
-      console.log('Invalid telescope'); // TODO return error properly for user
+      // 'Invalid telescope' // TODO return error properly for user
   }
   */
 

@@ -22,7 +22,6 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
 
   React.useEffect(() => {
     const getSensCalc = async () => {
-      console.log('OBSERVATION in SensCal Display', observation);
       const response = await getSensitivityCalculatorAPIData(observation);
       // Calculate response for LOW doesn't have a status property: this will cause the error icon to be wrongly displayed for LOW responses
       // TODO: handle response errors differently

@@ -551,14 +551,10 @@ export default function AddObservation() {
         effective_resolution: 0,
         number_of_sub_bands: subBands
       };
-      console.log('OBSERVATION in AddObservation', newObservation);
-      console.log('getProposal()', getProposal());
-      console.log('getProposal().observations', getProposal().observations);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation]
       });
-      console.log('PROPOSAL in AddObservation', getProposal());
     };
 
     const buttonClicked = () => {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
-import Observation from 'services/types/observation';
+import Observation from '../../../../utils/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
 
 async function GetCalculate(telescope: string, mode: string, observation: Observation) {
@@ -120,7 +120,7 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
           MOCK_RESPONSE = MockResponseMidCalculateZoom;
           break;
         default:
-          console.log('Invalid mode'); // TODO return error properly for user
+        // 'Invalid mode' // TODO return error properly for user
       }
       break;
     case 'Low':
@@ -137,11 +137,11 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
           MOCK_RESPONSE = MockResponseLowCalculateZoom;
           break;
         default:
-          console.log('Invalid mode'); // TODO return error properly for user
+        // 'Invalid mode' // TODO return error properly for user
       }
       break;
     default:
-      console.log('Invalid telescope'); // TODO return error properly for user
+    // 'Invalid telescope' // TODO return error properly for user
   }
 
   if (USE_LOCAL_DATA) {
@@ -149,7 +149,6 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   }
 
   try {
-    console.log('QUERY_STRING_PARAMETERS', QUERY_STRING_PARAMETERS);
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
