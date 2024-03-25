@@ -36,30 +36,31 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
-  const uploadPdftoSignedUrl = async (theFile) => {
+  const uploadPdftoSignedUrl = async theFile => {
+    setTheStatus(FileUploadStatus.ERROR);
+    setTimeout(10000);
 
     try {
-      const proposal = getProposal()
-      const prsl_id = proposal.id
-      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`)
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`);
 
-      if(typeof signedUrl != "string") new Error('Not able to Get Upload URL');
+      if (typeof signedUrl != 'string') new Error('Not able to Get Upload URL');
 
-      const uploadResult = await PutUploadPDF(signedUrl, theFile)
+      const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
-      console.log('uploadResult', uploadResult)
-      if(uploadResult.error) {
-        throw new Error('PDF Not Uploaded')
+      console.log('uploadResult', uploadResult);
+      if (uploadResult.error) {
+        throw new Error('PDF Not Uploaded');
       }
 
       setUploadStatus(FileUploadStatus.OK);
-
-    } catch(e){
-      console.log('uploadPdftoSignedUrl catch')
-      setFile(null)
+    } catch (e) {
+      console.log('uploadPdftoSignedUrl catch');
+      setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
     }
-  }
+  };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -104,7 +105,7 @@ export default function SciencePage() {
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
             uploadFunction={uploadPdftoSignedUrl}
-            uploadURL='testuploadurl'
+            uploadURL="testuploadurl"
           />
         </Grid>
         <Grid item xs={6}>

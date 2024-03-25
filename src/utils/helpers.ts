@@ -56,11 +56,11 @@ export const helpers = {
     // TODO: handle saving PDF filename as document_id and link
     // "documents" : [
     //   {"document_id" : "prsl-12334-science",         "link": 'download pdf'}
-      
-    //   , 
-             
+
+    //   ,
+
     //   {"document_id" : "prsl-12334-technical",          "link": 'download pdf'     }
-      
+
     //   ]
     /*
     CREATE = proposal with no observations, etc.

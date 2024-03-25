@@ -1,10 +1,6 @@
 import axios from 'axios';
 import {
-  GENERAL,
-  OBSERVATION,
-  Projects,
   SKA_PHT_API_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 
