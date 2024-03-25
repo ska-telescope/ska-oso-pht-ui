@@ -58,6 +58,7 @@ async function GetWeighting(telescope, mode) {
     // TODO
   }
 
+  /*
   //  TODO
   switch (telescope) {
     case 'Mid':
@@ -97,6 +98,7 @@ async function GetWeighting(telescope, mode) {
     default:
       console.log('Invalid telescope'); // TODO return error properly for user
   }
+  */
 
   switch (telescope) {
     case 'Mid':
@@ -138,11 +140,9 @@ async function GetWeighting(telescope, mode) {
     default:
   }
 
-  /*
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
   }
-  */
 
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
