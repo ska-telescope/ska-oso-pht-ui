@@ -42,7 +42,22 @@ async function GetWeighting(telescope, mode) {
     }
   };
 
-  /*
+  function mapQueryMidWeighting() {
+    // TODO
+  }
+
+  function mapQueryMidWeightingLine() {
+    // TODO
+  }
+
+  function mapQueryLowWeighting() {
+    // TODO
+  }
+
+  function mapQueryLowWeightingLine() {
+    // TODO
+  }
+
   //  TODO
   switch (telescope) {
     case 'Mid':
@@ -72,7 +87,7 @@ async function GetWeighting(telescope, mode) {
           break;
         case 'Zoom':
           URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = mapQueryLowWeightingLine());
+          QUERY_STRING_PARAMETERS = mapQueryLowWeightingLine();
           MOCK_RESPONSE = MockQuerryLowWeightingLine;
           break;
         default:
@@ -82,7 +97,6 @@ async function GetWeighting(telescope, mode) {
     default:
       console.log('Invalid telescope'); // TODO return error properly for user
   }
-  */
 
   switch (telescope) {
     case 'Mid':
@@ -124,9 +138,11 @@ async function GetWeighting(telescope, mode) {
     default:
   }
 
+  /*
   if (USE_LOCAL_DATA) {
     return MOCK_RESPONSE;
   }
+  */
 
   try {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
