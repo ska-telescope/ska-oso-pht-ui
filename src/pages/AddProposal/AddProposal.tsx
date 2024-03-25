@@ -9,7 +9,7 @@ import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/TitleContent/TitleContent';
 import { EMPTY_PROPOSAL, EMPTY_STATUS, NAV } from '../../utils/constants';
 import PostProposal from '../../services/axios/postProposal/postProposal';
-import Proposal from '../../services/types/proposal';
+import Proposal from '../../utils/types/proposal';
 
 const PAGE = 9;
 

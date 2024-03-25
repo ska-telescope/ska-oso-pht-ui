@@ -4,7 +4,7 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Proposal } from '../../../services/types/proposal';
+import { Proposal } from '../../../utils/types/proposal';
 
 export default function ValidateButton({ onClick }) {
   const { t } = useTranslation('pht');

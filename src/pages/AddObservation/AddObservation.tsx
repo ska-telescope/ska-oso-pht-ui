@@ -16,8 +16,8 @@ import {
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
-import Proposal from '../../services/types/proposal';
-import Observation from 'services/types/observation';
+import Proposal from '../../utils/types/proposal';
+import Observation from '../../utils/types/observation';
 
 // TODO : Cypress Testing
 // TODO : Documentation
@@ -123,7 +123,6 @@ export default function AddObservation() {
         disabled={!arrayConfig || OBSERVATION.array[arrayConfig - 1].subarray.length < 2}
         testId="subarrayConfig"
         value={subarrayConfig}
-        select
         setValue={setSubarrayConfig}
         label={t('subArrayConfiguration.label')}
         labelBold
@@ -150,7 +149,6 @@ export default function AddObservation() {
       options={OBSERVATION.ObservationType}
       testId="observationType"
       value={observationType}
-      select
       setValue={setObservationType}
       label={t('observationType.label')}
       labelBold
@@ -173,7 +171,6 @@ export default function AddObservation() {
         disabled={!getOptions() || getOptions()?.length < 2}
         testId="observingBand"
         value={observingBand}
-        select
         setValue={setObservingBand}
         label={t('observingBand.label')}
         labelBold
@@ -188,7 +185,6 @@ export default function AddObservation() {
       options={OBSERVATION.ImageWeighting}
       testId="imageWeighting"
       value={imageWeighting}
-      select
       setValue={setImageWeighting}
       label={t('imageWeighting.label')}
       labelBold
@@ -202,7 +198,6 @@ export default function AddObservation() {
       options={OBSERVATION.Tapering}
       testId="tapering"
       value={tapering}
-      select
       setValue={setTapering}
       label={t('tapering.label')}
       labelBold
@@ -224,7 +219,6 @@ export default function AddObservation() {
         options={getOptions()}
         testId="bandwidth"
         value={bandwidth}
-        select
         setValue={setBandwidth}
         label={t('bandWidth.label')}
         labelBold
@@ -270,7 +264,6 @@ export default function AddObservation() {
         options={getOptions()}
         testId="spectralResolution"
         value={spectralResolution}
-        select
         setValue={setSpectralResolution}
         label={t('spectralResolution.label')}
         labelBold
@@ -288,7 +281,6 @@ export default function AddObservation() {
         options={getOptions()}
         testId="spectral"
         value={spectralAveraging}
-        select
         setValue={setSpectralAveraging}
         label={t('spectralAveraging.label')}
         labelBold

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 
 const PAGE = 6;
