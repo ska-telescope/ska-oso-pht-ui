@@ -1,8 +1,6 @@
 import { Proposal } from 'services/types/proposal';
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
 
-const specialChars = /[!]/;
-
 // TODO : Ensure that we remove all hard-coded values
 
 export const helpers = {
@@ -23,11 +21,6 @@ export const helpers = {
       }
       const { ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
-        if (specialChars.test(text)) {
-          setText(text);
-          setErrorText(ERROR_TEXT);
-          return false;
-        }
         setText(text);
         setErrorText('');
         return true;

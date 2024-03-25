@@ -232,7 +232,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         testId="titleId"
         value={getProposal().title}
         setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
+          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={errorText}
         helperText={helperFunction(getProposal().title)}
@@ -258,7 +258,6 @@ export default function TitleContent({ page }: TitleContentProps) {
             <Grid item xs={4}>
               <Typography variant="body2">{t('title.help')}</Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                {t('specialCharacters.help')}
               </Typography>
             </Grid>
           </Grid>
