@@ -52,7 +52,7 @@ export const helpers = {
     },
 
     /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
-    // TODO: move this into the PUT prosoal service (and POST?)
+    // TODO: move this into the PUT proposal service (and POST?)
     /*
     CREATE = proposal with no observations, etc.
     SAVE = proposal with or without observations, etc. STATUS: draft
