@@ -3,7 +3,7 @@ Data Page
 
 This guide explains the "Data Page," where you can add/delete Data Products associated with your proposal.
 
-.. figure:: /images/teamPage.png
+.. figure:: /images/dataProductPage.png
    :width: 90%
    :alt: screen in light & dark mode 
 
