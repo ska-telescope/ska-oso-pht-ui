@@ -1,8 +1,5 @@
 import axios from 'axios';
-import {
-  SKA_PHT_API_URL,
-  USE_LOCAL_DATA
-} from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function GetPresignedUploadUrl(filename: string): Promise<string> {
   const apiUrl = SKA_PHT_API_URL;

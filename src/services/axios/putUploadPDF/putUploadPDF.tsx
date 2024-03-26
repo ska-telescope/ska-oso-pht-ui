@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function PutUploadPDF(signedUrl, selectedFile) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/post';

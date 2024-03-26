@@ -16,6 +16,7 @@ export default function SciencePage() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -30,31 +31,31 @@ export default function SciencePage() {
   };
 
   const setFile = (theFile: File) => {
+    //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), sciencePDF: theFile });
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
+    setUploadButtonStatus(status);
   };
 
   const uploadPdftoSignedUrl = async theFile => {
-    setTheStatus(FileUploadStatus.ERROR);
-    setTimeout(10000);
+    setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
       const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Upload URL');
+      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
       console.log('uploadResult', uploadResult);
       if (uploadResult.error) {
-        throw new Error('PDF Not Uploaded');
+        throw new Error('Science PDF Not Uploaded');
       }
-
       setUploadStatus(FileUploadStatus.OK);
     } catch (e) {
       console.log('uploadPdftoSignedUrl catch');
@@ -107,7 +108,7 @@ export default function SciencePage() {
             setStatus={setUploadStatus}
             testId="fileUpload"
             uploadFunction={uploadPdftoSignedUrl}
-            uploadURL="testuploadurl"
+            status={uploadButtonStatus}
           />
         </Grid>
         <Grid item xs={6}>
