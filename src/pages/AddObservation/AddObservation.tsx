@@ -64,8 +64,6 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
 
-  const backFunction = () => navigate(PATH[PAGE]);
-
   const arrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
