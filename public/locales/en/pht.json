@@ -375,7 +375,6 @@
   },
   "sensitivityCalculatorResults": { "noData": "No data available" },
   "specialCharacters": {
-    "help": "Character exclamation mark ( ! )  not allowed",
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
     "cntWord": "Word count",
     "numWord": "Exceeded expected word count",

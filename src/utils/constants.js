@@ -349,6 +349,12 @@ export const TEXT_ENTRY_PARAMS = {
     ERROR_TEXT: 'specialCharacters.email',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  },
+  TITLE: {
+    MAX_LENGTH: 20,
+    ERROR_TEXT: 'specialCharacters.invalid',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
   }
 };
 

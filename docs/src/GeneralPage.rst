@@ -71,6 +71,7 @@ Key Information and Actions
 ===========================
 
 - Enter your proposal abstract (maximum 250 words).
+- The abstract field can contain latex in the provided text
 - Provide a clear and concise abstract.
 - Choose the relevant scientific category and subcategory.
 - Save your progress regularly.
