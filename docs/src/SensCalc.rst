@@ -6,7 +6,7 @@ The GetSensitivityCalculatorAPIData service acts as the entry point to the diffe
 the appropriate number of requests to the endpoints as necessary.
 
 Currently, the Observation data is passed to the Sensitivity Calculator Service and sent to the Calculate endpoint, 
-however the Weighting end points is still using mock data for teh query. 
+however the Weighting end points is still using mock data for the query. 
 The target data is also still mocked for both Calculate and Weighting.
 
 There are 2 or 3 calls to the API endpoints made every time.
