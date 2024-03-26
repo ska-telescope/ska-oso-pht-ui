@@ -8,7 +8,7 @@ import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificS
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import Shell from '../../components/layout/Shell/Shell';
 import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../utils/constants';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 

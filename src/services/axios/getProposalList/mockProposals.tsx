@@ -1,4 +1,4 @@
-import { ProposalsBackend } from '../../types/proposals';
+import { ProposalsBackend } from '../../../utils/types/proposals';
 
 const MockProposals: ProposalsBackend[] = [
   {
