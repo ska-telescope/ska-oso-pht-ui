@@ -46,6 +46,14 @@ function App() {
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  const theStorage = {
+    help: help,
+    helpToggle: helpToggle,
+    telescope: telescope,
+    themeMode: themeMode.mode,
+    toggleTheme: toggleTheme,
+    updateTelescope: updateTelescope
+  };
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>
