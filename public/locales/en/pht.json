@@ -122,6 +122,9 @@
   "dataProduct": {
     "button": "Add Data Product"
   },
+  "declination": {
+    "label": "Declination"
+  },
   "deleteDataProduct": {
     "label": "Delete this data product ? "
   },
@@ -278,6 +281,10 @@
       "name": "Unable to resolve provided name"
     }
   },
+  "rightAscension": {
+    "help": "Right ascension HELP",
+    "label": "Right ascension"
+  },
   "robust": {
     "help": "ROBUST HELP",
     "label": "Robust"
@@ -389,8 +396,12 @@
     "label": "Status"
   },
   "subBands": {
-    "help": "SUB-BANDS HELP",
-    "label": "Number of sub bands"
+    "help": "Valid range is 0 - 32 inclusive",
+    "label": "Number of sub bands",
+    "range": {
+      "lower": 0,
+      "upper": 32
+    }
   },
   "subArrayConfiguration": {
     "label": "Array Configuration",
@@ -549,7 +560,6 @@
     },
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
-    "subBandRange": "Value must be in the range 0 - 32 inclusive",
     "iconClicked": "Some error was encountered, please refresh page to continue"
   }
 }

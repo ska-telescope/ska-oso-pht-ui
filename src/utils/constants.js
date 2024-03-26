@@ -88,6 +88,14 @@ export const GENERAL = {
 
 export const DEFAULT_HELP = ['', ' ', ''];
 
+export const BANDWIDTH_TELESCOPE = [
+  { label: 'Not applicable', telescope: 2, value: 0 },
+  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 },
+  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 },
+  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 },
+  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4 }
+];
+
 export const OBSERVATION = {
   array: [
     {
@@ -106,12 +114,6 @@ export const OBSERVATION = {
         { label: '0', value: 3 },
         { label: '1', value: 4 },
         { label: '2', value: 5 }
-      ],
-      band: [
-        { label: 'Band 1 (0.35 - 1.05 GHz)', value: 1 },
-        { label: 'Band 2 (0.95 - 1.76 GHz)', value: 2 },
-        { label: 'Band 5a (4.6 - 8.5 GHz)', value: 3 },
-        { label: 'Band 5b (8.3 - 15.4 GHz)', value: 4 }
       ],
       bandWidth: [
         { label: '3.125 MHz', value: 1 },
@@ -145,8 +147,7 @@ export const OBSERVATION = {
         { value: 8, label: 'AA4' },
         { value: 9, label: 'AA4 (15-m antennas only)' }
       ],
-      robust: [{ value: 1 }],
-      band: [{ label: 'Not applicable', value: 0 }],
+      robust: [{ label: '', value: 1 }],
       bandWidth: [
         { label: '24.4 KHz', value: 1 },
         { label: '48.8 KHz', value: 2 },
