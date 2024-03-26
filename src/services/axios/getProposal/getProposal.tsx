@@ -12,7 +12,6 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
 import { TeamMemberBackend } from '../../../utils/types/teamMember';
 import { TargetBackend } from 'utils/types/target';
-import NewMockProposal from './newMockProposal';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);

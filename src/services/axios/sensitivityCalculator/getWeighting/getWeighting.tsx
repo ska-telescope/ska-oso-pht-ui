@@ -42,6 +42,7 @@ async function GetWeighting(telescope, mode) {
     }
   };
 
+  /*
   function mapQueryMidWeighting() {
     // TODO
   }
@@ -57,6 +58,7 @@ async function GetWeighting(telescope, mode) {
   function mapQueryLowWeightingLine() {
     // TODO
   }
+  */
 
   /*
   //  TO COMPLETE IN A NEW TICKET
