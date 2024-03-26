@@ -2,10 +2,9 @@ import axios from 'axios';
 import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function PutUploadPDF(signedUrl, selectedFile) {
-  const UPLOAD_URL_DUMMY = 'https://httpbin.org/post';
+  const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';
 
-  // This currently just returns an API URL to use for the FileUpload component, so not an "Axios" service
-  // TODO: Will this need to change to handle eroors from API etc. or not needed?
+  //TODO: revisit error handling when s3 credential is added to the backend
 
   if (USE_LOCAL_DATA) {
     return `${UPLOAD_URL_DUMMY}`;

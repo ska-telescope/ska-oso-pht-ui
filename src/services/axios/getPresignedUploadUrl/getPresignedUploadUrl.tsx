@@ -12,7 +12,7 @@ async function GetPresignedUploadUrl(filename: string): Promise<string> {
   };
 
   if (USE_LOCAL_DATA) {
-    return 'test getPresignedDownloadUrl';
+    return 'https://httpbin.org/put';
   }
 
   try {
