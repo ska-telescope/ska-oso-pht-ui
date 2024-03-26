@@ -70,13 +70,14 @@ export default function SciencePage() {
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
+            clearLabel={t('clearBtn.label')}
+            clearToolTip={t('clearBtn.toolTip')}
             direction="column"
             file={getProposal()?.sciencePDF}
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}
-            clearLabel={t('clearBtn.label')}
-            clearToolTip={t('clearBtn.toolTip')}
+            testId="fileUpload"
             uploadURL={PostUploadPDF()}
           />
         </Grid>

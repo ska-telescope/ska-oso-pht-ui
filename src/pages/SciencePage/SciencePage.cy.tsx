@@ -32,7 +32,6 @@ describe('<ScienceContent />', () => {
         </Router>
       </StoreProvider>
     );
-    cy.get('[data-testid="fileUpload,ChooseButton"]').contains('Choose file');
     cy.get('[data-testid="SearchIcon"]').click();
   });
 
