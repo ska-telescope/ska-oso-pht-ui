@@ -31,7 +31,7 @@ export default function TechnicalPage() {
   };
 
   const setFile = (theFile: File) => {
-    //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
+    //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), technicalPDF: theFile });
   };
 
