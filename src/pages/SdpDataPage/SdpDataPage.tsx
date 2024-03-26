@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
 import AddDataProductButton from '../../components/button/AddDataProduct/AddDataProductButton';

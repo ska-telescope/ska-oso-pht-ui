@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 import PostUploadPDF from '../../services/axios/postUploadPDF/postUploadPDF';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 
@@ -70,13 +70,14 @@ export default function SciencePage() {
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
+            clearLabel={t('clearBtn.label')}
+            clearToolTip={t('clearBtn.toolTip')}
             direction="column"
             file={getProposal()?.sciencePDF}
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}
-            clearLabel={t('clearBtn.label')}
-            clearToolTip={t('clearBtn.toolTip')}
+            testId="fileUpload"
             uploadURL={PostUploadPDF()}
           />
         </Grid>

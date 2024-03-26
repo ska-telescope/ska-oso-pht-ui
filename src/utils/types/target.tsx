@@ -28,7 +28,7 @@ type Target = {
   name: string;
   ra: string;
   raUnit: string;
-  referenceFrame: string;
+  referenceFrame: number;
   vel: string;
   velUnit: string;
 };

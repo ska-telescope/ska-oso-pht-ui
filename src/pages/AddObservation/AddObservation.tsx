@@ -14,13 +14,14 @@ import {
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION } from '../../utils/constants';
+import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, PATH } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
-import Proposal from '../../services/types/proposal';
+import Proposal from '../../utils/types/proposal';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const PAGE = 10;
+const BACK_PAGE = 5;
 
 const LABEL_WIDTH_SELECT = 5;
 const LABEL_WIDTH_STD = 5;
@@ -63,6 +64,8 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
 
+  const backFunction = () => navigate(PATH[PAGE]);
+
   const arrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
@@ -76,7 +79,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getSubArrayOptions()}
             testId="subarrayConfig"
@@ -95,7 +98,7 @@ export default function AddObservation() {
 
   const observationTypeField = () => (
     <Grid pt={1} spacing={0} container direction="row">
-      <Grid xs={FIELD_WIDTH_OPT1}>
+      <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
           options={OBSERVATION.ObservationType}
           testId="observationType"
@@ -120,7 +123,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
             disabled={!getOptions() || getOptions()?.length < 2}
@@ -140,7 +143,7 @@ export default function AddObservation() {
 
   const imageWeightingField = () => (
     <Grid pt={1} spacing={0} container direction="row">
-      <Grid xs={FIELD_WIDTH_OPT1}>
+      <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
           options={OBSERVATION.ImageWeighting}
           testId="imageWeighting"
@@ -158,7 +161,7 @@ export default function AddObservation() {
 
   const taperingField = () => (
     <Grid pt={1} spacing={0} container direction="row">
-      <Grid xs={FIELD_WIDTH_OPT1}>
+      <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
           options={OBSERVATION.Tapering}
           testId="tapering"
@@ -182,7 +185,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
             testId="bandwidth"
@@ -210,7 +213,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
             testId="robust"
@@ -235,7 +238,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
             testId="spectralResolution"
@@ -257,7 +260,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
             testId="spectral"
@@ -426,7 +429,7 @@ export default function AddObservation() {
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
-        <Grid xs={FIELD_WIDTH_OPT1}>
+        <Grid item xs={FIELD_WIDTH_OPT1}>
           {isContinuum() && (
             <NumberEntry
               label={t('subBands.label')}
@@ -543,7 +546,7 @@ export default function AddObservation() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
       <Grid item>
-        <PageBanner pageNo={PAGE} />
+        <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
       </Grid>
 
       <Grid

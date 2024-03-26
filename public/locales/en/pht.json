@@ -122,6 +122,9 @@
   "dataProduct": {
     "button": "Add Data Product"
   },
+  "declination": {
+    "label": "Declination"
+  },
   "deleteDataProduct": {
     "label": "Delete this data product ? "
   },
@@ -267,7 +270,8 @@
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
-    "LSR": "Heliocentric"
+    "0": "Heliocentric",
+    "1": "Local Standard of Rest"
   },
   "resolve": {
     "label": "Resolve",
@@ -276,6 +280,10 @@
       "mapping": "Unable to map results from API",
       "name": "Unable to resolve provided name"
     }
+  },
+  "rightAscension": {
+    "help": "Right ascension HELP",
+    "label": "Right ascension"
   },
   "robust": {
     "help": "ROBUST HELP",
