@@ -52,13 +52,11 @@ export default function SciencePage() {
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
-      console.log('uploadResult', uploadResult);
       if (uploadResult.error) {
         throw new Error('Science PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
     } catch (e) {
-      console.log('uploadPdftoSignedUrl catch');
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
     }
