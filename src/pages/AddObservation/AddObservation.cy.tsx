@@ -17,6 +17,7 @@ function verifyArrayConfiguration1AndSubArrayConfig() {
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
+/*
 function verifyArrayConfiguration2AndSubArrayConfig() {
   cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
   cy.get('[data-testid="arrayConfig"]').click();
@@ -30,6 +31,7 @@ function verifyArrayConfiguration2AndSubArrayConfig() {
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
+*/
 
 function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').contains('Integration Time');
