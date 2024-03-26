@@ -92,7 +92,6 @@ export default function AddObservation() {
         options={getArrayOptions()}
         testId="arrayConfig"
         value={arrayConfig}
-        select
         setValue={checkConfiguration}
         label={t('arrayConfiguration.label')}
         labelBold
@@ -241,7 +240,6 @@ export default function AddObservation() {
         options={getOptions()}
         testId="robust"
         value={robust}
-        select
         setValue={setRobust}
         label={t('robust.label')}
         labelBold
