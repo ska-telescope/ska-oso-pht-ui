@@ -13,6 +13,7 @@ charts/*/charts
 /cypress/screenshots
 /cypress/videos
 /cypress/downloads
+/tests/cypress/screenshots/*
 
 # production
 /build
