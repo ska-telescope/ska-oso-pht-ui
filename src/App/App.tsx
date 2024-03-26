@@ -27,14 +27,6 @@ function App() {
     toggleTheme,
     updateTelescope
   } = storageObject.useStore();
-  const theStorage = {
-    help: help,
-    helpToggle: helpToggle,
-    telescope: telescope,
-    themeMode: themeMode.mode,
-    toggleTheme: toggleTheme,
-    updateTelescope: updateTelescope
-  };
   const [showCopyright, setShowCopyright] = React.useState(false);
   const [apiVersion] = React.useState('0.1.0'); // TODO : Obtain real api version number
 
