@@ -258,7 +258,7 @@
     "label": "Pipeline",
     "help": "PIPELINE HELP",
     "helper": "Please enter your pipeline information",
-    "options":{
+    "options": {
       "1": "Visibility receive",
       "2": "‘Real-time’ pointing calibration'",
       "3": "Visibility pre-processing",
