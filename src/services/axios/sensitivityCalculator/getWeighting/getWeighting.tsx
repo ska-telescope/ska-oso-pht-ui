@@ -42,6 +42,66 @@ async function GetWeighting(telescope, mode) {
     }
   };
 
+  /*
+  function mapQueryMidWeighting() {
+    // TODO
+  }
+
+  function mapQueryMidWeightingLine() {
+    // TODO
+  }
+
+  function mapQueryLowWeighting() {
+    // TODO
+  }
+
+  function mapQueryLowWeightingLine() {
+    // TODO
+  }
+  */
+
+  /*
+  //  TO COMPLETE IN A NEW TICKET
+  switch (telescope) {
+    case 'Mid':
+      URL_TELESCOPE = URL_MID;
+      switch (mode) {
+        case 'Continuum':
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = mapQueryMidWeighting();
+          MOCK_RESPONSE = MockQuerryMidWeightingContinuum;
+          break;
+        case 'Zoom':
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = mapQueryMidWeightingLine();
+          MOCK_RESPONSE = MockQuerryMidWeightingLine;
+          break;
+        default:
+          // 'Invalid mode' // TODO return error properly for user
+      }
+      break;
+    case 'Low':
+      URL_TELESCOPE = URL_LOW;
+      switch (mode) {
+        case 'Continuum':
+          URL_MODE = URL_CONTINUUM;
+          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
+          MOCK_RESPONSE = MockQuerryLowWeightingContinuum;
+          break;
+        case 'Zoom':
+          URL_MODE = URL_ZOOM;
+          QUERY_STRING_PARAMETERS = mapQueryLowWeightingLine();
+          MOCK_RESPONSE = MockQuerryLowWeightingLine;
+          break;
+        default:
+          // 'Invalid mode' // TODO return error properly for user
+      }
+      break;
+    default:
+      // 'Invalid telescope' // TODO return error properly for user
+  }
+  */
+
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;

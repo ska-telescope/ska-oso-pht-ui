@@ -29,7 +29,7 @@ export default function SkyDirection1Field({
       labelPosition={LABEL_POSITION.START}
       labelWidth={labelWidth}
       suffix={t(FIELD + '.units.1.' + skyUnits.toString())}
-      testId={FIELD + 'Value'}
+      testId={FIELD + 'Value1'}
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
