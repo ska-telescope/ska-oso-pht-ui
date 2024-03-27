@@ -45,7 +45,7 @@ export const helpers = {
     },
 
     /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
-    // TODO: handle save/submit/create scenarios differences
+    // TODO: move this into the PUT proposal service (and POST?)
     // TODO: handle saving PDF filename as document_id and link
     // "documents" : [
     //   {"document_id" : "prsl-12334-science",         "link": 'download pdf'}

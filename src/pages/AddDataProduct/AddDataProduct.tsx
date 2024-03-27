@@ -8,6 +8,7 @@ import {
   Button,
   ButtonColorTypes,
   ButtonVariantTypes,
+  DropDown,
   LABEL_POSITION,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
@@ -16,50 +17,112 @@ import { NAV } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 
-// TODO : Cypress Testing
-// TODO : Documentation
 // TODO : Improved validation
-// TODO : Add functionality
-// TODO : Combine Bandwidth & Spectral Resolution ( SensCalc )
+// TODO : Add documentation page specifically for Adding a Data product
 
 const PAGE = 13;
 
 export default function AddDataProduct() {
-  const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [field1, setField1] = React.useState('');
-  const [field2, setField2] = React.useState('');
+  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
+  const [pipeline, setPipeline] = React.useState();
+  const [imageSize, setImageSize] = React.useState('');
+  const [pixelSize, setPixelSize] = React.useState('');
+  const [weighting, setWeighting] = React.useState('');
+
+  const { t } = useTranslation('pht');
+  const FIELD_OBS = 'observatoryDataProductConfig.options';
+  const FIELD_PIPELINE = 'pipeline.options';
 
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
   }, []);
 
-  const field1Field = () => (
+  const obsDataProductField = () => {
+    const OPTIONS = [1, 2];
+
+    const getOptions = () => {
+      return OPTIONS.map(e => ({
+        label: t(FIELD_OBS + '.' + e),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        options={getOptions()}
+        testId="observatoryDataProduct"
+        value={observatoryDataProduct}
+        setValue={setObservatoryDataProduct}
+        label={t('observatoryDataProductConfig.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
+      />
+    );
+  };
+
+  const pipelineField = () => {
+    const OPTIONS = [1, 2, 3, 4, 5, 6, 7];
+
+    const getOptions = () => {
+      return OPTIONS.map(e => ({
+        label: t(FIELD_PIPELINE + '.' + e),
+        value: e
+      }));
+    };
+    return (
+      <DropDown
+        options={getOptions()}
+        testId="pipeline"
+        value={pipeline}
+        setValue={setPipeline}
+        label={t('pipeline.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        onFocus={() => helpComponent(t('pipeline.help'))}
+      />
+    );
+  };
+
+  const imageSizeField = () => (
     <TextEntry
-      label="FIELD 1"
+      label={t('imageSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="field1"
-      value={field1}
-      setValue={setField1}
-      onFocus={() => helpComponent('FIELD1 HELP')}
+      testId="imageSize"
+      value={imageSize}
+      setValue={setImageSize}
+      onFocus={() => helpComponent(t('imageSize.help'))}
     />
   );
 
-  const field2Field = () => (
+  const pixelSizeField = () => (
     <TextEntry
-      label="FIELD 2"
+      label={t('pixelSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="field2"
-      value={field2}
-      setValue={setField2}
-      onFocus={() => helpComponent('FIELD2 HELP')}
+      testId="pixelSize"
+      value={pixelSize}
+      setValue={setPixelSize}
+      onFocus={() => helpComponent(t('pixelSize.help'))}
+    />
+  );
+
+  const weightingField = () => (
+    <TextEntry
+      label={t('weighting.label')}
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      testId="weighting"
+      value={weighting}
+      setValue={setWeighting}
+      onFocus={() => helpComponent(t('weighting.help'))}
     />
   );
 
@@ -77,8 +140,11 @@ export default function AddDataProduct() {
       );
       const newDataProduct = {
         id: highestId + 1,
-        field1,
-        field2
+        observatoryDataProduct,
+        pipeline,
+        imageSize,
+        pixelSize,
+        weighting
       };
       setProposal({
         ...getProposal(),
@@ -123,7 +189,7 @@ export default function AddDataProduct() {
   };
 
   return (
-    <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
+    <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
       <Grid item>
         <PageBanner pageNo={PAGE} />
       </Grid>
@@ -133,21 +199,19 @@ export default function AddDataProduct() {
         container
         direction="row"
         alignItems="space-evenly"
-        justifyContent="space-around"
+        justifyContent="center"
         spacing={1}
       >
-        <Grid item xs={9}>
-          <Grid
-            container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="space-around"
-          >
-            <Grid item>{field1Field()}</Grid>
-            <Grid item>{field2Field()}</Grid>
+        <Grid item xs={9} md={5}>
+          <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
+            <Grid item>{obsDataProductField()}</Grid>
+            <Grid item>{pipelineField()}</Grid>
+            <Grid item>{imageSizeField()}</Grid>
+            <Grid item>{pixelSizeField()}</Grid>
+            <Grid item>{weightingField()}</Grid>
           </Grid>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} ml={5}>
           <HelpPanel />
         </Grid>
       </Grid>
