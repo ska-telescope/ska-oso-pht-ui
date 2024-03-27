@@ -58,6 +58,9 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
 
+  // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
+  // some unit conversion will also be useful
+
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
   }, []);
@@ -487,7 +490,7 @@ export default function AddObservation() {
     };
 
     const addObservationToProposal = () => {
-      const highestId = getProposal().observations.reduce(
+      const highestId = getProposal().observations?.reduce(
         (acc, observation) => (observation.id > acc ? observation.id : acc),
         0
       );
@@ -497,7 +500,19 @@ export default function AddObservation() {
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
-        type: observationType
+        type: observationType,
+        observing_band: observingBand,
+        weather: weather,
+        elevation: elevation,
+        central_frequency: frequency,
+        bandwidth: bandwidth,
+        spectral_averaging: spectralAveraging,
+        tapering: tapering,
+        image_weighting: imageWeighting,
+        integration_time: suppliedValue,
+        spectral_resolution: spectralResolution,
+        effective_resolution: 0,
+        number_of_sub_bands: subBands
       };
       setProposal({
         ...getProposal(),

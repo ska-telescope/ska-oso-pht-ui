@@ -11,6 +11,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
+import Observation from '../../utils/types/observation';
 
 const PAGE = 5;
 
@@ -212,12 +213,10 @@ export default function ObservationPage() {
         const isSelected = isTargetSelected(e.row.id);
 
         if (currentObservation > 0) {
-          return (
-            <SensCalcDisplay
-              observation={getProposal().observations.find(p => p.id === currentObservation)}
-              selected={isSelected}
-            />
+          const obs: Observation = getProposal().observations.find(
+            p => p.id === currentObservation
           );
+          return <SensCalcDisplay observation={obs} selected={isSelected} />;
         }
         return '';
       }
