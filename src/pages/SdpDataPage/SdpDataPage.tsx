@@ -49,18 +49,47 @@ export default function SdpDataPage() {
 
   const columns = [
     {
-      field: 'field1',
-      headerName: 'FIELD 1',
+      field: 'observatoryDataProduct',
+      headerName: 'OBSERVATORY DATA PRODUCT',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { field1: number } }) => <Typography>{e.row.field1}</Typography>
+      renderCell: (e: { row: { observatoryDataProduct: number } }) => {
+        const obsDataLabel = t(
+          `observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`
+        );
+        return <Typography>{obsDataLabel}</Typography>;
+      }
     },
     {
-      field: 'field2',
-      headerName: 'FIELD 2',
+      field: 'pipeline',
+      headerName: 'PIPELINE',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { field2: number } }) => <Typography>{e.row.field2}</Typography>
+      renderCell: (e: { row: { pipeline: number } }) => {
+        const pipelineLabel = t(`pipeline.options.${e.row.pipeline}`);
+        return <Typography>{pipelineLabel}</Typography>;
+      }
+    },
+    {
+      field: 'imageSize',
+      headerName: 'IMAGE SIZE',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { imageSize: number } }) => <Typography>{e.row.imageSize}</Typography>
+    },
+    {
+      field: 'pixelSize',
+      headerName: 'PIXEL SIZE',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { pixelSize: number } }) => <Typography>{e.row.pixelSize}</Typography>
+    },
+    {
+      field: 'weighting',
+      headerName: 'WEIGHTING',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { weighting: number } }) => <Typography>{e.row.weighting}</Typography>
     },
     {
       field: 'id',
@@ -102,11 +131,22 @@ export default function SdpDataPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <FieldWrapper label={t('field1.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.field1}</Typography>
+        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">
+            {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
+          </Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('field2.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.field2}</Typography>
+        <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t(`pipeline.options.${rec.pipeline}`)}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.imageSize}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.pixelSize}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.weighting}</Typography>
         </FieldWrapper>
       </Grid>
     );
@@ -122,30 +162,37 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
         <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-          <Grid item pb={1}>
+          <Grid item xs={1}></Grid>
+          <Grid item xs={10} pb={1}>
             <AddDataProductButton />
           </Grid>
+          <Grid item xs={1}></Grid>
         </Grid>
-        {getRows().length > 0 && (
-          <DataGrid
-            rows={getRows()}
-            columns={extendedColumnsObservations}
-            height={450}
-            onRowClick={clickRow}
-            showBorder={false}
-            showMild
-            testId="observationDetails"
-          />
-        )}
-        {getRows().length === 0 && (
-          <InfoCard
-            color={InfoCardColorTypes.Error}
-            fontSize={20}
-            message={t('error.noObservations')}
-            testId="helpPanelId"
-          />
-        )}
+        <Grid container direction="row" alignItems="center" justifyContent="space-around">
+          <Grid item md={10}>
+            {getRows().length > 0 && (
+              <DataGrid
+                rows={getRows()}
+                columns={extendedColumnsObservations}
+                height={450}
+                onRowClick={clickRow}
+                showBorder={false}
+                showMild
+                testId="observationDetails"
+              />
+            )}
+            {getRows().length === 0 && (
+              <InfoCard
+                color={InfoCardColorTypes.Error}
+                fontSize={20}
+                message={t('error.noObservations')}
+                testId="helpPanelId"
+              />
+            )}
+          </Grid>
+        </Grid>
       </Grid>
+
       {openDialog && (
         <AlertDialog
           open={openDialog}
