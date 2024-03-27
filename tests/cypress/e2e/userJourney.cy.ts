@@ -21,7 +21,7 @@ context('PROPOSAL HANDLING TOOL', () => {
   });
 
   it('Content : Create proposal, complete all sections as required and then submit', () => {
-    cy.get('[data-testid="chloe"]').click();
+    cy.get('[data-testid="addProposalButton"]').click();
     //Complete title page
     cy.get('[data-testid="titleId"]').type('Test Proposal');
     cy.get('[id="ProposalType-1"]').click({ force: true });
@@ -112,7 +112,7 @@ context('PROPOSAL HANDLING TOOL', () => {
   });
 
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
-    cy.get('[data-testid="chloe"]').click();
+    cy.get('[data-testid="addProposalButton"]').click();
     //Partially complete title page
     cy.get('[id="ProposalType-1"]').click({ force: true });
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
