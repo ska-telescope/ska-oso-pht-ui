@@ -89,7 +89,7 @@ export const GENERAL = {
 export const DEFAULT_HELP = ['', ' ', ''];
 
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'Not applicable', telescope: 2, value: 0 },
+  { label: 'Not applicable (LOW)', telescope: 2, value: 0 },
   { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 },
   { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 },
   { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 },
@@ -102,15 +102,21 @@ export const OBSERVATION = {
       value: 1,
       subarray: [
         // MID
-        { value: 1, label: 'AA0.5' },
-        { value: 2, label: 'AA1' },
-        { value: 3, label: 'AA2' },
-        { value: 4, label: 'AA2 (core only)' },
-        { value: 5, label: 'AA*' },
-        { value: 6, label: 'AA* (15-m antennas only)' },
-        { value: 7, label: 'AA4' },
-        { value: 8, label: 'AA4 (15-m antennas only)' },
-        { value: 9, label: 'AA*/AA4 (13.5-m antennas only)' }
+        { value: 1, label: 'AA0.5', numOf15mAntennas: 4, numOf13mAntennas: 0 },
+        { value: 2, label: 'AA1', numOf15mAntennas: 8, numOf13mAntennas: 0 },
+        { value: 3, label: 'AA2', numOf15mAntennas: 64, numOf13mAntennas: 0 },
+        { value: 4, label: 'AA2 (core only)', numOf15mAntennas: 64, numOf13mAntennas: 0 },
+        { value: 5, label: 'AA*', numOf15mAntennas: 80, numOf13mAntennas: 64 },
+        { value: 6, label: 'AA* (15-m antennas only)', numOf15mAntennas: 80, numOf13mAntennas: 0 },
+        { value: 7, label: 'AA4', numOf15mAntennas: 133, numOf13mAntennas: 64 },
+        { value: 8, label: 'AA4 (15-m antennas only)', numOf15mAntennas: 133, numOf13mAntennas: 0 },
+        {
+          value: 9,
+          label: 'AA*/AA4 (13.5-m antennas only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 64
+        },
+        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0 }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -142,14 +148,15 @@ export const OBSERVATION = {
       value: 2,
       subarray: [
         // LOW
-        { value: 1, label: 'AA0.5' },
-        { value: 2, label: 'AA1' },
-        { value: 3, label: 'AA2' },
-        { value: 4, label: 'AA2 (core only)' },
-        { value: 5, label: 'AA*' },
-        { value: 6, label: 'AA* (core only)' },
-        { value: 7, label: 'AA4' },
-        { value: 8, label: 'AA4 (core only)' }
+        { value: 1, label: 'AA0.5', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 2, label: 'AA1', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 3, label: 'AA2', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 4, label: 'AA2 (core only)', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 5, label: 'AA*', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 6, label: 'AA* (core only)', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 7, label: 'AA4', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 8, label: 'AA4 (core only)', numOf15mAntennas: 0, numOf13mAntennas: 0 },
+        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0 }
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [

@@ -212,6 +212,30 @@
   "notSelected": {
     "label": "Not Selected"
   },
+  "numOf15mAntennas": {
+    "help": "Valid range is 0 - 133 inclusive",
+    "label": "Number of 15-m antennas",
+    "range": {
+      "lower": 0,
+      "upper": 133
+    }
+  },
+  "numOf13mAntennas": {
+    "help": "Valid range is 0 - 64 inclusive",
+    "label": "Number of 13-m antennas",
+    "range": {
+      "lower": 0,
+      "upper": 64
+    }
+  },
+  "numOfStations": {
+    "help": "Valid range is 0 - 512 inclusive",
+    "label": "Number of Stations",
+    "range": {
+      "lower": 0,
+      "upper": 512
+    }
+  },
   "observingBand": {
     "help": "Observing Band HELP",
     "label": "Observing Band"

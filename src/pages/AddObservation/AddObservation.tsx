@@ -58,6 +58,29 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
 
+  // TODO: MID - add number of 15-m antenna and number of 13-m antenna, LOW - number of stations
+  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
+  const [numOfStations, setNumOfStations] = React.useState(0);
+
+  // TODO: update 15-m antennas 13-m antennas when subarray is updated
+  React.useEffect(() => {
+    console.log('useEffect subarrayConfig', subarrayConfig);
+    console.log('useEffect observationType', observationType);
+    console.log('useEffect observingBand', observingBand);
+
+    setNumOf15mAntennas(
+      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
+        element => element.value === subarrayConfig
+      ).numOf15mAntennas
+    );
+    setNumOf13mAntennas(
+      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
+        element => element.value === subarrayConfig
+      ).numOf13mAntennas
+    );
+  }, [subarrayConfig]);
+
   // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
   // some unit conversion will also be useful
 
@@ -475,6 +498,97 @@ export default function AddObservation() {
     />
   );
 
+  // TODO: MID - add number of 15m/13m antennas field, LOW - add number of stations
+  const NumOf15mAntennasField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOf15mAntennas.range.lower')) &&
+        num <= Number(t('numOf15mAntennas.range.upper'))
+      ) {
+        setNumOf15mAntennas(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf15mAntennas.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOf15mAntennas"
+            value={numOf15mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const NumOf13mAntennasField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOf13mAntennas.range.lower')) &&
+        num <= Number(t('numOf13mAntennas.range.upper'))
+      ) {
+        setNumOf13mAntennas(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf13mAntennas.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOf13mAntennas"
+            value={numOf13mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const NumOfStationsField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOfStations.range.lower')) &&
+        num <= Number(t('numOfStations.range.upper'))
+      ) {
+        setNumOfStations(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOfStations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOfStations"
+            value={numOfStations}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOfStations.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
@@ -590,6 +704,15 @@ export default function AddObservation() {
             </Grid>
             <Grid item xs={XS_TOP}>
               {weatherField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {NumOfStationsField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {NumOf15mAntennasField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {NumOf13mAntennasField()}
             </Grid>
             <Grid item xs={XS_TOP} />
           </Grid>
