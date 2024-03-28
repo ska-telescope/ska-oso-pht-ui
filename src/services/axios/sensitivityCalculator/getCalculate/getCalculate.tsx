@@ -4,6 +4,7 @@ import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockRe
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
+import { getLowSubarrayType } from '../helpers';
 
 async function GetCalculate(telescope: string, mode: string, observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
@@ -68,13 +69,6 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     return params;
   }
 
-  function getSubarrayType(_subArray: string, telescope: string) {
-    const subArray = _subArray.replace('*', '').replace('(core only)', '');
-    const star = _subArray.includes('*') ? 'star' : '';
-    const type = _subArray.includes('core') ? 'core_only' : 'all';
-    return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
-  }
-
   interface ModeSpecificParametersLow {
     bandwidth_mhz?: string;
     spectral_averaging_factor?: string;
@@ -98,7 +92,7 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
     const params = new URLSearchParams({
-      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: observation.integration_time,
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,

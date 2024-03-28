@@ -10,6 +10,7 @@ import {
 } from './mockResponseLowWeighting';
 import Observation from 'utils/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
+import { getLowSubarrayType } from '../helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetWeighting(telescope, mode, observation: Observation) {
@@ -50,18 +51,6 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     return params;
   }
 
-  /*
-  returns string such as 'LOW_AA4_all',
-  */
-  function getLowSubarrayType(_subArray: string, telescope: string): string {
-    let subArray = _subArray.replace('*', '').replace('(core only)', ''); // remove * // remove (core only)
-    subArray = subArray.replace(/(\d+)\.(\d+)/g, '$1$2'); // remove dot following a number
-    const star = _subArray.includes('*') ? 'star' : ''; // add star for *
-    const type = _subArray.includes('core') ? 'core_only' : 'all';
-    return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
-  }
-
-  // same for mapQueryLowWeighting and mapQueryLowWeightingLine
   function mapQueryLowWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const subArray = array.subarray.find(obj => obj.value === observation.subarray).label;
@@ -76,12 +65,6 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     return params;
   }
 
-  /*
-  - TODO: put functions replicated in weighting and calculate in a common place 
-  */
-
-  console.log('telescope', telescope);
-  console.log('observation.telescope', observation.telescope);
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
