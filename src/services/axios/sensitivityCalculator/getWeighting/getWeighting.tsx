@@ -45,67 +45,64 @@ async function GetWeighting(telescope, mode, observation: Observation) {
   };
 
   function mapQueryMidWeighting() {
+    console.log('TELESCOPE', telescope);
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     return {
       frequency: observation.central_frequency,
       zoom_frequencies: observation.central_frequency,
       dec_str: '00:00:00.0', // to get from target
-      weighting: observation.image_weighting,
-      array_configuration: OBSERVATION.array[0].subarray.find(
-        obj => obj.value === observation.subarray
-      ).label,
-      calculator_mode: observation.type,
+      weighting: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
+      array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
+      calculator_mode: 'continuum',
       taper: observation.tapering
     };
   }
 
   function mapQueryMidWeightingLine() {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     return {
       frequency: observation.central_frequency,
       zoom_frequencies: observation.central_frequency,
       dec_str: '00:00:00.0', // to get from target
-      weighting: observation.image_weighting,
-      array_configuration: OBSERVATION.array[0].subarray.find(
-        obj => obj.value === observation.subarray
-      ).label,
+      weighting: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
+      array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
       calculator_mode: 'line',
       taper: observation.tapering
     };
   }
 
-  function getSubarrayType(_subArray: string, telescope: string) {
-    const subArray = _subArray.replace('*', '').replace('(core only)', '');
-    const star = _subArray.includes('*') ? 'star' : '';
+  /*
+  returns string such as 'LOW_AA4_all',
+  */
+  function getLowSubarrayType(_subArray: string, telescope: string): string {
+    let subArray = _subArray.replace('*', '').replace('(core only)', ''); // remove * // remove (core only)
+    subArray = subArray.replace(/(\d+)\.(\d+)/g, '$1$2'); // remove dot following a number
+    const star = _subArray.includes('*') ? 'star' : ''; // add star for *
     const type = _subArray.includes('core') ? 'core_only' : 'all';
     return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
   }
 
+  // same for mapQueryLowWeighting and mapQueryLowWeightingLine
   function mapQueryLowWeighting() {
-    const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
-      .label;
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const subArray = array.subarray.find(obj => obj.value === observation.subarray).label;
     return {
-      weighting_mode: observation.image_weighting,
-      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      weighting_mode: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
+      subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.central_frequency
     };
   }
 
-  function mapQueryLowWeightingLine() {
-    // same as mapQueryLowWeighting TODO: refactor a to use 1 function
-    const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
-      .label;
-    return {
-      weighting_mode: observation.image_weighting,
-      subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
-      pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
-      freq_centre: observation.central_frequency
-    };
-  }
-
-  // TODO
   /*
-  - use 1 function for Low
-  - figure which telescope we are using and check if the assumption 0=MID 1=LOW in consts/OBSERVATION is still valid
+  - TODO: refactor to use 1 function for Mid passing line true as parameter
+  - TODO: put functions replicated in weighting and calculate in a common place 
   */
 
   console.log('telescope', telescope);
@@ -117,14 +114,12 @@ async function GetWeighting(telescope, mode, observation: Observation) {
         case 'Continuum':
           URL_MODE = '';
           QUERY_STRING_PARAMETERS = mapQueryMidWeighting();
-          // MOCK_RESPONSE = MockQuerryMidWeightingContinuum;
-          MOCK_RESPONSE = mapQueryMidWeighting();
+          MOCK_RESPONSE = MockResponseMidWeightingContinuum;
           break;
         case 'Zoom':
           URL_MODE = '';
           QUERY_STRING_PARAMETERS = mapQueryMidWeightingLine();
-          // MOCK_RESPONSE = MockQuerryMidWeightingLine;
-          MOCK_RESPONSE = mapQueryMidWeightingLine();
+          MOCK_RESPONSE = MockQuerryMidWeightingLine;
           break;
         default:
         // 'Invalid mode' // TODO return error properly for user
@@ -136,16 +131,14 @@ async function GetWeighting(telescope, mode, observation: Observation) {
         case 'Continuum':
           URL_MODE = URL_CONTINUUM;
           QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
-          // MOCK_RESPONSE = MockQuerryLowWeightingContinuum;
-          MOCK_RESPONSE = mapQueryLowWeighting();
+          MOCK_RESPONSE = MockResponseLowWeightingContinuum;
           console.log('MOCK_RESPONSE', MOCK_RESPONSE);
           console.log('OBSERVATION', observation);
           break;
         case 'Zoom':
           URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = mapQueryLowWeightingLine();
-          // MOCK_RESPONSE = MockQuerryLowWeightingLine;
-          MOCK_RESPONSE = mapQueryLowWeightingLine();
+          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
+          MOCK_RESPONSE = MockQuerryLowWeightingLine;
           break;
         default:
         // 'Invalid mode' // TODO return error properly for user
@@ -153,46 +146,6 @@ async function GetWeighting(telescope, mode, observation: Observation) {
       break;
     default:
     // 'Invalid telescope' // TODO return error properly for user
-  }
-
-  switch (telescope) {
-    case 'Mid':
-      URL_TELESCOPE = URL_MID;
-      URL_CONTINUUM_VALUE = '';
-      URL_ZOOM_VALUE = '';
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQuerryMidWeightingContinuum;
-      MOCK_ZOOM_QUERY = MockQuerryMidWeightingLine;
-      MOCK_RESPONSE_CONTINUUM = MockResponseMidWeightingContinuum;
-      MOCK_RESPONSE_ZOOM = MockResponseMidWeightingLine;
-      break;
-    case 'Low':
-      URL_TELESCOPE = URL_LOW;
-      URL_CONTINUUM_VALUE = URL_CONTINUUM;
-      URL_ZOOM_VALUE = URL_ZOOM;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQuerryLowWeightingContinuum;
-      MOCK_ZOOM_QUERY = MockQuerryLowWeightingLine;
-      MOCK_RESPONSE_CONTINUUM = MockResponseLowWeightingContinuum;
-      MOCK_RESPONSE_ZOOM = MockResponseLowWeightingLine;
-      break;
-    default:
-  }
-
-  switch (mode) {
-    case 'Continuum':
-      QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
-      URL_MODE = URL_CONTINUUM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
-      break;
-    case 'Zoom':
-      QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
-      URL_MODE = URL_ZOOM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
-      break;
-    default:
   }
 
   if (USE_LOCAL_DATA) {

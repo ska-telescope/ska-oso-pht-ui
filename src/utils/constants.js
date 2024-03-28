@@ -101,12 +101,16 @@ export const OBSERVATION = {
     {
       value: 1,
       subarray: [
+        // MID
         { value: 1, label: 'AA0.5' },
         { value: 2, label: 'AA1' },
         { value: 3, label: 'AA2' },
         { value: 4, label: 'AA2 (core only)' },
         { value: 5, label: 'AA*' },
-        { value: 6, label: 'AA* (core only)' }
+        { value: 6, label: 'AA* (15-m antennas only)' },
+        { value: 7, label: 'AA4' },
+        { value: 8, label: 'AA4 (15-m antennas only)' },
+        { value: 9, label: 'AA*/AA4 (13.5-m antennas only)' }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -137,17 +141,17 @@ export const OBSERVATION = {
     {
       value: 2,
       subarray: [
+        // LOW
         { value: 1, label: 'AA0.5' },
         { value: 2, label: 'AA1' },
         { value: 3, label: 'AA2' },
         { value: 4, label: 'AA2 (core only)' },
         { value: 5, label: 'AA*' },
         { value: 6, label: 'AA* (core only)' },
-        { value: 7, label: 'AA* (15-m antennas only)' },
-        { value: 8, label: 'AA4' },
-        { value: 9, label: 'AA4 (15-m antennas only)' }
+        { value: 7, label: 'AA4' },
+        { value: 8, label: 'AA4 (core only)' }
       ],
-      robust: [{ label: '', value: 1 }],
+      robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
         { label: '24.4 KHz', value: 1 },
         { label: '48.8 KHz', value: 2 },

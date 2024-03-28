@@ -40,8 +40,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       bandwidth: observation.bandwidth.toString(),
       n_subbands: observation.number_of_sub_bands.toString(),
       resolution: observation.spectral_resolution.toString(),
-      weighting: OBSERVATION.ImageWeighting.find(obj => obj.value === observation.image_weighting)
-        .label,
+      weighting: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
       calculator_mode: 'continuum',
       taper: observation.tapering.toString(),
       integration_time: observation.integration_time
@@ -62,8 +63,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       bandwidth: observation.bandwidth.toString(),
       zoom_frequencies: observation.central_frequency,
       zoom_resolutions: observation.effective_resolution.toString(),
-      weighting: OBSERVATION.ImageWeighting.find(obj => obj.value === observation.image_weighting)
-        .label,
+      weighting: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
       calculator_mode: 'line',
       taper: observation.tapering.toString(),
       integration_time: observation.integration_time
