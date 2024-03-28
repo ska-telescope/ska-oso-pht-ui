@@ -217,7 +217,8 @@
     "label": "Observing Band"
   },
   "observations": {
-    "label": "Observations"
+    "label": "Observations",
+    "id": "obset_id"
   },
   "observationType": {
     "label": "Observation Type",
