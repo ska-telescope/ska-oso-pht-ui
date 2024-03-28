@@ -124,7 +124,17 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  const num = Number((Math.random()*3).toFixed(0));
   const columns = [
+    {
+      field: 'obset_id',
+      headerName: t('observations.id'),
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { observation: number } }) => (
+        <Typography>{'obs-' + num}</Typography>
+      )
+    },
     {
       field: 'telescope',
       headerName: t('arrayConfiguration.label'),
