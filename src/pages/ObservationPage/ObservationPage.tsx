@@ -124,7 +124,8 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const num = Number((Math.random()*3).toFixed(0));
+  // const num = Number((Math.random()*3).toFixed(0));
+  const uid = ( Math.random() * 1000000 ).toFixed(0);
   const columns = [
     {
       field: 'obset_id',
@@ -132,7 +133,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observation: number } }) => (
-        <Typography>{'obs-' + num}</Typography>
+        <Typography>{'obs-' + uid + '-cycle'}</Typography>
       )
     },
     {
