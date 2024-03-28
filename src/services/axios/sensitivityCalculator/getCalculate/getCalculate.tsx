@@ -17,7 +17,7 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   let URL_MODE: string;
   const URL_CALCULATE = `calculate`;
 
-  let QUERY_STRING_PARAMETERS: string | string[][] | Record<string, string> | URLSearchParams;
+  let QUERY_STRING_PARAMETERS: URLSearchParams;
   let MOCK_RESPONSE: any;
   const config = {
     headers: {
@@ -26,8 +26,29 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     }
   };
 
-  function mapQueryMidCalculate() {
-    return {
+  interface ModeSpecificParameters {
+    n_subbands?: string;
+    resolution?: string;
+    zoom_frequencies?: string;
+    zoom_resolutions?: string;
+  }
+
+  function mapQueryMidCalculate(calculator_mode): URLSearchParams {
+    console.log('calculator mode', calculator_mode);
+    let mode_specific_parameters: ModeSpecificParameters = {};
+    switch (calculator_mode) {
+      case 'continuum':
+        mode_specific_parameters.n_subbands = observation.number_of_sub_bands.toString();
+        mode_specific_parameters.resolution = observation.spectral_resolution.toString();
+        break;
+      case 'zoom':
+        mode_specific_parameters.zoom_frequencies = observation.central_frequency;
+        mode_specific_parameters.zoom_resolutions = observation.effective_resolution.toString();
+        break;
+      default:
+    }
+    console.log('mode_specific_parameters', mode_specific_parameters);
+    const params = new URLSearchParams({
       rx_band: `Band ${observation.observing_band.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
@@ -38,38 +59,15 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       el: observation.elevation,
       frequency: observation.central_frequency,
       bandwidth: observation.bandwidth.toString(),
-      n_subbands: observation.number_of_sub_bands.toString(),
-      resolution: observation.spectral_resolution.toString(),
       weighting: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       calculator_mode: 'continuum',
       taper: observation.tapering.toString(),
-      integration_time: observation.integration_time
-    };
-  }
-
-  function mapQueryMidCalculateZoom() {
-    return {
-      rx_band: `Band ${observation.observing_band.toString()}`,
-      ra_str: '00:00:00.0', // TODO: get from target
-      dec_str: '00:00:00.0', // TODO: get from target
-      array_configuration: OBSERVATION.array[0].subarray.find(
-        obj => obj.value === observation.subarray
-      ).label,
-      pwv: observation.weather,
-      el: observation.elevation,
-      frequency: observation.central_frequency,
-      bandwidth: observation.bandwidth.toString(),
-      zoom_frequencies: observation.central_frequency,
-      zoom_resolutions: observation.effective_resolution.toString(),
-      weighting: OBSERVATION.ImageWeighting.find(
-        obj => obj.value === observation.image_weighting
-      ).label.toLowerCase(),
-      calculator_mode: 'line',
-      taper: observation.tapering.toString(),
-      integration_time: observation.integration_time
-    };
+      integration_time: observation.integration_time,
+      ...mode_specific_parameters
+    });
+    return params;
   }
 
   function getSubarrayType(_subArray: string, telescope: string) {
@@ -79,32 +77,34 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
   }
 
-  function mapQueryLowCalculate() {
+  function mapQueryLowCalculate(): URLSearchParams {
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
-    return {
+    const params = new URLSearchParams({
       subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: observation.integration_time,
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,
       elevation_limit: observation.elevation,
-      bandwidth_mhz: observation.bandwidth.toString(),
-      spectral_averaging_factor: observation.spectral_averaging.toString()
-    };
+      bandwidth_mhz: observation.bandwidth.toString(), //
+      spectral_averaging_factor: observation.spectral_averaging.toString() //
+    });
+    return params;
   }
 
-  function mapQueryLowCalculateZoom() {
+  function mapQueryLowCalculateZoom(): URLSearchParams {
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
-    return {
+    const params = new URLSearchParams({
       subarray_configuration: getSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: observation.integration_time,
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,
       elevation_limit: observation.elevation,
-      spectral_resolution_hz: observation.spectral_resolution.toString(),
-      total_bandwidth_khz: observation.bandwidth.toString()
-    };
+      spectral_resolution_hz: observation.spectral_resolution.toString(), //
+      total_bandwidth_khz: observation.bandwidth.toString() //
+    });
+    return params;
   }
 
   switch (telescope) {
@@ -113,12 +113,12 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       switch (mode) {
         case 'Continuum':
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculate();
+          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('continuum');
           MOCK_RESPONSE = MockResponseMidCalculate;
           break;
         case 'Zoom':
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculateZoom();
+          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('zoom');
           MOCK_RESPONSE = MockResponseMidCalculateZoom;
           break;
         default:
@@ -151,7 +151,7 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   }
 
   try {
-    const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
+    const queryString = QUERY_STRING_PARAMETERS;
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
       config

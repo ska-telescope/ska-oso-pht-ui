@@ -44,7 +44,7 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     }
   };
 
-  function mapQueryMidWeighting() {
+  function mapQueryMidWeighting(calculatore_mode: string) {
     console.log('TELESCOPE', telescope);
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     return {
@@ -55,22 +55,7 @@ async function GetWeighting(telescope, mode, observation: Observation) {
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
-      calculator_mode: 'continuum',
-      taper: observation.tapering
-    };
-  }
-
-  function mapQueryMidWeightingLine() {
-    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    return {
-      frequency: observation.central_frequency,
-      zoom_frequencies: observation.central_frequency,
-      dec_str: '00:00:00.0', // to get from target
-      weighting: OBSERVATION.ImageWeighting.find(
-        obj => obj.value === observation.image_weighting
-      ).label.toLowerCase(),
-      array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
-      calculator_mode: 'line',
+      calculator_mode: calculatore_mode,
       taper: observation.tapering
     };
   }
@@ -101,7 +86,6 @@ async function GetWeighting(telescope, mode, observation: Observation) {
   }
 
   /*
-  - TODO: refactor to use 1 function for Mid passing line true as parameter
   - TODO: put functions replicated in weighting and calculate in a common place 
   */
 
@@ -113,12 +97,13 @@ async function GetWeighting(telescope, mode, observation: Observation) {
       switch (mode) {
         case 'Continuum':
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidWeighting();
+          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('continuum');
           MOCK_RESPONSE = MockResponseMidWeightingContinuum;
           break;
         case 'Zoom':
           URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidWeightingLine();
+          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('line');
+          // QUERY_STRING_PARAMETERS = mapQueryMidWeightingLine();
           MOCK_RESPONSE = MockQuerryMidWeightingLine;
           break;
         default:
