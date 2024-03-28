@@ -1,14 +1,10 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
 import {
-  MockQuerryMidWeightingContinuum,
-  MockQuerryMidWeightingLine,
   MockResponseMidWeightingContinuum,
   MockResponseMidWeightingLine
 } from './mockResponseMidWeighting';
 import {
-  MockQuerryLowWeightingContinuum,
-  MockQuerryLowWeightingLine,
   MockResponseLowWeightingContinuum,
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
@@ -25,18 +21,12 @@ async function GetWeighting(telescope, mode, observation: Observation) {
   // Mode URLs
   const URL_ZOOM = `line/`;
   const URL_CONTINUUM = `continuum/`;
-  let URL_ZOOM_VALUE;
-  let URL_CONTINUUM_VALUE;
   let URL_MODE;
   const URL_WEIGHTING = `weighting`;
   // Mocks query strings parameters
-  let QUERY_STRING_PARAMETERS;
-  let MOCK_CONTINUUM_QUERY;
-  let MOCK_ZOOM_QUERY;
+  let QUERY_STRING_PARAMETERS: URLSearchParams;
   // Mocks responses
   let MOCK_RESPONSE;
-  let MOCK_RESPONSE_CONTINUUM;
-  let MOCK_RESPONSE_ZOOM;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -44,10 +34,9 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     }
   };
 
-  function mapQueryMidWeighting(calculatore_mode: string) {
-    console.log('TELESCOPE', telescope);
+  function mapQueryMidWeighting(calculatore_mode: string): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    return {
+    const params = new URLSearchParams({
       frequency: observation.central_frequency,
       zoom_frequencies: observation.central_frequency,
       dec_str: '00:00:00.0', // to get from target
@@ -56,8 +45,9 @@ async function GetWeighting(telescope, mode, observation: Observation) {
       ).label.toLowerCase(),
       array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
       calculator_mode: calculatore_mode,
-      taper: observation.tapering
-    };
+      taper: observation.tapering.toString()
+    });
+    return params;
   }
 
   /*
@@ -72,17 +62,18 @@ async function GetWeighting(telescope, mode, observation: Observation) {
   }
 
   // same for mapQueryLowWeighting and mapQueryLowWeightingLine
-  function mapQueryLowWeighting() {
+  function mapQueryLowWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const subArray = array.subarray.find(obj => obj.value === observation.subarray).label;
-    return {
+    const params = new URLSearchParams({
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.central_frequency
-    };
+    });
+    return params;
   }
 
   /*
@@ -103,8 +94,7 @@ async function GetWeighting(telescope, mode, observation: Observation) {
         case 'Zoom':
           URL_MODE = '';
           QUERY_STRING_PARAMETERS = mapQueryMidWeighting('line');
-          // QUERY_STRING_PARAMETERS = mapQueryMidWeightingLine();
-          MOCK_RESPONSE = MockQuerryMidWeightingLine;
+          MOCK_RESPONSE = MockResponseMidWeightingLine;
           break;
         default:
         // 'Invalid mode' // TODO return error properly for user
@@ -117,13 +107,11 @@ async function GetWeighting(telescope, mode, observation: Observation) {
           URL_MODE = URL_CONTINUUM;
           QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
           MOCK_RESPONSE = MockResponseLowWeightingContinuum;
-          console.log('MOCK_RESPONSE', MOCK_RESPONSE);
-          console.log('OBSERVATION', observation);
           break;
         case 'Zoom':
           URL_MODE = URL_ZOOM;
           QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
-          MOCK_RESPONSE = MockQuerryLowWeightingLine;
+          MOCK_RESPONSE = MockResponseLowWeightingLine;
           break;
         default:
         // 'Invalid mode' // TODO return error properly for user
