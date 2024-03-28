@@ -13,8 +13,6 @@ interface SensCalcDisplayProps {
   observation: Observation;
 }
 
-// TODO : pass querry parameters from observation instead of mock query parameters in service
-
 export default function SensCalcDisplay({ selected, observation }: SensCalcDisplayProps) {
   const [lvl, setLvl] = React.useState(STATUS_PARTIAL);
   const [openDialog, setOpenDialog] = React.useState(false);
