@@ -125,7 +125,7 @@ export default function ObservationPage() {
   }, [validateToggle]);
 
   // const num = Number((Math.random()*3).toFixed(0));
-  const uid = ( Math.random() * 1000000 ).toFixed(0);
+  const uid = (Math.random() * 1000000).toFixed(0);
   const columns = [
     {
       field: 'obset_id',
