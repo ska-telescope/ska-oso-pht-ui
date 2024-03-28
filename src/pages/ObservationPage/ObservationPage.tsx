@@ -124,7 +124,6 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  // const num = Number((Math.random()*3).toFixed(0));
   const uid = (Math.random() * 1000000).toFixed(0);
   const columns = [
     {
