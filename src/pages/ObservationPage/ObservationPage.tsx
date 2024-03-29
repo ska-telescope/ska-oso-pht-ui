@@ -6,7 +6,7 @@ import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import { Proposal } from '../../utils/types/proposal';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -124,7 +124,17 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  const uid = (Math.random() * 1000000).toFixed(0);
   const columns = [
+    {
+      field: 'obset_id',
+      headerName: t('observations.id'),
+      flex: 2,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { observation: number } }) => (
+        <Typography>{'obs-' + uid + '-' + GENERAL.Cycle}</Typography>
+      )
+    },
     {
       field: 'telescope',
       headerName: t('arrayConfiguration.label'),
