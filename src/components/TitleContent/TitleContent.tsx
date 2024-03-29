@@ -211,6 +211,12 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
+    function validateWordCount(title: string) {
+      if (countWords(title) > 20) {
+        return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
+      }
+    }
+
     const countWords = (text: string) => {
       return !text
         ? 0
@@ -234,7 +240,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
-        errorText={errorText}
+        errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title)}
       />
     );
