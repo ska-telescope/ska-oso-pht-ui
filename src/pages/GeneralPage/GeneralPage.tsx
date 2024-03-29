@@ -109,6 +109,14 @@ export default function GeneralPage() {
         title
       )} / ${MAX_WORD}`;
 
+    function validateWordCount(title: string) {
+      if (countWords(title) > 50) {
+        return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
+          title
+        )} / ${MAX_WORD}`;
+      }
+    }
+
     return (
       <TextEntry
         label={t('abstract.label')}
@@ -120,6 +128,7 @@ export default function GeneralPage() {
         setValue={(e: string) => setValue(e)}
         onFocus={() => helpComponent(t('abstract.help'))}
         helperText={helperFunction(getProposal().abstract)}
+        errorText={validateWordCount(getProposal().abstract)}
       />
     );
   };
