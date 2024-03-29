@@ -213,7 +213,9 @@ export default function TitleContent({ page }: TitleContentProps) {
 
     function validateWordCount(title: string) {
       if (countWords(title) > 20) {
-        return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
+        return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
+          title
+        )} / ${MAX_WORD}`;
       }
     }
 
