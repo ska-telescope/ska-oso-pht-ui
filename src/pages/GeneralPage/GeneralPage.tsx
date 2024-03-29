@@ -115,7 +115,7 @@ export default function GeneralPage() {
         labelBold
         labelPosition={LABEL_POSITION.START}
         testId="abstractId"
-        rows={t('abstract.rows')}
+        rows={t('abstract.minDisplayRows')}
         value={getProposal().abstract}
         setValue={(e: string) => setValue(e)}
         onFocus={() => helpComponent(t('abstract.help'))}
