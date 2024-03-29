@@ -33,6 +33,7 @@ export default function SkyDirection2Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      required
     />
   );
 
@@ -47,6 +48,7 @@ export default function SkyDirection2Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      required
     />
   );
 

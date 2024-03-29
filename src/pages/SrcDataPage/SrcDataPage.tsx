@@ -58,6 +58,7 @@ export default function SrcDataPage() {
       setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
       onFocus={() => helpComponent(t('pipeline.help'))}
       helperText={t('pipeline.helper')}
+      required
     />
   );
 
