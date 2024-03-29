@@ -10,6 +10,7 @@ interface SkyDirection2FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
+  required?: boolean;
 }
 
 export default function SkyDirection2Field({
@@ -33,6 +34,7 @@ export default function SkyDirection2Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      required
     />
   );
 
@@ -47,6 +49,7 @@ export default function SkyDirection2Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      required
     />
   );
 

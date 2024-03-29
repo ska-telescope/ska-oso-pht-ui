@@ -167,14 +167,14 @@
     "label": "Elevation"
   },
   "email": {
-    "label": "Email*",
+    "label": "Email",
     "help": "EMAIL HELP"
   },
   "fileName": {
     "label": "File name"
   },
   "firstName": {
-    "label": "First Name*",
+    "label": "First Name",
     "help": "FIRST NAME HELP"
   },
   "frequencyUnits": {
@@ -198,7 +198,7 @@
     "label": "Invite Team Member"
   },
   "lastName": {
-    "label": "Last Name*",
+    "label": "Last Name",
     "help": "LAST NAME HELP"
   },
   "listOfTargets": {
@@ -206,7 +206,7 @@
     "toolTip": "A list of target will be entered and/or imported from file"
   },
   "name": {
-    "label": "Name*",
+    "label": "Name",
     "help": "NAME HELP"
   },
   "notSelected": {
@@ -293,7 +293,7 @@
     "toolTip": "Current functionality is not yet available"
   },
   "referenceFrame": {
-    "label": "Reference Frame*",
+    "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
     "0": "Heliocentric",
     "1": "Local Standard of Rest"
@@ -351,11 +351,11 @@
     },
     "label": {
       "1": {
-        "0": "Right Ascension*",
+        "0": "Right Ascension",
         "1": "Latitude"
       },
       "2": {
-        "0": "Declination*",
+        "0": "Declination",
         "1": "Longitude"
       }
     },
@@ -382,7 +382,7 @@
   },
   "skyUnits": {
     "help": "REFERENCE COORDINATE HELP",
-    "label": "Reference Coordinate*",
+    "label": "Reference Coordinate",
     "0": "Equatorial",
     "1": "Galactic"
   },
@@ -493,8 +493,8 @@
       "0": "km/s",
       "1": "m/s"
     },
-    "0": "Velocity*",
-    "1": "Redshift*"
+    "0": "Velocity",
+    "1": "Redshift"
   },
   "viewProposal": {
     "toolTip": "View proposal"

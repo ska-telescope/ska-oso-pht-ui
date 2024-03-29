@@ -8,6 +8,7 @@ interface SkyUnitsFieldProps {
   setValue?: Function;
   value: number;
   valueFocus?: Function;
+  required?: boolean;
 }
 
 export default function SkyUnitsField({
@@ -38,6 +39,7 @@ export default function SkyUnitsField({
           labelPosition={LABEL_POSITION.START}
           labelWidth={labelWidth}
           onFocus={valueFocus}
+          required
         />
       </Box>
     );

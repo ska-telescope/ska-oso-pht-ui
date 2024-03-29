@@ -102,6 +102,7 @@ export default function AddTarget() {
     return (
       <Box p={1} sx={{ width: '100%' }}>
         <TextEntry
+          required
           label={t('name.label')}
           labelBold
           labelPosition={LABEL_POSITION.START}
@@ -136,6 +137,7 @@ export default function AddTarget() {
               setValue={setRAType}
               value={raType}
               valueFocus={() => helpComponent(t('skyUnits.help'))}
+              required
             />
           </Grid>
           <Grid item xs={12}>
@@ -182,6 +184,7 @@ export default function AddTarget() {
                 onFocus={() => helpComponent(t('referenceFrame.help'))}
                 setValue={setReferenceFrame}
                 value={referenceFrame}
+                required
               />
             </Grid>
           )}

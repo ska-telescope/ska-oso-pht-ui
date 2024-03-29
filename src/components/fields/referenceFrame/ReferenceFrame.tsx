@@ -10,6 +10,7 @@ interface ReferenceFrameFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
+  required?: boolean;
 }
 
 export default function ReferenceFrameField({
@@ -41,6 +42,7 @@ export default function ReferenceFrameField({
         labelPosition={labelPosition}
         labelWidth={labelWidth}
         onFocus={onFocus}
+        required
       />
     </Box>
   );
