@@ -6,7 +6,7 @@ import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-comp
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 
 const PAGE = 2;
 

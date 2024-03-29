@@ -32,8 +32,7 @@ describe('<TechnicalPage />', () => {
         </Router>
       </StoreProvider>
     );
-    // cy.get('[data-testid="uploadPdfLabel"]').contains('Upload PDF');
-    // cy.get('[data-testid="SearchIcon"]').click();
+    cy.get('[data-testid="SearchIcon"]').click();
   });
 
   it(`Verify pdf preview elements`, () => {

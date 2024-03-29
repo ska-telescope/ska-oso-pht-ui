@@ -10,6 +10,7 @@ const NewMockProposal = {
   scienceLoadStatus: false,
   technicalPDF: null,
   technicalLoadStatus: false,
+  dataProducts: [],
   pipeline: '',
   team: []
 };

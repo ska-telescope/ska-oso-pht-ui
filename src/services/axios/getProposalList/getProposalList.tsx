@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
-import Proposals, { ProposalsIN } from '../../../services/types/proposals';
+import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
 
 // TODO : Need to do this properly
 const getPI = (_inValue: any) => {
   return 'THE PI NAME';
 };
 
-function mappingList(inRec: ProposalsIN[]): Proposals[] {
+function mappingList(inRec: ProposalsBackend[]): Proposals[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposals = {

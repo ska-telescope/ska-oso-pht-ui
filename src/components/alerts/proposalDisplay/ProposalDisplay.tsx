@@ -6,11 +6,11 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
-import Proposal from '../../../services/types/proposal';
+import Proposal from '../../../utils/types/proposal';
 import { GENERAL, Projects } from '../../../utils/constants';
-import TeamMember from '../../../services/types/teamMember';
-import Target from '../../../services/types/target';
-import Observation from '../../../services/types/observation';
+import TeamMember from '../../../utils/types/teamMember';
+import Target from '../../../utils/types/target';
+import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 

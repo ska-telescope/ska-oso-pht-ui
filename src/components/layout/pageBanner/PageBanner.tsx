@@ -9,17 +9,19 @@ import SaveButton from '../../button/Save/SaveButton';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
-import { LAST_PAGE, PATH } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PATH } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-import { Proposal } from '../../../services/types/proposal';
+import { Proposal } from '../../../utils/types/proposal';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
+import PreviousPageButton from '../../../components/button/PreviousPage/PreviousPageButton';
 
 interface PageBannerProps {
   pageNo: number;
+  backPage?: number;
 }
 
-export default function PageBanner({ pageNo }: PageBannerProps) {
+export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application } = storageObject.useStore();
@@ -47,6 +49,10 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
       setAxiosValidateError(response.error);
       setAxiosValidateErrorColor(AlertColorTypes.Error);
     }
+  };
+
+  const prevPageNav = () => {
+    navigate(NAV[backPage]);
   };
 
   const handleSaveClick = response => {
@@ -102,7 +108,14 @@ export default function PageBanner({ pageNo }: PageBannerProps) {
                 justifyContent="space-between"
               >
                 <Grid item>
-                  <HomeButton />
+                  {backPage > 0 && (
+                    <PreviousPageButton
+                      label={t('button.cancel')}
+                      page={pageNo}
+                      func={prevPageNav}
+                    />
+                  )}
+                  {!backPage && <HomeButton />}
                 </Grid>
                 <Grid item>
                   {!axiosSaveError && pageNo < LAST_PAGE && (

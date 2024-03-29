@@ -7,7 +7,7 @@ import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 
 interface TitleContentProps {
   page: number;
@@ -232,7 +232,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         testId="titleId"
         value={getProposal().title}
         setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText)
+          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={errorText}
         helperText={helperFunction(getProposal().title)}
@@ -257,9 +257,10 @@ export default function TitleContent({ page }: TitleContentProps) {
             </Grid>
             <Grid item xs={4}>
               <Typography variant="body2">{t('title.help')}</Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                {t('specialCharacters.help')}
-              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ paddingTop: '20px', fontStyle: 'italic' }}
+              ></Typography>
             </Grid>
           </Grid>
 

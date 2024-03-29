@@ -1,20 +1,19 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
 import {
-  MockQuerryMidWeightingContinuum,
-  MockQuerryMidWeightingLine,
   MockResponseMidWeightingContinuum,
   MockResponseMidWeightingLine
 } from './mockResponseMidWeighting';
 import {
-  MockQuerryLowWeightingContinuum,
-  MockQuerryLowWeightingLine,
   MockResponseLowWeightingContinuum,
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
+import Observation from 'utils/types/observation';
+import { OBSERVATION } from '../../../../utils/constants';
+import { getLowSubarrayType } from '../helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetWeighting(telescope, mode) {
+async function GetWeighting(telescope, mode, observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
   let URL_TELESCOPE;
@@ -23,18 +22,12 @@ async function GetWeighting(telescope, mode) {
   // Mode URLs
   const URL_ZOOM = `line/`;
   const URL_CONTINUUM = `continuum/`;
-  let URL_ZOOM_VALUE;
-  let URL_CONTINUUM_VALUE;
   let URL_MODE;
   const URL_WEIGHTING = `weighting`;
   // Mocks query strings parameters
-  let QUERY_STRING_PARAMETERS;
-  let MOCK_CONTINUUM_QUERY;
-  let MOCK_ZOOM_QUERY;
+  let QUERY_STRING_PARAMETERS: URLSearchParams;
   // Mocks responses
   let MOCK_RESPONSE;
-  let MOCK_RESPONSE_CONTINUUM;
-  let MOCK_RESPONSE_ZOOM;
   const config = {
     headers: {
       Accept: 'application/json',
@@ -42,44 +35,73 @@ async function GetWeighting(telescope, mode) {
     }
   };
 
+  function mapQueryMidWeighting(calculatore_mode: string): URLSearchParams {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const params = new URLSearchParams({
+      frequency: observation.central_frequency,
+      zoom_frequencies: observation.central_frequency,
+      dec_str: '00:00:00.0', // to get from target
+      weighting: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
+      array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
+      calculator_mode: calculatore_mode,
+      taper: observation.tapering.toString()
+    });
+    return params;
+  }
+
+  function mapQueryLowWeighting(): URLSearchParams {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const subArray = array.subarray.find(obj => obj.value === observation.subarray).label;
+    const params = new URLSearchParams({
+      weighting_mode: OBSERVATION.ImageWeighting.find(
+        obj => obj.value === observation.image_weighting
+      ).label.toLowerCase(),
+      subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
+      freq_centre: observation.central_frequency
+    });
+    return params;
+  }
+
   switch (telescope) {
     case 'Mid':
       URL_TELESCOPE = URL_MID;
-      URL_CONTINUUM_VALUE = '';
-      URL_ZOOM_VALUE = '';
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQuerryMidWeightingContinuum;
-      MOCK_ZOOM_QUERY = MockQuerryMidWeightingLine;
-      MOCK_RESPONSE_CONTINUUM = MockResponseMidWeightingContinuum;
-      MOCK_RESPONSE_ZOOM = MockResponseMidWeightingLine;
+      switch (mode) {
+        case 'Continuum':
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('continuum');
+          MOCK_RESPONSE = MockResponseMidWeightingContinuum;
+          break;
+        case 'Zoom':
+          URL_MODE = '';
+          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('line');
+          MOCK_RESPONSE = MockResponseMidWeightingLine;
+          break;
+        default:
+        // 'Invalid mode' // TODO return error properly for user
+      }
       break;
     case 'Low':
       URL_TELESCOPE = URL_LOW;
-      URL_CONTINUUM_VALUE = URL_CONTINUUM;
-      URL_ZOOM_VALUE = URL_ZOOM;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_CONTINUUM_QUERY = MockQuerryLowWeightingContinuum;
-      MOCK_ZOOM_QUERY = MockQuerryLowWeightingLine;
-      MOCK_RESPONSE_CONTINUUM = MockResponseLowWeightingContinuum;
-      MOCK_RESPONSE_ZOOM = MockResponseLowWeightingLine;
+      switch (mode) {
+        case 'Continuum':
+          URL_MODE = URL_CONTINUUM;
+          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
+          MOCK_RESPONSE = MockResponseLowWeightingContinuum;
+          break;
+        case 'Zoom':
+          URL_MODE = URL_ZOOM;
+          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
+          MOCK_RESPONSE = MockResponseLowWeightingLine;
+          break;
+        default:
+        // 'Invalid mode' // TODO return error properly for user
+      }
       break;
     default:
-  }
-
-  switch (mode) {
-    case 'Continuum':
-      QUERY_STRING_PARAMETERS = MOCK_CONTINUUM_QUERY;
-      URL_MODE = URL_CONTINUUM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_CONTINUUM;
-      break;
-    case 'Zoom':
-      QUERY_STRING_PARAMETERS = MOCK_ZOOM_QUERY;
-      URL_MODE = URL_ZOOM_VALUE;
-      // Mocks queries declarations can be removed once queries passed to service
-      MOCK_RESPONSE = MOCK_RESPONSE_ZOOM;
-      break;
-    default:
+    // 'Invalid telescope' // TODO return error properly for user
   }
 
   if (USE_LOCAL_DATA) {
