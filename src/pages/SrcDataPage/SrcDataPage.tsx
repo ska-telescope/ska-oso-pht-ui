@@ -44,7 +44,7 @@ export default function SrcDataPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().pipeline.length > 0 ? 1 : 0;
+    const count = getProposal().dataProducts?.length > 0 ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
