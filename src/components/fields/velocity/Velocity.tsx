@@ -14,7 +14,6 @@ interface VelocityFieldProps {
   valueTypeFocus?: Function;
   valueUnit: number;
   valueUnitFocus?: Function;
-  required?: boolean;
 }
 
 export default function VelocityField({

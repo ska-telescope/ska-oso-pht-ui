@@ -10,7 +10,6 @@ interface SkyDirection1FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
-  required?: boolean;
 }
 
 export default function SkyDirection1Field({

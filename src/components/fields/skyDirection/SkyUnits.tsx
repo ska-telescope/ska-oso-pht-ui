@@ -8,7 +8,6 @@ interface SkyUnitsFieldProps {
   setValue?: Function;
   value: number;
   valueFocus?: Function;
-  required?: boolean;
 }
 
 export default function SkyUnitsField({

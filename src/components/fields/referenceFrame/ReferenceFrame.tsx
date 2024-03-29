@@ -10,7 +10,6 @@ interface ReferenceFrameFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
-  required?: boolean;
 }
 
 export default function ReferenceFrameField({
