@@ -110,7 +110,7 @@ export default function GeneralPage() {
       )} / ${MAX_WORD}`;
 
     function validateWordCount(title: string) {
-      if (countWords(title) > 50) {
+      if (countWords(title) > MAX_WORD) {
         return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
           title
         )} / ${MAX_WORD}`;
