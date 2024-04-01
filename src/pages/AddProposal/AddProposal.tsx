@@ -48,8 +48,7 @@ export default function AddProposal() {
   const contentValid = () =>
     !(
       getProposal()?.title?.length > 0 &&
-      getProposal()?.proposalType > 0 &&
-      getProposal()?.proposalSubType > 0
+      getProposal()?.proposalType > 0
     );
 
   return (
