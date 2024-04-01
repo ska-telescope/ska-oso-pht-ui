@@ -59,9 +59,9 @@
     "label": "Abstract",
     "help": "ABSTRACT HELP",
     "helper": "Please enter your abstract information",
-    "maxChar": "600",
+    "maxChar": "2300",
     "maxWord": "50",
-    "rows": "5"
+    "minDisplayRows": "5"
   },
   "actions": {
     "label": "Actions"
@@ -474,7 +474,7 @@
   },
   "title": {
     "label": "Title",
-    "maxChar": "50",
+    "maxChar": "939",
     "maxWord": "20",
     "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "helper": "Please enter your title information"
