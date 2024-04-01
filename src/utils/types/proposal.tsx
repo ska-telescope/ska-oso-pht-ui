@@ -16,7 +16,7 @@ export type ProposalBackend = {
     abstract: string;
     proposal_type: {
       main_type: string;
-      sub_type: string;
+      sub_type: string[];
     };
     science_category: string;
     targets: TargetBackend[];
@@ -29,7 +29,7 @@ export type Proposal = {
   id: string;
   title: string;
   proposalType: number;
-  proposalSubType: number;
+  proposalSubType: number[];
   team: TeamMember[];
   abstract: string;
   category: number;

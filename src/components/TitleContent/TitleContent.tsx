@@ -53,9 +53,6 @@ export default function TitleContent({ page }: TitleContentProps) {
     if (getProposal()?.proposalType !== 0) {
       count++;
     }
-    if (getProposal()?.proposalSubType !== 0) {
-      count++;
-    }
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
