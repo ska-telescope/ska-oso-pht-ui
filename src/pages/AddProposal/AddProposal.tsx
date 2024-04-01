@@ -45,11 +45,7 @@ export default function AddProposal() {
     }
   };
 
-  const contentValid = () =>
-    !(
-      getProposal()?.title?.length > 0 &&
-      getProposal()?.proposalType > 0
-    );
+  const contentValid = () => !(getProposal()?.title?.length > 0 && getProposal()?.proposalType > 0);
 
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
