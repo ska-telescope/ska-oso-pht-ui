@@ -16,7 +16,7 @@ export type ProposalBackend = {
     abstract: string;
     proposal_type: {
       main_type: string;
-      sub_type: string[];
+      sub_type: string;
     };
     science_category: string;
     targets: TargetBackend[];
@@ -33,7 +33,7 @@ export type Proposal = {
   team: TeamMember[];
   abstract: string;
   category: number;
-  subCategory: number;
+  subCategory: number[];
   sciencePDF: File | null;
   scienceLoadStatus: number;
   targetOption: number;
