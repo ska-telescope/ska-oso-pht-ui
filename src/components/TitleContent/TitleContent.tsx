@@ -87,7 +87,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   function clickSubProposal(id: any) {
     if (getProposal().proposalSubType === 0) {
       setProposal({ ...getProposal(), proposalSubType: id });
-    } else if (getProposal().proposalSubType !== id) {
+    } else {
       confirmChange(id, true);
     }
   }
