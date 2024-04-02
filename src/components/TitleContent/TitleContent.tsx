@@ -86,7 +86,8 @@ export default function TitleContent({ page }: TitleContentProps) {
       setProposal({ ...getProposal(), proposalSubType: [id] });
     } else if(getProposal().proposalSubType[0] === id){
         console.log("TO-DO Deselect from list ")
-      }
+      setProposal({ ...getProposal(), proposalSubType: [0] });
+    }
     else {
       setProposal({ ...getProposal(), proposalSubType: [id] });
       console.log("TO-DO Add to list")
