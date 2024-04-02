@@ -188,14 +188,15 @@ export default function ObservationPage() {
     { field: 'dec', headerName: t('declination.label'), width: 150 }
   ];
   const columnsTargetsSelected = [
-    { field: 'name', headerName: t('name.label'), width: 200 },
+    { field: 'name', headerName: t('name.label'), width: 80 },
     { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
-    { field: 'dec', headerName: t('declination.label'), width: 150 },
+    { field: 'dec', headerName: t('declination.label'), width: 100 },
     {
       field: 'id',
       headerName: t('selected.label'),
       sortable: false,
       flex: 1,
+      width: 50,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -217,7 +218,7 @@ export default function ObservationPage() {
       field: 'vel',
       headerName: '',
       sortable: false,
-      flex: 1,
+      width: 50,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -227,6 +228,29 @@ export default function ObservationPage() {
             p => p.id === currentObservation
           );
           return <SensCalcDisplay observation={obs} selected={isSelected} />;
+        }
+        return '';
+      }
+    },
+    {
+      field: 'results',
+      headerName: 'Results',
+      sortable: false,
+      flex: 2,
+      disableClickEventBubbling: true,
+      width: 200,
+      renderCell: (e: { row: { id: number } }) => {
+        if (currentObservation > 0) {
+          return (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Grid item>result 1</Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid item>result 2</Grid>
+              </Grid>
+            </Grid>
+          );
         }
         return '';
       }
