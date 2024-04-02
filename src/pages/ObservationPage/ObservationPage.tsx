@@ -242,12 +242,22 @@ export default function ObservationPage() {
       renderCell: (e: { row: { id: number } }) => {
         if (currentObservation > 0) {
           return (
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Grid item>result 1</Grid>
+            <Grid container direction="column">
+              <Grid container direction="row" xs={12}>
+                <Grid item xs={6}>
+                  result 1 label
+                </Grid>
+                <Grid item xs={6}>
+                  result 1
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid item>result 2</Grid>
+              <Grid container direction="row" xs={12}>
+                <Grid item xs={6}>
+                  result 2 label
+                </Grid>
+                <Grid item xs={6}>
+                  result 2
+                </Grid>
               </Grid>
             </Grid>
           );
