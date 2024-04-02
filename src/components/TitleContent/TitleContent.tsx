@@ -7,7 +7,7 @@ import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { helpers } from '../../utils/helpers';
-import { Proposal } from '../../utils/types/proposal';
+import proposal, { Proposal } from '../../utils/types/proposal';
 
 interface TitleContentProps {
   page: number;
@@ -84,8 +84,12 @@ export default function TitleContent({ page }: TitleContentProps) {
   function clickSubProposal(id: any) {
     if (getProposal().proposalSubType[0] === 0) {
       setProposal({ ...getProposal(), proposalSubType: [id] });
-    } else {
+    } else if(getProposal().proposalSubType[0] === id){
+        console.log("TO-DO Deselect from list ")
+      }
+    else {
       setProposal({ ...getProposal(), proposalSubType: [id] });
+      console.log("TO-DO Add to list")
     }
   }
 
