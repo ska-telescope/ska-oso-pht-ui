@@ -175,6 +175,32 @@ function verifySubBands() {
   // cy.get('[data-testid="helpPanelId"]').contains('subBands.help');
 }
 
+function verifynumOf15mAntennas() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="numOf15mAntennas"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numOf15mAntennas.help');
+}
+
+function verifynumOf13mAntennas() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="numOf13mAntennas"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numOf13mAntennas.help');
+}
+
+function verifynumOfStations() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="1"]').click();
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="numOfStations"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numOfStations.help');
+}
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -239,6 +265,8 @@ describe('<AddObservation />', () => {
     verifyEffectiveResolution();
     verifyTapering();
     verifyImageWeighting();
+    verifynumOf15mAntennas();
+    verifynumOf13mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
@@ -261,6 +289,7 @@ describe('<AddObservation />', () => {
     verifyEffectiveResolution();
     verifyTapering();
     verifyImageWeighting();
+    verifynumOfStations();
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {

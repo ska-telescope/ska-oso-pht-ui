@@ -65,10 +65,6 @@ export default function AddObservation() {
 
   // TODO: update 15-m antennas 13-m antennas when subarray is updated
   React.useEffect(() => {
-    console.log('useEffect subarrayConfig', subarrayConfig);
-    console.log('useEffect observationType', observationType);
-    console.log('useEffect observingBand', observingBand);
-
     setNumOf15mAntennas(
       OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
         element => element.value === subarrayConfig
@@ -89,6 +85,7 @@ export default function AddObservation() {
   }, []);
 
   const isContinuum = () => observationType === 1;
+  const isLow = () => observingBand === 0;
 
   const arrayField = () => {
     const getSubArrayOptions = () => {
@@ -643,7 +640,10 @@ export default function AddObservation() {
         integration_time: suppliedValue,
         spectral_resolution: spectralResolution,
         effective_resolution: 0,
-        number_of_sub_bands: subBands
+        number_of_sub_bands: subBands,
+        number_of_13m_antennas: numOf13mAntennas,
+        number_of_15m_antennas: numOf15mAntennas,
+        number_of_stations: numOfStations
       };
       setProposal({
         ...getProposal(),
@@ -722,14 +722,15 @@ export default function AddObservation() {
             <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
+
             <Grid item xs={XS_TOP}>
-              {NumOfStationsField()}
+              {!isLow() && NumOf15mAntennasField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {NumOf15mAntennasField()}
+              {!isLow() && NumOf13mAntennasField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {NumOf13mAntennasField()}
+              {isLow() && NumOfStationsField()}
             </Grid>
             <Grid item xs={XS_TOP} />
           </Grid>
