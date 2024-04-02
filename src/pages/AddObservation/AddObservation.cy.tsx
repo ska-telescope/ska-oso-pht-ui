@@ -177,7 +177,7 @@ function verifySubBands() {
 
 function verifynumOf15mAntennas() {
   cy.get('[data-testid="observingBand"]').click();
-  cy.get('[data-value="2"]').click();
+  cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
   cy.get('[data-testid="numOf15mAntennas"]').click();
@@ -186,7 +186,7 @@ function verifynumOf15mAntennas() {
 
 function verifynumOf13mAntennas() {
   cy.get('[data-testid="observingBand"]').click();
-  cy.get('[data-value="2"]').click();
+  cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
   cy.get('[data-testid="numOf13mAntennas"]').click();
@@ -195,7 +195,7 @@ function verifynumOf13mAntennas() {
 
 function verifynumOfStations() {
   cy.get('[data-testid="observingBand"]').click();
-  cy.get('[data-value="1"]').click();
+  cy.get('[data-value="0"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
   cy.get('[data-testid="numOfStations"]').click();
@@ -227,6 +227,8 @@ describe('<AddObservation />', () => {
     );
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
+    verifynumOf15mAntennas();
+    verifynumOf13mAntennas();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
@@ -242,8 +244,6 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
-    verifynumOf15mAntennas();
-    verifynumOf13mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
@@ -303,6 +303,7 @@ describe('<AddObservation />', () => {
       </StoreProvider>
     );
     // verifyArrayConfiguration2AndSubArrayConfig();
+    verifynumOfStations();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
@@ -318,6 +319,5 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
-    verifynumOfStations();
   });
 });
