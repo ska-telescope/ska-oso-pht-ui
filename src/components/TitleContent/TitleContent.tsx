@@ -21,7 +21,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [tempValue, setTempValue] = React.useState(0);
   const [subProposalChange, setSubProposalChange] = React.useState(false);
-  const [errorText, setErrorText] = React.useState('');
+  const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
   React.useEffect(() => {
@@ -45,7 +45,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_PARTIAL, STATUS_OK];
+    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = 0;
     if (getProposal()?.title?.length > 0) {
       count++;
@@ -60,9 +60,9 @@ export default function TitleContent({ page }: TitleContentProps) {
 
   const handleDialogResponse = () => {
     if (!subProposalChange) {
-      setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: 0 });
+      setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [0] });
     } else {
-      setProposal({ ...getProposal(), proposalSubType: tempValue });
+      setProposal({ ...getProposal(), proposalSubType: [tempValue] });
     }
     setOpenDialog(false);
   };
@@ -74,7 +74,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   function clickProposal(id: number) {
-    if (getProposal().proposalType === 0 || getProposal().proposalSubType === 0) {
+    if (getProposal().proposalType === 0 || getProposal().proposalSubType[0] === 0) {
       setProposal({ ...getProposal(), proposalType: id });
     } else if (getProposal().proposalType !== id) {
       confirmChange(id, false);
@@ -82,8 +82,8 @@ export default function TitleContent({ page }: TitleContentProps) {
   }
 
   function clickSubProposal(id: any) {
-    if (getProposal().proposalSubType === 0) {
-      setProposal({ ...getProposal(), proposalSubType: id });
+    if (getProposal().proposalSubType[0] === 0) {
+      setProposal({ ...getProposal(), proposalSubType: [id] });
     } else {
       confirmChange(id, true);
     }
@@ -148,10 +148,10 @@ export default function TitleContent({ page }: TitleContentProps) {
       <Grid key={id} item>
         <Card
           style={{
-            color: setCardFG(getProposal().proposalSubType, id),
-            backgroundColor: setCardBG(getProposal().proposalSubType, id)
+            color: setCardFG(getProposal().proposalSubType[0], id),
+            backgroundColor: setCardBG(getProposal().proposalSubType[0], id)
           }}
-          className={setCardClassName(getProposal().proposalSubType, id)}
+          className={setCardClassName(getProposal().proposalSubType[0], id)}
           onClick={() => clickSubProposal(id)}
           variant="outlined"
           id={`SubProposalType-${id}`}
@@ -162,8 +162,8 @@ export default function TitleContent({ page }: TitleContentProps) {
                 <Avatar
                   variant="rounded"
                   style={{
-                    color: setCardBG(getProposal().proposalSubType, id),
-                    backgroundColor: setCardFG(getProposal().proposalSubType, id)
+                    color: setCardBG(getProposal().proposalSubType[0], id),
+                    backgroundColor: setCardFG(getProposal().proposalSubType[0], id)
                   }}
                 >
                   <Typography variant="body2" component="div">

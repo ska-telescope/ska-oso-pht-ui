@@ -49,7 +49,7 @@ export default function ProposalDisplay({
   const proposalType = () => {
     const pt = getProposal().proposalType;
     const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : Projects[pt - 1].title;
-    const st = getProposal().proposalSubType;
+    const st = getProposal().proposalSubType[0];
     const sName =
       !pt || pt < 1 || !st || st < 1
         ? t('displayProposal.noneSelected')
@@ -62,7 +62,7 @@ export default function ProposalDisplay({
     const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : t(`scienceCategory.${pt}`);
     const st = getProposal().subCategory;
     const sName =
-      !pt || pt < 1 || !st || st < 1
+      !pt || pt < 1 || !st || st.length < 1
         ? t('displayProposal.noneSelected')
         : t(`scienceSubCategory.${st}`);
     return `${pName} / ${sName}`;
