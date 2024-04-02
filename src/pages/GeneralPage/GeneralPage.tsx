@@ -109,17 +109,26 @@ export default function GeneralPage() {
         title
       )} / ${MAX_WORD}`;
 
+    function validateWordCount(title: string) {
+      if (countWords(title) > MAX_WORD) {
+        return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
+          title
+        )} / ${MAX_WORD}`;
+      }
+    }
+
     return (
       <TextEntry
         label={t('abstract.label')}
         labelBold
         labelPosition={LABEL_POSITION.START}
         testId="abstractId"
-        rows={t('abstract.rows')}
+        rows={t('abstract.minDisplayRows')}
         value={getProposal().abstract}
         setValue={(e: string) => setValue(e)}
         onFocus={() => helpComponent(t('abstract.help'))}
         helperText={helperFunction(getProposal().abstract)}
+        errorText={validateWordCount(getProposal().abstract)}
       />
     );
   };

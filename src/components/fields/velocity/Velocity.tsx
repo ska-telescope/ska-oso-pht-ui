@@ -47,6 +47,7 @@ export default function VelocityField({
           setValue={setValueType}
           label=""
           onFocus={valueTypeFocus}
+          required
         />
       </Box>
     );
@@ -61,6 +62,7 @@ export default function VelocityField({
         setValue={setValue}
         suffix={valueType === 0 ? VelocityUnitField() : ''}
         onFocus={valueFocus}
+        required
       />
     );
   };
