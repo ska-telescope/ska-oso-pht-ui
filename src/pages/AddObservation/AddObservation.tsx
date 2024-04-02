@@ -114,6 +114,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('subArrayConfiguration.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -133,6 +134,7 @@ export default function AddObservation() {
           labelPosition={LABEL_POSITION.START}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('observationType.help'))}
+          required
         />
       </Grid>
     </Grid>
@@ -159,6 +161,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('observingBand.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -178,6 +181,7 @@ export default function AddObservation() {
           labelPosition={LABEL_POSITION.START}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('imageWeighting.help'))}
+          required
         />
       </Grid>
     </Grid>
@@ -196,6 +200,7 @@ export default function AddObservation() {
           labelPosition={LABEL_POSITION.START}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('tapering.help'))}
+          required
         />
       </Grid>
     </Grid>
@@ -220,6 +225,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('bandWidth.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -248,6 +254,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('robust.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -273,6 +280,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('spectralResolution.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -295,6 +303,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('spectralAveraging.help'))}
+            required
           />
         </Grid>
       </Grid>
@@ -313,6 +322,7 @@ export default function AddObservation() {
           setValue={setSuppliedType}
           label=""
           onFocus={() => helpComponent(t('suppliedType.help'))}
+          required
         />
       </Box>
     );
@@ -376,6 +386,7 @@ export default function AddObservation() {
       value={suppliedValue}
       setValue={setSuppliedValue}
       onFocus={() => helpComponent(t('suppliedValue.help'))}
+      required
     />
   );
 
@@ -413,6 +424,7 @@ export default function AddObservation() {
       value={elevation}
       setValue={setElevation}
       onFocus={() => helpComponent(t('elevation.help'))}
+      required
     />
   );
 
@@ -426,6 +438,7 @@ export default function AddObservation() {
       value={weather}
       setValue={setWeather}
       onFocus={() => helpComponent(t('weather.help'))}
+      required
     />
   );
 
@@ -440,6 +453,7 @@ export default function AddObservation() {
       setValue={setFrequency}
       suffix={frequencyUnitsField()}
       onFocus={() => helpComponent(t('centralFrequency.help'))}
+      required
     />
   );
 
@@ -464,6 +478,7 @@ export default function AddObservation() {
               value={subBands}
               setValue={validate}
               onFocus={() => helpComponent(t('subBands.help'))}
+              required
             />
           )}
         </Grid>
@@ -482,6 +497,7 @@ export default function AddObservation() {
       value={continuumBandwidth}
       setValue={setContinuumBandwidth}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+      required
     />
   );
 
@@ -495,6 +511,7 @@ export default function AddObservation() {
       value={effective}
       setValue={setEffective}
       onFocus={() => helpComponent(t('effectiveResolution.help'))}
+      required
     />
   );
 

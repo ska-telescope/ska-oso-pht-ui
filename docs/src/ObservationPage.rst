@@ -34,6 +34,7 @@ The Observation Page consists of two distinct sections:
 
 - Enter specific parameters including:
 
+  - Observing Band: Dropdown menu to choose available bands.
   - Array Configuration: Dropdown menu to choose available configurations.
   - Observation Type: Select either "Continuum" or "Zoom" mode.
   - Other fields: Additional details may appear based on your selections, influenced by the Sensitivity Calculator.

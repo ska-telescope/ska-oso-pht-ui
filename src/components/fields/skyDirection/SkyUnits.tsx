@@ -38,6 +38,7 @@ export default function SkyUnitsField({
           labelPosition={LABEL_POSITION.START}
           labelWidth={labelWidth}
           onFocus={valueFocus}
+          required
         />
       </Box>
     );
