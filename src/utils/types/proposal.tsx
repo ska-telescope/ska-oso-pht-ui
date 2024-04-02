@@ -44,7 +44,6 @@ export type Proposal = {
   technicalLoadStatus: number;
   dataProducts: DataProduct[];
   pipeline: string;
-  details: string;
 };
 
 export default Proposal;
