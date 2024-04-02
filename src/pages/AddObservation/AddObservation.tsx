@@ -57,13 +57,10 @@ export default function AddObservation() {
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
-
-  // TODO: MID - add number of 15-m antenna and number of 13-m antenna, LOW - number of stations
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
 
-  // TODO: update 15-m antennas 13-m antennas when subarray is updated
   React.useEffect(() => {
     setNumOf15mAntennas(
       OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
