@@ -242,6 +242,8 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
+    verifynumOf15mAntennas();
+    verifynumOf13mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
@@ -316,5 +318,6 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
+    verifynumOfStations();
   });
 });
