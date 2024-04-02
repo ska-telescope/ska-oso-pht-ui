@@ -10,15 +10,10 @@ export default function calculateSensitivityCalculatorResults(response) {
   // TODO -> this is for Low Continuum: implement for zoom and Mid Continuum + Zoom and check differences
   // TODO refactor helpers file in sens cal folder
   // TODO check why everything is called twice
-  console.log('::: in calculateSensitivityCalculatorResults()', response);
-  console.log(response.calculate.sensitivity);
-  console.log(response.calculate.units);
   confusionNoise = getConfusionNoise(response);
   weightedSensitivity = getWeightedSensitivity(response);
   totalSensitivity = totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
   totalSensitivityDisplayValue = convertSensitivityToDisplayValue(totalSensitivity);
-  console.log('totalSensitivity', totalSensitivity);
-  console.log('totalSensitivityDisplayValue', totalSensitivityDisplayValue);
   return {
     totalSensitivity: { label: 'Total Sensitivity', value: totalSensitivityDisplayValue }
   };
