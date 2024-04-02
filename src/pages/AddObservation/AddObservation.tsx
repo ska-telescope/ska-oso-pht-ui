@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
+import { Box, Card, CardContent, Grid, Paper, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -11,6 +11,8 @@ import {
   DropDown,
   LABEL_POSITION,
   NumberEntry,
+  TELESCOPE_LOW,
+  TELESCOPE_MID,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
@@ -67,7 +69,7 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
 
-  const arrayField = () => {
+  const subArrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
@@ -139,6 +141,33 @@ export default function AddObservation() {
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('observingBand.help'))}
             required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const arrayField = () => {
+    const getOptions = () => {
+      return [
+        { label: TELESCOPE_LOW.name, value: 1 },
+        { label: TELESCOPE_MID.name, value: 2 }
+      ];
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <DropDown
+            options={getOptions()}
+            disabled
+            testId="arrayConfiguration"
+            value={BANDWIDTH_TELESCOPE[observingBand].telescope}
+            label={t('arrayConfiguration.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('arrayConfiguration.help'))}
           />
         </Grid>
       </Grid>
@@ -599,8 +628,12 @@ export default function AddObservation() {
             <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>
+            <Grid item xs={XS_TOP}></Grid>
             <Grid item xs={XS_TOP}>
               {arrayField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {subArrayField()}
             </Grid>
             <Grid item xs={XS_TOP}>
               {elevationField()}

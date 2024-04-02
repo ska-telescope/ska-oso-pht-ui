@@ -79,8 +79,8 @@
     "label": "API Version"
   },
   "arrayConfiguration": {
-    "label": "Telescope",
-    "help": "TELESCOPE HELP",
+    "label": "Array Configuration",
+    "help": "Array HELP",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
@@ -430,9 +430,9 @@
     }
   },
   "subArrayConfiguration": {
-    "label": "Array Configuration",
-    "help": "ARRAY CONFIGURATION HELP",
-    "short": "Array",
+    "label": "Subarray Configuration",
+    "help": "SUBARRAY CONFIGURATION HELP",
+    "short": "Subarray",
     "1": "AA0.5",
     "2": "AA1",
     "3": "AA2",
