@@ -82,10 +82,26 @@ export default function TitleContent({ page }: TitleContentProps) {
   }
 
   function clickSubProposal(id: any) {
+
+    let removed = false;
+    const newList = [];
+    getProposal().proposalSubType.forEach(e => {
+      if (e !== id) {
+        newList.push(e);
+        console.log("New list " + newList.push(e))
+      } else {
+        removed = true;
+      }
+      if (!removed) {
+        newList.push(id);
+        console.log("New updated list " + newList.push(id))
+      }
+    }
+    )
+
     if (getProposal().proposalSubType[0] === 0) {
       setProposal({ ...getProposal(), proposalSubType: [id] });
     } else if(getProposal().proposalSubType[0] === id){
-        console.log("TO-DO Deselect from list ")
       setProposal({ ...getProposal(), proposalSubType: [0] });
     }
     else {
