@@ -60,6 +60,7 @@ export default function AddObservation() {
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
+  const [details, setDetails] = React.useState('');
 
   React.useEffect(() => {
     setNumOf15mAntennas(
@@ -509,7 +510,6 @@ export default function AddObservation() {
     />
   );
 
-  // TODO: MID - add number of 15m/13m antennas field, LOW - add number of stations
   const NumOf15mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
@@ -600,6 +600,19 @@ export default function AddObservation() {
     );
   };
 
+  const detailsField = () => (
+    <TextEntry
+      label={t('details.label')}
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH_STD}
+      testId="details"
+      value={details}
+      setValue={setDetails}
+      onFocus={() => helpComponent(t('details.help'))}
+    />
+  );
+
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
@@ -640,7 +653,8 @@ export default function AddObservation() {
         number_of_sub_bands: subBands,
         number_of_13m_antennas: numOf13mAntennas,
         number_of_15m_antennas: numOf15mAntennas,
-        number_of_stations: numOfStations
+        number_of_stations: numOfStations,
+        details: details
       };
       setProposal({
         ...getProposal(),
@@ -776,6 +790,10 @@ export default function AddObservation() {
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeighting === 2 && robustField()}
                 </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {detailsField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}></Grid>
               </Grid>
             </CardContent>
           </Card>

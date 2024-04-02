@@ -201,6 +201,12 @@ function verifynumOfStations() {
   cy.get('[data-testid="numOfStations"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('numOfStations.help');
 }
+
+function verifyDetailsField() {
+  cy.get('[data-testid="details"]').type('test details');
+  cy.get('[data-testid="helpPanelId"]').contains('details.help');
+}
+
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -225,6 +231,7 @@ describe('<AddObservation />', () => {
         </BrowserRouter>
       </StoreProvider>
     );
+    verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifynumOf15mAntennas();
@@ -254,6 +261,7 @@ describe('<AddObservation />', () => {
         </BrowserRouter>
       </StoreProvider>
     );
+    verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifyElevationField();
@@ -280,6 +288,7 @@ describe('<AddObservation />', () => {
       </StoreProvider>
     );
     // verifyArrayConfiguration2AndSubArrayConfig();
+    verifyDetailsField();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
@@ -303,6 +312,7 @@ describe('<AddObservation />', () => {
       </StoreProvider>
     );
     // verifyArrayConfiguration2AndSubArrayConfig();
+    verifyDetailsField();
     verifynumOfStations();
     verifyElevationField();
     verifyWeatherField();
