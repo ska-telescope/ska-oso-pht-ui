@@ -4,7 +4,7 @@ import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockRe
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
-import { getLowSubarrayType } from '../helpers';
+import sensCalHelpers from '../sensCalHelpers';
 
 async function GetCalculate(telescope: string, mode: string, observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
@@ -76,7 +76,10 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     total_bandwidth_khz?: string;
   }
 
+  // TODO double check obseration parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
+
   function mapQueryLowCalculate(calculator_mode): URLSearchParams {
+    console.log('observation', observation);
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     switch (calculator_mode) {
       case 'continuum':
@@ -84,15 +87,23 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
         mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging.toString();
         break;
       case 'zoom':
-        mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution.toString();
-        mode_specific_parameters.total_bandwidth_khz = observation.bandwidth.toString();
+        console.log(
+          'observation.spectral_resolution.toString()',
+          observation.spectral_resolution.toString()
+        );
+        // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution.toString();
+        const value = 16;
+        mode_specific_parameters.spectral_resolution_hz = value.toString(); // temp fix
+        const value2 = 48.8;
+        mode_specific_parameters.total_bandwidth_khz = value2.toString(); // temp fix
+        // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth.toString();
         break;
       default:
     }
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
     const params = new URLSearchParams({
-      subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: observation.integration_time,
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,

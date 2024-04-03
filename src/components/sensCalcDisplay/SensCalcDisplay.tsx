@@ -26,7 +26,7 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
       // TODO: handle response errors differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       // calculate results
-      const results = calculateSensitivityCalculatorResults(response);
+      const results = calculateSensitivityCalculatorResults(response, observation.telescope);
       setResponse(response);
     };
 

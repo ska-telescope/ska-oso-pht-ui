@@ -1,38 +1,69 @@
-import { sqrtOfSumSqs, convertSensitivityToDisplayValue } from './helpers';
+import sensCalHelpers from './sensCalHelpers';
+import SensitivityCalculatorResults from './../../../utils/types/sensitivityCalculatorResults';
+import {
+  SensitivityCalculatorAPIResponseLow,
+  SensitivityCalculatorAPIResponseMid
+} from './../../../utils/types/sensitivityCalculatorAPIResponse';
 
-let confusionNoise;
-let weightedSensitivity;
-let totalSensitivity;
-let totalSensitivityDisplayValue;
+const TEL = ['', 'Mid', 'Low'];
+let telescope;
+let confusionNoise: number;
+let weightedSensitivity: number;
+let totalSensitivity: number;
+let totalSensitivityDisplayValue: string;
 
-export default function calculateSensitivityCalculatorResults(response) {
-  // TODO improve typing
-  // TODO -> this is for Low Continuum: implement for zoom and Mid Continuum + Zoom and check differences
-  // TODO refactor helpers file in sens cal folder
+export default function calculateSensitivityCalculatorResults(
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+  observationTelescope: number
+): SensitivityCalculatorResults {
+  telescope = TEL[observationTelescope];
+  console.log('response', response);
   // TODO check why everything is called twice
   confusionNoise = getConfusionNoise(response);
   weightedSensitivity = getWeightedSensitivity(response);
-  totalSensitivity = totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  totalSensitivityDisplayValue = convertSensitivityToDisplayValue(totalSensitivity);
+  totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
+  totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
+    totalSensitivity
+  );
+  console.log('totalSensitivityDisplayValue', totalSensitivityDisplayValue);
   return {
     totalSensitivity: { label: 'Total Sensitivity', value: totalSensitivityDisplayValue }
   };
 }
 
-function getConfusionNoise(response) {
-  return response.weighting.confusion_noise.value[0];
+function getConfusionNoise(
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
+): number {
+  // Response is of type SensitivityCalculatorAPIResponseMid
+  if ('data' in response.weighting) {
+    return response.weighting.data.confusion_noise.value[0];
+    // Response is of type SensitivityCalculatorAPIResponseLow
+  } else {
+    return response.weighting.confusion_noise.value[0];
+  }
 }
 
-function getWeightedSensitivity(response) {
-  return (response.calculate.sensitivity ?? 0) * response.weighting.weighting_factor;
+function getWeightedSensitivity(
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
+): number {
+  // Response is of type SensitivityCalculatorAPIResponseMid
+  if ('data' in response.calculate && 'data' in response.weighting) {
+    return (
+      (response.calculate?.data?.result?.sensitivity ?? 0) *
+      response.weighting?.data?.weighting_factor
+    );
+    // Response is of type SensitivityCalculatorAPIResponseLow
+  } else if ('sensitivity' in response.calculate && 'weighting_factor' in response.weighting) {
+    return (response.calculate.sensitivity ?? 0) * response.weighting.weighting_factor;
+  } else {
+    throw new Error('Response object is missing required properties');
+  }
 }
 
 function getIntegrationTime() {
   // TODO
 }
 
-function getSensitivity(confusionNoise, weightedSensitivity): number {
-  // TODO
-  // LOW: response.weighting.sensitivity and response.weighting.units
-  return sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
+function getSensitivity(confusionNoise: number, weightedSensitivity: number): number {
+  return sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
 }

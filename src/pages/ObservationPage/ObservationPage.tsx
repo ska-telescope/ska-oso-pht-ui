@@ -15,6 +15,7 @@ import Observation from '../../utils/types/observation';
 
 const PAGE = 5;
 
+// TODO check zoom label mapping: always displayed as "not specified" in observation table
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
 

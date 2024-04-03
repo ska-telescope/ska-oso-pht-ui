@@ -10,7 +10,7 @@ import {
 } from './mockResponseLowWeighting';
 import Observation from 'utils/types/observation';
 import { OBSERVATION } from '../../../../utils/constants';
-import { getLowSubarrayType } from '../helpers';
+import sensCalHelpers from '../sensCalHelpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function GetWeighting(telescope, mode, observation: Observation) {
@@ -58,7 +58,7 @@ async function GetWeighting(telescope, mode, observation: Observation) {
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
-      subarray_configuration: getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.central_frequency
     });
