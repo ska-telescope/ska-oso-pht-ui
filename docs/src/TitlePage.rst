@@ -25,6 +25,7 @@ You will see several main proposal types like Standard Proposal, Key Science Pro
     "Director's Discretionary Time Proposal", "DDT", "Does not follow the normal proposal submission policies. It only requires approval from DG?"
 
 Clicking a main proposal type reveals relevant sub-proposal types like Target of Opportunity or Joint SKA Proposal.
+Proposal sub-types are optional.
 
 .. csv-table:: Sub-Proposal types
    :header: "Proposal Sub-Type", "Initials", "Description"
