@@ -1,3 +1,5 @@
+global:
+  cluster_domain: techops.internal.skao.int
 
 # Configure Ingress
 ingress:
