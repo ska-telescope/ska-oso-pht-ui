@@ -602,14 +602,14 @@ export default function AddObservation() {
 
   const detailsField = () => (
     <TextEntry
-      label={t('details.label')}
+      label={t('observationDetails.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
       labelWidth={LABEL_WIDTH_STD}
-      testId="details"
+      testId="observationDetails"
       value={details}
       setValue={setDetails}
-      onFocus={() => helpComponent(t('details.help'))}
+      onFocus={() => helpComponent(t('observationDetails.help'))}
     />
   );
 

@@ -203,8 +203,8 @@ function verifynumOfStations() {
 }
 
 function verifyDetailsField() {
-  cy.get('[data-testid="details"]').type('test details');
-  cy.get('[data-testid="helpPanelId"]').contains('details.help');
+  cy.get('[data-testid="observationDetails"]').type('test observationDetails');
+  cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
 }
 
 describe('<AddObservation />', () => {
