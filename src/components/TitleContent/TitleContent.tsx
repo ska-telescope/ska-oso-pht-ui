@@ -81,33 +81,20 @@ export default function TitleContent({ page }: TitleContentProps) {
     }
   }
 
-  function clickSubProposal(id: any) {
-
+  function clickSubProposal(id: number) {
     let removed = false;
     const newList = [];
     getProposal().proposalSubType.forEach(e => {
       if (e !== id) {
         newList.push(e);
-        console.log("New list " + newList.push(e))
       } else {
         removed = true;
       }
-      if (!removed) {
-        newList.push(id);
-        console.log("New updated list " + newList.push(id))
-      }
+    });
+    if (!removed) {
+      newList.push(id);
     }
-    )
-
-    if (getProposal().proposalSubType[0] === 0) {
-      setProposal({ ...getProposal(), proposalSubType: [id] });
-    } else if(getProposal().proposalSubType[0] === id){
-      setProposal({ ...getProposal(), proposalSubType: [0] });
-    }
-    else {
-      setProposal({ ...getProposal(), proposalSubType: [id] });
-      console.log("TO-DO Add to list")
-    }
+    setProposal({ ...getProposal(), proposalSubType: newList });
   }
 
   const setCardBG = (in1: number, in2: number) =>
@@ -116,6 +103,19 @@ export default function TitleContent({ page }: TitleContentProps) {
     in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
   const setCardClassName = (in1: number, in2: number) =>
     in1 && in1 === in2 ? 'active' : 'inactive';
+
+  const setCardBG2 = (in1: number[], in2: number) => {
+    const num = in1.findIndex(obj => obj === in2);
+    return num !== -1 ? theme.palette.secondary.main : theme.palette.primary.main;
+  };
+  const setCardFG2 = (in1: number[], in2: number) => {
+    const num = in1.findIndex(obj => obj === in2);
+    return num !== -1 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
+  };
+  const setCardClassName2 = (in1: number[], in2: number) => {
+    const num = in1.findIndex(obj => obj === in2);
+    return num !== -1 ? 'active' : 'inactive';
+  };
 
   function ProposalType(TYPE: any) {
     const { id, title, code, description } = TYPE;
@@ -169,10 +169,10 @@ export default function TitleContent({ page }: TitleContentProps) {
       <Grid key={id} item>
         <Card
           style={{
-            color: setCardFG(getProposal().proposalSubType[0], id),
-            backgroundColor: setCardBG(getProposal().proposalSubType[0], id)
+            color: setCardFG2(getProposal().proposalSubType, id),
+            backgroundColor: setCardBG2(getProposal().proposalSubType, id)
           }}
-          className={setCardClassName(getProposal().proposalSubType[0], id)}
+          className={setCardClassName2(getProposal().proposalSubType, id)}
           onClick={() => clickSubProposal(id)}
           variant="outlined"
           id={`SubProposalType-${id}`}
@@ -183,8 +183,8 @@ export default function TitleContent({ page }: TitleContentProps) {
                 <Avatar
                   variant="rounded"
                   style={{
-                    color: setCardBG(getProposal().proposalSubType[0], id),
-                    backgroundColor: setCardFG(getProposal().proposalSubType[0], id)
+                    color: setCardBG2(getProposal().proposalSubType, id),
+                    backgroundColor: setCardFG2(getProposal().proposalSubType, id)
                   }}
                 >
                   <Typography variant="body2" component="div">
