@@ -47,25 +47,20 @@ export default function ProposalDisplay({
   };
 
   const proposalType = () => {
-    const pt = getProposal().proposalType;
-    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : Projects[pt - 1].title;
-    const st = getProposal().proposalSubType[0];
-    const sName =
-      !pt || pt < 1 || !st || st < 1
-        ? t('displayProposal.noneSelected')
-        : Projects[pt - 1].subProjects[st - 1].title;
-    return `${pName} / ${sName}`;
+    const proposalType = getProposal().proposalType;
+    const proposalName = !proposalType || proposalType < 1 ? t('displayProposal.noneSelected') : Projects[proposalType - 1].title;
+    return `${proposalName}`;
   };
 
   const category = () => {
-    const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : t(`scienceCategory.${pt}`);
-    const st = getProposal().subCategory;
-    const sName =
-      !pt || pt < 1 || !st || st.length < 1
+    const proposalType = getProposal().category;
+    const proposalName = !proposalType || proposalType < 1 ? t('displayProposal.noneSelected') : t(`scienceCategory.${proposalType}`);
+    const subCategory = getProposal().subCategory;
+    const subCategoryName =
+      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
         ? t('displayProposal.noneSelected')
-        : t(`scienceSubCategory.${st}`);
-    return `${pName} / ${sName}`;
+        : t(`scienceSubCategory.${subCategory}`);
+    return `${proposalName} / ${subCategoryName}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);

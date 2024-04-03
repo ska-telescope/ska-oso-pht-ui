@@ -20,7 +20,6 @@ export default function TitleContent({ page }: TitleContentProps) {
 
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [tempValue, setTempValue] = React.useState(0);
-  const [subProposalChange, setSubProposalChange] = React.useState(false);
   const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -59,25 +58,20 @@ export default function TitleContent({ page }: TitleContentProps) {
   const setTheErrorText = (str: string) => setErrorText(t(str));
 
   const handleDialogResponse = () => {
-    if (!subProposalChange) {
-      setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [0] });
-    } else {
-      setProposal({ ...getProposal(), proposalSubType: [tempValue] });
-    }
+    setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });
     setOpenDialog(false);
   };
 
-  const confirmChange = (id: number, isSubType: boolean) => {
+  const confirmChange = (id: number) => {
     setTempValue(id);
-    setSubProposalChange(isSubType);
     setOpenDialog(true);
   };
 
   function clickProposal(id: number) {
-    if (getProposal().proposalType === 0 || getProposal().proposalSubType[0] === 0) {
+    if (getProposal().proposalType === 0) {
       setProposal({ ...getProposal(), proposalType: id });
     } else if (getProposal().proposalType !== id) {
-      confirmChange(id, false);
+      confirmChange(id);
     }
   }
 
@@ -305,8 +299,9 @@ export default function TitleContent({ page }: TitleContentProps) {
             <Grid item xs={8}>
               <Typography variant="body2">{t('proposalType.help1')}</Typography>
               <Typography variant="body2">{t('proposalType.help2')}</Typography>
+              <Typography variant="body2">{t('proposalType.help3')}</Typography>
               <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
-                {t('proposalType.help3')}
+                {t('proposalType.help4')}
               </Typography>
             </Grid>
           </Grid>
