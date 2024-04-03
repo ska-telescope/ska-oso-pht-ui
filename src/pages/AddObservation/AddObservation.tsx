@@ -719,6 +719,7 @@ export default function AddObservation() {
             alignItems="center"
             gap={1}
             spacing={1}
+            paddingBottom={3}
             justifyContent="space-evenly"
           >
             <Grid item xs={XS_TOP}>
@@ -733,17 +734,22 @@ export default function AddObservation() {
             <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
-
-            <Grid item xs={XS_TOP}>
-              {!isLow() && NumOf15mAntennasField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {!isLow() && NumOf13mAntennasField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {isLow() && NumOfStationsField()}
-            </Grid>
-            <Grid item xs={XS_TOP} />
+            {!isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOf15mAntennasField()}
+              </Grid>
+            )}
+            {!isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOf13mAntennasField()}
+              </Grid>
+            )}
+            {isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOfStationsField()}
+              </Grid>
+            )}
+            {isLow() && <Grid item xs={XS_TOP} />}
           </Grid>
           <Card variant="outlined">
             <CardContent>
