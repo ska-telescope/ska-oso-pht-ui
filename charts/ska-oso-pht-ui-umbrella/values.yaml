@@ -3,6 +3,7 @@ global:
     app.gitlab.com/app: CI_PROJECT_PATH_SLUG
     app.gitlab.com/env: CI_ENVIRONMENT_SLUG
   minikube: true
+  cluster_domain: techops.internal.skao.int
 
 # This default `make k8s-install-chart` will deploy all of the dependencies: the UI will access an
 # PHT backend, which will use the RESTRepository backend to access the ODA REST API, which will connect
