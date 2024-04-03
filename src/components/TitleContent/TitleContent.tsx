@@ -78,9 +78,9 @@ export default function TitleContent({ page }: TitleContentProps) {
   function clickSubProposal(id: number) {
     let removed = false;
     const newList = [];
-    getProposal().proposalSubType.forEach(e => {
-      if (e !== id) {
-        newList.push(e);
+    getProposal().proposalSubType.forEach(subType => {
+      if (subType !== id) {
+        newList.push(subType);
       } else {
         removed = true;
       }
