@@ -22,6 +22,7 @@ const sensCalHelpers = {
      * @returns {string} the sensitivity as a string with the correct units and precision
      * **/
     convertSensitivityToDisplayValue(sensitivity: number, precision = 2): string {
+      // TODO: add tests (cypress?)
       if (Number(sensitivity)) {
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
