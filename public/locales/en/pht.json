@@ -433,7 +433,11 @@
   "selected": {
     "label": "Selected"
   },
-  "sensitivityCalculatorResults": { "noData": "No data available" },
+  "sensitivityCalculatorResults": { 
+    "noData": "No data available",
+    "totalSensitivity": "Total Sensitivity",
+    "integrationTime": "Integration Time"
+  },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
     "cntWord": "Word count",

@@ -2,9 +2,7 @@ import GetCalculate from './getCalculate/getCalculate';
 import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
-
-const TEL = ['', 'Mid', 'Low'];
-const MODE = ['Zoom', 'Continuum'];
+import { TEL, MODE } from '../../../utils/constants';
 
 async function getSensitivityCalculatorAPIData(observation: Observation) {
   /* 
