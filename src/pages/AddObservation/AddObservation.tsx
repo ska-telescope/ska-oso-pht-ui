@@ -17,6 +17,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
+import { helpers } from '../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -61,6 +62,10 @@ export default function AddObservation() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
+  const [errorTextElevation, setErrorTextElevation] = React.useState('');
+  const [formInvalid, setFormInvalid] = React.useState(true);
+  const [validateToggle, setValidateToggle] = React.useState(false);
+
 
   React.useEffect(() => {
     setNumOf15mAntennas(
@@ -75,6 +80,22 @@ export default function AddObservation() {
     );
   }, [subarrayConfig]);
 
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [elevation]);
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
+    setFormInvalid(invalidForm);
+  }, [validateToggle]);
+
+  const formValues = {
+    elevation: {
+      value: elevation,
+      setValue: setElevation
+    }
+  };
+
   // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
   // some unit conversion will also be useful
 
@@ -84,6 +105,25 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
   const isLow = () => observingBand === 0;
+
+  function formValidation() {
+    let count = 0;
+    let emptyField = elevation === '';
+    let isValid = !emptyField;
+    count += isValid ? 0 : 1;
+
+    // elevation
+    emptyField = elevation === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(elevation, setElevation, setErrorTextElevation, 'ELEVATION');
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextElevation('');
+    }
+    return count;
+  }
 
   const subArrayField = () => {
     const getSubArrayOptions = () => {
@@ -444,6 +484,7 @@ export default function AddObservation() {
       setValue={setElevation}
       onFocus={() => helpComponent(t('elevation.help'))}
       required
+      errorText={t(errorTextElevation)}
     />
   );
 
@@ -665,11 +706,10 @@ export default function AddObservation() {
       if (!elevation || !weather || !frequency || !effective) {
         return true;
       }
-      if (isContinuum() && !continuumBandwidth) {
-        return true;
-      }
-      return false;
+      return isContinuum() && !continuumBandwidth;
     };
+
+
 
     const addObservationToProposal = () => {
       const highestId = getProposal().observations?.reduce(
@@ -685,7 +725,7 @@ export default function AddObservation() {
         type: observationType,
         observing_band: observingBand,
         weather: weather,
-        elevation: elevation,
+        elevation: formValues.elevation.value,
         central_frequency: frequency,
         bandwidth: bandwidth,
         spectral_averaging: spectralAveraging,
@@ -729,7 +769,8 @@ export default function AddObservation() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
+              // disabled={disabled()}
+              disabled={formInvalid}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"

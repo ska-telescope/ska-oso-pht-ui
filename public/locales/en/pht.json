@@ -164,7 +164,9 @@
   },
   "elevation": {
     "help": "ELEVATION HELP",
-    "label": "Elevation"
+    "label": "Elevation",
+    "invalidString": "Invalid input: Only numeric characters are allowed",
+    "invalidNumber": "Invalid input: Please enter a number between 15 and 59.2"
   },
   "email": {
     "label": "Email",
