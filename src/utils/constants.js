@@ -1,4 +1,5 @@
 import { env } from '../env';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
@@ -88,8 +89,13 @@ export const GENERAL = {
 
 export const DEFAULT_HELP = ['', ' ', ''];
 
+export const TELESCOPES = [
+  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+];
+
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'Not applicable', telescope: 2, value: 0 },
+  { label: 'LOW Bands', telescope: 2, value: 0 },
   { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 },
   { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 },
   { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 },
