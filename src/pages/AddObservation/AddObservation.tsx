@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid, Paper } from '@mui/material';
+import useTheme from '@mui/material/styles/useTheme';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -11,12 +12,10 @@ import {
   DropDown,
   LABEL_POSITION,
   NumberEntry,
-  TELESCOPE_LOW,
-  TELESCOPE_MID,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION } from '../../utils/constants';
+import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 
@@ -32,6 +31,7 @@ const LABEL_WIDTH_OPT1 = 6;
 const FIELD_WIDTH_OPT1 = 10;
 
 export default function AddObservation() {
+  const theme = useTheme();
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -167,10 +167,7 @@ export default function AddObservation() {
 
   const arrayField = () => {
     const getOptions = () => {
-      return [
-        { label: TELESCOPE_LOW.name, value: 1 },
-        { label: TELESCOPE_MID.name, value: 2 }
-      ];
+      return TELESCOPES;
     };
 
     return (
@@ -539,6 +536,26 @@ export default function AddObservation() {
     />
   );
 
+  const AntennasFields = () => {
+    return (
+      <Grid pb={0} pt={1} container direction="row">
+        <Grid item pt={1} xs={5}>
+          <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
+            <Typography sx={{ fontWeight: subarrayConfig === 20 ? 'bold' : 'normal' }}>
+              {t('numOfAntennas.label')}
+            </Typography>
+          </InputLabel>
+        </Grid>
+        <Grid item xs={4}>
+          {NumOf15mAntennasField()}
+        </Grid>
+        <Grid item xs={3}>
+          {NumOf13mAntennasField()}
+        </Grid>
+      </Grid>
+    );
+  };
+
   const NumOf15mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
@@ -555,7 +572,7 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
-            label={t('numOf15mAntennas.label')}
+            label={t('numOf15mAntennas.short')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
@@ -585,7 +602,7 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
-            label={t('numOf13mAntennas.label')}
+            label={t('numOf13mAntennas.short')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
@@ -611,7 +628,7 @@ export default function AddObservation() {
     };
 
     return (
-      <Grid pt={1} spacing={0} container direction="row">
+      <Grid pt={2} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
@@ -754,7 +771,6 @@ export default function AddObservation() {
             <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>
-            <Grid item xs={XS_TOP}></Grid>
             <Grid item xs={XS_TOP}>
               {arrayField()}
             </Grid>
@@ -762,27 +778,14 @@ export default function AddObservation() {
               {subArrayField()}
             </Grid>
             <Grid item xs={XS_TOP}>
+              {isLow() ? NumOfStationsField() : AntennasFields()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
               {elevationField()}
             </Grid>
             <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
-            {!isLow() && (
-              <Grid item xs={XS_TOP}>
-                {NumOf15mAntennasField()}
-              </Grid>
-            )}
-            {!isLow() && (
-              <Grid item xs={XS_TOP}>
-                {NumOf13mAntennasField()}
-              </Grid>
-            )}
-            {isLow() && (
-              <Grid item xs={XS_TOP}>
-                {NumOfStationsField()}
-              </Grid>
-            )}
-            {isLow() && <Grid item xs={XS_TOP} />}
           </Grid>
           <Card variant="outlined">
             <CardContent>

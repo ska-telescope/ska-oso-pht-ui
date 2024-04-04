@@ -212,9 +212,13 @@
   "notSelected": {
     "label": "Not Selected"
   },
+  "numOfAntennas": {
+    "label": "Number of antennas"
+  },
   "numOf15mAntennas": {
     "help": "Valid range is 0 - 133 inclusive",
     "label": "Number of 15-m antennas",
+    "short": "15-m",
     "range": {
       "lower": 0,
       "upper": 133
@@ -223,6 +227,7 @@
   "numOf13mAntennas": {
     "help": "Valid range is 0 - 64 inclusive",
     "label": "Number of 13-m antennas",
+    "short": "13-m",
     "range": {
       "lower": 0,
       "upper": 64
