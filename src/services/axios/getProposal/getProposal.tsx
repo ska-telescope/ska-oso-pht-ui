@@ -86,15 +86,15 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
 };
 
 function mapping(inRec: ProposalBackend) {
-  return {
+  return ({
     id: inRec.prsl_id,
     title: inRec.proposal_info.title,
     proposalType: getProposalType(inRec.proposal_info.proposal_type),
-    proposalSubType: getProposalSubTypeType(inRec.proposal_info.proposal_type),
+    proposalSubType: [getProposalSubTypeType(inRec.proposal_info.proposal_type)],
     team: getTeamMembers(inRec.proposal_info.investigators),
     abstract: inRec.proposal_info.abstract,
     category: getCategory(inRec.proposal_info.science_category),
-    subCategory: getSubCategory(),
+    subCategory: [getSubCategory()],
     sciencePDF: null,
     scienceLoadStatus: 0,
     targetOption: 1,
@@ -105,7 +105,7 @@ function mapping(inRec: ProposalBackend) {
     technicalLoadStatus: 0,
     dataProducts: [],
     pipeline: ''
-  } as Proposal;
+  } as unknown) as Proposal;
 }
 
 export function GetMockProposal(): Proposal {
