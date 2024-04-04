@@ -31,7 +31,6 @@ const LABEL_WIDTH_OPT1 = 6;
 const FIELD_WIDTH_OPT1 = 10;
 
 export default function AddObservation() {
-  const theme = useTheme();
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
