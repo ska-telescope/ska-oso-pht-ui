@@ -57,6 +57,23 @@ export default function AddObservation() {
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
+  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
+  const [numOfStations, setNumOfStations] = React.useState(0);
+  const [details, setDetails] = React.useState('');
+
+  React.useEffect(() => {
+    setNumOf15mAntennas(
+      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
+        element => element.value === subarrayConfig
+      ).numOf15mAntennas
+    );
+    setNumOf13mAntennas(
+      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
+        element => element.value === subarrayConfig
+      ).numOf13mAntennas
+    );
+  }, [subarrayConfig]);
 
   // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
   // some unit conversion will also be useful
@@ -66,6 +83,7 @@ export default function AddObservation() {
   }, []);
 
   const isContinuum = () => observationType === 1;
+  const isLow = () => observingBand === 0;
 
   const arrayField = () => {
     const getSubArrayOptions = () => {
@@ -492,6 +510,109 @@ export default function AddObservation() {
     />
   );
 
+  const NumOf15mAntennasField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOf15mAntennas.range.lower')) &&
+        num <= Number(t('numOf15mAntennas.range.upper'))
+      ) {
+        setNumOf15mAntennas(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf15mAntennas.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOf15mAntennas"
+            value={numOf15mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const NumOf13mAntennasField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOf13mAntennas.range.lower')) &&
+        num <= Number(t('numOf13mAntennas.range.upper'))
+      ) {
+        setNumOf13mAntennas(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf13mAntennas.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOf13mAntennas"
+            value={numOf13mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const NumOfStationsField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('numOfStations.range.lower')) &&
+        num <= Number(t('numOfStations.range.upper'))
+      ) {
+        setNumOfStations(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOfStations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="numOfStations"
+            value={numOfStations}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOfStations.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const detailsField = () => (
+    <TextEntry
+      label={t('observationDetails.label')}
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH_STD}
+      testId="observationDetails"
+      value={details}
+      setValue={setDetails}
+      onFocus={() => helpComponent(t('observationDetails.help'))}
+    />
+  );
+
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
@@ -529,7 +650,11 @@ export default function AddObservation() {
         integration_time: suppliedValue,
         spectral_resolution: spectralResolution,
         effective_resolution: 0,
-        number_of_sub_bands: subBands
+        number_of_sub_bands: subBands,
+        number_of_13m_antennas: numOf13mAntennas,
+        number_of_15m_antennas: numOf15mAntennas,
+        number_of_stations: numOfStations,
+        details: details
       };
       setProposal({
         ...getProposal(),
@@ -594,6 +719,7 @@ export default function AddObservation() {
             alignItems="center"
             gap={1}
             spacing={1}
+            paddingBottom={3}
             justifyContent="space-evenly"
           >
             <Grid item xs={XS_TOP}>
@@ -608,7 +734,22 @@ export default function AddObservation() {
             <Grid item xs={XS_TOP}>
               {weatherField()}
             </Grid>
-            <Grid item xs={XS_TOP} />
+            {!isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOf15mAntennasField()}
+              </Grid>
+            )}
+            {!isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOf13mAntennasField()}
+              </Grid>
+            )}
+            {isLow() && (
+              <Grid item xs={XS_TOP}>
+                {NumOfStationsField()}
+              </Grid>
+            )}
+            {isLow() && <Grid item xs={XS_TOP} />}
           </Grid>
           <Card variant="outlined">
             <CardContent>
@@ -655,6 +796,10 @@ export default function AddObservation() {
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeighting === 2 && robustField()}
                 </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {detailsField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}></Grid>
               </Grid>
             </CardContent>
           </Card>
