@@ -66,7 +66,6 @@ export default function AddObservation() {
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
-
   React.useEffect(() => {
     setNumOf15mAntennas(
       OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
@@ -117,7 +116,12 @@ export default function AddObservation() {
     isValid = !emptyField;
     count += isValid ? 0 : 1;
     if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(elevation, setElevation, setErrorTextElevation, 'ELEVATION');
+      isValid = helpers.validate.validateTextEntry(
+        elevation,
+        setElevation,
+        setErrorTextElevation,
+        'ELEVATION'
+      );
       count += isValid ? 0 : 1;
     } else {
       setErrorTextElevation('');
@@ -708,8 +712,6 @@ export default function AddObservation() {
       }
       return isContinuum() && !continuumBandwidth;
     };
-
-
 
     const addObservationToProposal = () => {
       const highestId = getProposal().observations?.reduce(
