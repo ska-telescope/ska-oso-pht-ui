@@ -5,18 +5,20 @@ import {
   SensitivityCalculatorAPIResponseMid
 } from './../../../utils/types/sensitivityCalculatorAPIResponse';
 import { TEL } from '../../../utils/constants';
+import Observation from 'utils/types/observation';
 
 let telescope;
 let confusionNoise: number;
 let weightedSensitivity: number;
 let totalSensitivity: number;
 let totalSensitivityDisplayValue: string;
+let integrationTimeDisplayValue: string;
 
 export default function calculateSensitivityCalculatorResults(
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
-  observationTelescope: number
+  observation: Observation
 ): SensitivityCalculatorResults {
-  telescope = TEL[observationTelescope];
+  telescope = TEL[observation.telescope];
   // TODO check why everything is called twice
   confusionNoise = getConfusionNoise(response);
   weightedSensitivity = getWeightedSensitivity(response);
@@ -24,8 +26,11 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
+  integrationTimeDisplayValue = `${observation.integration_time} 
+  ${sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integration_time_units)}`;
   return {
-    totalSensitivity: { value: totalSensitivityDisplayValue }
+    totalSensitivity: { value: totalSensitivityDisplayValue },
+    integrationTime: { value: integrationTimeDisplayValue }
   };
 }
 
@@ -56,10 +61,6 @@ function getWeightedSensitivity(
   } else {
     throw new Error('Response object is missing required properties');
   }
-}
-
-function getIntegrationTime() {
-  // TODO
 }
 
 function getSensitivity(confusionNoise: number, weightedSensitivity: number): number {

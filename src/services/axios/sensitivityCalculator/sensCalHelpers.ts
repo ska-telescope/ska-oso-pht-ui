@@ -1,3 +1,5 @@
+import { OBSERVATION } from '../../../utils/constants';
+
 const sensCalHelpers = {
   format: {
     /**
@@ -37,6 +39,39 @@ const sensCalHelpers = {
       } else {
         return 'NaN';
       }
+    },
+    convertIntegrationTimeToSeconds(integrationTime: number, unit: string): number {
+      let seconds = 0;
+      switch (unit) {
+        case 'd':
+          seconds = integrationTime * 24 * 3600;
+          break;
+        case 'h':
+          seconds = integrationTime * 3600;
+          break;
+        case 'min':
+          seconds = integrationTime * 60;
+          break;
+        case 's':
+          seconds = integrationTime;
+          break;
+        case 'ms':
+          seconds = integrationTime / 1000;
+          break;
+        case 'us':
+          seconds = integrationTime / 1000000;
+          break;
+        case 'ns':
+          seconds = integrationTime / 1000000000;
+          break;
+        default:
+          throw new Error(`Invalid unit: ${unit}`);
+      }
+      return seconds;
+    },
+    getIntegrationTimeUnitsLabel(units: number): string {
+      const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
+      return unitsList.find(u => u.value === units).label;
     }
   },
   calculate: {

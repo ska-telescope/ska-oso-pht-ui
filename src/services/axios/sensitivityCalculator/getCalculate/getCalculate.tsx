@@ -47,6 +47,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
         break;
       default:
     }
+    const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+      observation.integration_time_units
+    );
     const params = new URLSearchParams({
       rx_band: `Band ${observation.observing_band.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
@@ -63,7 +66,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       ).label.toLowerCase(),
       calculator_mode: 'continuum',
       taper: observation.tapering.toString(),
-      integration_time: observation.integration_time,
+      integration_time: sensCalHelpers.format
+        .convertIntegrationTimeToSeconds(Number(observation.integration_time), integrationTimeUnits)
+        .toString(),
       ...mode_specific_parameters
     });
     return params;
@@ -99,9 +104,14 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     }
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       .label;
+    const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+      observation.integration_time_units
+    );
     const params = new URLSearchParams({
       subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
-      duration: observation.integration_time,
+      duration: sensCalHelpers.format
+        .convertIntegrationTimeToSeconds(Number(observation.integration_time), integrationTimeUnits)
+        .toString(),
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
       freq_centre: observation.central_frequency,
       elevation_limit: observation.elevation,
