@@ -79,7 +79,6 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
   // TODO double check obseration parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
 
   function mapQueryLowCalculate(calculator_mode): URLSearchParams {
-    console.log('observation', observation);
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     switch (calculator_mode) {
       case 'continuum':
@@ -87,15 +86,13 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
         mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging.toString();
         break;
       case 'zoom':
-        console.log(
-          'observation.spectral_resolution.toString()',
-          observation.spectral_resolution.toString()
-        );
         // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution.toString();
         const value = 16;
         mode_specific_parameters.spectral_resolution_hz = value.toString(); // temp fix
+        //TODO check value mapping, does it need conversion?
         const value2 = 48.8;
         mode_specific_parameters.total_bandwidth_khz = value2.toString(); // temp fix
+        //TODO check value mapping, does it need conversion?
         // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth.toString();
         break;
       default:

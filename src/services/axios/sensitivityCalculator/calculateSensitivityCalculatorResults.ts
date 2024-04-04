@@ -17,7 +17,6 @@ export default function calculateSensitivityCalculatorResults(
   observationTelescope: number
 ): SensitivityCalculatorResults {
   telescope = TEL[observationTelescope];
-  console.log('response', response);
   // TODO check why everything is called twice
   confusionNoise = getConfusionNoise(response);
   weightedSensitivity = getWeightedSensitivity(response);
@@ -25,7 +24,6 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  console.log('totalSensitivityDisplayValue', totalSensitivityDisplayValue);
   return {
     totalSensitivity: { label: 'Total Sensitivity', value: totalSensitivityDisplayValue }
   };
