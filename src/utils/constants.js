@@ -96,6 +96,10 @@ export const BANDWIDTH_TELESCOPE = [
   { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4 }
 ];
 
+export const TEL = ['', 'Mid', 'Low'];
+
+export const MODE = ['Zoom', 'Continuum'];
+
 export const OBSERVATION = {
   array: [
     {

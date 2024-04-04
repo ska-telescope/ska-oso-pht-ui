@@ -4,8 +4,8 @@ import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
 } from './../../../utils/types/sensitivityCalculatorAPIResponse';
+import { TEL } from '../../../utils/constants';
 
-const TEL = ['', 'Mid', 'Low'];
 let telescope;
 let confusionNoise: number;
 let weightedSensitivity: number;
