@@ -1,6 +1,5 @@
 type SensitivityCalculatorResults = {
   totalSensitivity: {
-    label: string;
     value: string;
   };
 };

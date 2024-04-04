@@ -242,22 +242,23 @@ export default function ObservationPage() {
       width: 200,
       renderCell: (e: { row: { id: number } }) => {
         if (currentObservation > 0) {
+          // TODO move content of sens cal results cell into SensCalcDisplay component
           return (
             <Grid container direction="column">
               <Grid container direction="row" xs={12}>
                 <Grid item xs={6}>
-                  result 1 label
+                  {t('sensitivityCalculatorResults.totalSensitivity')}
                 </Grid>
                 <Grid item xs={6}>
-                  result 1
+                  total sensitivity result
                 </Grid>
               </Grid>
               <Grid container direction="row" xs={12}>
                 <Grid item xs={6}>
-                  result 2 label
+                  {t('sensitivityCalculatorResults.integrationTime')}
                 </Grid>
                 <Grid item xs={6}>
-                  result 2
+                  integration time result
                 </Grid>
               </Grid>
             </Grid>

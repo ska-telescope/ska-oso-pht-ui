@@ -25,7 +25,7 @@ export default function calculateSensitivityCalculatorResults(
     totalSensitivity
   );
   return {
-    totalSensitivity: { label: 'Total Sensitivity', value: totalSensitivityDisplayValue }
+    totalSensitivity: { value: totalSensitivityDisplayValue }
   };
 }
 
