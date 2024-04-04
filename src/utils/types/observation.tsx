@@ -13,6 +13,7 @@ type Observation = {
   tapering?: number; // only for MID
   image_weighting: number;
   integration_time: string;
+  integration_time_units: number;
   // continuum_bandwidth?: number; // used where? => same as bandwidth
   spectral_resolution: number;
   effective_resolution: number;

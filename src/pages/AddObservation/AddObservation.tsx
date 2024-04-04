@@ -527,6 +527,7 @@ export default function AddObservation() {
         tapering: tapering,
         image_weighting: imageWeighting,
         integration_time: suppliedValue,
+        integration_time_units: suppliedUnits,
         spectral_resolution: spectralResolution,
         effective_resolution: 0,
         number_of_sub_bands: subBands
