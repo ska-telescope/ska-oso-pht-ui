@@ -131,7 +131,7 @@ export default function ObservationPage() {
     for (let i = 0; i < 6; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    return result
+    return result;
   };
 
   const columns = [
