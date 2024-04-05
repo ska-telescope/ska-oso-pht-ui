@@ -196,8 +196,7 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('selected.label'),
       sortable: false,
-      flex: 1,
-      width: 50,
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -217,9 +216,10 @@ export default function ObservationPage() {
     },
     {
       field: 'vel',
-      headerName: '',
+      headerName: 'Results',
+      renderHeader: () => <Typography ml={15}>Results</Typography>,
       sortable: false,
-      width: 50,
+      flex: 4,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -229,40 +229,6 @@ export default function ObservationPage() {
             p => p.id === currentObservation
           );
           return <SensCalcDisplay observation={obs} selected={isSelected} />;
-        }
-        return '';
-      }
-    },
-    {
-      field: 'results',
-      headerName: 'Results',
-      sortable: false,
-      flex: 2,
-      disableClickEventBubbling: true,
-      width: 200,
-      renderCell: (e: { row: { id: number } }) => {
-        if (currentObservation > 0) {
-          // TODO move content of sens cal results cell into SensCalcDisplay component
-          return (
-            <Grid container direction="column">
-              <Grid container direction="row" xs={12}>
-                <Grid item xs={6}>
-                  {t('sensitivityCalculatorResults.totalSensitivity')}
-                </Grid>
-                <Grid item xs={6}>
-                  total sensitivity result
-                </Grid>
-              </Grid>
-              <Grid container direction="row" xs={12}>
-                <Grid item xs={6}>
-                  {t('sensitivityCalculatorResults.integrationTime')}
-                </Grid>
-                <Grid item xs={6}>
-                  integration time result
-                </Grid>
-              </Grid>
-            </Grid>
-          );
         }
         return '';
       }

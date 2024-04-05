@@ -26,8 +26,9 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  integrationTimeDisplayValue = `${observation.integration_time} 
-  ${sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integration_time_units)}`;
+  integrationTimeDisplayValue = `${
+    observation.integration_time
+  } ${sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integration_time_units)}`;
   return {
     totalSensitivity: { value: totalSensitivityDisplayValue },
     integrationTime: { value: integrationTimeDisplayValue }
