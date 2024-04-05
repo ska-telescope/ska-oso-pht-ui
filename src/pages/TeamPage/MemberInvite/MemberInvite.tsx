@@ -5,7 +5,7 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
-import { Proposal } from '../../../services/types/proposal';
+import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/helpPanel/helpPanel';
@@ -171,6 +171,7 @@ export default function MemberInvite() {
           setValue={setFirstName}
           onFocus={() => helpComponent(t('firstName.help'))}
           errorText={errorTextFirstName}
+          required
         />
       </Box>
     );
@@ -189,6 +190,7 @@ export default function MemberInvite() {
           setValue={setLastName}
           onFocus={() => helpComponent(t('lastName.help'))}
           errorText={errorTextLastName}
+          required
         />
       </Box>
     );
@@ -207,6 +209,7 @@ export default function MemberInvite() {
           setValue={setEmail}
           errorText={t(errorTextEmail)}
           onFocus={() => helpComponent(t('email.help'))}
+          required
         />
       </Box>
     );

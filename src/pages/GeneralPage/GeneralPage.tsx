@@ -6,7 +6,7 @@ import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-comp
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 
 const PAGE = 2;
 
@@ -62,7 +62,7 @@ export default function GeneralPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...getProposal(), category: id, subCategory: 1 });
+    setProposal({ ...getProposal(), category: id, subCategory: [1] });
   };
 
   /* TODO : Retained for future use
@@ -109,17 +109,26 @@ export default function GeneralPage() {
         title
       )} / ${MAX_WORD}`;
 
+    function validateWordCount(title: string) {
+      if (countWords(title) > MAX_WORD) {
+        return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
+          title
+        )} / ${MAX_WORD}`;
+      }
+    }
+
     return (
       <TextEntry
         label={t('abstract.label')}
         labelBold
         labelPosition={LABEL_POSITION.START}
         testId="abstractId"
-        rows={t('abstract.rows')}
+        rows={t('abstract.minDisplayRows')}
         value={getProposal().abstract}
         setValue={(e: string) => setValue(e)}
         onFocus={() => helpComponent(t('abstract.help'))}
         helperText={helperFunction(getProposal().abstract)}
+        errorText={validateWordCount(getProposal().abstract)}
       />
     );
   };

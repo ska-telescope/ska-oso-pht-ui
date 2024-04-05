@@ -6,11 +6,11 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
-import Proposal from '../../../services/types/proposal';
+import Proposal from '../../../utils/types/proposal';
 import { GENERAL, Projects } from '../../../utils/constants';
-import TeamMember from '../../../services/types/teamMember';
-import Target from '../../../services/types/target';
-import Observation from '../../../services/types/observation';
+import TeamMember from '../../../utils/types/teamMember';
+import Target from '../../../utils/types/target';
+import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
@@ -47,25 +47,26 @@ export default function ProposalDisplay({
   };
 
   const proposalType = () => {
-    const pt = getProposal().proposalType;
-    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : Projects[pt - 1].title;
-    const st = getProposal().proposalSubType;
-    const sName =
-      !pt || pt < 1 || !st || st < 1
+    const proposalType = getProposal().proposalType;
+    const proposalName =
+      !proposalType || proposalType < 1
         ? t('displayProposal.noneSelected')
-        : Projects[pt - 1].subProjects[st - 1].title;
-    return `${pName} / ${sName}`;
+        : Projects[proposalType - 1].title;
+    return `${proposalName}`;
   };
 
   const category = () => {
-    const pt = getProposal().category;
-    const pName = !pt || pt < 1 ? t('displayProposal.noneSelected') : t(`scienceCategory.${pt}`);
-    const st = getProposal().subCategory;
-    const sName =
-      !pt || pt < 1 || !st || st < 1
+    const proposalType = getProposal().category;
+    const proposalName =
+      !proposalType || proposalType < 1
         ? t('displayProposal.noneSelected')
-        : t(`scienceSubCategory.${st}`);
-    return `${pName} / ${sName}`;
+        : t(`scienceCategory.${proposalType}`);
+    const subCategory = getProposal().subCategory;
+    const subCategoryName =
+      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
+        ? t('displayProposal.noneSelected')
+        : t(`scienceSubCategory.${subCategory}`);
+    return `${proposalName} / ${subCategoryName}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);

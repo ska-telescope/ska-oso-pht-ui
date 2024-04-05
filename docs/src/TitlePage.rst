@@ -25,6 +25,7 @@ You will see several main proposal types like Standard Proposal, Key Science Pro
     "Director's Discretionary Time Proposal", "DDT", "Does not follow the normal proposal submission policies. It only requires approval from DG?"
 
 Clicking a main proposal type reveals relevant sub-proposal types like Target of Opportunity or Joint SKA Proposal.
+Proposal sub-types are optional.
 
 .. csv-table:: Sub-Proposal types
    :header: "Proposal Sub-Type", "Initials", "Description"
@@ -42,6 +43,7 @@ Entering Title and Creating proposal
 ====================================
 
 - Enter your proposal's title in the provided text field ( maximum 20 words )
+- The title field can contain latex in the provided text
 - Select your chosen main and sub-proposal types from the menus.
 - Once selected, a "Create" button with a plus sign appears at the bottom right.
 - Click "Create" to proceed to the next page.

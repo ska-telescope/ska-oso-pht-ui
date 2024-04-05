@@ -1,11 +1,10 @@
 import GetCalculate from './getCalculate/getCalculate';
 import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
+import Observation from '../../../utils/types/observation';
+import { TEL, MODE } from '../../../utils/constants';
 
-const TEL = ['', 'Mid', 'Low'];
-const MODE = ['', 'Zoom', 'Continuum'];
-
-async function getSensitivityCalculatorAPIData(telescope: number, mode: number) {
+async function getSensitivityCalculatorAPIData(observation: Observation) {
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
     there are 2 or 3 calls to the API made
@@ -18,14 +17,22 @@ async function getSensitivityCalculatorAPIData(telescope: number, mode: number) 
     Zoom Modes (Low or Mid): 
     - 1 call to getCalculate - with Zoom parameter
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
-    */
+  */
 
-  const isZoom = mode === 1;
-  const calculate = await GetCalculate(TEL[telescope], MODE[mode]);
-  const weighting = await GetWeighting(TEL[telescope], MODE[mode]);
+  const isZoom = observation.type === 0;
+  const calculate = await GetCalculate(
+    TEL[observation.telescope],
+    MODE[observation.type],
+    observation
+  );
+  const weighting = await GetWeighting(
+    TEL[observation.telescope],
+    MODE[observation.type],
+    observation
+  );
   let weightingLine;
   if (!isZoom) {
-    weightingLine = await GetWeighting(TEL[telescope], MODE[1]);
+    weightingLine = await GetWeighting(TEL[observation.telescope], MODE[1], observation);
   } // 2nd weighting call with Zoom - Continuum Mode only
 
   const response = {
