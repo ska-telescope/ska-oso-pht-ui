@@ -247,7 +247,10 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "obset_id"
+    "obset_id": {
+      "id": "obset_id",
+      "0": "obs-l0mkYl"
+    }
   },
   "observationType": {
     "label": "Observation Type",

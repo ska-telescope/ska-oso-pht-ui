@@ -125,22 +125,18 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const uid = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-  };
-
   const columns = [
     {
       field: 'obset_id',
-      headerName: t('observations.id'),
+      headerName: t('observations.obset_id.id'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observation: number } }) => <Typography>{'obs-' + uid()}</Typography>
+      renderCell: (e: { row: { observation: number } }) => {
+        if (e.row.observation) {
+          return <Typography>{t(`observations.obset_id`)}</Typography>;
+        }
+        return <Typography>{t(`observations.obset_id.0`)}</Typography>;
+      }
     },
     {
       field: 'telescope',
