@@ -130,10 +130,10 @@ export default function ObservationPage() {
     {
       field: 'obset_id',
       headerName: t('observations.id'),
-      flex: 2,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observation: number } }) => (
-        <Typography>{'obs-' + uid + '-' + GENERAL.Cycle}</Typography>
+        <Typography>{'obs-' + uid}</Typography>
       )
     },
     {
