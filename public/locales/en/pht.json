@@ -433,7 +433,7 @@
   "selected": {
     "label": "Selected"
   },
-  "sensitivityCalculatorResults": { 
+  "sensitivityCalculatorResults": {
     "noData": "No data available",
     "totalSensitivity": "Total Sensitivity",
     "integrationTime": "Integration Time"

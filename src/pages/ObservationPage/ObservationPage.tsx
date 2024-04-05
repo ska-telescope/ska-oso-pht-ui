@@ -132,9 +132,7 @@ export default function ObservationPage() {
       headerName: t('observations.id'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observation: number } }) => (
-        <Typography>{'obs-' + uid}</Typography>
-      )
+      renderCell: (e: { row: { observation: number } }) => <Typography>{'obs-' + uid}</Typography>
     },
     {
       field: 'telescope',
