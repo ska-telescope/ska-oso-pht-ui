@@ -29,11 +29,11 @@ export type Proposal = {
   id: string;
   title: string;
   proposalType: number;
-  proposalSubType: number;
+  proposalSubType: number[];
   team: TeamMember[];
   abstract: string;
   category: number;
-  subCategory: number;
+  subCategory: number[];
   sciencePDF: File | null;
   scienceLoadStatus: number;
   targetOption: number;

@@ -62,7 +62,7 @@ export default function GeneralPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...getProposal(), category: id, subCategory: 1 });
+    setProposal({ ...getProposal(), category: id, subCategory: [1] });
   };
 
   /* TODO : Retained for future use

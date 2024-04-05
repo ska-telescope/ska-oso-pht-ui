@@ -79,8 +79,8 @@
     "label": "API Version"
   },
   "arrayConfiguration": {
-    "label": "Telescope",
-    "help": "TELESCOPE HELP",
+    "label": "Array Configuration",
+    "help": "Array HELP",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
@@ -212,6 +212,35 @@
   "notSelected": {
     "label": "Not Selected"
   },
+  "numOfAntennas": {
+    "label": "Number of antennas"
+  },
+  "numOf15mAntennas": {
+    "help": "Valid range is 0 - 133 inclusive",
+    "label": "Number of 15-m antennas",
+    "short": "15-m",
+    "range": {
+      "lower": 0,
+      "upper": 133
+    }
+  },
+  "numOf13mAntennas": {
+    "help": "Valid range is 0 - 64 inclusive",
+    "label": "Number of 13-m antennas",
+    "short": "13-m",
+    "range": {
+      "lower": 0,
+      "upper": 64
+    }
+  },
+  "numOfStations": {
+    "help": "Valid range is 0 - 512 inclusive",
+    "label": "Number of Stations",
+    "range": {
+      "lower": 0,
+      "upper": 512
+    }
+  },
   "observingBand": {
     "help": "Observing Band HELP",
     "label": "Observing Band"
@@ -235,6 +264,10 @@
       "1": "Continuum Image",
       "2": "Spectral Line Image"
     }
+  },
+  "observationDetails": {
+    "help": "OBSERVATION DETAILS HELP",
+    "label": "Details"
   },
   "pageStatus": {
     "toolTip": "This is the status of the page"
@@ -283,7 +316,8 @@
     "label": "Proposal Types",
     "help1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
     "help2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
-    "help3": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
+    "help3": "Proposal sub-types are optional",
+    "help4": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
   },
   "members": {
     "label": "Members",
@@ -434,9 +468,9 @@
     }
   },
   "subArrayConfiguration": {
-    "label": "Array Configuration",
-    "help": "ARRAY CONFIGURATION HELP",
-    "short": "Array",
+    "label": "Subarray Configuration",
+    "help": "SUBARRAY CONFIGURATION HELP",
+    "short": "Subarray",
     "1": "AA0.5",
     "2": "AA1",
     "3": "AA2",
