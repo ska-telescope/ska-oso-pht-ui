@@ -23,7 +23,7 @@ export default function AddProposalButton() {
       icon={<AddIcon />}
       label={title}
       onClick={ClickFunction}
-      testId={`${title}Button`}
+      testId={'addProposalButton'}
       toolTip={toolTip}
       variant={ButtonVariantTypes.Contained}
     />

@@ -89,9 +89,13 @@ describe('Content', () => {
     it('should clear the First Name helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="firstName"] input').type(incorrectText);
-      cy.get('[data-testid="firstName"] > p.Mui-error').should('exist');
+      cy.get('[data-testid="firstName"] > p.Mui-error')
+        .should('exist')
+        .contains('specialCharacters.invalid');
       cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="firstName"] > p.Mui-error').should('not.exist');
+      cy.get('[data-testid="firstName"] > p.Mui-error')
+        .should('exist')
+        .contains('entryField.required');
     });
     it('should set the First Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
@@ -121,9 +125,13 @@ describe('Content', () => {
     it('should clear the Last Name helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="lastName"] input').type(incorrectText);
-      cy.get('[data-testid="lastName"] > p.Mui-error').should('exist');
+      cy.get('[data-testid="lastName"] > p.Mui-error')
+        .should('exist')
+        .contains('specialCharacters.invalid');
       cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="lastName"] > p.Mui-error').should('not.exist');
+      cy.get('[data-testid="lastName"] > p.Mui-error')
+        .should('exist')
+        .contains('entryField.required');
     });
     it('should set the Last Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
@@ -153,9 +161,13 @@ describe('Content', () => {
     it('should clear the Email helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="email"] > p.Mui-error').should('exist');
+      cy.get('[data-testid="email"] > p.Mui-error')
+        .should('exist')
+        .contains('specialCharacters.email');
       cy.get('[data-testid="email"] input').clear();
-      cy.get('[data-testid="email"] > p.Mui-error').should('not.exist');
+      cy.get('[data-testid="email"] > p.Mui-error')
+        .should('exist')
+        .contains('entryField.required');
     });
     it('should set the Email field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';

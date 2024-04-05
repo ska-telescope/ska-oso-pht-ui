@@ -19,7 +19,14 @@ const FOOTER_HEIGHT = 20;
 
 function App() {
   const { t } = useTranslation('pht');
-  const { themeMode } = storageObject.useStore();
+  const {
+    help,
+    helpToggle,
+    telescope,
+    themeMode,
+    toggleTheme,
+    updateTelescope
+  } = storageObject.useStore();
   const [showCopyright, setShowCopyright] = React.useState(false);
   const [apiVersion] = React.useState('0.1.0'); // TODO : Obtain real api version number
 
@@ -31,6 +38,14 @@ function App() {
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  const theStorage = {
+    help: help,
+    helpToggle: helpToggle,
+    telescope: telescope,
+    themeMode: themeMode.mode,
+    toggleTheme: toggleTheme,
+    updateTelescope: updateTelescope
+  };
 
   return (
     <ThemeProvider theme={theme(themeMode.mode)}>
@@ -43,6 +58,7 @@ function App() {
           title={t('pht.title')}
           toolTip={toolTip}
           selectTelescope={false}
+          storage={theStorage}
         />
         <>
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />

@@ -4,15 +4,15 @@ import getSensitivityCalculatorAPIData from '../../services/axios/sensitivityCal
 import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { IconButton } from '@mui/material';
 import ObservationTargetResultsDisplay from '../alerts/observationTargetResultsDisplay/observationTargetResultsDisplay';
+import Observation from '../../utils/types/observation';
+import calculateSensitivityCalculatorResults from '../../services/axios/sensitivityCalculator/calculateSensitivityCalculatorResults';
 
 const SIZE = 20;
 
 interface SensCalcDisplayProps {
   selected: boolean;
-  observation: { telescope: number; subarray: number };
+  observation: Observation;
 }
-
-// TODO : pass querry parameters from observation instead of mock query parameters in service
 
 export default function SensCalcDisplay({ selected, observation }: SensCalcDisplayProps) {
   const [lvl, setLvl] = React.useState(STATUS_PARTIAL);
@@ -21,13 +21,12 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
 
   React.useEffect(() => {
     const getSensCalc = async () => {
-      const response = await getSensitivityCalculatorAPIData(
-        observation.telescope,
-        observation.subarray
-      );
+      const response = await getSensitivityCalculatorAPIData(observation);
       // Calculate response for LOW doesn't have a status property: this will cause the error icon to be wrongly displayed for LOW responses
       // TODO: handle response errors differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
+      // calculate results
+      const results = calculateSensitivityCalculatorResults(response, observation);
       setResponse(response);
     };
 

@@ -1,7 +1,5 @@
-import { Proposal } from 'services/types/proposal';
+import { Proposal } from 'utils/types/proposal';
 import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
-
-const specialChars = /[!]/;
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -23,11 +21,6 @@ export const helpers = {
       }
       const { ERROR_TEXT, PATTERN } = textEntryParams;
       if (PATTERN.test(text)) {
-        if (specialChars.test(text)) {
-          setText(text);
-          setErrorText(ERROR_TEXT);
-          return false;
-        }
         setText(text);
         setErrorText('');
         return true;
@@ -52,7 +45,16 @@ export const helpers = {
     },
 
     /* convert proposal to backend format to send with PUT/PROPOSAL (save button) and PUT/PROPOSAL/ (submit button) */
-    // TODO: handle save/submit/create scenarios differences
+    // TODO: move this into the PUT proposal service (and POST?)
+    // TODO: handle saving PDF filename as document_id and link
+    // "documents" : [
+    //   {"document_id" : "prsl-12334-science",         "link": 'download pdf'}
+
+    //   ,
+
+    //   {"document_id" : "prsl-12334-technical",          "link": 'download pdf'     }
+
+    //   ]
     /*
     CREATE = proposal with no observations, etc.
     SAVE = proposal with or without observations, etc. STATUS: draft

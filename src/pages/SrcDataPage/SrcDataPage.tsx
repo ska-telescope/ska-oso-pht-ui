@@ -4,7 +4,7 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
-import { Proposal } from '../../services/types/proposal';
+import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 
@@ -58,6 +58,7 @@ export default function SrcDataPage() {
       setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
       onFocus={() => helpComponent(t('pipeline.help'))}
       helperText={t('pipeline.helper')}
+      required
     />
   );
 

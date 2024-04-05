@@ -5,6 +5,9 @@ Each target that is selected in relation to an observation attempt to connect to
 The GetSensitivityCalculatorAPIData service acts as the entry point to the different API requests to the Sensitivity Calculator and handles 
 the appropriate number of requests to the endpoints as necessary.
 
+Currently, the Observation data is passed to the Sensitivity Calculator Service and sent to the Calculate endpoint and Weighting end point.
+However, the target data is still mocked for both Calculate and Weighting.
+
 There are 2 or 3 calls to the API endpoints made every time.
 
     Continuum Modes (Low or Mid): 

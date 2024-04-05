@@ -1,4 +1,5 @@
 import { env } from '../env';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
@@ -23,7 +24,7 @@ export const NAV = [
   '/proposal/src'
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation'];
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct'];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
@@ -88,17 +89,63 @@ export const GENERAL = {
 
 export const DEFAULT_HELP = ['', ' ', ''];
 
+export const TELESCOPES = [
+  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+];
+
+export const BANDWIDTH_TELESCOPE = [
+  { label: 'LOW Bands', telescope: 2, value: 0 },
+  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 },
+  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 },
+  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 },
+  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4 }
+];
+
+export const TEL = ['', 'Mid', 'Low'];
+
+export const MODE = ['Zoom', 'Continuum'];
+
 export const OBSERVATION = {
   array: [
     {
       value: 1,
       subarray: [
-        { value: 1, label: 'AA0.5' },
-        { value: 2, label: 'AA1' },
-        { value: 3, label: 'AA2' },
-        { value: 4, label: 'AA2 (core only)' },
-        { value: 5, label: 'AA*' },
-        { value: 6, label: 'AA* (core only)' }
+        // MID
+        { value: 1, label: 'AA0.5', numOf15mAntennas: 4, numOf13mAntennas: 0, numOfStations: 0 },
+        { value: 2, label: 'AA1', numOf15mAntennas: 8, numOf13mAntennas: 0, numOfStations: 0 },
+        { value: 3, label: 'AA2', numOf15mAntennas: 64, numOf13mAntennas: 0, numOfStations: 0 },
+        {
+          value: 4,
+          label: 'AA2 (core only)',
+          numOf15mAntennas: 64,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        },
+        { value: 5, label: 'AA*', numOf15mAntennas: 80, numOf13mAntennas: 64, numOfStations: 0 },
+        {
+          value: 6,
+          label: 'AA* (15-m antennas only)',
+          numOf15mAntennas: 80,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        },
+        { value: 7, label: 'AA4', numOf15mAntennas: 133, numOf13mAntennas: 64, numOfStations: 0 },
+        {
+          value: 8,
+          label: 'AA4 (15-m antennas only)',
+          numOf15mAntennas: 133,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        },
+        {
+          value: 9,
+          label: 'AA*/AA4 (13.5-m antennas only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 64,
+          numOfStations: 0
+        },
+        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -106,12 +153,6 @@ export const OBSERVATION = {
         { label: '0', value: 3 },
         { label: '1', value: 4 },
         { label: '2', value: 5 }
-      ],
-      band: [
-        { label: 'Band 1 (0.35 - 1.05 GHz)', value: 1 },
-        { label: 'Band 2 (0.95 - 1.76 GHz)', value: 2 },
-        { label: 'Band 5a (4.6 - 8.5 GHz)', value: 3 },
-        { label: 'Band 5b (8.3 - 15.4 GHz)', value: 4 }
       ],
       bandWidth: [
         { label: '3.125 MHz', value: 1 },
@@ -135,18 +176,36 @@ export const OBSERVATION = {
     {
       value: 2,
       subarray: [
-        { value: 1, label: 'AA0.5' },
-        { value: 2, label: 'AA1' },
-        { value: 3, label: 'AA2' },
-        { value: 4, label: 'AA2 (core only)' },
-        { value: 5, label: 'AA*' },
-        { value: 6, label: 'AA* (core only)' },
-        { value: 7, label: 'AA* (15-m antennas only)' },
-        { value: 8, label: 'AA4' },
-        { value: 9, label: 'AA4 (15-m antennas only)' }
+        // LOW
+        { value: 1, label: 'AA0.5', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 6 },
+        { value: 2, label: 'AA1', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 18 },
+        { value: 3, label: 'AA2', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 64 },
+        {
+          value: 4,
+          label: 'AA2 (core only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 40
+        },
+        { value: 5, label: 'AA*', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 307 },
+        {
+          value: 6,
+          label: 'AA* (core only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 199
+        },
+        { value: 7, label: 'AA4', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 512 },
+        {
+          value: 8,
+          label: 'AA4 (core only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 224
+        },
+        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
       ],
-      robust: [{ value: 1 }],
-      band: [{ label: 'Not applicable', value: 0 }],
+      robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
         { label: '24.4 KHz', value: 1 },
         { label: '48.8 KHz', value: 2 },
@@ -337,6 +396,22 @@ export const Projects = [
   }
 ];
 
+export const DATA_PRODUCT = {
+  observatoryDataProduct: [
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
+  ],
+  pipeline: [
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
+  ]
+};
+
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
     MAX_LENGTH: 50,
@@ -348,6 +423,12 @@ export const TEXT_ENTRY_PARAMS = {
     ERROR_TEXT: 'specialCharacters.email',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  },
+  TITLE: {
+    MAX_LENGTH: 20,
+    ERROR_TEXT: 'specialCharacters.invalid',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
   }
 };
 
@@ -369,12 +450,12 @@ export const EMPTY_PROPOSAL = {
   id: null,
   title: '',
   proposalType: 0,
-  proposalSubType: 0,
+  proposalSubType: [0],
   cycle: '',
   team: [DEFAULT_PI],
   abstract: '',
   category: 0,
-  subCategory: 0,
+  subCategory: [0],
   sciencePDF: null,
   scienceLoadStatus: 0,
   targetOption: 1,
@@ -383,5 +464,6 @@ export const EMPTY_PROPOSAL = {
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: 0,
+  dataProducts: [],
   pipeline: ''
 };
