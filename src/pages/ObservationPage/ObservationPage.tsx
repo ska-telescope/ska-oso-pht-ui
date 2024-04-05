@@ -108,6 +108,14 @@ export default function ObservationPage() {
     }
   };
 
+  const getTargetObs = (obsId: number, targetId: number) => {
+    const targetObservation = getProposal().targetObservation.find(
+      obsTar => obsTar.observationId === obsId && obsTar.targetId === targetId
+    );
+    console.log('::: getTargetObs', targetObservation);
+    return targetObservation;
+  };
+
   const getRows = () => getProposal().observations;
 
   React.useEffect(() => {
@@ -216,23 +224,72 @@ export default function ObservationPage() {
     },
     {
       field: 'vel',
-      headerName: 'Results',
-      renderHeader: () => <Typography ml={15}>Results</Typography>,
+      headerName: '',
       sortable: false,
-      flex: 4,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
+        const targetId = e.row.id;
 
         if (currentObservation > 0) {
           const obs: Observation = getProposal().observations.find(
             p => p.id === currentObservation
           );
-          return <SensCalcDisplay observation={obs} selected={isSelected} />;
+          return <SensCalcDisplay observation={obs} selected={isSelected} targetId={targetId} />;
+        }
+        return '';
+      }
+    },
+    {
+      headerName: `test ${t('sensitivityCalculatorResults.totalSensitivity')}`,
+      renderHeader: () => (
+        <>
+          <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+          <Typography ml={15}>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+        </>
+      ),
+      sortable: false,
+      flex: 3,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        if (currentObservation > 0) {
+          const obsTar = getTargetObs(currentObservation, e.row.id);
+          return (
+            <Grid container direction="row">
+              <Grid item xs={6}>
+                <Typography>
+                  {obsTar?.sensitivityCalculatorResults?.totalSensitivity?.value}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography ml={15}>
+                  {obsTar?.sensitivityCalculatorResults?.integrationTime?.value}
+                </Typography>
+              </Grid>
+            </Grid>
+          );
         }
         return '';
       }
     }
+    /*
+    {
+      headerName: `test ${t('sensitivityCalculatorResults.integrationTime')}`,
+      sortable: false,
+      flex: 1.5,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        const isSelected = isTargetSelected(e.row.id);
+        if (currentObservation > 0) {
+          const obsTar = getTargetObs(currentObservation, e.row.id);
+          // return <span>{obsTar?.sensitivityCalculatorResults?.integrationTime?.value}</span>;
+          return <span>TEST2</span>;
+        }
+        return 'loading';
+      }
+    }
+    */
   ];
   const extendedColumnsTargets = [...columnsTargets];
   const extendedColumnsTargetsSelected = [...columnsTargetsSelected];
