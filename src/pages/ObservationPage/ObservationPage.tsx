@@ -204,7 +204,7 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('selected.label'),
       sortable: false,
-      flex: 0.5,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -242,12 +242,16 @@ export default function ObservationPage() {
       }
     },
     {
-      headerName: `test ${t('sensitivityCalculatorResults.totalSensitivity')}`,
+      headerName: '',
       renderHeader: () => (
-        <>
-          <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
-          <Typography ml={15}>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
-        </>
+        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+          <Grid>
+            <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+          </Grid>
+          <Grid item ml={10}>
+            <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+          </Grid>
+        </Grid>
       ),
       sortable: false,
       flex: 3,
@@ -256,14 +260,14 @@ export default function ObservationPage() {
         if (currentObservation > 0) {
           const obsTar = getTargetObs(currentObservation, e.row.id);
           return (
-            <Grid container direction="row">
-              <Grid item xs={6}>
+            <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+              <Grid>
                 <Typography>
                   {obsTar?.sensitivityCalculatorResults?.totalSensitivity?.value}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography ml={15}>
+              <Grid item ml={10}>
+                <Typography>
                   {obsTar?.sensitivityCalculatorResults?.integrationTime?.value}
                 </Typography>
               </Grid>
