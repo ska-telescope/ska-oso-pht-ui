@@ -431,7 +431,12 @@ export const TEXT_ENTRY_PARAMS = {
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
   },
   ELEVATION: {
-    ERROR_TEXT: 'elevation.invalidString',
+    ERROR_TEXT: 'error.invalidString',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^[0-9]+(\.[0-9]+)?$/
+  },
+  WEATHER: {
+    ERROR_TEXT: 'error.invalidString',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }

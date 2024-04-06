@@ -63,6 +63,8 @@ export default function AddObservation() {
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
   const [errorTextElevation, setErrorTextElevation] = React.useState('');
+  const [errorTextWeather, setErrorTextWeather] = React.useState('');
+
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
@@ -81,7 +83,7 @@ export default function AddObservation() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [elevation]);
+  }, [elevation, weather]);
 
   React.useEffect(() => {
     const invalidForm = Boolean(formValidation());
@@ -92,6 +94,10 @@ export default function AddObservation() {
     elevation: {
       value: elevation,
       setValue: setElevation
+    },
+    weather: {
+      value: weather,
+      setValue: setWeather
     }
   };
 
@@ -125,6 +131,21 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextElevation('');
+    }
+    // weather
+    emptyField = weather === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        weather,
+        setWeather,
+        setErrorTextWeather,
+        'WEATHER'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextWeather('');
     }
     return count;
   }
@@ -503,6 +524,7 @@ export default function AddObservation() {
       setValue={setWeather}
       onFocus={() => helpComponent(t('weather.help'))}
       required
+      errorText={t(errorTextWeather)}
     />
   );
 

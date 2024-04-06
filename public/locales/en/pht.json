@@ -165,7 +165,6 @@
   "elevation": {
     "help": "ELEVATION HELP",
     "label": "Elevation",
-    "invalidString": "Invalid input: Only numeric characters are allowed",
     "invalidNumber": "Invalid input: Please enter a number between 15 and 59.2"
   },
   "email": {
@@ -630,6 +629,7 @@
     },
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
-    "iconClicked": "Some error was encountered, please refresh page to continue"
+    "iconClicked": "Some error was encountered, please refresh page to continue",
+    "invalidString": "Invalid input: Only numeric characters are allowed"
   }
 }
