@@ -430,16 +430,11 @@ export const TEXT_ENTRY_PARAMS = {
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
   },
-  ELEVATION: {
+  NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   },
-  WEATHER: {
-    ERROR_TEXT: 'error.invalidString',
-    // eslint-disable-next-line no-useless-escape
-    PATTERN: /^[0-9]+(\.[0-9]+)?$/
-  }
 };
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
