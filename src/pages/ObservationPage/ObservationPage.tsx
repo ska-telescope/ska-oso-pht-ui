@@ -16,6 +16,8 @@ import Observation from '../../utils/types/observation';
 const PAGE = 5;
 
 // TODO check zoom label mapping: always displayed as "not specified" in observation table
+// TODO check why sens cal being called multiple times
+// TODO check why extra target column displayed twice if added
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
 
@@ -108,13 +110,15 @@ export default function ObservationPage() {
     }
   };
 
+  /*
+  using sens cal results from redux store proposal
   const getTargetObs = (obsId: number, targetId: number) => {
     const targetObservation = getProposal().targetObservation.find(
       obsTar => obsTar.observationId === obsId && obsTar.targetId === targetId
     );
-    console.log('::: getTargetObs', targetObservation);
     return targetObservation;
   };
+  */
 
   const getRows = () => getProposal().observations;
 
@@ -225,8 +229,19 @@ export default function ObservationPage() {
     {
       field: 'vel',
       headerName: '',
+      renderHeader: () => (
+        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+          <Grid mr={14}></Grid>
+          <Grid mr={10}>
+            <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+          </Grid>
+          <Grid>
+            <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+          </Grid>
+        </Grid>
+      ),
       sortable: false,
-      flex: 1,
+      flex: 4,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -242,10 +257,31 @@ export default function ObservationPage() {
       }
     },
     {
+      field: 'vel',
+      headerName: '',
+      sortable: false,
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        const isSelected = isTargetSelected(e.row.id);
+        const targetId = e.row.id;
+
+        if (currentObservation > 0) {
+          const obs: Observation = getProposal().observations.find(
+            p => p.id === currentObservation
+          );
+          return <SensCalcDisplay observation={obs} selected={isSelected} targetId={targetId} />;
+        }
+        return '';
+      }
+    }
+    /*,
+    // using sens cals results from redux stored proposal => seems to cause even more multiple API calls?
+    {
       headerName: '',
       renderHeader: () => (
         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-          <Grid>
+          <Grid>s
             <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
           </Grid>
           <Grid item ml={10}>
@@ -275,22 +311,6 @@ export default function ObservationPage() {
           );
         }
         return '';
-      }
-    }
-    /*
-    {
-      headerName: `test ${t('sensitivityCalculatorResults.integrationTime')}`,
-      sortable: false,
-      flex: 1.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
-        const isSelected = isTargetSelected(e.row.id);
-        if (currentObservation > 0) {
-          const obsTar = getTargetObs(currentObservation, e.row.id);
-          // return <span>{obsTar?.sensitivityCalculatorResults?.integrationTime?.value}</span>;
-          return <span>TEST2</span>;
-        }
-        return 'loading';
       }
     }
     */

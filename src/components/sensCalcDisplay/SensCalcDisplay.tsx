@@ -2,14 +2,13 @@ import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensitivityCalculatorAPIData from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Grid, IconButton, Typography } from '@mui/material';
 import ObservationTargetResultsDisplay from '../alerts/observationTargetResultsDisplay/observationTargetResultsDisplay';
 import Observation from '../../utils/types/observation';
 import calculateSensitivityCalculatorResults from '../../services/axios/sensitivityCalculator/calculateSensitivityCalculatorResults';
-import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Proposal from 'utils/types/proposal';
-import TargetObservation from 'utils/types/targetObservation';
+// import TargetObservation from 'utils/types/targetObservation';
 
 const SIZE = 20;
 
@@ -24,7 +23,6 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  // const { t } = useTranslation('pht');
   const [lvl, setLvl] = React.useState(STATUS_PARTIAL);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [response, setResponse] = React.useState(null);
@@ -37,26 +35,29 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
       // TODO: handle response errors differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       if (response) {
-        console.log(':::IN RESPONSE', response);
         setResponse(response);
-        // calculate results
-        setResults(calculateSensitivityCalculatorResults(response, observation));
-        console.log(':::results', results);
+        // TODO Trying to add Sens Cal to the Redux store below causes multiple API calls?
+        // setResults(calculateSensitivityCalculatorResults(response, observation)); // to save results in redux store
+        const results = calculateSensitivityCalculatorResults(response, observation);
+        if (results) {
+          setResults(results);
+        }
       }
     };
 
     if (!selected) {
       setLvl(STATUS_INITIAL);
     } else {
-      getSensCalc();
+      if (!results) {
+        getSensCalc();
+      }
     }
   }, [selected]);
 
+  /*
+  // Add Sens Cal results in redux stored proposal
   React.useEffect(() => {
-    console.log('CHECK AGAIN');
-    console.log('results', results);
     if (results) {
-      console.log(':::IN RESULTS', results);
       const updatedTargetObservation = getProposal().targetObservation.map(targetObservation => {
         if (
           targetObservation.observationId === observation.id &&
@@ -74,29 +75,35 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
         ...getProposal(),
         targetObservation: updatedTargetObservation
       });
-
-      console.log('##### getProposal', getProposal());
     }
   }, [results]);
+  */
 
   const IconClicked = () => {
     setOpenDialog(true);
   };
-
+  <ObservationTargetResultsDisplay
+    open={openDialog}
+    onClose={() => setOpenDialog(false)}
+    data={response}
+    lvl={lvl}
+    observation={observation}
+  />;
   return (
     <>
-      <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
-        <StatusIcon ariaTitle="" testId="statusId" icon level={lvl} size={SIZE} />
-      </IconButton>
-      {/*
-      <ObservationTargetResultsDisplay
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        data={response}
-        lvl={lvl}
-        observation={observation}
-      />
-      */}
+      <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+        <Grid mr={10}>
+          <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
+            <StatusIcon ariaTitle="" testId="statusId" icon level={lvl} size={SIZE} />
+          </IconButton>
+        </Grid>
+        <Grid mr={10}>
+          <Typography>{results?.totalSensitivity?.value}</Typography>
+        </Grid>
+        <Grid>
+          <Typography>{results?.integrationTime?.value}</Typography>
+        </Grid>
+      </Grid>
     </>
   );
 }
