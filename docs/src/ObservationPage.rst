@@ -44,6 +44,7 @@ The Observation Page consists of two distinct sections:
 
 - This modal appears upon clicking on the status icon at the right of the linked target-observation
 - This displays the results returned from the Sensitivity Calculator API.
+- The Total Sensitivity and Integration Time are displayed on the right hand side of the Targets table.
 
 .. figure:: /images/sensitivityCalculatorModal.png
    :width: 90%

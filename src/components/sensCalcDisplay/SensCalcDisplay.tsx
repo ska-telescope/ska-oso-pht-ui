@@ -82,6 +82,9 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
   const IconClicked = () => {
     setOpenDialog(true);
   };
+
+  // removed from return below as was causing icons to be displayed twice
+  // TODO investigate issue to place modal below
   <ObservationTargetResultsDisplay
     open={openDialog}
     onClose={() => setOpenDialog(false)}
@@ -89,6 +92,7 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
     lvl={lvl}
     observation={observation}
   />;
+
   return (
     <>
       <Grid container direction="row" justifyContent="flex-start" alignItems="center">
