@@ -32,6 +32,21 @@ describe('<ObservationContent />', () => {
         </BrowserRouter>
       </StoreProvider>
     );
+    // TODO find a way to include redux store in tests so that the component can be mounted and tested
+    /*
+    Currently the observationPage is not mounted at all. This seems linked to an issue when accessing the Redux store in the component.
+    When commenting line 133-138 and commenting all the html linked to accessing getProposal() or getRow()
+    // React.useEffect(() => {
+    // const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+    // let count = getRows().length > 0 ? 1 : 0;
+    // count += getProposal().targetObservation.length > 0 ? 1 : 0;
+    // setTheProposalState(result[count]);
+    // }, [validateToggle]);
+    Then div is rendered correctly in test. Otherwise the component is not mounted so it can not be tested.
+    I have tried to look at https://www.cypress.io/blog/2018/11/14/testing-redux-store but this seems outdated.
+    Sarah
+    */
+
     /*
     cy.get('[data-testid="Add observationButton"]').click();
     cy.get('[data-testid="observationDetails"]').should('contain', 'Telescope');
