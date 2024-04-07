@@ -55,6 +55,7 @@ export default function SensCalcDisplay({ selected, observation, targetId }: Sen
   }, [selected]);
 
   /*
+  // TODO
   // Add Sens Cal results in redux stored proposal
   React.useEffect(() => {
     if (results) {

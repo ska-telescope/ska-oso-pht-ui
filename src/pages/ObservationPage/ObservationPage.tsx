@@ -111,6 +111,7 @@ export default function ObservationPage() {
   };
 
   /*
+  TODO
   using sens cal results from redux store proposal
   const getTargetObs = (obsId: number, targetId: number) => {
     const targetObservation = getProposal().targetObservation.find(
