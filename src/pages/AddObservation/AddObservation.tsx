@@ -784,13 +784,13 @@ export default function AddObservation() {
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
-    // const disabled = () => {
-    //   // TODO : Extend so that all options are covered
-    //   if (!elevation || !weather || !frequency || !effective) {
-    //     return true;
-    //   }
-    //   return isContinuum() && !continuumBandwidth;
-    // };
+    const disabled = () => {
+      // TODO : Extend so that all options are covered
+      if (!elevation || !weather || !frequency || !effective) {
+        return true;
+      }
+      return isContinuum() && !continuumBandwidth;
+    };
 
     const addObservationToProposal = () => {
       const highestId = getProposal().observations?.reduce(
@@ -850,8 +850,7 @@ export default function AddObservation() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              // disabled={disabled()}
-              disabled={formInvalid}
+              disabled={disabled() + formInvalid}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"
