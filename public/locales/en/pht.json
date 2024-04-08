@@ -66,6 +66,9 @@
   "actions": {
     "label": "Actions"
   },
+  "addObservation":{
+    "minDetailDisplayRows": "5"
+  },
   "addProposal": {
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
@@ -224,10 +227,10 @@
       "upper": 133
     }
   },
-  "numOf13mAntennas": {
+  "numOf13_5mAntennas": {
     "help": "Valid range is 0 - 64 inclusive",
-    "label": "Number of 13-m antennas",
-    "short": "13-m",
+    "label": "Number of 13.5-m antennas",
+    "short": "13.5-m",
     "range": {
       "lower": 0,
       "upper": 64
