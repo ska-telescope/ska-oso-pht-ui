@@ -58,7 +58,7 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
-  const [numOf13_5mAntennas, setnumOf13_5mAntennas] = React.useState(0);
+  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
 
@@ -68,7 +68,7 @@ export default function AddObservation() {
         element => element.value === subarrayConfig
       ).numOf15mAntennas
     );
-    setnumOf13_5mAntennas(
+    setNumOf13_5mAntennas(
       OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
         element => element.value === subarrayConfig
       ).numOf13_5mAntennas
@@ -596,7 +596,7 @@ export default function AddObservation() {
         num >= Number(t('numOf13_5mAntennas.range.lower')) &&
         num <= Number(t('numOf13_5mAntennas.range.upper'))
       ) {
-        setnumOf13_5mAntennas(num);
+        setNumOf13_5mAntennas(num);
       }
     };
 
