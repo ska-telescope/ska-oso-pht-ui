@@ -67,6 +67,7 @@ export default function AddObservation() {
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
+  const [errorTextEffectiveResolution, setErrorTextEffectiveResolution] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -183,6 +184,21 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextContinuumBandwidth('');
+    }
+    // effective resolution
+    emptyField = effective === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setEffective,
+        setErrorTextEffectiveResolution,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextEffectiveResolution('');
     }
     return count;
   }
@@ -638,6 +654,7 @@ export default function AddObservation() {
       setValue={setEffective}
       onFocus={() => helpComponent(t('effectiveResolution.help'))}
       required
+      errorText={t(errorTextEffectiveResolution)}
     />
   );
 
