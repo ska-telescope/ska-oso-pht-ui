@@ -96,9 +96,6 @@ export default function AddObservation() {
     setFormInvalid(invalidForm);
   }, [validateToggle]);
 
-  // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
-  // some unit conversion will also be useful
-
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
   }, []);
@@ -511,7 +508,7 @@ export default function AddObservation() {
 
   const elevationField = () => {
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
+      const num = Number(Math.abs(e).toFixed(1));
       if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
         setElevation(num);
       }
