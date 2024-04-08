@@ -43,7 +43,7 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(3);
-  const [frequency, setFrequency] = React.useState('');
+  const [frequency, setFrequency] = React.useState(50);
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
@@ -63,7 +63,6 @@ export default function AddObservation() {
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
-  const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
   const [errorTextEffectiveResolution, setErrorTextEffectiveResolution] = React.useState('');
 
@@ -128,28 +127,13 @@ export default function AddObservation() {
     } else {
       setErrorTextSuppliedValue('');
     }
-    // central frequency
-    emptyField = frequency === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        frequency,
-        setFrequency,
-        setErrorTextCentralFrequency,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextCentralFrequency('');
-    }
     // continuum bandwidth
     emptyField = continuumBandwidth === '';
     isValid = !emptyField;
     count += isValid ? 0 : 1;
     if (!emptyField) {
       isValid = helpers.validate.validateTextEntry(
-        frequency,
+        continuumBandwidth,
         setContinuumBandwidth,
         setErrorTextContinuumBandwidth,
         'NUMBER_ONLY'
@@ -164,7 +148,7 @@ export default function AddObservation() {
     count += isValid ? 0 : 1;
     if (!emptyField) {
       isValid = helpers.validate.validateTextEntry(
-        frequency,
+        effective,
         setEffective,
         setErrorTextEffectiveResolution,
         'NUMBER_ONLY'
@@ -579,21 +563,36 @@ export default function AddObservation() {
     );
   };
 
-  const centralFrequencyField = () => (
-    <TextEntry
-      label={t('centralFrequency.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="frequency"
-      value={frequency}
-      setValue={setFrequency}
-      suffix={frequencyUnitsField()}
-      onFocus={() => helpComponent(t('centralFrequency.help'))}
-      required
-      errorText={t(errorTextCentralFrequency)}
-    />
-  );
+  const centralFrequencyField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (
+        num >= Number(t('centralFrequency.range.lower')) &&
+        num <= Number(t('centralFrequency.range.upper'))
+      ) {
+        setFrequency(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            label={t('centralFrequency.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="frequency"
+            value={frequency}
+            setValue={validate}
+            onFocus={() => helpComponent(t('centralFrequency.help'))}
+            required
+            suffix={frequencyUnitsField()}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const SubBandsField = () => {
     const validate = (e: number) => {
