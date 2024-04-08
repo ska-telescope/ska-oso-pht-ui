@@ -62,8 +62,6 @@ export default function AddObservation() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
-  const [errorTextElevation, setErrorTextElevation] = React.useState('');
-  const [errorTextWeather, setErrorTextWeather] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
@@ -106,40 +104,10 @@ export default function AddObservation() {
 
   function formValidation() {
     let count = 0;
-    let emptyField = elevation === '';
+    let emptyField = suppliedValue === '';
     let isValid = !emptyField;
     count += isValid ? 0 : 1;
 
-    // elevation
-    emptyField = elevation === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        elevation,
-        setElevation,
-        setErrorTextElevation,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextElevation('');
-    }
-    // weather
-    emptyField = weather === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        weather,
-        setWeather,
-        setErrorTextWeather,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextWeather('');
-    }
     // supplied value
     emptyField = suppliedValue === '';
     isValid = !emptyField;
