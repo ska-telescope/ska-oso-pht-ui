@@ -744,13 +744,13 @@ export default function AddObservation() {
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
-    const disabled = () => {
-      // TODO : Extend so that all options are covered
-      if (!elevation || !weather || !frequency || !effective) {
-        return true;
-      }
-      return isContinuum() && !continuumBandwidth;
-    };
+    // const disabled = () => {
+    //   // TODO : Extend so that all options are covered
+    //   if (!elevation || !weather || !frequency || !effective) {
+    //     return true;
+    //   }
+    //   return isContinuum() && !continuumBandwidth;
+    // };
 
     const addObservationToProposal = () => {
       const highestId = getProposal().observations?.reduce(
