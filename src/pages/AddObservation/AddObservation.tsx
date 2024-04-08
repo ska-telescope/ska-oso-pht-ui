@@ -553,7 +553,7 @@ export default function AddObservation() {
   );
 
   const elevationField = () => (
-    <TextEntry
+    <NumberEntry
       label={t('elevation.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
@@ -568,7 +568,7 @@ export default function AddObservation() {
   );
 
   const weatherField = () => (
-    <TextEntry
+    <NumberEntry
       label={t('weather.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
