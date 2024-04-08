@@ -544,7 +544,11 @@
   },
   "weather": {
     "help": "WEATHER HELP",
-    "label": "Weather"
+    "label": "Weather",
+    "range": {
+      "lower": 3,
+      "upper": 25
+    }
   },
   "weighting": {
     "label": "Weighting",

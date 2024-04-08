@@ -42,7 +42,7 @@ export default function AddObservation() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState('');
-  const [weather, setWeather] = React.useState('');
+  const [weather, setWeather] = React.useState(0);
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -567,20 +567,32 @@ export default function AddObservation() {
     />
   );
 
-  const weatherField = () => (
-    <NumberEntry
-      label={t('weather.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="weather"
-      value={weather}
-      setValue={setWeather}
-      onFocus={() => helpComponent(t('weather.help'))}
-      required
-      errorText={t(errorTextWeather)}
-    />
-  );
+  const weatherField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (num >= Number(t('weather.range.lower')) && num <= Number(t('weather.range.upper'))) {
+        setWeather(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            label={t('weather.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="weather"
+            value={weather}
+            setValue={validate}
+            onFocus={() => helpComponent(t('weather.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const centralFrequencyField = () => (
     <TextEntry
