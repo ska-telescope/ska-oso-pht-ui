@@ -90,7 +90,7 @@ export default function AddObservation() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [elevation, weather]);
+  }, [elevation, weather, frequency, effective]);
 
   React.useEffect(() => {
     const invalidForm = Boolean(formValidation());
@@ -787,10 +787,7 @@ export default function AddObservation() {
       if (!elevation || !weather || !frequency || !effective) {
         return true;
       }
-      if (isContinuum() && !continuumBandwidth) {
-        return true;
-      }
-      return false;
+      return isContinuum() && !continuumBandwidth;
     };
 
     const addObservationToProposal = () => {
