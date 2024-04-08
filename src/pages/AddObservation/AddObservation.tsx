@@ -65,6 +65,7 @@ export default function AddObservation() {
   const [errorTextElevation, setErrorTextElevation] = React.useState('');
   const [errorTextWeather, setErrorTextWeather] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
+  const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -90,17 +91,6 @@ export default function AddObservation() {
     const invalidForm = Boolean(formValidation());
     setFormInvalid(invalidForm);
   }, [validateToggle]);
-
-  const formValues = {
-    elevation: {
-      value: elevation,
-      setValue: setElevation
-    },
-    weather: {
-      value: weather,
-      setValue: setWeather
-    }
-  };
 
   // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
   // some unit conversion will also be useful
@@ -162,6 +152,21 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextSuppliedValue('');
+    }
+    // central frequency
+    emptyField = frequency === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setFrequency,
+        setErrorTextCentralFrequency,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextCentralFrequency('');
     }
     return count;
   }
@@ -557,6 +562,7 @@ export default function AddObservation() {
       suffix={frequencyUnitsField()}
       onFocus={() => helpComponent(t('centralFrequency.help'))}
       required
+      errorText={t(errorTextCentralFrequency)}
     />
   );
 
@@ -766,7 +772,7 @@ export default function AddObservation() {
         type: observationType,
         observing_band: observingBand,
         weather: weather,
-        elevation: formValues.elevation.value,
+        elevation: elevation,
         central_frequency: frequency,
         bandwidth: bandwidth,
         spectral_averaging: spectralAveraging,
