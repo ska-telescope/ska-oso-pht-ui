@@ -184,13 +184,13 @@ function verifynumOf15mAntennas() {
   cy.get('[data-testid="helpPanelId"]').contains('numOf15mAntennas.help');
 }
 
-function verifynumOf13mAntennas() {
+function verifynumOf13_5mAntennas() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
-  cy.get('[data-testid="numOf13mAntennas"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('numOf13mAntennas.help');
+  cy.get('[data-testid="numOf13_5mAntennas"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numOf13_5mAntennas.help');
 }
 
 function verifynumOfStations() {
@@ -235,7 +235,7 @@ describe('<AddObservation />', () => {
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifynumOf15mAntennas();
-    verifynumOf13mAntennas();
+    verifynumOf13_5mAntennas();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
@@ -276,7 +276,7 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifyImageWeighting();
     verifynumOf15mAntennas();
-    verifynumOf13mAntennas();
+    verifynumOf13_5mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {

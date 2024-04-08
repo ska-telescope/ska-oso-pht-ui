@@ -58,7 +58,7 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
-  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
+  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
 
@@ -68,10 +68,15 @@ export default function AddObservation() {
         element => element.value === subarrayConfig
       ).numOf15mAntennas
     );
-    setNumOf13mAntennas(
+    setNumOf13_5mAntennas(
       OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
         element => element.value === subarrayConfig
-      ).numOf13mAntennas
+      ).numOf13_5mAntennas
+    );
+    setNumOfStations(
+      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
+        element => element.value === subarrayConfig
+      ).numOfStations
     );
   }, [subarrayConfig]);
 
@@ -548,7 +553,7 @@ export default function AddObservation() {
           {NumOf15mAntennasField()}
         </Grid>
         <Grid item xs={3}>
-          {NumOf13mAntennasField()}
+          {numOf13_5mAntennasField()}
         </Grid>
       </Grid>
     );
@@ -584,14 +589,14 @@ export default function AddObservation() {
     );
   };
 
-  const NumOf13mAntennasField = () => {
+  const numOf13_5mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
       if (
-        num >= Number(t('numOf13mAntennas.range.lower')) &&
-        num <= Number(t('numOf13mAntennas.range.upper'))
+        num >= Number(t('numOf13_5mAntennas.range.lower')) &&
+        num <= Number(t('numOf13_5mAntennas.range.upper'))
       ) {
-        setNumOf13mAntennas(num);
+        setNumOf13_5mAntennas(num);
       }
     };
 
@@ -600,14 +605,14 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
-            label={t('numOf13mAntennas.short')}
+            label={t('numOf13_5mAntennas.short')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
-            testId="numOf13mAntennas"
-            value={numOf13mAntennas}
+            testId="numOf13_5mAntennas"
+            value={numOf13_5mAntennas}
             setValue={validate}
-            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+            onFocus={() => helpComponent(t('numOf13_5mAntennas.help'))}
           />
         </Grid>
       </Grid>
@@ -654,6 +659,7 @@ export default function AddObservation() {
       value={details}
       setValue={setDetails}
       onFocus={() => helpComponent(t('observationDetails.help'))}
+      rows={t('addObservation.minDetailDisplayRows')}
     />
   );
 
@@ -696,7 +702,7 @@ export default function AddObservation() {
         spectral_resolution: spectralResolution,
         effective_resolution: 0,
         number_of_sub_bands: subBands,
-        number_of_13m_antennas: numOf13mAntennas,
+        number_of_13m_antennas: numOf13_5mAntennas,
         number_of_15m_antennas: numOf15mAntennas,
         number_of_stations: numOfStations,
         details: details
