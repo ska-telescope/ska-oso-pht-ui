@@ -5,7 +5,7 @@ import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../u
 import { IconButton } from '@mui/material';
 import ObservationTargetResultsDisplay from '../alerts/observationTargetResultsDisplay/observationTargetResultsDisplay';
 import Observation from '../../utils/types/observation';
-import calculateSensitivityCalculatorResults from '../../services/axios/sensitivityCalculator/calculateSensitivityCalculatorResults';
+// import calculateSensitivityCalculatorResults from '../../services/axios/sensitivityCalculator/calculateSensitivityCalculatorResults';
 
 const SIZE = 20;
 
@@ -26,7 +26,7 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
       // TODO: handle response errors differently
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       // calculate results
-      const results = calculateSensitivityCalculatorResults(response, observation);
+      //const results = calculateSensitivityCalculatorResults(response, observation);
       setResponse(response);
     };
 

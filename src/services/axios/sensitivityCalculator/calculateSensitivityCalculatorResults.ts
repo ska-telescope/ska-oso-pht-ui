@@ -7,7 +7,6 @@ import {
 import { TEL } from '../../../utils/constants';
 import Observation from 'utils/types/observation';
 
-let telescope;
 let confusionNoise: number;
 let weightedSensitivity: number;
 let totalSensitivity: number;
