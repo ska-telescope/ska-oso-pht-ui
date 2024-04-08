@@ -66,6 +66,7 @@ export default function AddObservation() {
   const [errorTextWeather, setErrorTextWeather] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
+  const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -167,6 +168,21 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextCentralFrequency('');
+    }
+    // continuum bandwidth
+    emptyField = continuumBandwidth === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setContinuumBandwidth,
+        setErrorTextContinuumBandwidth,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextContinuumBandwidth('');
     }
     return count;
   }
@@ -607,6 +623,7 @@ export default function AddObservation() {
       setValue={setContinuumBandwidth}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
       required
+      errorText={t(errorTextContinuumBandwidth)}
     />
   );
 
