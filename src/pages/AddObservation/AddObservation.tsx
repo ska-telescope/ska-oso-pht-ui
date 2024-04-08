@@ -146,7 +146,7 @@ export default function AddObservation() {
     count += isValid ? 0 : 1;
     if (!emptyField) {
       isValid = helpers.validate.validateTextEntry(
-        weather,
+        suppliedValue,
         setSuppliedValue,
         setErrorTextSuppliedValue,
         'NUMBER_ONLY'
