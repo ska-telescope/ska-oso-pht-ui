@@ -165,7 +165,11 @@
   "elevation": {
     "help": "ELEVATION HELP",
     "label": "Elevation",
-    "invalidNumber": "Invalid input: Please enter a number between 15 and 59.2"
+    "invalidNumber": "Invalid input: Please enter a number between 15 and 59.2",
+    "range": {
+      "lower": 15,
+      "upper": 59.2
+    }
   },
   "email": {
     "label": "Email",

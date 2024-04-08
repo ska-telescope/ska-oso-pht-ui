@@ -41,8 +41,8 @@ export default function AddObservation() {
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
-  const [elevation, setElevation] = React.useState('');
-  const [weather, setWeather] = React.useState(0);
+  const [elevation, setElevation] = React.useState(15);
+  const [weather, setWeather] = React.useState(3);
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -551,21 +551,32 @@ export default function AddObservation() {
       </Grid>
     </Grid>
   );
+  const elevationField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
+        setElevation(num);
+      }
+    };
 
-  const elevationField = () => (
-    <NumberEntry
-      label={t('elevation.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="elevation"
-      value={elevation}
-      setValue={setElevation}
-      onFocus={() => helpComponent(t('elevation.help'))}
-      required
-      errorText={t(errorTextElevation)}
-    />
-  );
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            label={t('elevation.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="elevation"
+            value={elevation}
+            setValue={validate}
+            onFocus={() => helpComponent(t('elevation.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const weatherField = () => {
     const validate = (e: number) => {
