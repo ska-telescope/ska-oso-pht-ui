@@ -429,6 +429,11 @@ export const TEXT_ENTRY_PARAMS = {
     ERROR_TEXT: 'specialCharacters.invalid',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
+  },
+  NUMBER_ONLY: {
+    ERROR_TEXT: 'error.invalidString',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };
 

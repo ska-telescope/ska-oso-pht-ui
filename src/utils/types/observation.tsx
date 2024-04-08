@@ -5,8 +5,8 @@ type Observation = {
   linked: string;
   type: number;
   observing_band: number;
-  weather?: string; // only for MID
-  elevation: string;
+  weather?: number; // only for MID
+  elevation: number;
   central_frequency: string;
   bandwidth: number;
   spectral_averaging?: number; // only for LOW

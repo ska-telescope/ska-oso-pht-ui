@@ -17,6 +17,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
+import { helpers } from '../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -40,8 +41,8 @@ export default function AddObservation() {
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
-  const [elevation, setElevation] = React.useState('');
-  const [weather, setWeather] = React.useState('');
+  const [elevation, setElevation] = React.useState(15);
+  const [weather, setWeather] = React.useState(3);
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -61,6 +62,13 @@ export default function AddObservation() {
   const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
+  const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
+  const [errorTextCentralFrequency, setErrorTextCentralFrequency] = React.useState('');
+  const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
+  const [errorTextEffectiveResolution, setErrorTextEffectiveResolution] = React.useState('');
+
+  const [formInvalid, setFormInvalid] = React.useState(true);
+  const [validateToggle, setValidateToggle] = React.useState(false);
 
   React.useEffect(() => {
     setNumOf15mAntennas(
@@ -80,6 +88,15 @@ export default function AddObservation() {
     );
   }, [subarrayConfig]);
 
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, [elevation, weather]);
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
+    setFormInvalid(invalidForm);
+  }, [validateToggle]);
+
   // TODO: implement stricter validations for the fields to ensure successful requests to the Sensitivity Calculator API (type and range of values)
   // some unit conversion will also be useful
 
@@ -89,6 +106,75 @@ export default function AddObservation() {
 
   const isContinuum = () => observationType === 1;
   const isLow = () => observingBand === 0;
+
+  function formValidation() {
+    let count = 0;
+    let emptyField = suppliedValue === '';
+    let isValid = !emptyField;
+    count += isValid ? 0 : 1;
+
+    // supplied value
+    emptyField = suppliedValue === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        suppliedValue,
+        setSuppliedValue,
+        setErrorTextSuppliedValue,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextSuppliedValue('');
+    }
+    // central frequency
+    emptyField = frequency === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setFrequency,
+        setErrorTextCentralFrequency,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextCentralFrequency('');
+    }
+    // continuum bandwidth
+    emptyField = continuumBandwidth === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setContinuumBandwidth,
+        setErrorTextContinuumBandwidth,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextContinuumBandwidth('');
+    }
+    // effective resolution
+    emptyField = effective === '';
+    isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(
+        frequency,
+        setEffective,
+        setErrorTextEffectiveResolution,
+        'NUMBER_ONLY'
+      );
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextEffectiveResolution('');
+    }
+    return count;
+  }
 
   const subArrayField = () => {
     const getSubArrayOptions = () => {
@@ -411,6 +497,7 @@ export default function AddObservation() {
       setValue={setSuppliedValue}
       onFocus={() => helpComponent(t('suppliedValue.help'))}
       required
+      errorText={t(errorTextSuppliedValue)}
     />
   );
 
@@ -438,33 +525,59 @@ export default function AddObservation() {
     </Grid>
   );
 
-  const elevationField = () => (
-    <TextEntry
-      label={t('elevation.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="elevation"
-      value={elevation}
-      setValue={setElevation}
-      onFocus={() => helpComponent(t('elevation.help'))}
-      required
-    />
-  );
+  const elevationField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
+        setElevation(num);
+      }
+    };
 
-  const weatherField = () => (
-    <TextEntry
-      label={t('weather.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="weather"
-      value={weather}
-      setValue={setWeather}
-      onFocus={() => helpComponent(t('weather.help'))}
-      required
-    />
-  );
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            label={t('elevation.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="elevation"
+            value={elevation}
+            setValue={validate}
+            onFocus={() => helpComponent(t('elevation.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const weatherField = () => {
+    const validate = (e: number) => {
+      const num = Number(Math.abs(e).toFixed(0));
+      if (num >= Number(t('weather.range.lower')) && num <= Number(t('weather.range.upper'))) {
+        setWeather(num);
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            label={t('weather.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="weather"
+            value={weather}
+            setValue={validate}
+            onFocus={() => helpComponent(t('weather.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const centralFrequencyField = () => (
     <TextEntry
@@ -478,6 +591,7 @@ export default function AddObservation() {
       suffix={frequencyUnitsField()}
       onFocus={() => helpComponent(t('centralFrequency.help'))}
       required
+      errorText={t(errorTextCentralFrequency)}
     />
   );
 
@@ -522,6 +636,7 @@ export default function AddObservation() {
       setValue={setContinuumBandwidth}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
       required
+      errorText={t(errorTextContinuumBandwidth)}
     />
   );
 
@@ -536,6 +651,7 @@ export default function AddObservation() {
       setValue={setEffective}
       onFocus={() => helpComponent(t('effectiveResolution.help'))}
       required
+      errorText={t(errorTextEffectiveResolution)}
     />
   );
 
@@ -736,7 +852,7 @@ export default function AddObservation() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
+              disabled={disabled() + formInvalid}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"
