@@ -5,29 +5,29 @@ const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
 const MOCK_RESULTS = [
   {
     equatorial: {
-      declination: '22:00:53.000',
-      right_ascension: '05:34:30.900'
+      dec: '22:00:53.000',
+      ra: '05:34:30.900'
     }
   },
   {
     galactic: {
-      latitude: -5.78763,
-      longitude: 184.555
+      lat: -5.78763,
+      lon: 184.555
     }
   }
 ];
 
 const mapping = (
   response:
-    | { equatorial: { declination: string; right_ascension: string }; galactic?: undefined }
-    | { galactic: { latitude: number; longitude: number }; equatorial?: undefined }
+    | { equatorial: { dec: string; ra: string }; galactic?: undefined }
+    | { galactic: { lat: number; lon: number }; equatorial?: undefined }
 ) => {
   if (response.equatorial) {
     return (
-      response.equatorial.declination + ' ' + response.equatorial.right_ascension + ' equatorial'
+      response.equatorial.dec + ' ' + response.equatorial.ra + ' equatorial'
     );
   } else if (response.galactic) {
-    return response.galactic.latitude + ' ' + response.galactic.longitude + ' galactic';
+    return response.galactic.lat + ' ' + response.galactic.lon + ' galactic';
   } else {
     return { error: 'resolve.error.results' };
   }
