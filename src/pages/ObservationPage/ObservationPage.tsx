@@ -131,11 +131,8 @@ export default function ObservationPage() {
       headerName: t('observations.obset_id.id'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observation: number } }) => {
-        if (e.row.observation) {
-          return <Typography>{t(`observations.obset_id`)}</Typography>;
-        }
-        return <Typography>{t(`observations.obset_id.0`)}</Typography>;
+      renderCell: (e: { row: { obset_id: number } }) => {
+        return <Typography>{t(`obs-${e.row.obset_id}`)}</Typography>;
       }
     },
     {
