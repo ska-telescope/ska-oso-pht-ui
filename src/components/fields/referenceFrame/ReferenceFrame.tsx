@@ -41,7 +41,6 @@ export default function ReferenceFrameField({
         labelPosition={labelPosition}
         labelWidth={labelWidth}
         onFocus={onFocus}
-        required
       />
     </Box>
   );

@@ -97,7 +97,10 @@
   },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY HELP",
-    "label": "Central Frequency"
+    "label": "Central Frequency",
+    "range": {
+      "lower": 0
+    }
   },
   "changeProposal": {
     "label": "Change Proposal's type?",
@@ -167,7 +170,11 @@
   },
   "elevation": {
     "help": "ELEVATION HELP",
-    "label": "Elevation"
+    "label": "Elevation",
+    "range": {
+      "lower": 15,
+      "upper": 59.2
+    }
   },
   "email": {
     "label": "Email",
@@ -546,7 +553,11 @@
   },
   "weather": {
     "help": "WEATHER HELP",
-    "label": "Weather"
+    "label": "Weather",
+    "range": {
+      "lower": 3,
+      "upper": 25
+    }
   },
   "weighting": {
     "label": "Weighting",
@@ -631,6 +642,7 @@
     },
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
-    "iconClicked": "An error was encountered, please refresh page to continue"
+    "iconClicked": "An error was encountered, please refresh page to continue",
+    "invalidString": "Invalid input: Only numeric characters are allowed"
   }
 }
