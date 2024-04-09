@@ -125,16 +125,18 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const uid = (Math.random() * 1000000).toFixed(0);
   const columns = [
     {
       field: 'obset_id',
-      headerName: t('observations.id'),
-      flex: 2,
+      headerName: t('observations.obset_id.id'),
+      flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observation: number } }) => (
-        <Typography>{'obs-' + uid + '-' + GENERAL.Cycle}</Typography>
-      )
+      renderCell: (e: { row: { observation: number } }) => {
+        if (e.row.observation) {
+          return <Typography>{t(`observations.obset_id`)}</Typography>;
+        }
+        return <Typography>{t(`observations.obset_id.0`)}</Typography>;
+      }
     },
     {
       field: 'telescope',
