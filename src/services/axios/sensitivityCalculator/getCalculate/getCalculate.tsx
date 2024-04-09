@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  USE_LOCAL_DATA,
+  SKA_SENSITIVITY_CALCULATOR_API_URL
+} from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
