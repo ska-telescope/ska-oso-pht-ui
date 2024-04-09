@@ -99,8 +99,7 @@
     "help": "CENTRAL FREQUENCY HELP",
     "label": "Central Frequency",
     "range": {
-      "lower": 50,
-      "upper": 350
+      "lower": 0
     }
   },
   "changeProposal": {

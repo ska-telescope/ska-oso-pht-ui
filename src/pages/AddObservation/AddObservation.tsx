@@ -43,7 +43,7 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(3);
-  const [frequency, setFrequency] = React.useState(50);
+  const [frequency, setFrequency] = React.useState(0.1);
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
@@ -562,11 +562,8 @@ export default function AddObservation() {
 
   const centralFrequencyField = () => {
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (
-        num >= Number(t('centralFrequency.range.lower')) &&
-        num <= Number(t('centralFrequency.range.upper'))
-      ) {
+      const num = Number(Math.abs(e).toFixed(1));
+      if (num >= Number(t('centralFrequency.range.lower'))) {
         setFrequency(num);
       }
     };
