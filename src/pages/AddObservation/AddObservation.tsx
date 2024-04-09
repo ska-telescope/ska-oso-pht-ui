@@ -783,7 +783,10 @@ export default function AddObservation() {
       if (!elevation || !weather || !frequency || !effective) {
         return true;
       }
-      return isContinuum() && !continuumBandwidth;
+      if (isContinuum() && !continuumBandwidth) {
+        return true;
+      }
+      return formInvalid;
     };
 
     const addObservationToProposal = () => {
@@ -845,7 +848,7 @@ export default function AddObservation() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              disabled={disabled() + formInvalid}
+              disabled={disabled()}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"
