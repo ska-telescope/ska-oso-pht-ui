@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  AXIOS_CONFIG,
   GENERAL,
   OBSERVATION,
   Projects,
@@ -21,7 +22,7 @@ const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
 const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
-  return rec2.id;
+  return rec2 ? rec2.id : null;
 };
 
 const getTeamMembers = (inValue: TeamMemberBackend[]) => {
@@ -113,21 +114,13 @@ export function GetMockProposal(): Proposal {
 }
 
 async function GetProposal(id: string): Promise<Proposal | string> {
-  const apiUrl = SKA_PHT_API_URL;
-  const URL_GET = `/proposals/`;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  };
-
   if (USE_LOCAL_DATA) {
     return GetMockProposal();
   }
 
   try {
-    const result = await axios.get(`${apiUrl}${URL_GET}${id}`, config);
+    const URL_PATH = `/proposals/${id}`;
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

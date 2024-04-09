@@ -12,6 +12,13 @@ export const STATUS_INITIAL = 5;
 
 export const LAST_PAGE = 9;
 
+export const AXIOS_CONFIG = {
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+};
+
 export const NAV = [
   '/proposal/title',
   '/proposal/team',

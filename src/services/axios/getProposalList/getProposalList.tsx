@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MockProposals from './mockProposals';
 import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
 
@@ -31,22 +31,13 @@ export function GetMockProposalList(): Proposals[] {
 }
 
 async function GetProposalList(): Promise<Proposals[] | string> {
-  const apiUrl = SKA_PHT_API_URL;
-  const LIST_QUERY = 'DefaultUser';
-  const URL_LIST = `/proposals/list/${LIST_QUERY}`;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  };
-
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
 
   try {
-    const result = await axios.get(`${apiUrl}${URL_LIST}`, config);
+    const URL_PATH = `/proposals/list/DefaultUser`;
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return e.message;

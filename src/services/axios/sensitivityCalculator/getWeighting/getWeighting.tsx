@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  USE_LOCAL_DATA,
+  SKA_SENSITIVITY_CALCULATOR_API_URL
+} from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
   MockResponseMidWeightingLine
@@ -16,24 +20,18 @@ import sensCalHelpers from '../sensCalHelpers';
 async function GetWeighting(telescope, mode, observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   // Telescope URLS
-  let URL_TELESCOPE;
+  let URL_TELESCOPE: string;
   const URL_MID = `mid/`;
   const URL_LOW = `low/`;
   // Mode URLs
   const URL_ZOOM = `line/`;
   const URL_CONTINUUM = `continuum/`;
-  let URL_MODE;
+  let URL_MODE: string;
   const URL_WEIGHTING = `weighting`;
   // Mocks query strings parameters
   let QUERY_STRING_PARAMETERS: URLSearchParams;
   // Mocks responses
   let MOCK_RESPONSE;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  };
 
   function mapQueryMidWeighting(calculatore_mode: string): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
@@ -112,7 +110,7 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS).toString();
     const result = await axios.get(
       `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`,
-      config
+      AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
