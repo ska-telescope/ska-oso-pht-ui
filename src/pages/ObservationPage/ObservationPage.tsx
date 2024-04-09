@@ -132,7 +132,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { obset_id: number } }) => {
-        return <Typography>{t(`obs-${e.row.obset_id}`)}</Typography>;
+        return <Typography>{'obs-' + t(`${e.row.obset_id}`)}</Typography>;
       }
     },
     {
