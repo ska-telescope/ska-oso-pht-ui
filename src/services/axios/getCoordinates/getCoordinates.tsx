@@ -52,8 +52,11 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
   }
 
   try {
-    const URL_PATH = `/coordinates/${targetName}/${MOCK_UNITS[units]}`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const URL_PATH = `/coordinates/`;
+    const result = await axios.get(
+      `${SKA_PHT_API_URL}${URL_PATH}${targetName}/${MOCK_UNITS[units]}`,
+      AXIOS_CONFIG
+    );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return { error: e.message };
