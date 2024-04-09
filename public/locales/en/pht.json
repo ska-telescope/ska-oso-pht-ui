@@ -631,6 +631,6 @@
     },
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
-    "iconClicked": "Some error was encountered, please refresh page to continue"
+    "iconClicked": "An error was encountered, please refresh page to continue"
   }
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
 const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
 const MOCK_RESULTS = [
@@ -24,25 +24,26 @@ const mapping = (
 ) => {
   if (response.equatorial) {
     return (
-      response.equatorial.declination + ' ' + response.equatorial.right_ascension + ' equatorial'
+      response.equatorial.declination +
+      ' ' +
+      response.equatorial.right_ascension +
+      ' ' +
+      MOCK_UNITS[0].toLowerCase()
     );
   } else if (response.galactic) {
-    return response.galactic.latitude + ' ' + response.galactic.longitude + ' galactic';
+    return (
+      response.galactic.latitude +
+      ' ' +
+      response.galactic.longitude +
+      ' ' +
+      MOCK_UNITS[1].toLowerCase()
+    );
   } else {
     return { error: 'resolve.error.results' };
   }
 };
 
 async function GetCoordinates(targetName: string, skyUnits: number) {
-  const apiUrl = SKA_PHT_API_URL;
-  const URL_COORDINATES = `/coordinates/`;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  };
-
   const units = skyUnits < 0 || skyUnits > MOCK_UNITS.length - 1 ? 0 : skyUnits;
   if (USE_LOCAL_DATA) {
     return targetName?.trim() === 'M1'
@@ -51,10 +52,8 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
   }
 
   try {
-    const result = await axios.get(
-      `${apiUrl}${URL_COORDINATES}${targetName}/${MOCK_UNITS[units]}`,
-      config
-    );
+    const URL_PATH = `/coordinates/${targetName}/${MOCK_UNITS[units]}`;
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return { error: e.message };
