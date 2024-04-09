@@ -35,7 +35,7 @@ export default function AddTarget() {
     helpComponent(t('skyUnits.help'));
   }, []);
 
-  const disabled = () => !!(!name.length || !ra.length || !dec.length || !vel.length);
+  const disabled = () => !!(!name.length || !ra.length || !dec.length);
 
   const formValues = {
     name: {
@@ -184,7 +184,6 @@ export default function AddTarget() {
                 onFocus={() => helpComponent(t('referenceFrame.help'))}
                 setValue={setReferenceFrame}
                 value={referenceFrame}
-                required
               />
             </Grid>
           )}
