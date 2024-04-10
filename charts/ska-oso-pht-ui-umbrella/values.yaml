@@ -12,9 +12,9 @@ global:
 ska-oso-pht-services:
   rest:
     logLevel: debug
-    # oda:
-    #   backendType: rest
-    #   url: ~ # Use the default value in the chart, which is the ODA service address
+    oda:
+      backendType: rest
+      url: ~ # Use the default value in the chart, which is the ODA service address
 
 ska-db-oda-umbrella:
   ska-db-oda:
