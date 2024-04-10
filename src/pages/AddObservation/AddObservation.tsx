@@ -792,8 +792,19 @@ export default function AddObservation() {
         0
       );
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+
+      const generateObsetId = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < 6; i++) {
+          result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+      };
+
       const newObservation = {
         id: highestId + 1,
+        obset_id: generateObsetId(),
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
