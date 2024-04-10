@@ -12,6 +12,13 @@ export const STATUS_INITIAL = 5;
 
 export const LAST_PAGE = 9;
 
+export const AXIOS_CONFIG = {
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+};
+
 export const NAV = [
   '/proposal/title',
   '/proposal/team',
@@ -429,6 +436,11 @@ export const TEXT_ENTRY_PARAMS = {
     ERROR_TEXT: 'specialCharacters.invalid',
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
+  },
+  NUMBER_ONLY: {
+    ERROR_TEXT: 'error.invalidString',
+    // eslint-disable-next-line no-useless-escape
+    PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };
 
