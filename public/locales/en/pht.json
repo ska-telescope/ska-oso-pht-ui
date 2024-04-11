@@ -552,6 +552,9 @@
   "uploadPDF": {
     "label": "Upload PDF"
   },
+  "downloadPDF": {
+    "label": "Download PDF"
+  },
   "velocity": {
     "help": "VELOCITY HELP",
     "units": {

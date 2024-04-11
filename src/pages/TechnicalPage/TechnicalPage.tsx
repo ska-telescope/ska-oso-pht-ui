@@ -2,13 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { Button, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import GetDownloadPDF from '../../services/axios/getDownloadPDF/getDownloadPDF';
 
 const PAGE = 6;
 
@@ -62,6 +63,27 @@ export default function TechnicalPage() {
     }
   };
 
+  const downloadPdf = async theFile => {
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-technical.pdf`);
+
+      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
+
+      const downloadResult = await GetDownloadPDF(signedUrl, theFile);
+
+      console.log("HERE!")
+      if (downloadResult.error) {
+        console.log("HERE!!")
+        throw new Error('Technical PDF unable to be downloaded');
+      }
+    } catch (e) {
+      setFile(null);
+      console.log("HERE!!!")
+    }
+  };
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -108,6 +130,11 @@ export default function TechnicalPage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
+          <Button
+            direction="column"
+            testId="fileDownload"
+            onClick={downloadPdf}
+            label={"download PDF"}/>
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
