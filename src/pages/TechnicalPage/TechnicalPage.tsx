@@ -73,14 +73,14 @@ export default function TechnicalPage() {
 
       const downloadResult = await GetDownloadPDF(signedUrl, theFile);
 
-      console.log("HERE!")
+      console.log('HERE!');
       if (downloadResult.error) {
-        console.log("HERE!!")
+        console.log('HERE!!');
         throw new Error('Technical PDF unable to be downloaded');
       }
     } catch (e) {
       setFile(null);
-      console.log("HERE!!!")
+      console.log('HERE!!!');
     }
   };
 
@@ -134,7 +134,8 @@ export default function TechnicalPage() {
             direction="column"
             testId="fileDownload"
             onClick={downloadPdf}
-            label={"download PDF"}/>
+            label={'download PDF'}
+          />
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
