@@ -83,6 +83,7 @@
   },
   "arrayConfiguration": {
     "label": "Array Configuration",
+    "short": "Array",
     "help": "Array HELP",
     "0": "Not specified",
     "1": "MID",
@@ -112,8 +113,9 @@
     "toolTip": "This will clear the file upload selection"
   },
   "cloneProposal": {
+    "confirm": "Clone this proposal",
     "toolTip": "Clone proposal",
-    "confirm": "Clone this proposal"
+    "suffix": "(CLONE)"
   },
   "continuumBandWidth": {
     "help": "Continuum BANDWIDTH HELP",
@@ -447,9 +449,20 @@
     "label": "Selected"
   },
   "sensitivityCalculatorResults": {
+    "continuumSensitivityWeighted": "Weighted continuum sensitivity",
+    "continuumConfusionNoise": "Continuum confusion noise",
+    "continuumTotalSensitivity": "Total continuum sensitivity",
+    "continuumSynthBeamSize": "Continuum synthesized beam-size",
+    "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
+    "integrationTime": "Integration time",
     "noData": "No data available",
-    "totalSensitivity": "Total Sensitivity",
-    "integrationTime": "Integration Time"
+    "spectralSensitivityWeighted": "Weighted spectral sensitivity",
+    "spectralConfusionNoise": "Spectral confusion noise",
+    "spectralTotalSensitivity": "Total spectral sensitivity",
+    "spectralSynthBeamSize": "Spectral synthesized beam-size",
+    "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
+    "title": "Sensitivity Calculator Results",
+    "totalSensitivity": "total sensitivity"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",

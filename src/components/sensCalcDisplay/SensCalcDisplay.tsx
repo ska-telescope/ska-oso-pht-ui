@@ -5,7 +5,6 @@ import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../u
 import { IconButton } from '@mui/material';
 import ObservationTargetResultsDisplay from '../alerts/observationTargetResultsDisplay/observationTargetResultsDisplay';
 import Observation from '../../utils/types/observation';
-// import calculateSensitivityCalculatorResults from '../../services/axios/sensitivityCalculator/calculateSensitivityCalculatorResults';
 
 const SIZE = 20;
 
@@ -24,6 +23,7 @@ export default function SensCalcDisplay({ selected, observation }: SensCalcDispl
       const response = await getSensitivityCalculatorAPIData(observation);
       // Calculate response for LOW doesn't have a status property: this will cause the error icon to be wrongly displayed for LOW responses
       // TODO: handle response errors differently
+      console.log(response);
       setLvl(response?.calculate?.status ? STATUS_OK : STATUS_ERROR);
       // calculate results
       //const results = calculateSensitivityCalculatorResults(response, observation);

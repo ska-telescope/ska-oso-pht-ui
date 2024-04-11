@@ -2244,10 +2244,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^1.0.16":
-  version "1.0.16"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.16.tgz#1ef6e8aa657ed98ca5b5c24437100f4315b076f6"
-  integrity sha512-atzJ7RwsvXr6iCNiXSBOA8Pj36c74fhX8AbCHz0Sn7a8V6BoyPzeKOcf/6Jlj5RjK0eswvb1hoTlyMFdAS4ANg==
+"@ska-telescope/ska-gui-components@^1.0.17":
+  version "1.0.17"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.17.tgz#fddf8471b9575d0649e284a1990136af4617f864"
+  integrity sha512-+yfe6ax/rBXbcYE9g1x4DExqlAJScaAMnlLO2biTvQB49Hq55sG7A3A6mI+FVq0c401Tp7ZeXFdV2fC62ziS3Q==
   dependencies:
     "@mui/lab" "^5.0.0-alpha.166"
     "@mui/system" "^5.15.11"

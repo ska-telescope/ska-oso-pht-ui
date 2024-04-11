@@ -21,12 +21,14 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
+import Proposal from '../../utils/types/proposal';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const {
+    application,
     clearApp,
     helpComponent,
     updateAppContent1,
@@ -43,10 +45,12 @@ export default function LandingPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   React.useEffect(() => {
     let isMounted = true;
 
-    // Empty previous proposal
     updateAppContent2(null);
 
     const fetchData = async () => {
@@ -61,7 +65,6 @@ export default function LandingPage() {
     };
     fetchData();
     return () => {
-      // Clean up on unmount
       isMounted = false;
     };
   }, []);
@@ -116,7 +119,11 @@ export default function LandingPage() {
 
   const cloneConfirmed = () => {
     setOpenCloneDialog(false);
-    // TODO - In here we need to copy the proposal and take them to the title for processing.
+    setProposal({
+      ...getProposal(),
+      id: null,
+      title: getProposal().title + ' ' + t('cloneProposal.suffix')
+    });
     goToTitlePage();
   };
 
@@ -133,7 +140,7 @@ export default function LandingPage() {
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
-  const canClone = () => false; //TODO: set canClone true after endpoint is implemented
+  const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 

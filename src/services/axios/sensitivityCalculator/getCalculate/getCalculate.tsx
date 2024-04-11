@@ -40,7 +40,7 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
         mode_specific_parameters.resolution = observation.spectral_resolution.toString();
         break;
       case 'zoom':
-        mode_specific_parameters.zoom_frequencies = observation.central_frequency;
+        mode_specific_parameters.zoom_frequencies = observation.central_frequency.toString();
         mode_specific_parameters.zoom_resolutions = observation.effective_resolution.toString();
         break;
       default:
@@ -55,9 +55,9 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       array_configuration: OBSERVATION.array[0].subarray.find(
         obj => obj.value === observation.subarray
       ).label,
-      pwv: observation.weather,
-      el: observation.elevation,
-      frequency: observation.central_frequency,
+      pwv: observation.weather.toString(),
+      el: observation.elevation.toString(),
+      frequency: observation.central_frequency.toString(),
       bandwidth: observation.bandwidth.toString(),
       weighting: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.image_weighting
@@ -111,8 +111,8 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
         .convertIntegrationTimeToSeconds(Number(observation.integration_time), integrationTimeUnits)
         .toString(),
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
-      freq_centre: observation.central_frequency,
-      elevation_limit: observation.elevation,
+      freq_centre: observation.central_frequency.toString(),
+      elevation_limit: observation.elevation.toString(),
       ...mode_specific_parameters
     });
     return params;
