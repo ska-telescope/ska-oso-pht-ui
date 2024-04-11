@@ -29,15 +29,19 @@ export default function ObservationTargetResultsDisplay({
 
   const { t } = useTranslation('pht');
 
-  const displayElement = (eLabel: string, eValue: any) => (
+  const displayElement = (eLabel: string, eValue: any, eId: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item xs={5}>
-        <Typography sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
+        <Typography
+          id={eId + 'Label'}
+          sx={{ align: 'right', fontWeight: 'normal' }}
+          variant="body1"
+        >
           {eLabel}
         </Typography>
       </Grid>
       <Grid item xs={3}>
-        <Typography sx={{ align: 'left', fontWeight: 'bold' }} variant="body1" id="sensitivityId">
+        <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
           {eValue}
         </Typography>
       </Grid>
@@ -65,7 +69,7 @@ export default function ObservationTargetResultsDisplay({
               icon
               level={lvl}
               size={SIZE}
-              text="TREVOR"
+              text="DUMMY TEXT"
             />
           }
           component={Box}
@@ -82,44 +86,54 @@ export default function ObservationTargetResultsDisplay({
           <>
             {displayElement(
               t('sensitivityCalculatorResults.continuumSensitivityWeighted'),
-              '84.47 ujy/beam (6.10)'
+              '84.47 ujy/beam (6.10)',
+              'id1'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.continuumConfusionNoise'),
-              '3.63 mjy/beam'
+              '3.63 mjy/beam',
+              'id2'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.continuumTotalSensitivity'),
-              '3.64 mjy/beam'
+              '3.64 mjy/beam',
+              'id3'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.continuumSynthBeamSize'),
-              '190.9" x 171.3"'
+              '190.9" x 171.3"',
+              'id4'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'),
-              '3.40 K'
+              '3.40 K',
+              'id5'
             )}
             <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
             {displayElement(
               t('sensitivityCalculatorResults.spectralSensitivityWeighted'),
-              '(2.62)'
+              '(2.62)',
+              'id6'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.spectralConfusionNoise'),
-              '6.02 mjy/beam'
+              '6.02 mjy/beam',
+              'id7'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.spectralTotalSensitivity'),
-              '9.45 mjy/beam'
+              '9.45 mjy/beam',
+              'id8'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.spectralSynthBeamSize'),
-              '230.0" x 207.8"'
+              '230.0" x 207.8"',
+              'id9'
             )}
             {displayElement(
               t('sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'),
-              '6.04 K'
+              '6.04 K',
+              'id10'
             )}
           </>
         ) : (
