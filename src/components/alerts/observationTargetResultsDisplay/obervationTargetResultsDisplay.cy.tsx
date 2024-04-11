@@ -54,6 +54,7 @@ const observation = { telescope: 2 };
 describe('<ObservationTargetResultsDisplay />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -74,6 +75,7 @@ describe('<ObservationTargetResultsDisplay />', () => {
 
 describe('Modal with no data', () => {
   beforeEach(() => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -98,6 +100,7 @@ describe('Modal with no data', () => {
 
 describe('Modal with data', () => {
   beforeEach(() => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -119,7 +122,46 @@ describe('Modal with data', () => {
     cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
   });
   it('Alert should display appropriate results', () => {
-    cy.get('[id="sensitivityId"]').should('contain', response.calculate.sensitivity);
-    cy.get('[id="weightingFactorId"]').should('contain', response.weighting.weighting_factor);
+    cy.get('[id="id1Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.continuumSensitivityWeighted'
+    );
+    cy.get('[id="id2Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.continuumConfusionNoise'
+    );
+    cy.get('[id="id3Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.continuumTotalSensitivity'
+    );
+    cy.get('[id="id4Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.continuumSynthBeamSize'
+    );
+    cy.get('[id="id5Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'
+    );
+
+    cy.get('[id="id6Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.spectralSensitivityWeighted'
+    );
+    cy.get('[id="id7Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.spectralConfusionNoise'
+    );
+    cy.get('[id="id8Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.spectralTotalSensitivity'
+    );
+    cy.get('[id="id9Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.spectralSynthBeamSize'
+    );
+    cy.get('[id="id10Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'
+    );
   });
 });

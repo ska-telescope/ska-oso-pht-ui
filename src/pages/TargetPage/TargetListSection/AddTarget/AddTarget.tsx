@@ -137,7 +137,6 @@ export default function AddTarget() {
               setValue={setRAType}
               value={raType}
               valueFocus={() => helpComponent(t('skyUnits.help'))}
-              required
             />
           </Grid>
           <Grid item xs={12}>

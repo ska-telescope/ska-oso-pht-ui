@@ -11,6 +11,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
+import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
@@ -20,6 +21,10 @@ export default function TargetListSection() {
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openDialog, setOpenDialog] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
+
+  const editIconClicked = async () => {
+    alert(t('error.iconClicked'));
+  };
 
   const deleteIconClicked = () => {
     setOpenDialog(true);
@@ -78,7 +83,16 @@ export default function TargetListSection() {
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
+      renderCell: () => (
+        <>
+          <EditIcon
+            onClick={() => editIconClicked()}
+            disabled={true}
+            toolTip="Currently disabled"
+          />
+          <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
+        </>
+      )
     }
   ];
   const extendedColumns = [...columns];

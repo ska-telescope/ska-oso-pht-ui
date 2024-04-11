@@ -1,12 +1,19 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
+import { Card, CardContent, Grid, IconButton, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
+import {
+  DataGrid,
+  InfoCard,
+  InfoCardColorTypes,
+  StatusIcon,
+  TickBox
+} from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import { Proposal } from '../../utils/types/proposal';
-import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -14,6 +21,7 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 
 const PAGE = 5;
+const STATUS_SIZE = 20;
 
 // TODO check zoom label mapping: always displayed as "not specified" in observation table
 export default function ObservationPage() {
@@ -36,6 +44,10 @@ export default function ObservationPage() {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
+  };
+
+  const editIconClicked = async (id: number) => {
+    alert(t('error.iconClicked'));
   };
 
   const deleteIconClicked = () => {
@@ -137,7 +149,7 @@ export default function ObservationPage() {
     },
     {
       field: 'telescope',
-      headerName: t('arrayConfiguration.label'),
+      headerName: t('arrayConfiguration.short'),
       flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number } }) => (
@@ -163,7 +175,7 @@ export default function ObservationPage() {
     {
       field: 'type',
       headerName: t('type.label'),
-      flex: 1,
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
         <Typography>{t(`observationType.${e.row.type}`)}</Typography>
@@ -173,10 +185,20 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('actions.label'),
       sortable: false,
-      flex: 0.5,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => (
-        <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
+        <>
+          <EditIcon
+            onClick={() => editIconClicked(e.row.id)}
+            disabled={true}
+            toolTip="Currently disabled"
+          />
+          <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
+          <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }}>
+            <StatusIcon ariaTitle="" testId="statusId" icon level={5} size={STATUS_SIZE} />
+          </IconButton>
+        </>
       )
     }
   ];
@@ -190,13 +212,12 @@ export default function ObservationPage() {
   const columnsTargetsSelected = [
     { field: 'name', headerName: t('name.label'), width: 80 },
     { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
-    { field: 'dec', headerName: t('declination.label'), width: 100 },
+    { field: 'dec', headerName: t('declination.label'), width: 150 },
     {
       field: 'id',
       headerName: t('selected.label'),
       sortable: false,
-      flex: 1,
-      width: 50,
+      width: 100,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -249,7 +270,7 @@ export default function ObservationPage() {
                   {t('sensitivityCalculatorResults.totalSensitivity')}
                 </Grid>
                 <Grid item xs={6}>
-                  total sensitivity result
+                  TODO
                 </Grid>
               </Grid>
               <Grid container direction="row" xs={12}>
@@ -257,7 +278,7 @@ export default function ObservationPage() {
                   {t('sensitivityCalculatorResults.integrationTime')}
                 </Grid>
                 <Grid item xs={6}>
-                  integration time result
+                  TODO
                 </Grid>
               </Grid>
             </Grid>
