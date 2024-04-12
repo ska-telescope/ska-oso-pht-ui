@@ -4,7 +4,6 @@ import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
 } from './../../../utils/types/sensitivityCalculatorAPIResponse';
-import { TEL } from '../../../utils/constants';
 import Observation from 'utils/types/observation';
 
 let confusionNoise: number;
@@ -17,8 +16,6 @@ export default function calculateSensitivityCalculatorResults(
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
   observation: Observation
 ): SensitivityCalculatorResults {
-  telescope = TEL[observation.telescope];
-  // TODO check why everything is called twice
   confusionNoise = getConfusionNoise(response);
   weightedSensitivity = getWeightedSensitivity(response);
   totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);

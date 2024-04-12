@@ -4,13 +4,17 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import theme from '../../../services/theme/theme';
-import ObservationTargetResultsDisplay from './observationTargetResultsDisplay';
+import theme from '../../../../services/theme/theme';
+import SensCalcDisplaySingle from './SensCalcModalSingle';
+import {
+  SENSCALC_EMPTY,
+  SENSCALC_MOCKED
+} from '../../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-const emptyResponse = null;
 // LOW API response
+/*
 const response = {
   calculate: {
     sensitivity: 5.4349377028499,
@@ -50,6 +54,7 @@ const response = {
 const lvlError = 1;
 const lvlOk = 0;
 const observation = { telescope: 2 };
+*/
 
 describe('<ObservationTargetResultsDisplay />', () => {
   for (const theTheme of THEME) {
@@ -59,12 +64,10 @@ describe('<ObservationTargetResultsDisplay />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <ObservationTargetResultsDisplay
+            <SensCalcDisplaySingle
               open
               onClose={cy.stub().as('handleCancel')}
-              data={emptyResponse}
-              lvl={lvlError}
-              observation={observation}
+              data={SENSCALC_EMPTY}
             />
           </ThemeProvider>
         </StoreProvider>
@@ -79,13 +82,7 @@ describe('Modal with no data', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <ObservationTargetResultsDisplay
-            open
-            onClose={cy.stub().as('handleClose')}
-            data={emptyResponse}
-            lvl={lvlError}
-            observation={observation}
-          />
+          <SensCalcDisplaySingle open onClose={cy.stub().as('handleClose')} data={SENSCALC_EMPTY} />
         </Router>
       </StoreProvider>
     );
@@ -104,12 +101,10 @@ describe('Modal with data', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <ObservationTargetResultsDisplay
+          <SensCalcDisplaySingle
             open
             onClose={cy.stub().as('handleClose')}
-            data={response}
-            lvl={lvlOk}
-            observation={observation}
+            data={SENSCALC_MOCKED}
           />
         </Router>
       </StoreProvider>
@@ -163,5 +158,11 @@ describe('Modal with data', () => {
       'contain',
       'sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'
     );
+    cy.get('[id="id11Label"]').should('contain', 'sensitivityCalculatorResults.pwhmOfrmsf');
+    cy.get('[id="id12Label"]').should(
+      'contain',
+      'sensitivityCalculatorResults.maxFaradayDepthExtent'
+    );
+    cy.get('[id="id113Label"]').should('contain', 'sensitivityCalculatorResults.maxFaradayDepth');
   });
 });

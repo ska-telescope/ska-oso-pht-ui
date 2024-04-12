@@ -1,27 +1,22 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, Grid, IconButton, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  DataGrid,
-  InfoCard,
-  InfoCardColorTypes,
-  StatusIcon,
-  TickBox
-} from '@ska-telescope/ska-gui-components';
+import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
 import { Proposal } from '../../utils/types/proposal';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import SensCalcDisplay from '../../components/sensCalcDisplay/SensCalcDisplay';
+import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
+import SensCalcDisplayMultiple from '../../components/sensCalcDisplay/multiple/SensCalcDisplayMultiple';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
+import Target from '../../utils/types/target';
 
 const PAGE = 5;
-const STATUS_SIZE = 20;
 
 // TODO check zoom label mapping: always displayed as "not specified" in observation table
 export default function ObservationPage() {
@@ -182,12 +177,22 @@ export default function ObservationPage() {
       )
     },
     {
+      field: 'weather',
+      headerName: '',
+      sortable: false,
+      width: 50,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: Observation }) => {
+        return <SensCalcDisplayMultiple observation={e.row} />;
+      }
+    },
+    {
       field: 'id',
       headerName: t('actions.label'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => (
+      renderCell: (e: { row: Observation }) => (
         <>
           <EditIcon
             onClick={() => editIconClicked(e.row.id)}
@@ -195,9 +200,6 @@ export default function ObservationPage() {
             toolTip="Currently disabled"
           />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
-          <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }}>
-            <StatusIcon ariaTitle="" testId="statusId" icon level={5} size={STATUS_SIZE} />
-          </IconButton>
         </>
       )
     }
@@ -224,12 +226,16 @@ export default function ObservationPage() {
 
         if (currentObservation > 0) {
           return (
-            <TickBox
-              label=""
-              testId="linkedTickBox"
-              checked={isSelected}
-              onChange={() => targetSelectedToggle(e.row.id)}
-            />
+            <Grid container direction="row" alignContent="centre" alignItems="space-around">
+              <Grid item>
+                <TickBox
+                  label=""
+                  testId="linkedTickBox"
+                  checked={isSelected}
+                  onChange={() => targetSelectedToggle(e.row.id)}
+                />
+              </Grid>
+            </Grid>
           );
         }
         return '';
@@ -241,14 +247,14 @@ export default function ObservationPage() {
       sortable: false,
       width: 50,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
+      renderCell: (e: { row: Target }) => {
         const isSelected = isTargetSelected(e.row.id);
 
         if (currentObservation > 0) {
           const obs: Observation = getProposal().observations.find(
             p => p.id === currentObservation
           );
-          return <SensCalcDisplay observation={obs} selected={isSelected} />;
+          return <SensCalcDisplaySingle observation={obs} selected={isSelected} target={e.row} />;
         }
         return '';
       }
@@ -262,10 +268,10 @@ export default function ObservationPage() {
       width: 200,
       renderCell: (e: { row: { id: number } }) => {
         if (currentObservation > 0) {
-          // TODO move content of sens cal results cell into SensCalcDisplay component
+          // TODO move content of sens cal results cell into SensCalcDisplaySingle component
           return (
             <Grid container direction="column">
-              <Grid container direction="row" xs={12}>
+              <Grid container direction="row">
                 <Grid item xs={6}>
                   {t('sensitivityCalculatorResults.totalSensitivity')}
                 </Grid>
@@ -273,7 +279,7 @@ export default function ObservationPage() {
                   TODO
                 </Grid>
               </Grid>
-              <Grid container direction="row" xs={12}>
+              <Grid container direction="row">
                 <Grid item xs={6}>
                   {t('sensitivityCalculatorResults.integrationTime')}
                 </Grid>
