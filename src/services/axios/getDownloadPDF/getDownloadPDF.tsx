@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA } from '../../../utils/constants';
+import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function GetDownloadPDF(signedUrl, selectedFile) {
   const DOWNLOAD_URL_DUMMY = 'https://httpbin.org/get';
@@ -12,12 +12,12 @@ async function GetDownloadPDF(signedUrl, selectedFile) {
   }
 
   try {
-    let formData = new FormData();
-    formData.append('file', selectedFile);
     console.log('Pre get request..');
-    const result = await axios.get(`${signedUrl}`);
-    console.log('Post get request..');
+    const URL_PATH = `/upload/signedurl/${selectedFile}`;
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
 
+    console.log('Result..' + result.data);
+    console.log('Post get request..');
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
