@@ -76,8 +76,7 @@ export default function TechnicalPage() {
       if (downloadResult.error) {
         throw new Error('Technical PDF unable to be downloaded');
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   };
 
   React.useEffect(() => {
