@@ -67,11 +67,8 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-technical.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
-
-      const downloadResult = await GetDownloadPDF(signedUrl, `${prsl_id}-technical.pdf`);
+      const downloadResult = await GetDownloadPDF(`${prsl_id}-technical.pdf`);
       console.log('HERE!');
       if (downloadResult.error) {
         throw new Error('Technical PDF unable to be downloaded');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL } from '../../../utils/constants';
 
-async function GetDownloadPDF(signedUrl, selectedFile) {
+async function GetDownloadPDF(selectedFile) {
   const URL_PATH = `/download/signedurl/${selectedFile}`;
 
   axios
