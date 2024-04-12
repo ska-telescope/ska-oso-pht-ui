@@ -27,7 +27,7 @@ export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcD
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item xs={6}>
         <Typography
-          id={eId + 'Label'}
+          id={eId}
           sx={{ align: 'right', fontWeight: 'normal' }}
           variant="body1"
         >

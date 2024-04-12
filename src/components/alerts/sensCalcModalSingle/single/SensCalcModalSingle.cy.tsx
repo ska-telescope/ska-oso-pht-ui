@@ -90,8 +90,8 @@ describe('Modal with no data', () => {
   it('Alert should be displayed when no data', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('be.visible');
   });
-  it('Error icon should be displayed when no data', () => {
-    cy.get('[aria-label="Status Indicator 1"]').should('be.visible');
+  it('Empty icon should be displayed when no data', () => {
+    cy.get('[aria-label="Status Indicator 5"]').should('be.visible');
   });
 });
 
@@ -117,52 +117,52 @@ describe('Modal with data', () => {
     cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
   });
   it('Alert should display appropriate results', () => {
-    cy.get('[id="id1Label"]').should(
+    cy.get('[id="continuumSensitivityWeighted"]').should(
       'contain',
       'sensitivityCalculatorResults.continuumSensitivityWeighted'
     );
-    cy.get('[id="id2Label"]').should(
+    cy.get('[id="continuumConfusionNoise"]').should(
       'contain',
       'sensitivityCalculatorResults.continuumConfusionNoise'
     );
-    cy.get('[id="id3Label"]').should(
+    cy.get('[id="continuumTotalSensitivity"]').should(
       'contain',
       'sensitivityCalculatorResults.continuumTotalSensitivity'
     );
-    cy.get('[id="id4Label"]').should(
+    cy.get('[id="continuumSynthBeamSize"]').should(
       'contain',
       'sensitivityCalculatorResults.continuumSynthBeamSize'
     );
-    cy.get('[id="id5Label"]').should(
+    cy.get('[id="continuumSurfaceBrightnessSensitivity"]').should(
       'contain',
       'sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'
     );
 
-    cy.get('[id="id6Label"]').should(
+    cy.get('[id="spectralSensitivityWeighted"]').should(
       'contain',
       'sensitivityCalculatorResults.spectralSensitivityWeighted'
     );
-    cy.get('[id="id7Label"]').should(
+    cy.get('[id="spectralConfusionNoise"]').should(
       'contain',
       'sensitivityCalculatorResults.spectralConfusionNoise'
     );
-    cy.get('[id="id8Label"]').should(
+    cy.get('[id="spectralTotalSensitivity"]').should(
       'contain',
       'sensitivityCalculatorResults.spectralTotalSensitivity'
     );
-    cy.get('[id="id9Label"]').should(
+    cy.get('[id="spectralSynthBeamSize"]').should(
       'contain',
       'sensitivityCalculatorResults.spectralSynthBeamSize'
     );
-    cy.get('[id="id10Label"]').should(
+    cy.get('[id="spectralSurfaceBrightnessSensitivity"]').should(
       'contain',
       'sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'
     );
-    cy.get('[id="id11Label"]').should('contain', 'sensitivityCalculatorResults.pwhmOfrmsf');
-    cy.get('[id="id12Label"]').should(
+    cy.get('[id="pwhmOfrmsf"]').should('contain', 'sensitivityCalculatorResults.pwhmOfrmsf');
+    cy.get('[id="maxFaradayDepthExtent"]').should(
       'contain',
       'sensitivityCalculatorResults.maxFaradayDepthExtent'
     );
-    cy.get('[id="id113Label"]').should('contain', 'sensitivityCalculatorResults.maxFaradayDepth');
+    cy.get('[id="maxFaradayDepth"]').should('contain', 'sensitivityCalculatorResults.maxFaradayDepth');
   });
 });
