@@ -13,7 +13,7 @@ async function GetDownloadPDF(signedUrl, selectedFile) {
 
   try {
     console.log('Pre get request..');
-    const URL_PATH = `/upload/signedurl/${selectedFile}`;
+    const URL_PATH = `/download/signedurl/${selectedFile}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
 
     console.log('Result..' + result.data);
