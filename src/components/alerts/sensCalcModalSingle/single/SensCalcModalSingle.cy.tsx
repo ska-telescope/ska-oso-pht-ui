@@ -163,6 +163,9 @@ describe('Modal with data', () => {
       'contain',
       'sensitivityCalculatorResults.maxFaradayDepthExtent'
     );
-    cy.get('[id="maxFaradayDepth"]').should('contain', 'sensitivityCalculatorResults.maxFaradayDepth');
+    cy.get('[id="maxFaradayDepth"]').should(
+      'contain',
+      'sensitivityCalculatorResults.maxFaradayDepth'
+    );
   });
 });

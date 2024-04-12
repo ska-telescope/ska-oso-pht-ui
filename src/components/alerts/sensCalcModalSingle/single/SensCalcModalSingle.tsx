@@ -26,11 +26,7 @@ export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcD
   const displayElement = (eLabel: string, eValue: any, eId: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item xs={6}>
-        <Typography
-          id={eId}
-          sx={{ align: 'right', fontWeight: 'normal' }}
-          variant="body1"
-        >
+        <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
           {eLabel}
         </Typography>
       </Grid>
