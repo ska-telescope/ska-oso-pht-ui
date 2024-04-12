@@ -276,8 +276,11 @@
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {
-      "1": "Continuum Image",
-      "2": "Spectral Line Image"
+      "1": "Raw Visibility Data",
+      "2": "Calibrated Visibilities",
+      "3": "Image Products 1: Image Cubes",
+      "4": "Image Products 2: UV Grids",
+      "5": "LSM Catalogue"
     }
   },
   "observationDetails": {
