@@ -63,7 +63,7 @@ export default function TechnicalPage() {
     }
   };
 
-  const downloadPdf = async theFile => {
+  const downloadPdf = async () => {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
