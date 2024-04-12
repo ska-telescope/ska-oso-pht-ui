@@ -54,17 +54,18 @@ const getSubCategory = () => {
 
 const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
-  for (let i = 0; i < inValue.length - 1; i++) {
+  for (let i = 0; i < inValue.length; i++) {
+    const e = inValue[i];
     results.push({
-      dec: inValue[i].declination.toString(),
-      decUnits: inValue[i].declination_unit,
+      dec: e.declination?.toString(),
+      decUnits: e.declination_unit,
       id: i + 1,
-      name: inValue[i].name,
-      ra: inValue[i].right_ascension.toString(),
-      raUnits: inValue[i].right_ascension_unit,
+      name: e.name,
+      ra: e.right_ascension?.toString(),
+      raUnits: e.right_ascension_unit,
       referenceFrame: '',
-      vel: inValue[i].velocity.toString(),
-      velUnits: inValue[i].velocity_unit
+      vel: e.velocity?.toString(),
+      velUnits: e.velocity_unit
     });
   }
   return results;

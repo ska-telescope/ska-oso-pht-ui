@@ -174,6 +174,7 @@
     "help": "ELEVATION HELP",
     "label": "Elevation",
     "range": {
+      "error": "Acceptable range is 15 - 59.2 inclusive",
       "lower": 15,
       "upper": 59.2
     }
@@ -268,9 +269,8 @@
     "label": "Observation Type",
     "help": "OBSERVATION TYPE HELP",
     "short": "Type",
-    "0": "Not specified",
-    "1": "Continuum",
-    "2": "Zoom"
+    "0": "Zoom",
+    "1": "Continuum"
   },
   "observatoryDataProductConfig": {
     "label": "Observatory Data Product",
@@ -458,7 +458,10 @@
     "continuumSynthBeamSize": "Continuum synthesized beam-size",
     "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
     "integrationTime": "Integration time",
+    "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
+    "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "pwhmOfrmsf": "FWHM of the RMSF",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",
     "spectralTotalSensitivity": "Total spectral sensitivity",
