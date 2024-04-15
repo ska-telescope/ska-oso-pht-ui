@@ -27,8 +27,6 @@ export default function TechnicalPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
 
-
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -77,7 +75,7 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-technical.pdf`
+      const selectedFile = `${prsl_id}-technical.pdf`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
@@ -87,7 +85,6 @@ export default function TechnicalPage() {
       if (downloadResult.error) {
         throw new Error('Technical PDF Not Downloaded');
       }
-
     } catch (e) {
       //TODO: error handling
     }
