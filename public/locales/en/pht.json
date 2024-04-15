@@ -66,6 +66,10 @@
   "actions": {
     "label": "Actions"
   },
+  "addDataProductObservations": {
+    "label": "Observations",
+    "help": "OBSERVATIONS HELP"
+  },
   "addObservation": {
     "minDetailDisplayRows": "5"
   },

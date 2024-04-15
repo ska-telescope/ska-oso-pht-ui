@@ -31,6 +31,7 @@ export default function AddDataProduct() {
 
   const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
   const [pipeline, setPipeline] = React.useState();
+  const [observations, setObservations] = React.useState();
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
@@ -90,6 +91,27 @@ export default function AddDataProduct() {
     );
   };
 
+  const observationField = () => {
+    const getOptions = () => {
+      return getProposal().observations.map(e => ({
+        label: e.obset_id,
+        value: e.obset_id
+      }));
+    };
+    return (
+      <DropDown
+        options={getOptions()}
+        testId="observations"
+        value={observations}
+        setValue={setObservations}
+        label={t('addDataProductObservations.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        onFocus={() => helpComponent(t('addDataProductObservations.help'))}
+      />
+    );
+  };
+
   const imageSizeField = () => (
     <TextEntry
       label={t('imageSize.label')}
@@ -141,11 +163,15 @@ export default function AddDataProduct() {
       const newDataProduct = {
         id: highestId + 1,
         observatoryDataProduct,
+        observations,
         pipeline,
         imageSize,
         pixelSize,
         weighting
       };
+
+      console.log('addDataProduct newDataProduct', newDataProduct);
+
       setProposal({
         ...getProposal(),
         dataProducts: [...getProposal().dataProducts, newDataProduct]
@@ -206,6 +232,7 @@ export default function AddDataProduct() {
           <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
             <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{pipelineField()}</Grid>
+            <Grid item>{observationField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>

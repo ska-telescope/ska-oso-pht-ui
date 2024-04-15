@@ -61,6 +61,15 @@ export default function SdpDataPage() {
       }
     },
     {
+      field: 'observations',
+      headerName: 'OBSERVATIONS',
+      flex: 1,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { observations: string } }) => {
+        return <Typography>{e.row.observations}</Typography>;
+      }
+    },
+    {
       field: 'pipeline',
       headerName: 'PIPELINE',
       flex: 1,
