@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
+import {
+  MODE,
+  OBSERVATION,
+  USE_LOCAL_DATA,
+  SKA_SENSITIVITY_CALCULATOR_API_URL,
+  AXIOS_CONFIG
+} from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
   MockResponseMidWeightingLine
@@ -9,33 +15,28 @@ import {
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
 import Observation from 'utils/types/observation';
-import { OBSERVATION } from '../../../../utils/constants';
 import sensCalHelpers from '../sensCalHelpers';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function GetWeighting(telescope, mode, observation: Observation) {
+const TELESCOPE_LOW_NUM = 1;
+const URL_WEIGHTING = `weighting`;
+
+async function GetWeighting(observation: Observation, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
-  // Telescope URLS
-  let URL_TELESCOPE;
-  const URL_MID = `mid/`;
-  const URL_LOW = `low/`;
-  // Mode URLs
-  const URL_ZOOM = `line/`;
-  const URL_CONTINUUM = `continuum/`;
-  let URL_MODE;
-  const URL_WEIGHTING = `weighting`;
-  // Mocks query strings parameters
-  let QUERY_STRING_PARAMETERS: URLSearchParams;
-  // Mocks responses
-  let MOCK_RESPONSE;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+
+  const getTelescope = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
+
+  const getMode = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return MODE[inMode].toLowerCase() + '/';
     }
+    return '';
   };
 
-  function mapQueryMidWeighting(calculatore_mode: string): URLSearchParams {
+  /*********************************************************** MID *********************************************************/
+
+  function mapQueryMidWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const params = new URLSearchParams({
       frequency: observation.central_frequency?.toString(),
@@ -45,11 +46,13 @@ async function GetWeighting(telescope, mode, observation: Observation) {
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
-      calculator_mode: calculatore_mode,
+      calculator_mode: MODE[inMode],
       taper: observation.tapering?.toString()
     });
     return params;
   }
+
+  /*********************************************************** LOW *********************************************************/
 
   function mapQueryLowWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
@@ -65,55 +68,27 @@ async function GetWeighting(telescope, mode, observation: Observation) {
     return params;
   }
 
-  switch (telescope) {
-    case 'Mid':
-      URL_TELESCOPE = URL_MID;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('continuum');
-          MOCK_RESPONSE = MockResponseMidWeightingContinuum;
-          break;
-        case 'Zoom':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidWeighting('line');
-          MOCK_RESPONSE = MockResponseMidWeightingLine;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    case 'Low':
-      URL_TELESCOPE = URL_LOW;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = URL_CONTINUUM;
-          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
-          MOCK_RESPONSE = MockResponseLowWeightingContinuum;
-          break;
-        case 'Zoom':
-          URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = mapQueryLowWeighting();
-          MOCK_RESPONSE = MockResponseLowWeightingLine;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    default:
-    // 'Invalid telescope' // TODO return error properly for user
-  }
+  /*************************************************************************************************************************/
 
-  if (true || USE_LOCAL_DATA) {
-    // TODO - TREVOR
-    return MOCK_RESPONSE;
+  const getQueryParams = () => {
+    return getTelescope() === TELESCOPE_LOW.code ? mapQueryLowWeighting() : mapQueryMidWeighting();
+  };
+
+  const getMockData = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return observation.type ? MockResponseLowWeightingContinuum : MockResponseLowWeightingLine;
+    }
+    return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
+  };
+
+  if (USE_LOCAL_DATA) {
+    return getMockData();
   }
 
   try {
-    const queryString = new URLSearchParams(QUERY_STRING_PARAMETERS)?.toString();
     const result = await axios.get(
-      `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_WEIGHTING}?${queryString}`,
-      config
+      `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
+      AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {

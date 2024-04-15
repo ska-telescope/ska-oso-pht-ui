@@ -4,14 +4,13 @@ import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import {
-  TEL,
-  MODE,
   TYPE_ZOOM,
   STATUS_OK,
   STATUS_INITIAL,
   STATUS_PARTIAL,
   USE_LOCAL_DATA,
-  STATUS_ERROR
+  STATUS_ERROR,
+  TYPE_CONTINUUM
 } from '../../../utils/constants';
 
 export type SensCalcResult = {
@@ -120,22 +119,10 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
   */
 
-  const calculate = await GetCalculate(
-    TEL[observation.telescope],
-    MODE[observation.type],
-    observation
-  );
-
-  const weighting = await GetWeighting(
-    TEL[observation.telescope],
-    MODE[observation.type],
-    observation
-  );
-
-  let weightingLine;
-  if (observation.type !== TYPE_ZOOM) {
-    weightingLine = await GetWeighting(TEL[observation.telescope], MODE[1], observation);
-  } // 2nd weighting call with Zoom - Continuum Mode only
+  const calculate = await GetCalculate(observation);
+  const weighting = await GetWeighting(observation, observation.type);
+  const weightingLine =
+    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;
 
   const response = {
     calculate,

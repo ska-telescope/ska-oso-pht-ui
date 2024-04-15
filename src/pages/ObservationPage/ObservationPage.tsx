@@ -160,7 +160,7 @@ export default function ObservationPage() {
         if (e.row.telescope) {
           return (
             <Typography>
-              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
+              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray.value}`)}
             </Typography>
           );
         }
