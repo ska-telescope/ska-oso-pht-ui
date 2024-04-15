@@ -4,11 +4,14 @@ import CancelButton from '../../../button/cancel/CancelButton';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import ObservationPage from 'pages/ObservationPage/ObservationPage';
+import Observation from '../../../../utils/types/observation';
 
 interface SensCalcDisplayMultipleProps {
   open: boolean;
   onClose: Function;
   data: any;
+  observation: Observation
 }
 
 const SIZE = 30;
@@ -16,7 +19,8 @@ const SIZE = 30;
 export default function SensCalcDisplayMultiple({
   open,
   onClose,
-  data
+  data,
+  observation
 }: SensCalcDisplayMultipleProps) {
   const handleClose = () => {
     onClose();
@@ -25,6 +29,11 @@ export default function SensCalcDisplayMultiple({
   const { t } = useTranslation('pht');
 
   const columns = [
+    {
+      field: 'title',
+      headerName: t('sensitivityCalculatorResults.targetName'),
+      flex: 3
+    },
     {
       field: 'field1',
       headerName: t('sensitivityCalculatorResults.continuumSensitivityWeighted'),
@@ -125,7 +134,7 @@ export default function SensCalcDisplayMultiple({
             />
           }
           component={Box}
-          title={t('sensitivityCalculatorResults.title')}
+          title={t('sensitivityCalculatorResults.title') + " (" + observation.obset_id + ")"}
           titleTypographyProps={{
             align: 'center',
             fontWeight: 'bold',

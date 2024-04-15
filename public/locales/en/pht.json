@@ -260,7 +260,7 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "obset_id",
+    "id": "Id",
     "obset_id": {
       "id": "obset_id"
     }
@@ -469,6 +469,7 @@
     "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
+    "targetName": "Target name",
     "totalSensitivity": "total sensitivity"
   },
   "specialCharacters": {

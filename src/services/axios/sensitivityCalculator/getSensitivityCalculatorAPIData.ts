@@ -14,6 +14,7 @@ import {
 } from '../../../utils/constants';
 
 export type SensCalcResult = {
+  title?: string;
   status: number;
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
@@ -25,6 +26,7 @@ export const SENSCALC_EMPTY: SensCalcResult = {
 };
 
 export const SENSCALC_MOCKED: SensCalcResult = {
+  title: 'TITLE FIELD',
   status: STATUS_OK,
   section1: [
     { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
@@ -50,7 +52,7 @@ const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
 
-function mapping(inRec: any) {
+function mapping(inRec: any, title: string) {
   //
   // TODO : Current values are the same as the MOCKED results, but the value and units fields need to be mapped as required
   //
@@ -60,6 +62,7 @@ function mapping(inRec: any) {
   // console.log("mapping", inRec);
   //
   return {
+    title: title,
     status: STATUS_OK,
     section1: [
       { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
@@ -89,7 +92,7 @@ function getSensCalc(observation: Observation, target: Target): SensCalcResult {
   let results = SENSCALC_LOADING;
   try {
     const output = fetchSensCalc(observation, target);
-    return mapping(output);
+    return mapping(output, target.name);
   } catch (e) {
     results.status = STATUS_ERROR;
     return results;

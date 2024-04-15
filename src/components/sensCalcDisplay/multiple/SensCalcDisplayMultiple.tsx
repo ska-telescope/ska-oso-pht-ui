@@ -41,9 +41,11 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
   React.useEffect(() => {
     const arr = [];
     targets?.map(rec => {
-      const values = getSensCalc(observation, getTarget(rec));
+      const target: Target = getTarget(rec.targetId);
+      const values = getSensCalc(observation, target);
       arr.push({
         id: rec.targetId,
+        title: target?.name,
         status: values.status,
         field1: values.section1?.length ? values.section1[0].value : null,
         field2: values.section1?.length ? values.section1[1].value : null,
@@ -76,6 +78,7 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         data={results}
+        observation={observation}
       />
     </>
   );
