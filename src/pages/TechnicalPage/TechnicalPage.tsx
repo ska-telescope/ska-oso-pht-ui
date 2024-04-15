@@ -11,15 +11,8 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetDownloadPDF from '../../services/axios/getDownloadPDF/getDownloadPDF';
-import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer';
 
 const PAGE = 6;
-
-// const MyDoc = () => (
-//   <Document>
-//     <Page>// My document data</Page>
-//   </Document>
-// );
 
 export default function TechnicalPage() {
   const { t } = useTranslation('pht');
