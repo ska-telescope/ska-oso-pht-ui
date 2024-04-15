@@ -9,11 +9,11 @@ const sensCalHelpers = {
      * @returns {string} a string such as 'LOW_AA4_all'
      */
     getLowSubarrayType(_subArray: string, telescope: string): string {
-      let subArray = _subArray.replace('*', '').replace('(core only)', ''); // remove * // remove (core only)
-      subArray = subArray.replace(/(\d+)\.(\d+)/g, '$1$2'); // remove dot following a number
-      const star = _subArray.includes('*') ? 'star' : ''; // add star for *
-      const type = _subArray.includes('core') ? 'core_only' : 'all';
-      return `${telescope}_${subArray}${star}_${type}`.replace(' ', '');
+      let subArray = _subArray?.replace('*', '')?.replace('(core only)', ''); // remove * // remove (core only)
+      subArray = subArray?.replace(/(\d+)\.(\d+)/g, '$1$2'); // remove dot following a number
+      const star = _subArray?.includes('*') ? 'star' : ''; // add star for *
+      const type = _subArray?.includes('core') ? 'core_only' : 'all';
+      return `${telescope}_${subArray}${star}_${type}`?.replace(' ', '');
     },
     /**
      * Converts the sensitivity to a sensible unit,
@@ -42,6 +42,9 @@ const sensCalHelpers = {
     },
     convertIntegrationTimeToSeconds(integrationTime: number, unit: string): number {
       let seconds = 0;
+      if (!integrationTime) {
+        return seconds;
+      }
       switch (unit) {
         case 'd':
           seconds = integrationTime * 24 * 3600;
@@ -71,7 +74,7 @@ const sensCalHelpers = {
     },
     getIntegrationTimeUnitsLabel(units: number): string {
       const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
-      return unitsList.find(u => u.value === units).label;
+      return unitsList.find(u => u.value === units)?.label;
     }
   },
   calculate: {

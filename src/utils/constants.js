@@ -10,6 +10,9 @@ export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+
 export const LAST_PAGE = 9;
 
 export const AXIOS_CONFIG = {
@@ -237,8 +240,8 @@ export const OBSERVATION = {
     }
   ],
   ObservationType: [
-    { label: 'Zoom', value: 0 },
-    { label: 'Continuum', value: 1 }
+    { label: 'Continuum', value: TYPE_CONTINUUM },
+    { label: 'Zoom', value: TYPE_ZOOM }
   ],
   ImageWeighting: [
     { label: 'Natural', value: 0 },

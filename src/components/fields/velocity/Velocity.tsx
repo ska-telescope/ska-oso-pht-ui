@@ -12,7 +12,7 @@ interface VelocityFieldProps {
   valueFocus?: Function;
   valueType: number;
   valueTypeFocus?: Function;
-  valueUnit: number;
+  valueUnit: string;
   valueUnitFocus?: Function;
 }
 

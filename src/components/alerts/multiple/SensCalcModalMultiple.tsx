@@ -1,28 +1,26 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@mui/material';
-import CancelButton from '../../button/cancel/CancelButton';
+import CancelButton from '../../../button/cancel/CancelButton';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import { SensCalcResult } from '../../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import { STATUS_INITIAL } from '../../../../utils/constants';
 
-interface ObservationTargetResultsDisplayProps {
+interface SensCalcDisplayMultipleProps {
   open: boolean;
   onClose: Function;
-  data: any;
-  lvl: number;
-  observation: any;
+  data: SensCalcResult;
 }
 
 const SIZE = 30;
 const SPACER_HEIGHT = 30;
 
-export default function ObservationTargetResultsDisplay({
+export default function SensCalcDisplayMultiple({
   open,
   onClose,
-  data,
-  lvl,
-  observation
-}: ObservationTargetResultsDisplayProps) {
+  data
+}: SensCalcDisplayMultipleProps) {
   const handleClose = () => {
     onClose();
   };
@@ -31,7 +29,7 @@ export default function ObservationTargetResultsDisplay({
 
   const displayElement = (eLabel: string, eValue: any, eId: string) => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid item xs={5}>
+      <Grid item xs={6}>
         <Typography
           id={eId + 'Label'}
           sx={{ align: 'right', fontWeight: 'normal' }}
@@ -40,7 +38,7 @@ export default function ObservationTargetResultsDisplay({
           {eLabel}
         </Typography>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={6}>
         <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
           {eValue}
         </Typography>
@@ -67,9 +65,9 @@ export default function ObservationTargetResultsDisplay({
               ariaDescription=""
               testId="statusId"
               icon
-              level={lvl}
+              level={data.status}
               size={SIZE}
-              text="DUMMY TEXT"
+              text=""
             />
           }
           component={Box}
@@ -82,58 +80,18 @@ export default function ObservationTargetResultsDisplay({
         />
       </Card>
       <CardContent>
-        {data ? (
+        {data?.status !== STATUS_INITIAL ? (
           <>
-            {displayElement(
-              t('sensitivityCalculatorResults.continuumSensitivityWeighted'),
-              '84.47 ujy/beam (6.10)',
-              'id1'
+            {data?.section1?.map(rec =>
+              displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
             )}
-            {displayElement(
-              t('sensitivityCalculatorResults.continuumConfusionNoise'),
-              '3.63 mjy/beam',
-              'id2'
+            {data?.section2?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+            {data?.section2?.map(rec =>
+              displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
             )}
-            {displayElement(
-              t('sensitivityCalculatorResults.continuumTotalSensitivity'),
-              '3.64 mjy/beam',
-              'id3'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.continuumSynthBeamSize'),
-              '190.9" x 171.3"',
-              'id4'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'),
-              '3.40 K',
-              'id5'
-            )}
-            <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
-            {displayElement(
-              t('sensitivityCalculatorResults.spectralSensitivityWeighted'),
-              '(2.62)',
-              'id6'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.spectralConfusionNoise'),
-              '6.02 mjy/beam',
-              'id7'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.spectralTotalSensitivity'),
-              '9.45 mjy/beam',
-              'id8'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.spectralSynthBeamSize'),
-              '230.0" x 207.8"',
-              'id9'
-            )}
-            {displayElement(
-              t('sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'),
-              '6.04 K',
-              'id10'
+            {data?.section3?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+            {data?.section3?.map(rec =>
+              displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
             )}
           </>
         ) : (
