@@ -10,6 +10,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetDownloadPDF from '../../services/axios/getDownloadPDF/getDownloadPDF';
+import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer';
 
 const PAGE = 6;
 
@@ -18,6 +19,12 @@ export default function TechnicalPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+
+  const MyDoc = () => (
+    <Document>
+      <Page>// My document data</Page>
+    </Document>
+  );
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -128,6 +135,9 @@ export default function TechnicalPage() {
             onClick={downloadPdf}
             label={'download PDF'}
           />
+          <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
+            {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+          </PDFDownloadLink>
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
