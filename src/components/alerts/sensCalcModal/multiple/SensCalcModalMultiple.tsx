@@ -4,14 +4,13 @@ import CancelButton from '../../../button/cancel/CancelButton';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import ObservationPage from 'pages/ObservationPage/ObservationPage';
 import Observation from '../../../../utils/types/observation';
 
 interface SensCalcDisplayMultipleProps {
   open: boolean;
   onClose: Function;
   data: any;
-  observation: Observation
+  observation: Observation;
 }
 
 const SIZE = 30;
@@ -134,7 +133,7 @@ export default function SensCalcDisplayMultiple({
             />
           }
           component={Box}
-          title={t('sensitivityCalculatorResults.title') + " (" + observation.obset_id + ")"}
+          title={t('sensitivityCalculatorResults.title') + ' (' + observation.obset_id + ')'}
           titleTypographyProps={{
             align: 'center',
             fontWeight: 'bold',
