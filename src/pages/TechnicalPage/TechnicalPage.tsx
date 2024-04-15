@@ -148,9 +148,6 @@ export default function TechnicalPage() {
             onClick={downloadPdftoSignedUrl}
             label={'download PDF'}
           />
-          {/* <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
-            {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
-          </PDFDownloadLink> */}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
