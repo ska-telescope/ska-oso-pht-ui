@@ -77,13 +77,16 @@ export default function SensCalcDisplayMultiple({
       flex: 3
     },
 
-    { field: 'field11', headerName: t('sensitivityCalculatorResults.pwhmOfrmsf'), flex: 3 },
     {
-      field: 'field12',
-      headerName: t('sensitivityCalculatorResults.maxFaradayDepthExtent'),
+      field: 'field11',
+      headerName: t('sensitivityCalculatorResults.continuumIntegrationTime'),
       flex: 3
     },
-    { field: 'field13', headerName: t('sensitivityCalculatorResults.maxFaradayDepth'), flex: 3 },
+    {
+      field: 'field12',
+      headerName: t('sensitivityCalculatorResults.spectralIntegrationTime'),
+      flex: 3
+    },
     {
       field: 'status',
       headerName: '',

@@ -42,9 +42,8 @@ export const SENSCALC_MOCKED: SensCalcResult = {
     { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
   ],
   section3: [
-    { field: 'pwhmOfrmsf', value: '19.3', units: 'rad/m squared' },
-    { field: 'maxFaradayDepthExtent', value: '36.0', units: 'rad/m squared' },
-    { field: 'maxFaradayDepth', value: '139890.8', units: 'rad/m squared' }
+    { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
+    { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
   ]
 };
 
@@ -78,9 +77,8 @@ function mapping(inRec: any) {
       { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
     ],
     section3: [
-      { field: 'pwhmOfrmsf', value: '19.3', units: 'rad/m squared' },
-      { field: 'maxFaradayDepthExtent', value: '36.0', units: 'rad/m squared' },
-      { field: 'maxFaradayDepth', value: '139890.8', units: 'rad/m squared' }
+      { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
+      { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
     ]
   } as SensCalcResult;
 }

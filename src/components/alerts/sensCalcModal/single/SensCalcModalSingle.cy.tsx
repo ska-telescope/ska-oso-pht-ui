@@ -158,7 +158,6 @@ describe('Modal with data', () => {
       'contain',
       'sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'
     );
-    cy.get('[id="pwhmOfrmsf"]').should('contain', 'sensitivityCalculatorResults.pwhmOfrmsf');
     cy.get('[id="maxFaradayDepthExtent"]').should(
       'contain',
       'sensitivityCalculatorResults.maxFaradayDepthExtent'
