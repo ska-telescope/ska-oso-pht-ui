@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL } from '../../../utils/constants';
 
-async function GetDownloadPDF(selectedFile) {
-  const URL_PATH = `/download/signedurl/${selectedFile}`;
+
+async function GetDownloadPDF(urlPath, selectedFile) {
+  const URL_PATH = urlPath;
 
   axios
-    .get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG)
+    .get(`${URL_PATH}`, AXIOS_CONFIG)
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');

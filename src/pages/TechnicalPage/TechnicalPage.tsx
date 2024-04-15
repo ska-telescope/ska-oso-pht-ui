@@ -7,6 +7,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetDownloadPDF from '../../services/axios/getDownloadPDF/getDownloadPDF';
@@ -14,17 +15,19 @@ import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer';
 
 const PAGE = 6;
 
+// const MyDoc = () => (
+//   <Document>
+//     <Page>// My document data</Page>
+//   </Document>
+// );
+
 export default function TechnicalPage() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
 
-  const MyDoc = () => (
-    <Document>
-      <Page>// My document data</Page>
-    </Document>
-  );
+
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -70,18 +73,38 @@ export default function TechnicalPage() {
     }
   };
 
-  const downloadPdf = async () => {
+  const downloadPdftoSignedUrl = async () => {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-technical.pdf`
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      const downloadResult = await GetDownloadPDF(`${prsl_id}-technical.pdf`);
-      console.log('HERE!');
+      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
+
+      const downloadResult = await GetDownloadPDF(signedUrl, selectedFile);
+
       if (downloadResult.error) {
-        throw new Error('Technical PDF unable to be downloaded');
+        throw new Error('Technical PDF Not Downloaded');
       }
-    } catch (e) {}
+
+    } catch (e) {
+      //TODO: error handling
+    }
   };
+
+  // const downloadPdf = async () => {
+  //   try {
+  //     const proposal = getProposal();
+  //     const prsl_id = proposal.id;
+
+  //     const downloadResult = await GetDownloadPDF(`${prsl_id}-technical.pdf`);
+  //     console.log('HERE!');
+  //     if (downloadResult.error) {
+  //       throw new Error('Technical PDF unable to be downloaded');
+  //     }
+  //   } catch (e) {}
+  // };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -132,12 +155,12 @@ export default function TechnicalPage() {
           <Button
             direction="column"
             testId="fileDownload"
-            onClick={downloadPdf}
+            onClick={downloadPdftoSignedUrl}
             label={'download PDF'}
           />
-          <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
+          {/* <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
             {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
