@@ -1,51 +1,51 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA, SKA_SENSITIVITY_CALCULATOR_API_URL } from '../../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  MODE,
+  OBSERVATION,
+  SKA_SENSITIVITY_CALCULATOR_API_URL,
+  TYPE_CONTINUUM,
+  USE_LOCAL_DATA
+} from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
-import { OBSERVATION } from '../../../../utils/constants';
 import sensCalHelpers from '../sensCalHelpers';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-async function GetCalculate(telescope: string, mode: string, observation: Observation) {
+const TELESCOPE_LOW_NUM = 1;
+const URL_CALCULATE = `calculate`;
+
+async function GetCalculate(observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
-  // Telescope URLS
-  let URL_TELESCOPE: string;
-  const URL_MID = `mid/`;
-  const URL_LOW = `low/`;
-  // Mode URLs
-  const URL_ZOOM = `zoom/`;
-  const URL_CONTINUUM = `continuum/`;
-  let URL_MODE: string;
-  const URL_CALCULATE = `calculate`;
 
-  let QUERY_STRING_PARAMETERS: URLSearchParams;
-  let MOCK_RESPONSE: any;
-  const config = {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+  const getTelescope = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
+
+  const getMode = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return MODE[observation.type].toLowerCase() + '/';
     }
+    return '';
   };
 
-  interface ModeSpecificParameters {
+  /*********************************************************** MID *********************************************************/
+
+  interface ModeSpecificParametersMid {
     n_subbands?: string;
     resolution?: string;
     zoom_frequencies?: string;
     zoom_resolutions?: string;
   }
 
-  function mapQueryMidCalculate(calculator_mode): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParameters = {};
-    switch (calculator_mode) {
-      case 'continuum':
-        mode_specific_parameters.n_subbands = observation.number_of_sub_bands?.toString();
-        mode_specific_parameters.resolution = observation.spectral_resolution?.toString();
-        break;
-      case 'zoom':
-        mode_specific_parameters.zoom_frequencies = observation.central_frequency?.toString();
-        mode_specific_parameters.zoom_resolutions = observation.effective_resolution?.toString();
-        break;
-      default:
+  function mapQueryCalculateMid(): URLSearchParams {
+    let mode_specific_parameters: ModeSpecificParametersMid = {};
+    if (observation.type === TYPE_CONTINUUM) {
+      mode_specific_parameters.n_subbands = observation.number_of_sub_bands?.toString();
+      mode_specific_parameters.resolution = observation.spectral_resolution?.toString();
+    } else {
+      mode_specific_parameters.zoom_frequencies = observation.central_frequency?.toString();
+      mode_specific_parameters.zoom_resolutions = observation.effective_resolution?.toString();
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integration_time_units
@@ -74,6 +74,8 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     return params;
   }
 
+  /*********************************************************** LOW *********************************************************/
+
   interface ModeSpecificParametersLow {
     bandwidth_mhz?: string;
     spectral_averaging_factor?: string;
@@ -83,24 +85,20 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
 
   // TODO double check obseration parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
 
-  function mapQueryLowCalculate(calculator_mode): URLSearchParams {
+  function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
-    switch (calculator_mode) {
-      case 'continuum':
-        mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
-        mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging?.toString();
-        break;
-      case 'zoom':
-        // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
-        const value = 16;
-        mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
-        //TODO check value mapping, does it need conversion?
-        const value2 = 48.8;
-        mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
-        //TODO check value mapping, does it need conversion?
-        // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
-        break;
-      default:
+    if (observation.type === TYPE_CONTINUUM) {
+      mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
+      mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging?.toString();
+    } else {
+      // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
+      const value = 16;
+      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
+      //TODO check value mapping, does it need conversion?
+      const value2 = 48.8;
+      mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
+      //TODO check value mapping, does it need conversion?
+      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
     }
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
       ?.label;
@@ -120,54 +118,27 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
     return params;
   }
 
-  switch (telescope) {
-    case 'Mid':
-      URL_TELESCOPE = URL_MID;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('continuum');
-          MOCK_RESPONSE = MockResponseMidCalculate;
-          break;
-        case 'Zoom':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('zoom');
-          MOCK_RESPONSE = MockResponseMidCalculateZoom;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    case 'Low':
-      URL_TELESCOPE = URL_LOW;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = URL_CONTINUUM;
-          QUERY_STRING_PARAMETERS = mapQueryLowCalculate('continuum');
-          MOCK_RESPONSE = MockResponseLowCalculate;
-          break;
-        case 'Zoom':
-          URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = mapQueryLowCalculate('zoom');
-          MOCK_RESPONSE = MockResponseLowCalculateZoom;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    default:
-    // 'Invalid telescope' // TODO return error properly for user
-  }
+  /*************************************************************************************************************************/
+
+  const getQueryParams = () => {
+    return getTelescope() === TELESCOPE_LOW.code ? mapQueryCalculateLow() : mapQueryCalculateMid();
+  };
+
+  const getMockData = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return observation.type ? MockResponseLowCalculate : MockResponseLowCalculateZoom;
+    }
+    return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
+  };
 
   if (USE_LOCAL_DATA) {
-    return MOCK_RESPONSE;
+    return getMockData();
   }
 
   try {
-    const queryString = QUERY_STRING_PARAMETERS;
     const result = await axios.get(
-      `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
-      config
+      `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`,
+      AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {

@@ -4,17 +4,17 @@ import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import {
-  TEL,
-  MODE,
   TYPE_ZOOM,
   STATUS_OK,
   STATUS_INITIAL,
   STATUS_PARTIAL,
   USE_LOCAL_DATA,
-  STATUS_ERROR
+  STATUS_ERROR,
+  TYPE_CONTINUUM
 } from '../../../utils/constants';
 
 export type SensCalcResult = {
+  title?: string;
   status: number;
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
@@ -26,6 +26,7 @@ export const SENSCALC_EMPTY: SensCalcResult = {
 };
 
 export const SENSCALC_MOCKED: SensCalcResult = {
+  title: 'TITLE FIELD',
   status: STATUS_OK,
   section1: [
     { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
@@ -42,9 +43,8 @@ export const SENSCALC_MOCKED: SensCalcResult = {
     { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
   ],
   section3: [
-    { field: 'pwhmOfrmsf', value: '19.3', units: 'rad/m squared' },
-    { field: 'maxFaradayDepthExtent', value: '36.0', units: 'rad/m squared' },
-    { field: 'maxFaradayDepth', value: '139890.8', units: 'rad/m squared' }
+    { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
+    { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
   ]
 };
 
@@ -52,7 +52,7 @@ const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
 
-function mapping(inRec: any) {
+function mapping(inRec: any, title: string) {
   //
   // TODO : Current values are the same as the MOCKED results, but the value and units fields need to be mapped as required
   //
@@ -62,6 +62,7 @@ function mapping(inRec: any) {
   // console.log("mapping", inRec);
   //
   return {
+    title: title,
     status: STATUS_OK,
     section1: [
       { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
@@ -78,9 +79,8 @@ function mapping(inRec: any) {
       { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
     ],
     section3: [
-      { field: 'pwhmOfrmsf', value: '19.3', units: 'rad/m squared' },
-      { field: 'maxFaradayDepthExtent', value: '36.0', units: 'rad/m squared' },
-      { field: 'maxFaradayDepth', value: '139890.8', units: 'rad/m squared' }
+      { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
+      { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
     ]
   } as SensCalcResult;
 }
@@ -92,7 +92,7 @@ function getSensCalc(observation: Observation, target: Target): SensCalcResult {
   let results = SENSCALC_LOADING;
   try {
     const output = fetchSensCalc(observation, target);
-    return mapping(output);
+    return mapping(output, target.name);
   } catch (e) {
     results.status = STATUS_ERROR;
     return results;
@@ -122,22 +122,10 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
   */
 
-  const calculate = await GetCalculate(
-    TEL[observation.telescope],
-    MODE[observation.type],
-    observation
-  );
-
-  const weighting = await GetWeighting(
-    TEL[observation.telescope],
-    MODE[observation.type],
-    observation
-  );
-
-  let weightingLine;
-  if (observation.type !== TYPE_ZOOM) {
-    weightingLine = await GetWeighting(TEL[observation.telescope], MODE[1], observation);
-  } // 2nd weighting call with Zoom - Continuum Mode only
+  const calculate = await GetCalculate(observation);
+  const weighting = await GetWeighting(observation, observation.type);
+  const weightingLine =
+    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;
 
   const response = {
     calculate,
