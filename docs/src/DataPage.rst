@@ -17,6 +17,7 @@ The Data Product Page contains the following:
 - Displays a table with information about each data product
 
   - Observatory Data Product
+  - Observations
   - Pipeline
   - Image Size
   - Pixel Size
