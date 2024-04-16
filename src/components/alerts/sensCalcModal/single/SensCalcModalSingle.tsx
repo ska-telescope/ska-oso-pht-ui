@@ -24,7 +24,7 @@ export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcD
   const { t } = useTranslation('pht');
 
   const displayElement = (eLabel: string, eValue: any, eId: string) => (
-    <Grid container direction="row" justifyContent="space-around" alignItems="center">
+    <Grid key={eId} container direction="row" justifyContent="space-around" alignItems="center">
       <Grid item xs={6}>
         <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
           {eLabel}
@@ -74,6 +74,8 @@ export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcD
       <CardContent>
         {data?.status !== STATUS_INITIAL ? (
           <>
+            {displayElement(t('sensitivityCalculatorResults.targetName'), data.title, 'targetName')}
+            {data?.section1?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
             {data?.section1?.map(rec =>
               displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
             )}

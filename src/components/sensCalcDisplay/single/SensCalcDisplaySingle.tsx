@@ -4,7 +4,7 @@ import getSensCalc, {
   SENSCALC_EMPTY
 } from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { IconButton } from '@mui/material';
-import SensCalcModalSingle from '../../alerts/sensCalcModalSingle/single/SensCalcModalSingle';
+import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 

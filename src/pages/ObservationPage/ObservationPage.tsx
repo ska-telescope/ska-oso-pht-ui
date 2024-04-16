@@ -135,7 +135,7 @@ export default function ObservationPage() {
   const columns = [
     {
       field: 'obset_id',
-      headerName: t('observations.obset_id.id'),
+      headerName: t('observations.id'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { obset_id: number } }) => {
@@ -156,11 +156,11 @@ export default function ObservationPage() {
       headerName: t('subArrayConfiguration.short'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number; subarray: number } }) => {
+      renderCell: (e: { row: { telescope: number; subarray: { value: number } } }) => {
         if (e.row.telescope) {
           return (
             <Typography>
-              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
+              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray.value}`)}
             </Typography>
           );
         }
