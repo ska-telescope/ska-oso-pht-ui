@@ -229,10 +229,17 @@ export default function AddDataProduct() {
         spacing={1}
       >
         <Grid item xs={9} md={5}>
-          <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
+          <Grid
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="center"
+            p={2}
+            spacing={2}
+          >
             <Grid item>{obsDataProductField()}</Grid>
-            <Grid item>{pipelineField()}</Grid>
             <Grid item>{observationField()}</Grid>
+            <Grid item>{pipelineField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>
