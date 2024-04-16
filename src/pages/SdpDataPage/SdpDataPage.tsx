@@ -145,6 +145,9 @@ export default function SdpDataPage() {
             {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
           </Typography>
         </FieldWrapper>
+        <FieldWrapper label={t('observations.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.observations}</Typography>
+        </FieldWrapper>
         <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(`pipeline.options.${rec.pipeline}`)}</Typography>
         </FieldWrapper>
