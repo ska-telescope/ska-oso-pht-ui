@@ -264,7 +264,7 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "obset_id",
+    "id": "Id",
     "obset_id": {
       "id": "obset_id"
     }
@@ -461,17 +461,19 @@
     "continuumTotalSensitivity": "Total continuum sensitivity",
     "continuumSynthBeamSize": "Continuum synthesized beam-size",
     "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
+    "continuumIntegrationTime": "Continuum integration time",
     "integrationTime": "Integration time",
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
-    "pwhmOfrmsf": "FWHM of the RMSF",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",
     "spectralTotalSensitivity": "Total spectral sensitivity",
     "spectralSynthBeamSize": "Spectral synthesized beam-size",
     "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
+    "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
+    "targetName": "Target name",
     "totalSensitivity": "total sensitivity"
   },
   "specialCharacters": {
