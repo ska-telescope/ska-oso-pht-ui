@@ -229,7 +229,6 @@ export default function ObservationPage() {
     },
     {
       field: 'vel',
-      headerName: '',
       renderHeader: () => (
         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
           <Grid mr={14}></Grid>
@@ -256,65 +255,7 @@ export default function ObservationPage() {
         }
         return '';
       }
-    },
-    {
-      field: 'vel',
-      headerName: '',
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
-        const isSelected = isTargetSelected(e.row.id);
-        const targetId = e.row.id;
-
-        if (currentObservation > 0) {
-          const obs: Observation = getProposal().observations.find(
-            p => p.id === currentObservation
-          );
-          return <SensCalcDisplay observation={obs} selected={isSelected} targetId={targetId} />;
-        }
-        return '';
-      }
     }
-    /*,
-    // using sens cals results from redux stored proposal => seems to cause even more multiple API calls?
-    {
-      headerName: '',
-      renderHeader: () => (
-        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-          <Grid>s
-            <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
-          </Grid>
-          <Grid item ml={10}>
-            <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
-          </Grid>
-        </Grid>
-      ),
-      sortable: false,
-      flex: 3,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
-        if (currentObservation > 0) {
-          const obsTar = getTargetObs(currentObservation, e.row.id);
-          return (
-            <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-              <Grid>
-                <Typography>
-                  {obsTar?.sensitivityCalculatorResults?.totalSensitivity?.value}
-                </Typography>
-              </Grid>
-              <Grid item ml={10}>
-                <Typography>
-                  {obsTar?.sensitivityCalculatorResults?.integrationTime?.value}
-                </Typography>
-              </Grid>
-            </Grid>
-          );
-        }
-        return '';
-      }
-    }
-    */
   ];
   const extendedColumnsTargets = [...columnsTargets];
   const extendedColumnsTargetsSelected = [...columnsTargetsSelected];
