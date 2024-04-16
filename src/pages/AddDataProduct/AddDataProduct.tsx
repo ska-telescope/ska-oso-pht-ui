@@ -170,8 +170,6 @@ export default function AddDataProduct() {
         weighting
       };
 
-      console.log('addDataProduct newDataProduct', newDataProduct);
-
       setProposal({
         ...getProposal(),
         dataProducts: [...getProposal().dataProducts, newDataProduct]
