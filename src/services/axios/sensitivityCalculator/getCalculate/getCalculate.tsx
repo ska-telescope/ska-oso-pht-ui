@@ -131,9 +131,9 @@ async function GetCalculate(observation: Observation) {
     return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
   };
 
-  if (USE_LOCAL_DATA) {
-    return getMockData();
-  }
+  //if (USE_LOCAL_DATA) {
+  return getMockData();
+  //}
 
   try {
     const result = await axios.get(

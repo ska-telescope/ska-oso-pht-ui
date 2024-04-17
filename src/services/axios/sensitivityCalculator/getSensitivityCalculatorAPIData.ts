@@ -12,6 +12,7 @@ import {
   STATUS_ERROR,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
+import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 
 export type SensCalcResult = {
   title?: string;
@@ -85,23 +86,41 @@ function mapping(inRec: any, title: string) {
   } as SensCalcResult;
 }
 
-function getSensCalc(observation: Observation, target: Target): SensCalcResult {
+function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
   if (USE_LOCAL_DATA) {
-    return SENSCALC_MOCKED;
+    return Promise.resolve(SENSCALC_MOCKED);
   }
+  /*
   let results = SENSCALC_LOADING;
   try {
     const output = fetchSensCalc(observation, target);
-    return mapping(output, target.name);
+    console.log('results output', output);
+    console.log('results output try', output['PromiseResult']);
+    // return mapping(output, target.name);
+    const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
+    console.log('results', results);
+    return results;
   } catch (e) {
     results.status = STATUS_ERROR;
     return results;
   }
-}
+  */
 
-const fetchSensCalc = async (observation: Observation, target: Target) => {
-  return await getSensitivityCalculatorAPIData(observation, target);
-};
+  const fetchSensCalc = async (observation: Observation, target: Target) => {
+    return await getSensitivityCalculatorAPIData(observation, target);
+  };
+
+  return fetchSensCalc(observation, target)
+    .then(output => {
+      const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
+      console.log('results', results);
+      return results;
+    })
+    .catch(() => {
+      const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+      return results as SensCalcResult;
+    });
+}
 
 async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
   //
