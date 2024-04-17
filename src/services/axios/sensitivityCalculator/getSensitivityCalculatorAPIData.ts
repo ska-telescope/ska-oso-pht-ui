@@ -90,21 +90,6 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
   if (USE_LOCAL_DATA) {
     return Promise.resolve(SENSCALC_MOCKED);
   }
-  /*
-  let results = SENSCALC_LOADING;
-  try {
-    const output = fetchSensCalc(observation, target);
-    console.log('results output', output);
-    console.log('results output try', output['PromiseResult']);
-    // return mapping(output, target.name);
-    const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
-    console.log('results', results);
-    return results;
-  } catch (e) {
-    results.status = STATUS_ERROR;
-    return results;
-  }
-  */
 
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     return await getSensitivityCalculatorAPIData(observation, target);
@@ -113,7 +98,6 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
   return fetchSensCalc(observation, target)
     .then(output => {
       const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
-      console.log('results', results);
       return results;
     })
     .catch(() => {

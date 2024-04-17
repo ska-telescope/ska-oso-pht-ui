@@ -23,7 +23,6 @@ export default function SensCalcDisplaySingle({
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY);
-  const [integrationTime, setIntegrationTime] = React.useState('');
 
   React.useEffect(() => {
     async function fetchResults() {
@@ -37,14 +36,14 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const TotalSensitivity = () => {
+  const TotalSensitivity: any = () => {
     if (results.section1) {
       return results.section1.find(item => item.field === 'continuumTotalSensitivity');
     }
     return '';
   };
 
-  const IntegrationTime = () => {
+  const IntegrationTime: any = () => {
     if (results.section3) {
       return results.section3.find(item => item.field === 'continuumIntegrationTime');
     }
@@ -60,17 +59,10 @@ export default function SensCalcDisplaySingle({
           </IconButton>
         </Grid>
         <Grid mr={10}>
-          <Typography>
-            {`${TotalSensitivity()?.value} ${TotalSensitivity()?.units}`}
-            {/*results?.section1?.[2]?.value*/} {/*results?.totalSensitivity?.value*/}
-          </Typography>
+          <Typography>{`${TotalSensitivity()?.value} ${TotalSensitivity()?.units}`}</Typography>
         </Grid>
         <Grid>
-          <Typography>
-            {/*`${IntegrationTime()?.value} ${IntegrationTime()?.units}`*/}
-            {`${IntegrationTime()?.value} ${IntegrationTime()?.units}`}
-            {/*results?.integrationTime?.value*/}
-          </Typography>
+          <Typography>{`${IntegrationTime()?.value} ${IntegrationTime()?.units}`}</Typography>
         </Grid>
       </Grid>
       <SensCalcModalSingle open={openDialog} onClose={() => setOpenDialog(false)} data={results} />
