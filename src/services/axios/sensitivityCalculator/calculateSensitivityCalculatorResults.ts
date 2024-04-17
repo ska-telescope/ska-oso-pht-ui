@@ -11,7 +11,7 @@ import { STATUS_OK } from '../../../utils/constants';
 let confusionNoise: number;
 let weightedSensitivity: number;
 let totalSensitivity: number;
-let totalSensitivityDisplayValue: string;
+let totalSensitivityDisplayValue: any;
 let integrationTimeDisplayValue: string;
 
 export default function calculateSensitivityCalculatorResults(
@@ -36,8 +36,8 @@ export default function calculateSensitivityCalculatorResults(
       { field: 'continuumConfusionNoise', value: '3.63', units: 'mjy/beam' },
       {
         field: 'continuumTotalSensitivity',
-        value: totalSensitivityDisplayValue,
-        units: 'mjy/beam'
+        value: totalSensitivityDisplayValue?.value,
+        units: totalSensitivityDisplayValue?.units
       },
       { field: 'continuumSynthBeamSize', value: '190.0" x 171.3"', units: '' },
       { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
@@ -52,8 +52,10 @@ export default function calculateSensitivityCalculatorResults(
     section3: [
       {
         field: 'continuumIntegrationTime',
-        value: integrationTimeDisplayValue,
-        units: 'rad/m squared'
+        value: observation.integration_time,
+        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+          observation.integration_time_units
+        )
       },
       { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
     ]
