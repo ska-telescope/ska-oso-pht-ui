@@ -36,16 +36,18 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const TotalSensitivity: any = () => {
+  const TotalSensitivity: any = type => {
     if (results.section1) {
-      return results.section1.find(item => item.field === 'continuumTotalSensitivity');
+      const result = results.section1.find(item => item.field === 'continuumTotalSensitivity');
+      return result[type];
     }
     return '';
   };
 
-  const IntegrationTime: any = () => {
+  const IntegrationTime: any = type => {
     if (results.section3) {
-      return results.section3.find(item => item.field === 'continuumIntegrationTime');
+      const result = results.section3.find(item => item.field === 'continuumIntegrationTime');
+      return result[type];
     }
     return '';
   };
@@ -59,10 +61,10 @@ export default function SensCalcDisplaySingle({
           </IconButton>
         </Grid>
         <Grid mr={10}>
-          <Typography>{`${TotalSensitivity()?.value} ${TotalSensitivity()?.units}`}</Typography>
+          <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
         </Grid>
         <Grid>
-          <Typography>{`${IntegrationTime()?.value} ${IntegrationTime()?.units}`}</Typography>
+          <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
         </Grid>
       </Grid>
       <SensCalcModalSingle open={openDialog} onClose={() => setOpenDialog(false)} data={results} />

@@ -39,7 +39,7 @@ export default function calculateSensitivityCalculatorResults(
       { field: 'continuumSynthBeamSize', value: '190.0" x 171.3"', units: '' },
       { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
     ],
-    // if continuum (use getCalculate and getWeightingLine) // same as section1?
+    // if continuum (use getCalculate and getWeightingLine) // call line? or spectral?
     section2: [
       { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
       { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
@@ -47,7 +47,7 @@ export default function calculateSensitivityCalculatorResults(
       { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
       { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
     ],
-    // if zoom (use getCalculate and getWeighting) // call line? or spectral?
+    // if zoom (use getCalculate and getWeighting) // same as section 1
     section3: [
       { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
       { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
