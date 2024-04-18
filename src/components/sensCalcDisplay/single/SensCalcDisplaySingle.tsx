@@ -33,7 +33,7 @@ export default function SensCalcDisplaySingle({
   }, [selected]);
 
   const IconClicked = () => {
-    setOpenDialog(true);
+    // setOpenDialog(true); //commented for now to not display the modal
   };
 
   const TotalSensitivity: any = type => {
