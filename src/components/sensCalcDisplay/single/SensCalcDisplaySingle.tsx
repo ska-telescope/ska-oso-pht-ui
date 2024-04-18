@@ -7,6 +7,7 @@ import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
+import { useTranslation } from 'react-i18next';
 
 const SIZE = 20;
 
@@ -23,6 +24,8 @@ export default function SensCalcDisplaySingle({
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY);
+  const { t } = useTranslation('pht');
+  const observationTypeLabel = t(`observationType.${observation.type}`).toLowerCase();
 
   React.useEffect(() => {
     async function fetchResults() {
@@ -38,7 +41,9 @@ export default function SensCalcDisplaySingle({
 
   const TotalSensitivity: any = type => {
     if (results.section1) {
-      const result = results.section1.find(item => item.field === 'continuumTotalSensitivity');
+      const result = results.section1.find(
+        item => item.field === `${observationTypeLabel}TotalSensitivity`
+      );
       return result[type];
     }
     return '';

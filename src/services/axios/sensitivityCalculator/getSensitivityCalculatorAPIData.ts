@@ -70,9 +70,11 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
   return fetchSensCalc(observation, target)
     .then(output => {
       const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
+      console.log('RESULTS', results);
       return results;
     })
     .catch(() => {
+      console.log('ERROR', STATUS_ERROR);
       const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
       return results as SensCalcResult;
     });
@@ -98,9 +100,12 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   */
 
   const calculate = await GetCalculate(observation);
+  console.log('CALCULATE RESPONSE', calculate);
   const weighting = await GetWeighting(observation, observation.type);
+  console.log('WEIGHTING RESPONSE', weighting);
   const weightingLine =
     observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;
+  console.log('WEIGHTINGLINE RESPONSE', weightingLine);
 
   const response = {
     calculate,
@@ -109,7 +114,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   };
 
   helpers.transform.trimObject(response);
-
+  console.log('RESPONSE', response);
   return response;
 }
 

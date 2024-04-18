@@ -23,6 +23,10 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
+  console.log('TYPE', observation.type); // 0: Zoom / 1: Continuum
+  const telescopeLabel: string = observation.type === 1 ? 'continuum' : 'spectral';
+  const types = ['zoom', 'continuum'];
+  const observationTypeLabel: string = types[observation.type];
   return {
     //
     // TODO : Current values are the same as the MOCKED results, but the value and units fields need to be mapped as required
@@ -35,15 +39,19 @@ export default function calculateSensitivityCalculatorResults(
     // if continuum (use getCalculate and getWeighting) // name without saying continuum or spectral?
     // or change fieldName depending of continnum or zoom?
     section1: [
-      { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
-      { field: 'continuumConfusionNoise', value: '3.63', units: 'mjy/beam' },
       {
-        field: 'continuumTotalSensitivity',
+        field: `${observationTypeLabel}SensitivityWeighted`,
+        value: '84.47',
+        units: 'ujy/beam (6.10)'
+      },
+      { field: `${observationTypeLabel}ConfusionNoise`, value: '3.63', units: 'mjy/beam' },
+      {
+        field: `${observationTypeLabel}TotalSensitivity`,
         value: totalSensitivityDisplayValue?.value,
         units: totalSensitivityDisplayValue?.units
       },
-      { field: 'continuumSynthBeamSize', value: '190.0" x 171.3"', units: '' },
-      { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
+      { field: `${observationTypeLabel}SynthBeamSize`, value: '190.0" x 171.3"', units: '' },
+      { field: `${observationTypeLabel}SurfaceBrightnessSensitivity`, value: '3.40', units: 'k' }
     ],
     // if continuum (use getCalculate and getWeightingLine)
     section2: [
