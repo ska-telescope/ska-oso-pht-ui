@@ -457,7 +457,6 @@
     "continuumTotalSensitivity": "Total continuum sensitivity",
     "continuumSynthBeamSize": "Continuum synthesized beam-size",
     "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
-    "continuumIntegrationTime": "Continuum integration time",
     "continuumSpectralLineSensitivityWeighted": "Weighted continuum spectral line sensitivity",
     "continuumSpectralLineConfusionNoise": "Continuum spectral line confusion noise",
     "continuumSpectralLineTotalSensitivity": "Total continuum spectral line sensitivity",
@@ -472,7 +471,6 @@
     "spectralTotalSensitivity": "Total spectral sensitivity",
     "spectralSynthBeamSize": "Spectral synthesized beam-size",
     "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
-    "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
     "totalSensitivity": "total sensitivity"

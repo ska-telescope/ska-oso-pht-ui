@@ -58,7 +58,7 @@ export default function SensCalcDisplayMultiple({
       headerName: t('sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'),
       flex: 3
     },
-
+    // TODO: make columns 6 to 10 optional (if section2 exists) to match data
     {
       field: 'field6',
       headerName: t('sensitivityCalculatorResults.spectralSensitivityWeighted'),
@@ -88,11 +88,6 @@ export default function SensCalcDisplayMultiple({
     {
       field: 'field11',
       headerName: t('sensitivityCalculatorResults.continuumIntegrationTime'),
-      flex: 3
-    },
-    {
-      field: 'field12',
-      headerName: t('sensitivityCalculatorResults.spectralIntegrationTime'),
       flex: 3
     },
     {
