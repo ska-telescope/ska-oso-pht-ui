@@ -64,7 +64,7 @@ export default function TechnicalPage() {
     }
   };
 
-  const downloadPdftoSignedUrl = async () => {
+  const downloadPdfToSignedUrl = async () => {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
@@ -73,28 +73,11 @@ export default function TechnicalPage() {
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
 
-      const downloadResult = await GetDownloadPDF(signedUrl, selectedFile);
-
-      if (downloadResult.error) {
-        throw new Error('Technical PDF Not Downloaded');
-      }
+      window.open(signedUrl, '_blank');
     } catch (e) {
       //TODO: error handling
     }
   };
-
-  // const downloadPdf = async () => {
-  //   try {
-  //     const proposal = getProposal();
-  //     const prsl_id = proposal.id;
-
-  //     const downloadResult = await GetDownloadPDF(`${prsl_id}-technical.pdf`);
-  //     console.log('HERE!');
-  //     if (downloadResult.error) {
-  //       throw new Error('Technical PDF unable to be downloaded');
-  //     }
-  //   } catch (e) {}
-  // };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -145,7 +128,7 @@ export default function TechnicalPage() {
           <Button
             direction="column"
             testId="fileDownload"
-            onClick={downloadPdftoSignedUrl}
+            onClick={downloadPdfToSignedUrl}
             label={'download PDF'}
           />
         </Grid>
