@@ -20,7 +20,6 @@ export type SensCalcResult = {
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
   section3?: { field: string; value: string; units: string }[];
-  section4?: { field: string; value: string; units: string }[];
 };
 
 export const SENSCALC_EMPTY: SensCalcResult = {
@@ -44,14 +43,7 @@ export const SENSCALC_MOCKED: SensCalcResult = {
     { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
     { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
   ],
-  section3: [
-    { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
-    { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
-    { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-    { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-    { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-  ],
-  section4: [{ field: 'integrationTime', value: '19.3', units: 'rad/m squared' }]
+  section3: [{ field: 'integrationTime', value: '19.3', units: 'rad/m squared' }]
 };
 
 const SENSCALC_LOADING: SensCalcResult = {

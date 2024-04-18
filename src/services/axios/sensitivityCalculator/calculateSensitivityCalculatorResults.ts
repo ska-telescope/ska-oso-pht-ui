@@ -35,8 +35,6 @@ export default function calculateSensitivityCalculatorResults(
     //
     title: 'TITLE FIELD',
     status: STATUS_OK,
-    // if continuum (use getCalculate and getWeighting) // name without saying continuum or spectral?
-    // or change fieldName depending of continnum or zoom?
     section1: [
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
@@ -52,23 +50,17 @@ export default function calculateSensitivityCalculatorResults(
       { field: `${observationTypeLabel}SynthBeamSize`, value: '190.0" x 171.3"', units: '' },
       { field: `${observationTypeLabel}SurfaceBrightnessSensitivity`, value: '3.40', units: 'k' }
     ],
-    // if continuum (use getCalculate and getWeightingLine)
-    section2: [
-      { field: 'continuumSpectralLineSensitivityWeighted', value: '(2.62)', units: '' },
-      { field: 'continuumSpectralLineConfusionNoise', value: '6.02', units: 'mjy/beam' },
-      { field: 'continuumSpectralLineTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-      { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-      { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-    ],
-    // if zoom (use getCalculate and getWeighting) // same as section 1
+    // only return section2 if continuum
+    ...(observation.type === 1 && {
+      section2: [
+        { field: 'continuumSpectralLineSensitivityWeighted', value: '(2.62)', units: '' },
+        { field: 'continuumSpectralLineConfusionNoise', value: '6.02', units: 'mjy/beam' },
+        { field: 'continuumSpectralLineTotalSensitivity', value: '9.45', units: 'mjy/beam' },
+        { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
+        { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
+      ]
+    }),
     section3: [
-      { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
-      { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
-      { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-      { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-      { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-    ],
-    section4: [
       {
         field: 'integrationTime',
         value: observation.integration_time,

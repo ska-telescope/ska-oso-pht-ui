@@ -49,8 +49,8 @@ export default function SensCalcDisplaySingle({
   };
 
   const IntegrationTime: any = type => {
-    if (results.section4) {
-      const result = results.section4.find(item => item.field === 'integrationTime');
+    if (results.section3) {
+      const result = results.section3.find(item => item.field === 'integrationTime');
       return result[type];
     }
     return '';
