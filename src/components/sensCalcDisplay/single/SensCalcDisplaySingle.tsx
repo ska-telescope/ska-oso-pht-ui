@@ -33,7 +33,7 @@ export default function SensCalcDisplaySingle({
   }, [selected]);
 
   const IconClicked = () => {
-    // setOpenDialog(true); //commented for now to not display the modal
+    setOpenDialog(true);
   };
 
   const TotalSensitivity: any = type => {
@@ -45,8 +45,8 @@ export default function SensCalcDisplaySingle({
   };
 
   const IntegrationTime: any = type => {
-    if (results.section3) {
-      const result = results.section3.find(item => item.field === 'continuumIntegrationTime');
+    if (results.section4) {
+      const result = results.section4.find(item => item.field === 'integrationTime');
       return result[type];
     }
     return '';

@@ -20,6 +20,7 @@ export type SensCalcResult = {
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
   section3?: { field: string; value: string; units: string }[];
+  section4?: { field: string; value: string; units: string }[];
 };
 
 export const SENSCALC_EMPTY: SensCalcResult = {
@@ -37,54 +38,25 @@ export const SENSCALC_MOCKED: SensCalcResult = {
     { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
   ],
   section2: [
+    { field: 'continuumSpectralLineSensitivityWeighted', value: '(2.62)', units: '' },
+    { field: 'continuumSpectralLineConfusionNoise', value: '6.02', units: 'mjy/beam' },
+    { field: 'continuumSpectralLineTotalSensitivity', value: '9.45', units: 'mjy/beam' },
+    { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
+    { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
+  ],
+  section3: [
     { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
     { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
     { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
     { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
     { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
   ],
-  section3: [
-    { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
-    { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
-  ]
+  section4: [{ field: 'integrationTime', value: '19.3', units: 'rad/m squared' }]
 };
 
 const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
-
-function mapping(inRec: any, title: string) {
-  //
-  // TODO : Current values are the same as the MOCKED results, but the value and units fields need to be mapped as required
-  //
-  // The field values are all correct and have a corresponding translation.
-  // I am not sure if we also need translations for the units, but they will be simple to do if required
-  //
-  // console.log("mapping", inRec);
-  //
-  return {
-    title: title,
-    status: STATUS_OK,
-    section1: [
-      { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
-      { field: 'continuumConfusionNoise', value: '3.63', units: 'mjy/beam' },
-      { field: 'continuumTotalSensitivity', value: '3.64', units: 'mjy/beam' },
-      { field: 'continuumSynthBeamSize', value: '190.0" x 171.3"', units: '' },
-      { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
-    ],
-    section2: [
-      { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
-      { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
-      { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-      { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-      { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-    ],
-    section3: [
-      { field: 'continuumIntegrationTime', value: '19.3', units: 'rad/m squared' },
-      { field: 'spectralIntegrationTime', value: '36.0', units: 'rad/m squared' }
-    ]
-  } as SensCalcResult;
-}
 
 function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
   if (USE_LOCAL_DATA) {
