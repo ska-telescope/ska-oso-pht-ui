@@ -7,7 +7,6 @@ import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
-import { useTranslation } from 'react-i18next';
 
 const SIZE = 20;
 
@@ -24,8 +23,8 @@ export default function SensCalcDisplaySingle({
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY);
-  const { t } = useTranslation('pht');
-  const observationTypeLabel = t(`observationType.${observation.type}`).toLowerCase();
+  const types = ['spectral', 'continuum'];
+  const observationTypeLabel: string = types[observation.type];
 
   React.useEffect(() => {
     async function fetchResults() {

@@ -24,8 +24,7 @@ export default function calculateSensitivityCalculatorResults(
     totalSensitivity
   );
   console.log('TYPE', observation.type); // 0: Zoom / 1: Continuum
-  const telescopeLabel: string = observation.type === 1 ? 'continuum' : 'spectral';
-  const types = ['zoom', 'continuum'];
+  const types = ['spectral', 'continuum'];
   const observationTypeLabel: string = types[observation.type];
   return {
     //
