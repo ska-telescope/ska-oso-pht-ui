@@ -19,8 +19,7 @@ export const AXIOS_CONFIG = {
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
-  },
-  returnType: 'blob'
+  }
 };
 
 export const NAV = [
