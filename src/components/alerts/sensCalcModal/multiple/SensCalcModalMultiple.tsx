@@ -68,38 +68,40 @@ export default function SensCalcDisplayMultiple({
     },
     {
       field: 'field6',
-      headerName: t('sensitivityCalculatorResults.spectralSensitivityWeighted'),
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSensitivityWeighted'),
       flex: 3,
       optional: params => params.value !== null
     },
     {
       field: 'field7',
-      headerName: t('sensitivityCalculatorResults.spectralConfusionNoise'),
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineConfusionNoise'),
       flex: 3,
       optional: params => params.value !== null
     },
     {
       field: 'field8',
-      headerName: t('sensitivityCalculatorResults.spectralTotalSensitivity'),
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineTotalSensitivity'),
       flex: 3,
       optional: params => params.value !== null
     },
     {
       field: 'field9',
-      headerName: t('sensitivityCalculatorResults.spectralSynthBeamSize'),
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSynthBeamSize'),
       flex: 3,
       optional: params => params.value !== null
     },
     {
       field: 'field10',
-      headerName: t('sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'),
+      headerName: t(
+        'sensitivityCalculatorResults.continuumSpectralLineSurfaceBrightnessSensitivity'
+      ),
       flex: 3,
       optional: params => params.value !== null
     },
 
     {
       field: 'field11',
-      headerName: t('sensitivityCalculatorResults.continuumIntegrationTime'),
+      headerName: t('sensitivityCalculatorResults.integrationTime'),
       flex: 3,
       optional: params => params.value !== null
     },

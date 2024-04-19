@@ -23,8 +23,8 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  console.log('TYPE', observation.type); // 0: Zoom / 1: Continuum
-  const types = ['spectral', 'continuum'];
+  console.log('OBSERVATION', observation);
+  const types = ['spectral', 'continuum']; // 0: Zoom / 1: Continuum
   const observationTypeLabel: string = types[observation.type];
   return {
     //
