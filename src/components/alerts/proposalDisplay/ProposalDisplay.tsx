@@ -12,8 +12,7 @@ import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
-import { Alert, AlertColorTypes, Button } from '@ska-telescope/ska-gui-components';
-import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -192,12 +191,6 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().sciencePDF as unknown) as string}
           </Typography>
-          <Button
-            direction="column"
-            testId="scienceFileDownload"
-            onClick={downloadPdfToSignedUrl}
-            label={'download Science PDF'}
-          />
         </Grid>
       </Grid>
     </Grid>
@@ -288,21 +281,6 @@ export default function ProposalDisplay({
     </Grid>
   );
 
-  const downloadPdfToSignedUrl = async () => {
-    try {
-      const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-science.pdf`;
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-
-      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Download URL');
-
-      window.open(signedUrl, '_blank');
-    } catch (e) {
-      //TODO: error handling
-    }
-  };
-
   const technicalContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -312,12 +290,6 @@ export default function ProposalDisplay({
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().technicalPDF as unknown) as string}
-            <Button
-              direction="column"
-              testId="technicalFileDownload"
-              onClick={downloadPdfToSignedUrl}
-              label={'download Technical PDF'}
-            />
           </Typography>
         </Grid>
       </Grid>
