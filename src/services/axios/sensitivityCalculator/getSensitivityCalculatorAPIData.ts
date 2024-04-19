@@ -5,14 +5,13 @@ import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import {
   TYPE_ZOOM,
-  STATUS_OK,
-  STATUS_INITIAL,
   STATUS_PARTIAL,
   USE_LOCAL_DATA,
   STATUS_ERROR,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
+import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 
 export type SensCalcResult = {
   title?: string;
@@ -20,38 +19,6 @@ export type SensCalcResult = {
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
   section3?: { field: string; value: string; units: string }[];
-  section4?: { field: string; value: string; units: string }[];
-};
-
-export const SENSCALC_EMPTY: SensCalcResult = {
-  status: STATUS_INITIAL
-};
-
-export const SENSCALC_MOCKED: SensCalcResult = {
-  title: 'TITLE FIELD',
-  status: STATUS_OK,
-  section1: [
-    { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
-    { field: 'continuumConfusionNoise', value: '3.63', units: 'mjy/beam' },
-    { field: 'continuumTotalSensitivity', value: '3.64', units: 'mjy/beam' },
-    { field: 'continuumSynthBeamSize', value: '190.0" x 171.3"', units: '' },
-    { field: 'continuumSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
-  ],
-  section2: [
-    { field: 'continuumSpectralLineSensitivityWeighted', value: '(2.62)', units: '' },
-    { field: 'continuumSpectralLineConfusionNoise', value: '6.02', units: 'mjy/beam' },
-    { field: 'continuumSpectralLineTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-    { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-    { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-  ],
-  section3: [
-    { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
-    { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
-    { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-    { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-    { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
-  ],
-  section4: [{ field: 'integrationTime', value: '19.3', units: 'rad/m squared' }]
 };
 
 const SENSCALC_LOADING: SensCalcResult = {
@@ -60,7 +27,7 @@ const SENSCALC_LOADING: SensCalcResult = {
 
 function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
   if (USE_LOCAL_DATA) {
-    return Promise.resolve(SENSCALC_MOCKED);
+    return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
 
   const fetchSensCalc = async (observation: Observation, target: Target) => {
@@ -109,7 +76,6 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   };
 
   helpers.transform.trimObject(response);
-
   return response;
 }
 

@@ -5,6 +5,7 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
+import { OBS_TYPES } from '../../../../utils/constants';
 
 interface SensCalcDisplayMultipleProps {
   open: boolean;
@@ -27,6 +28,13 @@ export default function SensCalcDisplayMultiple({
 
   const { t } = useTranslation('pht');
 
+  const observationTypeLabel: string = OBS_TYPES[observation.type];
+  const label1 = `${observationTypeLabel}SensitivityWeighted`;
+  const label2 = `${observationTypeLabel}ConfusionNoise`;
+  const label3 = `${observationTypeLabel}TotalSensitivity`;
+  const label4 = `${observationTypeLabel}SynthBeamSize`;
+  const label5 = `${observationTypeLabel}SurfaceBrightnessSensitivity`;
+
   const columns = [
     {
       field: 'title',
@@ -35,65 +43,67 @@ export default function SensCalcDisplayMultiple({
     },
     {
       field: 'field1',
-      headerName: t('sensitivityCalculatorResults.continuumSensitivityWeighted'),
+      headerName: t(`sensitivityCalculatorResults.${label1}`),
       flex: 3
     },
     {
       field: 'field2',
-      headerName: t('sensitivityCalculatorResults.continuumConfusionNoise'),
+      headerName: t(`sensitivityCalculatorResults.${label2}`),
       flex: 3
     },
     {
       field: 'field3',
-      headerName: t('sensitivityCalculatorResults.continuumTotalSensitivity'),
+      headerName: t(`sensitivityCalculatorResults.${label3}`),
       flex: 3
     },
     {
       field: 'field4',
-      headerName: t('sensitivityCalculatorResults.continuumSynthBeamSize'),
+      headerName: t(`sensitivityCalculatorResults.${label4}`),
       flex: 3
     },
     {
       field: 'field5',
-      headerName: t('sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'),
+      headerName: t(`sensitivityCalculatorResults.${label5}`),
       flex: 3
     },
-
     {
       field: 'field6',
-      headerName: t('sensitivityCalculatorResults.spectralSensitivityWeighted'),
-      flex: 3
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSensitivityWeighted'),
+      flex: 3,
+      optional: params => params.value !== null
     },
     {
       field: 'field7',
-      headerName: t('sensitivityCalculatorResults.spectralConfusionNoise'),
-      flex: 3
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineConfusionNoise'),
+      flex: 3,
+      optional: params => params.value !== null
     },
     {
       field: 'field8',
-      headerName: t('sensitivityCalculatorResults.spectralTotalSensitivity'),
-      flex: 3
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineTotalSensitivity'),
+      flex: 3,
+      optional: params => params.value !== null
     },
     {
       field: 'field9',
-      headerName: t('sensitivityCalculatorResults.spectralSynthBeamSize'),
-      flex: 3
+      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSynthBeamSize'),
+      flex: 3,
+      optional: params => params.value !== null
     },
     {
       field: 'field10',
-      headerName: t('sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'),
-      flex: 3
+      headerName: t(
+        'sensitivityCalculatorResults.continuumSpectralLineSurfaceBrightnessSensitivity'
+      ),
+      flex: 3,
+      optional: params => params.value !== null
     },
 
     {
       field: 'field11',
-      headerName: t('sensitivityCalculatorResults.continuumIntegrationTime'),
-      flex: 3
-    },
-    {
-      field: 'field12',
-      headerName: t('sensitivityCalculatorResults.spectralIntegrationTime'),
-      flex: 3
+      headerName: t('sensitivityCalculatorResults.integrationTime'),
+      flex: 3,
+      optional: params => params.value !== null
     },
     {
       field: 'status',
@@ -107,6 +117,15 @@ export default function SensCalcDisplayMultiple({
     }
   ];
   const extendedColumns = [...columns];
+
+  // Filter out optional columns that don't have data
+  const filteredColumns = extendedColumns.filter(col => {
+    if (col.optional) {
+      return data.some(data => col.optional({ value: data[col.field] }));
+    } else {
+      return true;
+    }
+  });
 
   return (
     <Dialog
@@ -144,7 +163,7 @@ export default function SensCalcDisplayMultiple({
           {data ? (
             <DataGrid
               rows={data}
-              columns={extendedColumns}
+              columns={filteredColumns}
               height={500}
               showBorder={false}
               showMild
