@@ -12,7 +12,8 @@ import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes, Button } from '@ska-telescope/ska-gui-components';
+import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -281,6 +282,21 @@ export default function ProposalDisplay({
     </Grid>
   );
 
+  const downloadPdfToSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-technical.pdf`;
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Download URL');
+
+      window.open(signedUrl, '_blank');
+    } catch (e) {
+      //TODO: error handling
+    }
+  };
+
   const technicalContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -290,6 +306,12 @@ export default function ProposalDisplay({
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().technicalPDF as unknown) as string}
+            <Button
+              direction="column"
+              testId="technicalFileDownload"
+              onClick={downloadPdfToSignedUrl}
+              label={'download Technical PDF'}
+            />
           </Typography>
         </Grid>
       </Grid>
