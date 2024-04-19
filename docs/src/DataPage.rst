@@ -18,7 +18,6 @@ The Data Product Page contains the following:
 
   - Observatory Data Product
   - Observations
-  - Pipeline
   - Image Size
   - Pixel Size
   - Weighting

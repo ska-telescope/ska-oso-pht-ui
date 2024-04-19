@@ -30,7 +30,6 @@ export default function AddDataProduct() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
-  const [pipeline, setPipeline] = React.useState();
   const [observations, setObservations] = React.useState();
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
@@ -38,7 +37,6 @@ export default function AddDataProduct() {
 
   const { t } = useTranslation('pht');
   const FIELD_OBS = 'observatoryDataProductConfig.options';
-  const FIELD_PIPELINE = 'pipeline.options';
 
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
@@ -68,30 +66,7 @@ export default function AddDataProduct() {
     );
   };
 
-  const pipelineField = () => {
-    const OPTIONS = [1, 2, 3, 4, 5, 6, 7];
-
-    const getOptions = () => {
-      return OPTIONS.map(e => ({
-        label: t(FIELD_PIPELINE + '.' + e),
-        value: e
-      }));
-    };
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="pipeline"
-        value={pipeline}
-        setValue={setPipeline}
-        label={t('pipeline.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('pipeline.help'))}
-      />
-    );
-  };
-
-  const observationField = () => {
+  const observationsField = () => {
     const getOptions = () => {
       return getProposal().observations.map(e => ({
         label: e.obset_id,
@@ -164,7 +139,6 @@ export default function AddDataProduct() {
         id: highestId + 1,
         observatoryDataProduct,
         observations,
-        pipeline,
         imageSize,
         pixelSize,
         weighting
@@ -236,8 +210,7 @@ export default function AddDataProduct() {
             spacing={2}
           >
             <Grid item>{obsDataProductField()}</Grid>
-            <Grid item>{observationField()}</Grid>
-            <Grid item>{pipelineField()}</Grid>
+            <Grid item>{observationsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>

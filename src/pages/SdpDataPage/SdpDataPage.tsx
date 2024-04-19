@@ -70,16 +70,6 @@ export default function SdpDataPage() {
       }
     },
     {
-      field: 'pipeline',
-      headerName: 'PIPELINE',
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { pipeline: number } }) => {
-        const pipelineLabel = t(`pipeline.options.${e.row.pipeline}`);
-        return <Typography>{pipelineLabel}</Typography>;
-      }
-    },
-    {
       field: 'imageSize',
       headerName: 'IMAGE SIZE',
       flex: 1,
@@ -147,9 +137,6 @@ export default function SdpDataPage() {
         </FieldWrapper>
         <FieldWrapper label={t('observations.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.observations}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(`pipeline.options.${rec.pipeline}`)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.imageSize}</Typography>
