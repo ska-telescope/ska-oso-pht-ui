@@ -129,7 +129,6 @@ export default function SciencePage() {
             direction="column"
             testId="sciencefileDownload"
             onClick={downloadPdfToSignedUrl}
-            label={'download PDF'}
           />}
         </Grid>
         <Grid item xs={6}>

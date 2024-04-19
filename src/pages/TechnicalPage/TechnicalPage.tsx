@@ -129,7 +129,6 @@ export default function TechnicalPage() {
             direction="column"
             testId="technicalfileDownload"
             onClick={downloadPdfToSignedUrl}
-            label={'download PDF'}
           />}
         </Grid>
         <Grid item xs={6}>
