@@ -115,6 +115,7 @@ export const BANDWIDTH_TELESCOPE = [
 export const TEL = ['', 'Mid', 'Low'];
 
 export const MODE = ['Zoom', 'Continuum'];
+export const OBS_TYPES = ['spectral', 'continuum'];
 
 export const OBSERVATION = {
   array: [

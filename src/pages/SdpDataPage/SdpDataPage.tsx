@@ -61,13 +61,12 @@ export default function SdpDataPage() {
       }
     },
     {
-      field: 'pipeline',
-      headerName: 'PIPELINE',
+      field: 'observations',
+      headerName: 'OBSERVATIONS',
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { pipeline: number } }) => {
-        const pipelineLabel = t(`pipeline.options.${e.row.pipeline}`);
-        return <Typography>{pipelineLabel}</Typography>;
+      renderCell: (e: { row: { observations: string } }) => {
+        return <Typography>{e.row.observations}</Typography>;
       }
     },
     {
@@ -136,8 +135,8 @@ export default function SdpDataPage() {
             {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
           </Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('pipeline.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(`pipeline.options.${rec.pipeline}`)}</Typography>
+        <FieldWrapper label={t('observations.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.observations}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.imageSize}</Typography>
