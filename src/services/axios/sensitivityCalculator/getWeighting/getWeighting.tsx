@@ -81,9 +81,9 @@ async function GetWeighting(observation: Observation, inMode: number) {
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };
 
-  if (USE_LOCAL_DATA) {
-    return getMockData();
-  }
+  //if (USE_LOCAL_DATA) {
+  return getMockData();
+  //}
 
   try {
     const result = await axios.get(

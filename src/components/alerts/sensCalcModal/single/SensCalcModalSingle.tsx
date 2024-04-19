@@ -87,6 +87,10 @@ export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcD
             {data?.section3?.map(rec =>
               displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
             )}
+            {data?.section4?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+            {data?.section4?.map(rec =>
+              displayElement(t('sensitivityCalculatorResults.' + rec.field), rec.value, rec.field)
+            )}
           </>
         ) : (
           <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>

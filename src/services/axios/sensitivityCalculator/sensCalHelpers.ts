@@ -21,23 +21,36 @@ const sensCalHelpers = {
      *
      * @param sensitivity the sensitivity returned from the API in uJy/beam
      * @param precision the number of d.p. to display the result to
-     * @returns {string} the sensitivity as a string with the correct units and precision
+     * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
-    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): string {
+    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): object {
+      // TODO: create a proper type
       // TODO: add tests (cypress?)
       if (Number(sensitivity)) {
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
-          return `${sensitivity.toFixed(precision)} uJy/beam`;
+          return {
+            value: sensitivity.toFixed(precision),
+            units: 'uJy/beam'
+          };
+          // return `${sensitivity.toFixed(precision)} uJy/beam`;
         }
         if (sensitivity < 1e6) {
           // For 1000 - 999999 uJy/beam, display the value in mJy/beam
-          return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
+          return {
+            value: (sensitivity / 1e3).toFixed(precision),
+            units: 'mJy/beam'
+          };
+          // return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
         }
         // For values above 999999 uJy/beam, display the value in Jy/beam
-        return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
+        return {
+          value: (sensitivity / 1e6).toFixed(precision),
+          units: 'Jy/beam'
+        };
+        // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
-        return 'NaN';
+        return null; // TODO return proper error
       }
     },
     convertIntegrationTimeToSeconds(integrationTime: number, unit: string): number {
