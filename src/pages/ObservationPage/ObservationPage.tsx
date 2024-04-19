@@ -180,7 +180,7 @@ export default function ObservationPage() {
       field: 'weather',
       headerName: '',
       sortable: false,
-      width: 50,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Observation }) => {
         return <SensCalcDisplayMultiple observation={e.row} />;
@@ -190,7 +190,7 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('actions.label'),
       sortable: false,
-      flex: 1,
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Observation }) => (
         <>
@@ -219,7 +219,7 @@ export default function ObservationPage() {
       field: 'id',
       headerName: t('selected.label'),
       sortable: false,
-      width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -243,9 +243,19 @@ export default function ObservationPage() {
     },
     {
       field: 'vel',
-      headerName: '',
+      renderHeader: () => (
+        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+          <Grid mr={14}></Grid>
+          <Grid mr={10}>
+            <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+          </Grid>
+          <Grid>
+            <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+          </Grid>
+        </Grid>
+      ),
       sortable: false,
-      width: 50,
+      flex: 4,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Target }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -258,7 +268,8 @@ export default function ObservationPage() {
         }
         return '';
       }
-    },
+    }
+    /*
     {
       field: 'results',
       headerName: 'Results',
@@ -293,6 +304,7 @@ export default function ObservationPage() {
         return '';
       }
     }
+    */
   ];
   const extendedColumnsTargets = [...columnsTargets];
   const extendedColumnsTargetsSelected = [...columnsTargetsSelected];

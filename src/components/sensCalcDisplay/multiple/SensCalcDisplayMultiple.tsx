@@ -40,9 +40,9 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
 
   React.useEffect(() => {
     const arr = [];
-    targets?.map(rec => {
+    targets?.map(async rec => {
       const target: Target = getTarget(rec.targetId);
-      const values = getSensCalc(observation, target);
+      const values = await getSensCalc(observation, target);
       arr.push({
         id: rec.targetId,
         title: target?.name,
