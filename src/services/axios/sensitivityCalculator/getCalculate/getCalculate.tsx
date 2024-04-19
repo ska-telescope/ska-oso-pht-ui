@@ -17,7 +17,6 @@ const TELESCOPE_LOW_NUM = 1;
 const URL_CALCULATE = `calculate`;
 
 async function GetCalculate(observation: Observation) {
-  console.log('IN GETCALCULATE()');
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const getTelescope = () =>
@@ -25,7 +24,6 @@ async function GetCalculate(observation: Observation) {
 
   const getMode = () => {
     if (getTelescope() === TELESCOPE_LOW.code) {
-      console.log('MODE', MODE[observation.type].toLowerCase() + '/');
       return MODE[observation.type].toLowerCase() + '/';
     }
     return '';

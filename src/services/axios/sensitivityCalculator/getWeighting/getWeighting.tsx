@@ -22,14 +22,11 @@ const TELESCOPE_LOW_NUM = 1;
 const URL_WEIGHTING = `weighting`;
 
 async function GetWeighting(observation: Observation, inMode: number) {
-  console.log('IN GETWEIGHTING()');
-  console.log('inMode', inMode);
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const getTelescope = () =>
     observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
 
-  console.log('TELESCOPE_LOW.code', TELESCOPE_LOW.code);
   const getMode = () => {
     if (getTelescope() === TELESCOPE_LOW.code) {
       return MODE[inMode].toLowerCase() + '/';
@@ -78,7 +75,6 @@ async function GetWeighting(observation: Observation, inMode: number) {
   };
 
   const getMockData = () => {
-    console.log(':::IN GETMOCKDATA');
     if (getTelescope() === TELESCOPE_LOW.code) {
       return observation.type ? MockResponseLowWeightingContinuum : MockResponseLowWeightingLine;
     }
@@ -87,8 +83,6 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   //if (USE_LOCAL_DATA) {
   const data = getMockData();
-  console.log('/////////////////////////////////////////////////////////');
-  console.log('DATA', data);
   return getMockData();
   //}
 
