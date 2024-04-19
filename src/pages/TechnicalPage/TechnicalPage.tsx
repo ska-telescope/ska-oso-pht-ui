@@ -127,7 +127,7 @@ export default function TechnicalPage() {
           />
           <Button
             direction="column"
-            testId="fileDownload"
+            testId="technicalfileDownload"
             onClick={downloadPdfToSignedUrl}
             label={'download PDF'}
           />

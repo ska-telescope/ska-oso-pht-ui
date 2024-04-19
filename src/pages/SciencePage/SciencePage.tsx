@@ -126,7 +126,7 @@ export default function SciencePage() {
           />
           <Button
             direction="column"
-            testId="fileDownload"
+            testId="sciencefileDownload"
             onClick={downloadPdfToSignedUrl}
             label={'download PDF'}
           />
