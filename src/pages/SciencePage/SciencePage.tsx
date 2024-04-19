@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
@@ -125,11 +125,13 @@ export default function SciencePage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
-          {getProposal().sciencePDF != null && <Download
-            direction="column"
-            testId="sciencefileDownload"
-            onClick={downloadPdfToSignedUrl}
-          />}
+          {getProposal().sciencePDF != null && (
+            <Download
+              direction="column"
+              testId="sciencefileDownload"
+              onClick={downloadPdfToSignedUrl}
+            />
+          )}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
