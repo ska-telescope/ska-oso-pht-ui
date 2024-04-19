@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Button, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import {FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
@@ -10,7 +10,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import GetDownloadPDF from '../../services/axios/getDownloadPDF/getDownloadPDF';
+import { Download } from '@mui/icons-material';
 
 const PAGE = 6;
 
@@ -125,12 +125,12 @@ export default function TechnicalPage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
-          <Button
+          {getProposal().technicalPDF != null && <Download
             direction="column"
             testId="technicalfileDownload"
             onClick={downloadPdfToSignedUrl}
             label={'download PDF'}
-          />
+          />}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
