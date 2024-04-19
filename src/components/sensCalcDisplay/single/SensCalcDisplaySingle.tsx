@@ -1,8 +1,7 @@
 import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import getSensCalc, {
-  SENSCALC_EMPTY
-} from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import { SENSCALC_EMPTY_MOCKED } from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
 import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
@@ -22,13 +21,15 @@ export default function SensCalcDisplaySingle({
   target
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [results, setResults] = React.useState(SENSCALC_EMPTY);
+  const [results, setResults] = React.useState(SENSCALC_EMPTY_MOCKED);
   const types = ['spectral', 'continuum'];
   const observationTypeLabel: string = types[observation.type];
 
   React.useEffect(() => {
     async function fetchResults() {
-      const sensCalcResult = selected ? await getSensCalc(observation, target) : SENSCALC_EMPTY;
+      const sensCalcResult = selected
+        ? await getSensCalc(observation, target)
+        : SENSCALC_EMPTY_MOCKED;
       setResults(sensCalcResult);
     }
     fetchResults();
