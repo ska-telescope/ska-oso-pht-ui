@@ -9,6 +9,8 @@ import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import { Download } from '@mui/icons-material';
 
 const PAGE = 3;
 
@@ -62,6 +64,21 @@ export default function SciencePage() {
     }
   };
 
+  const downloadPdfToSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-science.pdf`;
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Download URL');
+
+      window.open(signedUrl, '_blank');
+    } catch (e) {
+      //TODO: error handling
+    }
+  };
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -108,6 +125,13 @@ export default function SciencePage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
+          {getProposal().sciencePDF != null && (
+            <Download
+              direction="column"
+              testId="sciencefileDownload"
+              onClick={downloadPdfToSignedUrl}
+            />
+          )}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
