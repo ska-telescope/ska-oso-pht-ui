@@ -6,6 +6,7 @@ import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
+import { OBS_TYPES } from '../../../utils/constants';
 
 const SIZE = 20;
 
@@ -22,8 +23,7 @@ export default function SensCalcDisplaySingle({
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY_MOCKED);
-  const types = ['spectral', 'continuum'];
-  const observationTypeLabel: string = types[observation.type];
+  const observationTypeLabel: string = OBS_TYPES[observation.type];
 
   React.useEffect(() => {
     async function fetchResults() {

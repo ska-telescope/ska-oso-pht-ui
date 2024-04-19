@@ -6,6 +6,7 @@ import {
 import Observation from 'utils/types/observation';
 import { SensCalcResult } from './getSensitivityCalculatorAPIData';
 import { STATUS_OK } from '../../../utils/constants';
+import { OBS_TYPES } from '../../../utils/constants';
 
 let confusionNoise: number;
 let weightedSensitivity: number;
@@ -23,8 +24,7 @@ export default function calculateSensitivityCalculatorResults(
   totalSensitivityDisplayValue = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  const types = ['spectral', 'continuum']; // 0: Zoom / 1: Continuum
-  const observationTypeLabel: string = types[observation.type];
+  const observationTypeLabel: string = OBS_TYPES[observation.type];
   return {
     //
     // TODO : Current values are the same as the MOCKED results, but the value and units fields need to be mapped as required

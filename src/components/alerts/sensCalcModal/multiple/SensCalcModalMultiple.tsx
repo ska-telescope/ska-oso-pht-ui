@@ -5,6 +5,7 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
+import { OBS_TYPES } from '../../../../utils/constants';
 
 interface SensCalcDisplayMultipleProps {
   open: boolean;
@@ -27,8 +28,7 @@ export default function SensCalcDisplayMultiple({
 
   const { t } = useTranslation('pht');
 
-  const types = ['spectral', 'continuum'];
-  const observationTypeLabel: string = types[observation.type];
+  const observationTypeLabel: string = OBS_TYPES[observation.type];
   const label1 = `${observationTypeLabel}SensitivityWeighted`;
   const label2 = `${observationTypeLabel}ConfusionNoise`;
   const label3 = `${observationTypeLabel}TotalSensitivity`;
