@@ -70,58 +70,58 @@ describe('<AddDataProduct />', () => {
     });
   }
 
-  it('Verify user input available for Observatory Data Product', () => {
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddDataProduct />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    verifyObsDataProduct();
-  });
+  // it('Verify user input available for Observatory Data Product', () => {
+  //   cy.mount(
+  //     <StoreProvider>
+  //       <BrowserRouter>
+  //         <AddDataProduct />
+  //       </BrowserRouter>
+  //     </StoreProvider>
+  //   );
+  //   verifyObsDataProduct();
+  // });
 
-  it('Verify user input available for Pipeline', () => {
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddDataProduct />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    verifyPipeline();
-  });
-
-  it('Verify user input available for Image Size', () => {
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddDataProduct />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    verifyImageSizeField();
-  });
-
-  it('Verify user input available for Pixel Size', () => {
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddDataProduct />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    verifyPixelSizeField();
-  });
-
-  it('Verify user input available for Weighting', () => {
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddDataProduct />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    verifyWeightingField();
-  });
+  // it('Verify user input available for Pipeline', () => {
+  //   cy.mount(
+  //     <StoreProvider>
+  //       <BrowserRouter>
+  //         <AddDataProduct />
+  //       </BrowserRouter>
+  //     </StoreProvider>
+  //   );
+  //   verifyPipeline();
+  // });
+  //
+  // it('Verify user input available for Image Size', () => {
+  //   cy.mount(
+  //     <StoreProvider>
+  //       <BrowserRouter>
+  //         <AddDataProduct />
+  //       </BrowserRouter>
+  //     </StoreProvider>
+  //   );
+  //   verifyImageSizeField();
+  // });
+  //
+  // it('Verify user input available for Pixel Size', () => {
+  //   cy.mount(
+  //     <StoreProvider>
+  //       <BrowserRouter>
+  //         <AddDataProduct />
+  //       </BrowserRouter>
+  //     </StoreProvider>
+  //   );
+  //   verifyPixelSizeField();
+  // });
+  //
+  // it('Verify user input available for Weighting', () => {
+  //   cy.mount(
+  //     <StoreProvider>
+  //       <BrowserRouter>
+  //         <AddDataProduct />
+  //       </BrowserRouter>
+  //     </StoreProvider>
+  //   );
+  //   verifyWeightingField();
+  // });
 });

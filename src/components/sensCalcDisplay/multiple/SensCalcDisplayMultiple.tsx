@@ -47,18 +47,44 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
         id: rec.targetId,
         title: target?.name,
         status: values.status,
-        field1: values.section1?.length ? values.section1[0].value : null,
-        field2: values.section1?.length ? values.section1[1].value : null,
-        field3: values.section1?.length ? values.section1[2].value : null,
-        field4: values.section1?.length ? values.section1[3].value : null,
-        field5: values.section1?.length ? values.section1[4].value : null,
-        field6: values.section1?.length ? values.section2[0].value : null,
-        field7: values.section1?.length ? values.section2[1].value : null,
-        field8: values.section1?.length ? values.section2[2].value : null,
-        field9: values.section1?.length ? values.section2[3].value : null,
-        field10: values.section1?.length ? values.section2[4].value : null,
-        field11: values.section1?.length ? values.section3[0].value : null,
-        field12: values.section1?.length ? values.section3[1].value : null
+        field1: values.section1?.length
+          ? `${values.section1[0].value} ${values.section1[0].units}`
+          : null,
+        field2: values.section1?.length
+          ? `${values.section1[1].value} ${values.section1[1].units}`
+          : null,
+        field3: values.section1?.length
+          ? `${values.section1[2].value} ${values.section1[2].units}`
+          : null,
+        field4: values.section1?.length
+          ? `${values.section1[3].value} ${values.section1[3].units}`
+          : null,
+        field5: values.section1?.length
+          ? `${values.section1[4].value} ${values.section1[4].units}`
+          : null,
+        field6:
+          values.section1?.length && values.section2?.length >= 1
+            ? `${values.section2[0].value} ${values.section2[0].units}`
+            : null,
+        field7:
+          values.section1?.length && values.section2?.length >= 2
+            ? `${values.section2[1].value} ${values.section2[1].units}`
+            : null,
+        field8:
+          values.section1?.length && values.section2?.length >= 3
+            ? `${values.section2[2].value} ${values.section2[2].units}`
+            : null,
+        field9:
+          values.section1?.length && values.section2?.length >= 4
+            ? `${values.section2[3].value} ${values.section2[3].units}`
+            : null,
+        field10:
+          values.section1?.length && values.section2?.length >= 5
+            ? `${values.section2[4].value} ${values.section2[4].units}`
+            : null,
+        field11: values.section1?.length
+          ? `${values.section3[0].value} ${values.section3[0].units}`
+          : null
       });
       return true;
     });

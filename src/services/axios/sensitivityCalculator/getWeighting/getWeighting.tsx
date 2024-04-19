@@ -82,6 +82,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
   };
 
   //if (USE_LOCAL_DATA) {
+  const data = getMockData();
   return getMockData();
   //}
 
