@@ -66,6 +66,10 @@
   "actions": {
     "label": "Actions"
   },
+  "addDataProductObservations": {
+    "label": "Observations",
+    "help": "OBSERVATIONS HELP"
+  },
   "addObservation": {
     "minDetailDisplayRows": "5"
   },
@@ -305,20 +309,6 @@
     "label": "Primary Investigator",
     "help": "PI HELP",
     "short": "PI"
-  },
-  "pipeline": {
-    "label": "Pipeline",
-    "help": "PIPELINE HELP",
-    "helper": "Please enter your pipeline information",
-    "options": {
-      "1": "Visibility receive",
-      "2": "‘Real-time’ pointing calibration'",
-      "3": "Visibility pre-processing",
-      "4": "Mid self-cal / ICal",
-      "5": "Low self-cal / ICal",
-      "6": "‘Real-time’ gain calibration",
-      "7": "Distributed Gridding/Imaging"
-    }
   },
   "pixelSize": {
     "label": "Pixel Size",
