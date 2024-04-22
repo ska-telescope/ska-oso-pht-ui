@@ -31,15 +31,33 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
   }
 
   const fetchSensCalc = async (observation: Observation, target: Target) => {
-    return await getSensitivityCalculatorAPIData(observation, target);
+    try {
+      const response = await getSensitivityCalculatorAPIData(observation, target);
+      return response;
+    } catch (e) {
+      return { error: e };
+    }
   };
 
   return fetchSensCalc(observation, target)
     .then(output => {
+      if (output.weighting.error || output.calculate.error) {
+        const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+        const errorResults = Object.assign({}, output, { status: STATUS_ERROR });
+        const errorObject = Object.keys(output).reduce((accumulator, key) => {
+          const subObject = output[key];
+          if (subObject && subObject.error) {
+            accumulator[key] = subObject.error;
+          }
+          return accumulator;
+        }, {});
+        // return results as SensCalcResult;
+        return errorResults as SensCalcResult; // TODO create a sensCalResponseError type
+      }
       const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
       return results;
     })
-    .catch(() => {
+    .catch(e => {
       const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
       return results as SensCalcResult;
     });

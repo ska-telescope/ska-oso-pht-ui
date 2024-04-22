@@ -4,7 +4,8 @@ import {
   OBSERVATION,
   USE_LOCAL_DATA,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
-  AXIOS_CONFIG
+  AXIOS_CONFIG,
+  TELESCOPE_LOW_NUM
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -18,7 +19,6 @@ import Observation from 'utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-const TELESCOPE_LOW_NUM = 1;
 const URL_WEIGHTING = `weighting`;
 
 async function GetWeighting(observation: Observation, inMode: number) {
@@ -46,7 +46,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
-      calculator_mode: MODE[inMode],
+      calculator_mode: MODE[inMode].toLowerCase(),
       taper: observation.tapering?.toString()
     });
     return params;
@@ -81,10 +81,9 @@ async function GetWeighting(observation: Observation, inMode: number) {
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };
 
-  //if (USE_LOCAL_DATA) {
-  const data = getMockData();
-  return getMockData();
-  //}
+  if (USE_LOCAL_DATA) {
+    return getMockData();
+  }
 
   try {
     const result = await axios.get(
@@ -93,7 +92,11 @@ async function GetWeighting(observation: Observation, inMode: number) {
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+    const errorObject = {
+      title: e.response.data.title,
+      detail: e.response.data.detail
+    };
+    return { error: errorObject };
   }
 }
 

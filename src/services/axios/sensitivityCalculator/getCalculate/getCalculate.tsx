@@ -5,7 +5,8 @@ import {
   OBSERVATION,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   TYPE_CONTINUUM,
-  USE_LOCAL_DATA
+  USE_LOCAL_DATA,
+  TELESCOPE_LOW_NUM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -13,7 +14,6 @@ import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-const TELESCOPE_LOW_NUM = 1;
 const URL_CALCULATE = `calculate`;
 
 async function GetCalculate(observation: Observation) {
@@ -131,9 +131,9 @@ async function GetCalculate(observation: Observation) {
     return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
   };
 
-  //if (USE_LOCAL_DATA) {
-  return getMockData();
-  //}
+  if (USE_LOCAL_DATA) {
+    return getMockData();
+  }
 
   try {
     const result = await axios.get(
@@ -142,7 +142,11 @@ async function GetCalculate(observation: Observation) {
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+    const errorObject = {
+      title: e.response.data.title,
+      detail: e.response.data.detail
+    };
+    return { error: errorObject };
   }
 }
 
