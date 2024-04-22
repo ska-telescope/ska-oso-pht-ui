@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL } from '../../../utils/constants';
+import { AXIOS_CONFIG } from '../../../utils/constants';
 
 async function GetDownloadPDF(urlPath, selectedFile) {
   const URL_PATH = urlPath;

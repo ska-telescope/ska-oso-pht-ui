@@ -42,15 +42,15 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
   return fetchSensCalc(observation, target)
     .then(output => {
       if (output.weighting.error || output.calculate.error) {
-        const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+        // const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
         const errorResults = Object.assign({}, output, { status: STATUS_ERROR });
-        const errorObject = Object.keys(output).reduce((accumulator, key) => {
-          const subObject = output[key];
-          if (subObject && subObject.error) {
-            accumulator[key] = subObject.error;
-          }
-          return accumulator;
-        }, {});
+        // const errorObject = Object.keys(output).reduce((accumulator, key) => {
+        //   const subObject = output[key];
+        //   if (subObject && subObject.error) {
+        //     accumulator[key] = subObject.error;
+        //   }
+        //   return accumulator;
+        // }, {});
         // return results as SensCalcResult;
         return errorResults as SensCalcResult; // TODO create a sensCalResponseError type
       }

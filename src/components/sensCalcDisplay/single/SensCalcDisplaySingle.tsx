@@ -2,11 +2,12 @@ import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { SENSCALC_EMPTY_MOCKED } from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
-import { Grid, IconButton, Typography, Tooltip } from '@mui/material';
+import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { OBS_TYPES } from '../../../utils/constants';
+import { t } from 'i18next';
 
 const SIZE = 20;
 
@@ -49,9 +50,9 @@ export default function SensCalcDisplaySingle({
       } else if (response?.calculate?.error) {
         text += `${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`;
       }
-      setTooltipError(text);
+      setTooltipError(' - ' + text);
     } else {
-      setTooltipError(null);
+      setTooltipError('');
     }
   };
 
@@ -76,21 +77,24 @@ export default function SensCalcDisplaySingle({
   return (
     <>
       <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-        <Grid mr={10}>
-          <Tooltip title={toolTipError} id="SensCalTooltip">
-            <IconButton
-              aria-label="SensCalc Status"
-              style={{ cursor: 'hand' }}
-              onClick={IconClicked}
-            >
-              <StatusIcon ariaTitle="" testId="statusId" icon level={results.status} size={SIZE} />
-            </IconButton>
-          </Tooltip>
+        <Grid item xs={2}>
+          <IconButton style={{ cursor: 'hand' }} onClick={IconClicked}>
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + results.status),
+                error: toolTipError
+              })}
+              testId="statusId"
+              icon
+              level={results.status}
+              size={SIZE}
+            />
+          </IconButton>
         </Grid>
-        <Grid mr={10}>
+        <Grid item xs={5}>
           <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
         </Grid>
-        <Grid>
+        <Grid item xs={5}>
           <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
         </Grid>
       </Grid>

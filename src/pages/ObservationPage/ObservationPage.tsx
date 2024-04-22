@@ -207,55 +207,46 @@ export default function ObservationPage() {
   const extendedColumnsObservations = [...columns];
 
   const columnsTargets = [
-    { field: 'name', headerName: t('name.label'), width: 200 },
-    { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
-    { field: 'dec', headerName: t('declination.label'), width: 150 }
-  ];
-  const columnsTargetsSelected = [
-    { field: 'name', headerName: t('name.label'), width: 80 },
-    { field: 'ra', headerName: t('rightAscension.label'), width: 150 },
-    { field: 'dec', headerName: t('declination.label'), width: 150 },
     {
       field: 'id',
-      headerName: t('selected.label'),
+      headerName: '',
       sortable: false,
-      flex: 1,
+      flex: 0.6,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
-        const isSelected = isTargetSelected(e.row.id);
-
-        if (currentObservation > 0) {
-          return (
-            <Grid container direction="row" alignContent="centre" alignItems="space-around">
-              <Grid item>
-                <TickBox
-                  label=""
-                  testId="linkedTickBox"
-                  checked={isSelected}
-                  onChange={() => targetSelectedToggle(e.row.id)}
-                />
-              </Grid>
-            </Grid>
-          );
-        }
-        return '';
+        return currentObservation > 0 ? (
+          <TickBox
+            label=""
+            testId="linkedTickBox"
+            checked={isTargetSelected(e.row.id)}
+            onChange={() => targetSelectedToggle(e.row.id)}
+          />
+        ) : (
+          <></>
+        );
       }
     },
+    { field: 'name', headerName: t('name.label'), flex: 1.5 },
+    { field: 'ra', headerName: t('rightAscension.label'), flex: 1 },
+    { field: 'dec', headerName: t('declination.label'), flex: 1 },
     {
       field: 'vel',
-      renderHeader: () => (
-        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-          <Grid mr={14}></Grid>
-          <Grid mr={10}>
-            <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+      renderHeader: () =>
+        currentObservation > 0 ? (
+          <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+            <Grid mr={10}></Grid>
+            <Grid mr={10}>
+              <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
+            </Grid>
+            <Grid>
+              <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+            </Grid>
           </Grid>
-          <Grid>
-            <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
-          </Grid>
-        </Grid>
-      ),
+        ) : (
+          <></>
+        ),
       sortable: false,
-      flex: 4,
+      flex: 5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Target }) => {
         const isSelected = isTargetSelected(e.row.id);
@@ -269,45 +260,8 @@ export default function ObservationPage() {
         return '';
       }
     }
-    /*
-    {
-      field: 'results',
-      headerName: 'Results',
-      sortable: false,
-      flex: 2,
-      disableClickEventBubbling: true,
-      width: 200,
-      renderCell: (e: { row: { id: number } }) => {
-        if (currentObservation > 0) {
-          // TODO move content of sens cal results cell into SensCalcDisplaySingle component
-          return (
-            <Grid container direction="column">
-              <Grid container direction="row">
-                <Grid item xs={6}>
-                  {t('sensitivityCalculatorResults.totalSensitivity')}
-                </Grid>
-                <Grid item xs={6}>
-                  TODO
-                </Grid>
-              </Grid>
-              <Grid container direction="row">
-                <Grid item xs={6}>
-                  {t('sensitivityCalculatorResults.integrationTime')}
-                </Grid>
-                <Grid item xs={6}>
-                  TODO
-                </Grid>
-              </Grid>
-            </Grid>
-          );
-        }
-        return '';
-      }
-    }
-    */
   ];
   const extendedColumnsTargets = [...columnsTargets];
-  const extendedColumnsTargetsSelected = [...columnsTargetsSelected];
 
   const ClickObservationRow = (e: { id: number }) => {
     setCurrentObservation(e.id);
@@ -396,9 +350,7 @@ export default function ObservationPage() {
               {getProposal().targets.length > 0 && (
                 <DataGrid
                   rows={filteredTargets()}
-                  columns={
-                    currentObservation > 0 ? extendedColumnsTargetsSelected : extendedColumnsTargets
-                  }
+                  columns={extendedColumnsTargets}
                   height={390}
                   showBorder={false}
                   showMild
