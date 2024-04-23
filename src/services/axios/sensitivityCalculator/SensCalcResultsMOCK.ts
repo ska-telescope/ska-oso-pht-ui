@@ -8,6 +8,7 @@ export const SENSCALC_EMPTY_MOCKED: SensCalcResult = {
 export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
   title: 'TITLE FIELD',
   status: STATUS_OK,
+  error: '',
   section1: [
     { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam (6.10)' },
     { field: 'continuumConfusionNoise', value: '3.63', units: 'mjy/beam' },
@@ -28,6 +29,7 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
 export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
   title: 'TITLE FIELD',
   status: STATUS_OK,
+  error: '',
   section1: [
     { field: 'spectralSensitivityWeighted', value: '84.47', units: 'ujy/beam' },
     { field: 'spectralConfusionNoise', value: '3.63', units: 'mjy/beam' },

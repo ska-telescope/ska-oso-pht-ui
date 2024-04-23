@@ -139,7 +139,7 @@ export default function ObservationPage() {
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { obset_id: number } }) => {
-        return <Typography>{'obs-' + t(`${e.row.obset_id}`)}</Typography>;
+        return <Typography>{e.row.obset_id}</Typography>;
       }
     },
     {
@@ -170,7 +170,7 @@ export default function ObservationPage() {
     {
       field: 'type',
       headerName: t('type.label'),
-      flex: 0.5,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => (
         <Typography>{t(`observationType.${e.row.type}`)}</Typography>
@@ -180,7 +180,7 @@ export default function ObservationPage() {
       field: 'weather',
       headerName: '',
       sortable: false,
-      flex: 1,
+      flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Observation }) => {
         return <SensCalcDisplayMultiple observation={e.row} />;

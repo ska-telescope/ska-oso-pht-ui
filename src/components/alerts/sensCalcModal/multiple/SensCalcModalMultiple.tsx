@@ -45,7 +45,6 @@ export default function SensCalcDisplayMultiple({
         {t(`sensitivityCalculatorResults.${inStr}`)
           .split(' ')
           .map(rec => HeaderLine(rec))}
-        {HeaderLine(inUnits)}
       </Stack>
     );
   };
@@ -61,58 +60,58 @@ export default function SensCalcDisplayMultiple({
       field: 'field1',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay(label1, data ? data[0]?.units1 : '')
+      renderHeader: () => headerDisplay(label1, '')
     },
     {
       field: 'field2',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay(label2, data ? data[0]?.units2 : '')
+      renderHeader: () => headerDisplay(label2, '')
     },
     {
       field: 'field3',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay(label3, data ? data[0]?.units3 : '')
+      renderHeader: () => headerDisplay(label3, '')
     },
     {
       field: 'field4',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay(label4, data ? data[0]?.units4 : '')
+      renderHeader: () => headerDisplay(label4, '')
     },
     {
       field: 'field5',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay(label5, data ? data[0]?.units5 : '')
+      renderHeader: () => headerDisplay(label5, '')
     },
     {
       field: 'field6',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay('spectralSensitivityWeighted', data ? data[0]?.units6 : ''),
+      renderHeader: () => headerDisplay('spectralSensitivityWeighted', ''),
       optional: params => params.value !== null
     },
     {
       field: 'field7',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay('spectralConfusionNoise', data ? data[0]?.units7 : ''),
+      renderHeader: () => headerDisplay('spectralConfusionNoise', ''),
       optional: params => params.value !== null
     },
     {
       field: 'field8',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay('spectralTotalSensitivity', data ? data[0]?.units8 : ''),
+      renderHeader: () => headerDisplay('spectralTotalSensitivity', ''),
       optional: params => params.value !== null
     },
     {
       field: 'field9',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay('spectralSynthBeamSize', data ? data[0]?.units9 : ''),
+      renderHeader: () => headerDisplay('spectralSynthBeamSize', ''),
       optional: params => params.value !== null
     },
     {
@@ -120,14 +119,14 @@ export default function SensCalcDisplayMultiple({
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
       renderHeader: () =>
-        headerDisplay('spectralSurfaceBrightnessSensitivity', data ? data[0]?.units10 : ''),
+        headerDisplay('spectralSurfaceBrightnessSensitivity', ''),
       optional: params => params.value !== null
     },
     {
       field: 'field11',
       flex: 3,
       AutoResizeColumnHeadersHeight: true,
-      renderHeader: () => headerDisplay('integrationTime', data ? data[0]?.units11 : ''),
+      renderHeader: () => headerDisplay('integrationTime', ''),
       optional: params => params.value !== null
     },
     {
@@ -189,6 +188,7 @@ export default function SensCalcDisplayMultiple({
             <DataGrid
               rows={data}
               columns={filteredColumns}
+              columnHeaderHeight={100}
               height={500}
               showBorder={false}
               showMild

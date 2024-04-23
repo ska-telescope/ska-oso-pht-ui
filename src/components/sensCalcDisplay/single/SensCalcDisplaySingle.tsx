@@ -43,16 +43,15 @@ export default function SensCalcDisplaySingle({
   };
 
   const displayToolTipMessage = response => {
+    setTooltipError('');
     if (response.status === 1) {
-      let text: string = '';
-      if (response?.weighting?.error) {
-        text = `${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`;
-      } else if (response?.calculate?.error) {
-        text += `${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`;
+      if (response?.weighting?.error?.title) {
+        setTooltipError(`${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`);
+      } else if (response?.calculate?.error.title) {
+        setTooltipError(`${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`);
+      } else {
+        setTooltipError(t('sensitivityCalculatorResults.errorUnknown'));
       }
-      setTooltipError(' - ' + text);
-    } else {
-      setTooltipError('');
     }
   };
 
@@ -81,8 +80,7 @@ export default function SensCalcDisplaySingle({
           <IconButton style={{ cursor: 'hand' }} onClick={IconClicked}>
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusValue.' + results.status),
-                error: toolTipError
+                status: t('statusValue.' + results.status)
               })}
               testId="statusId"
               icon
@@ -91,12 +89,18 @@ export default function SensCalcDisplaySingle({
             />
           </IconButton>
         </Grid>
-        <Grid item xs={5}>
-          <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
-        </Grid>
-        <Grid item xs={5}>
-          <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
-        </Grid>
+        {toolTipError?.length === 0 && <Grid item xs={5}>
+            <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
+          </Grid>
+        }
+        {toolTipError?.length === 0 && <Grid item xs={5}>
+            <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
+          </Grid>
+        }
+        {toolTipError?.length > 0 && <Grid item xs={10}>
+            <Typography>{toolTipError}</Typography>
+          </Grid>
+        }
       </Grid>
       <SensCalcModalSingle open={openDialog} onClose={() => setOpenDialog(false)} data={results} />
     </>

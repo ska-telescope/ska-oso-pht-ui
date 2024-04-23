@@ -83,6 +83,7 @@
   },
   "arrayConfiguration": {
     "label": "Array Configuration",
+    "short": "Array",
     "help": "Array HELP",
     "0": "Not specified",
     "1": "MID",
@@ -257,7 +258,7 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "obset_id"
+    "id": "Id"
   },
   "observationType": {
     "label": "Observation Type",
@@ -462,8 +463,9 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "total sensitivity",
-    "status": "Status : {{status}} {{error}}"
+    "totalSensitivity": "Total sensitivity",
+    "status": "Status : {{status}}",
+    "errorUnknown": "The error is undetermined at this time"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
