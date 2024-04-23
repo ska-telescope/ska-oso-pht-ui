@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, CardContent, CardHeader, Dialog, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
 import CancelButton from '../../../button/cancel/CancelButton';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
@@ -12,6 +12,7 @@ interface SensCalcDisplayMultipleProps {
   onClose: Function;
   data: any;
   observation: Observation;
+  level: number;
 }
 
 const SIZE = 30;
@@ -20,7 +21,8 @@ export default function SensCalcDisplayMultiple({
   open,
   onClose,
   data,
-  observation
+  observation,
+  level
 }: SensCalcDisplayMultipleProps) {
   const handleClose = () => {
     onClose();
@@ -35,74 +37,95 @@ export default function SensCalcDisplayMultiple({
   const label4 = `${observationTypeLabel}SynthBeamSize`;
   const label5 = `${observationTypeLabel}SurfaceBrightnessSensitivity`;
 
+  let i = 0; // Just here so that the key warning is dealt with
+
+  function HeaderLine(str: string) {
+    return <Typography key={i++}>{str}</Typography>;
+  }
+
+  const headerDisplay = (inStr: string, inUnits: string) => {
+    const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
+    const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
+    return <Stack>{sent.split(' ').map(rec => HeaderLine(rec))}</Stack>;
+  };
+
   const columns = [
     {
       field: 'title',
-      headerName: t('sensitivityCalculatorResults.targetName'),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('targetName', '')
     },
     {
       field: 'field1',
-      headerName: t(`sensitivityCalculatorResults.${label1}`),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label1, 'units1')
     },
     {
       field: 'field2',
-      headerName: t(`sensitivityCalculatorResults.${label2}`),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label2, 'units2')
     },
     {
       field: 'field3',
-      headerName: t(`sensitivityCalculatorResults.${label3}`),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label3, 'units3')
     },
     {
       field: 'field4',
-      headerName: t(`sensitivityCalculatorResults.${label4}`),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label4, 'units4')
     },
     {
       field: 'field5',
-      headerName: t(`sensitivityCalculatorResults.${label5}`),
-      flex: 3
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label5, 'units5')
     },
     {
       field: 'field6',
-      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSensitivityWeighted'),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSensitivityWeighted', 'units6'),
       optional: params => params.value !== null
     },
     {
       field: 'field7',
-      headerName: t('sensitivityCalculatorResults.continuumSpectralLineConfusionNoise'),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralConfusionNoise', 'units7'),
       optional: params => params.value !== null
     },
     {
       field: 'field8',
-      headerName: t('sensitivityCalculatorResults.continuumSpectralLineTotalSensitivity'),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralTotalSensitivity', 'units8'),
       optional: params => params.value !== null
     },
     {
       field: 'field9',
-      headerName: t('sensitivityCalculatorResults.continuumSpectralLineSynthBeamSize'),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSynthBeamSize', 'units9'),
       optional: params => params.value !== null
     },
     {
       field: 'field10',
-      headerName: t(
-        'sensitivityCalculatorResults.continuumSpectralLineSurfaceBrightnessSensitivity'
-      ),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity', 'units10'),
       optional: params => params.value !== null
     },
-
     {
       field: 'field11',
-      headerName: t('sensitivityCalculatorResults.integrationTime'),
       flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('integrationTime', 'units11'),
       optional: params => params.value !== null
     },
     {
@@ -111,8 +134,19 @@ export default function SensCalcDisplayMultiple({
       sortable: false,
       width: 50,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: any }) => {
-        return <StatusIcon ariaTitle="" testId="statusId" icon level={e.row.status} size={SIZE} />;
+      renderCell: (e: { row: { status: number; error: string } }) => {
+        return (
+          <StatusIcon
+            ariaTitle={t('sensitivityCalculatorResults.status', {
+              status: t('statusValue.' + e.row.status),
+              error: e.row.error
+            })}
+            testId="statusId"
+            icon
+            level={e.row.status}
+            size={SIZE}
+          />
+        );
       }
     }
   ];
@@ -146,7 +180,7 @@ export default function SensCalcDisplayMultiple({
               ariaDescription=""
               testId="statusId"
               icon
-              level={5}
+              level={level}
               size={SIZE}
               text=""
             />
@@ -164,6 +198,7 @@ export default function SensCalcDisplayMultiple({
             <DataGrid
               rows={data}
               columns={filteredColumns}
+              columnHeaderHeight={100}
               height={500}
               showBorder={false}
               showMild

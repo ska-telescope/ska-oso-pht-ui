@@ -66,10 +66,6 @@
   "actions": {
     "label": "Actions"
   },
-  "addDataProductObservations": {
-    "label": "Observations",
-    "help": "OBSERVATIONS HELP"
-  },
   "addObservation": {
     "minDetailDisplayRows": "5"
   },
@@ -117,9 +113,8 @@
     "toolTip": "This will clear the file upload selection"
   },
   "cloneProposal": {
-    "confirm": "Clone this proposal",
     "toolTip": "Clone proposal",
-    "suffix": "(CLONE)"
+    "confirm": "Clone this proposal"
   },
   "continuumBandWidth": {
     "help": "Continuum BANDWIDTH HELP",
@@ -178,7 +173,6 @@
     "help": "ELEVATION HELP",
     "label": "Elevation",
     "range": {
-      "error": "Acceptable range is 15 - 59.2 inclusive",
       "lower": 15,
       "upper": 59.2
     }
@@ -264,27 +258,22 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "Id",
-    "obset_id": {
-      "id": "obset_id"
-    }
+    "id": "Id"
   },
   "observationType": {
     "label": "Observation Type",
     "help": "OBSERVATION TYPE HELP",
     "short": "Type",
-    "0": "Zoom",
-    "1": "Continuum"
+    "0": "Not specified",
+    "1": "Continuum",
+    "2": "Zoom"
   },
   "observatoryDataProductConfig": {
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {
-      "1": "Raw Visibility Data",
-      "2": "Calibrated Visibilities",
-      "3": "Image Products 1: Image Cubes",
-      "4": "Image Products 2: UV Grids",
-      "5": "LSM Catalogue"
+      "1": "Continuum Image",
+      "2": "Spectral Line Image"
     }
   },
   "observationDetails": {
@@ -292,7 +281,7 @@
     "label": "Details"
   },
   "pageStatus": {
-    "toolTip": "This is the status of the page"
+    "toolTip": "Status of the {{pageName}} page : {{status}}"
   },
   "pdfPreview": {
     "label": "PDF Preview"
@@ -309,6 +298,20 @@
     "label": "Primary Investigator",
     "help": "PI HELP",
     "short": "PI"
+  },
+  "pipeline": {
+    "label": "Pipeline",
+    "help": "PIPELINE HELP",
+    "helper": "Please enter your pipeline information",
+    "options": {
+      "1": "Visibility receive",
+      "2": "‘Real-time’ pointing calibration'",
+      "3": "Visibility pre-processing",
+      "4": "Mid self-cal / ICal",
+      "5": "Low self-cal / ICal",
+      "6": "‘Real-time’ gain calibration",
+      "7": "Distributed Gridding/Imaging"
+    }
   },
   "pixelSize": {
     "label": "Pixel Size",
@@ -447,11 +450,7 @@
     "continuumTotalSensitivity": "Total continuum sensitivity",
     "continuumSynthBeamSize": "Continuum synthesized beam-size",
     "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
-    "continuumSpectralLineSensitivityWeighted": "Weighted continuum spectral line sensitivity",
-    "continuumSpectralLineConfusionNoise": "Continuum spectral line confusion noise",
-    "continuumSpectralLineTotalSensitivity": "Total continuum spectral line sensitivity",
-    "continuumSpectralLineSynthBeamSize": "Continuum spectral line synthesized beam-size",
-    "continuumSpectralLineSurfaceBrightnessSensitivity": "Continuum spectral line surface-brightness sensitivity",
+    "continuumIntegrationTime": "Continuum integration time",
     "integrationTime": "Integration time",
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
@@ -461,9 +460,23 @@
     "spectralTotalSensitivity": "Total spectral sensitivity",
     "spectralSynthBeamSize": "Spectral synthesized beam-size",
     "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
+    "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "total sensitivity"
+    "totalSensitivity": "Total sensitivity",
+    "status": "Status : {{status}} {{error}}",
+    "errorUnknown": "The error is undetermined at this time",
+    "units1": "ujy/beam",
+    "units2": "mjy/beam",
+    "units3": "mjy/beam",
+    "units4": "",
+    "units5": "k",
+    "units6": "ujy/beam",
+    "units7": "mjy/beam",
+    "units8": "mjy/beam",
+    "units9": "",
+    "units10": "k",
+    "units11": "rad/m2"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
@@ -485,6 +498,12 @@
   "status": {
     "0": "All status types",
     "label": "Status"
+  },
+  "statusValue": {
+    "0": "OK",
+    "1": "Error",
+    "3": "Partial",
+    "5": "Un-set"
   },
   "subBands": {
     "help": "Valid range is 0 - 32 inclusive",

@@ -482,6 +482,7 @@ export default function AddObservation() {
     />
   );
 
+  // TODO : Need to update the spacing
   const suppliedField = () => (
     <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={LABEL_WIDTH_SELECT}>

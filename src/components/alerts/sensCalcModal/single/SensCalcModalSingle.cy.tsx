@@ -99,25 +99,25 @@ describe('Modal with data - Continuum', () => {
       'contain',
       'sensitivityCalculatorResults.continuumSurfaceBrightnessSensitivity'
     );
-    cy.get('[id="continuumSpectralLineSensitivityWeighted"]').should(
+    cy.get('[id="spectralSensitivityWeighted"]').should(
       'contain',
-      'sensitivityCalculatorResults.continuumSpectralLineSensitivityWeighted'
+      'sensitivityCalculatorResults.spectralSensitivityWeighted'
     );
-    cy.get('[id="continuumSpectralLineConfusionNoise"]').should(
+    cy.get('[id="spectralConfusionNoise"]').should(
       'contain',
-      'sensitivityCalculatorResults.continuumSpectralLineConfusionNoise'
+      'sensitivityCalculatorResults.spectralConfusionNoise'
     );
-    cy.get('[id="continuumSpectralLineTotalSensitivity"]').should(
+    cy.get('[id="spectralTotalSensitivity"]').should(
       'contain',
-      'sensitivityCalculatorResults.continuumSpectralLineTotalSensitivity'
+      'sensitivityCalculatorResults.spectralTotalSensitivity'
     );
-    cy.get('[id="continuumSpectralLineSynthBeamSize"]').should(
+    cy.get('[id="spectralSynthBeamSize"]').should(
       'contain',
-      'sensitivityCalculatorResults.continuumSpectralLineSynthBeamSize'
+      'sensitivityCalculatorResults.spectralSynthBeamSize'
     );
-    cy.get('[id="continuumSpectralLineSurfaceBrightnessSensitivity"]').should(
+    cy.get('[id="spectralSurfaceBrightnessSensitivity"]').should(
       'contain',
-      'sensitivityCalculatorResults.continuumSpectralLineSurfaceBrightnessSensitivity'
+      'sensitivityCalculatorResults.spectralSurfaceBrightnessSensitivity'
     );
     cy.get('[id="integrationTime"]').should(
       'contain',

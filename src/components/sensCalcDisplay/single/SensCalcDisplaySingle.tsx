@@ -2,11 +2,12 @@ import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { SENSCALC_EMPTY_MOCKED } from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
-import { Grid, IconButton, Typography, Tooltip } from '@mui/material';
+import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
-import { OBS_TYPES } from '../../../utils/constants';
+import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
+import { t } from 'i18next';
 
 const SIZE = 20;
 
@@ -42,16 +43,19 @@ export default function SensCalcDisplaySingle({
   };
 
   const displayToolTipMessage = response => {
+    setTooltipError('');
     if (response.status === 1) {
-      let text: string = '';
-      if (response?.weighting?.error) {
-        text = `${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`;
-      } else if (response?.calculate?.error) {
-        text += `${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`;
+      if (response?.weighting?.error?.title) {
+        setTooltipError(
+          `${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`
+        );
+      } else if (response?.calculate?.error.title) {
+        setTooltipError(
+          `${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`
+        );
+      } else {
+        setTooltipError(t('sensitivityCalculatorResults.errorUnknown'));
       }
-      setTooltipError(text);
-    } else {
-      setTooltipError(null);
     }
   };
 
@@ -76,23 +80,38 @@ export default function SensCalcDisplaySingle({
   return (
     <>
       <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-        <Grid mr={10}>
-          <Tooltip title={toolTipError} id="SensCalTooltip">
-            <IconButton
-              aria-label="SensCalc Status"
-              style={{ cursor: 'hand' }}
-              onClick={IconClicked}
-            >
-              <StatusIcon ariaTitle="" testId="statusId" icon level={results.status} size={SIZE} />
-            </IconButton>
-          </Tooltip>
+        <Grid item xs={2}>
+          <IconButton
+            style={{ cursor: 'hand' }}
+            onClick={results.status === STATUS_OK ? IconClicked : null}
+          >
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + results.status),
+                error: ''
+              })}
+              testId="statusId"
+              icon
+              level={results.status}
+              size={SIZE}
+            />
+          </IconButton>
         </Grid>
-        <Grid mr={10}>
-          <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
-        </Grid>
-        <Grid>
-          <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
-        </Grid>
+        {toolTipError?.length === 0 && (
+          <Grid item xs={5}>
+            <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
+          </Grid>
+        )}
+        {toolTipError?.length === 0 && (
+          <Grid item xs={5}>
+            <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
+          </Grid>
+        )}
+        {toolTipError?.length > 0 && (
+          <Grid item xs={10}>
+            <Typography>{toolTipError}</Typography>
+          </Grid>
+        )}
       </Grid>
       <SensCalcModalSingle open={openDialog} onClose={() => setOpenDialog(false)} data={results} />
     </>

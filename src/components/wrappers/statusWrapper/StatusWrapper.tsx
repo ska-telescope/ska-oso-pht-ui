@@ -20,21 +20,28 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   };
 
   const getLevel = () => (level > 5 ? 0 : level);
+  const pageName = () => {
+    return t(`page.${page}.title`);
+  };
 
   return (
     <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
       <Grid container direction="column" alignItems="center" justifyContent="center">
         <StatusIcon
-          ariaTitle={t('pageStatus.toolTip')}
-          ariaDescription={t('pageStatus.toolTip')}
+          ariaTitle={t('pageStatus.toolTip', {
+            pageName: pageName().toLowerCase(),
+            status: t('statusValue.' + getLevel())
+          })}
+          ariaDescription={t('pageStatus.toolTip', {
+            pageName: pageName().toLowerCase(),
+            status: t('statusValue.' + getLevel())
+          })}
           testId="statusId"
           icon
           level={getLevel()}
           size={SIZE}
         />
-        <Typography testId={`pageTitle-${page}`} variant="caption">
-          {t(`page.${page}.title`)}
-        </Typography>
+        <Typography variant="caption">{pageName()}</Typography>
       </Grid>
     </IconButton>
   );

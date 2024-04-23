@@ -52,11 +52,11 @@ export default function calculateSensitivityCalculatorResults(
     // only return section2 if continuum
     ...(observation.type === 1 && {
       section2: [
-        { field: 'continuumSpectralLineSensitivityWeighted', value: '(2.62)', units: '' },
-        { field: 'continuumSpectralLineConfusionNoise', value: '6.02', units: 'mjy/beam' },
-        { field: 'continuumSpectralLineTotalSensitivity', value: '9.45', units: 'mjy/beam' },
-        { field: 'continuumSpectralLineSynthBeamSize', value: '230.0" x 207.8"', units: '' },
-        { field: 'continuumSpectralLineSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
+        { field: 'spectralSensitivityWeighted', value: '(2.62)', units: '' },
+        { field: 'spectralConfusionNoise', value: '6.02', units: 'mjy/beam' },
+        { field: 'spectralTotalSensitivity', value: '9.45', units: 'mjy/beam' },
+        { field: 'spectralSynthBeamSize', value: '230.0" x 207.8"', units: '' },
+        { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
       ]
     }),
     section3: [

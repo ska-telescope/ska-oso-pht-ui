@@ -14,11 +14,22 @@ import calculateSensitivityCalculatorResults from './calculateSensitivityCalcula
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 
 export type SensCalcResult = {
+  id?: string;
   title?: string;
   status: number;
+  error?: string;
   section1?: { field: string; value: string; units: string }[];
   section2?: { field: string; value: string; units: string }[];
   section3?: { field: string; value: string; units: string }[];
+};
+
+const SENSCALC_ERROR: SensCalcResult = {
+  title: '',
+  status: STATUS_ERROR,
+  error: '',
+  section1: [],
+  section2: [],
+  section3: []
 };
 
 const SENSCALC_LOADING: SensCalcResult = {
@@ -41,21 +52,29 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
 
   return fetchSensCalc(observation, target)
     .then(output => {
-      if (output.weighting.error || output.calculate.error) {
-        const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
-        const errorResults = Object.assign({}, output, { status: STATUS_ERROR });
-        const errorObject = Object.keys(output).reduce((accumulator, key) => {
-          const subObject = output[key];
-          if (subObject && subObject.error) {
-            accumulator[key] = subObject.error;
-          }
-          return accumulator;
-        }, {});
-        // return results as SensCalcResult;
-        return errorResults as SensCalcResult; // TODO create a sensCalResponseError type
+      if ('error' in output) {
+        let err = SENSCALC_ERROR;
+        err.title = target.name;
+        err.error = 'ERROR : SOME ERROR IN HERE';
+        return err;
       }
-      const results = calculateSensitivityCalculatorResults(output, observation) as SensCalcResult;
-      return results;
+      if ('calculate' in output) {
+        if ('error' in output.calculate) {
+          let err = SENSCALC_ERROR;
+          err.title = target.name;
+          err.error = 'CALCULATE : SOME ERROR IN HERE';
+          return err;
+        }
+      }
+      if ('weighting' in output) {
+        if ('error' in output.weighting) {
+          let err = SENSCALC_ERROR;
+          err.title = target.name;
+          err.error = 'WEIGHTING : SOME ERROR IN HERE';
+          return err;
+        }
+      }
+      return calculateSensitivityCalculatorResults(output, observation);
     })
     .catch(e => {
       const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
