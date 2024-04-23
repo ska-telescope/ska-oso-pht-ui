@@ -6,7 +6,7 @@ import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
-import { OBS_TYPES } from '../../../utils/constants';
+import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
 import { t } from 'i18next';
 
 const SIZE = 20;
@@ -46,9 +46,13 @@ export default function SensCalcDisplaySingle({
     setTooltipError('');
     if (response.status === 1) {
       if (response?.weighting?.error?.title) {
-        setTooltipError(`${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`);
+        setTooltipError(
+          `${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`
+        );
       } else if (response?.calculate?.error.title) {
-        setTooltipError(`${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`);
+        setTooltipError(
+          `${response?.calculate?.error?.title}\n${response?.calculate?.error?.detail}`
+        );
       } else {
         setTooltipError(t('sensitivityCalculatorResults.errorUnknown'));
       }
@@ -77,10 +81,14 @@ export default function SensCalcDisplaySingle({
     <>
       <Grid container direction="row" justifyContent="flex-start" alignItems="center">
         <Grid item xs={2}>
-          <IconButton style={{ cursor: 'hand' }} onClick={IconClicked}>
+          <IconButton
+            style={{ cursor: 'hand' }}
+            onClick={results.status === STATUS_OK ? IconClicked : null}
+          >
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusValue.' + results.status)
+                status: t('statusValue.' + results.status),
+                error: ''
               })}
               testId="statusId"
               icon
@@ -89,18 +97,21 @@ export default function SensCalcDisplaySingle({
             />
           </IconButton>
         </Grid>
-        {toolTipError?.length === 0 && <Grid item xs={5}>
+        {toolTipError?.length === 0 && (
+          <Grid item xs={5}>
             <Typography>{`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}</Typography>
           </Grid>
-        }
-        {toolTipError?.length === 0 && <Grid item xs={5}>
+        )}
+        {toolTipError?.length === 0 && (
+          <Grid item xs={5}>
             <Typography>{`${IntegrationTime('value')} ${IntegrationTime('units')}`}</Typography>
           </Grid>
-        }
-        {toolTipError?.length > 0 && <Grid item xs={10}>
+        )}
+        {toolTipError?.length > 0 && (
+          <Grid item xs={10}>
             <Typography>{toolTipError}</Typography>
           </Grid>
-        }
+        )}
       </Grid>
       <SensCalcModalSingle open={openDialog} onClose={() => setOpenDialog(false)} data={results} />
     </>

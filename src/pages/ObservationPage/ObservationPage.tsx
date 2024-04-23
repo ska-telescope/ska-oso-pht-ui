@@ -183,7 +183,7 @@ export default function ObservationPage() {
       flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Observation }) => {
-        return <SensCalcDisplayMultiple observation={e.row} />;
+        return <SensCalcDisplayMultiple observation={e.row} targets={selectedTargets(e.row.id)} />;
       }
     },
     {
@@ -279,6 +279,10 @@ export default function ObservationPage() {
       return list.filter(e => !isTargetSelected(e.id));
     }
     return [];
+  };
+
+  const selectedTargets = (id: number) => {
+    return getProposal().targets.filter(e => isTargetSelected(id));
   };
 
   return (

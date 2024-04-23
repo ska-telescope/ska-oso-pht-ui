@@ -464,8 +464,19 @@
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
     "totalSensitivity": "Total sensitivity",
-    "status": "Status : {{status}}",
-    "errorUnknown": "The error is undetermined at this time"
+    "status": "Status : {{status}} {{error}}",
+    "errorUnknown": "The error is undetermined at this time",
+    "units1": "ujy/beam",
+    "units2": "mjy/beam",
+    "units3": "mjy/beam",
+    "units4": "",
+    "units5": "k",
+    "units6": "ujy/beam",
+    "units7": "mjy/beam",
+    "units8": "mjy/beam",
+    "units9": "",
+    "units10": "k",
+    "units11": "rad/m2"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
