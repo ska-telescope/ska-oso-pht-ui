@@ -15,6 +15,35 @@ interface SensCalcDisplayMultipleProps {
   observation: Observation;
 }
 
+export type tempResults = {
+  id: number,
+  title: string,
+  status: number,
+  field1: string,
+  field2: string,
+  field3: string,
+  field4: string,
+  field5: string,
+  field6: string,
+  field7: string,
+  field8: string,
+  field9: string,
+  field10: string,
+  field11: string,
+
+  units1: string,
+  units2: string,
+  units3: string,
+  units4: string,
+  units5: string,
+  units6: string,
+  units7: string,
+  units8: string,
+  units9: string,
+  units10: string,
+  units11: string
+};
+
 export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplayMultipleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const { application } = storageObject.useStore();
@@ -39,12 +68,12 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
   };
 
   React.useEffect(() => {
-    var arr = new Array();
+    const arr: tempResults[] = [];
     targets?.map(async rec => {
       const target: Target = getTarget(rec.targetId);
       const values = await getSensCalc(observation, target);
-      console.log('TAS', values);
-      const item = {
+      const tmp = results;
+      const item: tempResults = {
         id: rec.targetId,
         title: target?.name,
         status: values.status,
@@ -72,10 +101,10 @@ export default function SensCalcDisplayMultiple({ observation }: SensCalcDisplay
         units10: values.section2?.length > 4 ? values.section2[4].units : '',
         units11: values.section3?.length > 0 ? values.section3[0].units : ''
       };
-      arr.push(item);
-      return true;
+      tmp.push(item);
+      return;
     });
-    setResults(arr);
+    // setResults(arr);
   }, [targets]);
 
   const IconClicked = () => {
