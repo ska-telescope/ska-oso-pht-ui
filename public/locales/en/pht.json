@@ -489,12 +489,12 @@
     "units1": "ujy/beam",
     "units2": "mjy/beam",
     "units3": "mjy/beam",
-    "units4": "arcsecs",
+    "units4": "arcsecs squared",
     "units5": "k",
     "units6": "ujy/beam",
     "units7": "mjy/beam",
     "units8": "mjy/beam",
-    "units9": "arcsecs",
+    "units9": "arcsecs squared",
     "units10": "k",
     "units11": "rad/m2"
   },
@@ -575,7 +575,7 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "THERE ARE NO TARGETS ASSOCIATED WITH THIS PROPOSAL"
+    "empty": "NO TARGET ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
     "label": "Title",
@@ -653,26 +653,26 @@
       "desc": "TECHNICAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "7": {
-      "title": "Data",
-      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
-      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL"
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
+      "title": "SDP",
+      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
       "title": "SRC Net",
       "desc": "SRC Net. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "9": {
-      "title": "Add Proposal",
-      "desc": "ADD PROPOSAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "title": "Title",
+      "desc": "Provide a title of your observation"
     },
     "10": {
       "title": "Observation Setup",
-      "desc": "ADD OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Add one or more observation setup(s)"
     },
     "11": {
       "title": "Landing page",
-      "desc": "Proposals where you have either participated as a Co-Investigator or as a Principal Investigator.",
+      "desc": "A list of proposals in which you have either participated as a Principal Investigator or a Co-Investigator.",
       "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "12": {
@@ -702,8 +702,7 @@
     "axios": {
       "format": "Unexpected data format returned from API"
     },
-
-    "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
