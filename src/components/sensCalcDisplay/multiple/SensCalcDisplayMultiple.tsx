@@ -86,6 +86,7 @@ export default function SensCalcDisplayMultiple({
 
   React.useEffect(() => {
     const getSensCalcData = async (target: Target) => {
+      console.log('TREVOR SensCalcDisplayMultiple');
       const response = await getSensCalc(observation, target);
       if (response) {
         const item = updateResults(target, response);

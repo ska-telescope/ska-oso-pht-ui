@@ -62,7 +62,7 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
         if ('error' in output.calculate) {
           let err = SENSCALC_ERROR;
           err.title = target.name;
-          err.error = 'CALCULATE : SOME ERROR IN HERE';
+          err.error = output.calculate.error.detail.split('\n')[0];
           return err;
         }
       }
@@ -70,11 +70,11 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
         if ('error' in output.weighting) {
           let err = SENSCALC_ERROR;
           err.title = target.name;
-          err.error = 'WEIGHTING : SOME ERROR IN HERE';
+          err.error = output.weighting.error.detail.split('\n')[0];
           return err;
         }
       }
-      return calculateSensitivityCalculatorResults(output, observation);
+      return calculateSensitivityCalculatorResults(output, observation, target);
     })
     .catch(e => {
       const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
@@ -83,10 +83,6 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
 }
 
 async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
-  //
-  //  NOTE : It has been discussed that the calculations will need information from both the observation and the target, so both have been provided.
-  //
-
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
     there are 2 or 3 calls to the API made

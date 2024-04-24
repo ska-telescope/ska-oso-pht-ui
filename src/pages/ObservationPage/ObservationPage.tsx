@@ -156,11 +156,11 @@ export default function ObservationPage() {
       headerName: t('subArrayConfiguration.short'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number; subarray: { value: number } } }) => {
+      renderCell: (e: { row: { telescope: number; subarray: number } }) => {
         if (e.row.telescope) {
           return (
             <Typography>
-              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray.value}`)}
+              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
             </Typography>
           );
         }
