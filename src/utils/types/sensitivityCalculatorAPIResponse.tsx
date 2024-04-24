@@ -1,15 +1,15 @@
 export type SensitivityCalculatorAPIResponseLow = {
   calculate: {
-    sensitivity: number;
-    units: string;
+    continuum_sensitivity: {
+      value: number;
+      units: string;
+    };
+    spectral_sensitivity: {
+      value: number;
+      units: string;
+    };
   };
   weighting: {
-    weighting_factor: number;
-    sbs_conv_factor: number[];
-    confusion_noise: {
-      value: number[];
-      limit_type: string[];
-    };
     beam_size: [
       {
         beam_maj_scaled: number;
@@ -17,14 +17,14 @@ export type SensitivityCalculatorAPIResponseLow = {
         beam_pa: number;
       }
     ];
+    confusion_noise: {
+      value: number[];
+      limit_type: string[];
+    };
+    sbs_conv_factor: number[];
+    weighting_factor: number;
   };
   weightingLine: {
-    weighting_factor: number;
-    sbs_conv_factor: number[];
-    confusion_noise: {
-      value: number[];
-      limit_type: string[];
-    };
     beam_size: [
       {
         beam_maj_scaled: number;
@@ -32,6 +32,12 @@ export type SensitivityCalculatorAPIResponseLow = {
         beam_pa: number;
       }
     ];
+    confusion_noise: {
+      value: number[];
+      limit_type: string[];
+    };
+    sbs_conv_factor: number[];
+    weighting_factor: number;
   };
 };
 

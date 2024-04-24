@@ -1,8 +1,13 @@
-import { STATUS_INITIAL, STATUS_OK } from '../../../utils/constants';
+import { STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
 import { SensCalcResult } from './getSensitivityCalculatorAPIData';
 
 export const SENSCALC_EMPTY_MOCKED: SensCalcResult = {
   status: STATUS_INITIAL
+};
+
+export const SENSCALC_PARTIAL_MOCKED: SensCalcResult = {
+  status: STATUS_PARTIAL,
+  error: ''
 };
 
 export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
