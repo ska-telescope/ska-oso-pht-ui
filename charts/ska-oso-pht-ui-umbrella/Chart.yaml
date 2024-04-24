@@ -13,7 +13,7 @@ dependencies:
 # PHT services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load SBD, save SBD, etc.)
 - name: ska-oso-pht-services
-  version: 1.1.0
+  version: 1.1.1
   repository: https://artefact.skao.int/repository/helm-internal
 
 # ODA is a dependency of PHT Services. Include it for data persistence
