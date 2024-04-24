@@ -100,7 +100,7 @@ export default function AddTarget() {
 
   const nameField = () => {
     return (
-      <Box p={1} sx={{ width: '100%' }}>
+      <Grid p={1}>
         <TextEntry
           required
           label={t('name.label')}
@@ -116,7 +116,7 @@ export default function AddTarget() {
           onFocus={() => helpComponent(t('name.help'))}
           errorText={nameFieldError}
         />
-      </Box>
+      </Grid>
     );
   };
 
@@ -137,10 +137,15 @@ export default function AddTarget() {
               setValue={setRAType}
               value={raType}
               valueFocus={() => helpComponent(t('skyUnits.help'))}
-              required
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              paddingTop: '10px'
+            }}
+          >
             {nameField()}
           </Grid>
           <Grid item xs={12}>
@@ -169,7 +174,7 @@ export default function AddTarget() {
               setValueUnit={setVelUnit}
               value={vel}
               valueType={velType}
-              valueUnit={velUnit}
+              valueUnit={velUnit.toString()}
               valueFocus={() => helpComponent(t('velocity.help'))}
               valueTypeFocus={() => helpComponent(t('velocity.help'))}
               valueUnitFocus={() => helpComponent(t('velocity.help'))}

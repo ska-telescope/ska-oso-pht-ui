@@ -59,6 +59,7 @@
       "science_category": "gjhjkhklj",
       "science_goals": [
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -67,6 +68,7 @@
           "subarray": "subarray 1"
         },
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -167,6 +169,7 @@
       "science_category": "gjhjkhklj",
       "science_goals": [
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -175,6 +178,7 @@
           "subarray": "subarray 1"
         },
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -275,6 +279,7 @@
       "science_category": "gjhjkhklj",
       "science_goals": [
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -283,6 +288,7 @@
           "subarray": "subarray 1"
         },
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -383,6 +389,7 @@
       "science_category": "gjhjkhklj",
       "science_goals": [
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -391,6 +398,7 @@
           "subarray": "subarray 1"
         },
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -491,6 +499,7 @@
       "science_category": "gjhjkhklj",
       "science_goals": [
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",
@@ -499,6 +508,7 @@
           "subarray": "subarray 1"
         },
         {
+          "obset_id": "obs-l0mkYl",
           "array": "MID",
           "linked": "4",
           "observation_type": "Continuum",

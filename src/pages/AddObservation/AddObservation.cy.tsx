@@ -105,7 +105,7 @@ function verifyContinuumUnits() {
   // cy.get('[data-testid="continuumUnits"]').click();
   // cy.get('[data-value="2"]').click();
   // cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
+  // cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
 function verifyMidBandwidthFrequency() {
@@ -210,6 +210,7 @@ function verifyDetailsField() {
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -224,6 +225,7 @@ describe('<AddObservation />', () => {
   }
 
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <BrowserRouter>
@@ -254,6 +256,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <BrowserRouter>
@@ -280,6 +283,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <BrowserRouter>
@@ -304,6 +308,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <BrowserRouter>

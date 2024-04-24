@@ -30,21 +30,20 @@ export default function AddDataProduct() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
-  const [pipeline, setPipeline] = React.useState();
+  const [observations, setObservations] = React.useState();
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
 
   const { t } = useTranslation('pht');
   const FIELD_OBS = 'observatoryDataProductConfig.options';
-  const FIELD_PIPELINE = 'pipeline.options';
 
   React.useEffect(() => {
     helpComponent(t('arrayConfiguration.help'));
   }, []);
 
   const obsDataProductField = () => {
-    const OPTIONS = [1, 2];
+    const OPTIONS = [1, 2, 3, 4, 5];
 
     const getOptions = () => {
       return OPTIONS.map(e => ({
@@ -67,25 +66,23 @@ export default function AddDataProduct() {
     );
   };
 
-  const pipelineField = () => {
-    const OPTIONS = [1, 2, 3, 4, 5, 6, 7];
-
+  const observationsField = () => {
     const getOptions = () => {
-      return OPTIONS.map(e => ({
-        label: t(FIELD_PIPELINE + '.' + e),
-        value: e
+      return getProposal().observations.map(e => ({
+        label: e.obset_id,
+        value: e.obset_id
       }));
     };
     return (
       <DropDown
         options={getOptions()}
-        testId="pipeline"
-        value={pipeline}
-        setValue={setPipeline}
-        label={t('pipeline.label')}
+        testId="observations"
+        value={observations}
+        setValue={setObservations}
+        label={t('addDataProductObservations.label')}
         labelBold
         labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('pipeline.help'))}
+        onFocus={() => helpComponent(t('addDataProductObservations.help'))}
       />
     );
   };
@@ -141,11 +138,12 @@ export default function AddDataProduct() {
       const newDataProduct = {
         id: highestId + 1,
         observatoryDataProduct,
-        pipeline,
+        observations,
         imageSize,
         pixelSize,
         weighting
       };
+
       setProposal({
         ...getProposal(),
         dataProducts: [...getProposal().dataProducts, newDataProduct]
@@ -203,9 +201,16 @@ export default function AddDataProduct() {
         spacing={1}
       >
         <Grid item xs={9} md={5}>
-          <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
+          <Grid
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="center"
+            p={2}
+            spacing={2}
+          >
             <Grid item>{obsDataProductField()}</Grid>
-            <Grid item>{pipelineField()}</Grid>
+            <Grid item>{observationsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>

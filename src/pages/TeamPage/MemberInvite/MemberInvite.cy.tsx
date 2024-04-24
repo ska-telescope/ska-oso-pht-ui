@@ -13,6 +13,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 describe('<MemberInvite />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -27,6 +28,7 @@ describe('<MemberInvite />', () => {
 
 describe('Content', () => {
   beforeEach(() => {
+    cy.viewport(1500, 1500);
     cy.mount(
       <StoreProvider>
         <ThemeProvider theme={theme(THEME_LIGHT)}>
@@ -95,7 +97,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').clear();
       cy.get('[data-testid="firstName"] > p.Mui-error')
         .should('exist')
-        .contains('entryField.required');
+        .contains('A value is required');
     });
     it('should set the First Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
@@ -131,7 +133,7 @@ describe('Content', () => {
       cy.get('[data-testid="lastName"] input').clear();
       cy.get('[data-testid="lastName"] > p.Mui-error')
         .should('exist')
-        .contains('entryField.required');
+        .contains('A value is required');
     });
     it('should set the Last Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
@@ -167,7 +169,7 @@ describe('Content', () => {
       cy.get('[data-testid="email"] input').clear();
       cy.get('[data-testid="email"] > p.Mui-error')
         .should('exist')
-        .contains('entryField.required');
+        .contains('A value is required');
     });
     it('should set the Email field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';

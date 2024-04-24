@@ -7,8 +7,10 @@ import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { Download } from '@mui/icons-material';
 
 const PAGE = 6;
 
@@ -62,6 +64,21 @@ export default function TechnicalPage() {
     }
   };
 
+  const downloadPdfToSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-technical.pdf`;
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Download URL');
+
+      window.open(signedUrl, '_blank');
+    } catch (e) {
+      //TODO: error handling
+    }
+  };
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -108,6 +125,13 @@ export default function TechnicalPage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
+          {getProposal().technicalPDF != null && (
+            <Download
+              direction="column"
+              testId="technicalfileDownload"
+              onClick={downloadPdfToSignedUrl}
+            />
+          )}
         </Grid>
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>

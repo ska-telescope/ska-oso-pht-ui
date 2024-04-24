@@ -1,76 +1,80 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
+  MODE,
+  OBSERVATION,
+  SKA_SENSITIVITY_CALCULATOR_API_URL,
+  TYPE_CONTINUUM,
   USE_LOCAL_DATA,
-  SKA_SENSITIVITY_CALCULATOR_API_URL
+  TELESCOPE_LOW_NUM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
-import { OBSERVATION } from '../../../../utils/constants';
 import sensCalHelpers from '../sensCalHelpers';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-async function GetCalculate(telescope: string, mode: string, observation: Observation) {
+const URL_CALCULATE = `calculate`;
+
+async function GetCalculate(observation: Observation) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
-  // Telescope URLS
-  let URL_TELESCOPE: string;
-  const URL_MID = `mid/`;
-  const URL_LOW = `low/`;
-  // Mode URLs
-  const URL_ZOOM = `zoom/`;
-  const URL_CONTINUUM = `continuum/`;
-  let URL_MODE: string;
-  const URL_CALCULATE = `calculate`;
 
-  let QUERY_STRING_PARAMETERS: URLSearchParams;
-  let MOCK_RESPONSE: any;
+  const getTelescope = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
 
-  interface ModeSpecificParameters {
+  const getMode = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return MODE[observation.type].toLowerCase() + '/';
+    }
+    return '';
+  };
+
+  /*********************************************************** MID *********************************************************/
+
+  interface ModeSpecificParametersMid {
     n_subbands?: string;
     resolution?: string;
     zoom_frequencies?: string;
     zoom_resolutions?: string;
   }
 
-  function mapQueryMidCalculate(calculator_mode): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParameters = {};
-    switch (calculator_mode) {
-      case 'continuum':
-        mode_specific_parameters.n_subbands = observation.number_of_sub_bands.toString();
-        mode_specific_parameters.resolution = observation.spectral_resolution.toString();
-        break;
-      case 'zoom':
-        mode_specific_parameters.zoom_frequencies = observation.central_frequency;
-        mode_specific_parameters.zoom_resolutions = observation.effective_resolution.toString();
-        break;
-      default:
+  function mapQueryCalculateMid(): URLSearchParams {
+    let mode_specific_parameters: ModeSpecificParametersMid = {};
+    if (observation.type === TYPE_CONTINUUM) {
+      mode_specific_parameters.n_subbands = observation.number_of_sub_bands?.toString();
+      mode_specific_parameters.resolution = observation.spectral_resolution?.toString();
+    } else {
+      mode_specific_parameters.zoom_frequencies = observation.central_frequency?.toString();
+      mode_specific_parameters.zoom_resolutions = observation.effective_resolution?.toString();
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integration_time_units
     );
     const params = new URLSearchParams({
-      rx_band: `Band ${observation.observing_band.toString()}`,
+      rx_band: `Band ${observation.observing_band?.toString()}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
       array_configuration: OBSERVATION.array[0].subarray.find(
         obj => obj.value === observation.subarray
       ).label,
-      pwv: observation.weather,
-      el: observation.elevation,
-      frequency: observation.central_frequency,
-      bandwidth: observation.bandwidth.toString(),
+      pwv: observation.weather?.toString(),
+      el: observation.elevation?.toString(),
+      frequency: observation.central_frequency?.toString(),
+      bandwidth: observation.bandwidth?.toString(),
       weighting: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       calculator_mode: 'continuum',
-      taper: observation.tapering.toString(),
+      taper: observation.tapering?.toString(),
       integration_time: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integration_time), integrationTimeUnits)
-        .toString(),
+        ?.toString(),
       ...mode_specific_parameters
     });
     return params;
   }
+
+  /*********************************************************** LOW *********************************************************/
 
   interface ModeSpecificParametersLow {
     bandwidth_mhz?: string;
@@ -81,27 +85,23 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
 
   // TODO double check obseration parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
 
-  function mapQueryLowCalculate(calculator_mode): URLSearchParams {
+  function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
-    switch (calculator_mode) {
-      case 'continuum':
-        mode_specific_parameters.bandwidth_mhz = observation.bandwidth.toString();
-        mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging.toString();
-        break;
-      case 'zoom':
-        // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution.toString();
-        const value = 16;
-        mode_specific_parameters.spectral_resolution_hz = value.toString(); // temp fix
-        //TODO check value mapping, does it need conversion?
-        const value2 = 48.8;
-        mode_specific_parameters.total_bandwidth_khz = value2.toString(); // temp fix
-        //TODO check value mapping, does it need conversion?
-        // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth.toString();
-        break;
-      default:
+    if (observation.type === TYPE_CONTINUUM) {
+      mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
+      mode_specific_parameters.spectral_averaging_factor = observation.spectral_averaging?.toString();
+    } else {
+      // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
+      const value = 16;
+      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
+      //TODO check value mapping, does it need conversion?
+      const value2 = 48.8;
+      mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
+      //TODO check value mapping, does it need conversion?
+      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
     }
     const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
-      .label;
+      ?.label;
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integration_time_units
     );
@@ -109,67 +109,44 @@ async function GetCalculate(telescope: string, mode: string, observation: Observ
       subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integration_time), integrationTimeUnits)
-        .toString(),
+        ?.toString(),
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
-      freq_centre: observation.central_frequency,
-      elevation_limit: observation.elevation,
+      freq_centre: observation.central_frequency?.toString(),
+      elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     });
     return params;
   }
 
-  switch (telescope) {
-    case 'Mid':
-      URL_TELESCOPE = URL_MID;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('continuum');
-          MOCK_RESPONSE = MockResponseMidCalculate;
-          break;
-        case 'Zoom':
-          URL_MODE = '';
-          QUERY_STRING_PARAMETERS = mapQueryMidCalculate('zoom');
-          MOCK_RESPONSE = MockResponseMidCalculateZoom;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    case 'Low':
-      URL_TELESCOPE = URL_LOW;
-      switch (mode) {
-        case 'Continuum':
-          URL_MODE = URL_CONTINUUM;
-          QUERY_STRING_PARAMETERS = mapQueryLowCalculate('continuum');
-          MOCK_RESPONSE = MockResponseLowCalculate;
-          break;
-        case 'Zoom':
-          URL_MODE = URL_ZOOM;
-          QUERY_STRING_PARAMETERS = mapQueryLowCalculate('zoom');
-          MOCK_RESPONSE = MockResponseLowCalculateZoom;
-          break;
-        default:
-        // 'Invalid mode' // TODO return error properly for user
-      }
-      break;
-    default:
-    // 'Invalid telescope' // TODO return error properly for user
-  }
+  /*************************************************************************************************************************/
+
+  const getQueryParams = () => {
+    return getTelescope() === TELESCOPE_LOW.code ? mapQueryCalculateLow() : mapQueryCalculateMid();
+  };
+
+  const getMockData = () => {
+    if (getTelescope() === TELESCOPE_LOW.code) {
+      return observation.type ? MockResponseLowCalculate : MockResponseLowCalculateZoom;
+    }
+    return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
+  };
 
   if (USE_LOCAL_DATA) {
-    return MOCK_RESPONSE;
+    return getMockData();
   }
 
   try {
-    const queryString = QUERY_STRING_PARAMETERS;
     const result = await axios.get(
-      `${apiUrl}${URL_TELESCOPE}${URL_MODE}${URL_CALCULATE}?${queryString}`,
+      `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`,
       AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+    const errorObject = {
+      title: e.response.data.title,
+      detail: e.response.data.detail
+    };
+    return { error: errorObject };
   }
 }
 

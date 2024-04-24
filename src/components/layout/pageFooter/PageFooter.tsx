@@ -1,46 +1,74 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPageButton';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
 import { LAST_PAGE, NAV } from '../../../utils/constants';
+import Proposal from '../../../utils/types/proposal';
+import PostProposal from '../../../services/axios/postProposal/postProposal';
 
 interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
-  buttonFunc?: Function;
   children?: JSX.Element;
 }
 
-export default function PageFooter({
-  pageNo,
-  buttonDisabled = false,
-  buttonFunc = null,
-  children
-}: PageFooterProps) {
+export default function PageFooter({ pageNo, buttonDisabled = false, children }: PageFooterProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const { application, updateAppContent2 } = storageObject.useStore();
+  const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+  const [alertText, setAlertText] = React.useState('');
+  const [alertTextColor, setAlertTextColor] = React.useState(AlertColorTypes.Warning);
 
-  const nextLabel = () => {
-    if (pageNo === -2) {
-      return 'Add';
+  React.useEffect(() => {
+    const getProposal = () => application.content2 as Proposal;
+    if (!getProposal() || getProposal().id === null) {
+      setUsedPageNo(-1);
     }
-    if (pageNo === -1) {
-      return t(`button.create`);
+  }, []);
+
+  const createProposal = async () => {
+    const getProposal = () => application.content2 as Proposal;
+    const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+    setAlertText(t('addProposal.warning'));
+    const response = await PostProposal(getProposal(), 'draft');
+    if (response && !response.error) {
+      setAlertText(t('addProposal.success') + response);
+      setAlertTextColor(AlertColorTypes.Success);
+      setProposal({ ...getProposal(), id: response });
+      setTimeout(() => {
+        navigate(NAV[1]);
+      }, 2000);
+    } else {
+      setAlertText(response.error);
+      setAlertTextColor(AlertColorTypes.Error);
     }
-    return t(`page.${pageNo + 1}.title`);
   };
 
-  const prevLabel = () => t(`page.${pageNo - 1}.title`);
+  const nextLabel = () => {
+    if (usedPageNo === -2) {
+      return 'Add';
+    }
+    if (usedPageNo === -1) {
+      return t(`button.create`);
+    }
+    return t(`page.${usedPageNo + 1}.title`);
+  };
 
-  const prevPageNav = () => (pageNo > 0 ? navigate(NAV[pageNo - 1]) : '');
+  const prevLabel = () => t(`page.${usedPageNo - 1}.title`);
 
-  const nextPageNav = () => (pageNo < NAV.length ? navigate(NAV[pageNo + 1]) : '');
+  const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
+
+  const nextPageNav = () => (usedPageNo < NAV.length ? navigate(NAV[usedPageNo + 1]) : '');
 
   const nextPageClicked = () => {
-    if (buttonFunc) {
-      buttonFunc();
+    if (usedPageNo === -1) {
+      createProposal();
     } else {
       nextPageNav();
     }
@@ -53,17 +81,23 @@ export default function PageFooter({
     >
       <Grid p={1} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
-          {pageNo > 0 && (
-            <PreviousPageButton label={prevLabel()} page={pageNo} func={prevPageNav} />
+          {usedPageNo > 0 && (
+            <PreviousPageButton label={prevLabel()} page={usedPageNo} func={prevPageNav} />
           )}
         </Grid>
-        <Grid item>{children}</Grid>
         <Grid item>
-          {pageNo < LAST_PAGE - 1 && (
+          {alertText && (
+            <Alert testId="timedAlertId" color={alertTextColor}>
+              <Typography>{alertText}</Typography>
+            </Alert>
+          )}
+        </Grid>
+        <Grid item>
+          {usedPageNo < LAST_PAGE - 1 && (
             <NextPageButton
               disabled={buttonDisabled}
               label={nextLabel()}
-              page={pageNo}
+              page={usedPageNo}
               func={nextPageClicked}
             />
           )}
