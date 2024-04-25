@@ -164,7 +164,8 @@ export default function AddObservation() {
     const getOptions = () => {
       const groups: GroupObservation[] = getProposal().groupObservations;
       const formatedGroupObs = [
-        { label: 'new', value: 0 },
+        { label: t('groupObservations.none'), value: 0 },
+        { label: t('groupObservations.new'), value: 1 },
         ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
       return formatedGroupObs as any;
@@ -183,7 +184,6 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
-            required
           />
         </Grid>
       </Grid>

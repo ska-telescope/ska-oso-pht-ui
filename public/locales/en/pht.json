@@ -193,7 +193,9 @@
   },
   "groupObservations": {
     "label": "Group Observations",
-    "help": "GROUP OBSERVATIONS HELP"
+    "help": "GROUP OBSERVATIONS HELP",
+    "new": "New Group",
+    "none": "None" 
   },
   "id": {
     "label": "Id"
