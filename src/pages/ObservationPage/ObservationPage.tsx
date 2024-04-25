@@ -18,13 +18,12 @@ import Target from '../../utils/types/target';
 
 const PAGE = 5;
 
-// TODO check zoom label mapping: always displayed as "not specified" in observation table
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentObservation, setCurrentObservation] = React.useState(0);
+  const [currObsId, setCurrObsId] = React.useState('');
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -54,18 +53,16 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().observations.filter(e => e.id !== currentObservation);
-    const obs2 = getProposal().targetObservation.filter(
-      e => e.observationId !== currentObservation
-    );
+    const obs1 = getProposal().observations.filter(e => e.obset_id !== currObsId);
+    const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObsId);
     setProposal({ ...getProposal(), observations: obs1, targetObservation: obs2 });
-    setCurrentObservation(0);
+    setCurrObsId('');
     closeDeleteDialog();
   };
 
   const alertContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal().observations.find(p => p.id === currentObservation);
+    const rec = getProposal().observations.find(p => p.obset_id === currObsId);
     return (
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <FieldWrapper label={t('arrayConfiguration.label')} labelWidth={LABEL_WIDTH}>
@@ -88,13 +85,13 @@ export default function ObservationPage() {
   };
 
   const AddObservationTarget = (id: number) => {
-    const rec = { observationId: currentObservation, targetId: id };
+    const rec = { observationId: currObsId, targetId: id };
     setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
   };
 
   function filterRecords(id: number) {
     return getProposal().targetObservation.filter(
-      item => !(item.observationId === currentObservation && item.targetId === id)
+      item => !(item.observationId === currObsId && item.targetId === id)
     );
   }
 
@@ -104,7 +101,7 @@ export default function ObservationPage() {
 
   const isTargetSelected = (id: number) =>
     getProposal().targetObservation.filter(
-      entry => entry.observationId === currentObservation && entry.targetId === id
+      entry => entry.observationId === currObsId && entry.targetId === id
     ).length > 0;
 
   const targetSelectedToggle = (id: number) => {
@@ -136,20 +133,15 @@ export default function ObservationPage() {
     {
       field: 'obset_id',
       headerName: t('observations.id'),
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { obset_id: number } }) => {
-        return <Typography>{e.row.obset_id}</Typography>;
-      }
+      flex: 0.75,
+      disableClickEventBubbling: true
     },
     {
       field: 'telescope',
       headerName: t('arrayConfiguration.short'),
       flex: 0.5,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number } }) => (
-        <Typography>{t(`arrayConfiguration.${e.row.telescope}`)}</Typography>
-      )
+      renderCell: (e: { row: { telescope: number } }) => t(`arrayConfiguration.${e.row.telescope}`)
     },
     {
       field: 'subarray',
@@ -158,23 +150,17 @@ export default function ObservationPage() {
       disableClickEventBubbling: true,
       renderCell: (e: { row: { telescope: number; subarray: number } }) => {
         if (e.row.telescope) {
-          return (
-            <Typography>
-              {t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`)}
-            </Typography>
-          );
+          return t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`);
         }
-        return <Typography>{t('arrayConfiguration.0')}</Typography>;
+        return t('arrayConfiguration.0');
       }
     },
     {
       field: 'type',
       headerName: t('type.label'),
-      flex: 1,
+      flex: 0.75,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => (
-        <Typography>{t(`observationType.${e.row.type}`)}</Typography>
-      )
+      renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
     },
     {
       field: 'weather',
@@ -183,25 +169,33 @@ export default function ObservationPage() {
       flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Observation }) => {
-        return <SensCalcDisplayMultiple observation={e.row} targets={selectedTargets(e.row.id)} />;
+        const obs = getProposal().observations.find(p => p.id === e.row.id);
+        return (
+          <SensCalcDisplayMultiple
+            observation={obs}
+            targetIds={observationTargetIds(obs.obset_id)}
+          />
+        );
       }
     },
     {
       field: 'id',
       headerName: t('actions.label'),
       sortable: false,
-      flex: 0.5,
+      flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: Observation }) => (
-        <>
-          <EditIcon
-            onClick={() => editIconClicked(e.row.id)}
-            disabled={true}
-            toolTip="Currently disabled"
-          />
-          <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
-        </>
-      )
+      renderCell: (e: { row: Observation }) => {
+        return (
+          <>
+            <EditIcon
+              onClick={() => editIconClicked(e.row.id)}
+              disabled={true}
+              toolTip="Currently disabled"
+            />
+            <TrashIcon onClick={deleteIconClicked} toolTip="Delete observation" />
+          </>
+        );
+      }
     }
   ];
   const extendedColumnsObservations = [...columns];
@@ -221,7 +215,7 @@ export default function ObservationPage() {
       flex: 0.6,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
-        return currentObservation > 0 ? (
+        return currObsId !== '' ? (
           <TickBox
             label=""
             testId="linkedTickBox"
@@ -234,12 +228,12 @@ export default function ObservationPage() {
       }
     },
     { field: 'name', headerName: t('name.label'), flex: 1.5 },
-    { field: 'ra', headerName: t('rightAscension.label'), flex: 1 },
+    { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
     { field: 'dec', headerName: t('declination.label'), flex: 1 },
     {
       field: 'vel',
       renderHeader: () =>
-        currentObservation > 0 ? (
+        currObsId !== '' ? (
           <Grid container direction="row" justifyContent="flex-start" alignItems="center">
             <Grid mr={10}></Grid>
             <Grid mr={10}>
@@ -258,10 +252,8 @@ export default function ObservationPage() {
       renderCell: (e: { row: Target }) => {
         const isSelected = isTargetSelected(e.row.id);
 
-        if (currentObservation > 0) {
-          const obs: Observation = getProposal().observations.find(
-            p => p.id === currentObservation
-          );
+        if (currObsId !== '') {
+          const obs: Observation = getProposal().observations.find(p => p.obset_id === currObsId);
           return <SensCalcDisplaySingle observation={obs} selected={isSelected} target={e.row} />;
         }
         return '';
@@ -270,8 +262,8 @@ export default function ObservationPage() {
   ];
   const extendedColumnsTargets = [...columnsTargets];
 
-  const ClickObservationRow = (e: { id: number }) => {
-    setCurrentObservation(e.id);
+  const ClickObservationRow = (e: any) => {
+    setCurrObsId(e.row.obset_id);
   };
 
   const filteredTargets = () => {
@@ -288,8 +280,8 @@ export default function ObservationPage() {
     return [];
   };
 
-  const selectedTargets = (id: number) => {
-    return getProposal().targets.filter(e => isTargetSelected(id));
+  const observationTargetIds = (id: string) => {
+    return getProposal().targetObservation.filter(e => e.observationId === id);
   };
 
   return (
@@ -315,8 +307,6 @@ export default function ObservationPage() {
                 columns={extendedColumnsObservations}
                 height={450}
                 onRowClick={ClickObservationRow}
-                showBorder={false}
-                showMild
                 testId="observationDetails"
               />
             )}
@@ -340,7 +330,7 @@ export default function ObservationPage() {
               </Grid>
               <Grid item>
                 <TickBox
-                  disabled={currentObservation === 0}
+                  disabled={currObsId === ''}
                   label={t('selected.label')}
                   testId="selectedTickBox"
                   checked={selected}
@@ -349,7 +339,7 @@ export default function ObservationPage() {
               </Grid>
               <Grid item>
                 <TickBox
-                  disabled={currentObservation === 0}
+                  disabled={currObsId === ''}
                   label={t('notSelected.label')}
                   testId="unlinkedTickBox"
                   checked={notSelected}
@@ -363,8 +353,6 @@ export default function ObservationPage() {
                   rows={filteredTargets()}
                   columns={extendedColumnsTargets}
                   height={390}
-                  showBorder={false}
-                  showMild
                   testId="linkedTargetDetails"
                 />
               )}

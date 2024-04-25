@@ -67,6 +67,7 @@
     "label": "Actions"
   },
   "addObservation": {
+    "idPrefix": "obs-",
     "minDetailDisplayRows": "5"
   },
   "addProposal": {
@@ -326,6 +327,13 @@
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
   },
+  "proposalStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "accepted": "Accepted",
+    "withdrawn": "Withdrawn",
+    "rejected": "Rejected"
+  },
   "proposalType": {
     "label": "Proposal Types",
     "help1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
@@ -507,7 +515,7 @@
     "0": "OK",
     "1": "Error",
     "3": "Partial",
-    "5": "Un-set"
+    "5": "Not indicated"
   },
   "subBands": {
     "help": "Valid range is 0 - 32 inclusive",

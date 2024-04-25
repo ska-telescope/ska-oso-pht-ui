@@ -5,7 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../../services/theme/theme';
-import SensCalcDisplaySingle from './SensCalcModalSingle';
+import SensCalcModalSingle from './SensCalcModalSingle';
 import {
   SENSCALC_EMPTY_MOCKED,
   SENSCALC_CONTINUUM_MOCKED,
@@ -22,7 +22,7 @@ describe('<ObservationTargetResultsDisplay />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
-            <SensCalcDisplaySingle
+            <SensCalcModalSingle
               open
               onClose={cy.stub().as('handleCancel')}
               data={SENSCALC_EMPTY_MOCKED}
@@ -40,7 +40,7 @@ describe('Modal with no data', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <SensCalcDisplaySingle
+          <SensCalcModalSingle
             open
             onClose={cy.stub().as('handleClose')}
             data={SENSCALC_EMPTY_MOCKED}
@@ -63,7 +63,7 @@ describe('Modal with data - Continuum', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <SensCalcDisplaySingle
+          <SensCalcModalSingle
             open
             onClose={cy.stub().as('handleClose')}
             data={SENSCALC_CONTINUUM_MOCKED}
@@ -132,7 +132,7 @@ describe('Modal with data - Spectral', () => {
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
-          <SensCalcDisplaySingle
+          <SensCalcModalSingle
             open
             onClose={cy.stub().as('handleClose')}
             data={SENSCALC_SPECTRAL_MOCKED}

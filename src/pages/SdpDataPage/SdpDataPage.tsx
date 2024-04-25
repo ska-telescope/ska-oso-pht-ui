@@ -175,8 +175,6 @@ export default function SdpDataPage() {
                 columns={extendedColumnsObservations}
                 height={450}
                 onRowClick={clickRow}
-                showBorder={false}
-                showMild
                 testId="observationDetails"
               />
             )}

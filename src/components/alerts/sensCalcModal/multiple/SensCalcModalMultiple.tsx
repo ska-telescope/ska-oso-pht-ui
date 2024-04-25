@@ -7,23 +7,25 @@ import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
 import { OBS_TYPES } from '../../../../utils/constants';
 
-interface SensCalcDisplayMultipleProps {
+interface SensCalcModalMultipleProps {
   open: boolean;
   onClose: Function;
   data: any;
   observation: Observation;
   level: number;
+  levelError: string;
 }
 
 const SIZE = 30;
 
-export default function SensCalcDisplayMultiple({
+export default function SensCalcModalMultiple({
   open,
   onClose,
   data,
   observation,
-  level
-}: SensCalcDisplayMultipleProps) {
+  level,
+  levelError
+}: SensCalcModalMultipleProps) {
   const handleClose = () => {
     onClose();
   };
@@ -153,13 +155,9 @@ export default function SensCalcDisplayMultiple({
   const extendedColumns = [...columns];
 
   // Filter out optional columns that don't have data
-  const filteredColumns = extendedColumns.filter(col => {
-    if (col.optional) {
-      return data.some(data => col.optional({ value: data[col.field] }));
-    } else {
-      return true;
-    }
-  });
+  const filteredColumns = extendedColumns.filter(col =>
+    col.optional ? data.some(data => col.optional({ value: data[col.field] })) : true
+  );
 
   return (
     <Dialog
@@ -176,8 +174,10 @@ export default function SensCalcDisplayMultiple({
           action={<CancelButton onClick={handleClose} label="button.close" />}
           avatar={
             <StatusIcon
-              ariaTitle=""
-              ariaDescription=""
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + level),
+                error: levelError
+              })}
               testId="statusId"
               icon
               level={level}
@@ -200,8 +200,6 @@ export default function SensCalcDisplayMultiple({
               columns={filteredColumns}
               columnHeaderHeight={100}
               height={500}
-              showBorder={false}
-              showMild
               testId="sensCalcDetailsList"
             />
           ) : (

@@ -3,6 +3,15 @@ import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from '.
 
 // TODO : Ensure that we remove all hard-coded values
 
+export const generateId = (prefix: string, length: number) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return prefix + result;
+};
+
 export const helpers = {
   validate: {
     validateTextEntry(
@@ -62,7 +71,8 @@ export const helpers = {
     */
     convertProposalToBackendFormat(proposal: Proposal, status: string) {
       const project = Projects.find(p => p.id === proposal.proposalType);
-      const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType);
+      // TODO : We need to update so that 0 - n entries are added.
+      const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType[0]);
 
       const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {
