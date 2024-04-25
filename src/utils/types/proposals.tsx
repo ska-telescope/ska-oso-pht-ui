@@ -7,6 +7,9 @@ export type ProposalsBackend = {
   status: string;
   submitted_by: string;
   submitted_on: string;
+  meta_data: {
+    last_modified_on: string
+  };
   proposal_info: {
     title: string;
     cycle: string;

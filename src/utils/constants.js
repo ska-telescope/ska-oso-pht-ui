@@ -109,7 +109,7 @@ export const TELESCOPES = [
 ];
 
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'LOW Bands', telescope: 2, value: 0 },
+  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0 },
   { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 }, // Band 1
   { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 }, // Band 2
   { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 }, // Band 5a
