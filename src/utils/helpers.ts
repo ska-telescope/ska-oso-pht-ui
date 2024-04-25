@@ -64,6 +64,8 @@ export const helpers = {
       const project = Projects.find(p => p.id === proposal.proposalType);
       const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType);
 
+      // TODO: add groupObservations to send to backend
+
       const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {
           acc[to.observationId] = [];

@@ -19,6 +19,7 @@ import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { helpers } from '../../utils/helpers';
 import AddGroupObservationButton from '../../components/button/AddGroupObservation/AddGroupObservationButton';
+import GroupObservation from 'utils/types/groupObservation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -160,18 +161,13 @@ export default function AddObservation() {
   }
 
   const groupObservationsField = () => {
-    /*const getOptions = () => {
-      return BANDWIDTH_TELESCOPE
-        ? BANDWIDTH_TELESCOPE
-        : [{ label: 'Not applicable', telescope: 2, value: 0 }];
-    };*/
     const getOptions = () => {
-      // return getProposal()?.groupObservations;
-      // TODO : make dropdown access groupObservations of proposal
-      return [
-        { label: 'test1', value: 0 },
-        { label: 'test2', value: 1 }
+      const groups: GroupObservation[] = getProposal().groupObservations;
+      const formatedGroupObs = [
+        { label: 'new', value: 0 },
+        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
+      return formatedGroupObs as any;
     };
 
     return (

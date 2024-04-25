@@ -106,7 +106,8 @@ function mapping(inRec: ProposalBackend) {
     technicalPDF: null,
     technicalLoadStatus: 0,
     dataProducts: [],
-    pipeline: ''
+    pipeline: '',
+    groupObservations: []
   } as unknown) as Proposal;
 }
 
