@@ -1,7 +1,10 @@
 import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import { SENSCALC_EMPTY_MOCKED } from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
+import {
+  SENSCALC_EMPTY_MOCKED,
+  SENSCALC_PARTIAL_MOCKED
+} from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
 import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
@@ -29,6 +32,10 @@ export default function SensCalcDisplaySingle({
 
   React.useEffect(() => {
     async function fetchResults() {
+      const tmp = SENSCALC_PARTIAL_MOCKED;
+      tmp.error = t('sensitivityCalculatorResults.partial');
+      setResults(tmp);
+      setTooltipError(t('sensitivityCalculatorResults.partial'));
       const sensCalcResult = selected
         ? await getSensCalc(observation, target)
         : SENSCALC_EMPTY_MOCKED;
@@ -45,7 +52,9 @@ export default function SensCalcDisplaySingle({
   const displayToolTipMessage = response => {
     setTooltipError('');
     if (response.status === 1) {
-      if (response?.weighting?.error?.title) {
+      if (response?.error) {
+        setTooltipError(response.error);
+      } else if (response?.weighting?.error?.title) {
         setTooltipError(
           `${response?.weighting?.error?.title}\n${response?.weighting?.error?.detail}`
         );

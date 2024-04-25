@@ -472,15 +472,16 @@
     "totalSensitivity": "Total sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
+    "partial": "Fetching results...",
     "units1": "ujy/beam",
     "units2": "mjy/beam",
     "units3": "mjy/beam",
-    "units4": "",
+    "units4": "arcsecs",
     "units5": "k",
     "units6": "ujy/beam",
     "units7": "mjy/beam",
     "units8": "mjy/beam",
-    "units9": "",
+    "units9": "arcsecs",
     "units10": "k",
     "units11": "rad/m2"
   },
@@ -579,6 +580,7 @@
     "label": "Upload PDF"
   },
   "velocity": {
+    "label": "Velocity",
     "help": "VELOCITY HELP",
     "units": {
       "0": "km/s",

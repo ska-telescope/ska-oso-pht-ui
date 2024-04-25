@@ -100,7 +100,7 @@ export default function AddTarget() {
 
   const nameField = () => {
     return (
-      <Grid>
+      <Grid p={1}>
         <TextEntry
           required
           label={t('name.label')}
@@ -174,7 +174,7 @@ export default function AddTarget() {
               setValueUnit={setVelUnit}
               value={vel}
               valueType={velType}
-              valueUnit={velUnit}
+              valueUnit={velUnit.toString()}
               valueFocus={() => helpComponent(t('velocity.help'))}
               valueTypeFocus={() => helpComponent(t('velocity.help'))}
               valueUnitFocus={() => helpComponent(t('velocity.help'))}
