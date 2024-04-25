@@ -127,8 +127,8 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = getRows().length > 0 ? 1 : 0;
-    count += getProposal().targetObservation.length > 0 ? 1 : 0;
+    let count = hasObservations() > 0 ? 1 : 0;
+    count += hasTargetObservations() ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
@@ -205,6 +205,13 @@ export default function ObservationPage() {
     }
   ];
   const extendedColumnsObservations = [...columns];
+  const hasTargets = () =>
+    getProposal() && getProposal().targets && getProposal().targets.length > 0;
+
+  const hasObservations = () => getRows() && getRows().length > 0;
+
+  const hasTargetObservations = () =>
+    getProposal() && getProposal().targetObservation && getProposal().targetObservation.length > 0;
 
   const columnsTargets = [
     {
@@ -302,7 +309,7 @@ export default function ObservationPage() {
                 <AddObservationButton />
               </Grid>
             </Grid>
-            {getRows().length > 0 && (
+            {hasObservations() && (
               <DataGrid
                 rows={getRows()}
                 columns={extendedColumnsObservations}
@@ -313,7 +320,7 @@ export default function ObservationPage() {
                 testId="observationDetails"
               />
             )}
-            {getRows().length === 0 && (
+            {!hasObservations() && (
               <InfoCard
                 color={InfoCardColorTypes.Error}
                 fontSize={20}
@@ -351,7 +358,7 @@ export default function ObservationPage() {
               </Grid>
             </Grid>
             <CardContent>
-              {getProposal().targets.length > 0 && (
+              {hasTargets() && (
                 <DataGrid
                   rows={filteredTargets()}
                   columns={extendedColumnsTargets}
@@ -361,7 +368,7 @@ export default function ObservationPage() {
                   testId="linkedTargetDetails"
                 />
               )}
-              {getProposal().targets.length === 0 && (
+              {!hasTargets() && (
                 <InfoCard
                   color={InfoCardColorTypes.Error}
                   fontSize={20}
