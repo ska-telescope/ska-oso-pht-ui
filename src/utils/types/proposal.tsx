@@ -1,4 +1,5 @@
 import DataProduct from './dataProduct';
+import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
@@ -39,6 +40,7 @@ export type Proposal = {
   targetOption: number;
   targets: Target[];
   observations: Observation[];
+  groupObservations: GroupObservation[];
   targetObservation: TargetObservation[];
   technicalPDF: File | null;
   technicalLoadStatus: number;

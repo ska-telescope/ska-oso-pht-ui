@@ -192,6 +192,9 @@
   "frequencyUnits": {
     "help": "FREQUENCY UNITS HELP"
   },
+  "groupObservations": {
+    "label": "Group of observations"
+  },
   "id": {
     "label": "Id"
   },

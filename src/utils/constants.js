@@ -481,6 +481,7 @@ export const EMPTY_PROPOSAL = {
   targetOption: 1,
   targets: [],
   observations: [],
+  groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: 0,
