@@ -18,7 +18,7 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
       pi: getPI(inRec[i].proposal_info.investigator),
       cpi: 'CPI',
       status: inRec[i].status,
-      lastUpdated: inRec[i].meta_data.last_modified_on, // TODO : Needs to be the correct data
+      lastUpdated: new Date().toDateString(), // TODO : Needs to be the correct data
       telescope: 'N/A'
     };
     output.push(rec);
