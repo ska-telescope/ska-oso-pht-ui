@@ -93,9 +93,6 @@
     "help": "BANDWIDTH HELP",
     "label": "Band Width"
   },
-  "category": {
-    "label": "Category"
-  },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY HELP",
     "label": "Central Frequency",
@@ -126,6 +123,9 @@
   },
   "cycle": {
     "label": "Cycle"
+  },
+  "category": {
+    "label": "Category"
   },
   "dataProduct": {
     "button": "Add Data Product"
