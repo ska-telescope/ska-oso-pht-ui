@@ -17,7 +17,7 @@ import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
-import { helpers } from '../../utils/helpers';
+import { generateId, helpers } from '../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -511,13 +511,13 @@ export default function AddObservation() {
     let errorText = '';
 
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(1));
-      if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
-        setElevation(num);
-        errorText = '';
-      } else {
-        errorText = t('elevation.range.error');
-      }
+      // const num = Number(Math.abs(e).toFixed(1));
+      // if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
+      setElevation(e);
+      //  errorText = '';
+      //} else {
+      //  errorText = t('elevation.range.error');
+      //}
     };
 
     return (
@@ -800,18 +800,9 @@ export default function AddObservation() {
       );
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
-      const generateObsetId = () => {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < 6; i++) {
-          result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
-      };
-
       const newObservation = {
         id: highestId + 1,
-        obset_id: generateObsetId(),
+        obset_id: generateId(t('addObservation.idPrefix'), 6),
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
@@ -897,7 +888,7 @@ export default function AddObservation() {
             alignItems="center"
             gap={1}
             spacing={1}
-            paddingBottom={3}
+            pb={3}
             justifyContent="space-evenly"
           >
             <Grid item xs={XS_TOP}>

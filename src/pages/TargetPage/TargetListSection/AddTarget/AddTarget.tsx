@@ -139,13 +139,7 @@ export default function AddTarget() {
               valueFocus={() => helpComponent(t('skyUnits.help'))}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              paddingTop: '10px'
-            }}
-          >
+          <Grid item xs={12}>
             {nameField()}
           </Grid>
           <Grid item xs={12}>

@@ -5,6 +5,8 @@ export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
+export const ENTRY_HEIGHT = 40;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
