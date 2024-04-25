@@ -128,7 +128,10 @@ export default function ObservationPage() {
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
     let count = getRows() && getRows().length > 0 ? 1 : 0;
-    count += getProposal() && getProposal().targetObservation && getProposal().targetObservation.length > 0 ? 1 : 0;
+    count +=
+      getProposal() && getProposal().targetObservation && getProposal().targetObservation.length > 0
+        ? 1
+        : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
@@ -205,7 +208,8 @@ export default function ObservationPage() {
     }
   ];
   const extendedColumnsObservations = [...columns];
-  const hasTargets = () => getProposal() && getProposal().targets && getProposal().targets.length > 0;
+  const hasTargets = () =>
+    getProposal() && getProposal().targets && getProposal().targets.length > 0;
 
   const hasObservations = () => getRows() && getRows().length > 0;
 
