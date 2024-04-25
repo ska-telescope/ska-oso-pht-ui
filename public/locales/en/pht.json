@@ -192,7 +192,8 @@
     "help": "FREQUENCY UNITS HELP"
   },
   "groupObservations": {
-    "label": "Group of observations"
+    "label": "Group of observations",
+    "help": "GROUP OBSERVATIONS HELP"
   },
   "id": {
     "label": "Id"

@@ -8,7 +8,7 @@ import {
   ButtonVariantTypes
 } from '@ska-telescope/ska-gui-components';
 
-export default function AddGroupObservationButton({ targetName, skyUnits, onClick }) {
+export default function AddGroupObservationButton({ onClick }) {
   const { t } = useTranslation('pht');
 
   const ClickFunction = async () => {

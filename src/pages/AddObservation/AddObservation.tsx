@@ -18,6 +18,7 @@ import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/c
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { helpers } from '../../utils/helpers';
+import AddGroupObservationButton from '../../components/button/AddGroupObservation/AddGroupObservationButton';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -38,6 +39,7 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const [groupObservation, setgroupObservation] = React.useState(0);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
@@ -156,6 +158,41 @@ export default function AddObservation() {
     }
     return count;
   }
+
+  const groupObservationsField = () => {
+    /*const getOptions = () => {
+      return BANDWIDTH_TELESCOPE
+        ? BANDWIDTH_TELESCOPE
+        : [{ label: 'Not applicable', telescope: 2, value: 0 }];
+    };*/
+    const getOptions = () => {
+      // return getProposal()?.groupObservations;
+      // TODO : make dropdown access groupObservations of proposal
+      return [
+        { label: 'test1', value: 0 },
+        { label: 'test2', value: 1 }
+      ];
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <DropDown
+            options={getOptions()}
+            testId="groupObservation"
+            value={groupObservation}
+            setValue={setgroupObservation}
+            label={t('groupObservations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('groupObservations.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const subArrayField = () => {
     const getSubArrayOptions = () => {
@@ -900,6 +937,12 @@ export default function AddObservation() {
             paddingBottom={3}
             justifyContent="space-evenly"
           >
+            <Grid item xs={XS_TOP}>
+              {groupObservationsField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              <AddGroupObservationButton onClick="" />
+            </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>
