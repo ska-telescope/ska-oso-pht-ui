@@ -67,8 +67,7 @@
     "label": "Actions"
   },
   "addObservation": {
-    "idPrefix": "obs-",
-    "minDetailDisplayRows": "5"
+    "idPrefix": "obs-"
   },
   "addProposal": {
     "label": "Add Proposal",
@@ -282,7 +281,8 @@
   },
   "observationDetails": {
     "help": "OBSERVATION DETAILS HELP",
-    "label": "Details"
+    "label": "Details",
+    "minDisplayRows": "5"
   },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"

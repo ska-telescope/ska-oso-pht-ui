@@ -30,6 +30,7 @@ const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const PAGE = 10;
 const BACK_PAGE = 5;
+const LINE_OFFSET = 30;
 
 const LABEL_WIDTH_SELECT = 5;
 const LABEL_WIDTH_STD = 5;
@@ -791,19 +792,24 @@ export default function AddObservation() {
     );
   };
 
-  const detailsField = () => (
-    <TextEntry
-      label={t('observationDetails.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="observationDetails"
-      value={details}
-      setValue={setDetails}
-      onFocus={() => helpComponent(t('observationDetails.help'))}
-      rows={t('addObservation.minDetailDisplayRows')}
-    />
-  );
+  const detailsField = () => {
+    const numRows = Number(t('observationDetails.minDisplayRows'));
+    return (
+      <Box sx={{ height: LINE_OFFSET * numRows }}>
+        <TextEntry
+          label={t('observationDetails.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_STD}
+          testId="observationDetails"
+          value={details}
+          setValue={setDetails}
+          onFocus={() => helpComponent(t('observationDetails.help'))}
+          rows={t('observationDetails.minDisplayRows')}
+        />
+      </Box>
+    );
+  };
 
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
