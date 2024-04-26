@@ -1,5 +1,12 @@
 import { Proposal } from 'utils/types/proposal';
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
+import {
+  TEXT_ENTRY_PARAMS,
+  Projects,
+  GENERAL,
+  OBSERVATION,
+  DEFAULT_PI,
+  OBSERVATION_TYPE_BACKEND
+} from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -92,8 +99,7 @@ export const helpers = {
           array: array?.label,
           subarray: array?.subarray?.find(sa => sa.value === observation.subarray)?.label,
           linked_sources: targets?.map(target => target.name),
-          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)
-            ?.label
+          observation_type: OBSERVATION_TYPE_BACKEND[observation.type]
         };
       });
 

@@ -14,6 +14,8 @@ export const STATUS_INITIAL = 5;
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
 
 export const LAST_PAGE = 9;
 
@@ -118,7 +120,6 @@ export const TELESCOPE_LOW_NUM = 2;
 
 export const TEL = ['', 'Mid', 'Low'];
 
-export const MODE = ['Zoom', 'Continuum'];
 export const OBS_TYPES = ['spectral', 'continuum'];
 
 export const OBSERVATION = {
@@ -242,10 +243,6 @@ export const OBSERVATION = {
         { label: '1808.4 Hz', value: 8 }
       ]
     }
-  ],
-  ObservationType: [
-    { label: 'Continuum', value: TYPE_CONTINUUM },
-    { label: 'Zoom', value: TYPE_ZOOM }
   ],
   ImageWeighting: [
     { label: 'Natural', value: 0 },

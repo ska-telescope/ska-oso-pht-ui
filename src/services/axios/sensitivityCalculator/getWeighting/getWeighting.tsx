@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  MODE,
+  OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
   USE_LOCAL_DATA,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
@@ -29,7 +29,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   const getMode = () => {
     if (getTelescope() === TELESCOPE_LOW.code) {
-      return MODE[inMode].toLowerCase() + '/';
+      return OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
     }
     return '';
   };
@@ -46,7 +46,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
         obj => obj.value === observation.image_weighting
       ).label.toLowerCase(),
       array_configuration: array.subarray.find(obj => obj.value === observation.subarray).label,
-      calculator_mode: MODE[inMode].toLowerCase(),
+      calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
       taper: observation.tapering?.toString()
     });
     return params;

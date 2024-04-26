@@ -124,7 +124,7 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = hasObservations() > 0 ? 1 : 0;
+    let count = hasObservations() ? 1 : 0;
     count += hasTargetObservations() ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
@@ -328,7 +328,8 @@ export default function ObservationPage() {
                   {t('targetObservation.label')}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={2}>
                 <TickBox
                   disabled={currObsId === ''}
                   label={t('selected.label')}
@@ -337,7 +338,7 @@ export default function ObservationPage() {
                   onChange={() => setSelected(!selected)}
                 />
               </Grid>
-              <Grid item>
+              <Grid item xs={3}>
                 <TickBox
                   disabled={currObsId === ''}
                   label={t('notSelected.label')}

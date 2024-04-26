@@ -3,6 +3,7 @@ import {
   AXIOS_CONFIG,
   GENERAL,
   OBSERVATION,
+  OBSERVATION_TYPE_BACKEND,
   Projects,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
@@ -72,16 +73,21 @@ const getTargets = (inValue: TargetBackend[]) => {
 };
 
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
+  // const BACKEND_OBSERVATION_TYPE = [
+  //   { label: 'Continuum', value: TYPE_CONTINUUM },
+  //   { label: 'Zoom', value: TYPE_ZOOM }
+  // ];
+
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].subarray);
-    const typ = OBSERVATION.ObservationType.find(p => p.label === inValue[i].observation_type);
+    const typ = OBSERVATION_TYPE_BACKEND.find(p => p === inValue[i].observation_type);
     results.push({
       id: i + 1,
       telescope: arr,
       subarray: sub ? sub : 0,
-      type: typ ? typ.value : 0
+      type: typ ? typ : 0
     });
   }
   return results;

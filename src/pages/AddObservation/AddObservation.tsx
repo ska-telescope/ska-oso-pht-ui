@@ -14,7 +14,14 @@ import {
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
+import {
+  BANDWIDTH_TELESCOPE,
+  NAV,
+  OBSERVATION,
+  OBSERVATION_TYPE,
+  TELESCOPES,
+  TYPE_CONTINUUM
+} from '../../utils/constants';
 import HelpPanel from '../../components/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
@@ -42,7 +49,7 @@ export default function AddObservation() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
-  const [weather, setWeather] = React.useState(3);
+  const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
   const [frequency, setFrequency] = React.useState(0.1);
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -100,8 +107,17 @@ export default function AddObservation() {
     helpComponent(t('observingBand.help'));
   }, []);
 
-  const isContinuum = () => observationType === 1;
+  const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
+
+  // TODO : We should move this to a utility at some point
+  const options = (prefix: string, arr: number[]) => {
+    let results = [];
+    arr.forEach(element => {
+      results.push({ label: t(prefix + '.' + element), value: element });
+    });
+    return results;
+  };
 
   function formValidation() {
     let count = 0;
@@ -192,7 +208,7 @@ export default function AddObservation() {
     <Grid pt={1} spacing={0} container direction="row">
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
-          options={OBSERVATION.ObservationType}
+          options={options('observationType', OBSERVATION_TYPE)}
           testId="observationType"
           value={observationType}
           setValue={setObservationType}
@@ -540,27 +556,30 @@ export default function AddObservation() {
     );
   };
 
+  const weatherUnitsField = () => t('weather.units');
+
   const weatherField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num >= Number(t('weather.range.lower')) && num <= Number(t('weather.range.upper'))) {
-        setWeather(num);
-      }
+    const errorMessage = () => {
+      const min = Number(t('weather.range.lower'));
+      const max = Number(t('weather.range.upper'));
+      return weather < min || weather > max ? t('weather.range.error') : '';
     };
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
+            errorText={errorMessage()}
             label={t('weather.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="weather"
             value={weather}
-            setValue={validate}
+            setValue={setWeather}
             onFocus={() => helpComponent(t('weather.help'))}
             required
+            suffix={weatherUnitsField()}
           />
         </Grid>
       </Grid>
@@ -569,16 +588,19 @@ export default function AddObservation() {
 
   const centralFrequencyField = () => {
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(1));
-      if (num >= Number(t('centralFrequency.range.lower'))) {
-        setFrequency(num);
-      }
+      setFrequency(Number(Math.abs(e).toFixed(4)));
+    };
+
+    const errorMessage = () => {
+      const min = Number(t('centralFrequency.range.lower'));
+      return frequency < min ? t('centralFrequency.range.error') : '';
     };
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
+            errorText={errorMessage()}
             label={t('centralFrequency.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
@@ -596,11 +618,14 @@ export default function AddObservation() {
   };
 
   const SubBandsField = () => {
+    const errorMessage = () => {
+      const min = Number(t('subBands.range.lower'));
+      const max = Number(t('subBands.range.upper'));
+      return subBands < min || subBands > max ? t('subBands.range.error') : '';
+    };
+
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num >= Number(t('subBands.range.lower')) && num <= Number(t('subBands.range.upper'))) {
-        setSubBands(num);
-      }
+      setSubBands(Number(Math.abs(e).toFixed(0)));
     };
 
     return (
@@ -608,6 +633,7 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           {isContinuum() && (
             <NumberEntry
+              errorText={errorMessage()}
               label={t('subBands.label')}
               labelBold
               labelPosition={LABEL_POSITION.START}
