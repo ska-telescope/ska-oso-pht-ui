@@ -8,7 +8,7 @@ type Observation = {
   observing_band: number;
   weather?: number; // only for MID
   elevation: number;
-  central_frequency: number;
+  central_frequency: string;
   bandwidth: number;
   spectral_averaging?: number; // only for LOW
   tapering?: number; // only for MID

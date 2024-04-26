@@ -51,7 +51,7 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
-  const [frequency, setFrequency] = React.useState(0.1);
+  let [frequency, setFrequency] = React.useState('');
   let [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
@@ -581,10 +581,28 @@ export default function AddObservation() {
       return frequency < min ? t('centralFrequency.range.error') : '';
     };
 
+    switch (observingBand) {
+      case 0:
+        frequency = OBSERVATION.CentralFrequency[0].value;
+        break;
+      case 1:
+        frequency = OBSERVATION.CentralFrequency[1].value;
+        break;
+      case 2:
+        frequency = OBSERVATION.CentralFrequency[2].value;
+        break;
+      case 3:
+        frequency = OBSERVATION.CentralFrequency[3].value;
+        break;
+      case 4:
+        frequency = OBSERVATION.CentralFrequency[4].value;
+        break;
+    }
+
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <NumberEntry
+          <TextEntry
             errorText={errorMessage()}
             label={t('centralFrequency.label')}
             labelBold

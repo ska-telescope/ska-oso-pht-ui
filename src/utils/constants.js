@@ -269,6 +269,13 @@ export const OBSERVATION = {
     { value: '161.28 kHz (7.4 km/s)' },
     { value: '322.56 kHz (14.8 km/s)' }
   ],
+  CentralFrequency: [
+    { value: '200' },
+    { value: '0.7' },
+    { value: '1.355' },
+    { value: '6.55' },
+    { value: '11.85' }
+  ],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },
