@@ -3,26 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import AddIcon from '@mui/icons-material/Add';
-import { PATH } from '../../../utils/constants';
 
-export default function AddDataProductButton() {
+interface AddButtonProps {
+  title: string;
+  navPath: string;
+  disabled?: boolean;
+}
+
+export default function AddButton({ disabled = false, navPath, title = '' }: AddButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const ClickFunction = () => {
-    navigate(PATH[3]);
+    navigate(navPath);
   };
 
-  const title = t('dataProduct.button');
+  const theTitle = t(title);
 
   return (
     <Button
-      ariaDescription={`${title}Button`}
+      ariaDescription={`${theTitle}Button`}
       color={ButtonColorTypes.Secondary}
+      disabled={disabled}
       icon={<AddIcon />}
-      label={title}
+      label={theTitle}
       onClick={ClickFunction}
-      testId={`${title}Button`}
+      testId={'addButton'}
       variant={ButtonVariantTypes.Contained}
     />
   );

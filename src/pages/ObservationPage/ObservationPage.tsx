@@ -124,7 +124,7 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = hasObservations() > 0 ? 1 : 0;
+    let count = hasObservations() ? 1 : 0;
     count += hasTargetObservations() ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);

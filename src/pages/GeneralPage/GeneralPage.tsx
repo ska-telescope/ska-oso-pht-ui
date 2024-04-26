@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';

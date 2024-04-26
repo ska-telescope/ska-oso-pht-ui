@@ -26,8 +26,8 @@ The Data Product Page contains the following:
 
 2. Data Product Management Options
 
-- Clicking on the "Add Data Product button" takes the user to a page where he can enter a new data product
-- Once added, the new data product is displayed in the table.
+- Clicking on the "Add Data Product" button takes the user to a page where he can enter a new data product
+- Once added, the new data product is displayed in the Data Product List.
 
 Navigation Elements
 ===================
