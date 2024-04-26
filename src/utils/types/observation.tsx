@@ -16,7 +16,7 @@ type Observation = {
   integration_time: string;
   integration_time_units: number;
   // continuum_bandwidth?: number; // used where? => same as bandwidth
-  spectral_resolution: number;
+  spectral_resolution: string;
   effective_resolution: number;
   number_of_sub_bands?: number; // only for MID
   number_of_15m_antennas?: number;

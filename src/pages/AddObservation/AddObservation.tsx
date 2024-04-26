@@ -51,14 +51,14 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
-  let [frequency, setFrequency] = React.useState('');
+  let [frequency] = React.useState('');
   let [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
   const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
-  const [spectralResolution, setSpectralResolution] = React.useState(1);
+  let [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState('');
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
@@ -354,16 +354,28 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    const getOptions = () => {
-      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      return OBSERVATION.array[usedTelescope - 1].spectralResolution;
-    };
+    switch (frequency) {
+      case '200':
+        spectralResolution = OBSERVATION.SpectralResolution[0].value;
+        break;
+      case '0.7':
+        spectralResolution = OBSERVATION.SpectralResolution[1].value;
+        break;
+      case '1.355':
+        spectralResolution = OBSERVATION.SpectralResolution[2].value;
+        break;
+      case '6.55':
+        spectralResolution = OBSERVATION.SpectralResolution[3].value;
+        break;
+      case '11.85':
+        spectralResolution = OBSERVATION.SpectralResolution[4].value;
+        break;
+    }
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <DropDown
-            options={getOptions()}
+          <TextEntry
             testId="spectralResolution"
             value={spectralResolution}
             setValue={setSpectralResolution}
@@ -572,15 +584,6 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    const validate = (e: number) => {
-      setFrequency(Number(Math.abs(e).toFixed(4)));
-    };
-
-    const errorMessage = () => {
-      const min = Number(t('centralFrequency.range.lower'));
-      return frequency < min ? t('centralFrequency.range.error') : '';
-    };
-
     switch (observingBand) {
       case 0:
         frequency = OBSERVATION.CentralFrequency[0].value;
@@ -603,14 +606,12 @@ export default function AddObservation() {
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <TextEntry
-            errorText={errorMessage()}
             label={t('centralFrequency.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
-            setValue={validate}
             onFocus={() => helpComponent(t('centralFrequency.help'))}
             required
             suffix={frequencyUnitsField()}

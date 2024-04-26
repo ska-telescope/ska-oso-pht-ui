@@ -178,15 +178,6 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5 },
         { label: '100 MHz', value: 6 },
         { label: '200 MHz', value: 7 }
-      ],
-      spectralResolution: [
-        { label: '0.21 KHz', value: 1 },
-        { label: '0.42 KHz', value: 2 },
-        { label: '0.84 KHz', value: 3 },
-        { label: '1.68 KHz', value: 4 },
-        { label: '3.36 KHz', value: 5 },
-        { label: '6.72 KHz', value: 6 },
-        { label: '13.44 KHz', value: 7 }
       ]
     },
     {
@@ -231,16 +222,6 @@ export const OBSERVATION = {
         { label: '781.3 KHz', value: 6 },
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
-      ],
-      spectralResolution: [
-        { label: '14.1 Hz', value: 1 },
-        { label: '28.3 Hz', value: 2 },
-        { label: '56.5 Hz', value: 3 },
-        { label: '113.0 Hz', value: 4 },
-        { label: '226.1 Hz', value: 5 },
-        { label: '452.1 Hz', value: 6 },
-        { label: '904.2 Hz', value: 7 },
-        { label: '1808.4 Hz', value: 8 }
       ]
     }
   ],
@@ -275,6 +256,13 @@ export const OBSERVATION = {
     { value: '1.355' },
     { value: '6.55' },
     { value: '11.85' }
+  ],
+  SpectralResolution: [
+    { value: '5.43 kHz (8.1 km/s)' },
+    { value: '13.44 kHz (5.8 km/s)' },
+    { value: '13.44 kHz (3.0 km/s)' },
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '13.44 kHz (340.0 m/s)' }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },
