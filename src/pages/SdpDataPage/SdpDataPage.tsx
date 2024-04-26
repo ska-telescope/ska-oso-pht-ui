@@ -1,17 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
-import AddDataProductButton from '../../components/button/AddDataProduct/AddDataProductButton';
+import { DataGrid } from '@ska-telescope/ska-gui-components';
+import AddButton from '../../components/button/Add/Add';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
+import ErrorPanel from '../../components/info/errorPanel/errorPanel';
+import { PATH } from '../../utils/constants';
 
 const PAGE = 7;
+const DATAGRID_HEIGHT = 450;
+const LABEL_WIDTH = 6;
 
 export default function SdpDataPage() {
   const { t } = useTranslation('pht');
@@ -50,45 +54,35 @@ export default function SdpDataPage() {
   const columns = [
     {
       field: 'observatoryDataProduct',
-      headerName: 'OBSERVATORY DATA PRODUCT',
+      headerName: t('observatoryDataProductConfig.label'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderCell: (e: { row: { observatoryDataProduct: number } }) => {
-        const obsDataLabel = t(
-          `observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`
-        );
-        return <Typography>{obsDataLabel}</Typography>;
-      }
+      renderCell: (e: { row: { observatoryDataProduct: number } }) =>
+        t(`observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`)
     },
     {
       field: 'observations',
-      headerName: 'OBSERVATIONS',
+      headerName: t('observations.dp.label'),
       flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { observations: string } }) => {
-        return <Typography>{e.row.observations}</Typography>;
-      }
+      disableClickEventBubbling: true
     },
     {
       field: 'imageSize',
-      headerName: 'IMAGE SIZE',
+      headerName: t('imageSize.label'),
       flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { imageSize: number } }) => <Typography>{e.row.imageSize}</Typography>
+      disableClickEventBubbling: true
     },
     {
       field: 'pixelSize',
-      headerName: 'PIXEL SIZE',
+      headerName: t('pixelSize.label'),
       flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { pixelSize: number } }) => <Typography>{e.row.pixelSize}</Typography>
+      disableClickEventBubbling: true
     },
     {
       field: 'weighting',
-      headerName: 'WEIGHTING',
+      headerName: t('weighting.label'),
       flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { weighting: number } }) => <Typography>{e.row.weighting}</Typography>
+      disableClickEventBubbling: true
     },
     {
       field: 'id',
@@ -97,7 +91,7 @@ export default function SdpDataPage() {
       flex: 0.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => (
-        <TrashIcon onClick={deleteIconClicked} toolTip="Delete data product" />
+        <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
       )
     }
   ];
@@ -120,7 +114,6 @@ export default function SdpDataPage() {
   };
 
   const alertContent = () => {
-    const LABEL_WIDTH = 6;
     const rec = getProposal().dataProducts.find(p => p.id === currentRow);
     return (
       <Grid
@@ -130,12 +123,12 @@ export default function SdpDataPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('observatoryDataProductConfig.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
             {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
           </Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('observations.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.observations}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
@@ -152,6 +145,9 @@ export default function SdpDataPage() {
   };
 
   const getRows = () => getProposal().dataProducts;
+  const hasObservations = () => (getProposal()?.observations?.length > 0 ? true : false);
+  const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
+  const errorMessage = () => 'page.' + PAGE + errorSuffix();
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);
@@ -159,34 +155,23 @@ export default function SdpDataPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-        <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-          <Grid item xs={1}></Grid>
-          <Grid item xs={10} pb={1}>
-            <AddDataProductButton />
-          </Grid>
-          <Grid item xs={1}></Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" justifyContent="space-around">
-          <Grid item md={10}>
-            {getRows().length > 0 && (
-              <DataGrid
-                rows={getRows()}
-                columns={extendedColumnsObservations}
-                height={450}
-                onRowClick={clickRow}
-                testId="observationDetails"
-              />
-            )}
-            {getRows().length === 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Error}
-                fontSize={20}
-                message={t('error.noObservations')}
-                testId="helpPanelId"
-              />
-            )}
-          </Grid>
+      <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
+        <Grid item xs={10}>
+          <AddButton title="dataProduct.button" navPath={PATH[3]} disabled={!hasObservations()} />
+          {getRows().length > 0 && (
+            <DataGrid
+              rows={getRows()}
+              columns={extendedColumnsObservations}
+              height={DATAGRID_HEIGHT}
+              onRowClick={clickRow}
+              testId="observationDetails"
+            />
+          )}
+          {getRows().length === 0 && (
+            <Box pt={2}>
+              <ErrorPanel msg={errorMessage()} />
+            </Box>
+          )}
         </Grid>
       </Grid>
 
@@ -195,7 +180,7 @@ export default function SdpDataPage() {
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onDialogResponse={deleteConfirmed}
-          title="deleteDataProduct.label"
+          title="deleteDataProduct.confirmTitle"
         >
           {alertContent()}
         </AlertDialog>
