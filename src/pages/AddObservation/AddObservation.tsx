@@ -52,7 +52,7 @@ export default function AddObservation() {
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
   const [frequency, setFrequency] = React.useState(0.1);
-  const [effective, setEffective] = React.useState('');
+  let [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -72,7 +72,6 @@ export default function AddObservation() {
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
-  const [errorTextEffectiveResolution, setErrorTextEffectiveResolution] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -155,21 +154,6 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextContinuumBandwidth('');
-    }
-    // effective resolution
-    emptyField = effective === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        effective,
-        setEffective,
-        setErrorTextEffectiveResolution,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextEffectiveResolution('');
     }
     return count;
   }
@@ -667,20 +651,48 @@ export default function AddObservation() {
     />
   );
 
-  const effectiveResolutionField = () => (
-    <TextEntry
-      label={t('effectiveResolution.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="effective"
-      value={effective}
-      setValue={setEffective}
-      onFocus={() => helpComponent(t('effectiveResolution.help'))}
-      required
-      errorText={t(errorTextEffectiveResolution)}
-    />
-  );
+  const effectiveResolutionField = () => {
+    switch (spectralAveraging) {
+      case 1:
+        effective = OBSERVATION.EffectiveResolution[0].value;
+        break;
+      case 2:
+        effective = OBSERVATION.EffectiveResolution[1].value;
+        break;
+      case 3:
+        effective = OBSERVATION.EffectiveResolution[2].value;
+        break;
+      case 4:
+        effective = OBSERVATION.EffectiveResolution[3].value;
+        break;
+      case 6:
+        effective = OBSERVATION.EffectiveResolution[4].value;
+        break;
+      case 8:
+        effective = OBSERVATION.EffectiveResolution[5].value;
+        break;
+      case 12:
+        effective = OBSERVATION.EffectiveResolution[6].value;
+        break;
+      case 24:
+        effective = OBSERVATION.EffectiveResolution[7].value;
+        break;
+    }
+
+    return (
+      <TextEntry
+        label={t('effectiveResolution.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        testId="effective"
+        value={effective}
+        setValue={setEffective}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        required
+      />
+    );
+  };
 
   const AntennasFields = () => {
     return (

@@ -259,6 +259,16 @@ export const OBSERVATION = {
     { label: '12', value: 12 },
     { label: '24', value: 24 }
   ],
+  EffectiveResolution: [
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '26.88 kHz (1.2 km/s)' },
+    { value: '40.32 kHz (1.8 km/s)' },
+    { value: '53.76 kHz (2.5 km/s)' },
+    { value: '80.64 kHz (3.7 km/s)' },
+    { value: '107.52 kHz (4.9 km/s)' },
+    { value: '161.28 kHz (7.4 km/s)' },
+    { value: '322.56 kHz (14.8 km/s)' }
+  ],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },
