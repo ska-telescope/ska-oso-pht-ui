@@ -198,12 +198,13 @@ export default function AddObservation() {
 
   const buttonGroupObservationsField = () => {
     const title = t('groupObservations.label');
-    const getIcon = () => <AddIcon />;
+    // const getIcon = () => <AddIcon />;
     const buttonClicked = async () => {
       // TODO
     };
 
-    return (
+    return {
+      /*
       <Button
         ariaDescription={`${title}Button`}
         color={ButtonColorTypes.Secondary}
@@ -214,7 +215,8 @@ export default function AddObservation() {
         onClick={buttonClicked}
         variant={ButtonVariantTypes.Contained}
       />
-    );
+    */
+    };
   };
 
   const subArrayField = () => {
