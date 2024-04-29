@@ -182,7 +182,7 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getOptions()}
-            testId="groupObservation"
+            testId="groupObservations"
             value={groupObservation}
             setValue={setgroupObservation}
             label={t('groupObservations.label')}
