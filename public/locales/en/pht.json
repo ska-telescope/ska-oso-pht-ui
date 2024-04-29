@@ -638,11 +638,11 @@
     },
     "3": {
       "title": "Science",
-      "desc": "SCIENCE. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "4": {
       "title": "Target",
-      "desc": "TARGET. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Select a category to associate target(s) with this proposal. For a list of targets you can only specify a maximum of 30."
     },
     "5": {
       "title": "Observation",
