@@ -673,8 +673,7 @@ export default function AddObservation() {
   const effectiveResolutionField = () => {
     switch (observingBand) {
       case 0:
-        //TODO: refactor for low same as mid
-        frequency = OBSERVATION.CentralFrequency[0].value;
+        observationBandLow();
         break;
       case 1:
         observationBand1();
@@ -688,6 +687,35 @@ export default function AddObservation() {
       case 4:
         observationBand5b();
         break;
+    }
+
+    function observationBandLow() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOBLow[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOBLow[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOBLow[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOBLow[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOBLow[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOBLow[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOBLow[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOBLow[7].value;
+          break;
+      }
     }
 
     function observationBand1() {

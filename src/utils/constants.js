@@ -240,6 +240,16 @@ export const OBSERVATION = {
     { label: '12', value: 12 },
     { label: '24', value: 24 }
   ],
+  EffectiveResolutionOBLow: [
+    { value: '5.43 kHz (8.1 km/s)' },
+    { value: '10.86 kHz (16.3 km/s)' },
+    { value: '16.29 kHz (24.4 km/s)' },
+    { value: '21.72 kHz (32.6 km/s)' },
+    { value: '32.58 kHz (48.8 km/s)' },
+    { value: '43.44 kHz (65.1 km/s)' },
+    { value: '65.16 kHz (97.7 km/s)' },
+    { value: '130.32 kHz (195.3 km/s)' }
+  ],
   EffectiveResolutionOB1: [
     { value: '13.44 kHz (5.8 km/s)' },
     { value: '26.88 kHz (11.5 km/s)' },
