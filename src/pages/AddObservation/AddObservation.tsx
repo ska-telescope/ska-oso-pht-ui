@@ -794,15 +794,10 @@ export default function AddObservation() {
     };
 
     const addObservationToProposal = () => {
-      const highestId = getProposal().observations?.reduce(
-        (acc, observation) => (observation.id > acc ? observation.id : acc),
-        0
-      );
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       const newObservation = {
-        id: highestId + 1,
-        obset_id: generateId(t('addObservation.idPrefix'), 6),
+        id: generateId(t('addObservation.idPrefix'), 6),
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',

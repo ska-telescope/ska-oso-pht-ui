@@ -186,7 +186,7 @@ export default function SensCalcModalMultiple({
             />
           }
           component={Box}
-          title={t('sensitivityCalculatorResults.title') + ' (' + observation.obset_id + ')'}
+          title={t('sensitivityCalculatorResults.title') + ' (' + observation.id + ')'}
           titleTypographyProps={{
             align: 'center',
             fontWeight: 'bold',

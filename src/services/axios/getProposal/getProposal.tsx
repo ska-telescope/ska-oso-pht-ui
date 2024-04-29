@@ -80,15 +80,15 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
     results.push({
       id: i + 1,
       telescope: arr,
-      subarray: sub ? sub : 0,
+      subarray: sub ? sub.value : 0,
       type: typ ? typ.value : 0
     });
   }
   return results;
 };
 
-function mapping(inRec: ProposalBackend) {
-  return ({
+function mapping(inRec: ProposalBackend): Proposal {
+  return {
     id: inRec.prsl_id,
     title: inRec.proposal_info.title,
     proposalType: getProposalType(inRec.proposal_info.proposal_type),
@@ -102,12 +102,13 @@ function mapping(inRec: ProposalBackend) {
     targetOption: 1,
     targets: getTargets(inRec.proposal_info.targets),
     observations: getObservations(inRec.proposal_info.science_programmes),
+    groupObservations: [],
     targetObservation: [],
     technicalPDF: null,
     technicalLoadStatus: 0,
     dataProducts: [],
     pipeline: ''
-  } as unknown) as Proposal;
+  };
 }
 
 export function GetMockProposal(): Proposal {
