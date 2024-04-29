@@ -62,12 +62,12 @@ export default function AddTarget() {
       0
     );
     const newTarget = {
+      ra,
+      raUnit: raType.toString(),
       dec,
       decUnit: raType.toString(),
       id: highestId + 1,
       name,
-      ra,
-      raUnit: raType.toString(),
       referenceFrame,
       vel,
       velUnit: velType.toString()
