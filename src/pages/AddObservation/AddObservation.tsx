@@ -160,10 +160,14 @@ export default function AddObservation() {
     return count;
   }
 
+  const hasGroupObservations = (): boolean =>
+    getProposal() && getProposal().groupObservations && getProposal().groupObservations.length > 0;
+
   const groupObservationsField = () => {
     const getOptions = () => {
-      const groups: GroupObservation[] = getProposal()?.groupObservations;
-      // const groups: GroupObservation[] = [];
+      const groups: GroupObservation[] = hasGroupObservations()
+        ? getProposal()?.groupObservations
+        : [];
       const formatedGroupObs = [
         { label: t('groupObservations.none'), value: 0 },
         { label: t('groupObservations.new'), value: 1 },
