@@ -70,8 +70,8 @@ export default function AddDataProduct() {
   const observationsField = () => {
     const getOptions = () => {
       return getProposal()?.observations?.map(e => ({
-        label: e.obset_id,
-        value: e.obset_id
+        label: e.id,
+        value: e.id
       }));
     };
     return (

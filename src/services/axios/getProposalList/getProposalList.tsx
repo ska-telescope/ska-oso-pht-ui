@@ -13,6 +13,7 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposals = {
       id: inRec[i].prsl_id.toString(),
+      category: inRec[i].proposal_info.proposal_type.main_type,
       title: inRec[i].proposal_info.title,
       cycle: inRec[i].proposal_info.cycle,
       pi: getPI(inRec[i].proposal_info.investigator),

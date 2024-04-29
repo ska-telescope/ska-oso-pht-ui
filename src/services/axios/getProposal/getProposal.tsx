@@ -73,28 +73,22 @@ const getTargets = (inValue: TargetBackend[]) => {
 };
 
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
-  // const BACKEND_OBSERVATION_TYPE = [
-  //   { label: 'Continuum', value: TYPE_CONTINUUM },
-  //   { label: 'Zoom', value: TYPE_ZOOM }
-  // ];
-
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].subarray);
-    const typ = OBSERVATION_TYPE_BACKEND.find(p => p === inValue[i].observation_type);
     results.push({
       id: i + 1,
       telescope: arr,
-      subarray: sub ? sub : 0,
-      type: typ ? typ : 0
+      subarray: sub ? sub.value : 0,
+      type: inValue[i].observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1
     });
   }
   return results;
 };
 
-function mapping(inRec: ProposalBackend) {
-  return ({
+function mapping(inRec: ProposalBackend): Proposal {
+  return {
     id: inRec.prsl_id,
     title: inRec.proposal_info.title,
     proposalType: getProposalType(inRec.proposal_info.proposal_type),
@@ -108,12 +102,13 @@ function mapping(inRec: ProposalBackend) {
     targetOption: 1,
     targets: getTargets(inRec.proposal_info.targets),
     observations: getObservations(inRec.proposal_info.science_programmes),
+    groupObservations: [],
     targetObservation: [],
     technicalPDF: null,
     technicalLoadStatus: 0,
     dataProducts: [],
     pipeline: ''
-  } as unknown) as Proposal;
+  };
 }
 
 export function GetMockProposal(): Proposal {
