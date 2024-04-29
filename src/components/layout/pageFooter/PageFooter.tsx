@@ -52,7 +52,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
 
   const nextLabel = () => {
     if (usedPageNo === -2) {
-      return 'Add';
+      return t(`button.add`);
     }
     if (usedPageNo === -1) {
       return t(`button.create`);

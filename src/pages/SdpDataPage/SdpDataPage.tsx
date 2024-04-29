@@ -157,7 +157,7 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
         <Grid item xs={10}>
-          <AddButton title="dataProduct.button" navPath={PATH[3]} disabled={!hasObservations()} />
+          <AddButton title="dataProduct.button" action={PATH[3]} disabled={!hasObservations()} />
           {getRows().length > 0 && (
             <DataGrid
               rows={getRows()}

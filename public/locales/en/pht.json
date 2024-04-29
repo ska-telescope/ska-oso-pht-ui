@@ -9,7 +9,6 @@
   "no": "No",
   "button": {
     "add": "Add",
-    "addObservation": "observation setup",
     "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
@@ -67,7 +66,8 @@
     "label": "Actions"
   },
   "addObservation": {
-    "idPrefix": "obs-"
+    "idPrefix": "obs-",
+    "button": "observation setup"
   },
   "addProposal": {
     "label": "Add Proposal",
@@ -263,6 +263,8 @@
   },
   "observations": {
     "label": "Observations",
+    "delete": "Delete observation",
+    "edit": "Edit obversation",
     "id": "Id",
     "dp": {
       "label": "Observation",
@@ -583,9 +585,6 @@
     "maxWord": "20",
     "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "helper": "Please enter your title information"
-  },
-  "type": {
-    "label": "Type"
   },
   "updated": {
     "label": "Last Updated"
