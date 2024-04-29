@@ -35,6 +35,7 @@ export default function ObservationPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
+  console.log('PRoposal', getProposal());
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {

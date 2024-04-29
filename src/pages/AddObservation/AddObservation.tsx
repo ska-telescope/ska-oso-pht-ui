@@ -79,6 +79,8 @@ export default function AddObservation() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const observationId = generateId(t('addObservation.idPrefix'), 6);
+  const [addGroupObsButtonDisabled, setAddGroupObsButtonDisabled] = React.useState(false);
 
   React.useEffect(() => {
     setNumOf15mAntennas(
@@ -200,12 +202,25 @@ export default function AddObservation() {
   };
 
   const buttonGroupObservationsField = () => {
+    console.log('proposal before', getProposal());
     const title = t('groupObservations.label');
-    const buttonClicked = async () => {
-      // TODO
+    const buttonClicked = () => {
+      const newGroupObs: GroupObservation = {
+        groupId: generateId(t('groupObservations.idPrefix'), 6),
+        observationId: observationId
+      };
+      setProposal({
+        ...getProposal(),
+        groupObservations: [...getProposal().groupObservations, newGroupObs]
+      });
+      console.log('newGroupObs', newGroupObs);
+      console.log('proposal after', getProposal());
+      setAddGroupObsButtonDisabled(true);
     };
 
-    return <AddButton title={title} action={buttonClicked} />;
+    return (
+      <AddButton title={'button.add'} action={buttonClicked} disabled={addGroupObsButtonDisabled} />
+    );
   };
 
   const subArrayField = () => {
@@ -908,7 +923,7 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       const newObservation = {
-        id: generateId(t('addObservation.idPrefix'), 6),
+        id: observationId,
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
