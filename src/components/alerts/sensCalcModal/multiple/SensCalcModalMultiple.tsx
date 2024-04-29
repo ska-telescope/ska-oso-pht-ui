@@ -41,14 +41,27 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
-  function HeaderLine(str: string) {
-    return <Typography key={i++}>{str}</Typography>;
+  function HeaderLine(str: string, bold: boolean) {
+    return (
+      <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>
+        {str}
+      </Typography>
+    );
   }
 
   const headerDisplay = (inStr: string, inUnits: string) => {
     const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
     const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
-    return <Stack>{sent.split(' ').map(rec => HeaderLine(rec))}</Stack>;
+    const arr = sent.split(' ');
+    i = 0;
+    let count = 0;
+    return (
+      <Stack>
+        {arr.map(rec => {
+          return HeaderLine(rec, unit.length > 0 && arr.length === ++count);
+        })}
+      </Stack>
+    );
   };
 
   const columns = [
@@ -138,16 +151,18 @@ export default function SensCalcModalMultiple({
       disableClickEventBubbling: true,
       renderCell: (e: { row: { status: number; error: string } }) => {
         return (
-          <StatusIcon
-            ariaTitle={t('sensitivityCalculatorResults.status', {
-              status: t('statusValue.' + e.row.status),
-              error: e.row.error
-            })}
-            testId="statusId"
-            icon
-            level={e.row.status}
-            size={SIZE}
-          />
+          <Box pt={1}>
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + e.row.status),
+                error: e.row.error
+              })}
+              testId="statusId"
+              icon
+              level={e.row.status}
+              size={SIZE}
+            />
+          </Box>
         );
       }
     }

@@ -2,27 +2,32 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  Button,
-  ButtonColorTypes,
-  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { BANDWIDTH_TELESCOPE, NAV, OBSERVATION, TELESCOPES } from '../../utils/constants';
+import {
+  BANDWIDTH_TELESCOPE,
+  NAV,
+  OBSERVATION,
+  OBSERVATION_TYPE,
+  TELESCOPES,
+  TYPE_CONTINUUM
+} from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
+import AddButton from '../../components/button/Add/Add';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const PAGE = 10;
 const BACK_PAGE = 5;
+const LINE_OFFSET = 30;
 
 const LABEL_WIDTH_SELECT = 5;
 const LABEL_WIDTH_STD = 5;
@@ -43,14 +48,14 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(3);
-  const [frequency, setFrequency] = React.useState(0.1);
-  const [effective, setEffective] = React.useState('');
+  let [frequency] = React.useState('');
+  let [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
   const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
-  const [spectralResolution, setSpectralResolution] = React.useState(1);
+  let [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState('');
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
@@ -64,7 +69,6 @@ export default function AddObservation() {
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
-  const [errorTextEffectiveResolution, setErrorTextEffectiveResolution] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -100,8 +104,17 @@ export default function AddObservation() {
     helpComponent(t('observingBand.help'));
   }, []);
 
-  const isContinuum = () => observationType === 1;
+  const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
+
+  // TODO : We should move this to a utility at some point
+  const options = (prefix: string, arr: number[]) => {
+    let results = [];
+    arr.forEach(element => {
+      results.push({ label: t(prefix + '.' + element), value: element });
+    });
+    return results;
+  };
 
   function formValidation() {
     let count = 0;
@@ -138,21 +151,6 @@ export default function AddObservation() {
       count += isValid ? 0 : 1;
     } else {
       setErrorTextContinuumBandwidth('');
-    }
-    // effective resolution
-    emptyField = effective === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        effective,
-        setEffective,
-        setErrorTextEffectiveResolution,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextEffectiveResolution('');
     }
     return count;
   }
@@ -192,7 +190,7 @@ export default function AddObservation() {
     <Grid pt={1} spacing={0} container direction="row">
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
-          options={OBSERVATION.ObservationType}
+          options={options('observationType', OBSERVATION_TYPE)}
           testId="observationType"
           value={observationType}
           setValue={setObservationType}
@@ -353,16 +351,28 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    const getOptions = () => {
-      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      return OBSERVATION.array[usedTelescope - 1].spectralResolution;
-    };
+    switch (frequency) {
+      case '200':
+        spectralResolution = OBSERVATION.SpectralResolution[0].value;
+        break;
+      case '0.7':
+        spectralResolution = OBSERVATION.SpectralResolution[1].value;
+        break;
+      case '1.355':
+        spectralResolution = OBSERVATION.SpectralResolution[2].value;
+        break;
+      case '6.55':
+        spectralResolution = OBSERVATION.SpectralResolution[3].value;
+        break;
+      case '11.85':
+        spectralResolution = OBSERVATION.SpectralResolution[4].value;
+        break;
+    }
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <DropDown
-            options={getOptions()}
+          <TextEntry
             testId="spectralResolution"
             value={spectralResolution}
             setValue={setSpectralResolution}
@@ -540,27 +550,30 @@ export default function AddObservation() {
     );
   };
 
+  const weatherUnitsField = () => t('weather.units');
+
   const weatherField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num >= Number(t('weather.range.lower')) && num <= Number(t('weather.range.upper'))) {
-        setWeather(num);
-      }
+    const errorMessage = () => {
+      const min = Number(t('weather.range.lower'));
+      const max = Number(t('weather.range.upper'));
+      return weather < min || weather > max ? t('weather.range.error') : '';
     };
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
+            errorText={errorMessage()}
             label={t('weather.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="weather"
             value={weather}
-            setValue={validate}
+            setValue={setWeather}
             onFocus={() => helpComponent(t('weather.help'))}
             required
+            suffix={weatherUnitsField()}
           />
         </Grid>
       </Grid>
@@ -568,24 +581,34 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(1));
-      if (num >= Number(t('centralFrequency.range.lower'))) {
-        setFrequency(num);
-      }
-    };
+    switch (observingBand) {
+      case 0:
+        frequency = OBSERVATION.CentralFrequency[0].value;
+        break;
+      case 1:
+        frequency = OBSERVATION.CentralFrequency[1].value;
+        break;
+      case 2:
+        frequency = OBSERVATION.CentralFrequency[2].value;
+        break;
+      case 3:
+        frequency = OBSERVATION.CentralFrequency[3].value;
+        break;
+      case 4:
+        frequency = OBSERVATION.CentralFrequency[4].value;
+        break;
+    }
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <NumberEntry
+          <TextEntry
             label={t('centralFrequency.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
-            setValue={validate}
             onFocus={() => helpComponent(t('centralFrequency.help'))}
             required
             suffix={frequencyUnitsField()}
@@ -596,11 +619,14 @@ export default function AddObservation() {
   };
 
   const SubBandsField = () => {
+    const errorMessage = () => {
+      const min = Number(t('subBands.range.lower'));
+      const max = Number(t('subBands.range.upper'));
+      return subBands < min || subBands > max ? t('subBands.range.error') : '';
+    };
+
     const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num >= Number(t('subBands.range.lower')) && num <= Number(t('subBands.range.upper'))) {
-        setSubBands(num);
-      }
+      setSubBands(Number(Math.abs(e).toFixed(0)));
     };
 
     return (
@@ -608,6 +634,7 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           {isContinuum() && (
             <NumberEntry
+              errorText={errorMessage()}
               label={t('subBands.label')}
               labelBold
               labelPosition={LABEL_POSITION.START}
@@ -640,20 +667,48 @@ export default function AddObservation() {
     />
   );
 
-  const effectiveResolutionField = () => (
-    <TextEntry
-      label={t('effectiveResolution.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="effective"
-      value={effective}
-      setValue={setEffective}
-      onFocus={() => helpComponent(t('effectiveResolution.help'))}
-      required
-      errorText={t(errorTextEffectiveResolution)}
-    />
-  );
+  const effectiveResolutionField = () => {
+    switch (spectralAveraging) {
+      case 1:
+        effective = OBSERVATION.EffectiveResolution[0].value;
+        break;
+      case 2:
+        effective = OBSERVATION.EffectiveResolution[1].value;
+        break;
+      case 3:
+        effective = OBSERVATION.EffectiveResolution[2].value;
+        break;
+      case 4:
+        effective = OBSERVATION.EffectiveResolution[3].value;
+        break;
+      case 6:
+        effective = OBSERVATION.EffectiveResolution[4].value;
+        break;
+      case 8:
+        effective = OBSERVATION.EffectiveResolution[5].value;
+        break;
+      case 12:
+        effective = OBSERVATION.EffectiveResolution[6].value;
+        break;
+      case 24:
+        effective = OBSERVATION.EffectiveResolution[7].value;
+        break;
+    }
+
+    return (
+      <TextEntry
+        label={t('effectiveResolution.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        testId="effective"
+        value={effective}
+        setValue={setEffective}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        required
+      />
+    );
+  };
 
   const AntennasFields = () => {
     return (
@@ -765,23 +820,26 @@ export default function AddObservation() {
     );
   };
 
-  const detailsField = () => (
-    <TextEntry
-      label={t('observationDetails.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      testId="observationDetails"
-      value={details}
-      setValue={setDetails}
-      onFocus={() => helpComponent(t('observationDetails.help'))}
-      rows={t('addObservation.minDetailDisplayRows')}
-    />
-  );
+  const detailsField = () => {
+    const numRows = Number(t('observationDetails.minDisplayRows'));
+    return (
+      <Box sx={{ height: LINE_OFFSET * numRows }}>
+        <TextEntry
+          label={t('observationDetails.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_STD}
+          testId="observationDetails"
+          value={details}
+          setValue={setDetails}
+          onFocus={() => helpComponent(t('observationDetails.help'))}
+          rows={t('observationDetails.minDisplayRows')}
+        />
+      </Box>
+    );
+  };
 
   const pageFooter = () => {
-    const getIcon = () => <AddIcon />;
-
     const disabled = () => {
       // TODO : Extend so that all options are covered
       if (!elevation || !weather || !frequency || !effective) {
@@ -846,16 +904,7 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <Button
-              ariaDescription="add Button"
-              color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
-              icon={getIcon()}
-              label={t('button.add')}
-              testId="addButton"
-              onClick={buttonClicked}
-              variant={ButtonVariantTypes.Contained}
-            />
+            <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
           </Grid>
         </Grid>
       </Paper>

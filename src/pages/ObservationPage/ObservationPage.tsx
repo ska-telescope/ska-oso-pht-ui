@@ -4,7 +4,7 @@ import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
-import AddObservationButton from '../../components/button/AddObservation/AddObservationButton';
+import AddButton from '../../components/button/Add/Add';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -14,6 +14,7 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
+import { PATH } from '../../utils/constants';
 
 const PAGE = 5;
 const LABEL_WIDTH = 6;
@@ -42,7 +43,7 @@ export default function ObservationPage() {
     updateAppContent1(temp);
   };
 
-  const setLastObs = (currObsId: number, target: any, value: number) => {
+  const setLastObs = (currObsId: number, target: any, value: object) => {
     const temp = [];
     elementsT.forEach(rec => {
       if (rec.id === target.id) {
@@ -61,8 +62,10 @@ export default function ObservationPage() {
     setElementsT(temp);
   };
 
-  const editIconClicked = async (id: string) => {
-    alert(t('error.iconClicked'));
+  const editIconClicked = (row: any) => {
+    setCurrObs(row.rec);
+    // TODO : Need to complete this
+    // navigate(PATH[4], currObs);
   };
 
   const deleteIconClicked = (row: any) => {
@@ -98,7 +101,7 @@ export default function ObservationPage() {
         </FieldWrapper>
         <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {t('dropdown.telescope.' + rec.telescope + '.' + rec.subarray)}
+            {t('dropdown.telescope.' + rec.telescope + '.array.' + rec.subarray)}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
@@ -115,7 +118,6 @@ export default function ObservationPage() {
   };
 
   const AddObservationTarget = (id: number) => {
-    console.log('TREVOR', currObs);
     const rec = { observationId: currObs?.id, targetId: id, status: 0 };
     setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
   };
@@ -153,11 +155,10 @@ export default function ObservationPage() {
         name: rec.name,
         ra: rec.ra,
         dec: rec.dec,
-        status: 0,
+        status: null,
         lastObs: null
       }))
     );
-    console.log('OBS', getProposal().observations);
     setElementsO(
       getProposal().observations.map(rec => ({
         id: rec.id,
@@ -237,11 +238,14 @@ export default function ObservationPage() {
         return (
           <>
             <EditIcon
-              onClick={() => editIconClicked(e.row.id)}
+              onClick={() => editIconClicked(e.row)}
               disabled={true}
-              toolTip="Currently disabled"
+              toolTip={t('observations.edit')}
             />
-            <TrashIcon onClick={() => deleteIconClicked(e.row)} toolTip="Delete observation" />
+            <TrashIcon
+              onClick={() => deleteIconClicked(e.row)}
+              toolTip={t('observations.delete')}
+            />
           </>
         );
       }
@@ -263,7 +267,7 @@ export default function ObservationPage() {
       flex: 0.6,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
-        return currObs?.id !== '' ? (
+        return currObs ? (
           <TickBox
             label=""
             testId="linkedTickBox"
@@ -281,7 +285,7 @@ export default function ObservationPage() {
     {
       field: 'vel',
       renderHeader: () =>
-        currObs?.id !== '' ? (
+        currObs ? (
           <Grid container direction="row" justifyContent="flex-start" alignItems="center">
             <Grid mr={10}></Grid>
             <Grid mr={10}>
@@ -350,7 +354,7 @@ export default function ObservationPage() {
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
-                <AddObservationButton />
+                <AddButton title="addObservation.button" action={PATH[2]} />
               </Grid>
             </Grid>
             {hasObservations() && (
@@ -380,7 +384,8 @@ export default function ObservationPage() {
                   {t('targetObservation.label')}
                 </Typography>
               </Grid>
-              <Grid item>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={2}>
                 <TickBox
                   disabled={!currObs}
                   label={t('selected.label')}
@@ -389,7 +394,7 @@ export default function ObservationPage() {
                   onChange={() => setSelected(!selected)}
                 />
               </Grid>
-              <Grid item>
+              <Grid item xs={3}>
                 <TickBox
                   disabled={!currObs}
                   label={t('notSelected.label')}

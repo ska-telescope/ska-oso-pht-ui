@@ -39,7 +39,6 @@ export default function SensCalcDisplaySingle({
     const updateResults = (result: any) => {
       displayToolTipMessage(result);
       setResults(result);
-      console.log('TREVOR, UNSETTING THE FETCH');
       setFetch(false);
     };
 
@@ -57,7 +56,6 @@ export default function SensCalcDisplaySingle({
 
     if (fetch) {
       if (observation) {
-        console.log('TREVOR GETS HERE');
         fetchResults();
       } else {
         updateResults(row.status);
@@ -67,7 +65,6 @@ export default function SensCalcDisplaySingle({
 
   React.useEffect(() => {
     if (selected && !fetch) {
-      console.log('TREVOR, SETTING THE FETCH');
       setFetch(true);
     }
   }, [selected]);

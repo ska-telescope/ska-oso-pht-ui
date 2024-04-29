@@ -14,6 +14,8 @@ export const STATUS_INITIAL = 5;
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
 
 export const LAST_PAGE = 9;
 
@@ -36,7 +38,7 @@ export const NAV = [
   '/proposal/src'
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct'];
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
@@ -118,7 +120,6 @@ export const TELESCOPE_LOW_NUM = 2;
 
 export const TEL = ['', 'Mid', 'Low'];
 
-export const MODE = ['Zoom', 'Continuum'];
 export const OBS_TYPES = ['spectral', 'continuum'];
 
 export const OBSERVATION = {
@@ -177,15 +178,6 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5 },
         { label: '100 MHz', value: 6 },
         { label: '200 MHz', value: 7 }
-      ],
-      spectralResolution: [
-        { label: '0.21 KHz', value: 1 },
-        { label: '0.42 KHz', value: 2 },
-        { label: '0.84 KHz', value: 3 },
-        { label: '1.68 KHz', value: 4 },
-        { label: '3.36 KHz', value: 5 },
-        { label: '6.72 KHz', value: 6 },
-        { label: '13.44 KHz', value: 7 }
       ]
     },
     {
@@ -230,22 +222,8 @@ export const OBSERVATION = {
         { label: '781.3 KHz', value: 6 },
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
-      ],
-      spectralResolution: [
-        { label: '14.1 Hz', value: 1 },
-        { label: '28.3 Hz', value: 2 },
-        { label: '56.5 Hz', value: 3 },
-        { label: '113.0 Hz', value: 4 },
-        { label: '226.1 Hz', value: 5 },
-        { label: '452.1 Hz', value: 6 },
-        { label: '904.2 Hz', value: 7 },
-        { label: '1808.4 Hz', value: 8 }
       ]
     }
-  ],
-  ObservationType: [
-    { label: 'Continuum', value: TYPE_CONTINUUM },
-    { label: 'Zoom', value: TYPE_ZOOM }
   ],
   ImageWeighting: [
     { label: 'Natural', value: 0 },
@@ -261,6 +239,30 @@ export const OBSERVATION = {
     { label: '8', value: 8 },
     { label: '12', value: 12 },
     { label: '24', value: 24 }
+  ],
+  EffectiveResolution: [
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '26.88 kHz (1.2 km/s)' },
+    { value: '40.32 kHz (1.8 km/s)' },
+    { value: '53.76 kHz (2.5 km/s)' },
+    { value: '80.64 kHz (3.7 km/s)' },
+    { value: '107.52 kHz (4.9 km/s)' },
+    { value: '161.28 kHz (7.4 km/s)' },
+    { value: '322.56 kHz (14.8 km/s)' }
+  ],
+  CentralFrequency: [
+    { value: '200' },
+    { value: '0.7' },
+    { value: '1.355' },
+    { value: '6.55' },
+    { value: '11.85' }
+  ],
+  SpectralResolution: [
+    { value: '5.43 kHz (8.1 km/s)' },
+    { value: '13.44 kHz (5.8 km/s)' },
+    { value: '13.44 kHz (3.0 km/s)' },
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '13.44 kHz (340.0 m/s)' }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },
