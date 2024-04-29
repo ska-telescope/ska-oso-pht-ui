@@ -97,7 +97,7 @@ export default function SensCalcDisplaySingle({
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
                 status: t('statusValue.' + results.status),
-                error: ''
+                error: toolTipError
               })}
               testId="statusId"
               icon

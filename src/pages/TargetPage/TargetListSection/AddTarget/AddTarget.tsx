@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
-import HelpPanel from '../../../../components/helpPanel/helpPanel';
+import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../../../utils/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
@@ -139,13 +139,7 @@ export default function AddTarget() {
               valueFocus={() => helpComponent(t('skyUnits.help'))}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              paddingTop: '10px'
-            }}
-          >
+          <Grid item xs={12}>
             {nameField()}
           </Grid>
           <Grid item xs={12}>

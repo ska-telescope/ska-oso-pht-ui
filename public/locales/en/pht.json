@@ -67,7 +67,7 @@
     "label": "Actions"
   },
   "addObservation": {
-    "minDetailDisplayRows": "5"
+    "idPrefix": "obs-"
   },
   "addProposal": {
     "label": "Add Proposal",
@@ -100,7 +100,8 @@
     "help": "CENTRAL FREQUENCY HELP",
     "label": "Central Frequency",
     "range": {
-      "lower": 0
+      "lower": 0,
+      "error": "Value cannot be negative"
     }
   },
   "changeProposal": {
@@ -133,7 +134,8 @@
     "label": "Declination"
   },
   "deleteDataProduct": {
-    "label": "Delete this data product ? "
+    "label": "Delete data product",
+    "confirmTitle": "Delete this data product ? "
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
@@ -144,7 +146,7 @@
   },
   "deleteObservation": {
     "label": "Delete this observation ? ",
-    "content1": "NOTE : Selections to the targets will also be removed"
+    "content1": "NOTE : Links to the targets will also be removed"
   },
   "deleteProposal": {
     "toolTip": "Delete proposal",
@@ -264,27 +266,34 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "Id"
+    "id": "Id",
+    "dp": {
+      "label": "Observation",
+      "help": "OBSERVATION HELP"
+    }
   },
   "observationType": {
     "label": "Observation Type",
     "help": "OBSERVATION TYPE HELP",
     "short": "Type",
-    "0": "Not specified",
-    "1": "Continuum",
-    "2": "Zoom"
+    "0": "Zoom",
+    "1": "Continuum"
   },
   "observatoryDataProductConfig": {
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {
-      "1": "Continuum Image",
-      "2": "Spectral Line Image"
+      "1": "Raw Visibility Data",
+      "2": "Calibrated Visibilities",
+      "3": "Image Products 1 : Image Cubes",
+      "4": "Image Products 2 : UV Grids",
+      "5": "LSM Catalogue"
     }
   },
   "observationDetails": {
     "help": "OBSERVATION DETAILS HELP",
-    "label": "Details"
+    "label": "Details",
+    "minDisplayRows": "5"
   },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
@@ -328,6 +337,13 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
+  },
+  "proposalStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "accepted": "Accepted",
+    "withdrawn": "Withdrawn",
+    "rejected": "Rejected"
   },
   "proposalType": {
     "label": "Proposal Types",
@@ -510,14 +526,15 @@
     "0": "OK",
     "1": "Error",
     "3": "Partial",
-    "5": "Un-set"
+    "5": "Not indicated"
   },
   "subBands": {
     "help": "Valid range is 0 - 32 inclusive",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
-      "upper": 32
+      "upper": 32,
+      "error": "Values are outside of allowed range"
     }
   },
   "subArrayConfiguration": {
@@ -550,7 +567,7 @@
     "label": "Tapering"
   },
   "targetObservation": {
-    "label": "Target List related to the selected Observation"
+    "label": "Target / Observation relationship"
   },
   "targetSelection": {
     "label": "Target selection"
@@ -596,11 +613,13 @@
     "clicked": "View Proposal Icon clicked"
   },
   "weather": {
-    "help": "WEATHER HELP",
+    "help": "This is the allowed level of Precipitable Water Vapour",
     "label": "Weather",
+    "units": "mm",
     "range": {
       "lower": 3,
-      "upper": 25
+      "upper": 25,
+      "error": "Values are outside of allowed range"
     }
   },
   "weighting": {
@@ -638,7 +657,9 @@
     },
     "7": {
       "title": "Data",
-      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL"
     },
     "8": {
       "title": "SRC Net",
@@ -684,6 +705,7 @@
     "axios": {
       "format": "Unexpected data format returned from API"
     },
+
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "iconClicked": "An error was encountered, please refresh page to continue",

@@ -14,12 +14,13 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV } from '../../utils/constants';
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 
 // TODO : Improved validation
 // TODO : Add documentation page specifically for Adding a Data product
 
+const BACK_PAGE = 7;
 const PAGE = 13;
 
 export default function AddDataProduct() {
@@ -39,7 +40,7 @@ export default function AddDataProduct() {
   const FIELD_OBS = 'observatoryDataProductConfig.options';
 
   React.useEffect(() => {
-    helpComponent(t('arrayConfiguration.help'));
+    helpComponent(t('observatoryDataProductConfig.help'));
   }, []);
 
   const obsDataProductField = () => {
@@ -68,22 +69,26 @@ export default function AddDataProduct() {
 
   const observationsField = () => {
     const getOptions = () => {
-      return getProposal().observations.map(e => ({
+      return getProposal()?.observations?.map(e => ({
         label: e.obset_id,
         value: e.obset_id
       }));
     };
     return (
-      <DropDown
-        options={getOptions()}
-        testId="observations"
-        value={observations}
-        setValue={setObservations}
-        label={t('addDataProductObservations.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('addDataProductObservations.help'))}
-      />
+      <>
+        {getOptions() && (
+          <DropDown
+            options={getOptions()}
+            testId="observations"
+            value={observations}
+            setValue={setObservations}
+            label={t('observations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            onFocus={() => helpComponent(t('observations.dp.help'))}
+          />
+        )}
+      </>
     );
   };
 
@@ -127,7 +132,7 @@ export default function AddDataProduct() {
     const getIcon = () => <AddIcon />;
 
     const disabled = () => {
-      return false;
+      return getProposal()?.observations?.length > 0 ? false : true;
     };
 
     const addToProposal = () => {
@@ -189,7 +194,7 @@ export default function AddDataProduct() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
       <Grid item>
-        <PageBanner pageNo={PAGE} />
+        <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
       </Grid>
 
       <Grid

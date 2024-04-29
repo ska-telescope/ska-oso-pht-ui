@@ -7,23 +7,25 @@ import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
 import { OBS_TYPES } from '../../../../utils/constants';
 
-interface SensCalcDisplayMultipleProps {
+interface SensCalcModalMultipleProps {
   open: boolean;
   onClose: Function;
   data: any;
   observation: Observation;
   level: number;
+  levelError: string;
 }
 
 const SIZE = 30;
 
-export default function SensCalcDisplayMultiple({
+export default function SensCalcModalMultiple({
   open,
   onClose,
   data,
   observation,
-  level
-}: SensCalcDisplayMultipleProps) {
+  level,
+  levelError
+}: SensCalcModalMultipleProps) {
   const handleClose = () => {
     onClose();
   };
@@ -39,14 +41,27 @@ export default function SensCalcDisplayMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
-  function HeaderLine(str: string) {
-    return <Typography key={i++}>{str}</Typography>;
+  function HeaderLine(str: string, bold: boolean) {
+    return (
+      <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>
+        {str}
+      </Typography>
+    );
   }
 
   const headerDisplay = (inStr: string, inUnits: string) => {
     const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
     const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
-    return <Stack>{sent.split(' ').map(rec => HeaderLine(rec))}</Stack>;
+    const arr = sent.split(' ');
+    i = 0;
+    let count = 0;
+    return (
+      <Stack>
+        {arr.map(rec => {
+          return HeaderLine(rec, unit.length > 0 && arr.length === ++count);
+        })}
+      </Stack>
+    );
   };
 
   const columns = [
@@ -136,16 +151,18 @@ export default function SensCalcDisplayMultiple({
       disableClickEventBubbling: true,
       renderCell: (e: { row: { status: number; error: string } }) => {
         return (
-          <StatusIcon
-            ariaTitle={t('sensitivityCalculatorResults.status', {
-              status: t('statusValue.' + e.row.status),
-              error: e.row.error
-            })}
-            testId="statusId"
-            icon
-            level={e.row.status}
-            size={SIZE}
-          />
+          <Box pt={1}>
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + e.row.status),
+                error: e.row.error
+              })}
+              testId="statusId"
+              icon
+              level={e.row.status}
+              size={SIZE}
+            />
+          </Box>
         );
       }
     }
@@ -153,13 +170,9 @@ export default function SensCalcDisplayMultiple({
   const extendedColumns = [...columns];
 
   // Filter out optional columns that don't have data
-  const filteredColumns = extendedColumns.filter(col => {
-    if (col.optional) {
-      return data.some(data => col.optional({ value: data[col.field] }));
-    } else {
-      return true;
-    }
-  });
+  const filteredColumns = extendedColumns.filter(col =>
+    col.optional ? data.some(data => col.optional({ value: data[col.field] })) : true
+  );
 
   return (
     <Dialog
@@ -176,8 +189,10 @@ export default function SensCalcDisplayMultiple({
           action={<CancelButton onClick={handleClose} label="button.close" />}
           avatar={
             <StatusIcon
-              ariaTitle=""
-              ariaDescription=""
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + level),
+                error: levelError
+              })}
               testId="statusId"
               icon
               level={level}
@@ -200,8 +215,6 @@ export default function SensCalcDisplayMultiple({
               columns={filteredColumns}
               columnHeaderHeight={100}
               height={500}
-              showBorder={false}
-              showMild
               testId="sensCalcDetailsList"
             />
           ) : (
