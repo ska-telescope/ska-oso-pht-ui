@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
-import HelpPanel from '../../../../components/helpPanel/helpPanel';
+import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../../../utils/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';

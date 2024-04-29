@@ -22,7 +22,7 @@ import {
   TELESCOPES,
   TYPE_CONTINUUM
 } from '../../utils/constants';
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
 

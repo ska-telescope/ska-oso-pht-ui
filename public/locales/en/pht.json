@@ -134,7 +134,8 @@
     "label": "Declination"
   },
   "deleteDataProduct": {
-    "label": "Delete this data product ? "
+    "label": "Delete data product",
+    "confirmTitle": "Delete this data product ? "
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
@@ -262,7 +263,11 @@
   },
   "observations": {
     "label": "Observations",
-    "id": "Id"
+    "id": "Id",
+    "dp": {
+      "label": "Observation",
+      "help": "OBSERVATION HELP"
+    }
   },
   "observationType": {
     "label": "Observation Type",
@@ -275,8 +280,11 @@
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {
-      "1": "Continuum Image",
-      "2": "Spectral Line Image"
+      "1": "Raw Visibility Data",
+      "2": "Calibrated Visibilities",
+      "3": "Image Products 1 : Image Cubes",
+      "4": "Image Products 2 : UV Grids",
+      "5": "LSM Catalogue"
     }
   },
   "observationDetails": {
@@ -646,7 +654,9 @@
     },
     "7": {
       "title": "Data",
-      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL"
     },
     "8": {
       "title": "SRC Net",
@@ -692,6 +702,7 @@
     "axios": {
       "format": "Unexpected data format returned from API"
     },
+
     "noObservations": "THERE ARE NO OBSERVATIONS ASSOCIATED WITH THIS PROPOSAL",
     "pdf": "Syntax error or PDF not available ",
     "iconClicked": "An error was encountered, please refresh page to continue",
