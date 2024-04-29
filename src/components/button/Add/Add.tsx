@@ -6,16 +6,20 @@ import AddIcon from '@mui/icons-material/Add';
 
 interface AddButtonProps {
   title: string;
-  navPath: string;
+  action: string | Function;
   disabled?: boolean;
 }
 
-export default function AddButton({ disabled = false, navPath, title = '' }: AddButtonProps) {
+export default function AddButton({ disabled = false, action, title = '' }: AddButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const ClickFunction = () => {
-    navigate(navPath);
+    if (typeof action === 'string') {
+      navigate(action);
+    } else {
+      action();
+    }
   };
 
   const theTitle = t(title);

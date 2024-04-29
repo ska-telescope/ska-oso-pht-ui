@@ -1,36 +1,47 @@
 import React from 'react';
+import { t } from 'i18next';
+import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import {
   SENSCALC_EMPTY_MOCKED,
   SENSCALC_PARTIAL_MOCKED
 } from '../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
-import { Grid, IconButton, Typography } from '@mui/material';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
-import { t } from 'i18next';
 
 const SIZE = 20;
 
 interface SensCalcDisplaySingleProps {
   selected: boolean;
+  row: any;
   observation: Observation;
+  setObs: Function;
   target: Target;
 }
 
 export default function SensCalcDisplaySingle({
   selected,
+  row,
   observation,
+  setObs,
   target
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY_MOCKED);
-  const observationTypeLabel: string = OBS_TYPES[observation.type];
+  const observationTypeLabel: string = OBS_TYPES[observation?.type];
   const [toolTipError, setTooltipError] = React.useState('');
+  const [fetch, setFetch] = React.useState(false);
 
   React.useEffect(() => {
+    const updateResults = (result: any) => {
+      displayToolTipMessage(result);
+      setResults(result);
+      setFetch(false);
+    };
+
     async function fetchResults() {
       const tmp = SENSCALC_PARTIAL_MOCKED;
       tmp.error = t('sensitivityCalculatorResults.partial');
@@ -39,10 +50,23 @@ export default function SensCalcDisplaySingle({
       const sensCalcResult = selected
         ? await getSensCalc(observation, target)
         : SENSCALC_EMPTY_MOCKED;
-      displayToolTipMessage(sensCalcResult);
-      setResults(sensCalcResult);
+      updateResults(sensCalcResult);
+      setObs(observation.id, target, sensCalcResult);
     }
-    fetchResults();
+
+    if (fetch) {
+      if (observation) {
+        fetchResults();
+      } else {
+        updateResults(row.status);
+      }
+    }
+  }, [fetch]);
+
+  React.useEffect(() => {
+    if (selected && !fetch) {
+      setFetch(true);
+    }
   }, [selected]);
 
   const IconClicked = () => {

@@ -2,12 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  Button,
-  ButtonColorTypes,
-  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -25,6 +21,7 @@ import {
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
+import AddButton from '../../components/button/Add/Add';
 
 import GroupObservation from 'utils/types/groupObservation';
 import AddButton from 'components/button/Add/Add';
@@ -905,8 +902,6 @@ export default function AddObservation() {
   };
 
   const pageFooter = () => {
-    const getIcon = () => <AddIcon />;
-
     const disabled = () => {
       // TODO : Extend so that all options are covered
       if (!elevation || !weather || !frequency || !effective) {
@@ -919,15 +914,10 @@ export default function AddObservation() {
     };
 
     const addObservationToProposal = () => {
-      const highestId = getProposal().observations?.reduce(
-        (acc, observation) => (observation.id > acc ? observation.id : acc),
-        0
-      );
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       const newObservation = {
-        id: highestId + 1,
-        obset_id: generateId(t('addObservation.idPrefix'), 6),
+        id: generateId(t('addObservation.idPrefix'), 6),
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
@@ -976,16 +966,7 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <Button
-              ariaDescription="add Button"
-              color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
-              icon={getIcon()}
-              label={t('button.add')}
-              testId="addButton"
-              onClick={buttonClicked}
-              variant={ButtonVariantTypes.Contained}
-            />
+            <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
           </Grid>
         </Grid>
       </Paper>
