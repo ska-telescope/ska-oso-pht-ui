@@ -67,8 +67,7 @@
     "label": "Actions"
   },
   "addObservation": {
-    "idPrefix": "obs-",
-    "minDetailDisplayRows": "5"
+    "idPrefix": "obs-"
   },
   "addProposal": {
     "label": "Add Proposal",
@@ -101,7 +100,8 @@
     "help": "CENTRAL FREQUENCY HELP",
     "label": "Central Frequency",
     "range": {
-      "lower": 0
+      "lower": 0,
+      "error": "Value cannot be negative"
     }
   },
   "changeProposal": {
@@ -146,7 +146,7 @@
   },
   "deleteObservation": {
     "label": "Delete this observation ? ",
-    "content1": "NOTE : Selections to the targets will also be removed"
+    "content1": "NOTE : Links to the targets will also be removed"
   },
   "deleteProposal": {
     "toolTip": "Delete proposal",
@@ -273,9 +273,8 @@
     "label": "Observation Type",
     "help": "OBSERVATION TYPE HELP",
     "short": "Type",
-    "0": "Not specified",
-    "1": "Continuum",
-    "2": "Zoom"
+    "0": "Zoom",
+    "1": "Continuum"
   },
   "observatoryDataProductConfig": {
     "label": "Observatory Data Product",
@@ -290,7 +289,8 @@
   },
   "observationDetails": {
     "help": "OBSERVATION DETAILS HELP",
-    "label": "Details"
+    "label": "Details",
+    "minDisplayRows": "5"
   },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
@@ -530,7 +530,8 @@
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
-      "upper": 32
+      "upper": 32,
+      "error": "Values are outside of allowed range"
     }
   },
   "subArrayConfiguration": {
@@ -563,7 +564,7 @@
     "label": "Tapering"
   },
   "targetObservation": {
-    "label": "Target List related to the selected Observation"
+    "label": "Target / Observation relationship"
   },
   "targetSelection": {
     "label": "Target selection"
@@ -609,11 +610,13 @@
     "clicked": "View Proposal Icon clicked"
   },
   "weather": {
-    "help": "WEATHER HELP",
+    "help": "This is the allowed level of Precipitable Water Vapour",
     "label": "Weather",
+    "units": "mm",
     "range": {
       "lower": 3,
-      "upper": 25
+      "upper": 25,
+      "error": "Values are outside of allowed range"
     }
   },
   "weighting": {

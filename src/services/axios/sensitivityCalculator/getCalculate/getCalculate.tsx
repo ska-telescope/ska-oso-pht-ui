@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
-  MODE,
+  OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   TYPE_CONTINUUM,
@@ -24,7 +24,7 @@ async function GetCalculate(observation: Observation) {
 
   const getMode = () => {
     if (getTelescope() === TELESCOPE_LOW.code) {
-      return MODE[observation.type].toLowerCase() + '/';
+      return OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/';
     }
     return '';
   };
