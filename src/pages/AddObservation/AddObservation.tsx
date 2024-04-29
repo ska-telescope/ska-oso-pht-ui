@@ -204,8 +204,12 @@ export default function AddObservation() {
     const buttonClicked = async () => {
       // TODO
     };
+    const disabled = () => {
+      // TODO
+      return false;
+    };
 
-    return <AddButton title={title} action={buttonClicked} />;
+    return <AddButton title={title} action={buttonClicked} disabled={disabled()} />;
   };
 
   const subArrayField = () => {
