@@ -173,7 +173,7 @@
   },
   "elevation": {
     "help": "ELEVATION HELP",
-    "label": "Elevation",
+    "label": "Minimum Elevation",
     "range": {
       "lower": 15,
       "upper": 59.2

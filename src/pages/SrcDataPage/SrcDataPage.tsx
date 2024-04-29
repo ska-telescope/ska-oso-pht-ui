@@ -80,13 +80,13 @@ export default function SrcDataPage() {
           alignItems="baseline"
           justifyContent="flex-start"
         >
-          <Grid item xs={1} />
+          {/* <Grid item xs={1} />
           <Grid item xs={6}>
             <Typography variant="h6">{t('srcNet.label')}</Typography>
 
             {pipelineField()}
           </Grid>
-          <Grid item xs={1} />
+          <Grid item xs={1} /> */}
           <Grid item xs={3}>
             <HelpPanel />
           </Grid>
