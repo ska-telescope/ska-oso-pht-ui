@@ -241,14 +241,14 @@ export const OBSERVATION = {
     { label: '24', value: 24 }
   ],
   EffectiveResolution: [
-    { value: '13.44 kHz (615.1 m/s)' },
-    { value: '26.88 kHz (1.2 km/s)' },
-    { value: '40.32 kHz (1.8 km/s)' },
-    { value: '53.76 kHz (2.5 km/s)' },
-    { value: '80.64 kHz (3.7 km/s)' },
-    { value: '107.52 kHz (4.9 km/s)' },
-    { value: '161.28 kHz (7.4 km/s)' },
-    { value: '322.56 kHz (14.8 km/s)' }
+    { value: '13.44 kHz (5.8 km/s)' },
+    { value: '26.88 kHz (11.5 km/s)' },
+    { value: '40.32 kHz (17.3 km/s)' },
+    { value: '53.76 kHz (23.0 km/s)' },
+    { value: '80.64 kHz (34.5 km/s)' },
+    { value: '107.52 kHz (46.0 km/s)' },
+    { value: '161.28 kHz (69.1 km/s)' },
+    { value: '322.56 kHz (138.1 km/s)' }
   ],
   CentralFrequency: [
     { value: '200' },
