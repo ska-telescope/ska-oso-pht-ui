@@ -608,7 +608,7 @@
     "range": {
       "lower": 3,
       "upper": 25,
-      "error": "Values are outside of allowed rangee"
+      "error": "Values are outside of allowed range"
     }
   },
   "weighting": {
