@@ -1,7 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  InputLabel,
+  Paper,
+  TextField,
+  Typography
+} from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   ButtonColorTypes,
@@ -80,7 +90,9 @@ export default function AddObservation() {
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const observationId = generateId(t('addObservation.idPrefix'), 6);
+  const groupObservationId = generateId(t('groupObservations.idPrefix'), 6);
   const [addGroupObsButtonDisabled, setAddGroupObsButtonDisabled] = React.useState(false);
+  const [groupObservationVal, setGroupObservationVal] = React.useState(null);
 
   React.useEffect(() => {
     setNumOf15mAntennas(
@@ -195,6 +207,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
+            disabled={groupObservationVal}
           />
         </Grid>
       </Grid>
@@ -204,22 +217,35 @@ export default function AddObservation() {
   const buttonGroupObservationsField = () => {
     console.log('proposal before', getProposal());
     const title = t('groupObservations.label');
-    const buttonClicked = () => {
-      const newGroupObs: GroupObservation = {
-        groupId: generateId(t('groupObservations.idPrefix'), 6),
-        observationId: observationId
-      };
-      setProposal({
-        ...getProposal(),
-        groupObservations: [...getProposal().groupObservations, newGroupObs]
-      });
-      console.log('newGroupObs', newGroupObs);
-      console.log('proposal after', getProposal());
-      setAddGroupObsButtonDisabled(true);
+    const buttonClicked = groupObservationValue => {
+      console.log('groupObservationValue', groupObservationValue);
+      switch (groupObservationValue) {
+        case 0: // null
+          break;
+        case 1: // new group
+          const newGroupObs: GroupObservation = {
+            groupId: groupObservationId,
+            observationId: observationId
+          };
+          setProposal({
+            ...getProposal(),
+            groupObservations: [...getProposal().groupObservations, newGroupObs]
+          });
+          console.log('newGroupObs', newGroupObs);
+          console.log('proposal after', getProposal());
+          setGroupObservationVal(groupObservationValue);
+          setAddGroupObsButtonDisabled(true);
+          break;
+        default:
+      }
     };
 
     return (
-      <AddButton title={'button.add'} action={buttonClicked} disabled={addGroupObsButtonDisabled} />
+      <AddButton
+        title={title}
+        action={() => buttonClicked(groupObservation)}
+        disabled={addGroupObsButtonDisabled}
+      />
     );
   };
 
