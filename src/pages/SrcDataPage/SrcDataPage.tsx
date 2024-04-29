@@ -48,19 +48,19 @@ export default function SrcDataPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const pipelineField = () => (
-    <TextEntry
-      label={t('pipeline.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      testId="pipelineId"
-      value={getProposal().pipeline}
-      setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-      onFocus={() => helpComponent(t('pipeline.help'))}
-      helperText={t('pipeline.helper')}
-      required
-    />
-  );
+  // const pipelineField = () => (
+  //   <TextEntry
+  //     label={t('pipeline.label')}
+  //     labelBold
+  //     labelPosition={LABEL_POSITION.START}
+  //     testId="pipelineId"
+  //     value={getProposal().pipeline}
+  //     setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
+  //     onFocus={() => helpComponent(t('pipeline.help'))}
+  //     helperText={t('pipeline.helper')}
+  //     required
+  //   />
+  // );
 
   return (
     <Shell page={PAGE}>
