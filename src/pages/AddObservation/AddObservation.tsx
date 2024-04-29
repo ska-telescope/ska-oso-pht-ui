@@ -668,31 +668,167 @@ export default function AddObservation() {
   );
 
   const effectiveResolutionField = () => {
-    switch (spectralAveraging) {
+    switch (observingBand) {
+      case 0:
+        observationBandLow();
+        break;
       case 1:
-        effective = OBSERVATION.EffectiveResolution[0].value;
+        observationBand1();
         break;
       case 2:
-        effective = OBSERVATION.EffectiveResolution[1].value;
+        observationBand2();
         break;
       case 3:
-        effective = OBSERVATION.EffectiveResolution[2].value;
+        observationBand5a();
         break;
       case 4:
-        effective = OBSERVATION.EffectiveResolution[3].value;
+        observationBand5b();
         break;
-      case 6:
-        effective = OBSERVATION.EffectiveResolution[4].value;
-        break;
-      case 8:
-        effective = OBSERVATION.EffectiveResolution[5].value;
-        break;
-      case 12:
-        effective = OBSERVATION.EffectiveResolution[6].value;
-        break;
-      case 24:
-        effective = OBSERVATION.EffectiveResolution[7].value;
-        break;
+    }
+
+    function observationBandLow() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOBLow[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOBLow[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOBLow[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOBLow[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOBLow[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOBLow[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOBLow[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOBLow[7].value;
+          break;
+      }
+    }
+
+    function observationBand1() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOB1[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOB1[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOB1[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOB1[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOB1[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOB1[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOB1[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOB1[7].value;
+          break;
+      }
+    }
+
+    function observationBand2() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOB2[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOB2[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOB2[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOB2[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOB2[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOB2[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOB2[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOB2[7].value;
+          break;
+      }
+    }
+
+    function observationBand5a() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOB5a[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOB5a[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOB5a[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOB5a[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOB5a[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOB5a[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOB5a[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOB5a[7].value;
+          break;
+      }
+    }
+
+    function observationBand5b() {
+      switch (spectralAveraging) {
+        case 1:
+          effective = OBSERVATION.EffectiveResolutionOB5b[0].value;
+          break;
+        case 2:
+          effective = OBSERVATION.EffectiveResolutionOB5b[1].value;
+          break;
+        case 3:
+          effective = OBSERVATION.EffectiveResolutionOB5b[2].value;
+          break;
+        case 4:
+          effective = OBSERVATION.EffectiveResolutionOB5b[3].value;
+          break;
+        case 6:
+          effective = OBSERVATION.EffectiveResolutionOB5b[4].value;
+          break;
+        case 8:
+          effective = OBSERVATION.EffectiveResolutionOB5b[5].value;
+          break;
+        case 12:
+          effective = OBSERVATION.EffectiveResolutionOB5b[6].value;
+          break;
+        case 24:
+          effective = OBSERVATION.EffectiveResolutionOB5b[7].value;
+          break;
+      }
     }
 
     return (
