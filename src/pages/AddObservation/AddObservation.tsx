@@ -673,28 +673,28 @@ export default function AddObservation() {
   const effectiveResolutionField = () => {
     switch (spectralAveraging) {
       case 1:
-        effective = OBSERVATION.EffectiveResolution[0].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[0].value;
         break;
       case 2:
-        effective = OBSERVATION.EffectiveResolution[1].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[1].value;
         break;
       case 3:
-        effective = OBSERVATION.EffectiveResolution[2].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[2].value;
         break;
       case 4:
-        effective = OBSERVATION.EffectiveResolution[3].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[3].value;
         break;
       case 6:
-        effective = OBSERVATION.EffectiveResolution[4].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[4].value;
         break;
       case 8:
-        effective = OBSERVATION.EffectiveResolution[5].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[5].value;
         break;
       case 12:
-        effective = OBSERVATION.EffectiveResolution[6].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[6].value;
         break;
       case 24:
-        effective = OBSERVATION.EffectiveResolution[7].value;
+        effective = OBSERVATION.EffectiveResolutionOB1[7].value;
         break;
     }
 

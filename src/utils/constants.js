@@ -240,7 +240,7 @@ export const OBSERVATION = {
     { label: '12', value: 12 },
     { label: '24', value: 24 }
   ],
-  EffectiveResolution: [
+  EffectiveResolutionOB1: [
     { value: '13.44 kHz (5.8 km/s)' },
     { value: '26.88 kHz (11.5 km/s)' },
     { value: '40.32 kHz (17.3 km/s)' },
@@ -249,6 +249,36 @@ export const OBSERVATION = {
     { value: '107.52 kHz (46.0 km/s)' },
     { value: '161.28 kHz (69.1 km/s)' },
     { value: '322.56 kHz (138.1 km/s)' }
+  ],
+  EffectiveResolutionOB2: [
+    { value: '13.44 kHz (3.0 km/s)' },
+    { value: '26.88 kHz (5.9 km/s)' },
+    { value: '40.32 kHz (8.9 km/s)' },
+    { value: '53.76 kHz (11.9 km/s)' },
+    { value: '80.64 kHz (17.8 km/s)' },
+    { value: '107.52 kHz (23.8 km/s)' },
+    { value: '161.28 kHz (35.7 km/s)' },
+    { value: '322.56 kHz (71.4 km/s)' }
+  ],
+  EffectiveResolutionOB5a: [
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '26.88 kHz (1.2 km/s)' },
+    { value: '40.32 kHz (1.8 km/s)' },
+    { value: '53.76 kHz (2.5 km/s)' },
+    { value: '80.64 kHz (3.7 km/s)' },
+    { value: '107.52 kHz (4.9 km/s)' },
+    { value: '161.28 kHz (7.4 km/s)' },
+    { value: '322.56 kHz (14.8 km/s)' }
+  ],
+  EffectiveResolutionOB5b: [
+    { value: '13.44 kHz (340.0 m/s)' },
+    { value: '26.88 kHz (680.0 m/s)' },
+    { value: '40.32 kHz (1.0 km/s)' },
+    { value: '53.76 kHz (1.4 km/s)' },
+    { value: '80.64 kHz (2.0 km/s)' },
+    { value: '107.52 kHz (2.7 km/s)' },
+    { value: '161.28 kHz (4.1 km/s)' },
+    { value: '322.56 kHz (8.2 km/s)' }
   ],
   CentralFrequency: [
     { value: '200' },
