@@ -1,9 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  ButtonColorTypes,
+  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -24,7 +26,8 @@ import { generateId, helpers } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 
 import GroupObservation from 'utils/types/groupObservation';
-import AddButton from 'components/button/Add/Add';
+import { t } from 'i18next';
+import getProposal from 'services/axios/getProposal/getProposal';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -198,25 +201,11 @@ export default function AddObservation() {
 
   const buttonGroupObservationsField = () => {
     const title = t('groupObservations.label');
-    // const getIcon = () => <AddIcon />;
     const buttonClicked = async () => {
       // TODO
     };
 
-    return {
-      /*
-      <Button
-        ariaDescription={`${title}Button`}
-        color={ButtonColorTypes.Secondary}
-        icon={getIcon()}
-        label={title}
-        testId={`${title}Button`}
-        toolTip={title}
-        onClick={buttonClicked}
-        variant={ButtonVariantTypes.Contained}
-      />
-    */
-    };
+    return <AddButton title={title} action={buttonClicked} />;
   };
 
   const subArrayField = () => {
