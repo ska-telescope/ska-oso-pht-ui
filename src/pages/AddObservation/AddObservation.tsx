@@ -25,8 +25,9 @@ import {
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
-import AddGroupObservationButton from '../../components/button/AddGroupObservation/AddGroupObservationButton';
+
 import GroupObservation from 'utils/types/groupObservation';
+import AddButton from 'components/button/Add/Add';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -161,10 +162,12 @@ export default function AddObservation() {
     return count;
   }
 
-  const hasGroupObservations = (): boolean =>
-    getProposal() && getProposal().groupObservations && getProposal().groupObservations.length > 0;
-
   const groupObservationsField = () => {
+    const hasGroupObservations = (): boolean =>
+      getProposal() &&
+      getProposal().groupObservations &&
+      getProposal().groupObservations.length > 0;
+
     const getOptions = () => {
       const groups: GroupObservation[] = hasGroupObservations()
         ? getProposal()?.groupObservations
@@ -193,6 +196,27 @@ export default function AddObservation() {
           />
         </Grid>
       </Grid>
+    );
+  };
+
+  const buttonGroupObservationsField = () => {
+    const title = t('groupObservations.label');
+    const getIcon = () => <AddIcon />;
+    const buttonClicked = async () => {
+      // TODO
+    };
+
+    return (
+      <Button
+        ariaDescription={`${title}Button`}
+        color={ButtonColorTypes.Secondary}
+        icon={getIcon()}
+        label={title}
+        testId={`${title}Button`}
+        toolTip={title}
+        onClick={buttonClicked}
+        variant={ButtonVariantTypes.Contained}
+      />
     );
   };
 
@@ -996,7 +1020,7 @@ export default function AddObservation() {
               {groupObservationsField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              <AddGroupObservationButton onClick="" />
+              {buttonGroupObservationsField()}
             </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}
