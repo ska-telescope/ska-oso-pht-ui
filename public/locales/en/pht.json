@@ -61,7 +61,7 @@
     "helper": "Please enter your abstract information",
     "maxChar": "2300",
     "maxWord": "50",
-    "minDisplayRows": "10"
+    "minDisplayRows": "5"
   },
   "actions": {
     "label": "Actions"
