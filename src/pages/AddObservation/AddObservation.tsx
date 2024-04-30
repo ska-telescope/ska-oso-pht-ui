@@ -176,29 +176,29 @@ export default function AddObservation() {
     return count;
   }
 
-  const groupObservationsField = () => {
+  const getGroupObsOptions = () => {
     const hasGroupObservations = (): boolean =>
       getProposal() &&
       getProposal().groupObservations &&
       getProposal().groupObservations.length > 0;
 
-    const getOptions = () => {
-      const groups: GroupObservation[] = hasGroupObservations()
-        ? getProposal()?.groupObservations
-        : [];
-      const formatedGroupObs = [
-        { label: t('groupObservations.none'), value: 0 },
-        { label: t('groupObservations.new'), value: 1 },
-        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
-      ];
-      return formatedGroupObs as any;
-    };
+    const groups: GroupObservation[] = hasGroupObservations()
+      ? getProposal()?.groupObservations
+      : [];
+    const formatedGroupObs = [
+      { label: t('groupObservations.none'), value: 0 },
+      { label: t('groupObservations.new'), value: 1 },
+      ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+    ];
+    return formatedGroupObs as any;
+  };
 
+  const groupObservationsField = () => {
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
-            options={getOptions()}
+            options={getGroupObsOptions()}
             testId="groupObservations"
             value={groupObservation}
             setValue={setgroupObservation}
@@ -207,7 +207,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
-            disabled={groupObservationVal}
+            disabled={false} // groupObservationVal
           />
         </Grid>
       </Grid>
@@ -219,6 +219,7 @@ export default function AddObservation() {
     const title = t('groupObservations.label');
     const buttonClicked = groupObservationValue => {
       console.log('groupObservationValue', groupObservationValue);
+      console.log('groupObservation', groupObservation);
       switch (groupObservationValue) {
         case 0: // null
           break;
@@ -227,14 +228,23 @@ export default function AddObservation() {
             groupId: groupObservationId,
             observationId: observationId
           };
-          setProposal({
+          const myset = setProposal({
             ...getProposal(),
             groupObservations: [...getProposal().groupObservations, newGroupObs]
           });
           console.log('newGroupObs', newGroupObs);
           console.log('proposal after', getProposal());
+          const obsgroups = getProposal().groupObservations;
+          console.log('obsgroups', obsgroups);
           setGroupObservationVal(groupObservationValue);
           setAddGroupObsButtonDisabled(true);
+
+          // groupObservationsField.getOptions();
+          // setgroupObservation({ label: 'test', value: 3 });
+          const options = getProposal();
+          console.log('options', options);
+          console.log('myset', myset);
+
           break;
         default:
       }
