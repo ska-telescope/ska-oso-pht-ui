@@ -101,7 +101,7 @@ export default function AddObservation() {
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
     if (record?.lookup) {
-      setEffective(inValue[0].value);
+      setEffective(inValue[record].value);
     }
   }
 
@@ -135,7 +135,7 @@ export default function AddObservation() {
     const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
     const lookup = record?.lookup;
     if (lookup) {
-      setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
+      setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
     }
   }, [frequency]);
 
