@@ -81,6 +81,8 @@ export const helpers = {
       // TODO : We need to update so that 0 - n entries are added.
       const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType[0]);
 
+      // TODO: add groupObservations to send to backend
+
       const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {
           acc[to.observationId] = [];

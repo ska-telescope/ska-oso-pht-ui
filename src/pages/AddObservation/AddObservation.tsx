@@ -22,6 +22,7 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
+import GroupObservation from '../../utils/types/groupObservation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -43,6 +44,7 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const [groupObservation, setgroupObservation] = React.useState(0);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
@@ -154,6 +156,57 @@ export default function AddObservation() {
     }
     return count;
   }
+
+  const groupObservationsField = () => {
+    const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
+
+    const getOptions = () => {
+      const groups: GroupObservation[] = hasGroupObservations()
+        ? getProposal()?.groupObservations
+        : [];
+      const formatedGroupObs = [
+        { label: t('groupObservations.none'), value: 0 },
+        { label: t('groupObservations.new'), value: 1 },
+        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+      ];
+      return formatedGroupObs as any;
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <DropDown
+            options={getOptions()}
+            testId="groupObservations"
+            value={groupObservation}
+            setValue={setgroupObservation}
+            label={t('groupObservations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('groupObservations.help'))}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const buttonGroupObservationsField = () => {
+    // const title = t('groupObservations.label');
+    const buttonClicked = async () => {
+      // TODO
+    };
+    const disabled = () => {
+      // TODO
+      return false;
+    };
+
+    return (
+      <Grid id="groupObservationButton">
+        <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
+      </Grid>
+    );
+  };
 
   const subArrayField = () => {
     const getSubArrayOptions = () => {
@@ -1071,6 +1124,12 @@ export default function AddObservation() {
             pb={3}
             justifyContent="space-evenly"
           >
+            <Grid item xs={XS_TOP}>
+              {groupObservationsField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {buttonGroupObservationsField()}
+            </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}
             </Grid>

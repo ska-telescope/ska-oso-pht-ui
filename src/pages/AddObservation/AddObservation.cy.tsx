@@ -209,6 +209,17 @@ function verifyDetailsField() {
   cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
 }
 
+function verifyGroupObservations() {
+  cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+  cy.get('[data-testid="groupObservations"]').click();
+  cy.get('[data-value="1"]').click();
+  cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+  cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+  cy.get('#groupObservationButton')
+    .find('[data-testid="addButton"]')
+    .click();
+}
+
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -235,6 +246,7 @@ describe('<AddObservation />', () => {
         </BrowserRouter>
       </StoreProvider>
     );
+    verifyGroupObservations();
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
