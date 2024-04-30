@@ -22,7 +22,7 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
-import GroupObservation from 'utils/types/groupObservation';
+import GroupObservation from '../../utils/types/groupObservation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
