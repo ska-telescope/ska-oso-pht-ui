@@ -298,11 +298,11 @@ export const OBSERVATION = {
     { lookup: 4, value: '11.85' }
   ],
   SpectralResolution: [
-    { value: '5.43 kHz (8.1 km/s)' },
-    { value: '13.44 kHz (5.8 km/s)' },
-    { value: '13.44 kHz (3.0 km/s)' },
-    { value: '13.44 kHz (615.1 m/s)' },
-    { value: '13.44 kHz (340.0 m/s)' }
+    { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
+    { lookup: 1, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 2, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 3, value: '13.44 kHz (615.1 m/s)' },
+    { lookup: 4, value: '13.44 kHz (340.0 m/s)' }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },

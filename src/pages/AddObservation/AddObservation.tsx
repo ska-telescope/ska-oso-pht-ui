@@ -107,7 +107,6 @@ export default function AddObservation() {
 
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
-    observationLookup(OBSERVATION.EffectiveResolutionOBLow);
   }, []);
 
   React.useEffect(() => {
@@ -128,13 +127,16 @@ export default function AddObservation() {
         observationLookup(OBSERVATION.EffectiveResolutionOB5b);
         break;
     }
+    console.log('observing band to set central frequency', observingBand);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
   }, [spectralAveraging, observingBand]);
 
   React.useEffect(() => {
     const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    console.log('record before spectral resolution lookup', record);
     const lookup = record?.lookup;
     if (lookup) {
+      console.log('spectral resolution lookup', lookup);
       setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
     }
   }, [frequency]);
