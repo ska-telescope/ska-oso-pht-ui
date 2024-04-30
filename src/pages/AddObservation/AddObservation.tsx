@@ -1,11 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
-  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -24,10 +22,7 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
-
 import GroupObservation from 'utils/types/groupObservation';
-import { t } from 'i18next';
-import getProposal from 'services/axios/getProposal/getProposal';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
