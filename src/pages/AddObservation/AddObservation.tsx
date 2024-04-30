@@ -195,7 +195,7 @@ export default function AddObservation() {
   };
 
   const buttonGroupObservationsField = () => {
-    const title = t('groupObservations.label');
+    // const title = t('groupObservations.label');
     const buttonClicked = async () => {
       // TODO
     };
@@ -204,7 +204,7 @@ export default function AddObservation() {
       return false;
     };
 
-    return <AddButton title={title} action={buttonClicked} disabled={disabled()} />;
+    return <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />;
   };
 
   const subArrayField = () => {
