@@ -98,9 +98,46 @@ export default function AddObservation() {
     setFormInvalid(invalidForm);
   }, [validateToggle]);
 
+  function observationLookup(inValue) {
+    const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
+    if (record?.lookup) {
+      setEffective(inValue[0].value);
+    }
+  }
+
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
+    observationLookup(OBSERVATION.EffectiveResolutionOBLow);
   }, []);
+
+  React.useEffect(() => {
+    switch (observingBand) {
+      case 0:
+        observationLookup(OBSERVATION.EffectiveResolutionOBLow);
+        break;
+      case 1:
+        observationLookup(OBSERVATION.EffectiveResolutionOB1);
+        break;
+      case 2:
+        observationLookup(OBSERVATION.EffectiveResolutionOB2);
+        break;
+      case 3:
+        observationLookup(OBSERVATION.EffectiveResolutionOB5a);
+        break;
+      case 4:
+        observationLookup(OBSERVATION.EffectiveResolutionOB5b);
+        break;
+    }
+    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+  }, [spectralAveraging, observingBand]);
+
+  React.useEffect(() => {
+    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    const lookup = record?.lookup;
+    if (lookup) {
+      setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
+    }
+  }, [frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -354,14 +391,6 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    // const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
-    // console.log('HELLO', record, frequency, record?.lookup);
-    // const lookup = record?.lookup;
-    // if(lookup){
-    //    console.log("HELLO INSIDE");
-    // setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
-    // }
-
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
@@ -574,8 +603,6 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    // setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
-
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
@@ -645,36 +672,6 @@ export default function AddObservation() {
   );
 
   const effectiveResolutionField = () => {
-    /*
-    switch (observingBand) {
-      case 0:
-        observationLookup(OBSERVATION.EffectiveResolutionOBLow);
-        break;
-      case 1:
-        observationLookup(OBSERVATION.EffectiveResolutionOB1);
-        break;
-      case 2:
-        observationLookup(OBSERVATION.EffectiveResolutionOB2);
-        break;
-      case 3:
-        observationLookup(OBSERVATION.EffectiveResolutionOB5a);
-        break;
-      case 4:
-        observationLookup(OBSERVATION.EffectiveResolutionOB5b);
-        break;
-    }
-    */
-
-    function observationLookup(inValue) {
-      if (spectralAveraging) {
-        // const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
-        // if(record?.lookup){
-        //   console.log("INSIDE LOOP",  record.lookup )
-        setEffective(inValue[0].value);
-        // }
-      }
-    }
-
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
