@@ -53,18 +53,18 @@ export default function SdpDataPage() {
 
   const columns = [
     {
+      field: 'observations',
+      headerName: t('observations.dp.label'),
+      flex: 1,
+      disableClickEventBubbling: true
+    },
+    {
       field: 'observatoryDataProduct',
       headerName: t('observatoryDataProductConfig.label'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observatoryDataProduct: number } }) =>
         t(`observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`)
-    },
-    {
-      field: 'observations',
-      headerName: t('observations.dp.label'),
-      flex: 1,
-      disableClickEventBubbling: true
     },
     {
       field: 'imageSize',
