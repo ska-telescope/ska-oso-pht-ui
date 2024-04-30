@@ -87,9 +87,9 @@ export default function SrcDataPage() {
             {pipelineField()}
           </Grid>
           <Grid item xs={1} /> */}
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <HelpPanel />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </Shell>

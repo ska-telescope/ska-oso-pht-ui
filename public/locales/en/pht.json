@@ -59,7 +59,7 @@
     "help": "ABSTRACT HELP",
     "helper": "Please enter your abstract information",
     "maxChar": "2300",
-    "maxWord": "50",
+    "maxWord": "200",
     "minDisplayRows": "5"
   },
   "actions": {
@@ -674,7 +674,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "A list of proposals in which you have either participated as a Principal Investigator or a Co-Investigator.",
+      "desc": "List of proposal(s) where you are either the Principal Investigator or a Co-Investigator. It provides key details such as proposal id, proposal category, cycle, title, principal investigator, status, last updated and a set of actions.",
       "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "12": {
