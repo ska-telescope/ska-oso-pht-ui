@@ -214,8 +214,8 @@ export default function AddDataProduct() {
             p={2}
             spacing={2}
           >
-            <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{observationsField()}</Grid>
+            <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>
