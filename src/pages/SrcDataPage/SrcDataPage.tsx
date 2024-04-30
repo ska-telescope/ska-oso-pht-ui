@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid} from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
@@ -15,11 +15,11 @@ export default function SrcDataPage() {
     application,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
+
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
