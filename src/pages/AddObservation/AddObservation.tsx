@@ -101,7 +101,7 @@ export default function AddObservation() {
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
     if (record?.lookup) {
-      setEffective(inValue[record].value);
+      setEffective(inValue[record.lookup].value);
     }
   }
 
