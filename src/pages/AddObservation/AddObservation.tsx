@@ -157,12 +157,15 @@ export default function AddObservation() {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       if (usedTelescope > 0) {
+        return [{ label: 'TREVOR', value: 0 }];
+        /*
         return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
           return {
             label: t('subArrayConfiguration.' + e.value),
             value: e.value
           };
         });
+        */
       }
     };
 
@@ -280,7 +283,7 @@ export default function AddObservation() {
     <Grid pt={1} spacing={0} container direction="row">
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
-          options={OBSERVATION.Tapering.label}
+          options={OBSERVATION.Tapering}
           testId="tapering"
           value={tapering}
           setValue={setTapering}
@@ -351,12 +354,12 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
-    console.log('HELLO', record, frequency, record?.lookup);
+    // const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    // console.log('HELLO', record, frequency, record?.lookup);
     // const lookup = record?.lookup;
     // if(lookup){
     //    console.log("HELLO INSIDE");
-    setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
+    // setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
     // }
 
     return (
@@ -571,7 +574,7 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+    // setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -642,6 +645,7 @@ export default function AddObservation() {
   );
 
   const effectiveResolutionField = () => {
+    /*
     switch (observingBand) {
       case 0:
         observationLookup(OBSERVATION.EffectiveResolutionOBLow);
@@ -659,6 +663,7 @@ export default function AddObservation() {
         observationLookup(OBSERVATION.EffectiveResolutionOB5b);
         break;
     }
+    */
 
     function observationLookup(inValue) {
       if (spectralAveraging) {
