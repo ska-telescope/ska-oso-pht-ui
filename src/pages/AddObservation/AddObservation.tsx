@@ -48,14 +48,14 @@ export default function AddObservation() {
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
   const [weather, setWeather] = React.useState(3);
-  let [frequency] = React.useState('');
-  let [effective, setEffective] = React.useState('');
+  const [frequency, setFrequency] = React.useState('');
+  const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
   const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
-  let [spectralResolution, setSpectralResolution] = React.useState('');
+  const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState('');
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
@@ -74,22 +74,20 @@ export default function AddObservation() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   React.useEffect(() => {
-    setNumOf15mAntennas(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOf15mAntennas
-    );
-    setNumOf13_5mAntennas(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOf13_5mAntennas
-    );
-    setNumOfStations(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOfStations
-    );
-  }, [subarrayConfig]);
+    if (!observingBand || !subarrayConfig) {
+      const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+      if (telescope > 0) {
+        const record = OBSERVATION.array[telescope - 1].subarray.find(
+          element => element.value === subarrayConfig
+        );
+        if (record) {
+          setNumOf15mAntennas(record.numOf15mAntennas);
+          setNumOf13_5mAntennas(record.numOf13_5mAntennas);
+          setNumOfStations(record.numOfStations);
+        }
+      }
+    }
+  }, [subarrayConfig, observingBand]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -158,12 +156,14 @@ export default function AddObservation() {
   const subArrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
-        return {
-          label: t('subArrayConfiguration.' + e.value),
-          value: e.value
-        };
-      });
+      if (usedTelescope > 0) {
+        return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
+          return {
+            label: t('subArrayConfiguration.' + e.value),
+            value: e.value
+          };
+        });
+      }
     };
 
     return (
@@ -280,7 +280,7 @@ export default function AddObservation() {
     <Grid pt={1} spacing={0} container direction="row">
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
-          options={OBSERVATION.Tapering}
+          options={OBSERVATION.Tapering.label}
           testId="tapering"
           value={tapering}
           setValue={setTapering}
@@ -351,23 +351,13 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    switch (frequency) {
-      case '200':
-        spectralResolution = OBSERVATION.SpectralResolution[0].value;
-        break;
-      case '0.7':
-        spectralResolution = OBSERVATION.SpectralResolution[1].value;
-        break;
-      case '1.355':
-        spectralResolution = OBSERVATION.SpectralResolution[2].value;
-        break;
-      case '6.55':
-        spectralResolution = OBSERVATION.SpectralResolution[3].value;
-        break;
-      case '11.85':
-        spectralResolution = OBSERVATION.SpectralResolution[4].value;
-        break;
-    }
+    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    console.log('HELLO', record, frequency, record?.lookup);
+    // const lookup = record?.lookup;
+    // if(lookup){
+    //    console.log("HELLO INSIDE");
+    setSpectralResolution(OBSERVATION.SpectralResolution[0].value);
+    // }
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -430,7 +420,7 @@ export default function AddObservation() {
   };
 
   const suppliedUnitsField = () => {
-    const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
+    const getOptions = () => (suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : []);
 
     return (
       <Box pt={1}>
@@ -581,23 +571,7 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    switch (observingBand) {
-      case 0:
-        frequency = OBSERVATION.CentralFrequency[0].value;
-        break;
-      case 1:
-        frequency = OBSERVATION.CentralFrequency[1].value;
-        break;
-      case 2:
-        frequency = OBSERVATION.CentralFrequency[2].value;
-        break;
-      case 3:
-        frequency = OBSERVATION.CentralFrequency[3].value;
-        break;
-      case 4:
-        frequency = OBSERVATION.CentralFrequency[4].value;
-        break;
-    }
+    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -670,164 +644,29 @@ export default function AddObservation() {
   const effectiveResolutionField = () => {
     switch (observingBand) {
       case 0:
-        observationBandLow();
+        observationLookup(OBSERVATION.EffectiveResolutionOBLow);
         break;
       case 1:
-        observationBand1();
+        observationLookup(OBSERVATION.EffectiveResolutionOB1);
         break;
       case 2:
-        observationBand2();
+        observationLookup(OBSERVATION.EffectiveResolutionOB2);
         break;
       case 3:
-        observationBand5a();
+        observationLookup(OBSERVATION.EffectiveResolutionOB5a);
         break;
       case 4:
-        observationBand5b();
+        observationLookup(OBSERVATION.EffectiveResolutionOB5b);
         break;
     }
 
-    function observationBandLow() {
-      switch (spectralAveraging) {
-        case 1:
-          effective = OBSERVATION.EffectiveResolutionOBLow[0].value;
-          break;
-        case 2:
-          effective = OBSERVATION.EffectiveResolutionOBLow[1].value;
-          break;
-        case 3:
-          effective = OBSERVATION.EffectiveResolutionOBLow[2].value;
-          break;
-        case 4:
-          effective = OBSERVATION.EffectiveResolutionOBLow[3].value;
-          break;
-        case 6:
-          effective = OBSERVATION.EffectiveResolutionOBLow[4].value;
-          break;
-        case 8:
-          effective = OBSERVATION.EffectiveResolutionOBLow[5].value;
-          break;
-        case 12:
-          effective = OBSERVATION.EffectiveResolutionOBLow[6].value;
-          break;
-        case 24:
-          effective = OBSERVATION.EffectiveResolutionOBLow[7].value;
-          break;
-      }
-    }
-
-    function observationBand1() {
-      switch (spectralAveraging) {
-        case 1:
-          effective = OBSERVATION.EffectiveResolutionOB1[0].value;
-          break;
-        case 2:
-          effective = OBSERVATION.EffectiveResolutionOB1[1].value;
-          break;
-        case 3:
-          effective = OBSERVATION.EffectiveResolutionOB1[2].value;
-          break;
-        case 4:
-          effective = OBSERVATION.EffectiveResolutionOB1[3].value;
-          break;
-        case 6:
-          effective = OBSERVATION.EffectiveResolutionOB1[4].value;
-          break;
-        case 8:
-          effective = OBSERVATION.EffectiveResolutionOB1[5].value;
-          break;
-        case 12:
-          effective = OBSERVATION.EffectiveResolutionOB1[6].value;
-          break;
-        case 24:
-          effective = OBSERVATION.EffectiveResolutionOB1[7].value;
-          break;
-      }
-    }
-
-    function observationBand2() {
-      switch (spectralAveraging) {
-        case 1:
-          effective = OBSERVATION.EffectiveResolutionOB2[0].value;
-          break;
-        case 2:
-          effective = OBSERVATION.EffectiveResolutionOB2[1].value;
-          break;
-        case 3:
-          effective = OBSERVATION.EffectiveResolutionOB2[2].value;
-          break;
-        case 4:
-          effective = OBSERVATION.EffectiveResolutionOB2[3].value;
-          break;
-        case 6:
-          effective = OBSERVATION.EffectiveResolutionOB2[4].value;
-          break;
-        case 8:
-          effective = OBSERVATION.EffectiveResolutionOB2[5].value;
-          break;
-        case 12:
-          effective = OBSERVATION.EffectiveResolutionOB2[6].value;
-          break;
-        case 24:
-          effective = OBSERVATION.EffectiveResolutionOB2[7].value;
-          break;
-      }
-    }
-
-    function observationBand5a() {
-      switch (spectralAveraging) {
-        case 1:
-          effective = OBSERVATION.EffectiveResolutionOB5a[0].value;
-          break;
-        case 2:
-          effective = OBSERVATION.EffectiveResolutionOB5a[1].value;
-          break;
-        case 3:
-          effective = OBSERVATION.EffectiveResolutionOB5a[2].value;
-          break;
-        case 4:
-          effective = OBSERVATION.EffectiveResolutionOB5a[3].value;
-          break;
-        case 6:
-          effective = OBSERVATION.EffectiveResolutionOB5a[4].value;
-          break;
-        case 8:
-          effective = OBSERVATION.EffectiveResolutionOB5a[5].value;
-          break;
-        case 12:
-          effective = OBSERVATION.EffectiveResolutionOB5a[6].value;
-          break;
-        case 24:
-          effective = OBSERVATION.EffectiveResolutionOB5a[7].value;
-          break;
-      }
-    }
-
-    function observationBand5b() {
-      switch (spectralAveraging) {
-        case 1:
-          effective = OBSERVATION.EffectiveResolutionOB5b[0].value;
-          break;
-        case 2:
-          effective = OBSERVATION.EffectiveResolutionOB5b[1].value;
-          break;
-        case 3:
-          effective = OBSERVATION.EffectiveResolutionOB5b[2].value;
-          break;
-        case 4:
-          effective = OBSERVATION.EffectiveResolutionOB5b[3].value;
-          break;
-        case 6:
-          effective = OBSERVATION.EffectiveResolutionOB5b[4].value;
-          break;
-        case 8:
-          effective = OBSERVATION.EffectiveResolutionOB5b[5].value;
-          break;
-        case 12:
-          effective = OBSERVATION.EffectiveResolutionOB5b[6].value;
-          break;
-        case 24:
-          effective = OBSERVATION.EffectiveResolutionOB5b[7].value;
-          break;
+    function observationLookup(inValue) {
+      if (spectralAveraging) {
+        // const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
+        // if(record?.lookup){
+        //   console.log("INSIDE LOOP",  record.lookup )
+        setEffective(inValue[0].value);
+        // }
       }
     }
 
