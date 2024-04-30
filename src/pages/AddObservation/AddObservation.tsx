@@ -47,7 +47,7 @@ export default function AddObservation() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
-  const [weather, setWeather] = React.useState(3);
+  const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
