@@ -194,15 +194,12 @@ export default function AddObservation() {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       if (usedTelescope > 0) {
-        return [{ label: 'TREVOR', value: 0 }];
-        /*
         return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
           return {
             label: t('subArrayConfiguration.' + e.value),
             value: e.value
           };
         });
-        */
       }
     };
 
