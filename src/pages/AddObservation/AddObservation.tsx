@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject, telescope } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
   LABEL_POSITION,
@@ -139,7 +139,7 @@ export default function AddObservation() {
       console.log('spectral resolution lookup', lookup);
       setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
     }
-  }, [frequency]);
+  }, [observingBand, frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
