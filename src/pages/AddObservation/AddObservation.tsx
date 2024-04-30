@@ -158,10 +158,7 @@ export default function AddObservation() {
   }
 
   const groupObservationsField = () => {
-    const hasGroupObservations = (): boolean =>
-      getProposal() &&
-      getProposal().groupObservations &&
-      getProposal().groupObservations.length > 0;
+    const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
     const getOptions = () => {
       const groups: GroupObservation[] = hasGroupObservations()
@@ -204,7 +201,11 @@ export default function AddObservation() {
       return false;
     };
 
-    return <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />;
+    return (
+      <Grid id="groupObservationButton">
+        <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
+      </Grid>
+    );
   };
 
   const subArrayField = () => {
