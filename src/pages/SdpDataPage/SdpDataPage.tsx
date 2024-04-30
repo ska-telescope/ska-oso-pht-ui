@@ -144,8 +144,8 @@ export default function SdpDataPage() {
     );
   };
 
-  const getRows = () => getProposal().dataProducts;
   const hasObservations = () => (getProposal()?.observations?.length > 0 ? true : false);
+  const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
   const errorMessage = () => 'page.' + PAGE + errorSuffix();
 
