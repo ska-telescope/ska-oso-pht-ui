@@ -231,14 +231,14 @@ export const OBSERVATION = {
     { label: 'Briggs', value: 2 }
   ],
   SpectralAveraging: [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-    { label: '4', value: 4 },
-    { label: '6', value: 6 },
-    { label: '8', value: 8 },
-    { label: '12', value: 12 },
-    { label: '24', value: 24 }
+    { label: '1', value: 1, lookup: 0 },
+    { label: '2', value: 2, lookup: 1 },
+    { label: '3', value: 3, lookup: 2 },
+    { label: '4', value: 4, lookup: 3 },
+    { label: '6', value: 6, lookup: 4 },
+    { label: '8', value: 8, lookup: 5 },
+    { label: '12', value: 12, lookup: 6 },
+    { label: '24', value: 24, lookup: 7 }
   ],
   EffectiveResolutionOBLow: [
     { value: '5.43 kHz (8.1 km/s)' },
@@ -291,11 +291,11 @@ export const OBSERVATION = {
     { value: '322.56 kHz (8.2 km/s)' }
   ],
   CentralFrequency: [
-    { value: '200' },
-    { value: '0.7' },
-    { value: '1.355' },
-    { value: '6.55' },
-    { value: '11.85' }
+    { lookup: 0, value: '200' },
+    { lookup: 1, value: '0.7' },
+    { lookup: 2, value: '1.355' },
+    { lookup: 3, value: '6.55' },
+    { lookup: 4, value: '11.85' }
   ],
   SpectralResolution: [
     { value: '5.43 kHz (8.1 km/s)' },
