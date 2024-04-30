@@ -123,7 +123,7 @@ export default function SdpDataPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.observations}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProductConfig.label')} labelWidth={LABEL_WIDTH}>
