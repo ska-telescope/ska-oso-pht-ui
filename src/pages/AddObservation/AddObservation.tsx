@@ -129,19 +129,14 @@ export default function AddObservation() {
         observationLookup(OBSERVATION.EffectiveResolutionOB5b);
         break;
     }
-    console.log('observing band to set central frequency', observingBand);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
-  }, [spectralAveraging, observingBand]);
 
-  React.useEffect(() => {
     const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
-    console.log('record before spectral resolution lookup', record);
     const lookup = record?.lookup;
-    if (lookup) {
-      console.log('spectral resolution lookup', lookup);
-      setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
+    if (lookup !== null) {
+      setSpectralResolution(OBSERVATION.SpectralResolution[lookup]?.value);
     }
-  }, [observingBand, frequency]);
+  }, [spectralAveraging, observingBand, frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
