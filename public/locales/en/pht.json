@@ -56,8 +56,8 @@
   },
   "abstract": {
     "label": "Abstract",
-    "help": "ABSTRACT HELP",
-    "helper": "The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field.",
+    "help": "ABSTRACT HELP: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field.",
+    "helper": "Please enter your abstract information.",
     "maxChar": "2300",
     "maxWord": "200",
     "minDisplayRows": "5"
@@ -90,12 +90,12 @@
     "2": "LOW"
   },
   "bandWidth": {
-    "help": "Enter the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal.You can also specify a custom bandwidth.",
+    "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
     "label": "Band Width"
   },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY HELP",
-    "label": "Central Frequency",
+    "label": "Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
     "range": {
       "lower": 0,
       "error": "Value cannot be negative"
@@ -649,25 +649,25 @@
     },
     "5": {
       "title": "Observation",
-      "desc": "OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "6": {
       "title": "Technical",
-      "desc": "TECHNICAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "title": "SDP",
-      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
       "title": "SRC Net",
-      "desc": "SRC Net. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "9": {
       "title": "Title",
-      "desc": "Provide a title of your observation"
+      "desc": "Provide a title of your proposal."
     },
     "10": {
       "title": "Observation Setup",
@@ -676,7 +676,7 @@
     "11": {
       "title": "Landing page",
       "desc": "A comprehensive list of proposals in which you hold the role of either Principal Investigator or Co-Investigator. The list includes essential details such as proposal ID, category, cycle, title, principal investigator, status, last updated date, and available actions.",
-      "empty": "THERE ARE NO PROPOSALS AVAILABLE"
+      "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
       "title": "SKAO Cycle",
@@ -684,7 +684,7 @@
     },
     "13": {
       "title": "Data Product",
-      "desc": "ADD DATA PRODUCT. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Add a data product(s) to your proposal. You can select more than 1 data products for an observation set."
     }
   },
   "label": {
