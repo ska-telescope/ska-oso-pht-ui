@@ -74,10 +74,21 @@ export default function AddObservation() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const observationId = generateId(t('addObservation.idPrefix'), 6);
-  const groupObservationId = generateId(t('groupObservations.idPrefix'), 6);
-  const [addGroupObsButtonDisabled, setAddGroupObsButtonDisabled] = React.useState(false);
-  const [groupObservationVal, setGroupObservationVal] = React.useState(null);
+  const [observationId, setObservationId] = React.useState(null);
+  const [groupObservationId, setGroupObservationId] = React.useState(null);
+  const [addGroupObsButtonDisabled, setAddGroupObsButtonDisabled] = React.useState(null);
+  const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('test');
+
+  // setGroupObservationLabel(t('groupObservations.new'));
+
+  React.useEffect(() => {
+    console.log('groupObservationId', groupObservationId);
+    if (!groupObservationId) {
+      setGroupObservationLabel(t('groupObservations.new'));
+    } else {
+      setGroupObservationLabel(groupObservationId);
+    }
+  }, groupObservationId);
 
   React.useEffect(() => {
     if (!observingBand || !subarrayConfig) {
@@ -199,23 +210,23 @@ export default function AddObservation() {
   const groupObservationsField = () => {
     const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
-    const groups: GroupObservation[] = hasGroupObservations()
-      ? getProposal()?.groupObservations
-      : [];
-    const formatedGroupObs = [
-      { label: t('groupObservations.none'), value: 0 },
-      { label: t('groupObservations.new'), value: 1 },
-      ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
-    ];
-    return formatedGroupObs as any;
-  };
+    const getOptions = () => {
+      const groups: GroupObservation[] = hasGroupObservations()
+        ? getProposal()?.groupObservations
+        : [];
+      const formatedGroupObs = [
+        { label: t('groupObservations.none'), value: 0 },
+        { label: newGroupObservationLabel, value: 1 },
+        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+      ];
+      return formatedGroupObs as any;
+    };
 
-  const groupObservationsField = () => {
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
-            options={getGroupObsOptions()}
+            options={getOptions()}
             testId="groupObservations"
             value={groupObservation}
             setValue={setgroupObservation}
@@ -224,7 +235,6 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
-            disabled={false} // groupObservationVal
           />
         </Grid>
       </Grid>
@@ -242,9 +252,10 @@ export default function AddObservation() {
           break;
         case 1: // new group
           const newGroupObs: GroupObservation = {
-            groupId: groupObservationId,
+            groupId: generateId(t('groupObservations.idPrefix'), 6),
             observationId: observationId
           };
+          setGroupObservationId(newGroupObs.groupId);
           const myset = setProposal({
             ...getProposal(),
             groupObservations: [...getProposal().groupObservations, newGroupObs]
@@ -253,7 +264,7 @@ export default function AddObservation() {
           console.log('proposal after', getProposal());
           const obsgroups = getProposal().groupObservations;
           console.log('obsgroups', obsgroups);
-          setGroupObservationVal(groupObservationValue);
+          // setGroupObservationVal(groupObservationValue);
           setAddGroupObsButtonDisabled(true);
 
           // groupObservationsField.getOptions();
@@ -261,6 +272,7 @@ export default function AddObservation() {
           const options = getProposal();
           console.log('options', options);
           console.log('myset', myset);
+          // setGroupObservationLabel(groupObservationId);
 
           break;
         default:
@@ -915,7 +927,7 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       const newObservation = {
-        id: observationId,
+        id: generateId(t('addObservation.idPrefix'), 6),
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
@@ -942,6 +954,7 @@ export default function AddObservation() {
         ...getProposal(),
         observations: [...getProposal().observations, newObservation]
       });
+      setObservationId(newObservation.id);
     };
 
     const buttonClicked = () => {
