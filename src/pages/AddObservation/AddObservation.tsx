@@ -653,7 +653,6 @@ export default function AddObservation() {
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
-            setValue={setFrequency}
             onFocus={() => helpComponent(t('centralFrequency.help'))}
             required
             suffix={frequencyUnitsField()}
