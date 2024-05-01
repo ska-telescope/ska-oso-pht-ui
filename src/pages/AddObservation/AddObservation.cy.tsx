@@ -215,9 +215,7 @@ function verifyGroupObservations() {
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
   cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-  cy.get('#groupObservationButton')
-    .find('[data-testid="addButton"]')
-    .click();
+  cy.get('[aria-label="groupObservations.label"]').click();
 }
 
 describe('<AddObservation />', () => {
