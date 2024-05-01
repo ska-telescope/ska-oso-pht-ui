@@ -6,7 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import { helpers } from '../../utils/helpers';
+import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 
 interface TitleContentProps {
@@ -230,15 +230,6 @@ export default function TitleContent({ page }: TitleContentProps) {
         )} / ${MAX_WORD}`;
       }
     }
-
-    const countWords = (text: string) => {
-      return !text
-        ? 0
-        : text
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean).length;
-    };
 
     const helperFunction = (title: string) =>
       `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;

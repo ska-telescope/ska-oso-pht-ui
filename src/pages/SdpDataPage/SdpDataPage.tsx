@@ -60,11 +60,11 @@ export default function SdpDataPage() {
     },
     {
       field: 'observatoryDataProduct',
-      headerName: t('observatoryDataProductConfig.label'),
+      headerName: t('observatoryDataProduct.label'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observatoryDataProduct: number } }) =>
-        t(`observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`)
+        t(`observatoryDataProduct.options.${e.row.observatoryDataProduct}`)
     },
     {
       field: 'imageSize',
@@ -126,9 +126,9 @@ export default function SdpDataPage() {
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.observations}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('observatoryDataProductConfig.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
+            {t(`observatoryDataProduct.options.${rec.observatoryDataProduct}`)}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>

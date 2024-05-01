@@ -10,7 +10,8 @@ import {
   ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
-  TextEntry
+  TextEntry,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { NAV } from '../../utils/constants';
@@ -19,6 +20,7 @@ import Proposal from '../../utils/types/proposal';
 
 // TODO : Improved validation
 // TODO : Add documentation page specifically for Adding a Data product
+// TODO : Replace individual tick-boxes with a mapping
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -30,26 +32,36 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
-  const [observations, setObservations] = React.useState();
+  const [observations, setObservations] = React.useState('0');
+  const [dp1, setDP1] = React.useState(false);
+  const [dp2, setDP2] = React.useState(false);
+  const [dp3, setDP3] = React.useState(false);
+  const [dp4, setDP4] = React.useState(false);
+  const [dp5, setDP5] = React.useState(false);
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
 
   const { t } = useTranslation('pht');
-  const FIELD_OBS = 'observatoryDataProductConfig.options';
+  const FIELD_OBS = 'observatoryDataProduct.options';
+  const LABEL_WIDTH = 5;
 
   React.useEffect(() => {
-    helpComponent(t('observatoryDataProductConfig.help'));
+    helpComponent(t('observations.dp.help'));
   }, []);
 
   const observationsField = () => {
     const getOptions = () => {
-      return getProposal()?.observations?.map(e => ({
-        label: e.id,
-        value: e.id
-      }));
+      const theOptions = [
+        { label: t('observations.all'), value: 0 },
+        ...getProposal()?.observations?.map(e => ({
+          label: e.id,
+          value: e.id
+        }))
+      ];
+      return theOptions;
     };
+
     return (
       <>
         {getOptions() && (
@@ -58,49 +70,43 @@ export default function AddDataProduct() {
             testId="observations"
             value={observations}
             setValue={setObservations}
-            label={t('observations.label')}
+            label={t('observations.single')}
             labelBold
             labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH}
             onFocus={() => helpComponent(t('observations.dp.help'))}
+            required
           />
         )}
       </>
     );
   };
 
-  const obsDataProductField = () => {
-    const OPTIONS = [1, 2, 3, 4, 5];
-
-    const getOptions = () => {
-      return OPTIONS.map(e => ({
-        label: t(FIELD_OBS + '.' + e),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="observatoryDataProduct"
-        value={observatoryDataProduct}
-        setValue={setObservatoryDataProduct}
-        label={t('observatoryDataProductConfig.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
-      />
-    );
-  };
+  const tickElement = (key: number, value: boolean, setter: Function) => (
+    <TickBox
+      key={key}
+      label={t(FIELD_OBS + '.' + key)}
+      labelBold
+      labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
+      testId={'observatoryDataProduct' + key}
+      checked={value}
+      onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
+      onChange={() => setter(!value)}
+    />
+  );
 
   const imageSizeField = () => (
     <TextEntry
       label={t('imageSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
       testId="imageSize"
       value={imageSize}
       setValue={setImageSize}
       onFocus={() => helpComponent(t('imageSize.help'))}
+      required
     />
   );
 
@@ -109,10 +115,12 @@ export default function AddDataProduct() {
       label={t('pixelSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
       testId="pixelSize"
       value={pixelSize}
       setValue={setPixelSize}
       onFocus={() => helpComponent(t('pixelSize.help'))}
+      required
     />
   );
 
@@ -121,18 +129,21 @@ export default function AddDataProduct() {
       label={t('weighting.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
       testId="weighting"
       value={weighting}
       setValue={setWeighting}
       onFocus={() => helpComponent(t('weighting.help'))}
+      required
     />
   );
 
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
-    const disabled = () => {
-      return getProposal()?.observations?.length > 0 ? false : true;
+    const enabled = () => {
+      const dp = dp1 || dp2 || dp3 || dp4 || dp5;
+      return dp && imageSize.length > 0 && pixelSize.length > 0 && weighting.length > 0;
     };
 
     const addToProposal = () => {
@@ -140,6 +151,7 @@ export default function AddDataProduct() {
         (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
         0
       );
+      const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
       const newDataProduct = {
         id: highestId + 1,
         observatoryDataProduct,
@@ -178,7 +190,7 @@ export default function AddDataProduct() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
+              disabled={!enabled()}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"
@@ -215,7 +227,11 @@ export default function AddDataProduct() {
             spacing={2}
           >
             <Grid item>{observationsField()}</Grid>
-            <Grid item>{obsDataProductField()}</Grid>
+            <Grid item>{tickElement(1, dp1, setDP1)}</Grid>
+            <Grid item>{tickElement(2, dp2, setDP2)}</Grid>
+            <Grid item>{tickElement(3, dp3, setDP3)}</Grid>
+            <Grid item>{tickElement(4, dp4, setDP4)}</Grid>
+            <Grid item>{tickElement(5, dp5, setDP5)}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>

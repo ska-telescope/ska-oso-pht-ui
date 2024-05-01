@@ -91,9 +91,33 @@ export default function AddObservation() {
     }
   }, [subarrayConfig, observingBand]);
 
+  // TODO : Dirty fix
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [elevation, weather, frequency, effective]);
+  }, [
+    groupObservation,
+    subarrayConfig,
+    observationType,
+    elevation,
+    weather,
+    effective,
+    imageWeighting,
+    tapering,
+    bandwidth,
+    robust,
+    spectralResolution,
+    suppliedType,
+    suppliedValue,
+    suppliedUnits,
+    frequencyUnits,
+    continuumBandwidth,
+    continuumUnits,
+    subBands,
+    numOf15mAntennas,
+    numOf13_5mAntennas,
+    numOfStations,
+    details
+  ]);
 
   React.useEffect(() => {
     const invalidForm = Boolean(formValidation());
@@ -551,7 +575,7 @@ export default function AddObservation() {
       setValue={setSuppliedValue}
       onFocus={() => helpComponent(t('suppliedValue.help'))}
       required
-      errorText={t(errorTextSuppliedValue)}
+      errorText={errorTextSuppliedValue?.length ? t(errorTextSuppliedValue) : ''}
     />
   );
 
@@ -708,7 +732,7 @@ export default function AddObservation() {
       setValue={setContinuumBandwidth}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
       required
-      errorText={t(errorTextContinuumBandwidth)}
+      errorText={errorTextContinuumBandwidth?.length ? t(errorTextContinuumBandwidth) : ''}
     />
   );
 

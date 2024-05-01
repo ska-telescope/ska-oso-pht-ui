@@ -26,34 +26,24 @@ function verifyObsDataProduct() {
   // TODO : Test the label
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.1'
-  );
+  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.1');
 
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.2'
-  );
+  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.2');
 
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="3"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.3'
-  );
+  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.3');
 
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="4"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.4'
-  );
+  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.4');
 
   cy.get('[data-testid="observatoryDataProduct"]').click();
   cy.get('[data-value="5"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.5'
-  );
-  cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProductConfig.help');
+  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.5');
+  cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProduct.help');
 }
 
 function verifyObservationsField() {

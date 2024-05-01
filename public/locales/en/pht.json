@@ -266,8 +266,10 @@
   },
   "observations": {
     "label": "Observations",
+    "single": "Observation",
+    "all": "All observations",
     "delete": "Delete observation",
-    "edit": "Edit obversation",
+    "edit": "Edit observation",
     "id": "Id",
     "dp": {
       "label": "Observation",
@@ -281,7 +283,7 @@
     "0": "Zoom",
     "1": "Continuum"
   },
-  "observatoryDataProductConfig": {
+  "observatoryDataProduct": {
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {

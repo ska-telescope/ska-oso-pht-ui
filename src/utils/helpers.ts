@@ -19,6 +19,15 @@ export const generateId = (prefix: string, length: number) => {
   return prefix + result;
 };
 
+export const countWords = (text: string) => {
+  return !text
+    ? 0
+    : text
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+};
+
 export const helpers = {
   validate: {
     validateTextEntry(
