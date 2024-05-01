@@ -102,42 +102,33 @@ export default function AddObservation() {
 
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
-    if (record?.lookup) {
+    const lookup = record?.lookup;
+    if (lookup !== null) {
       setEffective(inValue[record.lookup].value);
     }
   }
 
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
-    observationLookup(OBSERVATION.EffectiveResolutionOBLow);
   }, []);
 
   React.useEffect(() => {
-    switch (observingBand) {
-      case 0:
-        observationLookup(OBSERVATION.EffectiveResolutionOBLow);
-        break;
-      case 1:
-        observationLookup(OBSERVATION.EffectiveResolutionOB1);
-        break;
-      case 2:
-        observationLookup(OBSERVATION.EffectiveResolutionOB2);
-        break;
-      case 3:
-        observationLookup(OBSERVATION.EffectiveResolutionOB5a);
-        break;
-      case 4:
-        observationLookup(OBSERVATION.EffectiveResolutionOB5b);
-        break;
-    }
+    const arr = [
+      OBSERVATION.EffectiveResolutionOBLow,
+      OBSERVATION.EffectiveResolutionOB1,
+      OBSERVATION.EffectiveResolutionOB2,
+      OBSERVATION.EffectiveResolutionOB5a,
+      OBSERVATION.EffectiveResolutionOB5b
+    ];
+    observationLookup(arr[observingBand]);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
   }, [spectralAveraging, observingBand]);
 
   React.useEffect(() => {
     const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
     const lookup = record?.lookup;
-    if (lookup) {
-      setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
+    if (lookup !== null) {
+      setSpectralResolution(OBSERVATION.SpectralResolution[lookup]?.value);
     }
   }, [frequency]);
 
