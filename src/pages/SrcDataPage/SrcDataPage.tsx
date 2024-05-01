@@ -48,19 +48,19 @@ export default function SrcDataPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const pipelineField = () => (
-    <TextEntry
-      label={t('pipeline.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      testId="pipelineId"
-      value={getProposal().pipeline}
-      setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-      onFocus={() => helpComponent(t('pipeline.help'))}
-      helperText={t('pipeline.helper')}
-      required
-    />
-  );
+  // const pipelineField = () => (
+  //   <TextEntry
+  //     label={t('pipeline.label')}
+  //     labelBold
+  //     labelPosition={LABEL_POSITION.START}
+  //     testId="pipelineId"
+  //     value={getProposal().pipeline}
+  //     setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
+  //     onFocus={() => helpComponent(t('pipeline.help'))}
+  //     helperText={t('pipeline.helper')}
+  //     required
+  //   />
+  // );
 
   return (
     <Shell page={PAGE}>
@@ -80,16 +80,16 @@ export default function SrcDataPage() {
           alignItems="baseline"
           justifyContent="flex-start"
         >
-          <Grid item xs={1} />
+          {/* <Grid item xs={1} />
           <Grid item xs={6}>
             <Typography variant="h6">{t('srcNet.label')}</Typography>
 
             {pipelineField()}
           </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={3}>
+          <Grid item xs={1} /> */}
+          {/* <Grid item xs={3}>
             <HelpPanel />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </Shell>
