@@ -201,7 +201,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid p={3} container direction="column" alignItems="center" justifyContent="center">
+      <Grid p={6} container direction="column" alignItems="center" justifyContent="center">
         <Typography variant="h6">{t('page.11.desc')}</Typography>
       </Grid>
 
