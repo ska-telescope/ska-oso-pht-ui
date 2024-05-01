@@ -1,6 +1,6 @@
 context('PROPOSAL HANDLING TOOL', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:6100/');
+    cy.visit('http://localhost:6101/');
   });
 
   it('Header : Verify external link to skao site', () => {
