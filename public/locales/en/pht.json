@@ -401,7 +401,7 @@
     "13": "Transients",
     "14": "VLBI",
     "label": "Science Category",
-    "help": "CATEGORY HELP"
+    "help": "CATEGORY: Select a category that best describes your proposal."
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
@@ -414,10 +414,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "SKY DIRECTION 1 VALUE HELP"
+        "value": "RIGHT ASCENSION:"
       },
       "2": {
-        "value": "SKY DIRECTION 2 VALUE HELP"
+        "value": "dECLINATION: "
       }
     },
     "label": {
@@ -454,8 +454,7 @@
   "skyUnits": {
     "help": "REFERENCE COORDINATE HELP",
     "label": "Reference Coordinate",
-    "0": "Equatorial",
-    "1": "Galactic"
+    "0": "Equatorial"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"
