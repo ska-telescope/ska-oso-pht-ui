@@ -62,12 +62,12 @@ export default function AddTarget() {
       0
     );
     const newTarget = {
+      ra,
+      raUnit: raType.toString(),
       dec,
       decUnit: raType.toString(),
       id: highestId + 1,
       name,
-      ra,
-      raUnit: raType.toString(),
       referenceFrame,
       vel,
       velUnit: velType.toString()
@@ -90,8 +90,8 @@ export default function AddTarget() {
   const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
     if (response && !response.error) {
       const values = response.split(' ');
-      setRA(values[0]);
-      setDec(values[1]);
+      setRA(values[1]);
+      setDec(values[0]);
       setNameFieldError('');
     } else {
       setNameFieldError(t(response.error));

@@ -17,14 +17,18 @@ The Observation Page consists of two distinct sections:
 - Left side:
 
   - Add Observation: Click this button to create a new observation entry.
-  - Observation List: View a table summarizing existing observations with details like telescope, array, type, and actions (delete).
+  - Observation List: View a table summarizing existing observations with details like array, type, Sensitivity Calculation Summary and actions (delete).
 
 - Right side:
 
-  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for bulk actions.
-  - The status icon next to each linked target-observation shows the status of the Sensitivity Calculator API request.
-  - If an error is returned from the Sensitivity Calculator API, a tooltip showing the error is displayed when hovering over the status icon.
+  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
+  - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation.
 
+.. admonition:: Sensitivity Calculation Display
+
+   Further details of this can be found in the appropriate section of this guide
+
+   
 2. Observation Mode Details:
 
 - This section appears upon clicking "Add Observation".

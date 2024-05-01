@@ -43,30 +43,6 @@ export default function AddDataProduct() {
     helpComponent(t('observatoryDataProductConfig.help'));
   }, []);
 
-  const obsDataProductField = () => {
-    const OPTIONS = [1, 2, 3, 4, 5];
-
-    const getOptions = () => {
-      return OPTIONS.map(e => ({
-        label: t(FIELD_OBS + '.' + e),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="observatoryDataProduct"
-        value={observatoryDataProduct}
-        setValue={setObservatoryDataProduct}
-        label={t('observatoryDataProductConfig.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
-      />
-    );
-  };
-
   const observationsField = () => {
     const getOptions = () => {
       return getProposal()?.observations?.map(e => ({
@@ -89,6 +65,30 @@ export default function AddDataProduct() {
           />
         )}
       </>
+    );
+  };
+
+  const obsDataProductField = () => {
+    const OPTIONS = [1, 2, 3, 4, 5];
+
+    const getOptions = () => {
+      return OPTIONS.map(e => ({
+        label: t(FIELD_OBS + '.' + e),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        options={getOptions()}
+        testId="observatoryDataProduct"
+        value={observatoryDataProduct}
+        setValue={setObservatoryDataProduct}
+        label={t('observatoryDataProductConfig.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
+      />
     );
   };
 
@@ -214,8 +214,8 @@ export default function AddDataProduct() {
             p={2}
             spacing={2}
           >
-            <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{observationsField()}</Grid>
+            <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
             <Grid item>{weightingField()}</Grid>

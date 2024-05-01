@@ -14,7 +14,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -112,7 +112,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -252,7 +252,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -279,7 +279,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],

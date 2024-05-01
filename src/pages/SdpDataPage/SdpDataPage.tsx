@@ -53,18 +53,18 @@ export default function SdpDataPage() {
 
   const columns = [
     {
+      field: 'observations',
+      headerName: t('observations.dp.label'),
+      flex: 1,
+      disableClickEventBubbling: true
+    },
+    {
       field: 'observatoryDataProduct',
       headerName: t('observatoryDataProductConfig.label'),
       flex: 1,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { observatoryDataProduct: number } }) =>
         t(`observatoryDataProductConfig.options.${e.row.observatoryDataProduct}`)
-    },
-    {
-      field: 'observations',
-      headerName: t('observations.dp.label'),
-      flex: 1,
-      disableClickEventBubbling: true
     },
     {
       field: 'imageSize',
@@ -123,13 +123,13 @@ export default function SdpDataPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
+        <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.observations}</Typography>
+        </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProductConfig.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
             {t(`observatoryDataProductConfig.options.${rec.observatoryDataProduct}`)}
           </Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observations}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.imageSize}</Typography>
@@ -144,8 +144,8 @@ export default function SdpDataPage() {
     );
   };
 
-  const getRows = () => getProposal().dataProducts;
   const hasObservations = () => (getProposal()?.observations?.length > 0 ? true : false);
+  const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
   const errorMessage = () => 'page.' + PAGE + errorSuffix();
 

@@ -59,7 +59,7 @@
     "help": "ABSTRACT HELP",
     "helper": "Please enter your abstract information",
     "maxChar": "2300",
-    "maxWord": "50",
+    "maxWord": "200",
     "minDisplayRows": "5"
   },
   "actions": {
@@ -173,7 +173,7 @@
   },
   "elevation": {
     "help": "ELEVATION HELP",
-    "label": "Elevation",
+    "label": "Minimum Elevation",
     "range": {
       "lower": 15,
       "upper": 59.2
@@ -495,12 +495,12 @@
     "units1": "ujy/beam",
     "units2": "mjy/beam",
     "units3": "mjy/beam",
-    "units4": "arcsecs squared",
+    "units4": "arcsecs2",
     "units5": "k",
     "units6": "ujy/beam",
     "units7": "mjy/beam",
     "units8": "mjy/beam",
-    "units9": "arcsecs squared",
+    "units9": "arcsecs2",
     "units10": "k",
     "units11": "rad/m2"
   },
@@ -675,7 +675,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "A list of proposals in which you have either participated as a Principal Investigator or a Co-Investigator.",
+      "desc": "List of proposal(s) where you are either the Principal Investigator or a Co-Investigator. It provides key details such as proposal id, proposal category, cycle, title, principal investigator, status, last updated and a set of actions.",
       "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "12": {

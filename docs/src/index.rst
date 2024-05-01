@@ -31,6 +31,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    SciencePage
    TargetPage
    ObservationPage
+   ObsSensCalc
    TechnicalPage
    DataPage
    SrcNetPage
