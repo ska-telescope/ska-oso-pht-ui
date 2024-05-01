@@ -6,7 +6,7 @@ import Target from '../../../utils/types/target';
 import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
-  USE_LOCAL_DATA,
+  USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
@@ -37,7 +37,7 @@ const SENSCALC_LOADING: SensCalcResult = {
 };
 
 function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
 

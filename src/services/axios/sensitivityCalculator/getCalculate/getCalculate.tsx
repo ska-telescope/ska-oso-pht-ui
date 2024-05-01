@@ -5,7 +5,7 @@ import {
   OBSERVATION,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   TYPE_CONTINUUM,
-  USE_LOCAL_DATA,
+  USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
@@ -131,7 +131,7 @@ async function GetCalculate(observation: Observation) {
     return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
   };
 
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return getMockData();
   }
 

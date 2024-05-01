@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
-  USE_LOCAL_DATA,
+  USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
   TELESCOPE_LOW_NUM
@@ -81,7 +81,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };
 
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return getMockData();
   }
 
