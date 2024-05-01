@@ -1,21 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  InputLabel,
-  Paper,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
-  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -34,10 +22,7 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import { generateId, helpers } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
-
-import GroupObservation from 'utils/types/groupObservation';
-import { t } from 'i18next';
-import getProposal from 'services/axios/getProposal/getProposal';
+import GroupObservation from '../../utils/types/groupObservation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -64,15 +49,15 @@ export default function AddObservation() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(15);
-  const [weather, setWeather] = React.useState(3);
-  let [frequency] = React.useState('');
-  let [effective, setEffective] = React.useState('');
+  const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
+  const [frequency, setFrequency] = React.useState('');
+  const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(1);
   const [bandwidth, setBandwidth] = React.useState(1);
   const [robust, setRobust] = React.useState(0);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
-  let [spectralResolution, setSpectralResolution] = React.useState('');
+  const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState('');
   const [suppliedUnits, setSuppliedUnits] = React.useState(1);
@@ -95,22 +80,20 @@ export default function AddObservation() {
   const [groupObservationVal, setGroupObservationVal] = React.useState(null);
 
   React.useEffect(() => {
-    setNumOf15mAntennas(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOf15mAntennas
-    );
-    setNumOf13_5mAntennas(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOf13_5mAntennas
-    );
-    setNumOfStations(
-      OBSERVATION.array[BANDWIDTH_TELESCOPE[observingBand].telescope - 1].subarray.find(
-        element => element.value === subarrayConfig
-      ).numOfStations
-    );
-  }, [subarrayConfig]);
+    if (!observingBand || !subarrayConfig) {
+      const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+      if (telescope > 0) {
+        const record = OBSERVATION.array[telescope - 1].subarray.find(
+          element => element.value === subarrayConfig
+        );
+        if (record) {
+          setNumOf15mAntennas(record.numOf15mAntennas);
+          setNumOf13_5mAntennas(record.numOf13_5mAntennas);
+          setNumOfStations(record.numOfStations);
+        }
+      }
+    }
+  }, [subarrayConfig, observingBand]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -121,9 +104,46 @@ export default function AddObservation() {
     setFormInvalid(invalidForm);
   }, [validateToggle]);
 
+  function observationLookup(inValue) {
+    const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
+    if (record?.lookup) {
+      setEffective(inValue[record.lookup].value);
+    }
+  }
+
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
+    observationLookup(OBSERVATION.EffectiveResolutionOBLow);
   }, []);
+
+  React.useEffect(() => {
+    switch (observingBand) {
+      case 0:
+        observationLookup(OBSERVATION.EffectiveResolutionOBLow);
+        break;
+      case 1:
+        observationLookup(OBSERVATION.EffectiveResolutionOB1);
+        break;
+      case 2:
+        observationLookup(OBSERVATION.EffectiveResolutionOB2);
+        break;
+      case 3:
+        observationLookup(OBSERVATION.EffectiveResolutionOB5a);
+        break;
+      case 4:
+        observationLookup(OBSERVATION.EffectiveResolutionOB5b);
+        break;
+    }
+    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+  }, [spectralAveraging, observingBand]);
+
+  React.useEffect(() => {
+    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    const lookup = record?.lookup;
+    if (lookup) {
+      setSpectralResolution(OBSERVATION.SpectralResolution[lookup].value);
+    }
+  }, [frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -176,11 +196,8 @@ export default function AddObservation() {
     return count;
   }
 
-  const getGroupObsOptions = () => {
-    const hasGroupObservations = (): boolean =>
-      getProposal() &&
-      getProposal().groupObservations &&
-      getProposal().groupObservations.length > 0;
+  const groupObservationsField = () => {
+    const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
     const groups: GroupObservation[] = hasGroupObservations()
       ? getProposal()?.groupObservations
@@ -262,12 +279,14 @@ export default function AddObservation() {
   const subArrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
-        return {
-          label: t('subArrayConfiguration.' + e.value),
-          value: e.value
-        };
-      });
+      if (usedTelescope > 0) {
+        return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
+          return {
+            label: t('subArrayConfiguration.' + e.value),
+            value: e.value
+          };
+        });
+      }
     };
 
     return (
@@ -455,24 +474,6 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
-    switch (frequency) {
-      case '200':
-        spectralResolution = OBSERVATION.SpectralResolution[0].value;
-        break;
-      case '0.7':
-        spectralResolution = OBSERVATION.SpectralResolution[1].value;
-        break;
-      case '1.355':
-        spectralResolution = OBSERVATION.SpectralResolution[2].value;
-        break;
-      case '6.55':
-        spectralResolution = OBSERVATION.SpectralResolution[3].value;
-        break;
-      case '11.85':
-        spectralResolution = OBSERVATION.SpectralResolution[4].value;
-        break;
-    }
-
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
@@ -534,7 +535,7 @@ export default function AddObservation() {
   };
 
   const suppliedUnitsField = () => {
-    const getOptions = () => OBSERVATION.Supplied[suppliedType - 1].units;
+    const getOptions = () => (suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : []);
 
     return (
       <Box pt={1}>
@@ -685,24 +686,6 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
-    switch (observingBand) {
-      case 0:
-        frequency = OBSERVATION.CentralFrequency[0].value;
-        break;
-      case 1:
-        frequency = OBSERVATION.CentralFrequency[1].value;
-        break;
-      case 2:
-        frequency = OBSERVATION.CentralFrequency[2].value;
-        break;
-      case 3:
-        frequency = OBSERVATION.CentralFrequency[3].value;
-        break;
-      case 4:
-        frequency = OBSERVATION.CentralFrequency[4].value;
-        break;
-    }
-
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
@@ -772,33 +755,6 @@ export default function AddObservation() {
   );
 
   const effectiveResolutionField = () => {
-    switch (spectralAveraging) {
-      case 1:
-        effective = OBSERVATION.EffectiveResolution[0].value;
-        break;
-      case 2:
-        effective = OBSERVATION.EffectiveResolution[1].value;
-        break;
-      case 3:
-        effective = OBSERVATION.EffectiveResolution[2].value;
-        break;
-      case 4:
-        effective = OBSERVATION.EffectiveResolution[3].value;
-        break;
-      case 6:
-        effective = OBSERVATION.EffectiveResolution[4].value;
-        break;
-      case 8:
-        effective = OBSERVATION.EffectiveResolution[5].value;
-        break;
-      case 12:
-        effective = OBSERVATION.EffectiveResolution[6].value;
-        break;
-      case 24:
-        effective = OBSERVATION.EffectiveResolution[7].value;
-        break;
-    }
-
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
