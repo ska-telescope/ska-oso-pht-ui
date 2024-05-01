@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -253,7 +254,12 @@ export default function AddObservation() {
 
     return (
       <Grid id="groupObservationButton">
-        <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
+        <AddButton
+          title={'button.add'}
+          action={buttonClicked}
+          disabled={disabled()}
+          color={ButtonColorTypes.Inherit}
+        />
       </Grid>
     );
   };
