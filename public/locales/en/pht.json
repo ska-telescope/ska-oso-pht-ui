@@ -57,7 +57,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT HELP",
-    "helper": "Please enter your abstract information",
+    "helper": "The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field.",
     "maxChar": "2300",
     "maxWord": "200",
     "minDisplayRows": "5"
@@ -675,7 +675,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "List of proposal(s) where you are either the Principal Investigator or a Co-Investigator. It provides key details such as proposal id, proposal category, cycle, title, principal investigator, status, last updated and a set of actions.",
+      "desc": "A comprehensive list of proposals in which you hold the role of either Principal Investigator or Co-Investigator. The list includes essential details such as proposal ID, category, cycle, title, principal investigator, status, last updated date, and available actions.",
       "empty": "THERE ARE NO PROPOSALS AVAILABLE"
     },
     "12": {
