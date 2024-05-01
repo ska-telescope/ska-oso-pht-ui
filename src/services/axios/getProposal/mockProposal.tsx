@@ -54,13 +54,13 @@ const MockProposal: ProposalBackend = {
     science_programmes: [
       {
         array: 'MID',
-        subarray: 'subarray 1',
+        subarray: '1',
         linked_sources: ['M1', 'M2'],
         observation_type: 'Continuum'
       },
       {
         array: 'MID',
-        subarray: 'subarray 1',
+        subarray: '1',
         linked_sources: ['M1', 'M2'],
         observation_type: 'Continuum'
       }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
@@ -15,6 +15,7 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { PATH } from '../../utils/constants';
+import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 
 const PAGE = 5;
 const LABEL_WIDTH = 6;
@@ -43,17 +44,18 @@ export default function ObservationPage() {
     updateAppContent1(temp);
   };
 
-  const setLastObs = (currObsId: number, target: any, value: object) => {
+  const setSensCalc = (results: any, target: any, currId) => {
     const temp = [];
     elementsT.forEach(rec => {
-      if (rec.id === target.id) {
+      if (rec?.id === target?.id) {
         temp.push({
           id: rec.id,
+          observationId: currId,
           name: rec.name,
           ra: rec.ra,
           dec: rec.dec,
-          status: value,
-          lastObs: currObsId
+          rec: rec,
+          sensCalc: results
         });
       } else {
         temp.push(rec);
@@ -117,9 +119,21 @@ export default function ObservationPage() {
     );
   };
 
-  const AddObservationTarget = (id: number) => {
-    const rec = { observationId: currObs?.id, targetId: id, status: 0 };
-    setProposal({ ...getProposal(), targetObservation: [...getProposal().targetObservation, rec] });
+  const AddObservationTarget = (row: any) => {
+    async function fetchResults(row: any) {
+      const sensCalcResult = await getSensCalc(currObs, row.rec);
+      const rec = {
+        observationId: currObs.id,
+        targetId: row.rec.id,
+        sensCalc: sensCalcResult
+      };
+      setSensCalc(sensCalcResult, row.rec, currObs.id);
+      setProposal({
+        ...getProposal(),
+        targetObservation: [...getProposal().targetObservation, rec]
+      });
+    }
+    fetchResults(row);
   };
 
   function filterRecords(id: number) {
@@ -128,8 +142,8 @@ export default function ObservationPage() {
     );
   }
 
-  const DeleteObservationTarget = (id: number) => {
-    setProposal({ ...getProposal(), targetObservation: filterRecords(id) });
+  const DeleteObservationTarget = (row: any) => {
+    setProposal({ ...getProposal(), targetObservation: filterRecords(row.id) });
   };
 
   const isTargetSelected = (id: number) =>
@@ -137,11 +151,11 @@ export default function ObservationPage() {
       entry => entry.observationId === currObs?.id && entry.targetId === id
     ).length > 0;
 
-  const targetSelectedToggle = (id: number) => {
-    if (isTargetSelected(id)) {
-      DeleteObservationTarget(id);
+  const targetSelectedToggle = (row: any) => {
+    if (isTargetSelected(row.id)) {
+      DeleteObservationTarget(row);
     } else {
-      AddObservationTarget(id);
+      AddObservationTarget(row);
     }
   };
 
@@ -155,8 +169,7 @@ export default function ObservationPage() {
         name: rec.name,
         ra: rec.ra,
         dec: rec.dec,
-        status: null,
-        lastObs: null
+        sensCalc: null
       }))
     );
     setElementsO(
@@ -268,12 +281,14 @@ export default function ObservationPage() {
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
         return currObs ? (
-          <TickBox
-            label=""
-            testId="linkedTickBox"
-            checked={isTargetSelected(e.row.id)}
-            onChange={() => targetSelectedToggle(e.row.id)}
-          />
+          <Box pr={1}>
+            <TickBox
+              label=""
+              testId="linkedTickBox"
+              checked={isTargetSelected(e.row.id)}
+              onChange={() => targetSelectedToggle(e.row)}
+            />
+          </Box>
         ) : (
           <></>
         );
@@ -281,14 +296,14 @@ export default function ObservationPage() {
     },
     { field: 'name', headerName: t('name.label'), flex: 1.5 },
     { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
-    { field: 'dec', headerName: t('declination.label'), flex: 1 },
+    { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
     {
       field: 'vel',
       renderHeader: () =>
         currObs ? (
           <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-            <Grid mr={10}></Grid>
-            <Grid mr={10}>
+            <Grid mr={6}></Grid>
+            <Grid mr={6}>
               <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
             </Grid>
             <Grid>
@@ -302,22 +317,7 @@ export default function ObservationPage() {
       flex: 5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: any }) => {
-        const isSelected = isTargetSelected(e.row.id);
-
-        if (currObs) {
-          const obs: Observation =
-            currObs.id !== e.row.lastObs ? elementsO.find(p => p.id === currObs.id) : null;
-          return (
-            <SensCalcDisplaySingle
-              observation={obs}
-              row={e.row}
-              setObs={setLastObs}
-              selected={isSelected}
-              target={e.row}
-            />
-          );
-        }
-        return '';
+        return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
       }
     }
   ];

@@ -44,7 +44,7 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [groupObservation, setgroupObservation] = React.useState(0);
+  const [groupObservation, setGroupObservation] = React.useState(0);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
@@ -214,7 +214,7 @@ export default function AddObservation() {
             options={getOptions()}
             testId="groupObservations"
             value={groupObservation}
-            setValue={setgroupObservation}
+            setValue={setGroupObservation}
             label={t('groupObservations.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
