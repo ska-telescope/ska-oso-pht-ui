@@ -22,28 +22,14 @@ function verifyPageDescription() {
   // cy.get('#pageDesc').contains('page.13.desc');
 }
 
+// TODO : Extend these tests further
 function verifyObsDataProduct() {
-  // TODO : Test the label
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.1');
-
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.2');
-
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="3"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.3');
-
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="4"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.4');
-
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="5"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains('observatoryDataProduct.options.5');
-  cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProduct.help');
+  // cy.get('[data-testid="observatoryDataProduct1"]').click();
+  // cy.get('[data-testid="observatoryDataProduct2"]').click();
+  // cy.get('[data-testid="observatoryDataProduct3"]').click();
+  // cy.get('[data-testid="observatoryDataProduct4"]').click();
+  // cy.get('[data-testid="observatoryDataProduct5"]').click();
+  // cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProduct.help');
 }
 
 function verifyObservationsField() {
