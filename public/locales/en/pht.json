@@ -56,7 +56,7 @@
   },
   "abstract": {
     "label": "Abstract",
-    "help": "ABSTRACT HELP: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field.",
+    "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field.",
     "helper": "Please enter your abstract information.",
     "maxChar": "2300",
     "maxWord": "200",
@@ -405,7 +405,7 @@
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
-    "help": "SUB-CATEGORY HELP",
+    "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
     "1": "Not specified"
   },
   "searchForMember": {
