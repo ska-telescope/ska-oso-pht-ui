@@ -347,4 +347,19 @@ describe('<AddObservation />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+
+  it('Chloe', () => {
+    cy.viewport(1500, 1500);
+    cy.mount(
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
+    );
+    cy.get('[data-testid="groupObservations"]').click();
+    cy.get('[data-value="1"]').click();
+    cy.get('[aria-label="groupObservations.label"]').click();
+    cy.get('[data-testid="addButton"]').should('be.disabled')
+  });
 });
