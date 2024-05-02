@@ -243,7 +243,7 @@
       "upper": 133
     }
   },
-  "numOf13_5mAntennas": {
+  "numOf13mAntennas": {
     "help": "Valid range is 0 - 64 inclusive",
     "label": "Number of 13.5-m antennas",
     "short": "13.5-m",

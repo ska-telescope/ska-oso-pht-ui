@@ -317,7 +317,7 @@ export default function ObservationPage() {
       flex: 5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: any }) => {
-        return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
+        return <SensCalcDisplaySingle row={e.row.rec} show={isTargetSelected(e.row.id)} />;
       }
     }
   ];

@@ -8,11 +8,11 @@ import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
 const SIZE = 20;
 
 interface SensCalcDisplaySingleProps {
-  show: boolean;
   row: any;
+  show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ show, row }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {

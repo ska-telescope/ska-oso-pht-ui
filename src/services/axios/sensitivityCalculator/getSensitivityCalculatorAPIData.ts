@@ -55,11 +55,11 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
       if ('error' in output) {
         let err = SENSCALC_ERROR;
         err.title = target.name;
-        err.error = 'ERROR : SOME ERROR IN HERE';
+        err.error = output.error;
         return err;
       }
-      if ('calculate' in output) {
-        if ('error' in output.calculate) {
+      /* TODO : THIS DOESN'T APPEAR TO BE CORRECT
+      if (output?.calculate?.error) {
           let err = SENSCALC_ERROR;
           err.title = target.name;
           err.error = output.calculate.error.detail.split('\n')[0];
@@ -74,6 +74,7 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
           return err;
         }
       }
+      */
       return calculateSensitivityCalculatorResults(output, observation, target);
     })
     .catch(e => {
