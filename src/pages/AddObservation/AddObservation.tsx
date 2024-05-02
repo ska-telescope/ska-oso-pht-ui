@@ -467,7 +467,6 @@ export default function AddObservation() {
           <TextEntry
             testId="spectralResolution"
             value={spectralResolution}
-            setValue={setSpectralResolution}
             label={t('spectralResolution.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
@@ -750,7 +749,6 @@ export default function AddObservation() {
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
         value={effective}
-        setValue={setEffective}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
