@@ -46,9 +46,16 @@ async function GetCalculate(observation: Observation) {
     }
 
     const arrConfig = OBSERVATION.array[0].subarray.find(obj => obj.value === observation.subarray);
-    const weighting = OBSERVATION.ImageWeighting.find(obj => obj.value === observation.imageWeighting);
-    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits);
-    const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(Number(observation.integrationTime), iTimeUnits);
+    const weighting = OBSERVATION.ImageWeighting.find(
+      obj => obj.value === observation.imageWeighting
+    );
+    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+      observation.integrationTimeUnits
+    );
+    const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
+      Number(observation.integrationTime),
+      iTimeUnits
+    );
 
     const params = new URLSearchParams({
       rx_band: `Band ${observation.observingBand}`,
@@ -135,7 +142,7 @@ async function GetCalculate(observation: Observation) {
   try {
     const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
     const result = await axios.get(path, AXIOS_CONFIG);
-    console.log("TREVOR EXECUTE", result);
+    console.log('TREVOR EXECUTE', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {

@@ -24,7 +24,8 @@ const URL_WEIGHTING = `weighting`;
 async function GetWeighting(observation: Observation, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
-  const getTelescope = () => observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
+  const getTelescope = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
@@ -36,7 +37,9 @@ async function GetWeighting(observation: Observation, inMode: number) {
   function mapQueryMidWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    const weighting = OBSERVATION.ImageWeighting.find(obj => obj.value === observation.imageWeighting);
+    const weighting = OBSERVATION.ImageWeighting.find(
+      obj => obj.value === observation.imageWeighting
+    );
 
     const params = new URLSearchParams({
       frequency: observation.centralFrequency,
@@ -69,7 +72,9 @@ async function GetWeighting(observation: Observation, inMode: number) {
   /*************************************************************************************************************************/
 
   const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM ? mapQueryLowWeighting() : mapQueryMidWeighting();
+    return observation.telescope === TELESCOPE_LOW_NUM
+      ? mapQueryLowWeighting()
+      : mapQueryMidWeighting();
   };
 
   const getMockData = () => {
@@ -88,7 +93,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
       AXIOS_CONFIG
     );
-    console.log("TREVOR EXECUTE", result);
+    console.log('TREVOR EXECUTE', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {

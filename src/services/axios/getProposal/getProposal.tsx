@@ -75,7 +75,7 @@ const getTargets = (inValue: TargetBackend[]) => {
 const getIntegrationTimeUnits = (inValue: String) => {
   const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
   return unitsList.find(u => u.label === inValue)?.value;
-}
+};
 
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];

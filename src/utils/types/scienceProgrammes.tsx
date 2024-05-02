@@ -5,7 +5,7 @@ export type ScienceProgrammeBackend = {
   observation_type: string;
   image_weighting: number;
   observing_band: number;
-  integration_time: number,
-  integration_time_units: string,
-  central_frequency: number
+  integration_time: number;
+  integration_time_units: string;
+  central_frequency: number;
 };
