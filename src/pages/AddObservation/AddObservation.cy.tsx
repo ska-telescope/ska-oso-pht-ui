@@ -220,10 +220,8 @@ function verifyGroupObservations() {
     .click();
 }
 
-describe('<AddObservation />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
+function mounting(theTheme) {
+  cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -234,18 +232,17 @@ describe('<AddObservation />', () => {
           </ThemeProvider>
         </StoreProvider>
       );
+}
+
+describe('<AddObservation />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mounting(theTheme);
     });
   }
 
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     verifyGroupObservations();
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
@@ -270,14 +267,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
@@ -297,14 +287,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     // verifyArrayConfiguration2AndSubArrayConfig();
     verifyDetailsField();
     verifyElevationField();
@@ -322,14 +305,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     // verifyArrayConfiguration2AndSubArrayConfig();
     verifyDetailsField();
     verifynumOfStations();

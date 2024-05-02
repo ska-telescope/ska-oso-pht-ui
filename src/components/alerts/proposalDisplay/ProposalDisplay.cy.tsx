@@ -10,15 +10,13 @@ import { GetMockProposal } from '../../../services/axios/getProposal/getProposal
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<ProposalDisplay />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
+function mounting(theTheme) {
+  cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
             <ProposalDisplay
-              pageNo={0}
               onClose={cy.stub().as('handleCancel')}
               onConfirm={cy.stub().as('handleConfirm')}
               open
@@ -26,6 +24,12 @@ describe('<ProposalDisplay />', () => {
           </ThemeProvider>
         </StoreProvider>
       );
+}
+
+describe('<ProposalDisplay />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mounting(theTheme);
     });
   }
 });
@@ -35,18 +39,7 @@ describe('Content', () => {
     cy.stub()
       .as('getProposal')
       .returns(GetMockProposal);
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <ProposalDisplay
-            pageNo={0}
-            onClose={cy.stub().as('handleCancel')}
-            onConfirm={cy.stub().as('handleConfirm')}
-            open
-          />
-        </Router>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
   });
   it('verify content', () => {
     cy.get('[data-testid="button.closeButton"]').click();

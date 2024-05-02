@@ -46,8 +46,9 @@ async function GetWeighting(observation: Observation, inMode: number) {
       zoom_frequencies: observation.centralFrequency?.toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
-      array_configuration: arrConfig?.label,
+      array_configuration: arrConfig?.map,
       calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
+      resolution: '0',
       taper: observation.tapering?.toString()
     });
     return params;
@@ -57,12 +58,12 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   function mapQueryLowWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    const subArray = array.subarray.find(obj => obj.value === observation.subarray)?.label;
+    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     const params = new URLSearchParams({
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting
       )?.label.toLowerCase(),
-      subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: arrConfig.map, // sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.centralFrequency?.toString()
     });

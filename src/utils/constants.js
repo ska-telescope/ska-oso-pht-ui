@@ -130,27 +130,30 @@ export const OBSERVATION = {
       value: 1,
       subarray: [
         // MID
-        { value: 1, label: 'AA0.5', numOf15mAntennas: 4, numOf13mAntennas: 0, numOfStations: 0 },
-        { value: 2, label: 'AA1', numOf15mAntennas: 8, numOf13mAntennas: 0, numOfStations: 0 },
-        { value: 3, label: 'AA2', numOf15mAntennas: 64, numOf13mAntennas: 0, numOfStations: 0 },
+        { value: 1, map: 'MID_AA05_all', label: 'AA0.5', numOf15mAntennas: 4, numOf13mAntennas: 0, numOfStations: 0 },
+        { value: 2, map: 'MID_AA1_all', label: 'AA1', numOf15mAntennas: 8, numOf13mAntennas: 0, numOfStations: 0 },
+        { value: 3, map: 'MID_AA2_all', label: 'AA2', numOf15mAntennas: 64, numOf13mAntennas: 0, numOfStations: 0 },
         {
           value: 4,
+          map: 'MID_AA2_core_only',
           label: 'AA2 (core only)',
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0
         },
-        { value: 5, label: 'AA*', numOf15mAntennas: 80, numOf13mAntennas: 64, numOfStations: 0 },
+        { value: 5, map: 'MID_AAstar_all', label: 'AA*', numOf15mAntennas: 80, numOf13mAntennas: 64, numOfStations: 0 },
         {
           value: 6,
+          map: 'MID_AAstar_core_all',
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
           numOf13mAntennas: 0,
           numOfStations: 0
         },
-        { value: 7, label: 'AA4', numOf15mAntennas: 133, numOf13mAntennas: 64, numOfStations: 0 },
+        { value: 7, map: 'MID_AA4_all', label: 'AA4', numOf15mAntennas: 133, numOf13mAntennas: 64, numOfStations: 0 },
         {
           value: 8,
+          map: 'MID_AA4_all',
           label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 133,
           numOf13mAntennas: 0,
@@ -158,12 +161,13 @@ export const OBSERVATION = {
         },
         {
           value: 9,
+          map: 'MID_AA4_core_all',
           label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
           numOfStations: 0
         },
-        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
+        { value: 20, map: 'Custom', label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -186,33 +190,36 @@ export const OBSERVATION = {
       value: 2,
       subarray: [
         // LOW
-        { value: 1, label: 'AA0.5', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 6 },
-        { value: 2, label: 'AA1', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 18 },
-        { value: 3, label: 'AA2', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 64 },
+        { value: 1, map: 'LOW_AA05_all', label: 'AA0.5', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 6 },
+        { value: 2, map: 'LOW_AA1_all', label: 'AA1', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 18 },
+        { value: 3, map: 'LOW_AA2_all', label: 'AA2', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 64 },
         {
           value: 4,
+          map: 'LOW_AA2_core_all', 
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 40
         },
-        { value: 5, label: 'AA*', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 307 },
+        { value: 5, map: 'LOW_AAstar_all', label: 'AA*', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 307 },
         {
           value: 6,
+          map: 'LOW_AAstar_core_all', 
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 199
         },
-        { value: 7, label: 'AA4', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 512 },
+        { value: 7, map: 'LOW_AA4_all', label: 'AA4', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 512 },
         {
           value: 8,
+          map: 'LOW_AA4_core_all', 
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 224
         },
-        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
+        { value: 20, map: 'Custom', label: 'Custom', numOf15mAntennas: 0, numOf13mAntennas: 0, numOfStations: 0 }
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
