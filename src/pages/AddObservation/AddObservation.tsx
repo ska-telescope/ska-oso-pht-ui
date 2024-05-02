@@ -77,7 +77,7 @@ export default function AddObservation() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [observationId, setObservationId] = React.useState(null);
   const [groupObservationId, setGroupObservationId] = React.useState(null);
-  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(null);
+  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
   const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
 
   React.useEffect(() => {
@@ -85,6 +85,7 @@ export default function AddObservation() {
       setGroupObservationLabel(t('groupObservations.new'));
     } else {
       setGroupObservationLabel(groupObservationId);
+      setAddGroupObsDisabled(true);
     }
   }, groupObservationId);
 
@@ -247,7 +248,6 @@ export default function AddObservation() {
             ...getProposal(),
             groupObservations: [...getProposal().groupObservations, newGroupObs]
           });
-          setAddGroupObsDisabled(true);
           break;
         default:
       }
