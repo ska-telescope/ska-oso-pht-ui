@@ -360,6 +360,6 @@ describe('<AddObservation />', () => {
     cy.get('[data-testid="groupObservations"]').click();
     cy.get('[data-value="1"]').click();
     cy.get('[aria-label="groupObservations.label"]').click();
-    cy.get('[data-testid="addButton"]').should('be.disabled')
+    cy.get('[data-testid="addButton"]').should('be.disabled');
   });
 });
