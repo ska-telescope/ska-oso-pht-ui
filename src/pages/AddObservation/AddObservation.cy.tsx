@@ -222,16 +222,16 @@ function verifyGroupObservations() {
 
 function mounting(theTheme) {
   cy.viewport(1500, 1500);
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <BrowserRouter>
-              <AddObservation />
-            </BrowserRouter>
-          </ThemeProvider>
-        </StoreProvider>
-      );
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </ThemeProvider>
+    </StoreProvider>
+  );
 }
 
 describe('<AddObservation />', () => {
