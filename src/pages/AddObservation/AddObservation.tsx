@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -76,7 +77,7 @@ export default function AddObservation() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [observationId, setObservationId] = React.useState(null);
   const [groupObservationId, setGroupObservationId] = React.useState(null);
-  const [addGroupObsButtonDisabled, setAddGroupObsButtonDisabled] = React.useState(null);
+  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(null);
   const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
 
   React.useEffect(() => {
@@ -241,12 +242,12 @@ export default function AddObservation() {
             groupId: generateId(t('groupObservations.idPrefix'), 6),
             observationId: observationId
           };
-          setGroupObservationId(newGroupObs.groupId);
+          setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
           setProposal({
             ...getProposal(),
             groupObservations: [...getProposal().groupObservations, newGroupObs]
           });
-          setAddGroupObsButtonDisabled(true);
+          setAddGroupObsDisabled(true);
           break;
         default:
       }
@@ -256,7 +257,8 @@ export default function AddObservation() {
       <AddButton
         title={title}
         action={() => buttonClicked(groupObservation)}
-        disabled={addGroupObsButtonDisabled}
+        disabled={addGroupObsDisabled}
+        color={ButtonColorTypes.Inherit}
       />
     );
   };
@@ -985,7 +987,7 @@ export default function AddObservation() {
               {groupObservationsField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {buttonGroupObservationsField()}
+              <Grid ml={-20}>{buttonGroupObservationsField()}</Grid>
             </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}

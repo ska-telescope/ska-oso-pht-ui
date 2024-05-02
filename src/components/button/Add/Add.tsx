@@ -8,9 +8,15 @@ interface AddButtonProps {
   title: string;
   action: string | Function;
   disabled?: boolean;
+  color?: ButtonColorTypes;
 }
 
-export default function AddButton({ disabled = false, action, title = '' }: AddButtonProps) {
+export default function AddButton({
+  disabled = false,
+  action,
+  title = '',
+  color = ButtonColorTypes.Secondary
+}: AddButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
@@ -27,7 +33,7 @@ export default function AddButton({ disabled = false, action, title = '' }: AddB
   return (
     <Button
       ariaDescription={`${theTitle}Button`}
-      color={ButtonColorTypes.Secondary}
+      color={color}
       disabled={disabled}
       icon={<AddIcon />}
       label={theTitle}
