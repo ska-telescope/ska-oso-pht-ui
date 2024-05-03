@@ -83,7 +83,13 @@ export default function ObservationPage() {
   const deleteConfirmed = () => {
     const obs1 = elementsO.filter(e => e.id !== currObs.id);
     const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs.id);
-    setProposal({ ...getProposal(), observations: obs1, targetObservation: obs2 });
+    const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs.id);
+    setProposal({
+      ...getProposal(),
+      observations: obs1,
+      targetObservation: obs2,
+      groupObservations: obs3
+    });
 
     const temp = [];
     elementsO.forEach(rec => {
