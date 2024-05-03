@@ -240,8 +240,8 @@ describe('<AddObservation />', () => {
     cy.get('[data-value="1"]').click();
     cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
     cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-    cy.get('[aria-label="groupObservations.label"]').click();
-    cy.get('[data-testid="addButton"][aria-label="groupObservations.label"]').should('be.disabled');
+    cy.get('[aria-describedby="AddButton"]').click();
+    cy.get('[data-testid="addButton"][aria-describedby="AddButton"]').should('be.disabled');
     cy.get('[data-testid="groupObservations"]')
       .find('input')
       .should('be.disabled');
