@@ -196,29 +196,11 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const getObservationGroup = id => {
-    // TODO
-    /*
-    console.log('id', id);
-    if (getProposal().groupObservations.length > 0) {
-      console.log('getProposal().observations', getProposal().observations);
-      console.log('getProposal().groupObservations', getProposal().groupObservations);
-      const group = getProposal().groupObservations.find(
-        elementID => elementID.observationId === id
-      );
-      console.log('group', group);
-      return group?.groupId;
-    }
-    */
-  };
-
   const observationGroupIds = (id: string) => {
     if (getProposal()?.groupObservations?.length > 0) {
-      console.log('getProposal()?.groupObservations', getProposal()?.groupObservations);
       const group: GroupObservation[] = getProposal().groupObservations.filter(
         e => e.observationId === id
       );
-      console.log('group', group);
       return group[0]?.groupId;
     }
     return '/';

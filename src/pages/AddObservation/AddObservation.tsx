@@ -252,7 +252,6 @@ export default function AddObservation() {
   const buttonGroupObservationsField = () => {
     const generateGroupId = () => {
       if (hasGroupObservations()) {
-        console.log('::: has groupObs', getProposal().groupObservations);
         // get latest group id and add + 1
         const groups = getProposal().groupObservations;
         const lastGroup = groups[groups.length - 1];
