@@ -209,17 +209,6 @@ function verifyDetailsField() {
   cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
 }
 
-function verifyGroupObservations() {
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
-  cy.get('[data-testid="groupObservations"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
-  cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-  cy.get('#groupObservationButton')
-    .find('[data-testid="addButton"]')
-    .click();
-}
-
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -237,6 +226,28 @@ describe('<AddObservation />', () => {
     });
   }
 
+  it('Verify the observation can be added to a group observation', () => {
+    cy.viewport(1500, 1500);
+    cy.mount(
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
+    );
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+    cy.get('[data-testid="groupObservations"]').click();
+    cy.get('[data-value="1"]').click();
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+    cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+    cy.get('[aria-label="groupObservations.label"]').click();
+    cy.get('[data-testid="addButton"][aria-label="groupObservations.label"]').should('be.disabled');
+    cy.get('[data-testid="groupObservations"]')
+      .find('input')
+      .should('be.disabled');
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
+  });
+
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
     cy.viewport(1500, 1500);
     cy.mount(
@@ -246,7 +257,6 @@ describe('<AddObservation />', () => {
         </BrowserRouter>
       </StoreProvider>
     );
-    verifyGroupObservations();
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();

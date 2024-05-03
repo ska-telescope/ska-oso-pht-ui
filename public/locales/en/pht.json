@@ -194,10 +194,11 @@
     "help": "FREQUENCY UNITS HELP"
   },
   "groupObservations": {
-    "label": "Group Observations",
+    "label": "Group",
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
-    "none": "None"
+    "none": "None",
+    "idPrefix": "groupObs-"
   },
   "id": {
     "label": "Id"
