@@ -8,7 +8,7 @@ import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, USE_LOCAL_DATA } from '../../utils/constants';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import { Download } from '@mui/icons-material';
 
@@ -65,17 +65,21 @@ export default function SciencePage() {
   };
 
   const downloadPdfToSignedUrl = async () => {
-    try {
-      const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-science.pdf`;
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+    if (USE_LOCAL_DATA) {
+      window.open('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
+    } else {
+      try {
+        const proposal = getProposal();
+        const prsl_id = proposal.id;
+        const selectedFile = `${prsl_id}-science.pdf`;
+        const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Download URL');
-
-      window.open(signedUrl, '_blank');
-    } catch (e) {
-      //TODO: error handling
+        if (proposal.sciencePDF.name.includes(selectedFile)) {
+          window.open(signedUrl, '_blank');
+        }
+      } catch (e) {
+        new Error('Not able to Get Science PDF Download URL');
+      }
     }
   };
 
