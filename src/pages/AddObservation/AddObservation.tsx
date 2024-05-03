@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -44,7 +45,6 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [groupObservation, setGroupObservation] = React.useState(0);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
@@ -74,6 +74,27 @@ export default function AddObservation() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const [groupObservation, setGroupObservation] = React.useState(0);
+  const [groupObservationId, setGroupObservationId] = React.useState(null);
+  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
+  const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
+  const [myObsId, setMyObsId] = React.useState('');
+  const [selectedGroupObservation, setSelectedGroupObservation] = React.useState(null);
+
+  React.useEffect(() => {
+    const newId = generateId(t('addObservation.idPrefix'), 6);
+    setMyObsId(newId);
+  }, []);
+
+  React.useEffect(() => {
+    if (!groupObservationId) {
+      setGroupObservationLabel(t('groupObservations.new'));
+    } else {
+      setGroupObservationLabel(groupObservationId);
+      setAddGroupObsDisabled(true);
+    }
+  }, groupObservationId);
 
   React.useEffect(() => {
     if (!observingBand || !subarrayConfig) {
@@ -190,10 +211,20 @@ export default function AddObservation() {
       const groups: GroupObservation[] = hasGroupObservations()
         ? getProposal()?.groupObservations
         : [];
+
+      // don't display duplicate groupIds
+      const uniqueGroups = groups.reduce((acc, group) => {
+        const existingGroup = acc.find(g => g.groupId === group.groupId);
+        if (!existingGroup) {
+          acc.push(group);
+        }
+        return acc;
+      }, []);
+
       const formatedGroupObs = [
         { label: t('groupObservations.none'), value: 0 },
-        { label: t('groupObservations.new'), value: 1 },
-        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+        { label: newGroupObservationLabel, value: 1 },
+        ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
       return formatedGroupObs as any;
     };
@@ -211,6 +242,7 @@ export default function AddObservation() {
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
+            disabled={groupObservationId}
           />
         </Grid>
       </Grid>
@@ -218,19 +250,38 @@ export default function AddObservation() {
   };
 
   const buttonGroupObservationsField = () => {
-    // const title = t('groupObservations.label');
-    const buttonClicked = async () => {
-      // TODO
-    };
-    const disabled = () => {
-      // TODO
-      return false;
+    const title = t('groupObservations.label');
+
+    const buttonClicked = groupObservationValue => {
+      switch (groupObservationValue) {
+        case 0: // null
+          break;
+        case 1: // new group
+          const newGroupObs: GroupObservation = {
+            groupId: generateId(t('groupObservations.idPrefix'), 6),
+            observationId: myObsId
+          };
+          setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
+          setSelectedGroupObservation(newGroupObs);
+          break;
+        default:
+          // existing group
+          const existingGroup: GroupObservation = {
+            groupId: groupObservationValue,
+            observationId: myObsId
+          };
+          setGroupObservationId(groupObservationValue);
+          setSelectedGroupObservation(existingGroup);
+      }
     };
 
     return (
-      <Grid id="groupObservationButton">
-        <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
-      </Grid>
+      <AddButton
+        title={title}
+        action={() => buttonClicked(groupObservation)}
+        disabled={addGroupObsDisabled}
+        color={ButtonColorTypes.Inherit}
+      />
     );
   };
 
@@ -871,7 +922,7 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       const newObservation = {
-        id: generateId(t('addObservation.idPrefix'), 6),
+        id: myObsId,
         telescope: usedTelescope,
         subarray: subarrayConfig,
         linked: '0',
@@ -900,8 +951,18 @@ export default function AddObservation() {
       });
     };
 
+    const addGroupObservationToProposal = () => {
+      if (selectedGroupObservation) {
+        setProposal({
+          ...getProposal(),
+          groupObservations: [...getProposal().groupObservations, selectedGroupObservation]
+        });
+      }
+    };
+
     const buttonClicked = () => {
       addObservationToProposal();
+      addGroupObservationToProposal();
       navigate(NAV[5]);
     };
 
@@ -955,7 +1016,7 @@ export default function AddObservation() {
               {groupObservationsField()}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {buttonGroupObservationsField()}
+              <Grid ml={-20}>{buttonGroupObservationsField()}</Grid>
             </Grid>
             <Grid item xs={XS_TOP}>
               {observingBandField()}
