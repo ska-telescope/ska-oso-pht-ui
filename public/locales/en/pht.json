@@ -198,7 +198,7 @@
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
     "none": "None",
-    "idPrefix": "groupObs-"
+    "idPrefix": "group-"
   },
   "id": {
     "label": "Id"

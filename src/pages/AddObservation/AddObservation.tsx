@@ -204,9 +204,9 @@ export default function AddObservation() {
     return count;
   }
 
-  const groupObservationsField = () => {
-    const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
+  const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
+  const groupObservationsField = () => {
     const getOptions = () => {
       const groups: GroupObservation[] = hasGroupObservations()
         ? getProposal()?.groupObservations
@@ -250,7 +250,18 @@ export default function AddObservation() {
   };
 
   const buttonGroupObservationsField = () => {
-    // const title = '';
+    const generateGroupId = () => {
+      if (hasGroupObservations()) {
+        console.log('::: has groupObs', getProposal().groupObservations);
+        // get latest group id and add + 1
+        const groups = getProposal().groupObservations;
+        const lastGroup = groups[groups.length - 1];
+        const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
+        return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
+      } else {
+        return `${t('groupObservations.idPrefix')}1`;
+      }
+    };
 
     const buttonClicked = groupObservationValue => {
       switch (groupObservationValue) {
@@ -258,7 +269,7 @@ export default function AddObservation() {
           break;
         case 1: // new group
           const newGroupObs: GroupObservation = {
-            groupId: generateId(t('groupObservations.idPrefix'), 6),
+            groupId: generateGroupId(),
             observationId: myObsId
           };
           setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
