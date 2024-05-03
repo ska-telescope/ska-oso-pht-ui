@@ -9,10 +9,6 @@ async function GetPresignedDownloadUrl(selectedFile) {
   try {
     const URL_PATH = `/download/signedurl/${selectedFile}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    if (result.status != 200) {
-      console.log('request failed');
-      new Error('Not able to Get Technical PDF Download URL');
-    }
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return e.message;
