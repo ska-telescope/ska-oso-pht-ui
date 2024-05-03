@@ -7,12 +7,14 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
 import Proposal from '../../../utils/types/proposal';
-import { GENERAL, Projects } from '../../../utils/constants';
+import { GENERAL, Projects, USE_LOCAL_DATA } from '../../../utils/constants';
 import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Download } from '@mui/icons-material';
+import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -44,6 +46,25 @@ export default function ProposalDisplay({
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const downloadPdf = async (fileType: string) => {
+    if (USE_LOCAL_DATA) {
+      window.open('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
+    } else {
+      try {
+        const proposal = getProposal();
+        const prsl_id = proposal.id;
+        const selectedFile = `${prsl_id}-` + fileType`.pdf`;
+        const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+        if (proposal.sciencePDF.name.includes(selectedFile)) {
+          window.open(signedUrl, '_blank');
+        }
+      } catch (e) {
+        new Error('Not able to Get Science PDF Download URL');
+      }
+    }
   };
 
   const proposalType = () => {
@@ -191,6 +212,11 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().sciencePDF as unknown) as string}
           </Typography>
+          <Download
+            direction="column"
+            testId="sciencefileDownload"
+            onClick={() => downloadPdf('science')}
+          />
         </Grid>
       </Grid>
     </Grid>
@@ -291,6 +317,11 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().technicalPDF as unknown) as string}
           </Typography>
+          <Download
+            direction="column"
+            testId="sciencefileDownload"
+            onClick={() => downloadPdf('technical')}
+          />
         </Grid>
       </Grid>
     </Grid>
