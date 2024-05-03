@@ -16,6 +16,7 @@ import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { PATH } from '../../utils/constants';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import GroupObservation from 'utils/types/groupObservation';
 
 const PAGE = 5;
 const LABEL_WIDTH = 6;
@@ -195,12 +196,50 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  const getObservationGroup = id => {
+    // TODO
+    /*
+    console.log('id', id);
+    if (getProposal().groupObservations.length > 0) {
+      console.log('getProposal().observations', getProposal().observations);
+      console.log('getProposal().groupObservations', getProposal().groupObservations);
+      const group = getProposal().groupObservations.find(
+        elementID => elementID.observationId === id
+      );
+      console.log('group', group);
+      return group?.groupId;
+    }
+    */
+  };
+
+  const observationGroupIds = (id: string) => {
+    if (getProposal()?.groupObservations?.length > 0) {
+      console.log('getProposal()?.groupObservations', getProposal()?.groupObservations);
+      const group: GroupObservation[] = getProposal().groupObservations.filter(
+        e => e.observationId === id
+      );
+      console.log('group', group);
+      return group[0]?.groupId;
+    }
+    return '/';
+  };
+
   const columns = [
     {
       field: 'id',
       headerName: t('observations.id'),
       flex: 0.75,
       disableClickEventBubbling: true
+    },
+    {
+      // field: getObservationGroup(),
+      headerName: t('observations.group'),
+      flex: 0.75,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        // return getObservationGroup(e.row.id);
+        return observationGroupIds((e.row.id as unknown) as string);
+      }
     },
     {
       field: 'telescope',

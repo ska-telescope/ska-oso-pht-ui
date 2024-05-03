@@ -272,7 +272,7 @@ export default function AddObservation() {
             groupId: generateGroupId(),
             observationId: myObsId
           };
-          setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
+          setGroupObservationId(newGroupObs.groupId); // to display new ID in dropdown
           setSelectedGroupObservation(newGroupObs);
           break;
         default:

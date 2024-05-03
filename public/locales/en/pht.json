@@ -273,7 +273,8 @@
     "dp": {
       "label": "Observation",
       "help": "OBSERVATION HELP"
-    }
+    },
+    "group": "Group"
   },
   "observationType": {
     "label": "Observation Type",
