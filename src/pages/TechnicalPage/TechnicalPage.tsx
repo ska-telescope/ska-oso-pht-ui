@@ -73,15 +73,11 @@ export default function TechnicalPage() {
         const prsl_id = proposal.id;
         const selectedFile = `${prsl_id}-technical.pdf`;
         const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-        console.log('BEFORE!');
 
         if (proposal.technicalPDF.name.includes(selectedFile)) {
-          console.log('HERE!!');
           window.open(signedUrl, '_blank');
         }
       } catch (e) {
-        console.log('HERE!!!');
-        //TODO: error handling
         new Error('Not able to Get Technical PDF Download URL');
       }
     }
