@@ -45,7 +45,6 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [groupObservation, setGroupObservation] = React.useState(0);
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
@@ -75,10 +74,13 @@ export default function AddObservation() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const [groupObservation, setGroupObservation] = React.useState(0);
   const [groupObservationId, setGroupObservationId] = React.useState(null);
   const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
   const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
   const [myObsId, setMyObsId] = React.useState('');
+  const [selectedGroupObservation, setSelectedGroupObservation] = React.useState(null);
 
   React.useEffect(() => {
     const newId = generateId(t('addObservation.idPrefix'), 6);
@@ -250,10 +252,7 @@ export default function AddObservation() {
             observationId: myObsId
           };
           setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
-          setProposal({
-            ...getProposal(),
-            groupObservations: [...getProposal().groupObservations, newGroupObs]
-          });
+          setSelectedGroupObservation(newGroupObs);
           break;
         default:
           // existing group
@@ -262,10 +261,7 @@ export default function AddObservation() {
             observationId: myObsId
           };
           setGroupObservationId(groupObservationValue);
-          setProposal({
-            ...getProposal(),
-            groupObservations: [...getProposal().groupObservations, existingGroup]
-          });
+          setSelectedGroupObservation(existingGroup);
       }
     };
 
@@ -945,8 +941,18 @@ export default function AddObservation() {
       });
     };
 
+    const addGroupObservationToProposal = () => {
+      if (selectedGroupObservation) {
+        setProposal({
+          ...getProposal(),
+          groupObservations: [...getProposal().groupObservations, selectedGroupObservation]
+        });
+      }
+    };
+
     const buttonClicked = () => {
       addObservationToProposal();
+      addGroupObservationToProposal();
       navigate(NAV[5]);
     };
 
