@@ -956,22 +956,15 @@ export default function AddObservation() {
       };
       setProposal({
         ...getProposal(),
-        observations: [...getProposal().observations, newObservation]
+        observations: [...getProposal().observations, newObservation],
+        groupObservations: selectedGroupObservation
+          ? [...getProposal().groupObservations, selectedGroupObservation]
+          : getProposal().groupObservations
       });
-    };
-
-    const addGroupObservationToProposal = () => {
-      if (selectedGroupObservation) {
-        setProposal({
-          ...getProposal(),
-          groupObservations: [...getProposal().groupObservations, selectedGroupObservation]
-        });
-      }
     };
 
     const buttonClicked = () => {
       addObservationToProposal();
-      addGroupObservationToProposal();
       navigate(NAV[5]);
     };
 
