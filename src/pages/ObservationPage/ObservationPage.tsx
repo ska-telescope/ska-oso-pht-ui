@@ -197,7 +197,10 @@ export default function ObservationPage() {
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {
-    if (getProposal()?.groupObservations?.length > 0) {
+    if (
+      getProposal()?.groupObservations &&
+      getProposal()?.groupObservations.some(e => e.observationId === id)
+    ) {
       const group: GroupObservation[] = getProposal().groupObservations.filter(
         e => e.observationId === id
       );
