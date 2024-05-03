@@ -78,7 +78,6 @@ export default function AddObservation() {
   const [groupObservationId, setGroupObservationId] = React.useState(null);
   const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
   const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
-  // const myObsId = generateId(t('addObservation.idPrefix'), 6);
   const [myObsId, setMyObsId] = React.useState('');
 
   React.useEffect(() => {
