@@ -211,10 +211,20 @@ export default function AddObservation() {
       const groups: GroupObservation[] = hasGroupObservations()
         ? getProposal()?.groupObservations
         : [];
+
+      // don't display duplicate groupIds
+      const uniqueGroups = groups.reduce((acc, group) => {
+        const existingGroup = acc.find(g => g.groupId === group.groupId);
+        if (!existingGroup) {
+          acc.push(group);
+        }
+        return acc;
+      }, []);
+
       const formatedGroupObs = [
         { label: t('groupObservations.none'), value: 0 },
         { label: newGroupObservationLabel, value: 1 },
-        ...groups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+        ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
       return formatedGroupObs as any;
     };
