@@ -198,7 +198,7 @@
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
     "none": "None",
-    "idPrefix": "groupObs-"
+    "idPrefix": "group-"
   },
   "id": {
     "label": "Id"
@@ -273,7 +273,8 @@
     "dp": {
       "label": "Observation",
       "help": "OBSERVATION HELP"
-    }
+    },
+    "group": "Group"
   },
   "observationType": {
     "label": "Observation Type",
