@@ -204,9 +204,9 @@ export default function AddObservation() {
     return count;
   }
 
-  const groupObservationsField = () => {
-    const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
+  const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
+  const groupObservationsField = () => {
     const getOptions = () => {
       const groups: GroupObservation[] = hasGroupObservations()
         ? getProposal()?.groupObservations
@@ -250,7 +250,17 @@ export default function AddObservation() {
   };
 
   const buttonGroupObservationsField = () => {
-    const title = t('groupObservations.label');
+    const generateGroupId = () => {
+      if (hasGroupObservations()) {
+        // get latest group id and add + 1
+        const groups = getProposal().groupObservations;
+        const lastGroup = groups[groups.length - 1];
+        const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
+        return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
+      } else {
+        return `${t('groupObservations.idPrefix')}1`;
+      }
+    };
 
     const buttonClicked = groupObservationValue => {
       switch (groupObservationValue) {
@@ -258,10 +268,10 @@ export default function AddObservation() {
           break;
         case 1: // new group
           const newGroupObs: GroupObservation = {
-            groupId: generateId(t('groupObservations.idPrefix'), 6),
+            groupId: generateGroupId(),
             observationId: myObsId
           };
-          setGroupObservationId(newGroupObs.groupId); // to use to display new ID in dropdown
+          setGroupObservationId(newGroupObs.groupId); // to display new ID in dropdown
           setSelectedGroupObservation(newGroupObs);
           break;
         default:
@@ -277,7 +287,6 @@ export default function AddObservation() {
 
     return (
       <AddButton
-        title={title}
         action={() => buttonClicked(groupObservation)}
         disabled={addGroupObsDisabled}
         color={ButtonColorTypes.Inherit}
@@ -947,22 +956,15 @@ export default function AddObservation() {
       };
       setProposal({
         ...getProposal(),
-        observations: [...getProposal().observations, newObservation]
+        observations: [...getProposal().observations, newObservation],
+        groupObservations: selectedGroupObservation
+          ? [...getProposal().groupObservations, selectedGroupObservation]
+          : getProposal().groupObservations
       });
-    };
-
-    const addGroupObservationToProposal = () => {
-      if (selectedGroupObservation) {
-        setProposal({
-          ...getProposal(),
-          groupObservations: [...getProposal().groupObservations, selectedGroupObservation]
-        });
-      }
     };
 
     const buttonClicked = () => {
       addObservationToProposal();
-      addGroupObservationToProposal();
       navigate(NAV[5]);
     };
 
@@ -988,113 +990,125 @@ export default function AddObservation() {
     );
   };
 
-  return (
-    <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-      <Grid item>
-        <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
-      </Grid>
+  // center '+' icon on addGroup button
+  // TODO: do this the MUI way
+  const styles = `
+    .buttonGroupContainer .css-1d6wzja-MuiButton-startIcon{
+      margin-left: 0!important;
+      margin-right: 0!important;
+    }
+  `;
 
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-        spacing={1}
-      >
-        <Grid item xs={9}>
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            gap={1}
-            spacing={1}
-            pb={3}
-            justifyContent="space-evenly"
-          >
-            <Grid item xs={XS_TOP}>
-              {groupObservationsField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              <Grid ml={-20}>{buttonGroupObservationsField()}</Grid>
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {observingBandField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {arrayField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {subArrayField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {isLow() ? NumOfStationsField() : AntennasFields()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {elevationField()}
-            </Grid>
-            <Grid item xs={XS_TOP}>
-              {weatherField()}
-            </Grid>
-          </Grid>
-          <Card variant="outlined">
-            <CardContent>
-              <Grid
-                container
-                direction="row"
-                alignItems="center"
-                gap={1}
-                justifyContent="space-evenly"
-              >
-                <Grid item xs={XS_BOTTOM}>
-                  {observationTypeField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {suppliedField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {centralFrequencyField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {isContinuum() && continuumBandwidthField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {bandwidthField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {spectralResolutionField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {spectralAveragingField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {effectiveResolutionField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {taperingField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {SubBandsField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {imageWeightingField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {imageWeighting === 2 && robustField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {detailsField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}></Grid>
+  return (
+    <>
+      <style>{styles}</style>
+      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
+        <Grid item>
+          <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
+        </Grid>
+
+        <Grid
+          p={1}
+          container
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-around"
+          spacing={1}
+        >
+          <Grid item xs={9}>
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              gap={1}
+              spacing={1}
+              pb={3}
+              justifyContent="space-evenly"
+            >
+              <Grid item xs={XS_TOP}>
+                {groupObservationsField()}
               </Grid>
-            </CardContent>
-          </Card>
+              <Grid item xs={XS_TOP} className="buttonGroupContainer">
+                <Grid ml={-15}>{buttonGroupObservationsField()}</Grid>
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {observingBandField()}
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {arrayField()}
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {subArrayField()}
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {isLow() ? NumOfStationsField() : AntennasFields()}
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {elevationField()}
+              </Grid>
+              <Grid item xs={XS_TOP}>
+                {weatherField()}
+              </Grid>
+            </Grid>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  gap={1}
+                  justifyContent="space-evenly"
+                >
+                  <Grid item xs={XS_BOTTOM}>
+                    {observationTypeField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {suppliedField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {centralFrequencyField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {isContinuum() && continuumBandwidthField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {bandwidthField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {spectralResolutionField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {spectralAveragingField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {effectiveResolutionField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {taperingField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {SubBandsField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {imageWeightingField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {imageWeighting === 2 && robustField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}>
+                    {detailsField()}
+                  </Grid>
+                  <Grid item xs={XS_BOTTOM}></Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={3}>
+            <HelpPanel />
+          </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <HelpPanel />
-        </Grid>
+        {pageFooter()}
       </Grid>
-      {pageFooter()}
-    </Grid>
+    </>
   );
 }

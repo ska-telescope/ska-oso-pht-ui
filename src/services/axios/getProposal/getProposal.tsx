@@ -87,6 +87,19 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   return results;
 };
 
+const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    if (inValue[i].groupId) {
+      results.push({
+        observationId: i + 1,
+        groupId: inValue[i].groupId
+      });
+    }
+  }
+  return results;
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   return {
     id: inRec.prsl_id,
@@ -102,7 +115,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targetOption: 1,
     targets: getTargets(inRec.proposal_info.targets),
     observations: getObservations(inRec.proposal_info.science_programmes),
-    groupObservations: [],
+    groupObservations: getGroupObservations(inRec.proposal_info.science_programmes),
     targetObservation: [],
     technicalPDF: null,
     technicalLoadStatus: 0,

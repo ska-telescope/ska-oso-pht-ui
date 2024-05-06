@@ -56,7 +56,8 @@ const MockProposal: ProposalBackend = {
         array: 'MID',
         subarray: '1',
         linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
+        observation_type: 'Continuum',
+        groupId: 'group-1'
       },
       {
         array: 'MID',
