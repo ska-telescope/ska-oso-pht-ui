@@ -52,7 +52,7 @@ export default function ProposalDisplay({
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + fileType`.pdf`;
+      const selectedFile = `${prsl_id}-` + fileType + `.pdf`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (proposal.sciencePDF.name.includes(selectedFile)) {
