@@ -52,7 +52,6 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
 
   return fetchSensCalc(observation, target)
     .then(output => {
-      console.log('TREVOR Results', output);
       if ('error' in output) {
         let err = SENSCALC_ERROR;
         err.title = target.name;

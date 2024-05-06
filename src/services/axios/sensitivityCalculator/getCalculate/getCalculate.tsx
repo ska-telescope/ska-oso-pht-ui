@@ -26,6 +26,13 @@ async function GetCalculate(observation: Observation) {
     observation.telescope === TELESCOPE_LOW_NUM
       ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
       : '';
+
+    const getSubArray = () => {
+      const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+      const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
+      return arrConfig.map;
+    }
+
   /*********************************************************** MID *********************************************************/
 
   interface ModeSpecificParametersMid {
@@ -45,7 +52,6 @@ async function GetCalculate(observation: Observation) {
       mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
     }
 
-    const arrConfig = OBSERVATION.array[0].subarray.find(obj => obj.value === observation.subarray);
     const weighting = OBSERVATION.ImageWeighting.find(
       obj => obj.value === observation.imageWeighting
     );
@@ -61,7 +67,7 @@ async function GetCalculate(observation: Observation) {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
-      array_configuration: arrConfig?.label,
+      array_configuration: getSubArray(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       frequency: observation.centralFrequency,
@@ -85,12 +91,9 @@ async function GetCalculate(observation: Observation) {
     total_bandwidth_khz?: string;
   }
 
-  // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
+  // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
 
   function mapQueryCalculateLow(): URLSearchParams {
-    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    console.log('CALC : arrConfig', observation.telescope, arrConfig);
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
@@ -105,13 +108,11 @@ async function GetCalculate(observation: Observation) {
       //TODO check value mapping, does it need conversion?
       // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
     }
-    const subArray = OBSERVATION.array[1].subarray.find(obj => obj.value === observation.subarray)
-      ?.label;
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
     const params = new URLSearchParams({
-      subarray_configuration: sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
         ?.toString(),
@@ -145,7 +146,6 @@ async function GetCalculate(observation: Observation) {
   try {
     const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
     const result = await axios.get(path, AXIOS_CONFIG);
-    console.log('TREVOR EXECUTE', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {

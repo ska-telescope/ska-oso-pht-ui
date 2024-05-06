@@ -179,7 +179,6 @@ export default function ObservationPage() {
         sensCalc: null
       }))
     );
-    console.log('getProposal().observations', getProposal().observations);
     setElementsO(
       getProposal().observations.map(rec => ({
         id: rec.id,

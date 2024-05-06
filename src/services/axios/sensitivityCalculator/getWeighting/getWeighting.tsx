@@ -31,12 +31,16 @@ async function GetWeighting(observation: Observation, inMode: number) {
     observation.telescope === TELESCOPE_LOW_NUM
       ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
       : '';
+      
+  const getSubArray = () => {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig.map;
+  }
 
   /*********************************************************** MID *********************************************************/
 
   function mapQueryMidWeighting(): URLSearchParams {
-    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     const weighting = OBSERVATION.ImageWeighting.find(
       obj => obj.value === observation.imageWeighting
     );
@@ -46,7 +50,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       zoom_frequencies: observation.centralFrequency?.toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
-      array_configuration: arrConfig?.map,
+      subarray_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
       resolution: '0',
       taper: observation.tapering?.toString()
@@ -57,14 +61,11 @@ async function GetWeighting(observation: Observation, inMode: number) {
   /*********************************************************** LOW *********************************************************/
 
   function mapQueryLowWeighting(): URLSearchParams {
-    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    console.log('WEIGH : arrConfig', observation.telescope, arrConfig);
     const params = new URLSearchParams({
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting
       )?.label.toLowerCase(),
-      subarray_configuration: arrConfig.map, // sensCalHelpers.format.getLowSubarrayType(subArray, 'LOW'), // 'for example: LOW_AA4_all',
+      subarray_configuration: getSubArray(),
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.centralFrequency?.toString()
     });
@@ -95,7 +96,6 @@ async function GetWeighting(observation: Observation, inMode: number) {
       `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
       AXIOS_CONFIG
     );
-    console.log('TREVOR EXECUTE', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {
