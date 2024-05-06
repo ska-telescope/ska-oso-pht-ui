@@ -209,6 +209,7 @@ function verifyDetailsField() {
   cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
 }
 
+/* TODO : Not used
 function verifyGroupObservations() {
   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
   cy.get('[data-testid="groupObservations"]').click();
@@ -219,6 +220,7 @@ function verifyGroupObservations() {
     .find('[data-testid="addButton"]')
     .click();
 }
+*/
 
 function mounting(theTheme: any) {
   cy.viewport(1500, 1500);
@@ -243,7 +245,12 @@ describe('<AddObservation />', () => {
 
   it('Verify the observation can be added to a group observation', () => {
     mounting(THEME_LIGHT);
-    verifyGroupObservations();
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+    cy.get('[data-testid="groupObservations"]').click();
+    cy.get('[data-value="1"]').click();
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+    cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+    cy.get('#groupObservationButton').find('[data-testid="addButton"]').click();
     cy.get('[data-testid="addButton"][aria-describedby="AddButton"]').should('be.disabled');
     cy.get('[data-testid="groupObservations"]')
       .find('input')
