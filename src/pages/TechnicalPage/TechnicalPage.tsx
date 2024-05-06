@@ -9,7 +9,7 @@ import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, USE_LOCAL_DATA } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Download } from '@mui/icons-material';
 
 const PAGE = 6;

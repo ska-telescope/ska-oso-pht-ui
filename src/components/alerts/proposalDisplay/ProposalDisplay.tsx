@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/cancel/CancelButton';
 import ConfirmButton from '../../button/confirm/ConfirmButton';
 import Proposal from '../../../utils/types/proposal';
-import { GENERAL, Projects, USE_LOCAL_DATA } from '../../../utils/constants';
+import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
