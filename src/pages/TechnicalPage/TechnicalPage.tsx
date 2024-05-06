@@ -70,7 +70,8 @@ export default function TechnicalPage() {
       const prsl_id = proposal.id;
       const selectedFile = `${prsl_id}-` + t('pdfDownload.technical') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-      if (proposal.technicalPDF.name.includes(selectedFile)) {
+
+      if (signedUrl == t('pdfDownload.sampleData') || signedUrl == selectedFile) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {

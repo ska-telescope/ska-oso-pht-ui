@@ -55,9 +55,7 @@ export default function ProposalDisplay({
       const selectedFile = `${prsl_id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (proposal.sciencePDF.name.includes(selectedFile)) {
-        window.open(signedUrl, '_blank');
-      } else if (proposal.technicalPDF.name.includes(selectedFile)) {
+      if (signedUrl == t('pdfDownload.sampleData') || signedUrl == selectedFile) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {

@@ -193,7 +193,8 @@
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
     "science": "science",
-    "technical": "technical"
+    "technical": "technical",
+    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "firstName": {
     "label": "First Name",
