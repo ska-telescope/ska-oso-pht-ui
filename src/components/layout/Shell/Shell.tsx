@@ -1,6 +1,7 @@
 import React from 'react';
 import PageBanner from '../pageBanner/PageBanner';
 import PageFooter from '../pageFooter/PageFooter';
+import { HashLink } from 'react-router-hash-link';
 
 interface ShellProps {
   page: number;
@@ -13,6 +14,7 @@ export default function Shell({ page, children }: ShellProps) {
       <PageBanner pageNo={page} />
       {children}
       <PageFooter pageNo={page} />
+      <HashLink smooth to={page} />
     </>
   );
 }
