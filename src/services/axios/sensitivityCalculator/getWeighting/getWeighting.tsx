@@ -59,6 +59,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
   function mapQueryLowWeighting(): URLSearchParams {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
+    console.log('WEIGH : arrConfig', observation.telescope, arrConfig);
     const params = new URLSearchParams({
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting

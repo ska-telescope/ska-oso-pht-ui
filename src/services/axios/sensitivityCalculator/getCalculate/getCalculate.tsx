@@ -85,9 +85,12 @@ async function GetCalculate(observation: Observation) {
     total_bandwidth_khz?: string;
   }
 
-  // TODO double check obseration parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
+  // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tappering always 1? -> keys mapping?)
 
   function mapQueryCalculateLow(): URLSearchParams {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
+    console.log('CALC : arrConfig', observation.telescope, arrConfig);
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
