@@ -2010,20 +2010,6 @@
     csstype "^3.1.3"
     prop-types "^15.8.1"
 
-"@mui/system@^5.15.15":
-  version "5.15.15"
-  resolved "https://registry.yarnpkg.com/@mui/system/-/system-5.15.15.tgz#658771b200ce3c4a0f28e58169f02e5e718d1c53"
-  integrity sha512-aulox6N1dnu5PABsfxVGOZffDVmlxPOVgj56HrUnJE8MCSh8lOvvkd47cebIVQQYAjpwieXQXiDPj5pwM40jTQ==
-  dependencies:
-    "@babel/runtime" "^7.23.9"
-    "@mui/private-theming" "^5.15.14"
-    "@mui/styled-engine" "^5.15.14"
-    "@mui/types" "^7.2.14"
-    "@mui/utils" "^5.15.14"
-    clsx "^2.1.0"
-    csstype "^3.1.3"
-    prop-types "^15.8.1"
-
 "@mui/types@^7.2.14":
   version "7.2.14"
   resolved "https://registry.yarnpkg.com/@mui/types/-/types-7.2.14.tgz#8a02ac129b70f3d82f2f9b76ded2c8d48e3fc8c9"
@@ -2457,10 +2443,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^1.0.25":
-  version "1.0.25"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.25.tgz#08430d061cee31a6ebdf06978e452894b3d22ba5"
-  integrity sha512-yUcYibY/YUmICjM9ChoaD1Qgmfl9Qf68IBa+aphV4/mRHIQMz/DHLVu2g7DExy2Qud8WyRCJ0mFU9p4OI0QP4Q==
+"@ska-telescope/ska-gui-components@^1.0.26":
+  version "1.0.26"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.26.tgz#24a793ff06f52d6992b78cca90702305af7be5f2"
+  integrity sha512-PlB+F4O6vy0MYsd2nFjOdIQqFuFZqv+g+JNmrC5mMCADIfcFEWmVH3y3ahfvqGryWVBXz2w1SVkrK8Q+KUP+GQ==
   dependencies:
     "@mui/core" "^5.0.0-alpha.54"
     "@mui/icons-material" "^5.15.15"
