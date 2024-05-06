@@ -65,21 +65,16 @@ export default function TechnicalPage() {
   };
 
   const downloadPdfToSignedUrl = async () => {
-    if (USE_LOCAL_DATA) {
-      window.open('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
-    } else {
-      try {
-        const proposal = getProposal();
-        const prsl_id = proposal.id;
-        const selectedFile = `${prsl_id}-technical.pdf`;
-        const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-
-        if (proposal.technicalPDF.name.includes(selectedFile)) {
-          window.open(signedUrl, '_blank');
-        }
-      } catch (e) {
-        new Error('Not able to Get Technical PDF Download URL');
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-technical.pdf`;
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      if (proposal.technicalPDF.name.includes(selectedFile)) {
+        window.open(signedUrl, '_blank');
       }
+    } catch (e) {
+      new Error('Not able to Get Technical PDF Download URL');
     }
   };
 

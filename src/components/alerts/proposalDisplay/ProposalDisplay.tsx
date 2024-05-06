@@ -49,21 +49,19 @@ export default function ProposalDisplay({
   };
 
   const downloadPdf = async (fileType: string) => {
-    if (USE_LOCAL_DATA) {
-      window.open('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
-    } else {
-      try {
-        const proposal = getProposal();
-        const prsl_id = proposal.id;
-        const selectedFile = `${prsl_id}-` + fileType`.pdf`;
-        const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-` + fileType`.pdf`;
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-        if (proposal.sciencePDF.name.includes(selectedFile)) {
-          window.open(signedUrl, '_blank');
-        }
-      } catch (e) {
-        new Error('Not able to Get Science PDF Download URL');
+      if (proposal.sciencePDF.name.includes(selectedFile)) {
+        window.open(signedUrl, '_blank');
+      } else if (proposal.technicalPDF.name.includes(selectedFile)) {
+        window.open(signedUrl, '_blank');
       }
+    } catch (e) {
+      new Error('Not able to Get Science PDF Download URL');
     }
   };
 

@@ -3,7 +3,7 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 
 async function GetPresignedDownloadUrl(selectedFile) {
   if (USE_LOCAL_DATA) {
-    return 'https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf';
+    return window.open('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
   }
 
   try {
