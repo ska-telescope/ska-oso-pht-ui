@@ -68,14 +68,14 @@ export default function SciencePage() {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-science.pdf`;
+      const selectedFile = `${prsl_id}-` + t('pdfDownload.science') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (proposal.sciencePDF.name.includes(selectedFile)) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
-      new Error('Not able to Get Science PDF Download URL');
+      new Error(t('pdfDownload.error'));
     }
   };
 

@@ -52,7 +52,7 @@ export default function ProposalDisplay({
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + fileType + `.pdf`;
+      const selectedFile = `${prsl_id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (proposal.sciencePDF.name.includes(selectedFile)) {
@@ -61,7 +61,7 @@ export default function ProposalDisplay({
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
-      new Error('Not able to Get Science PDF Download URL');
+      new Error(t('pdfDownload.error'));
     }
   };
 

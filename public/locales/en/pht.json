@@ -186,6 +186,15 @@
   "fileName": {
     "label": "File name"
   },
+
+  "fileType": {
+    "pdf": ".pdf"
+  },
+  "pdfDownload": {
+    "error": "Not able to Get PDF Download URL",
+    "science": "science",
+    "technical": "technical"
+  },
   "firstName": {
     "label": "First Name",
     "help": "FIRST NAME HELP"
