@@ -220,7 +220,7 @@ function verifyGroupObservations() {
     .click();
 }
 
-function mounting(theTheme) {
+function mounting(theTheme: any) {
   cy.viewport(1500, 1500);
   cy.mount(
     <StoreProvider>
@@ -241,9 +241,18 @@ describe('<AddObservation />', () => {
     });
   }
 
-  it('Verify user input available for observation type Continuum and Array Config MID', () => {
+  it('Verify the observation can be added to a group observation', () => {
     mounting(THEME_LIGHT);
     verifyGroupObservations();
+    cy.get('[data-testid="addButton"][aria-describedby="AddButton"]').should('be.disabled');
+    cy.get('[data-testid="groupObservations"]')
+      .find('input')
+      .should('be.disabled');
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
+  });
+
+  it('Verify user input available for observation type Continuum and Array Config MID', () => {
+    mounting(THEME_LIGHT);
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();

@@ -56,10 +56,10 @@
   },
   "abstract": {
     "label": "Abstract",
-    "help": "ABSTRACT HELP",
-    "helper": "Please enter your abstract information",
+    "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "helper": "Please enter your abstract information.",
     "maxChar": "2300",
-    "maxWord": "200",
+    "maxWord": "250",
     "minDisplayRows": "5"
   },
   "actions": {
@@ -72,7 +72,7 @@
   "addProposal": {
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
-    "toolTip": "",
+    "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal"
   },
   "addTarget": {
@@ -84,17 +84,17 @@
   "arrayConfiguration": {
     "label": "Array Configuration",
     "short": "Array",
-    "help": "Array HELP",
+    "help": "Specify an array a configuration. Currently the SKA has two arrays which is the MID and LOW.",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
   },
   "bandWidth": {
-    "help": "BANDWIDTH HELP",
+    "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
     "label": "Band Width"
   },
   "centralFrequency": {
-    "help": "CENTRAL FREQUENCY HELP",
+    "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
       "lower": 0,
@@ -194,10 +194,11 @@
     "help": "FREQUENCY UNITS HELP"
   },
   "groupObservations": {
-    "label": "Group Observations",
+    "label": "Group",
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
-    "none": "None"
+    "none": "None",
+    "idPrefix": "group-"
   },
   "id": {
     "label": "Id"
@@ -274,7 +275,8 @@
     "dp": {
       "label": "Observation",
       "help": "OBSERVATION HELP"
-    }
+    },
+    "group": "Group"
   },
   "observationType": {
     "label": "Observation Type",
@@ -347,7 +349,8 @@
     "submitted": "Submitted",
     "accepted": "Accepted",
     "withdrawn": "Withdrawn",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "under review": "Under Review"
   },
   "proposalType": {
     "label": "Proposal Types",
@@ -402,11 +405,11 @@
     "13": "Transients",
     "14": "VLBI",
     "label": "Science Category",
-    "help": "CATEGORY HELP"
+    "help": "CATEGORY: Select a category that best describes your proposal."
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
-    "help": "SUB-CATEGORY HELP",
+    "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
     "1": "Not specified"
   },
   "searchForMember": {
@@ -415,10 +418,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "SKY DIRECTION 1 VALUE HELP"
+        "value": "RIGHT ASCENSION:"
       },
       "2": {
-        "value": "SKY DIRECTION 2 VALUE HELP"
+        "value": "dECLINATION: "
       }
     },
     "label": {
@@ -455,8 +458,7 @@
   "skyUnits": {
     "help": "REFERENCE COORDINATE HELP",
     "label": "Reference Coordinate",
-    "0": "Equatorial",
-    "1": "Galactic"
+    "0": "Equatorial"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"
@@ -587,7 +589,7 @@
   "title": {
     "label": "Title",
     "maxChar": "939",
-    "maxWord": "20",
+    "maxWord": "50",
     "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
     "helper": "Please enter your title information"
   },
@@ -650,25 +652,25 @@
     },
     "5": {
       "title": "Observation",
-      "desc": "OBSERVATION. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "6": {
       "title": "Technical",
-      "desc": "TECHNICAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "title": "SDP",
-      "desc": "DATA. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
       "title": "SRC Net",
-      "desc": "SRC Net. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "9": {
       "title": "Title",
-      "desc": "Provide a title of your observation"
+      "desc": "Provide a title of your proposal."
     },
     "10": {
       "title": "Observation Setup",
@@ -676,8 +678,8 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "List of proposal(s) where you are either the Principal Investigator or a Co-Investigator. It provides key details such as proposal id, proposal category, cycle, title, principal investigator, status, last updated and a set of actions.",
-      "empty": "THERE ARE NO PROPOSALS AVAILABLE"
+      "desc": "A comprehensive list of proposals in which you hold the role of either Principal Investigator or Co-Investigator. The list includes essential details such as proposal ID, category, cycle, title, principal investigator, status, last updated date, and available actions.",
+      "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
       "title": "SKAO Cycle",
@@ -685,7 +687,7 @@
     },
     "13": {
       "title": "Data Product",
-      "desc": "ADD DATA PRODUCT. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Add a data product(s) to your proposal. You can select more than 1 data products for an observation set."
     }
   },
   "label": {

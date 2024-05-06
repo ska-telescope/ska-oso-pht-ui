@@ -8,4 +8,5 @@ export type ScienceProgrammeBackend = {
   integration_time: number;
   integration_time_units: string;
   central_frequency: number;
+  groupId?: string;
 };

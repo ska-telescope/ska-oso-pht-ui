@@ -1,6 +1,6 @@
 type GroupObservation = {
-  observationId: number;
-  groupId: number;
+  observationId: string;
+  groupId: string;
 };
 
 export default GroupObservation;

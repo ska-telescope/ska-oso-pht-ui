@@ -61,7 +61,8 @@ const MockProposal: ProposalBackend = {
         observing_band: 1,
         integration_time: 600,
         integration_time_units: 'd',
-        central_frequency: 0
+        central_frequency: 0,
+        groupId: 'group-1'
       },
       {
         array: 'MID',

@@ -16,6 +16,7 @@ import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { PATH } from '../../utils/constants';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import GroupObservation from 'utils/types/groupObservation';
 
 const PAGE = 5;
 const LABEL_WIDTH = 6;
@@ -82,7 +83,13 @@ export default function ObservationPage() {
   const deleteConfirmed = () => {
     const obs1 = elementsO.filter(e => e.id !== currObs.id);
     const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs.id);
-    setProposal({ ...getProposal(), observations: obs1, targetObservation: obs2 });
+    const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs.id);
+    setProposal({
+      ...getProposal(),
+      observations: obs1,
+      targetObservation: obs2,
+      groupObservations: obs3
+    });
 
     const temp = [];
     elementsO.forEach(rec => {
@@ -172,6 +179,7 @@ export default function ObservationPage() {
         sensCalc: null
       }))
     );
+    console.log('getProposal().observations', getProposal().observations);
     setElementsO(
       getProposal().observations.map(rec => ({
         id: rec.id,
@@ -195,12 +203,35 @@ export default function ObservationPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  const observationGroupIds = (id: string) => {
+    if (
+      getProposal()?.groupObservations &&
+      getProposal()?.groupObservations.some(e => e.observationId === id)
+    ) {
+      const group: GroupObservation[] = getProposal().groupObservations.filter(
+        e => e.observationId === id
+      );
+      return group[0]?.groupId;
+    }
+    return '/';
+  };
+
   const columns = [
     {
       field: 'id',
       headerName: t('observations.id'),
       flex: 0.75,
       disableClickEventBubbling: true
+    },
+    {
+      // field: getObservationGroup(),
+      headerName: t('observations.group'),
+      flex: 0.75,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { id: number } }) => {
+        // return getObservationGroup(e.row.id);
+        return observationGroupIds((e.row.id as unknown) as string);
+      }
     },
     {
       field: 'telescope',

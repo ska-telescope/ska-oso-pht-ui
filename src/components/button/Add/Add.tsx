@@ -5,7 +5,7 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import AddIcon from '@mui/icons-material/Add';
 
 interface AddButtonProps {
-  title: string;
+  title?: string;
   action: string | Function;
   disabled?: boolean;
   color?: ButtonColorTypes;
@@ -28,7 +28,7 @@ export default function AddButton({
     }
   };
 
-  const theTitle = t(title);
+  const theTitle = t(title ? title : 'button.add');
 
   return (
     <Button
