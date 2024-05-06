@@ -27,11 +27,11 @@ async function GetCalculate(observation: Observation) {
       ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
       : '';
 
-    const getSubArray = () => {
-      const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
-      const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-      return arrConfig.map;
-    }
+  const getSubArray = () => {
+    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig.map;
+  };
 
   /*********************************************************** MID *********************************************************/
 

@@ -31,12 +31,12 @@ async function GetWeighting(observation: Observation, inMode: number) {
     observation.telescope === TELESCOPE_LOW_NUM
       ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
       : '';
-      
+
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     return arrConfig.map;
-  }
+  };
 
   /*********************************************************** MID *********************************************************/
 

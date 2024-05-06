@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Download } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
@@ -10,7 +11,6 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import { Download } from '@mui/icons-material';
 
 const PAGE = 3;
 
@@ -71,7 +71,7 @@ export default function SciencePage() {
       const selectedFile = `${prsl_id}-` + t('pdfDownload.science') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl == t('pdfDownload.sampleData') || signedUrl == selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -128,7 +128,7 @@ export default function SciencePage() {
           {getProposal().sciencePDF != null && (
             <Download
               direction="column"
-              testId="sciencefileDownload"
+              testId="scienceFileDownload"
               onClick={downloadPdfToSignedUrl}
             />
           )}
