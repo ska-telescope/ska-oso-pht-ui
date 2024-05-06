@@ -316,6 +316,7 @@ export default function AddObservation() {
         action={() => buttonClicked(groupObservation)}
         disabled={addGroupObsDisabled}
         color={ButtonColorTypes.Inherit}
+        testId="addGroupButton"
       />
     );
   };

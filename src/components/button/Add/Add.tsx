@@ -9,13 +9,15 @@ interface AddButtonProps {
   action: string | Function;
   disabled?: boolean;
   color?: ButtonColorTypes;
+  testId?: string;
 }
 
 export default function AddButton({
   disabled = false,
   action,
   title = '',
-  color = ButtonColorTypes.Secondary
+  color = ButtonColorTypes.Secondary,
+  testId
 }: AddButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ export default function AddButton({
       icon={<AddIcon />}
       label={theTitle}
       onClick={ClickFunction}
-      testId={'addButton'}
+      testId={testId ? testId : 'addButton'}
       variant={ButtonVariantTypes.Contained}
     />
   );
