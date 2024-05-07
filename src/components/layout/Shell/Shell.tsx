@@ -15,12 +15,7 @@ export default function Shell({ page, children }: ShellProps) {
       {children}
       <PageFooter pageNo={page} />
       <div>
-        <Link
-          activeClass="active"
-          to="scrollTarget"
-          spy={true}
-          smooth={true}
-        ></Link>
+        <Link activeClass="active" to="scrollTarget" spy={true} smooth={true}></Link>
       </div>
     </>
   );
