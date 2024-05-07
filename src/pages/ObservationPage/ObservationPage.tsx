@@ -213,7 +213,7 @@ export default function ObservationPage() {
       );
       return group[0]?.groupId;
     }
-    return '/';
+    return '';
   };
 
   const columns = [
@@ -224,12 +224,10 @@ export default function ObservationPage() {
       disableClickEventBubbling: true
     },
     {
-      // field: getObservationGroup(),
       headerName: t('observations.group'),
       flex: 0.75,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { id: number } }) => {
-        // return getObservationGroup(e.row.id);
         return observationGroupIds((e.row.id as unknown) as string);
       }
     },
