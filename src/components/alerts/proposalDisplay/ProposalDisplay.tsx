@@ -13,6 +13,8 @@ import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Download } from '@mui/icons-material';
+import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -44,6 +46,21 @@ export default function ProposalDisplay({
 
   const handleCancel = () => {
     onClose();
+  };
+
+  const downloadPdf = async (fileType: string) => {
+    try {
+      const proposal = getProposal();
+      const prsl_id = proposal.id;
+      const selectedFile = `${prsl_id}-` + fileType + t('fileType.pdf');
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (signedUrl == t('pdfDownload.sampleData') || signedUrl == selectedFile) {
+        window.open(signedUrl, '_blank');
+      }
+    } catch (e) {
+      new Error(t('pdfDownload.error'));
+    }
   };
 
   const proposalType = () => {
@@ -191,6 +208,11 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().sciencePDF as unknown) as string}
           </Typography>
+          <Download
+            direction="column"
+            testId="sciencefileDownload"
+            onClick={() => downloadPdf('science')}
+          />
         </Grid>
       </Grid>
     </Grid>
@@ -291,6 +313,11 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().technicalPDF as unknown) as string}
           </Typography>
+          <Download
+            direction="column"
+            testId="sciencefileDownload"
+            onClick={() => downloadPdf('technical')}
+          />
         </Grid>
       </Grid>
     </Grid>
