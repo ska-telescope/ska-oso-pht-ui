@@ -103,12 +103,12 @@ export default function SensCalcDisplayMultiple({
     };
 
     setResults([]);
-    if (targetIds) {
-      targetIds?.forEach(async rec => {
-        const target = getProposal().targets.find(p => p.id === rec.targetId);
-        getSensCalcData(observation, target);
-      });
-    }
+    //if (targetIds) {
+    //  targetIds?.forEach(async rec => {
+    //    const target = getProposal().targets.find(p => p.id === rec.targetId);
+    //    getSensCalcData(observation, target);
+    //  });
+    //}
   }, [observation]);
 
   const IconClicked = () => {

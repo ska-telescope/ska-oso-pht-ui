@@ -12,7 +12,7 @@ interface SensCalcDisplaySingleProps {
   show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ row }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
@@ -40,42 +40,40 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
 
   return (
     <>
-      {show && (
-        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-          <Grid item xs={2}>
-            <IconButton
-              style={{ cursor: 'hand' }}
-              onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
-            >
-              <StatusIcon
-                ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusValue.' + row?.sensCalc?.status),
-                  error: row?.sensCalc?.error
-                })}
-                testId="statusId"
-                icon
-                level={row?.sensCalc?.status}
-                size={SIZE}
-              />
-            </IconButton>
-          </Grid>
-          {row?.sensCalc?.error?.length === 0 && (
-            <Grid item xs={5}>
-              {`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}
-            </Grid>
-          )}
-          {row?.sensCalc?.error?.length === 0 && (
-            <Grid item xs={5}>
-              {`${IntegrationTime('value')} ${IntegrationTime('units')}`}
-            </Grid>
-          )}
-          {row?.sensCalc?.error?.length > 0 && (
-            <Grid item xs={10}>
-              {row?.sensCalc?.error}
-            </Grid>
-          )}
+      <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+        <Grid item xs={2}>
+          <IconButton
+            style={{ cursor: 'hand' }}
+            onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
+          >
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + row?.sensCalc?.status),
+                error: row?.sensCalc?.error
+              })}
+              testId="statusId"
+              icon
+              level={row.sensCalc?.status}
+              size={SIZE}
+            />
+          </IconButton>
         </Grid>
-      )}
+        {row.sensCalc?.error?.length === 0 && (
+          <Grid item xs={5}>
+            {`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}
+          </Grid>
+        )}
+        {row.sensCalc?.error?.length === 0 && (
+          <Grid item xs={5}>
+            {`${IntegrationTime('value')} ${IntegrationTime('units')}`}
+          </Grid>
+        )}
+        {row.sensCalc?.error?.length > 0 && (
+          <Grid item xs={10}>
+            {row?.sensCalc?.error}
+          </Grid>
+        )}
+      </Grid>
       {openDialog && (
         <SensCalcModalSingle
           open={openDialog}

@@ -32,7 +32,7 @@ const SENSCALC_ERROR: SensCalcResult = {
   section3: []
 };
 
-const SENSCALC_LOADING: SensCalcResult = {
+export const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
 

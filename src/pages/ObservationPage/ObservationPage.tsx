@@ -10,13 +10,15 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
 import SensCalcDisplayMultiple from '../../components/sensCalcDisplay/multiple/SensCalcDisplayMultiple';
+import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { PATH } from '../../utils/constants';
-import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import GroupObservation from 'utils/types/groupObservation';
+import { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import GroupObservation from '../../utils/types/groupObservation';
+import Target from '../../utils/types/target';
 
 const PAGE = 5;
 const LABEL_WIDTH = 6;
@@ -32,6 +34,7 @@ export default function ObservationPage() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState(null);
   const [elementsT, setElementsT] = React.useState(null);
+  const [row, setRow] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -43,6 +46,27 @@ export default function ObservationPage() {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
+  };
+
+  const setSensPending = (id: string) => {
+    const temp = [];
+    elementsT.forEach(rec => {
+      if (rec?.id === id) {
+        temp.push({
+          id: rec.id,
+          observationId: currObs.id,
+          name: rec.name,
+          ra: rec.ra,
+          dec: rec.dec,
+          rec: rec,
+          sensCalc: SENSCALC_LOADING
+        });
+        setRow(rec);
+      } else {
+        temp.push(rec);
+      }
+    });
+    setElementsT(temp);
   };
 
   const setSensCalc = (results: any, target: any, currId) => {
@@ -64,6 +88,20 @@ export default function ObservationPage() {
     });
     setElementsT(temp);
   };
+
+  React.useEffect(() => {
+    const getSensCalcData = async (ob: Observation, target: Target) => {
+      const response = await getSensCalc(ob, target);
+      if (response) {
+        setSensCalc(response, row.rec, currObs.id);
+      }
+    };
+
+    if (row) {
+      getSensCalcData(currObs, row.rec);
+      setRow(null);
+    }
+  }, [row]);
 
   const editIconClicked = (row: any) => {
     setCurrObs(row.rec);
@@ -127,20 +165,16 @@ export default function ObservationPage() {
   };
 
   const AddObservationTarget = (row: any) => {
-    async function fetchResults(row: any) {
-      const sensCalcResult = await getSensCalc(currObs, row.rec);
-      const rec = {
-        observationId: currObs.id,
-        targetId: row.rec.id,
-        sensCalc: sensCalcResult
-      };
-      setSensCalc(sensCalcResult, row.rec, currObs.id);
-      setProposal({
-        ...getProposal(),
-        targetObservation: [...getProposal().targetObservation, rec]
-      });
-    }
-    fetchResults(row);
+    const rec = {
+      observationId: currObs.id,
+      targetId: row.rec.id,
+      sensCalc: SENSCALC_LOADING
+    };
+    setProposal({
+      ...getProposal(),
+      targetObservation: [...getProposal().targetObservation, rec]
+    });
+    setSensPending(row.rec.id);
   };
 
   function filterRecords(id: number) {
@@ -347,7 +381,7 @@ export default function ObservationPage() {
       flex: 5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: any }) => {
-        return <SensCalcDisplaySingle row={e.row.rec} show={isTargetSelected(e.row.id)} />;
+        return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
       }
     }
   ];

@@ -23,10 +23,10 @@ export default function SensCalcDisplaySingle({
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState(SENSCALC_EMPTY_MOCKED);
 
-  React.useEffect(
-    () => setResults(selected ? getSensCalc(observation, target) : SENSCALC_EMPTY_MOCKED),
-    [selected]
-  );
+  //React.useEffect(
+  //  () => setResults(selected ? getSensCalc(observation, target) : SENSCALC_EMPTY_MOCKED),
+  //  [selected]
+  //);
 
   const IconClicked = () => {
     setOpenDialog(true);

@@ -28,7 +28,7 @@ async function GetCalculate(observation: Observation) {
       : '';
 
   const getSubArray = () => {
-    const array = OBSERVATION.array.find(obj => (obj.value = observation.telescope));
+    const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     return arrConfig.map;
   };
