@@ -1,7 +1,8 @@
 import React from 'react';
 import PageBanner from '../pageBanner/PageBanner';
 import PageFooter from '../pageFooter/PageFooter';
-import { HashLink } from 'react-router-hash-link';
+// import { HashLink } from 'react-router-hash-link';
+import { Link } from 'react-scroll';
 
 interface ShellProps {
   page: number;
@@ -14,7 +15,17 @@ export default function Shell({ page, children }: ShellProps) {
       <PageBanner pageNo={page} />
       {children}
       <PageFooter pageNo={page} />
-      <HashLink smooth to={page} />
+      <div>
+        <Link
+          activeClass="active"
+          to="scrollTarget"
+          spy={true}
+          smooth={true}
+          // offset={}
+          // duration={500}
+        ></Link>
+        {/*<div style={{ height: '1000px' }}></div>*/}
+      </div>
     </>
   );
 }
