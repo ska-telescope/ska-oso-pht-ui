@@ -363,14 +363,9 @@ export default function ObservationPage() {
       field: 'vel',
       renderHeader: () =>
         currObs ? (
-          <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-            <Grid mr={6}></Grid>
-            <Grid mr={6}>
-              <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
-            </Grid>
-            <Grid>
-              <Typography>{t('sensitivityCalculatorResults.beamSize')}</Typography>
-            </Grid>
+          <Grid container direction="row" justifyContent="space-between" alignItems="right">
+            <Grid ml={10}>{t('sensitivityCalculatorResults.totalSensitivity')}</Grid>
+            <Grid ml={15}>{t('sensitivityCalculatorResults.beamSize')}</Grid>
           </Grid>
         ) : (
           <></>
