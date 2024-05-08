@@ -16,9 +16,9 @@ investigator or as a Co-Investigator as shown in  :ref:`Figure 2 <figure2>`. The
 
 - Proposal ID : Unique identifier for each proposal.
 - Cycle : SKAO observing cycle associated with the proposals.
-- Title : Briefly describes the research project.
-- PI : Principal Investigator leading the proposal.
-- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). You can also filter the proposal list using the status drop-down filter.
+- Title : Proposal title.
+- PI : Principal Investigator of the proposal.
+- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
 - Last Updated : Date and time the proposal was last modified.
 - Allowed actions |ico4| on each proposal (See :ref:`Table Actions <myactions>`).
 
@@ -52,8 +52,8 @@ Key Information and Actions
    :width: 30%
    :alt: Page search filter
 
--  Click |ico1| Button to create a new proposal.
--  Use the |ico2| to filter proposals by status.
+-  Click |ico1| Button to create a new proposal. This takes you to the title page.
+-  Use the drop down |ico2| to filter proposals by status.
 - The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
 
 
@@ -72,11 +72,11 @@ Key Information and Actions
      - Purpose
   
    * - Edit
-     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in draft status.
+     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in "Draft" status.
    * - View
-     - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for submitted and accepted proposals.
+     - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for "Submitted" and "Accepted" proposals.
    * - Clone
-     - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for submiited or acceted proposals.
+     - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
    * - Delete
      - Click the trash icon to delete a proposal. Note: Delete option is disabled for proposals that are "Accepted " or "Submitted". Selected proposal is removed from the application after confirmation.
 

@@ -1,16 +1,33 @@
 Title Page
 ~~~~~~~~~~
+:ref:`Figure 3 <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
 
-This guide will walk you through the "Title Page" section, where you define the key details of your proposal.
+Entering Title and Creating a proposal
+======================================
+.. |icocreate| image:: /images/create.png
+   :width: 20%
+   :alt: Page filter
 
-.. figure:: /images/titlePage.png
+
+
+- Enter your proposal's title in the provided text field ( maximum 20 words )
+- Select your chosen main and sub-proposal types from the menus.
+- Once selected, a "Create" button with a plus sign appears at the bottom right.
+- Click |icocreate| to proceed to the next page.
+
+.. _titlepage:
+
+.. figure:: /images/titlepage.png
    :width: 90%
-   :alt: screen in light & dark mode 
+   :alt: title screen in light mode
+
+   Figure 3: The title page in light and dark mode.
  
 Layout and Navigation
 =====================
 
 The Title Page has two main layouts:
+
 
 Selecting Proposal Type
 =======================
@@ -39,44 +56,9 @@ Proposal sub-types are optional.
 
    - Hovering over a proposal type displays a description for your reference.
 
-Entering Title and Creating proposal
-====================================
 
-- Enter your proposal's title in the provided text field ( maximum 20 words )
-- The title field can contain latex in the provided text
-- Select your chosen main and sub-proposal types from the menus.
-- Once selected, a "Create" button with a plus sign appears at the bottom right.
-- Click "Create" to proceed to the next page.
-
-Navigation Elements
-===================
-
-- Home: (Top left corner) Returns you to the Landing Page.
-- Team: (Bottom right corner) Takes you to the next page for managing your team.
-- Save: (Top left ) Saves your progress on the Title Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all details are entered and validated.
-
-Additional Features
-===================
-
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/titlePage.png
-   :width: 90%
-   :alt: screen in light & dark 
    
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
 
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
@@ -93,10 +75,10 @@ After successfully creating your proposal on this page, you'll move on to the "T
 Additional Notes
 ================
 
-- This guide assumes you're already logged in to PPT.
+- This guide assumes you are already logged in to PPT.
 - The content remains the same regardless of your user context.
 - Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated.
+- The "Submit" button will only become active when all required information is entered and validated against the capability of the current cycle.
 
 .. admonition:: Confirmation Summary
 
