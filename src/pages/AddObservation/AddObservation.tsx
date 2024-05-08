@@ -723,11 +723,11 @@ export default function AddObservation() {
       const midMax = Number(t('continuumBandWidth.range.midUpper'));
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
-      if (usedTelescope == 2) {
+      if (usedTelescope === 2) {
         return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
           ? t('continuumBandWidth.range.error')
           : '';
-      } else if (usedTelescope == 1) {
+      } else if (usedTelescope === 1) {
         return continuumBandwidth <= midMin || continuumBandwidth > midMax
           ? t('continuumBandWidth.range.error')
           : '';
