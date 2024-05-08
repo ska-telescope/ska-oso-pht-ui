@@ -174,9 +174,12 @@
   "elevation": {
     "help": "ELEVATION HELP",
     "label": "Minimum Elevation",
+    "units": "deg",
+    "default": 45,
     "range": {
       "lower": 15,
-      "upper": 59.2
+      "upper": 59.2,
+      "error": "Values are outside of allowed range"
     }
   },
   "email": {
@@ -627,6 +630,7 @@
     "help": "This is the allowed level of Precipitable Water Vapour",
     "label": "Weather",
     "units": "mm",
+    "default": 10,
     "range": {
       "lower": 3,
       "upper": 25,

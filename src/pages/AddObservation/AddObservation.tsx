@@ -48,8 +48,8 @@ export default function AddObservation() {
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
-  const [elevation, setElevation] = React.useState(15);
-  const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
+  const [elevation, setElevation] = React.useState(Number(t('elevation.default')));
+  const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -65,8 +65,8 @@ export default function AddObservation() {
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
-  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
-  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(0);
+  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
+  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(Number(t('numOf13_5mAntennas.range.subArrayAA0.5')));
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
@@ -639,33 +639,32 @@ export default function AddObservation() {
     </Grid>
   );
 
+  const elevationUnitsField = () => t('elevation.units');
+
   const elevationField = () => {
     let errorText = '';
 
-    const validate = (e: number) => {
-      // const num = Number(Math.abs(e).toFixed(1));
-      // if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
-      setElevation(e);
-      //  errorText = '';
-      //} else {
-      //  errorText = t('elevation.range.error');
-      //}
+    const errorMessage = () => {
+      const min = Number(t('elevation.range.lower'));
+      const max = Number(t('elevation.range.upper'));
+      return elevation < min || elevation > max ? t('elevation.range.error') : '';
     };
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
-            errorText={errorText}
+            errorText={errorMessage()}
             label={t('elevation.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="elevation"
             value={elevation}
-            setValue={validate}
+            setValue={setElevation}
             onFocus={() => helpComponent(t('elevation.help'))}
             required
+            suffix={elevationUnitsField()}
           />
         </Grid>
       </Grid>
