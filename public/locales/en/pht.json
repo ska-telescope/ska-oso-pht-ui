@@ -192,8 +192,14 @@
   },
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
-    "science": "science",
-    "technical": "technical",
+    "science": {
+      "label": "science",
+      "toolTip": "This is the download button of the file on the Science Page"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "This is the download button of the file on the Science Page"
+    },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "firstName": {
@@ -375,6 +381,12 @@
     "label": "No specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "referenceCoordinates": {
+    "help": "REFERENCE COORDINATE HELP",
+    "label": "Reference Coordinate",
+    "0": "Equatorial",
+    "1": "Galactic"
+  },
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
@@ -429,7 +441,7 @@
         "value": "RIGHT ASCENSION:"
       },
       "2": {
-        "value": "dECLINATION: "
+        "value": "DECLINATION: "
       }
     },
     "label": {
@@ -462,11 +474,6 @@
         "1": "deg"
       }
     }
-  },
-  "skyUnits": {
-    "help": "REFERENCE COORDINATE HELP",
-    "label": "Reference Coordinate",
-    "0": "Equatorial"
   },
   "spatialImaging": {
     "label": "Spatial Imaging"

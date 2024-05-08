@@ -13,7 +13,7 @@ import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/download/DownloadButton';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Download } from '@mui/icons-material';
+import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 interface ProposalDisplayProps {
@@ -55,7 +55,7 @@ export default function ProposalDisplay({
       const selectedFile = `${prsl_id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl == t('pdfDownload.sampleData') || signedUrl == selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -208,9 +208,8 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().sciencePDF as unknown) as string}
           </Typography>
-          <Download
-            direction="column"
-            testId="sciencefileDownload"
+          <DownloadIcon
+            toolTip={t('pdfDownload.science.toolTip')}
             onClick={() => downloadPdf('science')}
           />
         </Grid>
@@ -286,18 +285,16 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targetSelection.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation?.map(
-            (rec: { targetId: number; observationId: number }) => (
-              <Grid container direction="row" justifyContent="space-between" alignItems="center">
-                <Grid item xs={2}>
-                  <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography variant={CONTENT_STYLE}>{rec.observationId}</Typography>
-                </Grid>
+          {getProposal().targetObservation?.map(rec => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+              <Grid item xs={2}>
+                <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
               </Grid>
-            )
-          )}
+              <Grid item xs={2}>
+                <Typography variant={CONTENT_STYLE}>{rec.observationId}</Typography>
+              </Grid>
+            </Grid>
+          ))}
         </Grid>
       </Grid>
     </Grid>
@@ -313,9 +310,8 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>
             {(getProposal().technicalPDF as unknown) as string}
           </Typography>
-          <Download
-            direction="column"
-            testId="sciencefileDownload"
+          <DownloadIcon
+            toolTip={t('pdfDownload.technical.toolTip')}
             onClick={() => downloadPdf('technical')}
           />
         </Grid>

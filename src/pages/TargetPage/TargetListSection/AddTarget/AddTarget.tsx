@@ -11,9 +11,12 @@ import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
-import SkyUnits from '../../../../components/fields/skyDirection/SkyUnits';
 
-export default function AddTarget() {
+interface AddTargetProps {
+  raType: number;
+}
+
+export default function AddTarget({ raType }: AddTargetProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
 
@@ -26,13 +29,12 @@ export default function AddTarget() {
   const [vel, setVel] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [velUnit, setVelUnit] = React.useState(0);
-  const [raType, setRAType] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('skyUnits.help'));
+    helpComponent(t('name.help'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length);
@@ -131,14 +133,6 @@ export default function AddTarget() {
     >
       <Grid item xs={7}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
-          <Grid item xs={12}>
-            <SkyUnits
-              labelWidth={LAB_WIDTH}
-              setValue={setRAType}
-              value={raType}
-              valueFocus={() => helpComponent(t('skyUnits.help'))}
-            />
-          </Grid>
           <Grid item xs={12}>
             {nameField()}
           </Grid>

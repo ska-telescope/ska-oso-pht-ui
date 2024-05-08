@@ -1,28 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
 
 const PAGE = 8;
 
 export default function SrcDataPage() {
   const { t } = useTranslation('pht');
 
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, helpComponent, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
