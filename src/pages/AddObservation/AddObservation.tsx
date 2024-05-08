@@ -144,6 +144,7 @@ export default function AddObservation() {
     ];
     observationLookup(arr[observingBand]);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+    setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
   }, [spectralAveraging, observingBand]);
 
   React.useEffect(() => {
