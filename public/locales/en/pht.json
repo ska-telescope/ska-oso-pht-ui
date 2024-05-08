@@ -116,7 +116,14 @@
   },
   "continuumBandWidth": {
     "help": "Continuum BANDWIDTH HELP",
-    "label": "Continuum BandWidth"
+    "label": "Continuum BandWidth",
+    "range": {
+      "midLower": 0,
+      "midUpper": 0.8,
+      "lowLower": 0,
+      "lowUpper": 75,
+      "error": "Values are outside of allowed range"
+    }
   },
   "continuumUnits": {
     "help": "CONTINUUM UNITS HELP"

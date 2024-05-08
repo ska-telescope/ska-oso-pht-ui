@@ -71,9 +71,6 @@ export default function AddObservation() {
   );
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
-  const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
-
-  const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -116,11 +113,6 @@ export default function AddObservation() {
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, [elevation, weather, frequency, effective]);
-
-  React.useEffect(() => {
-    const invalidForm = Boolean(formValidation());
-    setFormInvalid(invalidForm);
-  }, [validateToggle]);
 
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
@@ -166,29 +158,6 @@ export default function AddObservation() {
     });
     return results;
   };
-
-  function formValidation() {
-    let count = 0;
-    let emptyField = continuumBandwidth === '';
-    let isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    // continuum bandwidth
-    emptyField = continuumBandwidth === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        continuumBandwidth,
-        setContinuumBandwidth,
-        setErrorTextContinuumBandwidth,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextContinuumBandwidth('');
-    }
-    return count;
-  }
 
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
@@ -587,22 +556,24 @@ export default function AddObservation() {
       </Box>
     );
   };
-  const errorMessage = () => {
-    const min = Number(t('suppliedValue.range.lower'));
-    return suppliedValue <= min ? t('suppliedValue.range.error') : '';
-  };
 
-  const suppliedValueField = () => (
-    <TextEntry
-      errorText={errorMessage()}
-      label=""
-      testId="suppliedValue"
-      value={String(suppliedValue)}
-      setValue={setSuppliedValue}
-      onFocus={() => helpComponent(t('suppliedValue.help'))}
-      required
-    />
-  );
+  const suppliedValueField = () => {
+    const errorMessage = () => {
+      const min = Number(t('suppliedValue.range.lower'));
+      return suppliedValue <= min ? t('suppliedValue.range.error') : '';
+    };
+    return (
+      <TextEntry
+        errorText={errorMessage()}
+        label=""
+        testId="suppliedValue"
+        value={String(suppliedValue)}
+        setValue={setSuppliedValue}
+        onFocus={() => helpComponent(t('suppliedValue.help'))}
+        required
+      />
+    );
+  };
 
   // TODO : Need to update the spacing
   const suppliedField = () => (
@@ -744,21 +715,41 @@ export default function AddObservation() {
     );
   };
 
-  const continuumBandwidthField = () => (
-    <TextEntry
-      label={t('continuumBandWidth.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      suffix={continuumUnitsField()}
-      testId="continuumBandwidth"
-      value={continuumBandwidth}
-      setValue={setContinuumBandwidth}
-      onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-      required
-      errorText={t(errorTextContinuumBandwidth)}
-    />
-  );
+  const continuumBandwidthField = () => {
+    const errorMessage = () => {
+      const lowMin = Number(t('continuumBandWidth.range.lowLower'));
+      const lowMax = Number(t('continuumBandWidth.range.lowUpper'));
+      const midMin = Number(t('continuumBandWidth.range.midLower'));
+      const midMax = Number(t('continuumBandWidth.range.midUpper'));
+      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+
+      if (usedTelescope == 2) {
+        return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
+          ? t('continuumBandwidth.range.error')
+          : '';
+      } else if (usedTelescope == 1) {
+        return continuumBandwidth <= midMin || continuumBandwidth > midMax
+          ? t('continuumBandwidth.range.error')
+          : '';
+      }
+    };
+
+    return (
+      <TextEntry
+        label={t('continuumBandWidth.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        suffix={continuumUnitsField()}
+        testId="continuumBandwidth"
+        value={continuumBandwidth}
+        setValue={setContinuumBandwidth}
+        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+        required
+        errorText={errorMessage()}
+      />
+    );
+  };
 
   const effectiveResolutionField = () => {
     return (
@@ -905,17 +896,6 @@ export default function AddObservation() {
   };
 
   const pageFooter = () => {
-    const disabled = () => {
-      // TODO : Extend so that all options are covered
-      if (!elevation || !weather || !frequency || !effective) {
-        return true;
-      }
-      if (isContinuum() && !continuumBandwidth) {
-        return true;
-      }
-      return formInvalid;
-    };
-
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
@@ -972,7 +952,7 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
+            <AddButton title={'button.add'} action={buttonClicked} />
           </Grid>
         </Grid>
       </Paper>
