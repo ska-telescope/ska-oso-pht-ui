@@ -66,7 +66,9 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
-  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(Number(t('numOf13_5mAntennas.range.subArrayAA0.5')));
+  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(
+    Number(t('numOf13_5mAntennas.range.subArrayAA0.5'))
+  );
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
