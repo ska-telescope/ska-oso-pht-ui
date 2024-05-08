@@ -725,11 +725,11 @@ export default function AddObservation() {
 
       if (usedTelescope == 2) {
         return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
-          ? t('continuumBandwidth.range.error')
+          ? t('continuumBandWidth.range.error')
           : '';
       } else if (usedTelescope == 1) {
         return continuumBandwidth <= midMin || continuumBandwidth > midMax
-          ? t('continuumBandwidth.range.error')
+          ? t('continuumBandWidth.range.error')
           : '';
       }
     };
