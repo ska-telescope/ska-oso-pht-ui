@@ -59,8 +59,8 @@ export default function AddObservation() {
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
-  const [suppliedValue, setSuppliedValue] = React.useState('');
-  const [suppliedUnits, setSuppliedUnits] = React.useState(1);
+  const [suppliedValue, setSuppliedValue] = React.useState(Number(t('suppliedValue.default')));
+  const [suppliedUnits, setSuppliedUnits] = React.useState(4);
   const [frequencyUnits, setFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
   const [continuumUnits, setContinuumUnits] = React.useState(1);
@@ -71,7 +71,6 @@ export default function AddObservation() {
   );
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
-  const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
   const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
@@ -169,25 +168,9 @@ export default function AddObservation() {
 
   function formValidation() {
     let count = 0;
-    let emptyField = suppliedValue === '';
+    let emptyField = continuumBandwidth === '';
     let isValid = !emptyField;
     count += isValid ? 0 : 1;
-
-    // supplied value
-    emptyField = suppliedValue === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        suppliedValue,
-        setSuppliedValue,
-        setErrorTextSuppliedValue,
-        'NUMBER_ONLY'
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextSuppliedValue('');
-    }
     // continuum bandwidth
     emptyField = continuumBandwidth === '';
     isValid = !emptyField;
@@ -603,16 +586,20 @@ export default function AddObservation() {
       </Box>
     );
   };
+  const errorMessage = () => {
+    const min = Number(t('suppliedValue.range.lower'));
+    return suppliedValue <= min ? t('suppliedValue.range.error') : '';
+  };
 
   const suppliedValueField = () => (
     <TextEntry
+      errorText={errorMessage()}
       label=""
       testId="suppliedValue"
-      value={suppliedValue}
+      value={String(suppliedValue)}
       setValue={setSuppliedValue}
       onFocus={() => helpComponent(t('suppliedValue.help'))}
       required
-      errorText={t(errorTextSuppliedValue)}
     />
   );
 

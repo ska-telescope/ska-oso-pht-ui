@@ -577,7 +577,12 @@
     "help": "SUPPLIED UNITS HELP"
   },
   "suppliedValue": {
-    "help": "SUPPLIED VALUE HELP"
+    "help": "SUPPLIED VALUE HELP",
+    "range": {
+      "lower": 0,
+      "error": "Values are outside of allowed range"
+    },
+    "default": 600
   },
   "tapering": {
     "help": "TAPERING HELP",
