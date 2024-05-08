@@ -483,6 +483,7 @@
     "label": "Selected"
   },
   "sensitivityCalculatorResults": {
+    "beamSize": "Beam Size",
     "continuumSensitivityWeighted": "Weighted continuum sensitivity",
     "continuumConfusionNoise": "Continuum confusion noise",
     "continuumTotalSensitivity": "Total continuum sensitivity",
@@ -542,6 +543,12 @@
     "0": "OK",
     "1": "Error",
     "3": "Partial",
+    "5": "Not indicated"
+  },
+  "statusLoading": {
+    "0": "OK",
+    "1": "Error",
+    "3": "Loading",
     "5": "Not indicated"
   },
   "subBands": {

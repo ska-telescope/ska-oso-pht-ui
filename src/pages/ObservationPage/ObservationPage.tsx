@@ -246,7 +246,7 @@ export default function ObservationPage() {
       );
       return group[0]?.groupId;
     }
-    return '/';
+    return '';
   };
 
   const columns = [
@@ -371,7 +371,7 @@ export default function ObservationPage() {
               <Typography>{t('sensitivityCalculatorResults.totalSensitivity')}</Typography>
             </Grid>
             <Grid>
-              <Typography>{t('sensitivityCalculatorResults.integrationTime')}</Typography>
+              <Typography>{t('sensitivityCalculatorResults.beamSize')}</Typography>
             </Grid>
           </Grid>
         ) : (

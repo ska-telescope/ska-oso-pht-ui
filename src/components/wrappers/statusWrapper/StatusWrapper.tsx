@@ -30,11 +30,11 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         <StatusIcon
           ariaTitle={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
+            status: getLevel() ? t('statusValue.' + getLevel()) : ''
           })}
           ariaDescription={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
+            status: getLevel() ? t('statusValue.' + getLevel()) : ''
           })}
           testId="statusId"
           icon

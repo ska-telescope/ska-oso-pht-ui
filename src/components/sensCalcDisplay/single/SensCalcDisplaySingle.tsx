@@ -7,29 +7,37 @@ import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
 
 const SIZE = 20;
 
+const TOTAL_SENSE = 'TotalSensitivity';
+const BEAM_SIZE = 'SynthBeamSize';
+const VALUE = 'value';
+const UNITS = 'units';
+
 interface SensCalcDisplaySingleProps {
   row: any;
   show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ row }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
     setOpenDialog(true);
   };
 
-  const TotalSensitivity: any = (type: string) => {
+  const hasError = () => row?.sensCalc?.error?.length > 0;
+
+  const FieldFetch: any = (type: string, suffix: string) => {
     const observationTypeLabel: string = OBS_TYPES[row?.sensCalc?.results?.section2 ? 0 : 1];
     if (row?.sensCalc?.section1) {
       const result = row?.sensCalc?.section1.find(
-        item => item.field === `${observationTypeLabel}TotalSensitivity`
+        item => item.field === `${observationTypeLabel}${suffix}`
       );
       return result ? result[type] : '';
     }
     return '';
   };
 
+  /* RETAINED FOR A WHILE, UNTIL WE ARE SURE IT IS NOT NEEDED
   const IntegrationTime: any = type => {
     if (row?.sensCalc?.section3) {
       const result = row?.sensCalc?.section3.find(item => item.field === 'integrationTime');
@@ -37,43 +45,46 @@ export default function SensCalcDisplaySingle({ row }: SensCalcDisplaySingleProp
     }
     return '';
   };
+  */
 
   return (
     <>
-      <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-        <Grid item xs={2}>
-          <IconButton
-            style={{ cursor: 'hand' }}
-            onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
-          >
-            <StatusIcon
-              ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusValue.' + row?.sensCalc?.status),
-                error: row?.sensCalc?.error
-              })}
-              testId="statusId"
-              icon
-              level={row.sensCalc?.status}
-              size={SIZE}
-            />
-          </IconButton>
+      {show && (
+        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+          <Grid item xs={2}>
+            <IconButton
+              style={{ cursor: 'hand' }}
+              onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
+            >
+              <StatusIcon
+                ariaTitle={t('sensitivityCalculatorResults.status', {
+                  status: t('statusLoading.' + row?.sensCalc?.status),
+                  error: row?.sensCalc?.error
+                })}
+                testId="statusId"
+                icon
+                level={row?.sensCalc?.status}
+                size={SIZE}
+              />
+            </IconButton>
+          </Grid>
+          {!hasError() && (
+            <Grid item xs={5}>
+              {`${FieldFetch(VALUE, TOTAL_SENSE)} ${FieldFetch(UNITS, TOTAL_SENSE)}`}
+            </Grid>
+          )}
+          {!hasError() && (
+            <Grid item xs={5}>
+              {`${FieldFetch(VALUE, BEAM_SIZE)} ${FieldFetch(UNITS, BEAM_SIZE)}`}
+            </Grid>
+          )}
+          {hasError() && (
+            <Grid item xs={10}>
+              {row?.sensCalc?.error}
+            </Grid>
+          )}
         </Grid>
-        {row.sensCalc?.error?.length === 0 && (
-          <Grid item xs={5}>
-            {`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}
-          </Grid>
-        )}
-        {row.sensCalc?.error?.length === 0 && (
-          <Grid item xs={5}>
-            {`${IntegrationTime('value')} ${IntegrationTime('units')}`}
-          </Grid>
-        )}
-        {row.sensCalc?.error?.length > 0 && (
-          <Grid item xs={10}>
-            {row?.sensCalc?.error}
-          </Grid>
-        )}
-      </Grid>
+      )}
       {openDialog && (
         <SensCalcModalSingle
           open={openDialog}

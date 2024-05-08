@@ -1,14 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+// import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+// import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import SensCalcModalMultiple from '../../alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import { Proposal } from '../../../utils/types/proposal';
+// import { Proposal } from '../../../utils/types/proposal';
 import Observation from '../../../utils/types/observation';
-import Target from '../../../utils/types/target';
+// import Target from '../../../utils/types/target';
 import TargetObservation from 'utils/types/targetObservation';
 
 const SIZE = 20;
@@ -53,13 +53,14 @@ export default function SensCalcDisplayMultiple({
   targetIds
 }: SensCalcDisplayMultipleProps) {
   const { t } = useTranslation('pht');
-  const { application } = storageObject.useStore();
+  // const { application } = storageObject.useStore();
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState([]);
 
-  const getProposal = () => application.content2 as Proposal;
+  // const getProposal = () => application.content2 as Proposal;
 
+  /*
   const updateResults = (target: Target, values: any) => {
     const item: tempResults = {
       id: target?.id,
@@ -92,15 +93,16 @@ export default function SensCalcDisplayMultiple({
     };
     return item;
   };
+  */
 
   React.useEffect(() => {
-    const getSensCalcData = async (ob: Observation, target: Target) => {
-      const response = await getSensCalc(ob, target);
-      if (response) {
-        const item = updateResults(target, response);
-        setResults(results => [...results, item]);
-      }
-    };
+    //const getSensCalcData = async (ob: Observation, target: Target) => {
+    //   const response = await getSensCalc(ob, target);
+    //   if (response) {
+    //     const item = updateResults(target, response);
+    //     setResults(results => [...results, item]);
+    //   }
+    // };
 
     setResults([]);
     //if (targetIds) {
@@ -149,7 +151,7 @@ export default function SensCalcDisplayMultiple({
       <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
         <StatusIcon
           ariaTitle={t('sensitivityCalculatorResults.status', {
-            status: t('statusValue.' + getLevel()),
+            status: getLevel() ? t('statusLoading.' + getLevel()) : '',
             error: getError()
           })}
           testId="statusId"
