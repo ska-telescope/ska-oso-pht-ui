@@ -37,6 +37,8 @@ const LABEL_WIDTH_OPT1 = 6;
 
 const FIELD_WIDTH_OPT1 = 10;
 
+const NUMBER_ONLY = 'NUMBER_ONLY';
+
 export default function AddObservation() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -66,7 +68,7 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
-  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(0);
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
   const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
@@ -105,16 +107,40 @@ export default function AddObservation() {
         );
         if (record) {
           setNumOf15mAntennas(record.numOf15mAntennas);
-          setNumOf13_5mAntennas(record.numOf13_5mAntennas);
+          setNumOf13mAntennas(record.numOf13mAntennas);
           setNumOfStations(record.numOfStations);
         }
       }
     }
   }, [subarrayConfig, observingBand]);
 
+  // TODO : Dirty fix
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [elevation, weather, frequency, effective]);
+  }, [
+    groupObservation,
+    subarrayConfig,
+    observationType,
+    elevation,
+    weather,
+    effective,
+    imageWeighting,
+    tapering,
+    bandwidth,
+    robust,
+    spectralResolution,
+    suppliedType,
+    suppliedValue,
+    suppliedUnits,
+    frequencyUnits,
+    continuumBandwidth,
+    continuumUnits,
+    subBands,
+    numOf15mAntennas,
+    numOf13mAntennas,
+    numOfStations,
+    details
+  ]);
 
   React.useEffect(() => {
     const invalidForm = Boolean(formValidation());
@@ -180,7 +206,7 @@ export default function AddObservation() {
         suppliedValue,
         setSuppliedValue,
         setErrorTextSuppliedValue,
-        'NUMBER_ONLY'
+        NUMBER_ONLY
       );
       count += isValid ? 0 : 1;
     } else {
@@ -195,7 +221,7 @@ export default function AddObservation() {
         continuumBandwidth,
         setContinuumBandwidth,
         setErrorTextContinuumBandwidth,
-        'NUMBER_ONLY'
+        NUMBER_ONLY
       );
       count += isValid ? 0 : 1;
     } else {
@@ -290,6 +316,7 @@ export default function AddObservation() {
         action={() => buttonClicked(groupObservation)}
         disabled={addGroupObsDisabled}
         color={ButtonColorTypes.Inherit}
+        testId="addGroupButton"
       />
     );
   };
@@ -610,7 +637,7 @@ export default function AddObservation() {
       setValue={setSuppliedValue}
       onFocus={() => helpComponent(t('suppliedValue.help'))}
       required
-      errorText={t(errorTextSuppliedValue)}
+      errorText={errorTextSuppliedValue?.length ? t(errorTextSuppliedValue) : ''}
     />
   );
 
@@ -767,7 +794,7 @@ export default function AddObservation() {
       setValue={setContinuumBandwidth}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
       required
-      errorText={t(errorTextContinuumBandwidth)}
+      errorText={errorTextContinuumBandwidth?.length ? t(errorTextContinuumBandwidth) : ''}
     />
   );
 
@@ -800,7 +827,7 @@ export default function AddObservation() {
           {NumOf15mAntennasField()}
         </Grid>
         <Grid item xs={3}>
-          {numOf13_5mAntennasField()}
+          {numOf13mAntennasField()}
         </Grid>
       </Grid>
     );
@@ -836,14 +863,14 @@ export default function AddObservation() {
     );
   };
 
-  const numOf13_5mAntennasField = () => {
+  const numOf13mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
       if (
-        num >= Number(t('numOf13_5mAntennas.range.lower')) &&
-        num <= Number(t('numOf13_5mAntennas.range.upper'))
+        num >= Number(t('numOf13mAntennas.range.lower')) &&
+        num <= Number(t('numOf13mAntennas.range.upper'))
       ) {
-        setNumOf13_5mAntennas(num);
+        setNumOf13mAntennas(num);
       }
     };
 
@@ -852,14 +879,14 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
-            label={t('numOf13_5mAntennas.short')}
+            label={t('numOf13mAntennas.short')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
-            testId="numOf13_5mAntennas"
-            value={numOf13_5mAntennas}
+            testId="numOf13mAntennas"
+            value={numOf13mAntennas}
             setValue={validate}
-            onFocus={() => helpComponent(t('numOf13_5mAntennas.help'))}
+            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
           />
         </Grid>
       </Grid>
@@ -936,22 +963,22 @@ export default function AddObservation() {
         subarray: subarrayConfig,
         linked: '0',
         type: observationType,
-        observing_band: observingBand,
+        observingBand: observingBand,
         weather: weather,
         elevation: elevation,
-        central_frequency: frequency,
+        centralFrequency: frequency,
         bandwidth: bandwidth,
-        spectral_averaging: spectralAveraging,
+        spectralAveraging: spectralAveraging,
         tapering: tapering,
-        image_weighting: imageWeighting,
-        integration_time: suppliedValue,
-        integration_time_units: suppliedUnits,
-        spectral_resolution: spectralResolution,
-        effective_resolution: 0,
-        number_of_sub_bands: subBands,
-        number_of_13m_antennas: numOf13_5mAntennas,
-        number_of_15m_antennas: numOf15mAntennas,
-        number_of_stations: numOfStations,
+        imageWeighting: imageWeighting,
+        integrationTime: suppliedValue,
+        integrationTimeUnits: suppliedUnits,
+        spectralResolution: spectralResolution,
+        effectiveResolution: 0,
+        numSubBands: subBands,
+        num13mAntennas: numOf13mAntennas,
+        num15mAntennas: numOf15mAntennas,
+        numStations: numOfStations,
         details: details
       };
       setProposal({

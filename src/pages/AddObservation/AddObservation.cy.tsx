@@ -186,13 +186,13 @@ function verifynumOf15mAntennas() {
   cy.get('[data-testid="helpPanelId"]').contains('numOf15mAntennas.help');
 }
 
-function verifynumOf13_5mAntennas() {
+function verifynumOf13mAntennas() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
-  cy.get('[data-testid="numOf13_5mAntennas"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('numOf13_5mAntennas.help');
+  cy.get('[data-testid="numOf13mAntennas"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numOf13mAntennas.help');
 }
 
 function verifynumOfStations() {
@@ -209,39 +209,40 @@ function verifyDetailsField() {
   cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
 }
 
+function verifyGroupObservations() {
+  cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+  cy.get('[data-testid="groupObservations"]').click();
+  cy.get('[data-value="1"]').click();
+  cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+  cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+  cy.get('[data-testid="addGroupButton"]').click();
+}
+
+function mounting(theTheme: any) {
+  cy.viewport(1500, 1500);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
 describe('<AddObservation />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <BrowserRouter>
-              <AddObservation />
-            </BrowserRouter>
-          </ThemeProvider>
-        </StoreProvider>
-      );
+      mounting(theTheme);
     });
   }
 
   it('Verify the observation can be added to a group observation', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
-    cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
-    cy.get('[data-testid="groupObservations"]').click();
-    cy.get('[data-value="1"]').click();
-    cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
-    cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-    cy.get('[aria-describedby="AddButton"]').click();
-    cy.get('[data-testid="addButton"][aria-describedby="AddButton"]').should('be.disabled');
+    mounting(THEME_LIGHT);
+    verifyGroupObservations();
+    cy.get('[data-testid="addGroupButton"]').should('be.disabled');
     cy.get('[data-testid="groupObservations"]')
       .find('input')
       .should('be.disabled');
@@ -249,19 +250,12 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
     verifynumOf15mAntennas();
-    verifynumOf13_5mAntennas();
+    verifynumOf13mAntennas();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
@@ -280,14 +274,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     verifyDetailsField();
     verifyArrayConfiguration1AndSubArrayConfig();
     verifyObservingBand();
@@ -303,18 +290,11 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifyImageWeighting();
     verifynumOf15mAntennas();
-    verifynumOf13_5mAntennas();
+    verifynumOf13mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     // verifyArrayConfiguration2AndSubArrayConfig();
     verifyDetailsField();
     verifyElevationField();
@@ -332,14 +312,7 @@ describe('<AddObservation />', () => {
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
-    cy.viewport(1500, 1500);
-    cy.mount(
-      <StoreProvider>
-        <BrowserRouter>
-          <AddObservation />
-        </BrowserRouter>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
     // verifyArrayConfiguration2AndSubArrayConfig();
     verifyDetailsField();
     verifynumOfStations();

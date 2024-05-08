@@ -54,16 +54,26 @@ const MockProposal: ProposalBackend = {
     science_programmes: [
       {
         array: 'MID',
-        subarray: '1',
+        subarray: 'AA1',
         linked_sources: ['M1', 'M2'],
         observation_type: 'Continuum',
+        image_weighting: 2,
+        observing_band: 1,
+        integration_time: 600,
+        integration_time_units: 'd',
+        central_frequency: 0,
         groupId: 'group-1'
       },
       {
         array: 'MID',
-        subarray: '1',
+        subarray: 'AA1',
         linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
+        observation_type: 'Continuum',
+        image_weighting: 2,
+        observing_band: 1,
+        integration_time: 600,
+        integration_time_units: 'd',
+        central_frequency: 0
       }
     ]
   }

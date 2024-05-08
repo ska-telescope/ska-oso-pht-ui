@@ -72,6 +72,11 @@ const getTargets = (inValue: TargetBackend[]) => {
   return results;
 };
 
+const getIntegrationTimeUnits = (inValue: String) => {
+  const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
+  return unitsList.find(u => u.label === inValue)?.value;
+};
+
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -81,7 +86,12 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
       id: i + 1,
       telescope: arr,
       subarray: sub ? sub.value : 0,
-      type: inValue[i].observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1
+      type: inValue[i].observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1,
+      imageWeighting: inValue[i].image_weighting,
+      observingBand: inValue[i].observing_band,
+      integrationTime: inValue[i].integration_time,
+      integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units),
+      centralFrequency: inValue[i].central_frequency
     });
   }
   return results;

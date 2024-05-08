@@ -7,29 +7,37 @@ import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
 
 const SIZE = 20;
 
+const TOTAL_SENSE = 'TotalSensitivity';
+const BEAM_SIZE = 'SynthBeamSize';
+const VALUE = 'value';
+const UNITS = 'units';
+
 interface SensCalcDisplaySingleProps {
-  show: boolean;
   row: any;
+  show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ show, row }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
     setOpenDialog(true);
   };
 
-  const TotalSensitivity: any = (type: string) => {
+  const hasError = () => row?.sensCalc?.error?.length > 0;
+
+  const FieldFetch: any = (type: string, suffix: string) => {
     const observationTypeLabel: string = OBS_TYPES[row?.sensCalc?.results?.section2 ? 0 : 1];
     if (row?.sensCalc?.section1) {
       const result = row?.sensCalc?.section1.find(
-        item => item.field === `${observationTypeLabel}TotalSensitivity`
+        item => item.field === `${observationTypeLabel}${suffix}`
       );
       return result ? result[type] : '';
     }
     return '';
   };
 
+  /* RETAINED FOR A WHILE, UNTIL WE ARE SURE IT IS NOT NEEDED
   const IntegrationTime: any = type => {
     if (row?.sensCalc?.section3) {
       const result = row?.sensCalc?.section3.find(item => item.field === 'integrationTime');
@@ -37,6 +45,7 @@ export default function SensCalcDisplaySingle({ show, row }: SensCalcDisplaySing
     }
     return '';
   };
+  */
 
   return (
     <>
@@ -49,7 +58,7 @@ export default function SensCalcDisplaySingle({ show, row }: SensCalcDisplaySing
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusValue.' + row?.sensCalc?.status),
+                  status: t('statusLoading.' + row?.sensCalc?.status),
                   error: row?.sensCalc?.error
                 })}
                 testId="statusId"
@@ -59,17 +68,17 @@ export default function SensCalcDisplaySingle({ show, row }: SensCalcDisplaySing
               />
             </IconButton>
           </Grid>
-          {row?.sensCalc?.error?.length === 0 && (
+          {!hasError() && (
             <Grid item xs={5}>
-              {`${TotalSensitivity('value')} ${TotalSensitivity('units')}`}
+              {`${FieldFetch(VALUE, TOTAL_SENSE)} ${FieldFetch(UNITS, TOTAL_SENSE)}`}
             </Grid>
           )}
-          {row?.sensCalc?.error?.length === 0 && (
+          {!hasError() && (
             <Grid item xs={5}>
-              {`${IntegrationTime('value')} ${IntegrationTime('units')}`}
+              {`${FieldFetch(VALUE, BEAM_SIZE)} ${FieldFetch(UNITS, BEAM_SIZE)}`}
             </Grid>
           )}
-          {row?.sensCalc?.error?.length > 0 && (
+          {hasError() && (
             <Grid item xs={10}>
               {row?.sensCalc?.error}
             </Grid>

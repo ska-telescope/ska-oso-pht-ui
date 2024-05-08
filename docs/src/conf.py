@@ -22,11 +22,12 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    "recommonmark"
 ]
 
 templates_path = []
 
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 master_doc = 'index'
 

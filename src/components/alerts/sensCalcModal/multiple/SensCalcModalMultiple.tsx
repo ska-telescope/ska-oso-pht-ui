@@ -154,7 +154,7 @@ export default function SensCalcModalMultiple({
           <Box pt={1}>
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusValue.' + e.row.status),
+                status: e.row.status ? t('statusValue.' + e.row.status) : '',
                 error: e.row.error
               })}
               testId="statusId"
@@ -190,7 +190,7 @@ export default function SensCalcModalMultiple({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusValue.' + level),
+                status: level ? t('statusValue.' + level) : '',
                 error: levelError
               })}
               testId="statusId"
