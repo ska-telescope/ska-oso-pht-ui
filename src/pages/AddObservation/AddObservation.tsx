@@ -21,7 +21,7 @@ import {
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
-import { generateId, helpers } from '../../utils/helpers';
+import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 
@@ -66,7 +66,7 @@ export default function AddObservation() {
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
-  const [numOf13_5mAntennas, setNumOf13_5mAntennas] = React.useState(
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(
     Number(t('numOf13_5mAntennas.range.subArrayAA0.5'))
   );
   const [numOfStations, setNumOfStations] = React.useState(0);
@@ -103,16 +103,40 @@ export default function AddObservation() {
         );
         if (record) {
           setNumOf15mAntennas(record.numOf15mAntennas);
-          setNumOf13_5mAntennas(record.numOf13_5mAntennas);
+          setNumOf13mAntennas(record.numOf13mAntennas);
           setNumOfStations(record.numOfStations);
         }
       }
     }
   }, [subarrayConfig, observingBand]);
 
+  // TODO : Dirty fix
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [elevation, weather, frequency, effective]);
+  }, [
+    groupObservation,
+    subarrayConfig,
+    observationType,
+    elevation,
+    weather,
+    effective,
+    imageWeighting,
+    tapering,
+    bandwidth,
+    robust,
+    spectralResolution,
+    suppliedType,
+    suppliedValue,
+    suppliedUnits,
+    frequencyUnits,
+    continuumBandwidth,
+    continuumUnits,
+    subBands,
+    numOf15mAntennas,
+    numOf13mAntennas,
+    numOfStations,
+    details
+  ]);
 
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
@@ -158,7 +182,6 @@ export default function AddObservation() {
     });
     return results;
   };
-
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
   const groupObservationsField = () => {
@@ -245,6 +268,7 @@ export default function AddObservation() {
         action={() => buttonClicked(groupObservation)}
         disabled={addGroupObsDisabled}
         color={ButtonColorTypes.Inherit}
+        testId="addGroupButton"
       />
     );
   };
@@ -603,8 +627,6 @@ export default function AddObservation() {
   const elevationUnitsField = () => t('elevation.units');
 
   const elevationField = () => {
-    let errorText = '';
-
     const errorMessage = () => {
       const min = Number(t('elevation.range.lower'));
       const max = Number(t('elevation.range.upper'));
@@ -714,7 +736,6 @@ export default function AddObservation() {
       </Grid>
     );
   };
-
   const continuumBandwidthField = () => {
     const errorMessage = () => {
       const lowMin = Number(t('continuumBandWidth.range.lowLower'));
@@ -780,7 +801,7 @@ export default function AddObservation() {
           {NumOf15mAntennasField()}
         </Grid>
         <Grid item xs={3}>
-          {numOf13_5mAntennasField()}
+          {numOf13mAntennasField()}
         </Grid>
       </Grid>
     );
@@ -816,14 +837,14 @@ export default function AddObservation() {
     );
   };
 
-  const numOf13_5mAntennasField = () => {
+  const numOf13mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
       if (
-        num >= Number(t('numOf13_5mAntennas.range.lower')) &&
-        num <= Number(t('numOf13_5mAntennas.range.upper'))
+        num >= Number(t('numOf13mAntennas.range.lower')) &&
+        num <= Number(t('numOf13mAntennas.range.upper'))
       ) {
-        setNumOf13_5mAntennas(num);
+        setNumOf13mAntennas(num);
       }
     };
 
@@ -832,14 +853,14 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             disabled={subarrayConfig !== 20}
-            label={t('numOf13_5mAntennas.short')}
+            label={t('numOf13mAntennas.short')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
-            testId="numOf13_5mAntennas"
-            value={numOf13_5mAntennas}
+            testId="numOf13mAntennas"
+            value={numOf13mAntennas}
             setValue={validate}
-            onFocus={() => helpComponent(t('numOf13_5mAntennas.help'))}
+            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
           />
         </Grid>
       </Grid>
@@ -905,22 +926,22 @@ export default function AddObservation() {
         subarray: subarrayConfig,
         linked: '0',
         type: observationType,
-        observing_band: observingBand,
+        observingBand: observingBand,
         weather: weather,
         elevation: elevation,
-        central_frequency: frequency,
+        centralFrequency: frequency,
         bandwidth: bandwidth,
-        spectral_averaging: spectralAveraging,
+        spectralAveraging: spectralAveraging,
         tapering: tapering,
-        image_weighting: imageWeighting,
-        integration_time: suppliedValue,
-        integration_time_units: suppliedUnits,
-        spectral_resolution: spectralResolution,
-        effective_resolution: 0,
-        number_of_sub_bands: subBands,
-        number_of_13m_antennas: numOf13_5mAntennas,
-        number_of_15m_antennas: numOf15mAntennas,
-        number_of_stations: numOfStations,
+        imageWeighting: imageWeighting,
+        integrationTime: suppliedValue,
+        integrationTimeUnits: suppliedUnits,
+        spectralResolution: spectralResolution,
+        effectiveResolution: 0,
+        numSubBands: subBands,
+        num13mAntennas: numOf13mAntennas,
+        num15mAntennas: numOf15mAntennas,
+        numStations: numOfStations,
         details: details
       };
       setProposal({

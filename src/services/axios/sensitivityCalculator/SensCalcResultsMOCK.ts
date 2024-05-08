@@ -28,7 +28,7 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
     { field: 'spectralSynthBeamSize', value: '230.0 x 207.8', units: 'arcsecs2' },
     { field: 'spectralSurfaceBrightnessSensitivity', value: '6.04', units: 'k' }
   ],
-  section3: [{ field: 'integrationTime', value: '19.3', units: 'rad/m2' }]
+  section3: [{ field: 'integrationTime', value: '19.3', units: 'hours' }]
 };
 
 export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
@@ -42,5 +42,5 @@ export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
     { field: 'spectralSynthBeamSize', value: '190.0 x 171.3', units: 'arcsecs2' },
     { field: 'spectralSurfaceBrightnessSensitivity', value: '3.40', units: 'k' }
   ],
-  section3: [{ field: 'integrationTime', value: '19.3', units: 'rad/m2' }]
+  section3: [{ field: 'integrationTime', value: '19.3', units: 'hours' }]
 };

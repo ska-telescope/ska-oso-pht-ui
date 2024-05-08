@@ -21,7 +21,10 @@ const MockProposalBackendSubmitted = {
         array: null,
         linked_sources: ['M1'],
         observation_type: 'Continuum',
-        subarray: null
+        subarray: null,
+        image_weighting: 2,
+        observing_band: 1,
+        central_frequency: 0
       }
     ],
     targets: [

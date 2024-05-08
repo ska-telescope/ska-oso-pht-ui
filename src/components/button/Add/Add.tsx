@@ -9,13 +9,15 @@ interface AddButtonProps {
   action: string | Function;
   disabled?: boolean;
   color?: ButtonColorTypes;
+  testId?: string;
 }
 
 export default function AddButton({
   disabled = false,
   action,
   title = '',
-  color = ButtonColorTypes.Secondary
+  color = ButtonColorTypes.Secondary,
+  testId
 }: AddButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -28,19 +30,17 @@ export default function AddButton({
     }
   };
 
-  const theTitle = t(title);
-
-  const description: string = theTitle ? theTitle : 'Add';
+  const theTitle = t(title ? title : 'button.add');
 
   return (
     <Button
-      ariaDescription={`${description}Button`}
+      ariaDescription={`${theTitle}Button`}
       color={color}
       disabled={disabled}
       icon={<AddIcon />}
       label={theTitle}
       onClick={ClickFunction}
-      testId={'addButton'}
+      testId={testId ? testId : 'addButton'}
       variant={ButtonVariantTypes.Contained}
     />
   );

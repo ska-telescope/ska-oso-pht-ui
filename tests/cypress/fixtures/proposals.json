@@ -65,7 +65,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal1",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         },
         {
           "obset_id": "obs-l0mkYl",
@@ -74,7 +74,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal2",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         }
       ],
       "science_justification": {
@@ -175,7 +175,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal1",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         },
         {
           "obset_id": "obs-l0mkYl",
@@ -184,7 +184,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal2",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         }
       ],
       "science_justification": {
@@ -285,7 +285,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal1",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         },
         {
           "obset_id": "obs-l0mkYl",
@@ -294,7 +294,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal2",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         }
       ],
       "science_justification": {
@@ -395,7 +395,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal1",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         },
         {
           "obset_id": "obs-l0mkYl",
@@ -404,7 +404,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal2",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         }
       ],
       "science_justification": {
@@ -505,7 +505,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal1",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         },
         {
           "obset_id": "obs-l0mkYl",
@@ -514,7 +514,7 @@
           "observation_type": "Continuum",
           "observing_band": "ghjghghg",
           "science_goal_id": "goal2",
-          "subarray": "subarray 1"
+          "subarray": "AA1"
         }
       ],
       "science_justification": {

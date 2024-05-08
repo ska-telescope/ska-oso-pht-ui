@@ -6,7 +6,7 @@ import Target from '../../../utils/types/target';
 import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
-  USE_LOCAL_DATA,
+  USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
@@ -32,19 +32,17 @@ const SENSCALC_ERROR: SensCalcResult = {
   section3: []
 };
 
-const SENSCALC_LOADING: SensCalcResult = {
+export const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
 
 function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
-
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      const response = await getSensitivityCalculatorAPIData(observation, target);
-      return response;
+      return await getSensitivityCalculatorAPIData(observation, target);
     } catch (e) {
       return { error: e };
     }
@@ -55,14 +53,14 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
       if ('error' in output) {
         let err = SENSCALC_ERROR;
         err.title = target.name;
-        err.error = 'ERROR : SOME ERROR IN HERE';
+        err.error = output.error;
         return err;
       }
       if ('calculate' in output) {
-        if ('error' in output.calculate) {
+        if ('error' in output.weighting) {
           let err = SENSCALC_ERROR;
           err.title = target.name;
-          err.error = output.calculate.error.detail.split('\n')[0];
+          err.error = output.weighting.error.detail.split('\n')[0];
           return err;
         }
       }

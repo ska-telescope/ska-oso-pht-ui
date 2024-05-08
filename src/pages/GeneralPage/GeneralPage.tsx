@@ -6,6 +6,7 @@ import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-comp
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 
 const PAGE = 2;
@@ -95,15 +96,6 @@ export default function GeneralPage() {
 
     const setValue = (e: string) => {
       setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
-    };
-
-    const countWords = (text: string) => {
-      if (text === 'undefined' || text === null) return 0;
-
-      return text
-        ?.trim()
-        .split(/\s+/)
-        .filter(Boolean).length;
     };
 
     const helperFunction = (title: string) =>
