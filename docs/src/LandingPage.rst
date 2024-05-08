@@ -12,7 +12,7 @@ You need to start by creating an account. When you log into the proposal prepara
 **Landing Page**
 ================
 On the landing is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
-investigator or as a Co-Investigator as shown in  :ref:`Figure 2 <figure2>`. The table in :ref:`Figure 2 <figure2>` list your proposals with the following information:
+investigator or as a Co-Investigator as shown in  :ref:`Figure 3 <figure3>`. The table in :ref:`Figure 3 <figure3>` list your proposals with the following information:
 
 - Proposal ID : Unique identifier for each proposal.
 - Cycle : SKAO observing cycle associated with the proposals.
@@ -22,14 +22,14 @@ investigator or as a Co-Investigator as shown in  :ref:`Figure 2 <figure2>`. The
 - Last Updated : Date and time the proposal was last modified.
 - Allowed actions |ico4| on each proposal (See :ref:`Table Actions <myactions>`).
 
-.. _figure2:
+.. _figure3:
 
 .. figure:: /images/landingPage.png
    :width: 100%
    :alt: screen in light & dark mode of the landing page
    :class: with-border
 
-   Figure 2: The Landing page in light and dark mode.
+   :ref:`Figure 3 <figure3>`: The Landing page in light and dark mode.
 
 Key Information and Actions
 ===========================
@@ -83,5 +83,5 @@ Key Information and Actions
 Next Steps
 ==========
 
-- To learn more about creating a new proposal, see the "Title Page" section of this user guide.
+- |ico1| takes you to the "Title Page".
 - If you have any questions or need technical assistance, please contact the `SKAO Help desk <https://www.skao.int/en/contact-us/>`_.
