@@ -695,7 +695,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "A comprehensive list of proposals in which you hold the role of either Principal Investigator or Co-Investigator. The list includes essential details such as proposal ID, category, cycle, title, principal investigator, status, last updated date, and available actions.",
+      "desc": "",
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {

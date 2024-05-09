@@ -12,24 +12,24 @@ You need to start by creating an account. When you log into the proposal prepara
 **Landing Page**
 ================
 On the landing is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
-investigator or as a Co-Investigator as shown in  :ref:`Figure 2 <figure2>`. The table in :ref:`Figure 2 <figure2>` list your proposals with the following information:
+investigator or as a Co-Investigator as shown in  :ref:`Figure 3 <figure3>`. The table in :ref:`Figure 3 <figure3>` list your proposals with the following information:
 
 - Proposal ID : Unique identifier for each proposal.
 - Cycle : SKAO observing cycle associated with the proposals.
-- Title : Briefly describes the research project.
-- PI : Principal Investigator leading the proposal.
-- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). You can also filter the proposal list using the status drop-down filter.
+- Title : Proposal title.
+- PI : Principal Investigator of the proposal.
+- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
 - Last Updated : Date and time the proposal was last modified.
 - Allowed actions |ico4| on each proposal (See :ref:`Table Actions <myactions>`).
 
-.. _figure2:
+.. _figure3:
 
 .. figure:: /images/landingPage.png
    :width: 100%
    :alt: screen in light & dark mode of the landing page
    :class: with-border
 
-   Figure 2: The Landing page in light and dark mode.
+   :ref:`Figure 3 <figure3>`: The Landing page in light and dark mode.
 
 Key Information and Actions
 ===========================
@@ -52,8 +52,8 @@ Key Information and Actions
    :width: 30%
    :alt: Page search filter
 
--  Click |ico1| Button to create a new proposal.
--  Use the |ico2| to filter proposals by status.
+-  Click |ico1| Button to create a new proposal. This takes you to the title page.
+-  Use the drop down |ico2| to filter proposals by status.
 - The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
 
 
@@ -72,16 +72,16 @@ Key Information and Actions
      - Purpose
   
    * - Edit
-     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in draft status.
+     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in "Draft" status.
    * - View
-     - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for submitted and accepted proposals.
+     - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for "Submitted" and "Accepted" proposals.
    * - Clone
-     - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for submiited or acceted proposals.
+     - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
    * - Delete
      - Click the trash icon to delete a proposal. Note: Delete option is disabled for proposals that are "Accepted " or "Submitted". Selected proposal is removed from the application after confirmation.
 
 Next Steps
 ==========
 
-- To learn more about creating a new proposal, see the "Title Page" section of this user guide.
+- |ico1| takes you to the "Title Page".
 - If you have any questions or need technical assistance, please contact the `SKAO Help desk <https://www.skao.int/en/contact-us/>`_.
