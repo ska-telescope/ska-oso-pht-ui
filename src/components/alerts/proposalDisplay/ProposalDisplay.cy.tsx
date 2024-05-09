@@ -2,7 +2,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import ProposalDisplay from './ProposalDisplay';
@@ -10,22 +9,26 @@ import { GetMockProposal } from '../../../services/axios/getProposal/getProposal
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function mounting(theTheme) {
+  cy.viewport(1500, 1500);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <ProposalDisplay
+          onClose={cy.stub().as('handleCancel')}
+          onConfirm={cy.stub().as('handleConfirm')}
+          open
+        />
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
 describe('<ProposalDisplay />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <ProposalDisplay
-              pageNo={0}
-              onClose={cy.stub().as('handleCancel')}
-              onConfirm={cy.stub().as('handleConfirm')}
-              open
-            />
-          </ThemeProvider>
-        </StoreProvider>
-      );
+      mounting(theTheme);
     });
   }
 });
@@ -35,18 +38,7 @@ describe('Content', () => {
     cy.stub()
       .as('getProposal')
       .returns(GetMockProposal);
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <ProposalDisplay
-            pageNo={0}
-            onClose={cy.stub().as('handleCancel')}
-            onConfirm={cy.stub().as('handleConfirm')}
-            open
-          />
-        </Router>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
   });
   it('verify content', () => {
     cy.get('[data-testid="button.closeButton"]').click();

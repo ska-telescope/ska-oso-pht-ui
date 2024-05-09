@@ -12,7 +12,8 @@ export const MockQueryMidCalculate = {
   weighting: 'uniform',
   calculator_mode: 'continuum',
   taper: '0',
-  integration_time: '600'
+  integration_time: '600',
+  integration_time_units: 'd'
 };
 
 export const MockQueryMidCalculateZoom = {
@@ -29,7 +30,8 @@ export const MockQueryMidCalculateZoom = {
   weighting: 'uniform',
   calculator_mode: 'line',
   taper: '0',
-  integration_time: '600'
+  integration_time: '600',
+  integration_time_units: 'd'
 };
 
 export const MockResponseMidCalculate = {

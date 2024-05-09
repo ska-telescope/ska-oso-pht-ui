@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
@@ -40,6 +39,7 @@ export default function SrcDataPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  // TODO : Retained in case is needed later
   // const pipelineField = () => (
   //   <TextEntry
   //     label={t('pipeline.label')}
@@ -56,34 +56,7 @@ export default function SrcDataPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        spacing={1}
-        p={3}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        <Grid item xs={1} />
-        <Grid
-          container
-          spacing={1}
-          direction="row"
-          alignItems="baseline"
-          justifyContent="flex-start"
-        >
-          {/* <Grid item xs={1} />
-          <Grid item xs={6}>
-            <Typography variant="h6">{t('srcNet.label')}</Typography>
-
-            {pipelineField()}
-          </Grid>
-          <Grid item xs={1} /> */}
-          {/* <Grid item xs={3}>
-            <HelpPanel />
-          </Grid> */}
-        </Grid>
-      </Grid>
+      <></>
     </Shell>
   );
 }

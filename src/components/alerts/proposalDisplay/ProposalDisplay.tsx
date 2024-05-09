@@ -51,8 +51,7 @@ export default function ProposalDisplay({
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + fileType + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
