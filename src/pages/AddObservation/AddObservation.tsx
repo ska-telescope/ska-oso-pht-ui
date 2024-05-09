@@ -21,7 +21,7 @@ import {
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
-import { generateId, helpers } from '../../utils/helpers';
+import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 
@@ -37,8 +37,6 @@ const LABEL_WIDTH_OPT1 = 6;
 
 const FIELD_WIDTH_OPT1 = 10;
 
-const NUMBER_ONLY = 'NUMBER_ONLY';
-
 export default function AddObservation() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -50,8 +48,8 @@ export default function AddObservation() {
   const [subarrayConfig, setSubarrayConfig] = React.useState(1);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
-  const [elevation, setElevation] = React.useState(15);
-  const [weather, setWeather] = React.useState(Number(t('weather.range.lower')));
+  const [elevation, setElevation] = React.useState(Number(t('elevation.default')));
+  const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [frequency, setFrequency] = React.useState('');
   const [effective, setEffective] = React.useState('');
   const [imageWeighting, setImageWeighting] = React.useState(1);
@@ -61,20 +59,18 @@ export default function AddObservation() {
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
-  const [suppliedValue, setSuppliedValue] = React.useState('');
-  const [suppliedUnits, setSuppliedUnits] = React.useState(1);
+  const [suppliedValue, setSuppliedValue] = React.useState(Number(t('suppliedValue.default')));
+  const [suppliedUnits, setSuppliedUnits] = React.useState(4);
   const [frequencyUnits, setFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
   const [continuumUnits, setContinuumUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(0);
-  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(0);
-  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
+  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(
+    Number(t('numOf13_5mAntennas.range.subArrayAA0.5'))
+  );
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [details, setDetails] = React.useState('');
-  const [errorTextSuppliedValue, setErrorTextSuppliedValue] = React.useState('');
-  const [errorTextContinuumBandwidth, setErrorTextContinuumBandwidth] = React.useState('');
-
-  const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -142,11 +138,6 @@ export default function AddObservation() {
     details
   ]);
 
-  React.useEffect(() => {
-    const invalidForm = Boolean(formValidation());
-    setFormInvalid(invalidForm);
-  }, [validateToggle]);
-
   function observationLookup(inValue) {
     const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
     const lookup = record?.lookup;
@@ -169,6 +160,7 @@ export default function AddObservation() {
     ];
     observationLookup(arr[observingBand]);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+    setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
   }, [spectralAveraging, observingBand]);
 
   React.useEffect(() => {
@@ -190,46 +182,6 @@ export default function AddObservation() {
     });
     return results;
   };
-
-  function formValidation() {
-    let count = 0;
-    let emptyField = suppliedValue === '';
-    let isValid = !emptyField;
-    count += isValid ? 0 : 1;
-
-    // supplied value
-    emptyField = suppliedValue === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        suppliedValue,
-        setSuppliedValue,
-        setErrorTextSuppliedValue,
-        NUMBER_ONLY
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextSuppliedValue('');
-    }
-    // continuum bandwidth
-    emptyField = continuumBandwidth === '';
-    isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(
-        continuumBandwidth,
-        setContinuumBandwidth,
-        setErrorTextContinuumBandwidth,
-        NUMBER_ONLY
-      );
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextContinuumBandwidth('');
-    }
-    return count;
-  }
-
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
   const groupObservationsField = () => {
@@ -629,17 +581,23 @@ export default function AddObservation() {
     );
   };
 
-  const suppliedValueField = () => (
-    <TextEntry
-      label=""
-      testId="suppliedValue"
-      value={suppliedValue}
-      setValue={setSuppliedValue}
-      onFocus={() => helpComponent(t('suppliedValue.help'))}
-      required
-      errorText={errorTextSuppliedValue?.length ? t(errorTextSuppliedValue) : ''}
-    />
-  );
+  const suppliedValueField = () => {
+    const errorMessage = () => {
+      const min = Number(t('suppliedValue.range.lower'));
+      return suppliedValue <= min ? t('suppliedValue.range.error') : '';
+    };
+    return (
+      <TextEntry
+        errorText={errorMessage()}
+        label=""
+        testId="suppliedValue"
+        value={String(suppliedValue)}
+        setValue={setSuppliedValue}
+        onFocus={() => helpComponent(t('suppliedValue.help'))}
+        required
+      />
+    );
+  };
 
   // TODO : Need to update the spacing
   const suppliedField = () => (
@@ -666,33 +624,30 @@ export default function AddObservation() {
     </Grid>
   );
 
-  const elevationField = () => {
-    let errorText = '';
+  const elevationUnitsField = () => t('elevation.units');
 
-    const validate = (e: number) => {
-      // const num = Number(Math.abs(e).toFixed(1));
-      // if (num >= Number(t('elevation.range.lower')) && num <= Number(t('elevation.range.upper'))) {
-      setElevation(e);
-      //  errorText = '';
-      //} else {
-      //  errorText = t('elevation.range.error');
-      //}
+  const elevationField = () => {
+    const errorMessage = () => {
+      const min = Number(t('elevation.range.lower'));
+      const max = Number(t('elevation.range.upper'));
+      return elevation < min || elevation > max ? t('elevation.range.error') : '';
     };
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
-            errorText={errorText}
+            errorText={errorMessage()}
             label={t('elevation.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="elevation"
             value={elevation}
-            setValue={validate}
+            setValue={setElevation}
             onFocus={() => helpComponent(t('elevation.help'))}
             required
+            suffix={elevationUnitsField()}
           />
         </Grid>
       </Grid>
@@ -781,22 +736,41 @@ export default function AddObservation() {
       </Grid>
     );
   };
+  const continuumBandwidthField = () => {
+    const errorMessage = () => {
+      const lowMin = Number(t('continuumBandWidth.range.lowLower'));
+      const lowMax = Number(t('continuumBandWidth.range.lowUpper'));
+      const midMin = Number(t('continuumBandWidth.range.midLower'));
+      const midMax = Number(t('continuumBandWidth.range.midUpper'));
+      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
-  const continuumBandwidthField = () => (
-    <TextEntry
-      label={t('continuumBandWidth.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH_STD}
-      suffix={continuumUnitsField()}
-      testId="continuumBandwidth"
-      value={continuumBandwidth}
-      setValue={setContinuumBandwidth}
-      onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-      required
-      errorText={errorTextContinuumBandwidth?.length ? t(errorTextContinuumBandwidth) : ''}
-    />
-  );
+      if (usedTelescope === 2) {
+        return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
+          ? t('continuumBandWidth.range.error')
+          : '';
+      } else if (usedTelescope === 1) {
+        return continuumBandwidth <= midMin || continuumBandwidth > midMax
+          ? t('continuumBandWidth.range.error')
+          : '';
+      }
+    };
+
+    return (
+      <TextEntry
+        label={t('continuumBandWidth.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        suffix={continuumUnitsField()}
+        testId="continuumBandwidth"
+        value={continuumBandwidth}
+        setValue={setContinuumBandwidth}
+        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+        required
+        errorText={errorMessage()}
+      />
+    );
+  };
 
   const effectiveResolutionField = () => {
     return (
@@ -943,17 +917,6 @@ export default function AddObservation() {
   };
 
   const pageFooter = () => {
-    const disabled = () => {
-      // TODO : Extend so that all options are covered
-      if (!elevation || !weather || !frequency || !effective) {
-        return true;
-      }
-      if (isContinuum() && !continuumBandwidth) {
-        return true;
-      }
-      return formInvalid;
-    };
-
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
@@ -1010,7 +973,7 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <AddButton title={'button.add'} action={buttonClicked} disabled={disabled()} />
+            <AddButton title={'button.add'} action={buttonClicked} />
           </Grid>
         </Grid>
       </Paper>

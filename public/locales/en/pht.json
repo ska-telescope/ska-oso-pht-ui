@@ -116,7 +116,14 @@
   },
   "continuumBandWidth": {
     "help": "Continuum BANDWIDTH HELP",
-    "label": "Continuum BandWidth"
+    "label": "Continuum BandWidth",
+    "range": {
+      "midLower": 0,
+      "midUpper": 0.8,
+      "lowLower": 0,
+      "lowUpper": 75,
+      "error": "Values are outside of allowed range"
+    }
   },
   "continuumUnits": {
     "help": "CONTINUUM UNITS HELP"
@@ -174,9 +181,12 @@
   "elevation": {
     "help": "ELEVATION HELP",
     "label": "Minimum Elevation",
+    "units": "deg",
+    "default": 45,
     "range": {
       "lower": 15,
-      "upper": 59.2
+      "upper": 59.2,
+      "error": "Values are outside of allowed range"
     }
   },
   "email": {
@@ -583,7 +593,12 @@
     "help": "SUPPLIED UNITS HELP"
   },
   "suppliedValue": {
-    "help": "SUPPLIED VALUE HELP"
+    "help": "SUPPLIED VALUE HELP",
+    "range": {
+      "lower": 0,
+      "error": "Values are outside of allowed range"
+    },
+    "default": 600
   },
   "tapering": {
     "help": "TAPERING HELP",
@@ -636,6 +651,7 @@
     "help": "This is the allowed level of Precipitable Water Vapour",
     "label": "Weather",
     "units": "mm",
+    "default": 10,
     "range": {
       "lower": 3,
       "upper": 25,

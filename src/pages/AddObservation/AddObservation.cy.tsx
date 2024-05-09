@@ -51,14 +51,12 @@ function verifySuppliedTypeValueAndUnits() {
 }
 
 function verifyElevationField() {
-  cy.get('[data-testid="elevation"]').type('test elevation');
+  cy.get('[id="elevation"]').type('15');
   cy.get('[data-testid="helpPanelId"]').contains('elevation.help');
 }
 
 function verifyWeatherField() {
-  //TODO: Refactor to enable editing of field
-  // cy.get('[data-testid="weather"]').type('30');
-  cy.get('[id="weather"]').click();
+  cy.get('[id="weather"]').type('30');
   cy.get('[data-testid="helpPanelId"]').contains('weather.help');
 }
 
