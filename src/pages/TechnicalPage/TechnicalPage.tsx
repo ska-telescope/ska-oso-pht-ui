@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
-import { Download } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
@@ -42,7 +42,7 @@ export default function TechnicalPage() {
     setUploadButtonStatus(status);
   };
 
-  const uploadPdftoSignedUrl = async theFile => {
+  const uploadPDFTtoSignedUrl = async theFile => {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
@@ -110,7 +110,7 @@ export default function TechnicalPage() {
         <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('uploadPDF.label')}
+            {t('uploadPDF.technical.label')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
@@ -122,13 +122,12 @@ export default function TechnicalPage() {
             setFile={setFile}
             setStatus={setUploadStatus}
             testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
+            uploadFunction={uploadPDFTtoSignedUrl}
             status={uploadButtonStatus}
           />
           {getProposal().technicalPDF != null && (
-            <Download
-              direction="column"
-              testId="technicalFileDownload"
+            <DownloadIcon
+              toolTip={t('pdfDownload.technical.toolTip')}
               onClick={downloadPdfToSignedUrl}
             />
           )}

@@ -3,23 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { DropDown, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 
-interface SkyUnitsFieldProps {
+interface ReferenceCoordinatesFieldProps {
   labelWidth?: number;
   setValue?: Function;
   value: number;
   valueFocus?: Function;
 }
 
-export default function SkyUnitsField({
+export default function ReferenceCoordinatesField({
   labelWidth = 5,
   setValue,
   value,
   valueFocus
-}: SkyUnitsFieldProps) {
+}: ReferenceCoordinatesFieldProps) {
   const { t } = useTranslation('pht');
-  const FIELD = 'skyUnits';
+  const FIELD = 'referenceCoordinates';
 
-  const SkyUnitsValueField = () => {
+  const ReferenceCoordinatesValueField = () => {
     const OPTIONS = [0, 1];
 
     const getOptions = () => {
@@ -33,7 +33,7 @@ export default function SkyUnitsField({
           testId={FIELD + 'Type'}
           value={value}
           setValue={setValue}
-          label={t('skyUnits.label')}
+          label={t(FIELD + '.label')}
           labelBold
           labelPosition={LABEL_POSITION.START}
           labelWidth={labelWidth}
@@ -46,7 +46,7 @@ export default function SkyUnitsField({
 
   return (
     <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
-      {SkyUnitsValueField()}
+      {ReferenceCoordinatesValueField()}
     </Box>
   );
 }

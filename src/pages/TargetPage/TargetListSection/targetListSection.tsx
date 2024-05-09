@@ -15,12 +15,14 @@ import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
+import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openDialog, setOpenDialog] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
+  const [raType, setRAType] = React.useState(0);
 
   const editIconClicked = async () => {
     alert(t('error.iconClicked'));
@@ -50,10 +52,10 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('rightAscension.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('skyDirection.label.1.' + raType)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.ra}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('declination.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('skyDirection.label.2.' + raType)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.dec}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.label')} labelWidth={LABEL_WIDTH}>
@@ -73,13 +75,13 @@ export default function TargetListSection() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const columns = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'ra', headerName: 'Right Ascension', width: 150 },
-    { field: 'dec', headerName: 'Declination', width: 100 },
-    { field: 'vel', headerName: 'Red Shift', width: 100 },
+    { field: 'name', headerName: t('name.label'), width: 200 },
+    { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
+    { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
+    { field: 'vel', headerName: t('velocity.1'), width: 100 },
     {
       field: 'id',
-      headerName: 'Actions',
+      headerName: t('actions.label'),
       sortable: false,
       flex: 1,
       disableClickEventBubbling: true,
@@ -114,8 +116,24 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
+  const RefOptions = () => {
+    const GRID_OFFSET = 1;
+    const GRID_WIDTH = 4;
+    const LAB_WIDTH = 5;
+    return (
+      <>
+        <Grid item md={GRID_OFFSET} xs={0}></Grid>
+        <Grid item md={GRID_WIDTH} xs={11}>
+          <ReferenceCoordinatesField labelWidth={LAB_WIDTH} setValue={setRAType} value={raType} />
+        </Grid>
+        <Grid item md={12 - GRID_OFFSET - GRID_WIDTH} xs={0}></Grid>
+      </>
+    );
+  };
+
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+      {RefOptions()}
       <Grid item md={5} xs={11}>
         {getProposal().targets.length > 0 && (
           <DataGrid
@@ -164,7 +182,7 @@ export default function TargetListSection() {
               />
             </Tabs>
           </Box>
-          {value === 0 && <AddTarget />}
+          {value === 0 && <AddTarget raType={raType} />}
           {value === 1 && <TargetFileImport />}
           {value === 2 && <SpatialImaging />}
         </Box>

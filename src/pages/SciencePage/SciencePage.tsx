@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
-import { Download } from '@mui/icons-material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
@@ -64,11 +64,11 @@ export default function SciencePage() {
     }
   };
 
-  const downloadPdfToSignedUrl = async () => {
+  const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + t('pdfDownload.science') + t('fileType.pdf');
+      const selectedFile = `${prsl_id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
@@ -126,10 +126,9 @@ export default function SciencePage() {
             status={uploadButtonStatus}
           />
           {getProposal().sciencePDF != null && (
-            <Download
-              direction="column"
-              testId="scienceFileDownload"
-              onClick={downloadPdfToSignedUrl}
+            <DownloadIcon
+              toolTip={t('pdfDownload.science.toolTip')}
+              onClick={downloadPDFToSignedUrl}
             />
           )}
         </Grid>
