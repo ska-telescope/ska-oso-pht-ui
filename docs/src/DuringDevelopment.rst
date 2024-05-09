@@ -8,7 +8,7 @@ Adjustment once final positioning within the SKA-Portal has been determined
 
 So that there is no clashes with other applications originating from a skeleton, the following steps should be taken. Once these are done the application will no longer be available via the ReactSKeleton menu item within the SKA-Portal
 
-1. webpack.config.js : Change the devServer port number from 6100.
+1. webpack.config.js : Change the devServer port number from 6101.
 2. webpack.config.js : Change the final ReactSkeleton entry to NewApp.
 3. Relate these new values back to the developer responsible for updating the SKA-Portal
 
