@@ -92,8 +92,8 @@ export default function AddTarget({ raType }: AddTargetProps) {
   const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
     if (response && !response.error) {
       const values = response.split(' ');
-      setRA(values[1]);
-      setDec(values[0]);
+      setRA(values[0]);
+      setDec(values[1]);
       setNameFieldError('');
     } else {
       setNameFieldError(t(response.error));

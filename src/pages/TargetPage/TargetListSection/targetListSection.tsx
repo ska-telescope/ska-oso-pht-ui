@@ -52,10 +52,10 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('rightAscension.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('skyDirection.label.1.' + raType)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.ra}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('declination.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('skyDirection.label.2.' + raType)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.dec}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.label')} labelWidth={LABEL_WIDTH}>
