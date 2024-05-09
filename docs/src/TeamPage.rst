@@ -1,11 +1,29 @@
 Team Page
 ~~~~~~~~~
 
-This guide explains the "Team Page," where you manage the researchers involved in your project.
+Once on the team page --> see :ref:`Figure 5 <figure5>`,  you can move between pages where you can click on the page name as seen in 
+:ref:`Figure 5 <figure5>`. See progress status indicated by the navigation bar "top center" of the page.
+
+
+
+
+
+.. |icostatus| image:: /images/sunMoonBtn.png
+   :width: 10%
+   :alt: Page filter
+
+   
+.. _figure5:
 
 .. figure:: /images/teamPage.png
-   :width: 90%
+   :width: 100%
    :alt: screen in light & dark mode 
+
+   :ref:`Figure 5 <figure5>` The team page in light and dark mode.
+
+
+
+
 
 Layout and Navigation
 =====================
@@ -22,46 +40,16 @@ The Team Page has two main sections:
   - PI star icon (filled: Principal Investigator, hollow: not PI, missing: invitation not accepted)
   - "Actions" (delete)
   
-- Click the star icon to make someone a PI or remove the PI role.
 
 2. Team Management Options (Right)
 
-- Invite Team Members: Add collaborators by entering their email and selecting PI, PhD Thesis options.
-- Import from File: Upload a file containing team member details.
-- Search for Member: Find existing users to add directly.
-- Field Sensitive Help: Content changes dependant upon the focused field
-- Send Invitation: Click this button after entering team member details. (Disabled until required fields are filled).
+- Invite Team Members: Fill the form to invite collaborators. Once the required fields are filled the "Send Invitation" button will become active.
+- Dynamic Help: Content changes dependant upon the focused field.
+- Import from File: Not available at the moment.
+- Search for a Member: Not available at the moment.
 
-Navigation Elements
-===================
 
-- Home: (Top left corner) Returns you to the Landing Page.
-- Title Page: (Bottom left corner) Takes you back to the Title Page.
-- Save: (Top left) Saves your progress on the Team Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
-- General: (Bottom right corner) Takes you to the next page for general proposal details.
 
-Additional Features
-===================
-
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/teamPage.png
-   :width: 90%
-   :alt: screen in light & dark 
-   
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
-
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
@@ -69,22 +57,10 @@ Key Information and Actions
 - View and manage your proposal team.
 - Invite new collaborators and assign PI roles.
 - Import team members from a file or find existing users.
-- Ensure clarity on everyone's involvement in the project.
 
-Next Steps
-==========
-
-After successfully managing your team on this page, you'll move on to the "General" page, where you enter general details about your proposal.
 
 Additional Notes
 ================
 
-- This guide assumes you're already logged in to PPT.
-- The content remains the same regardless of your user context.
 - Dynamic help is available, when you hover over fields, for descriptions. 
 - Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated.
-
-.. admonition:: Confirmation Summary
-
-   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.
