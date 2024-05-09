@@ -3,42 +3,55 @@ Introduction
 
 Welcome, astronomers!
 
-Do you wish to understand every detail there is to know about the mysteries of the universe? Do you wish to visit space in order to learn more about pulsars, black holes, and far-off galaxies? If so, the secret to unleashing the potential of the Square Kilometer Array Observatory and its telescopes lies in the Proposal Preparation Tool (PPT)!
+The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
-What is PPT?
-============
+The PPT supports both light and dark modes and can be accessed at the top left corner of your screen - see *Figure 1*.
 
-Consider a tool made especially for astronomers such as yourself. A tool that simplifies the proposal process and makes requesting observation and processing time on the state-of-the-art telescopes of the SKAO easier than before. That's exactly what PPT is! You can create strong proposals with it, and you'll be well on your way to making ground-breaking findings.
+.. figure:: /images/landingPage.png
+   :width: 100%
+   :alt: screen in light & dark mode of the landing page
+   :class: with-border
 
-Who is it for?
-==============
+   Figure 1: Location of light and dark mode toggle of the PPT.
 
-Both seasoned astronomers and those just starting out on their cosmic journey might benefit from PPT. We understand that putting in a proposal could be scary, but PPT has taken away the technological barriers so that astronomers can focus on what matters most: their scientific vision.
 
-What can you achieve?
-=====================
+Common Elements Overview:
+=========================
+Common elements are recurring components found across multiple pages in the tool. They provide consistency, usability, and familiarity as they navigate through different sections. Below is an overview of the key common elements that you will encounter throughout your interaction with PPT.
 
-With PPT, you can:
+.. csv-table:: Actions
+   :header: "Element", "Description"
 
-- Submit proposals for scientific exploration: Let your curiosity guide you! Utilize the telescopes at the SKAO to view a wide range of cosmic objects and phenomena, including quasars, pulsars, and objects at the edge of the observable universe.
-- Process and analyze public data: Delve into the wealth of data already collected by the SKAO. Uncover hidden insights and make new discoveries without requesting dedicated observing time.
-- Secure observing time on the SKAO telescopes: Craft compelling proposals that highlight the scientific merit of your research. Gaining important observing time through successful proposals can lead to ground-breaking findings.
-- Submit your research to journals: Contribute to the global dissemination of your study and the growth of astronomical knowledge.
+   "SKA Header and Footer",	"Appears at the top and bottom of each page, providing branding and navigation to other SKAO resources."
+   "Toggle Mode",	"All the pages supports both light and dark mode with a Sun/Moon icon on the top right corner of each page."
+   "Status Indicators",	Displayed at the top of the page, showing the validation status of each page in the flow."
+   "Home Button", "Positioned at the top left corner, enabling you to return to the Landing Page."
+   "Save Button",	"Located at the top left corner, allowing you to saves your progress on each page."
+   "Validate Button",	"Positioned at the top right, checking if all required information is filled correctly."
+   "Submit Button",	"Found at the top right corner, initially grayed out but becomes clickable when all details are entered and validated. Initiates the submission process, generating a summary of the proposal. Users can download this summary for records and confirm the submission."
+   "Dynamic Help", "Hover-over fields providing contextual descriptions and guidance for elements on all pages."
 
-Why choose PPT?
-===============
 
-- Easy to understand and intuitive: The user-friendliness of PPT is a priority in its design. All astronomers are guaranteed a seamless experience because of the simple interface and guided approach.
-- Powerful capabilities: Don't be fooled by the simplicity. With all the capabilities you need to write thorough and powerful proposals, PPT is a powerful tool.
-- Access to the state-of-the-art technology: Leverage the power of the world's most advanced radio astronomy facilities, the SKAO telescopes, to further our understanding of the universe.
+Additional Notes
+================
 
-Are you ready to embark on your celestial voyage?
-=================================================
+- You need to be logged in to access the landing page and its features.
 
-With the Proposal Preparation Tool, begin your cosmic exploration right now! You will be guided through every stage of the process by this user guide, from creating your proposal to submitting it. Now go ahead and let PPT serve as your springboard for celestial exploration as you let loose your scientific curiosity!
 
-We hope you're excited to explore the universe with PPT!
+.. figure:: /images/skaoBtn.png
+   :width: 15%
+   :alt: SKAO button
+
+
+.. figure:: /images/sunMoonBtn.png
+   :width: 5%
+   :alt: light/dark Button
+
+.. figure:: /images/landingPage.png
+   :width: 90%
+   :alt: screen in light & dark mode
+
 
 .. admonition:: Please note
 
-   This is an MVP version of PPT, meaning it offers a subset of the functionalities planned for the future. However, it still provides a powerful platform for astronomers to submit proposals and access valuable data.
+   This is an MVP version of PPT, meaning it offers a subset of the functionalities planned for the future. However, it allows you to submit a proposal for a continuum observation.

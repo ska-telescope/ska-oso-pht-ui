@@ -8,7 +8,7 @@ import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteBu
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
-import HelpPanel from '../../../components/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');

@@ -1,22 +1,26 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { IconButton } from '@mui/material';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import getSensCalc from '../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import { IconButton } from '@mui/material';
 import SensCalcModalMultiple from '../../alerts/sensCalcModal/multiple/SensCalcModalMultiple';
+import { STATUS_ERROR, STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
+import { Proposal } from '../../../utils/types/proposal';
 import Observation from '../../../utils/types/observation';
-import { useTranslation } from 'react-i18next';
-import { STATUS_ERROR, STATUS_INITIAL, STATUS_PARTIAL } from '../../../utils/constants';
 import Target from '../../../utils/types/target';
+import TargetObservation from 'utils/types/targetObservation';
 
 const SIZE = 20;
 
 interface SensCalcDisplayMultipleProps {
   observation: Observation;
-  targets: Target[];
+  targetIds: TargetObservation[];
 }
 
 export type tempResults = {
   id: number;
+  error: string;
   title: string;
   status: number;
   field1: string;
@@ -46,15 +50,20 @@ export type tempResults = {
 
 export default function SensCalcDisplayMultiple({
   observation,
-  targets
+  targetIds
 }: SensCalcDisplayMultipleProps) {
   const { t } = useTranslation('pht');
+  const { application } = storageObject.useStore();
+
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results, setResults] = React.useState([]);
+
+  const getProposal = () => application.content2 as Proposal;
 
   const updateResults = (target: Target, values: any) => {
     const item: tempResults = {
       id: target?.id,
+      error: values.error,
       title: target?.name,
       status: values.status,
       field1: values.section1?.length > 0 ? values.section1[0].value : '',
@@ -85,8 +94,8 @@ export default function SensCalcDisplayMultiple({
   };
 
   React.useEffect(() => {
-    const getSensCalcData = async (target: Target) => {
-      const response = await getSensCalc(observation, target);
+    const getSensCalcData = async (ob: Observation, target: Target) => {
+      const response = await getSensCalc(ob, target);
       if (response) {
         const item = updateResults(target, response);
         setResults(results => [...results, item]);
@@ -94,10 +103,13 @@ export default function SensCalcDisplayMultiple({
     };
 
     setResults([]);
-    targets?.forEach(async rec => {
-      getSensCalcData(rec);
-    });
-  }, [targets]);
+    if (targetIds) {
+      targetIds?.forEach(async rec => {
+        const target = getProposal().targets.find(p => p.id === rec.targetId);
+        getSensCalcData(observation, target);
+      });
+    }
+  }, [observation]);
 
   const IconClicked = () => {
     setOpenDialog(true);
@@ -115,10 +127,19 @@ export default function SensCalcDisplayMultiple({
           return;
         default:
           if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
-            result = e;
+            result = STATUS_OK;
           }
       }
-      return;
+    });
+    return result;
+  };
+
+  const getError = () => {
+    let result = '';
+    results.forEach(e => {
+      if (e.status === STATUS_ERROR) {
+        result = e.error;
+      }
     });
     return result;
   };
@@ -129,7 +150,7 @@ export default function SensCalcDisplayMultiple({
         <StatusIcon
           ariaTitle={t('sensitivityCalculatorResults.status', {
             status: t('statusValue.' + getLevel()),
-            error: ''
+            error: getError()
           })}
           testId="statusId"
           icon
@@ -137,13 +158,16 @@ export default function SensCalcDisplayMultiple({
           size={SIZE}
         />
       </IconButton>
-      <SensCalcModalMultiple
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        data={results}
-        observation={observation}
-        level={getLevel()}
-      />
+      {observation && (
+        <SensCalcModalMultiple
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          data={results}
+          observation={observation}
+          level={getLevel()}
+          levelError={getError()}
+        />
+      )}
     </>
   );
 }

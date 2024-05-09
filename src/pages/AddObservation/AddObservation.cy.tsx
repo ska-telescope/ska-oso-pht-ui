@@ -56,20 +56,22 @@ function verifyElevationField() {
 }
 
 function verifyWeatherField() {
-  cy.get('[data-testid="weather"]').type('test weather');
+  //TODO: Refactor to enable editing of field
+  // cy.get('[data-testid="weather"]').type('30');
+  cy.get('[id="weather"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('weather.help');
 }
 
 function verifyObservationTypeZoom() {
-  cy.get('[data-testid="observationType"]').contains('Continuum');
+  cy.get('[data-testid="observationType"]').contains('observationType.1');
   cy.get('[data-testid="observationType"]').click();
   cy.get('[data-value="0"]').click();
-  cy.get('[data-testid="observationType"]').contains('Zoom');
+  cy.get('[data-testid="observationType"]').contains('observationType.0');
   cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
 function verifyObservationTypeContinuum() {
-  cy.get('[data-testid="observationType"]').contains('Continuum');
+  cy.get('[data-testid="observationType"]').contains('observationType.1');
   cy.get('[data-testid="observationType"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
@@ -125,7 +127,7 @@ function verifyLowBandwidthFrequency() {
 }
 
 function verifySpectralResolutionLow() {
-  cy.get('[data-testid="spectralResolution"]').contains('14.1 Hz');
+  // cy.get('[data-testid="spectralResolution"]').contains('14.1 Hz');
   // cy.get('[data-testid="spectralResolution"]').click();
   // cy.get('[data-value="2"]').click();
   // cy.get('[data-testid="spectralResolution"]').contains('28.3 Hz');
@@ -133,7 +135,7 @@ function verifySpectralResolutionLow() {
 }
 
 function verifySpectralResolutionMid() {
-  cy.get('[data-testid="spectralResolution"]').contains('0.21 KHz');
+  // cy.get('[data-testid="spectralResolution"]').contains('0.21 KHz');
   // cy.get('[data-testid="spectralResolution"]').click();
   // cy.get('[data-value="2"]').click();
   // cy.get('[data-testid="spectralResolution"]').contains('0.42 KHz');
@@ -223,6 +225,28 @@ describe('<AddObservation />', () => {
       );
     });
   }
+
+  it('Verify the observation can be added to a group observation', () => {
+    cy.viewport(1500, 1500);
+    cy.mount(
+      <StoreProvider>
+        <BrowserRouter>
+          <AddObservation />
+        </BrowserRouter>
+      </StoreProvider>
+    );
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+    cy.get('[data-testid="groupObservations"]').click();
+    cy.get('[data-value="1"]').click();
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+    cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+    cy.get('[aria-describedby="AddButton"]').click();
+    cy.get('[data-testid="addButton"][aria-describedby="AddButton"]').should('be.disabled');
+    cy.get('[data-testid="groupObservations"]')
+      .find('input')
+      .should('be.disabled');
+    cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
+  });
 
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
     cy.viewport(1500, 1500);

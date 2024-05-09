@@ -1,14 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 
 const PAGE = 2;
+const LINE_OFFSET = 30;
 
 export default function GeneralPage() {
   const { t } = useTranslation('pht');
@@ -90,6 +91,7 @@ export default function GeneralPage() {
   const abstractField = () => {
     const MAX_CHAR = Number(t('abstract.maxChar'));
     const MAX_WORD = Number(t('abstract.maxWord'));
+    const numRows = Number(t('abstract.minDisplayRows'));
 
     const setValue = (e: string) => {
       setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
@@ -118,18 +120,20 @@ export default function GeneralPage() {
     }
 
     return (
-      <TextEntry
-        label={t('abstract.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        testId="abstractId"
-        rows={t('abstract.minDisplayRows')}
-        value={getProposal().abstract}
-        setValue={(e: string) => setValue(e)}
-        onFocus={() => helpComponent(t('abstract.help'))}
-        helperText={helperFunction(getProposal().abstract)}
-        errorText={validateWordCount(getProposal().abstract)}
-      />
+      <Box sx={{ height: LINE_OFFSET * numRows }}>
+        <TextEntry
+          label={t('abstract.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          testId="abstractId"
+          rows={numRows}
+          value={getProposal().abstract}
+          setValue={(e: string) => setValue(e)}
+          onFocus={() => helpComponent(t('abstract.help'))}
+          helperText={helperFunction(getProposal().abstract)}
+          errorText={validateWordCount(getProposal().abstract)}
+        />
+      </Box>
     );
   };
 
@@ -138,7 +142,6 @@ export default function GeneralPage() {
       options={GENERAL.ScienceCategory}
       testId="categoryId"
       value={getProposal().category}
-      select
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold

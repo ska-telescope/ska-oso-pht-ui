@@ -17,14 +17,19 @@ The Observation Page consists of two distinct sections:
 - Left side:
 
   - Add Observation: Click this button to create a new observation entry.
-  - Observation List: View a table summarizing existing observations with details like telescope, array, type, and actions (delete).
+  - Observation List: View a table summarizing existing observations with details like array, type, Sensitivity Calculation Summary and actions (delete).
+  - The observation list also displays the group Id if a given observation belongs to a group.
 
 - Right side:
 
-  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for bulk actions.
-  - The status icon next to each linked target-observation shows the status of the Sensitivity Calculator API request.
-  - If an error is returned from the Sensitivity Calculator API, a tooltip showing the error is displayed when hovering over the status icon.
+  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
+  - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation.
 
+.. admonition:: Sensitivity Calculation Display
+
+   Further details of this can be found in the appropriate section of this guide
+
+   
 2. Observation Mode Details:
 
 - This section appears upon clicking "Add Observation".
@@ -41,7 +46,14 @@ The Observation Page consists of two distinct sections:
   - Other fields: Additional details may appear based on your selections, influenced by the Sensitivity Calculator.
   - Add: Once finished, click this button to add the defined observation to the list.
 
-3. Sensitivity Calculator results
+3. Observation Group
+
+- The user has the option to group observations together by adding them to a group.
+- The observation can be added to an existing group or a new group can be created.
+- Adding an observation to a group is optional.
+- At the moment, once an observation has been added to a group, it can not be removed.
+
+4. Sensitivity Calculator results
 
 - This modal appears upon clicking on the status icon at the right of the linked target-observation
 - This displays the results returned from the Sensitivity Calculator API.

@@ -16,7 +16,7 @@ interface SensCalcDisplaySingleProps {
 const SIZE = 30;
 const SPACER_HEIGHT = 30;
 
-export default function SensCalcDisplaySingle({ open, onClose, data }: SensCalcDisplaySingleProps) {
+export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
   };

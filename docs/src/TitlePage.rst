@@ -31,7 +31,7 @@ Proposal sub-types are optional.
    :header: "Proposal Sub-Type", "Initials", "Description"
 
     "Target of Opportunity", "ToO", "A target of opportunity observing proposal"
-    "Joint Telescope proposal", "JTP", " proposal that requires both SKA-Mid and SKA-Low telescopes"
+    "Joint SKA proposal", "JSP", " proposal that requires both SKA-Mid and SKA-Low telescopes"
     "Coordinated Proposal", "CP", "A proposal requiring observing to be coordinated with another facility( either ground or space based) with user-specified scheduling constraints provided."
     "Long Term Proposal", "LTP", "A proposal that spans multiple proposal cycles. This differs from KSP as LTP typically needs small amounts of time spread over more than one cycle and KSP requires a lot of observing time."
 

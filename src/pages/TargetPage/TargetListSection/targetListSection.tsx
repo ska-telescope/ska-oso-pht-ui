@@ -123,8 +123,6 @@ export default function TargetListSection() {
             columns={extendedColumns}
             height={400}
             onRowClick={ClickTargetRow}
-            showBorder={false}
-            showMild
             testId="targetListColumns"
           />
         )}

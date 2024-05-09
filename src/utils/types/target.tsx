@@ -1,10 +1,10 @@
 export type TargetBackend = {
-  declination: number;
+  declination: string;
   declination_unit: string;
   name: string;
-  right_ascension: number;
+  right_ascension: string;
   right_ascension_unit: string;
-  velocity: number;
+  velocity: string;
   velocity_unit: string;
 };
 

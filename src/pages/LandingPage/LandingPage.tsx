@@ -146,10 +146,16 @@ export default function LandingPage() {
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 200 },
+    { field: 'category', headerName: t('category.label'), width: 200 },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
-    { field: 'status', headerName: t('status.label'), width: 100 },
+    {
+      field: 'status',
+      headerName: t('status.label'),
+      width: 100,
+      renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+    },
     { field: 'lastUpdated', headerName: t('updated.label'), width: 150 },
     {
       field: 'cpi',
@@ -195,8 +201,8 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
-        <Typography variant="h5">{t('page.11.desc')}</Typography>
+      <Grid p={6} container direction="column" alignItems="center" justifyContent="center">
+        <Typography variant="h6">{t('page.11.desc')}</Typography>
       </Grid>
 
       <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
@@ -242,8 +248,6 @@ export default function LandingPage() {
                 testId="dataGridId"
                 rows={filteredData}
                 columns={extendedColumns}
-                showBorder={false}
-                showMild
                 height={500}
               />
             )}

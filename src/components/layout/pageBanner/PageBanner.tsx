@@ -164,12 +164,12 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           </Grid>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant="h6" m={2}>
+          <Typography id="pageTitle" variant="h6" m={2}>
             {t(`page.${pageNo}.title`).toUpperCase()}
           </Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography variant="body1" m={2}>
+          <Typography id="pageDesc" variant="body1" m={2}>
             {t(`page.${pageNo}.desc`)}
           </Typography>
         </Grid>

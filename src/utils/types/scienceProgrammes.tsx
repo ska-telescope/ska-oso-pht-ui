@@ -3,4 +3,5 @@ export type ScienceProgrammeBackend = {
   subarray: string;
   linked_sources: string[];
   observation_type: string;
+  groupId?: string;
 };

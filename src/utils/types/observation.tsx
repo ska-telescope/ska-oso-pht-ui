@@ -1,6 +1,5 @@
 type Observation = {
-  id: number;
-  obset_id: string;
+  id: string;
   telescope: number;
   subarray: number;
   linked: string;
@@ -8,7 +7,7 @@ type Observation = {
   observing_band: number;
   weather?: number; // only for MID
   elevation: number;
-  central_frequency: number;
+  central_frequency: string;
   bandwidth: number;
   spectral_averaging?: number; // only for LOW
   tapering?: number; // only for MID
@@ -16,7 +15,7 @@ type Observation = {
   integration_time: string;
   integration_time_units: number;
   // continuum_bandwidth?: number; // used where? => same as bandwidth
-  spectral_resolution: number;
+  spectral_resolution: string;
   effective_resolution: number;
   number_of_sub_bands?: number; // only for MID
   number_of_15m_antennas?: number;

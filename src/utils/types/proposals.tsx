@@ -24,6 +24,7 @@ export type Proposals = {
   title: string;
   cycle: string;
   pi: string;
+  category: string;
   cpi: string;
   status: string;
   lastUpdated: string;

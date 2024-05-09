@@ -1,6 +1,7 @@
 type TargetObservation = {
   targetId: number;
-  observationId: number;
+  observationId: string;
+  sensCalc: any;
 };
 
 export default TargetObservation;
