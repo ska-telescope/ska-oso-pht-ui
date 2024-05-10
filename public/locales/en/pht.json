@@ -459,11 +459,11 @@
     "label": {
       "1": {
         "0": "Right Ascension",
-        "1": "Latitude"
+        "1": "Longitude"
       },
       "2": {
         "0": "Declination",
-        "1": "Longitude"
+        "1": "Latitude"
       }
     },
     "mask": {
