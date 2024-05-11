@@ -53,8 +53,13 @@ export default function ProposalDisplay({
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrlString = String(signedUrl);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData')) {
+        window.open(signedUrl, '_blank');
+      }
+
+      if (signedUrlString.includes(selectedFile)) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
