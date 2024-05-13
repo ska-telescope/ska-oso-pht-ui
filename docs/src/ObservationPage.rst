@@ -33,26 +33,27 @@ The Observation Page consists of two distinct sections see :ref:`Figure <obspage
 
 1. Observation set list and Target Selection:
 
-
 - Observation set list table which shows a table that displays the following details :
   
-   - observation Id
-   - observation group id: displays the group Id if a given observation belongs to a group.
-   - array 
-   - sub-array
-   - type of observation
-   - Sensitivity Calculation status: clicking on this status will open a modal with the results see :ref:`Figure <senscal>`. 
+   - observation Id: unique id for each observation set.
+   - observation group id: displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
+   - array: Array of the observation set i.e if MID or LOW.
+   - sub-array: This displays the sub-array of observation set.
+   - type of observation: If continuum or zoom.
+   - Sensitivity Calculation status: clicking on this status will open a modal with the results. See :ref:`Figure <senscal>`. 
    - *actions* : only delete action is available at the moment.
 
 - Target List: 
-  
-   - Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
-   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation.
+  This view allow you to add target(s) by clicking on the check box.
+   - Select targets associated with the chosen observation set by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
+   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation for that target. Hovering on this will display the status and clicking will display the target level results from the sensitivity calculator.
+   - The sensitivity based on the sensitivity calculator result.
+   - The beam size based on the sensitivity calculator result.
 
 
 .. tip:: 
 
-   - You can add targets to an observation set by selecting the target and each time, the sensitivity calculations are computed.
+   - You can add targets to an observation set by selecting the target and each time, the sensitivity calculations are computed on the go.
 
 
 
@@ -62,7 +63,7 @@ The Observation Page consists of two distinct sections see :ref:`Figure <obspage
    Further details of this can be found in the appropriate section of this guide
 
    
-1. Observation Mode Details:
+2. Add observation:
 
 - This section appears upon clicking "Add Observation".
 
@@ -108,14 +109,13 @@ Key Information and Actions
   - Create new observation entries.
   - Link observations to specific targets.
   - Define key parameters like array configuration, observation type, and additional details.
-  - View and manage your observation list.
-  - Utilize dynamic help for field descriptions.
+  - Manage observation list.
   - View the Sensitivity Calculator results for each linked observation-target.
 
 Next Steps
 ==========
 
-After specifying your observation details using the provided methods, click "Technical" to proceed to the next page, where you'll provide more specific technical information about your proposal.
+After adding observation set(s) you can proceed to the "Technical" page or any other page. 
 
 .. admonition:: Confirmation Summary
 

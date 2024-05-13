@@ -29,6 +29,10 @@ selected
    :width: 90%
    :alt: screen in light & dark mode 
 
+
+.. figure:: /images/obssenscal.png
+   :width: 90%
+   :alt: screen in light & dark mode
 Observation level Sensitivity Calculation
 =========================================
 
