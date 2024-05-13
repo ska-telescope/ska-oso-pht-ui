@@ -44,7 +44,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.skaSensitivityCalcUrl -}}
 {{ .Values.runtimeEnv.skaSensitivityCalcUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/sensitivity/
+/{{ .Release.Namespace }}/senscalc/api/v9/
 {{- end }}
 {{- end }}
 
