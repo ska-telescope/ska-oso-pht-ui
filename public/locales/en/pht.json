@@ -450,10 +450,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string or in degress"
+        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string 'HH:MM:SS.S' or in degress"
       },
       "2": {
-        "value": "DECLINATION: "
+        "value": "DECLINATION: This field takes the declination of a target in a string 'DD:MM:SS.S' or in degress. Declinations below 5 degrees cannot be observed for MID observations and below 10 degress for LOW observations."
       }
     },
     "label": {
@@ -701,7 +701,7 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
-      "title": "SDP",
+      "title": "SDP Data",
       "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
@@ -727,7 +727,7 @@
     },
     "13": {
       "title": "Data Product",
-      "desc": "Add a data product(s) to your proposal. You can select more than 1 data products for an observation set."
+      "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     }
   },
   "label": {
