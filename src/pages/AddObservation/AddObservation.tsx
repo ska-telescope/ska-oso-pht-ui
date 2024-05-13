@@ -646,7 +646,6 @@ export default function AddObservation() {
             value={elevation}
             setValue={setElevation}
             onFocus={() => helpComponent(t('elevation.help'))}
-            required
             suffix={elevationUnitsField()}
           />
         </Grid>
@@ -676,7 +675,6 @@ export default function AddObservation() {
             value={weather}
             setValue={setWeather}
             onFocus={() => helpComponent(t('weather.help'))}
-            required
             suffix={weatherUnitsField()}
           />
         </Grid>
