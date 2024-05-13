@@ -48,15 +48,27 @@ export default function ProposalDisplay({
     onClose();
   };
 
-  const getScienceURL = () => {
-    const temp = getProposal().sciencePDF;
-    console.log(temp, getProposal());
-  };
+  async function isXMLContent() {
+    const proposal = getProposal();
+    const selectedFile = `${proposal.id}-science` + t('fileType.pdf');
+    const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+    const signedUrlString = String(signedUrl);
 
-  const getTechnicalURL = () => {
-    const temp = getProposal().technicalPDF;
-    console.log(temp, getProposal());
-  };
+    try {
+      // Create a new DOMParser
+      const parser = new DOMParser();
+
+      // Try to parse the content as XML
+      parser.parseFromString(signedUrlString, 'text/xml');
+
+      // If parsing succeeds without throwing an error, it's valid XML
+      return true;
+    } catch (error) {
+      // If an error occurs during parsing, it's not valid XML
+      return false;
+    }
+  }
+  const hasXMLError = !isXMLContent();
 
   const downloadPdf = async (fileType: string) => {
     try {
@@ -211,7 +223,6 @@ export default function ProposalDisplay({
       </Grid>
     </Grid>
   );
-
   const scienceContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
@@ -221,12 +232,18 @@ export default function ProposalDisplay({
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
             {getProposal().id}-science{t('fileType.pdf')}
-            {getScienceURL()}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.science.toolTip')}
             onClick={() => downloadPdf('science')}
           />
+          <div>
+            {hasXMLError ? (
+              <p>The content contains XML errors.</p>
+            ) : (
+              <p>The content is valid XML.</p>
+            )}
+          </div>
         </Grid>
       </Grid>
     </Grid>
@@ -324,7 +341,6 @@ export default function ProposalDisplay({
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
             {getProposal().id}-technical{t('fileType.pdf')}
-            {getTechnicalURL()}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.technical.toolTip')}
