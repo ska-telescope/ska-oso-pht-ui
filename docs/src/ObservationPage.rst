@@ -119,4 +119,4 @@ After specifying your observation details using the provided methods, click "Tec
 
 .. admonition:: Confirmation Summary
 
-   Ensure proposal is save regularly
+   Ensure proposal is saved regularly

@@ -450,7 +450,7 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "RIGHT ASCENSION: This field takes the right ascension of a arget in a string or in degress"
+        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string or in degress"
       },
       "2": {
         "value": "DECLINATION: "
