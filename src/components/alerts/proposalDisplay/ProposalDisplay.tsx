@@ -48,6 +48,16 @@ export default function ProposalDisplay({
     onClose();
   };
 
+  const getScienceURL = () => {
+    const temp = getProposal().sciencePDF;
+    console.log(temp, getProposal());
+  };
+
+  const getTechnicalURL = () => {
+    const temp = getProposal().technicalPDF;
+    console.log(temp, getProposal());
+  };
+
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
@@ -59,7 +69,7 @@ export default function ProposalDisplay({
         window.open(signedUrl, '_blank');
       }
 
-      if (signedUrlString.includes(selectedFile)) {
+      if (signedUrlString?.includes(selectedFile)) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -210,7 +220,8 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {(getProposal().sciencePDF as unknown) as string}
+            {getProposal().id}-science{t('fileType.pdf')}
+            {getScienceURL()}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.science.toolTip')}
@@ -312,7 +323,8 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {(getProposal().technicalPDF as unknown) as string}
+            {getProposal().id}-technical{t('fileType.pdf')}
+            {getTechnicalURL()}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.technical.toolTip')}
