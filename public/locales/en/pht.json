@@ -450,7 +450,7 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "RIGHT ASCENSION:"
+        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string or in degress"
       },
       "2": {
         "value": "DECLINATION: "
@@ -459,11 +459,11 @@
     "label": {
       "1": {
         "0": "Right Ascension",
-        "1": "Latitude"
+        "1": "Longitude"
       },
       "2": {
         "0": "Declination",
-        "1": "Longitude"
+        "1": "Latitude"
       }
     },
     "mask": {
