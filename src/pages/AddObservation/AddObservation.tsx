@@ -646,6 +646,7 @@ export default function AddObservation() {
             value={elevation}
             setValue={setElevation}
             onFocus={() => helpComponent(t('elevation.help'))}
+            required
             suffix={elevationUnitsField()}
           />
         </Grid>
