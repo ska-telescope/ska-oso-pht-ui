@@ -1,86 +1,81 @@
-Data Page
-=========
+SDP Page
+~~~~~~~~~
 
-This guide explains the "Data Page," where you can add/delete Data Products associated with your proposal.
+The SDP page is linked with the observation page so observation sets can be made available. Here, you can request a single or multiple data products for an observation set or all observation sets added to your proposal.
+:ref:`Figure <datapage>` shows the layout of the data page in light mode when no data product has been added to observation(s).
+
+
+.. |icosdp| image:: /images/addsdp.png
+   :width: 20%
+   :alt: Page filter
+
+
+.. _datapage:
 
 .. figure:: /images/dataProductPage.png
-   :width: 90%
-   :alt: screen in light & dark mode 
+   :width: 100%
+   :alt: SDP page in screen in light mode 
+
+   Figure : Data page in light mode.
 
 Layout and Navigation
 =====================
 
-The Data Product Page contains the following:
+The are two parts to the SDP page:
 
-1. Data Product List
+1. **Landing page**
 
-- Displays a table with information about each data product
 
-  - Observatory Data Product
-  - Observations
-  - Image Size
-  - Pixel Size
-  - Weighting
-  - "Actions" (delete)
+To add SDP to an observation, click  |icosdp| button. once data products 
+have been added to your observation set(s), the SDP landing page will 
+display a table as shown in :ref:`Figure <datapage1>`. This table displays the following:
+
+  - *Observations*: Observation selected for which the data product(s) is added.
+  - *Observatory Data Product*: Selected data products(s).
+  - *Image Size*: Image size requested.
+  - *Pixel Size*: Pixel size calculated based on entered parameters.
+  - *Weighting*: The weighting of the selected observation set
+  - *"Actions"* : only delete option is available at the moment.
+
+
+
+.. _datapage1:
+
+.. figure:: /images/sdpdata1.png
+   :width: 90%
+   :alt: SDP page in screen in light mode 
+
+   Figure : Data page in light mode with data products added.
+
+
   
 
-2. Data Product Management Options
+1. **Data Product Management**
 
-- Clicking on the "Add Data Product" button takes the user to a page where he can enter a new data product
-- Once added, the new data product is displayed in the Data Product List.
+- Clicking on the |icosdp| button takes the user to a page where parameters of the 
+  data product(s) can be specified as shown in :ref:`Figure <datapage2>`
 
-Navigation Elements
-===================
+.. _datapage2:
 
-- Home: (Top left corner) Returns you to the Landing Page.
-- Title Page: (Bottom left corner) Takes you back to the Title Page.
-- Save: (Top left) Saves your progress on the Team Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
-- General: (Bottom right corner) Takes you to the next page for general proposal details.
-
-Additional Features
-===================
-
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/teamPage.png
+.. figure:: /images/sdpdata2.png
    :width: 90%
-   :alt: screen in light & dark 
-   
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
+   :alt: SDP page in screen in light mode 
 
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
+   Figure : Data management page in light mode.
+
 
 Key Information and Actions
 ===========================
 
-- View your proposal data products.
-- Create new data products.
+- View data products added to observation set(s).
+- Add new data products.
 - Delete data products.
+- If no observation is added to your proposal yet, the |icosdp| button will be deactivated.
 
 Next Steps
 ==========
 
-After successfully managing your data products on this page, you'll move on to the "SRC Net" page, where you enter your pipeline information.
+After successfully adding data products, you can move to the "SRC Net" page or any other page.
 
-Additional Notes
-================
 
-- This guide assumes you're already logged in to PPT.
-- The content remains the same regardless of your user context.
-- Dynamic help is available, when you hover over fields, for descriptions. 
-- Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated.
 
-.. admonition:: Confirmation Summary
-
-   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.

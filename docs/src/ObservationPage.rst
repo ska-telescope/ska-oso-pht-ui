@@ -1,36 +1,68 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
+On entering the observation page for the first time, it will look like :ref:`Figure <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button.
+and after filling out the form and clicking "Add", the page will look like :ref:`Figure <obspage1>`.
 
-This guide explains the “Observation Page”, where you seamlessly define your observation needs.
 
+
+
+.. |icoobs| image:: /images/obsbutton.png
+   :width: 20%
+   :alt: Page filter
+
+
+.. _obspage2:
+
+.. figure:: /images/observationPage2.png
+   :width: 90%
+   :alt: screen in light & dark mode 
+
+
+.. _obspage1:
 .. figure:: /images/observationPage.png
    :width: 90%
    :alt: screen in light & dark mode 
 
+.. note:: 
+   :ref:`Figure <obspage1>` has two sections.
+
 Layout and Navigation
 =====================
 
-The Observation Page consists of two distinct sections:
+The Observation Page consists of two distinct sections see :ref:`Figure <obspage1>`:
 
-1. Observation List and Target Selection:
+1. Observation set list and Target Selection:
 
-- Left side:
 
-  - Add Observation: Click this button to create a new observation entry.
-  - Observation List: View a table summarizing existing observations with details like array, type, Sensitivity Calculation Summary and actions (delete).
-  - The observation list also displays the group Id if a given observation belongs to a group.
+- Observation set list table which shows a table that displays the following details :
+  
+   - observation Id
+   - observation group id: displays the group Id if a given observation belongs to a group.
+   - array 
+   - sub-array
+   - type of observation
+   - Sensitivity Calculation status: clicking on this status will open a modal with the results see :ref:`Figure <senscal>`. 
+   - *actions* : only delete action is available at the moment.
 
-- Right side:
+- Target List: 
+  
+   - Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
+   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation.
 
-  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
-  - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation.
+
+.. tip:: 
+
+   - You can add targets to an observation set by selecting the target and each time, the sensitivity calculations are computed.
+
+
+
 
 .. admonition:: Sensitivity Calculation Display
 
    Further details of this can be found in the appropriate section of this guide
 
    
-2. Observation Mode Details:
+1. Observation Mode Details:
 
 - This section appears upon clicking "Add Observation".
 
@@ -59,40 +91,14 @@ The Observation Page consists of two distinct sections:
 - This displays the results returned from the Sensitivity Calculator API.
 - There is also a modal showing the results for the list of linked targets, when clicking on the observation status.
 
+.. _senscal:
+
 .. figure:: /images/sensitivityCalculatorModal.png
    :width: 90%
    :alt: screen in light & dark mode 
 
-Navigation Elements
-===================
 
-- Home: (Top left corner) Returns you to the Landing Page.
-- Target Page: (Bottom left corner) Takes you back to the Target Page.
-- Save: (Top left) Saves your progress on the Observation Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
-- Technical: (Bottom right corner) Moves you to the next page for Technical Justification details.
 
-Additional Features
-===================
-
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/observationPage.png
-   :width: 90%
-   :alt: screen in light & dark mode 
-   
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
-
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
@@ -111,15 +117,6 @@ Next Steps
 
 After specifying your observation details using the provided methods, click "Technical" to proceed to the next page, where you'll provide more specific technical information about your proposal.
 
-Additional Notes
-================
-
-- This guide assumes you're already logged in to PPT.
-- The content remains the same regardless of your user context.
-- Dynamic help is available, when you hover over fields, for descriptions. 
-- Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated.
-
 .. admonition:: Confirmation Summary
 
-   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.
+   Ensure proposal is saved regularly
