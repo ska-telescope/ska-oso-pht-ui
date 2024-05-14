@@ -14,7 +14,7 @@ type Observation = {
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID
   imageWeighting: number;
-  integrationTime: string;
+  integrationTime: number;
   integrationTimeUnits: number;
   // continuumBandwidth?: number; // used where? => same as bandwidth
   spectralResolution: string;

@@ -383,11 +383,11 @@ export const OBSERVATION = {
     { lookup: 4, value: '11.85' }
   ],
   ContinuumBandwidth: [
-    { lookup: 0, value: '75' },
-    { lookup: 1, value: '0.7' },
-    { lookup: 2, value: '0.8' },
-    { lookup: 3, value: '0.8' },
-    { lookup: 4, value: '0.8' }
+    { lookup: 0, value: 75 },
+    { lookup: 1, value: 0.7 },
+    { lookup: 2, value: 0.8 },
+    { lookup: 3, value: 0.8 },
+    { lookup: 4, value: 0.8 }
   ],
   SpectralResolution: [
     { lookup: 0, value: '5.43 kHz (8.1 km/s)' },

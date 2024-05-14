@@ -30,6 +30,7 @@ export default function VelocityField({
 }: VelocityFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'velocity';
+  const VELOCITY = 0;
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
@@ -59,7 +60,7 @@ export default function VelocityField({
         testId={FIELD + 'Value'}
         value={value}
         setValue={setValue}
-        suffix={valueType === 0 ? VelocityUnitField() : ''}
+        suffix={valueType === VELOCITY ? VelocityUnitField() : ''}
         onFocus={valueFocus}
       />
     );
