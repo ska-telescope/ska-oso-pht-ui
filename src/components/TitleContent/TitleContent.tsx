@@ -8,6 +8,9 @@ import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
+import IconButton from '@mui/material/IconButton';
+import FunctionsIcon from '@mui/icons-material/Functions';
+import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
 
 interface TitleContentProps {
   page: number;
@@ -22,6 +25,10 @@ export default function TitleContent({ page }: TitleContentProps) {
   const [tempValue, setTempValue] = React.useState(0);
   const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
+
+  const [openTitleLatexModal, setOpenTitleLatexModal] = React.useState(false);
+  const handleOpenTitleLatexModal = () => setOpenTitleLatexModal(true);
+  const handleCloseTitleLatexModal = () => setOpenTitleLatexModal(false);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -247,6 +254,11 @@ export default function TitleContent({ page }: TitleContentProps) {
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title)}
+        suffix={
+          <IconButton aria-label="preview latex" edge="end" onClick={handleOpenTitleLatexModal}>
+            <FunctionsIcon />
+          </IconButton>
+        }
       />
     );
   };
@@ -263,9 +275,20 @@ export default function TitleContent({ page }: TitleContentProps) {
             alignItems="center"
             spacing={2}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               {titleField()}
             </Grid>
+            <Grid item xs={1}>
+              <IconButton aria-label="preview latex" onClick={handleOpenTitleLatexModal}>
+                <FunctionsIcon />
+              </IconButton>
+            </Grid>
+            <LatexPreviewModal
+              value={getProposal().title}
+              open={openTitleLatexModal}
+              onClose={handleCloseTitleLatexModal}
+              title={t('title.latexPreviewTitle')}
+            />
             <Grid item xs={4}>
               <Typography variant="body2">{t('title.help')}</Typography>
               <Typography pr={2} variant="body2" sx={{ fontStyle: 'italic' }}></Typography>
