@@ -57,11 +57,11 @@ async function GetWeighting(observation: Observation, inMode: number) {
         .toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
-      subarray_configuration: getSubArray(),
+      array_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
-      resolution: '0',
       taper: observation.tapering?.toString()
     });
+
     return params;
   }
 
