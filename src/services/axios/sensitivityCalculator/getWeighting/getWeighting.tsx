@@ -67,7 +67,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
-      freq_centre: observation.centralFrequency?.toString()
+      freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
     });
     return params;
   }

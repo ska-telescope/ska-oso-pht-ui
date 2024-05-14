@@ -118,7 +118,7 @@ async function GetCalculate(observation: Observation) {
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
         ?.toString(),
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
-      freq_centre: observation.centralFrequency?.toString(),
+      freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     });
