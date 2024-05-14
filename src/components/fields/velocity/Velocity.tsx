@@ -32,6 +32,10 @@ export default function VelocityField({
   const FIELD = 'velocity';
   const VELOCITY = 0;
 
+  React.useEffect(() => {
+    setValue('');
+  }, [valueType]);
+
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
 

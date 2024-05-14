@@ -50,9 +50,9 @@ const mapping = (
       ' ' +
       response.galactic.lat +
       ' ' +
-      response.equatorial.redshift +
+      response.galactic.redshift +
       ' ' +
-      response.equatorial.velocity +
+      response.galactic.velocity +
       ' ' +
       MOCK_UNITS[1].toLowerCase()
     );
