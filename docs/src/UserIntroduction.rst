@@ -5,7 +5,7 @@ Welcome, astronomers!
 
 The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
-The PPT supports both light and dark modes and can be accessed at the top left corner |icostatus| of your screen - see :ref:`Figure 1 <figure1>`.
+The PPT supports both light and dark modes and can be accessed at the top left corner |icostatus| of your screen - see :numref:`Figure %s <figure1>`.
 
 
 
@@ -35,7 +35,7 @@ The PPT supports both light and dark modes and can be accessed at the top left c
    :alt: screen in light & dark mode of the landing page
    :class: with-border
 
-   :ref:`Figure 1 <figure1>`: Location of light and dark mode toggle of the PPT.
+   Location of light and dark mode toggle of the PPT.
 
 
 
@@ -49,7 +49,7 @@ Common elements are recurring components found across multiple pages in the tool
 .. csv-table:: Common elements and description
    :header: "Element", "Description"
 
-   "Status Indicators",	"Displayed at the top of the page. It shows the validation status as seen in :ref:`Figure 2 <figure2>`  on each page in the flow." 
+   "Status Indicators",	"Displayed at the top of the page. It shows the validation status as seen in :numref:`Figure %s <figure2>`  on each page in the flow." 
    "Home Button", "Positioned at the top left corner, enabling you to return to the Landing Page."
    "Save Button",	"Located at the top left corner, next to the home button, allowing you to save your progress on each page."
    "Validate Button",	"Positioned at the top right. This allows your proposal to the validated against the capabilities of a current cycle."
@@ -61,9 +61,10 @@ Common elements are recurring components found across multiple pages in the tool
 
 .. figure:: /images/statusnav.png
    :width: 100%
+   :align: center
    :alt: screen in light & dark mode 
 
-   :ref:`Figure 2 <figure2>` Status, Navigation and Validation.
+   Status, Navigation and Validation.
 
 
 Additional Notes
@@ -73,9 +74,10 @@ Additional Notes
 
 .. figure:: /images/landingPage.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode
 
-Additionally, :ref:`Figure 2 <figure2>` provides three funtions which are navigation, status and validation of each page as outlined below.
+Additionally, :numref:`Figure %s <figure2>` provides three funtions which are navigation, status and validation of each page as outlined below.
 
 - |icostatus2| represents a complete and validated page.
 - |icostatus3| represents an incomplete page. 

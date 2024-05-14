@@ -1,7 +1,7 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
-On entering the observation page for the first time, it will look like :ref:`Figure <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
-and after filling out the form and clicking "Add", the page will look like :ref:`Figure <obspage1>`.
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
+and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
 
 
@@ -15,23 +15,25 @@ and after filling out the form and clicking "Add", the page will look like :ref:
 
 .. figure:: /images/observationPage2.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-   Figure : Observation Set page.
+   Observation Set page.
 
 
 .. _obspage1:
 .. figure:: /images/observationPage.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-   Figure : Observation Set page in light nad dark mode.
+   Observation Set page in light nad dark mode.
 
 
 Layout and Navigation
 =====================
 
-The Observation Page consists of two distinct sections see :ref:`Figure <obspage1>`:
+The Observation Page consists of two distinct sections see :numref:`Figure %s <obspage1>`:
 
 
 1. Observation set list table which shows a table that displays the following details :
@@ -41,7 +43,7 @@ The Observation Page consists of two distinct sections see :ref:`Figure <obspage
    - array: Array of the observation set i.e if MID or LOW.
    - sub-array: This displays the sub-array of observation set.
    - type of observation: If continuum or zoom.
-   - Sensitivity Calculation status: clicking on this status will open a modal with the results. See :ref:`Figure <senscal>`. 
+   - Sensitivity Calculation status: clicking on this status will open a modal with the results. See :numref:`Figure %s <senscal>`. 
    - *actions* : only delete action is available at the moment.
 
 2. Target List: This view allow you to add target(s) by clicking on the check box.
@@ -63,15 +65,16 @@ The Observation Page consists of two distinct sections see :ref:`Figure <obspage
 Add observation
 +++++++++++++++
 
-When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :ref:`Figure <addobspage>` comes up.
+When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :numref:`Figure %s <addobspage>` comes up.
 
 .. _addobspage:
 
 .. figure:: /images/observationSetup.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-   Figure : The add observation page.
+   The add observation page.
 
 
 .. note:: 
@@ -89,9 +92,10 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :r
 
 .. figure:: /images/obssenscal.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-   Figure : Sensitivity calculator result modal display.
+   Sensitivity calculator result modal display.
 
 
 

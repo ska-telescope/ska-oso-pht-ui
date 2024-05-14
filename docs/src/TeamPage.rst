@@ -1,8 +1,8 @@
 Team Page
 ~~~~~~~~~
 
-Once on the team page --> see :ref:`Figure 5 <figure5>`,  you can move between pages where you can click on the page name as seen in 
-:ref:`Figure 5 <figure5>`. See progress status indicated by the navigation bar "top center" of the page.
+Once on the team page --> see :numref:`Figure %s <figure5>`,  you can move between pages where you can click on the page name as seen in 
+:numref:`Figure %s <figure5>`. See progress status indicated by the navigation bar "top center" of the page.
 
 
 
@@ -19,7 +19,7 @@ Once on the team page --> see :ref:`Figure 5 <figure5>`,  you can move between p
    :width: 100%
    :alt: screen in light & dark mode 
 
-   :ref:`Figure 5 <figure5>` The team page in light and dark mode.
+   The team page in light and dark mode.
 
 
 
