@@ -27,7 +27,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light & dark mode 
 
-   Observation Set page in light nad dark mode.
+   Observation Set page in light and dark mode.
 
 
 Layout and Navigation
