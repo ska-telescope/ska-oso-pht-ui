@@ -11,6 +11,7 @@ Entering Title and Creating a proposal
 
 
 - The proposal title allows a maximum of 50 words.
+- The title field saccepts latex syntax - which can be previewed by clicking the eye icon
 - Under proposal types you can select a :ref:`proposal category <proposaltypes>`. Once selected, click |icocreate| to create a proposal and proceed to the next page.
 
 .. tip:: 

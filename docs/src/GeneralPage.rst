@@ -17,7 +17,7 @@ Layout and Navigation
 The General Page has a clear structure:
 
 - Top section: Displays the cycle of the current proposal  ( auto-populated).
-- Abstract area: A text box to write your proposal abstract (maximum 250 words). It accepts latex syntax and you can preview the compiled pdf.
+- Abstract area: A text box to write your proposal abstract (maximum 250 words). It accepts latex syntax - which can be previewed by clicking the eye icon
 - Science Category: A drop down to select the relevant science category  see :ref:`Science Category Table <sciencecat>` for typical Options.
 
 .. _sciencecat:

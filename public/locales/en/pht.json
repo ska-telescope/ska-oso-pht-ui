@@ -60,7 +60,8 @@
     "helper": "Please enter your abstract information.",
     "maxChar": "2300",
     "maxWord": "250",
-    "minDisplayRows": "5"
+    "minDisplayRows": "5",
+    "latexPreviewTitle": "Abstract LaTeX Preview"
   },
   "actions": {
     "label": "Actions"
@@ -631,7 +632,8 @@
     "maxChar": "939",
     "maxWord": "50",
     "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
-    "helper": "Please enter your title information"
+    "helper": "Please enter your title information",
+    "latexPreviewTitle": "Title LaTeX Preview"
   },
   "updated": {
     "label": "Last Updated"
