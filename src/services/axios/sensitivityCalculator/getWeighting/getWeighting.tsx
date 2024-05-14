@@ -18,6 +18,7 @@ import {
 import Observation from 'utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import sensCalHelpers from '../sensCalHelpers';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -45,9 +46,11 @@ async function GetWeighting(observation: Observation, inMode: number) {
       obj => obj.value === observation.imageWeighting
     );
 
+    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
+
     const params = new URLSearchParams({
-      frequency: observation.centralFrequency,
-      zoom_frequencies: observation.centralFrequency?.toString(),
+      frequency: (sensCalHelpers.format.convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])).toString(),
+      zoom_frequencies: (sensCalHelpers.format.convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])).toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
