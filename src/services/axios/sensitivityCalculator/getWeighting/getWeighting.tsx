@@ -49,8 +49,12 @@ async function GetWeighting(observation: Observation, inMode: number) {
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
     const params = new URLSearchParams({
-      frequency: (sensCalHelpers.format.convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])).toString(),
-      zoom_frequencies: (sensCalHelpers.format.convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])).toString(),
+      frequency: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
+      zoom_frequencies: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
       subarray_configuration: getSubArray(),

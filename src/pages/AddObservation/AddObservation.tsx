@@ -929,7 +929,9 @@ export default function AddObservation() {
         observingBand: observingBand,
         weather: weather,
         elevation: elevation,
-        centralFrequency: `${frequency} ${OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label}`,
+        centralFrequency: `${frequency} ${
+          OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
+        }`,
         bandwidth: bandwidth,
         spectralAveraging: spectralAveraging,
         tapering: tapering,

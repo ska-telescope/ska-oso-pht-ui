@@ -46,7 +46,9 @@ async function GetCalculate(observation: Observation) {
     let mode_specific_parameters: ModeSpecificParametersMid = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      mode_specific_parameters.resolution = (Number(observation.spectralResolution.split(' ')[0]) * 1000).toString(); // resolution should be sent in Hz
+      mode_specific_parameters.resolution = (
+        Number(observation.spectralResolution.split(' ')[0]) * 1000
+      ).toString(); // resolution should be sent in Hz
     } else {
       mode_specific_parameters.zoom_frequencies = observation.centralFrequency?.toString();
       mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
@@ -71,7 +73,9 @@ async function GetCalculate(observation: Observation) {
       array_configuration: getSubArray(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
-      frequency: (sensCalHelpers.format.convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])).toString(),
+      frequency: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
       bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
