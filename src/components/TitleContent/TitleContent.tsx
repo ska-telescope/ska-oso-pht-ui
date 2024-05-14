@@ -254,11 +254,6 @@ export default function TitleContent({ page }: TitleContentProps) {
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title)}
-        suffix={
-          <IconButton aria-label="preview latex" edge="end" onClick={handleOpenTitleLatexModal}>
-            <FunctionsIcon />
-          </IconButton>
-        }
       />
     );
   };

@@ -60,7 +60,8 @@
     "helper": "Please enter your abstract information.",
     "maxChar": "2300",
     "maxWord": "250",
-    "minDisplayRows": "5"
+    "minDisplayRows": "5",
+    "latexPreviewTitle":"Abstract LaTeX Preview"
   },
   "actions": {
     "label": "Actions"
