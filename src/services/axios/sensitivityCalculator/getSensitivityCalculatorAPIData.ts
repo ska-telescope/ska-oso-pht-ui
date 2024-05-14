@@ -24,6 +24,7 @@ export type SensCalcResult = {
 };
 
 const SENSCALC_ERROR: SensCalcResult = {
+  id: '',
   title: '',
   status: STATUS_ERROR,
   error: '',
