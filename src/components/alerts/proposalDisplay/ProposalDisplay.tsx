@@ -205,7 +205,7 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {(getProposal().sciencePDF as unknown) as string}
+            {getProposal().id}-science{t('fileType.pdf')}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.science.toolTip')}
@@ -307,7 +307,7 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {(getProposal().technicalPDF as unknown) as string}
+            {getProposal().id}-technical{t('fileType.pdf')}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.technical.toolTip')}
