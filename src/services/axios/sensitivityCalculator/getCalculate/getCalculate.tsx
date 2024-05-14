@@ -46,7 +46,7 @@ async function GetCalculate(observation: Observation) {
     let mode_specific_parameters: ModeSpecificParametersMid = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      mode_specific_parameters.resolution = observation.spectralResolution?.toString();
+      mode_specific_parameters.resolution = (Number(observation.spectralResolution.split(' ')[0]) * 1000).toString();
     } else {
       mode_specific_parameters.zoom_frequencies = observation.centralFrequency?.toString();
       mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
