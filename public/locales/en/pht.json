@@ -414,7 +414,7 @@
     }
   },
   "rightAscension": {
-    "help": "Right ascension HELP",
+    "help": "Right ascension HELP: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
     "label": "Right ascension"
   },
   "robust": {
@@ -450,10 +450,11 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string or in degress"
+        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
+
       },
       "2": {
-        "value": "DECLINATION: "
+        "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degress. Declinations below 5 degrees cannot be observed for MID observations and below 10 degress for LOW observations."
       }
     },
     "label": {
@@ -491,7 +492,7 @@
     "label": "Spatial Imaging"
   },
   "sdp": {
-    "label": "SDP"
+    "label": "SDP Data"
   },
   "search": {
     "label": "Search"
@@ -701,7 +702,7 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
-      "title": "SDP",
+      "title": "SDP Data",
       "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
@@ -727,7 +728,7 @@
     },
     "13": {
       "title": "Data Product",
-      "desc": "Add a data product(s) to your proposal. You can select more than 1 data products for an observation set."
+      "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     }
   },
   "label": {

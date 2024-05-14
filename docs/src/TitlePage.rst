@@ -1,6 +1,6 @@
 Title Page
 ~~~~~~~~~~
-:ref:`Figure 4 <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
+:numref:`Figure %s <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
 
 Entering Title and Creating a proposal
 ======================================
@@ -28,7 +28,7 @@ Entering Title and Creating a proposal
    :width: 100%
    :alt: title screen in light mode
 
-   Figure 4: The title page in light mode.
+   The title page in light mode.
  
 
 

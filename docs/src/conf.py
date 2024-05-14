@@ -87,3 +87,11 @@ intersphinx_mapping = {}
 # -- Options for todo extension ----------------------------------------------
 
 todo_include_todos = True
+
+numfig = True
+
+numfig_format={
+    'figure': 'Figure %s :',
+    'table': 'Table %s',
+    'code-block': 'Listing %s'
+}
