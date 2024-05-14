@@ -51,51 +51,81 @@ export default function SdpDataPage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const columns = [
-    {
-      field: 'observations',
-      headerName: t('observations.dp.label'),
-      flex: 1,
-      disableClickEventBubbling: true
-    },
-    {
-      field: 'observatoryDataProduct',
-      headerName: t('observatoryDataProduct.label'),
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { observatoryDataProduct: number } }) =>
-        t(`observatoryDataProduct.options.${e.row.observatoryDataProduct}`)
-    },
-    {
-      field: 'imageSize',
-      headerName: t('imageSize.label'),
-      flex: 1,
-      disableClickEventBubbling: true
-    },
-    {
-      field: 'pixelSize',
-      headerName: t('pixelSize.label'),
-      flex: 1,
-      disableClickEventBubbling: true
-    },
-    {
-      field: 'weighting',
-      headerName: t('weighting.label'),
-      flex: 1,
-      disableClickEventBubbling: true
-    },
-    {
-      field: 'id',
-      headerName: t('actions.label'),
-      sortable: false,
-      flex: 0.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => (
-        <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
-      )
+  const getODPString = inArr => {
+    let count = 0;
+    let str = '';
+    if (inArr[0]) {
+      count++;
+      str = '1';
     }
+    if (inArr[1]) {
+      count++;
+      str = '3';
+    }
+    if (inArr[2]) {
+      count++;
+      str = '4';
+    }
+    if (inArr[3]) {
+      count++;
+      str = '4';
+    }
+    if (inArr[4]) {
+      count++;
+      str = '5';
+    }
+    return t(
+      count > 1 ? 'observatoryDataProduct.options.many' : 'observatoryDataProduct.options.' + str,
+      { count }
+    );
+  };
+
+  const extendedColumnsObservations = [
+    ...[
+      {
+        field: 'observations',
+        headerName: t('observations.dp.label'),
+        flex: 1,
+        disableClickEventBubbling: true
+      },
+      {
+        field: 'observatoryDataProduct',
+        headerName: t('observatoryDataProduct.label'),
+        flex: 1,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { observatoryDataProduct: number } }) =>
+          getODPString(e.row.observatoryDataProduct)
+      },
+      {
+        field: 'imageSize',
+        headerName: t('imageSize.label'),
+        flex: 1,
+        disableClickEventBubbling: true
+      },
+      {
+        field: 'pixelSize',
+        headerName: t('pixelSize.label'),
+        flex: 1,
+        disableClickEventBubbling: true
+      },
+      {
+        field: 'weighting',
+        headerName: t('imageWeighting.label'),
+        flex: 1,
+        disableClickEventBubbling: true
+      },
+      {
+        field: 'id',
+        headerName: t('actions.label'),
+        sortable: false,
+        flex: 0.5,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { id: number } }) => (
+          <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
+        )
+      }
+    ]
   ];
-  const extendedColumnsObservations = [...columns];
 
   const deleteIconClicked = () => {
     setOpenDialog(true);
