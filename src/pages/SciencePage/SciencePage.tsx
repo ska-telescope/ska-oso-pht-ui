@@ -71,7 +71,7 @@ export default function SciencePage() {
       const selectedFile = `${prsl_id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {

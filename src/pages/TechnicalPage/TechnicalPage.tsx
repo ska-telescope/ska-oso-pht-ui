@@ -68,10 +68,10 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + t('pdfDownload.technical') + t('fileType.pdf');
+      const selectedFile = `${prsl_id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -110,7 +110,7 @@ export default function TechnicalPage() {
         <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('uploadPDF.technical.label')}
+            {t('uploadPDF.label')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
