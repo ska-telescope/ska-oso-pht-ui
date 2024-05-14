@@ -51,10 +51,10 @@ async function GetCalculate(observation: Observation) {
       ).toString(); // resolution should be sent in Hz
     } else {
       const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
-      mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
-      .convertFrequencytoHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
-      .toString(),
-      mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
+      (mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
+        .convertFrequencytoHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
+        .toString()),
+        (mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString());
     }
 
     const weighting = OBSERVATION.ImageWeighting.find(

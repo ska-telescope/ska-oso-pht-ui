@@ -99,11 +99,12 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting
   */
 
-    console.log('observation', observation);
+  console.log('observation', observation);
 
   const calculate = await GetCalculate(observation);
   const weighting = await GetWeighting(observation, observation.type);
-  const weightingLine = observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_ZOOM) : null
+  const weightingLine =
+    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_ZOOM) : null;
   /*const weightingLine =
     observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;*/
 
