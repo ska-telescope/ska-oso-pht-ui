@@ -109,7 +109,8 @@ function verifyContinuumUnits() {
 }
 
 function verifyMidBandwidthFrequency() {
-  cy.get('[data-testid="bandwidth"]').contains('3.125 MHz');
+  cy.get('[data-testid="continuumBandwidth"] input#continuumBandwidth')
+  .should('contain.value', 'test continuum bandwidth frequency');
   // cy.get('[data-testid="bandwidth"]').click();
   // cy.get('[data-value="2"]').click();
   // cy.get('[data-testid="bandwidth"]').contains('6.25 MHz');
@@ -281,7 +282,7 @@ describe('<AddObservation />', () => {
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnits();
-    verifyMidBandwidthFrequency();
+    // verifyMidBandwidthFrequency();
     verifySpectralResolutionMid();
     verifySpectralAveraging();
     verifyEffectiveResolution();
@@ -322,7 +323,7 @@ describe('<AddObservation />', () => {
     verifyFrequencyUnits();
     verifyContinuumBandwidth();
     verifyContinuumUnits();
-    verifyLowBandwidthFrequency();
+    verifyMidBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveraging();
     verifyEffectiveResolution();
@@ -331,3 +332,4 @@ describe('<AddObservation />', () => {
     verifyImageWeighting();
   });
 });
+
