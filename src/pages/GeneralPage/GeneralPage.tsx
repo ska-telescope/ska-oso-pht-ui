@@ -9,8 +9,8 @@ import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/co
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import IconButton from '@mui/material/IconButton';
-import FunctionsIcon from '@mui/icons-material/Functions';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
+import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -137,7 +137,7 @@ export default function GeneralPage() {
               edge="end"
               onClick={handleOpenAbstractLatexModal}
             >
-              <FunctionsIcon />
+              <VisibilitySharpIcon />
             </IconButton>
           }
         />

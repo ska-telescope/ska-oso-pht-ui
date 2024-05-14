@@ -9,7 +9,7 @@ import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/c
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import IconButton from '@mui/material/IconButton';
-import FunctionsIcon from '@mui/icons-material/Functions';
+import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
 
 interface TitleContentProps {
@@ -275,7 +275,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             </Grid>
             <Grid item xs={1}>
               <IconButton aria-label="preview latex" onClick={handleOpenTitleLatexModal}>
-                <FunctionsIcon />
+                <VisibilitySharpIcon />
               </IconButton>
             </Grid>
             <LatexPreviewModal
