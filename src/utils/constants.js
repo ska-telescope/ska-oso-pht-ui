@@ -132,7 +132,7 @@ export const OBSERVATION = {
         // MID
         {
           value: 1,
-          map: 'MID_AA05_all',
+          map: 'AA0.5',
           label: 'AA0.5',
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
@@ -140,7 +140,7 @@ export const OBSERVATION = {
         },
         {
           value: 2,
-          map: 'MID_AA1_all',
+          map: 'AA1',
           label: 'AA1',
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
@@ -148,23 +148,15 @@ export const OBSERVATION = {
         },
         {
           value: 3,
-          map: 'MID_AA2_all',
+          map: 'AA2',
           label: 'AA2',
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0
         },
         {
-          value: 4,
-          map: 'MID_AA2_core_only',
-          label: 'AA2 (core only)',
-          numOf15mAntennas: 64,
-          numOf13mAntennas: 0,
-          numOfStations: 0
-        },
-        {
           value: 5,
-          map: 'MID_AAstar_all',
+          map: 'AA*',
           label: 'AA*',
           numOf15mAntennas: 80,
           numOf13mAntennas: 64,
@@ -172,7 +164,7 @@ export const OBSERVATION = {
         },
         {
           value: 6,
-          map: 'MID_AAstar_core_all',
+          map: 'AA* (15-m antennas only)',
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
           numOf13mAntennas: 0,
@@ -180,24 +172,24 @@ export const OBSERVATION = {
         },
         {
           value: 7,
-          map: 'MID_AA4_all',
+          map: 'AA4',
           label: 'AA4',
           numOf15mAntennas: 133,
           numOf13mAntennas: 64,
           numOfStations: 0
         },
         {
-          value: 8,
-          map: 'MID_AA4_all',
-          label: 'AA4 (15-m antennas only)',
-          numOf15mAntennas: 133,
-          numOf13mAntennas: 0,
+          value: 9,
+          map: 'AA4 (13.5-m antennas only)',
+          label: 'AA4 (13.5-m antennas only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 64,
           numOfStations: 0
         },
         {
-          value: 9,
-          map: 'MID_AA4_core_all',
-          label: 'AA*/AA4 (13.5-m antennas only)',
+          value: 10,
+          map: 'AA4 (15-m antennas only)',
+          label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
           numOfStations: 0
