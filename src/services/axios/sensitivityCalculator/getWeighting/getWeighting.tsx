@@ -5,7 +5,8 @@ import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -58,7 +59,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
-      calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
+      calculator_mode: OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING[inMode],
       taper: observation.tapering?.toString()
     });
 

@@ -85,20 +85,27 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     When the users clicks on the Calculate button of the Sensitivity Calculator,
     there are 2 or 3 calls to the API made
 
-    Continuum Modes (Low or Mid): 
-    - 1 call to getCalculate - with Continuum parameter
+    Mid Continuum Modes: 
+    - 1 call to getCalculate
     - 1 call to GetWeighting - with Continuum parameter
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
 
-    Zoom Modes (Low or Mid): 
+    Mid Zoom Modes: 
     - 1 call to getCalculate - with Zoom parameter
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
+
+    Low (Continuum and Zoom Modes): 
+    - 1 call to getCalculate
+    - 1 call to GetWeighting
   */
+
+    console.log('observation', observation);
 
   const calculate = await GetCalculate(observation);
   const weighting = await GetWeighting(observation, observation.type);
-  const weightingLine =
-    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;
+  const weightingLine = observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_ZOOM) : null
+  /*const weightingLine =
+    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;*/
 
   const response = {
     calculate,
