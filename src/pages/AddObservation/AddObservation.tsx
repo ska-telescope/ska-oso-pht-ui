@@ -1059,10 +1059,7 @@ export default function AddObservation() {
                     {centralFrequencyField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {isContinuum() && continuumBandwidthField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {bandwidthField()}
+                    {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {spectralResolutionField()}
