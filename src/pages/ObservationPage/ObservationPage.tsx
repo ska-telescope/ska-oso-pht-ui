@@ -69,7 +69,7 @@ export default function ObservationPage() {
     setElementsT(temp);
   };
 
-  const setSensCalc = (results: any, target: any, currId) => {
+  const setSensCalc = (results: any, target: any, currId: string) => {
     const temp = [];
     elementsT.forEach(rec => {
       if (rec?.id === target?.id) {
@@ -249,84 +249,6 @@ export default function ObservationPage() {
     return '';
   };
 
-  const columns = [
-    {
-      field: 'id',
-      headerName: t('observations.id'),
-      flex: 0.75,
-      disableClickEventBubbling: true
-    },
-    {
-      headerName: t('observations.group'),
-      flex: 0.75,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
-        return observationGroupIds((e.row.id as unknown) as string);
-      }
-    },
-    {
-      field: 'telescope',
-      headerName: t('arrayConfiguration.short'),
-      flex: 0.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number } }) => t(`arrayConfiguration.${e.row.telescope}`)
-    },
-    {
-      field: 'subarray',
-      headerName: t('subArrayConfiguration.short'),
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { telescope: number; subarray: number } }) => {
-        if (e.row.telescope) {
-          return t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`);
-        }
-        return t('arrayConfiguration.0');
-      }
-    },
-    {
-      field: 'type',
-      headerName: t('observationType.short'),
-      flex: 0.75,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
-    },
-    {
-      field: 'weather',
-      headerName: '',
-      sortable: false,
-      flex: 0.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: Observation }) => {
-        const obs = elementsO.find(p => p.id === e.row.id);
-        return (
-          <SensCalcDisplayMultiple observation={obs} targetIds={observationTargetIds(obs.id)} />
-        );
-      }
-    },
-    {
-      field: 'actions',
-      headerName: t('actions.label'),
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: Observation }) => {
-        return (
-          <>
-            <EditIcon
-              onClick={() => editIconClicked(e.row)}
-              disabled={true}
-              toolTip={t('observations.edit')}
-            />
-            <TrashIcon
-              onClick={() => deleteIconClicked(e.row)}
-              toolTip={t('observations.delete')}
-            />
-          </>
-        );
-      }
-    }
-  ];
-  const extendedColumnsObservations = [...columns];
   const hasTargets = () => elementsT?.length > 0;
 
   const hasObservations = () => elementsO?.length > 0;
@@ -334,51 +256,133 @@ export default function ObservationPage() {
   const hasTargetObservations = () =>
     getProposal() && getProposal().targetObservation && getProposal().targetObservation.length > 0;
 
-  const columnsTargets = [
-    {
-      field: 'id',
-      headerName: '',
-      sortable: false,
-      flex: 0.6,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { id: number } }) => {
-        return currObs ? (
-          <Box pr={1}>
-            <TickBox
-              label=""
-              testId="linkedTickBox"
-              checked={isTargetSelected(e.row.id)}
-              onChange={() => targetSelectedToggle(e.row)}
-            />
-          </Box>
-        ) : (
-          <></>
-        );
+  const extendedColumnsObservations = [
+    ...[
+      {
+        field: 'id',
+        headerName: t('observations.id'),
+        flex: 0.75,
+        disableClickEventBubbling: true
+      },
+      {
+        headerName: t('observations.group'),
+        flex: 0.75,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { id: number } }) => {
+          return observationGroupIds((e.row.id as unknown) as string);
+        }
+      },
+      {
+        field: 'telescope',
+        headerName: t('arrayConfiguration.short'),
+        flex: 0.5,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { telescope: number } }) =>
+          t(`arrayConfiguration.${e.row.telescope}`)
+      },
+      {
+        field: 'subarray',
+        headerName: t('subArrayConfiguration.short'),
+        flex: 1,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { telescope: number; subarray: number } }) => {
+          if (e.row.telescope) {
+            return t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`);
+          }
+          return t('arrayConfiguration.0');
+        }
+      },
+      {
+        field: 'type',
+        headerName: t('observationType.short'),
+        flex: 0.75,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
+      },
+      {
+        field: 'weather',
+        headerName: '',
+        sortable: false,
+        flex: 0.5,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: Observation }) => {
+          const obs = elementsO.find(p => p.id === e.row.id);
+          return (
+            <SensCalcDisplayMultiple observation={obs} elementsT={filteredByObservation(obs.id)} />
+          );
+        }
+      },
+      {
+        field: 'actions',
+        headerName: t('actions.label'),
+        sortable: false,
+        flex: 1,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: Observation }) => {
+          return (
+            <>
+              <EditIcon
+                onClick={() => editIconClicked(e.row)}
+                disabled={true}
+                toolTip={t('observations.edit')}
+              />
+              <TrashIcon
+                onClick={() => deleteIconClicked(e.row)}
+                toolTip={t('observations.delete')}
+              />
+            </>
+          );
+        }
       }
-    },
-    { field: 'name', headerName: t('name.label'), flex: 1.5 },
-    { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
-    { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
-    {
-      field: 'vel',
-      renderHeader: () =>
-        currObs ? (
-          <Grid container direction="row" justifyContent="space-between" alignItems="right">
-            <Grid ml={10}>{t('sensitivityCalculatorResults.totalSensitivity')}</Grid>
-            <Grid ml={15}>{t('sensitivityCalculatorResults.beamSize')}</Grid>
-          </Grid>
-        ) : (
-          <></>
-        ),
-      sortable: false,
-      flex: 5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: any }) => {
-        return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
-      }
-    }
+    ]
   ];
-  const extendedColumnsTargets = [...columnsTargets];
+
+  const extendedColumnsTargets = [
+    ...[
+      {
+        field: 'id',
+        headerName: '',
+        sortable: false,
+        flex: 0.6,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { id: number } }) => {
+          return currObs ? (
+            <Box pr={1}>
+              <TickBox
+                label=""
+                testId="linkedTickBox"
+                checked={isTargetSelected(e.row.id)}
+                onChange={() => targetSelectedToggle(e.row)}
+              />
+            </Box>
+          ) : (
+            <></>
+          );
+        }
+      },
+      { field: 'name', headerName: t('name.label'), flex: 1.5 },
+      { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
+      { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
+      {
+        field: 'vel',
+        renderHeader: () =>
+          currObs ? (
+            <Grid container direction="row" justifyContent="space-between" alignItems="right">
+              <Grid ml={10}>{t('sensitivityCalculatorResults.totalSensitivity')}</Grid>
+              <Grid ml={15}>{t('sensitivityCalculatorResults.beamSize')}</Grid>
+            </Grid>
+          ) : (
+            <></>
+          ),
+        sortable: false,
+        flex: 5,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: any }) => {
+          return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
+        }
+      }
+    ]
+  ];
 
   const filteredTargets = () => {
     if (selected) {
@@ -393,8 +397,8 @@ export default function ObservationPage() {
     return [];
   };
 
-  const observationTargetIds = (id: string) => {
-    return getProposal().targetObservation.filter(e => e.observationId === id);
+  const filteredByObservation = obId => {
+    return elementsT.filter(e => e.observationId === obId).map(e => e.sensCalc);
   };
 
   return (

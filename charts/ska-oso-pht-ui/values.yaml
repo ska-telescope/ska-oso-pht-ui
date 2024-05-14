@@ -8,7 +8,7 @@ ingress:
 runtimeEnv:
   skipPreflightCheck: "true"
   skaPhtApiUrl: ""
-  skaSensitivityCalcUrl: "https://sensitivity-calculator.skao.int/api/v9/"
+  skaSensitivityCalcUrl: ""
   useLocalData: "false"
   domain: ""
   skaLoginAppUrl: ""

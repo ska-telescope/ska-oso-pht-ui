@@ -11,6 +11,7 @@ export const SENSCALC_PARTIAL_MOCKED: SensCalcResult = {
 };
 
 export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
+  id: 'TITLE FIELD',
   title: 'TITLE FIELD',
   status: STATUS_OK,
   error: '',
@@ -32,6 +33,7 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
 };
 
 export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
+  id: 'TITLE FIELD',
   title: 'TITLE FIELD',
   status: STATUS_OK,
   error: '',
