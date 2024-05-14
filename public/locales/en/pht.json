@@ -451,7 +451,7 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
+        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit."
 
       },
       "2": {
