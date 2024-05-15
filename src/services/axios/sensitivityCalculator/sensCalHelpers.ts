@@ -30,6 +30,7 @@ const sensCalHelpers = {
       sensitivity: number,
       precision = 2
     ): { value: string; units: string } {
+      console.log('::: in convertSensitivityToDisplayValue', sensitivity);
       // TODO: create a proper type
       // TODO: add tests (cypress?)
       if (Number(sensitivity)) {
@@ -112,6 +113,9 @@ const sensCalHelpers = {
       beam_min_scaled: number,
       precision = 3
     ): string {
+      console.log('::: in convertBeamValueDegreesToDisplayValue');
+      console.log('::: beam_maj_scaled', beam_maj_scaled);
+      console.log('::: beam_min_scaled', beam_min_scaled);
       return `${(beam_maj_scaled * 3600).toFixed(precision)} x ${(beam_min_scaled * 3600).toFixed(
         precision
       )}`;
