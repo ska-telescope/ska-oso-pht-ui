@@ -65,7 +65,7 @@ export default function AddObservation() {
   const [frequencyUnits, setFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
   const [continuumUnits, setContinuumUnits] = React.useState(1);
-  const [subBands, setSubBands] = React.useState(0);
+  const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(
     Number(t('numOf13_5mAntennas.range.subArrayAA0.5'))
@@ -84,6 +84,13 @@ export default function AddObservation() {
   React.useEffect(() => {
     const newId = generateId(t('addObservation.idPrefix'), 6);
     setMyObsId(newId);
+
+    // const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+    // if (usedTelescope === 2) {
+    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.lowLower')));
+    // } else if (usedTelescope === 1) {
+    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.midLower')));
+    // }
   }, []);
 
   React.useEffect(() => {
@@ -184,6 +191,49 @@ export default function AddObservation() {
     return results;
   };
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
+
+  const groupObservationsField = () => {
+    const getOptions = () => {
+      const groups: GroupObservation[] = hasGroupObservations()
+        ? getProposal()?.groupObservations
+        : [];
+
+      // don't display duplicate groupIds
+      const uniqueGroups = groups.reduce((acc, group) => {
+        const existingGroup = acc.find(g => g.groupId === group.groupId);
+        if (!existingGroup) {
+          acc.push(group);
+        }
+        return acc;
+      }, []);
+
+      const formatedGroupObs = [
+        { label: t('groupObservations.none'), value: 0 },
+        { label: newGroupObservationLabel, value: 1 },
+        ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+      ];
+      return formatedGroupObs as any;
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <DropDown
+            options={getOptions()}
+            testId="groupObservations"
+            value={groupObservation}
+            setValue={setGroupObservation}
+            label={t('groupObservations.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('groupObservations.help'))}
+            disabled={groupObservationId}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   const buttonGroupObservationsField = () => {
     const generateGroupId = () => {
@@ -944,8 +994,8 @@ export default function AddObservation() {
         spectralResolution: spectralResolution,
         effectiveResolution: 0,
         numSubBands: subBands,
-        num13mAntennas: numOf13mAntennas,
         num15mAntennas: numOf15mAntennas,
+        num13mAntennas: numOf13mAntennas,
         numStations: numOfStations,
         details: details
       };
