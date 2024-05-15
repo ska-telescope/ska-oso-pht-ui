@@ -48,6 +48,10 @@ export default function ProposalDisplay({
     onClose();
   };
 
+  const handleDownload = () => {
+    //TODO
+  };
+
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
@@ -119,7 +123,7 @@ export default function ProposalDisplay({
         <CancelButton onClick={handleCancel} label="button.close" />
       </Grid>
       <Grid item>
-        <DownloadButton />
+        <DownloadButton disabled onClick={handleDownload} />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
