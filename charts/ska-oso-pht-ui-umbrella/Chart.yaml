@@ -7,7 +7,7 @@ appVersion: 0.2.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 dependencies:
 - name: ska-oso-pht-ui
-  version: 0.1.2
+  version: 0.2.0
   repository: file://../ska-oso-pht-ui
 
 # PHT services provides services required by the PHT UI and acts as the proxy

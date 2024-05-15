@@ -192,49 +192,6 @@ export default function AddObservation() {
   };
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
-  const groupObservationsField = () => {
-    const getOptions = () => {
-      const groups: GroupObservation[] = hasGroupObservations()
-        ? getProposal()?.groupObservations
-        : [];
-
-      // don't display duplicate groupIds
-      const uniqueGroups = groups.reduce((acc, group) => {
-        const existingGroup = acc.find(g => g.groupId === group.groupId);
-        if (!existingGroup) {
-          acc.push(group);
-        }
-        return acc;
-      }, []);
-
-      const formatedGroupObs = [
-        { label: t('groupObservations.none'), value: 0 },
-        { label: newGroupObservationLabel, value: 1 },
-        ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
-      ];
-      return formatedGroupObs as any;
-    };
-
-    return (
-      <Grid pt={1} spacing={0} container direction="row">
-        <Grid item xs={FIELD_WIDTH_OPT1}>
-          <DropDown
-            options={getOptions()}
-            testId="groupObservations"
-            value={groupObservation}
-            setValue={setGroupObservation}
-            label={t('groupObservations.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LABEL_WIDTH_OPT1}
-            onFocus={() => helpComponent(t('groupObservations.help'))}
-            disabled={groupObservationId}
-          />
-        </Grid>
-      </Grid>
-    );
-  };
-
   const buttonGroupObservationsField = () => {
     const generateGroupId = () => {
       if (hasGroupObservations()) {
@@ -1073,8 +1030,7 @@ export default function AddObservation() {
               <Grid item xs={XS_TOP}>
                 {groupObservationsField()}
               </Grid>
-              <Grid item xs={XS_TOP}>
-              </Grid>
+              <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
                 {observingBandField()}
               </Grid>
