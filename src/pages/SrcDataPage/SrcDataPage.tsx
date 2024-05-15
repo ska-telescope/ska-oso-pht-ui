@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 
@@ -34,25 +34,8 @@ export default function SrcDataPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().pipeline.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(STATUS_OK);
   }, [validateToggle]);
-
-  // TODO : Retained in case is needed later
-  // const pipelineField = () => (
-  //   <TextEntry
-  //     label={t('pipeline.label')}
-  //     labelBold
-  //     labelPosition={LABEL_POSITION.START}
-  //     testId="pipelineId"
-  //     value={getProposal().pipeline}
-  //     setValue={(e: string) => setProposal({ ...getProposal(), pipeline: e.substring(0, 100) })}
-  //     onFocus={() => helpComponent(t('pipeline.help'))}
-  //     helperText={t('pipeline.helper')}
-  //     required
-  //   />
-  // );
 
   return (
     <Shell page={PAGE}>

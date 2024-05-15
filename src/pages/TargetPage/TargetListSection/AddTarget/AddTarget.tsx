@@ -19,6 +19,7 @@ interface AddTargetProps {
 export default function AddTarget({ raType }: AddTargetProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
+  const VELOCITY = 0;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -92,8 +93,13 @@ export default function AddTarget({ raType }: AddTargetProps) {
   const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
     if (response && !response.error) {
       const values = response.split(' ');
-      setRA(values[0]);
-      setDec(values[1]);
+      setRA(values[1]);
+      setDec(values[0]);
+      if (values.length > 3 && velType === VELOCITY) {
+        setVel(values[3]);
+      } else if (values.length > 2) {
+        setVel(values[2]);
+      }
       setNameFieldError('');
     } else {
       setNameFieldError(t(response.error));
@@ -168,7 +174,7 @@ export default function AddTarget({ raType }: AddTargetProps) {
               valueUnitFocus={() => helpComponent(t('velocity.help'))}
             />
           </Grid>
-          {velType === 0 && (
+          {velType === VELOCITY && (
             <Grid item xs={12}>
               <ReferenceFrameField
                 labelBold={true}

@@ -62,9 +62,9 @@ export default function AddObservation() {
   const [suppliedValue, setSuppliedValue] = React.useState(Number(t('suppliedValue.default')));
   const [suppliedUnits, setSuppliedUnits] = React.useState(4);
   const [frequencyUnits, setFrequencyUnits] = React.useState(1);
-  const [continuumBandwidth, setContinuumBandwidth] = React.useState('');
+  const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
   const [continuumUnits, setContinuumUnits] = React.useState(1);
-  const [subBands, setSubBands] = React.useState(0);
+  const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(1);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(
     Number(t('numOf13_5mAntennas.range.subArrayAA0.5'))
@@ -83,6 +83,13 @@ export default function AddObservation() {
   React.useEffect(() => {
     const newId = generateId(t('addObservation.idPrefix'), 6);
     setMyObsId(newId);
+
+    // const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+    // if (usedTelescope === 2) {
+    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.lowLower')));
+    // } else if (usedTelescope === 1) {
+    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.midLower')));
+    // }
   }, []);
 
   React.useEffect(() => {
@@ -199,12 +206,12 @@ export default function AddObservation() {
         return acc;
       }, []);
 
-      const formatedGroupObs = [
+      const formattedGroupObs = [
         { label: t('groupObservations.none'), value: 0 },
         { label: newGroupObservationLabel, value: 1 },
         ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
-      return formatedGroupObs as any;
+      return formattedGroupObs as any;
     };
 
     return (
@@ -754,7 +761,7 @@ export default function AddObservation() {
     };
 
     return (
-      <TextEntry
+      <NumberEntry
         label={t('continuumBandWidth.label')}
         labelBold
         labelPosition={LABEL_POSITION.START}
@@ -937,8 +944,8 @@ export default function AddObservation() {
         spectralResolution: spectralResolution,
         effectiveResolution: 0,
         numSubBands: subBands,
-        num13mAntennas: numOf13mAntennas,
         num15mAntennas: numOf15mAntennas,
+        num13mAntennas: numOf13mAntennas,
         numStations: numOfStations,
         details: details
       };

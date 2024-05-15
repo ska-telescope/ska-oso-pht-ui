@@ -5,29 +5,57 @@ const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
 const MOCK_RESULTS = [
   {
     equatorial: {
-      dec: '22:00:53.000',
-      ra: '05:34:30.900'
+      ra: '21:33:27.02',
+      dec: '-00:49:23.7',
+      redshift: -0.000012,
+      velocity: -3.6
     }
   },
   {
     galactic: {
-      lat: -5.78763,
-      lon: 184.555
+      lon: 53.37088,
+      lat: -35.76976,
+      redshift: -0.000012,
+      velocity: -3.6
     }
   }
 ];
 
 const mapping = (
   response:
-    | { equatorial: { dec: string; ra: string }; galactic?: undefined }
-    | { galactic: { lat: number; lon: number }; equatorial?: undefined }
+    | {
+        equatorial: { ra: string; dec: string; redshift: number; velocity: number };
+        galactic?: undefined;
+      }
+    | {
+        galactic: { lon: number; lat: number; redshift: number; velocity: number };
+        equatorial?: undefined;
+      }
 ) => {
   if (response.equatorial) {
     return (
-      response.equatorial.dec + ' ' + response.equatorial.ra + ' ' + MOCK_UNITS[0].toLowerCase()
+      response.equatorial.dec +
+      ' ' +
+      response.equatorial.ra +
+      ' ' +
+      response.equatorial.redshift +
+      ' ' +
+      response.equatorial.velocity +
+      ' ' +
+      MOCK_UNITS[0].toLowerCase()
     );
   } else if (response.galactic) {
-    return response.galactic.lat + ' ' + response.galactic.lon + ' ' + MOCK_UNITS[1].toLowerCase();
+    return (
+      response.galactic.lon +
+      ' ' +
+      response.galactic.lat +
+      ' ' +
+      response.galactic.redshift +
+      ' ' +
+      response.galactic.velocity +
+      ' ' +
+      MOCK_UNITS[1].toLowerCase()
+    );
   } else {
     return { error: 'resolve.error.results' };
   }
