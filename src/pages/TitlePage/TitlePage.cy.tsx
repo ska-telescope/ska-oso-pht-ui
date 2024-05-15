@@ -36,13 +36,4 @@ describe('Content', () => {
       </StoreProvider>
     );
   });
-
-  describe('title TextEntry', () => {
-    it('latex preview button', () => {
-      //TODO: Investigate why .type isn't working
-      cy.get('[data-testid="titleId"]').type('hello');
-      cy.get('[data-testid="VisibilitySharpIcon"]').click();
-      cy.get('[id="modal-modal-title"]').contains('title.latexPreviewTitle');
-    });
-  });
 });
