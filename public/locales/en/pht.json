@@ -245,6 +245,10 @@
   "inviteTeamMember": {
     "label": "Invite Team Member"
   },
+  "latex": {
+    "toolTip": "Preview the content using LeTeX format",
+    "previewTitle": "LaTeX Preview"
+  },
   "lastName": {
     "label": "Last Name",
     "help": "LAST NAME HELP"
@@ -536,7 +540,7 @@
     "units8": "mjy/beam",
     "units9": "arcsecs2",
     "units10": "k",
-    "units11": "rad/m2"
+    "units11": "Hours"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
@@ -633,8 +637,7 @@
     "maxChar": "939",
     "maxWord": "50",
     "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
-    "helper": "Please enter your title information",
-    "latexPreviewTitle": "Title LaTeX Preview"
+    "helper": "Please enter your title information"
   },
   "updated": {
     "label": "Last Updated"
