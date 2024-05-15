@@ -33,7 +33,7 @@ module.exports = () => {
     },
 
     devServer: {
-      port: 6100,
+      port: 6101,
       historyApiFallback: true,
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -52,7 +52,7 @@ module.exports = () => {
           }
         },
         {
-          test: /\.s[ac]ss$/i,
+          test: /\.(sass|less|css)$/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
         {

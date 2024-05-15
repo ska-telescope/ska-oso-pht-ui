@@ -16,7 +16,7 @@ const MockProposal: ProposalBackend = {
         name: 'M28',
         right_ascension: '22:33:55',
         declination: '22:33:55',
-        velocity: 34.6,
+        velocity: '34.6',
         velocity_unit: 'km/s',
         right_ascension_unit: 'degrees',
         declination_unit: 'dd:mm:ss'
@@ -25,7 +25,7 @@ const MockProposal: ProposalBackend = {
         name: 'M1',
         right_ascension: '22:33:55',
         declination: '22:33:55',
-        velocity: 34.6,
+        velocity: '34.6',
         velocity_unit: 'km/s',
         right_ascension_unit: 'hh:mm:ss',
         declination_unit: 'dd:mm:ss'
@@ -54,15 +54,26 @@ const MockProposal: ProposalBackend = {
     science_programmes: [
       {
         array: 'MID',
-        subarray: 'subarray 1',
+        subarray: 'AA1',
         linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
+        observation_type: 'Continuum',
+        image_weighting: 2,
+        observing_band: 1,
+        integration_time: 600,
+        integration_time_units: 'd',
+        central_frequency: 0,
+        groupId: 'group-1'
       },
       {
         array: 'MID',
-        subarray: 'subarray 1',
+        subarray: 'AA1',
         linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum'
+        observation_type: 'Continuum',
+        image_weighting: 2,
+        observing_band: 1,
+        integration_time: 600,
+        integration_time_units: 'd',
+        central_frequency: 0
       }
     ]
   }

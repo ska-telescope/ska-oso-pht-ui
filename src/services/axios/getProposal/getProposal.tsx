@@ -3,6 +3,7 @@ import {
   AXIOS_CONFIG,
   GENERAL,
   OBSERVATION,
+  OBSERVATION_TYPE_BACKEND,
   Projects,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
@@ -71,24 +72,46 @@ const getTargets = (inValue: TargetBackend[]) => {
   return results;
 };
 
+const getIntegrationTimeUnits = (inValue: String) => {
+  const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
+  return unitsList.find(u => u.label === inValue)?.value;
+};
+
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].subarray);
-    const typ = OBSERVATION.ObservationType.find(p => p.label === inValue[i].observation_type);
     results.push({
       id: i + 1,
       telescope: arr,
-      subarray: sub ? sub : 0,
-      type: typ ? typ.value : 0
+      subarray: sub ? sub.value : 0,
+      type: inValue[i].observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1,
+      imageWeighting: inValue[i].image_weighting,
+      observingBand: inValue[i].observing_band,
+      integrationTime: inValue[i].integration_time,
+      integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units),
+      centralFrequency: inValue[i].central_frequency
     });
   }
   return results;
 };
 
-function mapping(inRec: ProposalBackend) {
-  return ({
+const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    if (inValue[i].groupId) {
+      results.push({
+        observationId: i + 1,
+        groupId: inValue[i].groupId
+      });
+    }
+  }
+  return results;
+};
+
+function mapping(inRec: ProposalBackend): Proposal {
+  return {
     id: inRec.prsl_id,
     title: inRec.proposal_info.title,
     proposalType: getProposalType(inRec.proposal_info.proposal_type),
@@ -102,12 +125,13 @@ function mapping(inRec: ProposalBackend) {
     targetOption: 1,
     targets: getTargets(inRec.proposal_info.targets),
     observations: getObservations(inRec.proposal_info.science_programmes),
+    groupObservations: getGroupObservations(inRec.proposal_info.science_programmes),
     targetObservation: [],
     technicalPDF: null,
     technicalLoadStatus: 0,
     dataProducts: [],
     pipeline: ''
-  } as unknown) as Proposal;
+  };
 }
 
 export function GetMockProposal(): Proposal {

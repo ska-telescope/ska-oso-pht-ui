@@ -1,93 +1,92 @@
-Landing Page
-~~~~~~~~~~~~
-To submit a proposal to seek observing and processing time on the SKAO telescopes, start here. You will be guided through the landing page's main features and functionalities via this guide.
+Starting a new Proposal
+########################
 
-.. figure:: /images/landingPage.png
-   :width: 90%
-   :alt: screen in light & dark mode
+You need to start by creating an account. When you log into the proposal preparation tool (PPT), you will arrive on the landing page.
 
-Layout and Navigation
-=====================
 
-- SKAO Header and Footer: Provides branding and navigation to other SKAO resources. 
-
-- Add New Proposal Button: Click this button to start creating a new proposal.
-
-.. figure:: /images/addProposalBtn.png
-   :width: 20%
-   :alt: Add proposal button
-
-- Filter by Status: Use the dropdown menu to filter proposals by their current status.
-
-.. figure:: /images/landingPageFilter.png
-   :width: 20%
-   :alt: Page filter
-
-- Search bar : Search for specific proposals by title, PI and proposal ID.
-
-.. figure:: /images/landingPageSearch.png
-   :width: 30%
-   :alt: Page search filter
-
-Proposal Table
-==============
-
-This table lists your proposals with the following information
-
-- Proposal ID : Unique identifier for each proposal.
-- Cycle : SKAO observing cycle associated with the proposals.
-- Title : Briefly describes the research project.
-- PI : Principal Investigator leading the proposal.
-- Status : Current stage of the proposal (e.g., draft, submitted, under review).
-- Last Updated : Date and time the proposal was last modified.
-- Perform various actions on individual proposals (See below).
-
-.. figure:: /images/landingPageIcons.png
+.. |ico4| image:: /images/landingPageIcons.png
    :width: 20%
    :alt: Landing page icons
 
-Table Actions
-=============
-   
-.. csv-table:: Actions
-   :header: "Icon", "Purpose"
 
-    "Edit", "Click the pencil icon to edit the details of a proposal"
-    "View", "Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal"
-    "Clone", "Click the clone icon to see a summary of a proposal, with options to download and confirm the clone"
-    "Delete", "Click the delete icon to see a summary of a proposal, with options to download and confirm the deletion"
-    
+**Landing Page**
+================
+On the landing is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
+investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` list your proposals with the following information:
+
+- Proposal ID : Unique identifier for each proposal.
+- Cycle : SKAO observing cycle associated with the proposals.
+- Title : Proposal title.
+- PI : Principal Investigator of the proposal.
+- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
+- Last Updated : Date and time the proposal was last modified.
+- Allowed actions |ico4| on each proposal. See  :numref:`Table %s <mytest>`.
+
+
+.. _figure3:
+
+.. figure:: /images/landingPage.png
+   :width: 100%
+   :align: center
+   :alt: screen in light & dark mode of the landing page
+   :class: with-border
+
+   The Landing page in light and dark mode.
+
+
+
+.. _mytest:
+
+
+.. list-table:: Table:  Icons and Functions
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Icon
+     - Purpose
+  
+   * - Edit
+     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in "Draft" status.
+   * - View
+     - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for "Submitted" and "Accepted" proposals.
+   * - Clone
+     - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
+   * - Delete
+     - Click the trash icon to delete a proposal. Note: Delete option is disabled for proposals that are "Accepted " or "Submitted". Selected proposal is removed from the application after confirmation.
+
+
+
 Key Information and Actions
 ===========================
 
-- An outline of your current proposals can be seen on the landing page.
-- You can search for specific proposals, filter by title, cycle, and view details of each proposal in the table.
-- Click the "Add New Proposal" button to start creating a new proposal.
+- You can search for specific proposals, filter by title, cycle, PI, and view details of each proposal in the table.
+- The table is sortable by clicking on the column headers
 
-Additional Notes
-================
 
-- You need to be logged in to access the landing page and its features.
-- The table is sortable by clicking on the column headers.
-- Hovering over the action tab displays a tooltip explaining its function.
-- The SKAO logo when clicked, opens a new browser window with the SKAO website
+**Navigation**
 
-.. figure:: /images/skaoBtn.png
-   :width: 15%
-   :alt: SKAO button
+.. |ico1| image:: /images/addProposalBtn.png
+   :height: 4ex
+   :alt: Add proposal button
 
-- The page supports both light and dark mode with a Sun/Moon icon on the top right corner of the page.
+.. |ico2| image:: /images/landingPageFilter.png
+   :width: 20%
+   :alt: Page filter
 
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
+.. |ico3| image:: /images/landingPageSearch.png
+   :width: 30%
+   :alt: Page search filter
 
-.. figure:: /images/landingPage.png
-   :width: 90%
-   :alt: screen in light & dark mode
+-  Click |ico1| Button to create a new proposal. This takes you to the title page.
+-  Use the drop down |ico2| to filter proposals by status.
+- The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
+
+
+
+
 
 Next Steps
 ==========
 
-- To learn more about creating a new proposal, see the "Title Page" section of this user guide.
-- If you have any questions or need further assistance, please contact the SKAO Help desk.
+- |ico1| takes you to the "Title Page".
+- If you have any questions or need technical assistance, please contact the `SKAO Help desk <https://www.skao.int/en/contact-us/>`_.

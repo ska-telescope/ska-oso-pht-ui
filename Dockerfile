@@ -8,7 +8,7 @@ COPY . .
 # install app dependencies
 RUN yarn install && yarn cache clean
 
-EXPOSE 6100
+EXPOSE 6101
 
 # start app
 CMD ["yarn", "start"]

@@ -5,17 +5,21 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
-import HelpPanel from '../../../../components/helpPanel/helpPanel';
+import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../../../utils/types/proposal';
 import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
-import SkyUnits from '../../../../components/fields/skyDirection/SkyUnits';
 
-export default function AddTarget() {
+interface AddTargetProps {
+  raType: number;
+}
+
+export default function AddTarget({ raType }: AddTargetProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
+  const VELOCITY = 0;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -26,13 +30,12 @@ export default function AddTarget() {
   const [vel, setVel] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [velUnit, setVelUnit] = React.useState(0);
-  const [raType, setRAType] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('skyUnits.help'));
+    helpComponent(t('name.help'));
   }, []);
 
   const disabled = () => !!(!name.length || !ra.length || !dec.length);
@@ -62,12 +65,12 @@ export default function AddTarget() {
       0
     );
     const newTarget = {
+      ra,
+      raUnit: raType.toString(),
       dec,
       decUnit: raType.toString(),
       id: highestId + 1,
       name,
-      ra,
-      raUnit: raType.toString(),
       referenceFrame,
       vel,
       velUnit: velType.toString()
@@ -90,8 +93,13 @@ export default function AddTarget() {
   const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
     if (response && !response.error) {
       const values = response.split(' ');
-      setRA(values[0]);
-      setDec(values[1]);
+      setRA(values[1]);
+      setDec(values[0]);
+      if (values.length > 3 && velType === VELOCITY) {
+        setVel(values[3]);
+      } else if (values.length > 2) {
+        setVel(values[2]);
+      }
       setNameFieldError('');
     } else {
       setNameFieldError(t(response.error));
@@ -132,20 +140,6 @@ export default function AddTarget() {
       <Grid item xs={7}>
         <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item xs={12}>
-            <SkyUnits
-              labelWidth={LAB_WIDTH}
-              setValue={setRAType}
-              value={raType}
-              valueFocus={() => helpComponent(t('skyUnits.help'))}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              paddingTop: '10px'
-            }}
-          >
             {nameField()}
           </Grid>
           <Grid item xs={12}>
@@ -180,7 +174,7 @@ export default function AddTarget() {
               valueUnitFocus={() => helpComponent(t('velocity.help'))}
             />
           </Grid>
-          {velType === 0 && (
+          {velType === VELOCITY && (
             <Grid item xs={12}>
               <ReferenceFrameField
                 labelBold={true}

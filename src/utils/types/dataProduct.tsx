@@ -1,6 +1,6 @@
 type DataProduct = {
   id: number;
-  observatoryDataProduct: number;
+  observatoryDataProduct: boolean[];
   observations: string;
   imageSize: string;
   pixelSize: string;

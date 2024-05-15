@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
@@ -11,62 +9,65 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 /*
+function verifyCancelButton() {
+  cy.get('[data-testid="button.cancelButton"]').contains('button.cancel');
+}
+
+function verifyPageTitle() {
+  cy.get('#pageTitle').contains('page.13.title');
+}
+
+function verifyPageDescription() {
+  cy.get('#pageDesc').contains('page.13.desc');
+}
+
+// TODO : Extend these tests further
 function verifyObsDataProduct() {
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.1'
-  );
-
-  cy.get('[data-testid="observatoryDataProduct"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="observatoryDataProduct"]').contains(
-    'observatoryDataProductConfig.options.2'
-  );
-  cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProductConfig.help');
+  cy.get('[data-testid="observatoryDataProduct1"]').click();
+  cy.get('[data-testid="observatoryDataProduct2"]').click();
+  cy.get('[data-testid="observatoryDataProduct3"]').click();
+  cy.get('[data-testid="observatoryDataProduct4"]').click();
+  cy.get('[data-testid="observatoryDataProduct5"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('observatoryDataProduct.help');
 }
-*/
 
-/*
-function verifyPipeline() {
-  cy.get('[data-testid="pipeline"]').click();
-  cy.get('[data-value="5"]').click();
-  cy.get('[data-testid="pipeline"]').contains('pipeline.options.5');
-
-  cy.get('[data-testid="pipeline"]').click();
-  cy.get('[data-value="3"]').click();
-  cy.get('[data-testid="pipeline"]').contains('pipeline.options.3');
-  cy.get('[data-testid="helpPanelId"]').contains('pipeline.help');
+function verifyObservationsField() {
+  // TODO : We need to have some observations
+  // TODO : Test the label
+  // cy.get('[data-testid="imageSize"]').type('test image size');
+  // cy.get('input#imageSize').should('have.value', 'test image size');
+  // cy.get('[data-testid="helpPanelId"]').contains('imageSize.help');
 }
-*/
 
-/*
 function verifyImageSizeField() {
+  // TODO : Test the label
   cy.get('[data-testid="imageSize"]').type('test image size');
   cy.get('input#imageSize').should('have.value', 'test image size');
   cy.get('[data-testid="helpPanelId"]').contains('imageSize.help');
 }
-*/
 
-/*
 function verifyPixelSizeField() {
+  // TODO : Test the label
   cy.get('[data-testid="pixelSize"]').type('test pixel size');
   cy.get('input#pixelSize').should('have.value', 'test pixel size');
   cy.get('[data-testid="helpPanelId"]').contains('pixelSize.help');
 }
-*/
 
-/*
 function verifyWeightingField() {
+  // TODO : Test the label
   cy.get('[data-testid="weighting"]').type('test weighting');
   cy.get('input#weighting').should('have.value', 'test weighting');
   cy.get('[data-testid="helpPanelId"]').contains('weighting.help');
 }
-*/
 
+function verifyAddButton() {
+  cy.get('[data-testid="addButton"]').contains('button.add');
+}
+*/
 describe('<AddDataProduct />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      cy.viewport(1500, 1500);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -79,59 +80,13 @@ describe('<AddDataProduct />', () => {
       );
     });
   }
-
-  // it('Verify user input available for Observatory Data Product', () => {
-  //   cy.mount(
-  //     <StoreProvider>
-  //       <BrowserRouter>
-  //         <AddDataProduct />
-  //       </BrowserRouter>
-  //     </StoreProvider>
-  //   );
-  //   verifyObsDataProduct();
-  // });
-
-  // it('Verify user input available for Pipeline', () => {
-  //   cy.mount(
-  //     <StoreProvider>
-  //       <BrowserRouter>
-  //         <AddDataProduct />
-  //       </BrowserRouter>
-  //     </StoreProvider>
-  //   );
-  //   verifyPipeline();
-  // });
-  //
-  // it('Verify user input available for Image Size', () => {
-  //   cy.mount(
-  //     <StoreProvider>
-  //       <BrowserRouter>
-  //         <AddDataProduct />
-  //       </BrowserRouter>
-  //     </StoreProvider>
-  //   );
-  //   verifyImageSizeField();
-  // });
-  //
-  // it('Verify user input available for Pixel Size', () => {
-  //   cy.mount(
-  //     <StoreProvider>
-  //       <BrowserRouter>
-  //         <AddDataProduct />
-  //       </BrowserRouter>
-  //     </StoreProvider>
-  //   );
-  //   verifyPixelSizeField();
-  // });
-  //
-  // it('Verify user input available for Weighting', () => {
-  //   cy.mount(
-  //     <StoreProvider>
-  //       <BrowserRouter>
-  //         <AddDataProduct />
-  //       </BrowserRouter>
-  //     </StoreProvider>
-  //   );
-  //   verifyWeightingField();
-  // });
+  //verifyCancelButton();
+  //verifyPageTitle();
+  //verifyPageDescription();
+  //verifyObsDataProduct();
+  //verifyObservationsField();
+  //verifyImageSizeField();
+  //verifyPixelSizeField();
+  //verifyWeightingField();
+  //verifyAddButton();
 });

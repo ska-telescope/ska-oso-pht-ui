@@ -9,17 +9,17 @@ import {
 import Target from 'utils/types/target';
 
 export default function calculateSensitivityCalculatorResults(
-  // response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
   response: any,
   observation: Observation,
   target: Target
 ): SensCalcResult {
   const isLOW = () => observation.telescope === TELESCOPE_LOW_NUM;
-
   const weightedSensitivity = isLOW()
     ? getWeightedSensitivityLOW(response)
     : getWeightedSensitivityMID(response);
-  const confusionNoise = isLOW() ? getConfusionNoiseLOW(response) : getConfusionNoiseMID(response);
+  const confusionNoise: number = isLOW()
+    ? getConfusionNoiseLOW(response)
+    : getConfusionNoiseMID(response);
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
   const beamSize = isLOW() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
   const sbs = isLOW()
@@ -52,7 +52,7 @@ export default function calculateSensitivityCalculatorResults(
   const totalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  const beamSizeDisplay = { value: beamSize, units: 'arcsecs' };
+  const beamSizeDisplay = { value: beamSize, units: 'arcsecs2' };
   const sbsDisplay = { value: sbs, units: 'k' };
 
   const spectralConfusionNoiseDisplay =
@@ -65,12 +65,13 @@ export default function calculateSensitivityCalculatorResults(
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralTotalSensitivity
   );
-  const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsecs' };
+  const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsecs2' };
   const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
 
-  return {
+  const theResults = {
+    id: target.name,
     title: target.name,
     status: STATUS_OK,
     section1: [
@@ -133,22 +134,26 @@ export default function calculateSensitivityCalculatorResults(
     section3: [
       {
         field: 'integrationTime',
-        value: observation.integration_time,
-        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-          observation.integration_time_units
-        )
+        value: observation.integrationTime,
+        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
       }
     ]
-  } as SensCalcResult;
+  };
+  return theResults as SensCalcResult;
 }
 
 /******************************************* MID ********************************************/
 
-const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  response.weighting.confusion_noise.value[0];
+const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
+  response.weighting.confusion_noise.value
+    ? Number(response.weighting.confusion_noise.value[0])
+    : 0;
 
-const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (response.calculate.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor;
+const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) => {
+  return (
+    (response.calculate.data.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor
+  );
+};
 
 const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
@@ -166,7 +171,8 @@ const getSpectralConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponse
   response.weightingLine.confusion_noise.value[0];
 
 const getSpectralWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (response.calculate.spectral_sensitivity.value ?? 0) * response.weightingLine.weighting_factor;
+  (response.calculate.data.spectral_sensitivity.value ?? 0) *
+  response.weightingLine.weighting_factor;
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
@@ -180,8 +186,11 @@ const getSpectralSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense:
 
 /******************************************* MID ********************************************/
 
-const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid) =>
-  response.weighting.data.confusion_noise.value[0];
+const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): number => {
+  return response.weighting.data.confusion_noise.value
+    ? Number(response.weighting.data.confusion_noise.value[0])
+    : 0;
+};
 
 const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
   (response.calculate?.data?.result?.sensitivity ?? 0) * response.weighting?.data?.weighting_factor;

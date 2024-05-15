@@ -2,8 +2,12 @@ import { env } from '../env';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+export const USE_LOCAL_DATA_SENSITIVITY_CALC =
+  env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
+
+export const ENTRY_HEIGHT = 40;
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
@@ -12,6 +16,9 @@ export const STATUS_INITIAL = 5;
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
+export const OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING = ['line', 'continuum'];
 
 export const LAST_PAGE = 9;
 
@@ -34,7 +41,7 @@ export const NAV = [
   '/proposal/src'
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct'];
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
@@ -105,7 +112,7 @@ export const TELESCOPES = [
 ];
 
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'LOW Bands', telescope: 2, value: 0 },
+  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0 },
   { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 }, // Band 1
   { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 }, // Band 2
   { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 }, // Band 5a
@@ -116,7 +123,6 @@ export const TELESCOPE_LOW_NUM = 2;
 
 export const TEL = ['', 'Mid', 'Low'];
 
-export const MODE = ['Zoom', 'Continuum'];
 export const OBS_TYPES = ['spectral', 'continuum'];
 
 export const OBSERVATION = {
@@ -125,40 +131,78 @@ export const OBSERVATION = {
       value: 1,
       subarray: [
         // MID
-        { value: 1, label: 'AA0.5', numOf15mAntennas: 4, numOf13_5mAntennas: 0, numOfStations: 0 },
-        { value: 2, label: 'AA1', numOf15mAntennas: 8, numOf13_5mAntennas: 0, numOfStations: 0 },
-        { value: 3, label: 'AA2', numOf15mAntennas: 64, numOf13_5mAntennas: 0, numOfStations: 0 },
         {
-          value: 4,
-          label: 'AA2 (core only)',
-          numOf15mAntennas: 64,
-          numOf13_5mAntennas: 0,
+          value: 1,
+          map: 'AA0.5',
+          label: 'AA0.5',
+          numOf15mAntennas: 4,
+          numOf13mAntennas: 0,
           numOfStations: 0
         },
-        { value: 5, label: 'AA*', numOf15mAntennas: 80, numOf13_5mAntennas: 64, numOfStations: 0 },
+        {
+          value: 2,
+          map: 'AA1',
+          label: 'AA1',
+          numOf15mAntennas: 8,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        },
+        {
+          value: 3,
+          map: 'AA2',
+          label: 'AA2',
+          numOf15mAntennas: 64,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        },
+        {
+          value: 5,
+          map: 'AA*',
+          label: 'AA*',
+          numOf15mAntennas: 80,
+          numOf13mAntennas: 64,
+          numOfStations: 0
+        },
         {
           value: 6,
+          map: 'AA* (15-m antennas only)',
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
-          numOf13_5mAntennas: 0,
+          numOf13mAntennas: 0,
           numOfStations: 0
         },
-        { value: 7, label: 'AA4', numOf15mAntennas: 133, numOf13_5mAntennas: 64, numOfStations: 0 },
         {
-          value: 8,
-          label: 'AA4 (15-m antennas only)',
+          value: 7,
+          map: 'AA4',
+          label: 'AA4',
           numOf15mAntennas: 133,
-          numOf13_5mAntennas: 0,
+          numOf13mAntennas: 64,
           numOfStations: 0
         },
         {
           value: 9,
-          label: 'AA*/AA4 (13.5-m antennas only)',
+          map: 'AA4 (13.5-m antennas only)',
+          label: 'AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
-          numOf13_5mAntennas: 64,
+          numOf13mAntennas: 64,
           numOfStations: 0
         },
-        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 0 }
+        {
+          value: 10,
+          map: 'AA4 (15-m antennas only)',
+          label: 'AA4 (15-m antennas only)',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 64,
+          numOfStations: 0
+        },
+        {
+          value: 20,
+          map: 'Custom',
+          label: 'Custom',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        }
       ],
       robust: [
         { label: '-2', value: 1 },
@@ -175,48 +219,84 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5 },
         { label: '100 MHz', value: 6 },
         { label: '200 MHz', value: 7 }
-      ],
-      spectralResolution: [
-        { label: '0.21 KHz', value: 1 },
-        { label: '0.42 KHz', value: 2 },
-        { label: '0.84 KHz', value: 3 },
-        { label: '1.68 KHz', value: 4 },
-        { label: '3.36 KHz', value: 5 },
-        { label: '6.72 KHz', value: 6 },
-        { label: '13.44 KHz', value: 7 }
       ]
     },
     {
       value: 2,
       subarray: [
         // LOW
-        { value: 1, label: 'AA0.5', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 6 },
-        { value: 2, label: 'AA1', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 18 },
-        { value: 3, label: 'AA2', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 64 },
+        {
+          value: 1,
+          map: 'LOW_AA05_all',
+          label: 'AA0.5',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 6
+        },
+        {
+          value: 2,
+          map: 'LOW_AA1_all',
+          label: 'AA1',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 18
+        },
+        {
+          value: 3,
+          map: 'LOW_AA2_all',
+          label: 'AA2',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 64
+        },
         {
           value: 4,
+          map: 'LOW_AA2_core_all',
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
-          numOf13_5mAntennas: 0,
+          numOf13mAntennas: 0,
           numOfStations: 40
         },
-        { value: 5, label: 'AA*', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 307 },
+        {
+          value: 5,
+          map: 'LOW_AAstar_all',
+          label: 'AA*',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 307
+        },
         {
           value: 6,
+          map: 'LOW_AAstar_core_all',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
-          numOf13_5mAntennas: 0,
+          numOf13mAntennas: 0,
           numOfStations: 199
         },
-        { value: 7, label: 'AA4', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 512 },
+        {
+          value: 7,
+          map: 'LOW_AA4_all',
+          label: 'AA4',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 512
+        },
         {
           value: 8,
+          map: 'LOW_AA4_core_all',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
-          numOf13_5mAntennas: 0,
+          numOf13mAntennas: 0,
           numOfStations: 224
         },
-        { value: 20, label: 'Custom', numOf15mAntennas: 0, numOf13_5mAntennas: 0, numOfStations: 0 }
+        {
+          value: 20,
+          map: 'Custom',
+          label: 'Custom',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 0
+        }
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
@@ -228,22 +308,8 @@ export const OBSERVATION = {
         { label: '781.3 KHz', value: 6 },
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
-      ],
-      spectralResolution: [
-        { label: '14.1 Hz', value: 1 },
-        { label: '28.3 Hz', value: 2 },
-        { label: '56.5 Hz', value: 3 },
-        { label: '113.0 Hz', value: 4 },
-        { label: '226.1 Hz', value: 5 },
-        { label: '452.1 Hz', value: 6 },
-        { label: '904.2 Hz', value: 7 },
-        { label: '1808.4 Hz', value: 8 }
       ]
     }
-  ],
-  ObservationType: [
-    { label: 'Continuum', value: TYPE_CONTINUUM },
-    { label: 'Zoom', value: TYPE_ZOOM }
   ],
   ImageWeighting: [
     { label: 'Natural', value: 0 },
@@ -251,14 +317,85 @@ export const OBSERVATION = {
     { label: 'Briggs', value: 2 }
   ],
   SpectralAveraging: [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-    { label: '4', value: 4 },
-    { label: '6', value: 6 },
-    { label: '8', value: 8 },
-    { label: '12', value: 12 },
-    { label: '24', value: 24 }
+    { label: '1', value: 1, lookup: 0 },
+    { label: '2', value: 2, lookup: 1 },
+    { label: '3', value: 3, lookup: 2 },
+    { label: '4', value: 4, lookup: 3 },
+    { label: '6', value: 6, lookup: 4 },
+    { label: '8', value: 8, lookup: 5 },
+    { label: '12', value: 12, lookup: 6 },
+    { label: '24', value: 24, lookup: 7 }
+  ],
+  EffectiveResolutionOBLow: [
+    { value: '5.43 kHz (8.1 km/s)' },
+    { value: '10.86 kHz (16.3 km/s)' },
+    { value: '16.29 kHz (24.4 km/s)' },
+    { value: '21.72 kHz (32.6 km/s)' },
+    { value: '32.58 kHz (48.8 km/s)' },
+    { value: '43.44 kHz (65.1 km/s)' },
+    { value: '65.16 kHz (97.7 km/s)' },
+    { value: '130.32 kHz (195.3 km/s)' }
+  ],
+  EffectiveResolutionOB1: [
+    { value: '13.44 kHz (5.8 km/s)' },
+    { value: '26.88 kHz (11.5 km/s)' },
+    { value: '40.32 kHz (17.3 km/s)' },
+    { value: '53.76 kHz (23.0 km/s)' },
+    { value: '80.64 kHz (34.5 km/s)' },
+    { value: '107.52 kHz (46.0 km/s)' },
+    { value: '161.28 kHz (69.1 km/s)' },
+    { value: '322.56 kHz (138.1 km/s)' }
+  ],
+  EffectiveResolutionOB2: [
+    { value: '13.44 kHz (3.0 km/s)' },
+    { value: '26.88 kHz (5.9 km/s)' },
+    { value: '40.32 kHz (8.9 km/s)' },
+    { value: '53.76 kHz (11.9 km/s)' },
+    { value: '80.64 kHz (17.8 km/s)' },
+    { value: '107.52 kHz (23.8 km/s)' },
+    { value: '161.28 kHz (35.7 km/s)' },
+    { value: '322.56 kHz (71.4 km/s)' }
+  ],
+  EffectiveResolutionOB5a: [
+    { value: '13.44 kHz (615.1 m/s)' },
+    { value: '26.88 kHz (1.2 km/s)' },
+    { value: '40.32 kHz (1.8 km/s)' },
+    { value: '53.76 kHz (2.5 km/s)' },
+    { value: '80.64 kHz (3.7 km/s)' },
+    { value: '107.52 kHz (4.9 km/s)' },
+    { value: '161.28 kHz (7.4 km/s)' },
+    { value: '322.56 kHz (14.8 km/s)' }
+  ],
+  EffectiveResolutionOB5b: [
+    { value: '13.44 kHz (340.0 m/s)' },
+    { value: '26.88 kHz (680.0 m/s)' },
+    { value: '40.32 kHz (1.0 km/s)' },
+    { value: '53.76 kHz (1.4 km/s)' },
+    { value: '80.64 kHz (2.0 km/s)' },
+    { value: '107.52 kHz (2.7 km/s)' },
+    { value: '161.28 kHz (4.1 km/s)' },
+    { value: '322.56 kHz (8.2 km/s)' }
+  ],
+  CentralFrequency: [
+    { lookup: 0, value: '200' },
+    { lookup: 1, value: '0.7' },
+    { lookup: 2, value: '1.355' },
+    { lookup: 3, value: '6.55' },
+    { lookup: 4, value: '11.85' }
+  ],
+  ContinuumBandwidth: [
+    { lookup: 0, value: 75 },
+    { lookup: 1, value: 0.7 },
+    { lookup: 2, value: 0.8 },
+    { lookup: 3, value: 0.8 },
+    { lookup: 4, value: 0.8 }
+  ],
+  SpectralResolution: [
+    { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
+    { lookup: 1, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 2, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 3, value: '13.44 kHz (615.1 m/s)' },
+    { lookup: 4, value: '13.44 kHz (340.0 m/s)' }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },
@@ -326,8 +463,8 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint Telescope proposal',
-        code: 'JTP',
+        title: 'Joint SKA proposal',
+        code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
@@ -360,8 +497,8 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint Telescope proposal',
-        code: 'JTP',
+        title: 'Joint SKA proposal',
+        code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
@@ -394,8 +531,8 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint Telescope proposal',
-        code: 'JTP',
+        title: 'Joint SKA proposal',
+        code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
@@ -441,7 +578,7 @@ export const TEXT_ENTRY_PARAMS = {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
     // eslint-disable-next-line no-useless-escape
-    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
+    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
@@ -479,6 +616,7 @@ export const EMPTY_PROPOSAL = {
   targetOption: 1,
   targets: [],
   observations: [],
+  groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: 0,

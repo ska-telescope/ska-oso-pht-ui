@@ -1,86 +1,104 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
+and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
-This guide explains the “Observation Page”, where you seamlessly define your observation needs.
 
+
+
+.. |icoobs| image:: /images/obsbutton.png
+   :width: 20%
+   :alt: Page filter
+
+
+.. _obspage2:
+
+.. figure:: /images/observationPage2.png
+   :width: 90%
+   :align: center
+   :alt: screen in light & dark mode 
+
+   Observation Set page.
+
+
+.. _obspage1:
 .. figure:: /images/observationPage.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
+
+   Observation Set page in light and dark mode.
+
 
 Layout and Navigation
 =====================
 
-The Observation Page consists of two distinct sections:
+The Observation Page consists of two distinct sections see :numref:`Figure %s <obspage1>`:
 
-1. Observation List and Target Selection:
 
-- Left side:
+1. Observation set list table which shows a table that displays the following details :
+  
+   - observation Id: unique id for each observation set.
+   - observation group id: displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
+   - array: Array of the observation set i.e if MID or LOW.
+   - sub-array: This displays the sub-array of observation set.
+   - type of observation: If continuum or zoom.
+   - Sensitivity Calculation status: clicking on this status will open a modal with the results. See :numref:`Figure %s <senscal>`. 
+   - *actions* : only delete action is available at the moment.
 
-  - Add Observation: Click this button to create a new observation entry.
-  - Observation List: View a table summarizing existing observations with details like telescope, array, type, and actions (delete).
+2. Target List: This view allow you to add target(s) by clicking on the check box.
+   
+   - Select targets associated with the chosen observation set by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
+   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation for that target. Hovering on this will display the status and clicking will display the target level results from the sensitivity calculator.
+   - The sensitivity based on the sensitivity calculator result.
+   - The beam size based on the sensitivity calculator result.
 
-- Right side:
 
-  - Target List: Select targets associated with the chosen observation by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for bulk actions.
-  - The status icon next to each linked target-observation shows the status of the Sensitivity Calculator API request.
-  - If an error is returned from the Sensitivity Calculator API, a tooltip showing the error is displayed when hovering over the status icon.
+.. tip:: 
 
-2. Observation Mode Details:
+   - Sensitivity calculation is done on the fly so you can add and remove targets at any time.
 
-- This section appears upon clicking "Add Observation".
+
+
+.. _addobs:
+
+Add observation
++++++++++++++++
+
+When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :numref:`Figure %s <addobspage>` comes up.
+
+.. _addobspage:
 
 .. figure:: /images/observationSetup.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-- Enter specific parameters including:
+   The add observation page.
 
-  - Observing Band: Dropdown menu to choose available bands.
-  - Array Configuration: Dropdown menu to choose available configurations.
-  - Observation Type: Select either "Continuum" or "Zoom" mode.
-  - Other fields: Additional details may appear based on your selections, influenced by the Sensitivity Calculator.
-  - Add: Once finished, click this button to add the defined observation to the list.
 
-3. Sensitivity Calculator results
+.. note:: 
 
-- This modal appears upon clicking on the status icon at the right of the linked target-observation
-- This displays the results returned from the Sensitivity Calculator API.
-- There is also a modal showing the results for the list of linked targets, when clicking on the observation status.
+   Observation Group
 
-.. figure:: /images/sensitivityCalculatorModal.png
+   - The user has the option to group observations together by adding them to a group.
+   - The observation can be added to an existing group or a new group can be created.
+   - Adding an observation to a group is optional.
+   - At the moment, once an observation has been added to a group, it can not be removed.
+
+
+
+.. _senscal:
+
+.. figure:: /images/obssenscal.png
    :width: 90%
+   :align: center
    :alt: screen in light & dark mode 
 
-Navigation Elements
-===================
+   Sensitivity calculator result modal display.
 
-- Home: (Top left corner) Returns you to the Landing Page.
-- Target Page: (Bottom left corner) Takes you back to the Target Page.
-- Save: (Top left) Saves your progress on the Observation Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
-- Technical: (Bottom right corner) Moves you to the next page for Technical Justification details.
 
-Additional Features
-===================
 
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/observationPage.png
-   :width: 90%
-   :alt: screen in light & dark mode 
-   
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
-
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
@@ -89,25 +107,14 @@ Key Information and Actions
 
   - Create new observation entries.
   - Link observations to specific targets.
-  - Define key parameters like array configuration, observation type, and additional details.
-  - View and manage your observation list.
-  - Utilize dynamic help for field descriptions.
+  - Manage observation list.
   - View the Sensitivity Calculator results for each linked observation-target.
 
 Next Steps
 ==========
 
-After specifying your observation details using the provided methods, click "Technical" to proceed to the next page, where you'll provide more specific technical information about your proposal.
-
-Additional Notes
-================
-
-- This guide assumes you're already logged in to PPT.
-- The content remains the same regardless of your user context.
-- Dynamic help is available, when you hover over fields, for descriptions. 
-- Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated.
+After adding observation set(s) you can proceed to the "Technical" page or any other page. 
 
 .. admonition:: Confirmation Summary
 
-   Before submitting your details, ensure everything is correct by clicking 'Validate'. Clicking 'Submit' after that will bring up a Confirmation Page summarizing your details. Review and click 'Confirm' to proceed or 'Cancel' to make changes.
+   Ensure proposal is saved regularly

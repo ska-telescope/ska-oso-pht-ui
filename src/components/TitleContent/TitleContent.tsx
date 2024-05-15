@@ -6,8 +6,10 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
 import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import { helpers } from '../../utils/helpers';
+import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
+import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
+import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 
 interface TitleContentProps {
   page: number;
@@ -19,9 +21,14 @@ export default function TitleContent({ page }: TitleContentProps) {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
 
   const [validateToggle, setValidateToggle] = React.useState(false);
+
   const [tempValue, setTempValue] = React.useState(0);
   const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
+
+  const [openTitleLatexModal, setOpenTitleLatexModal] = React.useState(false);
+  const handleOpenTitleLatexModal = () => setOpenTitleLatexModal(true);
+  const handleCloseTitleLatexModal = () => setOpenTitleLatexModal(false);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -231,15 +238,6 @@ export default function TitleContent({ page }: TitleContentProps) {
       }
     }
 
-    const countWords = (text: string) => {
-      return !text
-        ? 0
-        : text
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean).length;
-    };
-
     const helperFunction = (title: string) =>
       `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
 
@@ -256,6 +254,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title)}
+        suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
   };
@@ -272,15 +271,13 @@ export default function TitleContent({ page }: TitleContentProps) {
             alignItems="center"
             spacing={2}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               {titleField()}
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={3}>
               <Typography variant="body2">{t('title.help')}</Typography>
-              <Typography
-                variant="body2"
-                sx={{ paddingTop: '20px', fontStyle: 'italic' }}
-              ></Typography>
+              <Typography pr={2} variant="body2" sx={{ fontStyle: 'italic' }}></Typography>
             </Grid>
           </Grid>
 
@@ -300,7 +297,7 @@ export default function TitleContent({ page }: TitleContentProps) {
               <Typography variant="body2">{t('proposalType.help1')}</Typography>
               <Typography variant="body2">{t('proposalType.help2')}</Typography>
               <Typography variant="body2">{t('proposalType.help3')}</Typography>
-              <Typography variant="body2" sx={{ paddingTop: '20px', fontStyle: 'italic' }}>
+              <Typography variant="body2" pt={2} sx={{ fontStyle: 'italic' }}>
                 {t('proposalType.help4')}
               </Typography>
             </Grid>
@@ -334,6 +331,12 @@ export default function TitleContent({ page }: TitleContentProps) {
           </Grid>
         </Grid>
       )}
+      <LatexPreviewModal
+        value={getProposal().title}
+        open={openTitleLatexModal}
+        onClose={handleCloseTitleLatexModal}
+        title={t('latex.previewTitle')}
+      />
       <AlertDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

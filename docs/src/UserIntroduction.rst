@@ -3,42 +3,87 @@ Introduction
 
 Welcome, astronomers!
 
-Do you wish to understand every detail there is to know about the mysteries of the universe? Do you wish to visit space in order to learn more about pulsars, black holes, and far-off galaxies? If so, the secret to unleashing the potential of the Square Kilometer Array Observatory and its telescopes lies in the Proposal Preparation Tool (PPT)!
+The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
-What is PPT?
-============
+The PPT supports both light and dark modes and can be accessed at the top left corner |icostatus| of your screen - see :numref:`Figure %s <figure1>`.
 
-Consider a tool made especially for astronomers such as yourself. A tool that simplifies the proposal process and makes requesting observation and processing time on the state-of-the-art telescopes of the SKAO easier than before. That's exactly what PPT is! You can create strong proposals with it, and you'll be well on your way to making ground-breaking findings.
 
-Who is it for?
-==============
 
-Both seasoned astronomers and those just starting out on their cosmic journey might benefit from PPT. We understand that putting in a proposal could be scary, but PPT has taken away the technological barriers so that astronomers can focus on what matters most: their scientific vision.
+.. |icostatus| image:: /images/sunMoonBtn.png
+   :width: 15%
+   :alt: Page filter
 
-What can you achieve?
-=====================
+.. |icostatus2| image:: /images/statusnav1.png
+   :width: 30%
+   :alt: complete status
 
-With PPT, you can:
+.. |icostatus3| image:: /images/statusnav2.png
+   :width: 30%
+   :alt: incomplete status
 
-- Submit proposals for scientific exploration: Let your curiosity guide you! Utilize the telescopes at the SKAO to view a wide range of cosmic objects and phenomena, including quasars, pulsars, and objects at the edge of the observable universe.
-- Process and analyze public data: Delve into the wealth of data already collected by the SKAO. Uncover hidden insights and make new discoveries without requesting dedicated observing time.
-- Secure observing time on the SKAO telescopes: Craft compelling proposals that highlight the scientific merit of your research. Gaining important observing time through successful proposals can lead to ground-breaking findings.
-- Submit your research to journals: Contribute to the global dissemination of your study and the growth of astronomical knowledge.
+.. |icostatus4| image:: /images/statusnav3.png
+   :width: 30%
+   :alt: Not started status
 
-Why choose PPT?
-===============
+.. |icostatus5| image:: /images/statusnav4.png
+   :width: 30%
+   :alt: Failed validation status
 
-- Easy to understand and intuitive: The user-friendliness of PPT is a priority in its design. All astronomers are guaranteed a seamless experience because of the simple interface and guided approach.
-- Powerful capabilities: Don't be fooled by the simplicity. With all the capabilities you need to write thorough and powerful proposals, PPT is a powerful tool.
-- Access to the state-of-the-art technology: Leverage the power of the world's most advanced radio astronomy facilities, the SKAO telescopes, to further our understanding of the universe.
+.. _figure1:
+.. figure:: /images/toggle.png
+   :width: 100%
+   :alt: screen in light & dark mode of the landing page
+   :class: with-border
 
-Are you ready to embark on your celestial voyage?
-=================================================
+   Location of light and dark mode toggle of the PPT.
 
-With the Proposal Preparation Tool, begin your cosmic exploration right now! You will be guided through every stage of the process by this user guide, from creating your proposal to submitting it. Now go ahead and let PPT serve as your springboard for celestial exploration as you let loose your scientific curiosity!
 
-We hope you're excited to explore the universe with PPT!
+
+
+
+Common Elements Overview:
+=========================
+Common elements are recurring components found across multiple pages in the tool. They provide consistency and familiarity as they navigate through different sections. Below is an overview of the key common elements that you will encounter throughout the PPT. 
+
+
+.. csv-table:: Common elements and description
+   :header: "Element", "Description"
+
+   "Status Indicators",	"Displayed at the top of the page. It shows the validation status as seen in :numref:`Figure %s <figure2>`  on each page in the flow." 
+   "Home Button", "Positioned at the top left corner, enabling you to return to the Landing Page."
+   "Save Button",	"Located at the top left corner, next to the home button, allowing you to save your progress on each page."
+   "Validate Button",	"Positioned at the top right. This allows your proposal to the validated against the capabilities of a current cycle."
+   "Submit Button",	"Found at the top right corner. This buttons only becomes active after your proposal is validated."
+   "Dynamic Help", "Always on the right side of the page. Hover over fields provide contextual descriptions and guidance for elements on all pages."
+
+
+.. _figure2:
+
+.. figure:: /images/statusnav.png
+   :width: 100%
+   :align: center
+   :alt: screen in light & dark mode 
+
+   Status, Navigation and Validation.
+
+
+Additional Notes
+================
+
+- You need to be logged in to access the landing page and its features.
+
+.. figure:: /images/landingPage.png
+   :width: 90%
+   :align: center
+   :alt: screen in light & dark mode
+
+Additionally, :numref:`Figure %s <figure2>` provides three funtions which are navigation, status and validation of each page as outlined below.
+
+- |icostatus2| represents a complete and validated page.
+- |icostatus3| represents an incomplete page. 
+- |icostatus4| represents a page that is not started and 
+- |icostatus5| a page that has one or more failed field validations.
 
 .. admonition:: Please note
 
-   This is an MVP version of PPT, meaning it offers a subset of the functionalities planned for the future. However, it still provides a powerful platform for astronomers to submit proposals and access valuable data.
+   This is an MVP version of PPT, meaning it offers a subset of the functionalities planned for the future. However, it allows you to submit a proposal for a continuum observation.

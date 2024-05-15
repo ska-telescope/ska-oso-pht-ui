@@ -1,7 +1,32 @@
 import { Proposal } from 'utils/types/proposal';
-import { TEXT_ENTRY_PARAMS, Projects, GENERAL, OBSERVATION, DEFAULT_PI } from './constants';
+import {
+  TEXT_ENTRY_PARAMS,
+  Projects,
+  GENERAL,
+  OBSERVATION,
+  DEFAULT_PI,
+  OBSERVATION_TYPE_BACKEND
+} from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
+
+export const generateId = (prefix: string, length: number) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return prefix + result;
+};
+
+export const countWords = (text: string) => {
+  return !text
+    ? 0
+    : text
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length;
+};
 
 export const helpers = {
   validate: {
@@ -62,7 +87,10 @@ export const helpers = {
     */
     convertProposalToBackendFormat(proposal: Proposal, status: string) {
       const project = Projects.find(p => p.id === proposal.proposalType);
-      const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType);
+      // TODO : We need to update so that 0 - n entries are added.
+      const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType[0]);
+
+      // TODO: add groupObservations to send to backend
 
       const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
         if (!acc[to.observationId]) {
@@ -82,8 +110,7 @@ export const helpers = {
           array: array?.label,
           subarray: array?.subarray?.find(sa => sa.value === observation.subarray)?.label,
           linked_sources: targets?.map(target => target.name),
-          observation_type: OBSERVATION.ObservationType.find(ot => ot.value === observation.type)
-            ?.label
+          observation_type: OBSERVATION_TYPE_BACKEND[observation.type]
         };
       });
 

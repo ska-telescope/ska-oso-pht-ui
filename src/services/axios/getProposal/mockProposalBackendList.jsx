@@ -14,7 +14,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -76,7 +76,12 @@ const MockProposalBackendList = [
           array: null,
           linked_sources: ['M1'],
           observation_type: 'Continuum',
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         }
       ],
       targets: [
@@ -112,7 +117,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -174,31 +179,56 @@ const MockProposalBackendList = [
           array: null,
           linked_sources: ['Target 1'],
           observation_type: null,
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         },
         {
           array: null,
           linked_sources: [],
           observation_type: 'Continuum',
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         },
         {
           array: null,
           linked_sources: [],
           observation_type: 'Continuum',
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         },
         {
           array: null,
           linked_sources: [],
           observation_type: null,
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         },
         {
           array: null,
           linked_sources: [],
           observation_type: 'Continuum',
-          subarray: null
+          subarray: null,
+          image_weighting: 2,
+          observing_band: 1,
+          integration_time: 600,
+          integration_time_units: 'd',
+          central_frequency: 0
         }
       ],
       targets: [
@@ -252,7 +282,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],
@@ -279,7 +309,7 @@ const MockProposalBackendList = [
       investigators: null,
       proposal_type: {
         main_type: null,
-        sub_type: 'Joint Telescope proposal'
+        sub_type: 'Joint SKA proposal'
       },
       science_category: null,
       science_programmes: [],

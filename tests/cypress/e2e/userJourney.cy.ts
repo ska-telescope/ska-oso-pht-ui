@@ -1,6 +1,6 @@
 context('PROPOSAL HANDLING TOOL', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:6100/');
+    cy.visit('http://localhost:6101/');
   });
 
   it('Header : Verify external link to skao site', () => {
@@ -16,7 +16,7 @@ context('PROPOSAL HANDLING TOOL', () => {
 
   it('Footer : Verify Version', () => {
     cy.get('[data-testid="footerId"]')
-      .contains('0.1.2')
+      .contains('0.2.0')
       .should('be.visible');
   });
 

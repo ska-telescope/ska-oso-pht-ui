@@ -25,3 +25,15 @@ describe('<Proposal />', () => {
     });
   }
 });
+
+describe('Content', () => {
+  beforeEach(() => {
+    cy.mount(
+      <StoreProvider>
+        <Router location="/" navigator={undefined}>
+          <TitlePage />
+        </Router>
+      </StoreProvider>
+    );
+  });
+});

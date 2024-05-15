@@ -8,7 +8,7 @@ import {
   ButtonSizeTypes,
   ButtonVariantTypes
 } from '@ska-telescope/ska-gui-components';
-import { Grid } from '@mui/material';
+import { Box } from '@mui/material';
 
 export default function ResolveButton({ targetName, skyUnits, onClick }) {
   const { t } = useTranslation('pht');
@@ -21,7 +21,7 @@ export default function ResolveButton({ targetName, skyUnits, onClick }) {
   const title = t('resolve.label');
 
   return (
-    <Grid sx={{ marginBottom: '12px' }}>
+    <Box pb={1}>
       <Button
         ariaDescription={`${title}Button`}
         color={ButtonColorTypes.Inherit}
@@ -34,6 +34,6 @@ export default function ResolveButton({ targetName, skyUnits, onClick }) {
         toolTip={t('resolve.toolTip')}
         variant={ButtonVariantTypes.Contained}
       />
-    </Grid>
+    </Box>
   );
 }

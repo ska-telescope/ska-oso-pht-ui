@@ -10,17 +10,24 @@ import {
   ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
-  TextEntry
+  TextEntry,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { NAV } from '../../utils/constants';
-import HelpPanel from '../../components/helpPanel/helpPanel';
+import { NAV, OBSERVATION } from '../../utils/constants';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 // TODO : Improved validation
 // TODO : Add documentation page specifically for Adding a Data product
+// TODO : Replace individual tick-boxes with a mapping
+// TODO : Need to make ImageSize numeric, with a dropdown for units
+// TODO : Move ImageWeighting to a separate component as it is also on the Observation Page
 
+const BACK_PAGE = 7;
 const PAGE = 13;
+const PIXEL_SIZE = 33;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -29,61 +36,91 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [observatoryDataProduct, setObservatoryDataProduct] = React.useState();
-  const [observations, setObservations] = React.useState();
+  const [baseObservations, setBaseObservations] = React.useState(null);
+  const [observations, setObservations] = React.useState('0');
+  const [dp1, setDP1] = React.useState(false);
+  const [dp2, setDP2] = React.useState(false);
+  const [dp3, setDP3] = React.useState(false);
+  const [dp4, setDP4] = React.useState(false);
+  const [dp5, setDP5] = React.useState(false);
   const [imageSize, setImageSize] = React.useState('');
   const [pixelSize, setPixelSize] = React.useState('');
   const [weighting, setWeighting] = React.useState('');
 
   const { t } = useTranslation('pht');
-  const FIELD_OBS = 'observatoryDataProductConfig.options';
+  const FIELD_OBS = 'observatoryDataProduct.options';
+  const LABEL_WIDTH = 5;
 
   React.useEffect(() => {
-    helpComponent(t('arrayConfiguration.help'));
+    helpComponent(t('observations.dp.help'));
+    const theOptions = [
+      ...getProposal()?.observations?.map(e => ({
+        label: e.id,
+        value: e.id,
+        weighting: e.imageWeighting,
+        pixelSize: PIXEL_SIZE // TODO : We need to get this from the SensCalc properly
+      }))
+    ];
+    setBaseObservations(theOptions);
   }, []);
 
-  const obsDataProductField = () => {
-    const OPTIONS = [1, 2, 3, 4, 5];
+  React.useEffect(() => {
+    if (observations && baseObservations) {
+      const temp = baseObservations.find(e => e.value === observations);
+      setWeighting(temp ? temp.weighting : null);
+      setPixelSize(temp ? temp.pixelSize : null);
+    }
+  }, [baseObservations, observations]);
 
-    const getOptions = () => {
-      return OPTIONS.map(e => ({
-        label: t(FIELD_OBS + '.' + e),
-        value: e
-      }));
-    };
-
+  const observationsField = () => {
     return (
-      <DropDown
-        options={getOptions()}
-        testId="observatoryDataProduct"
-        value={observatoryDataProduct}
-        setValue={setObservatoryDataProduct}
-        label={t('observatoryDataProductConfig.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('observatoryDataProductConfig.help'))}
-      />
+      <>
+        {baseObservations && (
+          <DropDown
+            options={baseObservations}
+            testId="observations"
+            value={observations}
+            setValue={setObservations}
+            label={t('observations.single')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH}
+            onFocus={() => helpComponent(t('observations.dp.help'))}
+            required
+          />
+        )}
+      </>
     );
   };
 
-  const observationsField = () => {
-    const getOptions = () => {
-      return getProposal().observations.map(e => ({
-        label: e.obset_id,
-        value: e.obset_id
-      }));
-    };
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="observations"
-        value={observations}
-        setValue={setObservations}
-        label={t('addDataProductObservations.label')}
+  const tickElement = (key: number, value: boolean, setter: Function) => (
+    <FieldWrapper
+      label={key === 1 ? t('observatoryDataProduct.label') : ''}
+      labelWidth={LABEL_WIDTH}
+    >
+      <TickBox
+        key={key}
+        label={t(FIELD_OBS + '.' + key)}
         labelBold
-        labelPosition={LABEL_POSITION.START}
-        onFocus={() => helpComponent(t('addDataProductObservations.help'))}
+        labelPosition={LABEL_POSITION.END}
+        labelWidth={11}
+        testId={'observatoryDataProduct' + key}
+        checked={value}
+        onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
+        onChange={() => setter(!value)}
       />
+    </FieldWrapper>
+  );
+
+  const dataProductsField = () => {
+    return (
+      <>
+        {tickElement(1, dp1, setDP1)}
+        {tickElement(2, dp2, setDP2)}
+        {tickElement(3, dp3, setDP3)}
+        {tickElement(4, dp4, setDP4)}
+        {tickElement(5, dp5, setDP5)}
+      </>
     );
   };
 
@@ -92,10 +129,12 @@ export default function AddDataProduct() {
       label={t('imageSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
       testId="imageSize"
       value={imageSize}
       setValue={setImageSize}
       onFocus={() => helpComponent(t('imageSize.help'))}
+      required
     />
   );
 
@@ -104,30 +143,37 @@ export default function AddDataProduct() {
       label={t('pixelSize.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
+      labelWidth={LABEL_WIDTH}
       testId="pixelSize"
       value={pixelSize}
       setValue={setPixelSize}
       onFocus={() => helpComponent(t('pixelSize.help'))}
+      required
+      disabled
     />
   );
 
-  const weightingField = () => (
-    <TextEntry
-      label={t('weighting.label')}
+  const imageWeightingField = () => (
+    <DropDown
+      options={OBSERVATION.ImageWeighting}
+      testId="imageWeighting"
+      value={weighting}
+      label={t('imageWeighting.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
-      testId="weighting"
-      value={weighting}
-      setValue={setWeighting}
-      onFocus={() => helpComponent(t('weighting.help'))}
+      labelWidth={LABEL_WIDTH}
+      onFocus={() => helpComponent(t('imageWeighting.help'))}
+      required
+      disabled
     />
   );
 
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
-    const disabled = () => {
-      return false;
+    const enabled = () => {
+      const dp = dp1 || dp2 || dp3 || dp4 || dp5;
+      return dp && pixelSize !== '' && imageSize?.length > 0;
     };
 
     const addToProposal = () => {
@@ -135,6 +181,7 @@ export default function AddDataProduct() {
         (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
         0
       );
+      const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
       const newDataProduct = {
         id: highestId + 1,
         observatoryDataProduct,
@@ -173,7 +220,7 @@ export default function AddDataProduct() {
             <Button
               ariaDescription="add Button"
               color={ButtonColorTypes.Secondary}
-              disabled={disabled()}
+              disabled={!enabled()}
               icon={getIcon()}
               label={t('button.add')}
               testId="addButton"
@@ -189,7 +236,7 @@ export default function AddDataProduct() {
   return (
     <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
       <Grid item>
-        <PageBanner pageNo={PAGE} />
+        <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
       </Grid>
 
       <Grid
@@ -209,11 +256,11 @@ export default function AddDataProduct() {
             p={2}
             spacing={2}
           >
-            <Grid item>{obsDataProductField()}</Grid>
             <Grid item>{observationsField()}</Grid>
+            <Grid item>{dataProductsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
-            <Grid item>{weightingField()}</Grid>
+            <Grid item>{imageWeightingField()}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={3} ml={5}>
