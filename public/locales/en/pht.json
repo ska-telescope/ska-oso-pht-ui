@@ -632,9 +632,9 @@
     "label": "Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
+    "help": "",
     "helper": "Please enter your title information",
-    "latexPreviewTitle": "Title LaTeX Preview"
+    "latexPreviewTitle": "LaTeX Preview"
   },
   "updated": {
     "label": "Last Updated"
