@@ -15,8 +15,8 @@ export default function Shell({ label, labelWidth = 3, big = false, children }: 
   return (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={labelWidth}>
-        <Typography variant={variant}>
-          <strong>{label}</strong>
+        <Typography sx={{ fontWeight: 'bold' }} variant={variant}>
+          {label}
         </Typography>
       </Grid>
       <Grid item xs={CONTENT_WIDTH_XS}>

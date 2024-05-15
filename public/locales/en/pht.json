@@ -320,7 +320,8 @@
       "2": "Calibrated Visibilities",
       "3": "Image Products 1 : Image Cubes",
       "4": "Image Products 2 : UV Grids",
-      "5": "LSM Catalogue"
+      "5": "LSM Catalogue",
+      "many": "{{count}} selected"
     }
   },
   "observationDetails": {
