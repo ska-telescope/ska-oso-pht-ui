@@ -225,7 +225,8 @@
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
     "none": "None",
-    "idPrefix": "group-"
+    "idPrefix": "group-",
+    "toolTip": "Add a group so that the observation can be executed concurrently"
   },
   "id": {
     "label": "Id"
@@ -451,8 +452,7 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
-
+        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit."
       },
       "2": {
         "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degress. Declinations below 5 degrees cannot be observed for MID observations and below 10 degress for LOW observations."
