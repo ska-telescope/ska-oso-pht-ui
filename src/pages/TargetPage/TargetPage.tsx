@@ -100,7 +100,7 @@ export default function TargetPage() {
     <Shell page={PAGE}>
       <Grid container direction="column" justifyContent="space-around">
         <Grid
-          p={2}
+          p={1}
           container
           direction="row"
           justifyContent="space-evenly"
@@ -113,7 +113,7 @@ export default function TargetPage() {
         </Grid>
 
         <Grid
-          mt={4}
+          mt={1}
           container
           direction="column"
           justifyContent="space-between"
