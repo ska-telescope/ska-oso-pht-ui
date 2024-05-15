@@ -539,7 +539,7 @@
     "units8": "mjy/beam",
     "units9": "arcsecs2",
     "units10": "k",
-    "units11": "rad/m2"
+    "units11": "Hours"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
