@@ -41,7 +41,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralConfusionNoise = isLOW()
     ? getSpectralConfusionNoiseLOW(response)
     : getSpectralConfusionNoiseMID(response);
-    console.log('::: CHECK1 -3');
+    console.log('::: CHECK1 -4');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
@@ -72,6 +72,7 @@ export default function calculateSensitivityCalculatorResults(
       ? sensCalHelpers.format.convertSensitivityToDisplayValue(spectralConfusionNoise)
       : { value: '', units: '' };
   console.log('::: CHECK 3-2');
+  console.log('spectralTotalSensitivity', spectralTotalSensitivity);
   const spectralWeightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralWeightedSensitivity
   );
@@ -240,7 +241,7 @@ const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponse
 
 const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => {
   console.log('::: in getSpectralWeightedSensitivityMID', response);
-  (response.calculate.data?.result?.sensitivity ?? 0) *
+  (response.calculate.data?.data?.result?.sensitivity ?? 0) *
   response.weightingLine.data.weighting_factor;
 };
 
@@ -258,5 +259,9 @@ const getSpectralSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense:
 
 /********************************************************************************************/
 
-const getSensitivity = (confusionNoise: number, weightedSensitivity: number) =>
+const getSensitivity = (confusionNoise: number, weightedSensitivity: number) => {
+  console.log('::: in getSensitivity');
+  console.log('::: confusionNoise', confusionNoise);
+  console.log('::: weightedSensitivity', weightedSensitivity);
   sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
+}
