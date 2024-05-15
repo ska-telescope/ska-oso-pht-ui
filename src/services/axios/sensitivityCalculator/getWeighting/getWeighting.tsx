@@ -5,7 +5,8 @@ import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -18,6 +19,7 @@ import {
 import Observation from 'utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import sensCalHelpers from '../sensCalHelpers';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -45,16 +47,22 @@ async function GetWeighting(observation: Observation, inMode: number) {
       obj => obj.value === observation.imageWeighting
     );
 
+    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
+
     const params = new URLSearchParams({
-      frequency: observation.centralFrequency,
-      zoom_frequencies: observation.centralFrequency?.toString(),
+      frequency: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
+      zoom_frequencies: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
-      subarray_configuration: getSubArray(),
-      calculator_mode: OBSERVATION_TYPE_BACKEND[inMode].toLowerCase(),
-      resolution: '0',
+      array_configuration: getSubArray(),
+      calculator_mode: OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING[inMode],
       taper: observation.tapering?.toString()
     });
+
     return params;
   }
 
@@ -67,7 +75,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
-      freq_centre: observation.centralFrequency?.toString()
+      freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
     });
     return params;
   }

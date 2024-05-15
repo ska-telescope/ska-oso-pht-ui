@@ -46,9 +46,14 @@ async function GetCalculate(observation: Observation) {
     let mode_specific_parameters: ModeSpecificParametersMid = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      mode_specific_parameters.resolution = observation.spectralResolution?.toString();
+      mode_specific_parameters.resolution = (
+        Number(observation.spectralResolution.split(' ')[0]) * 1000
+      ).toString(); // resolution should be sent in Hz
     } else {
-      mode_specific_parameters.zoom_frequencies = observation.centralFrequency?.toString();
+      const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
+      mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
+        .convertFrequencytoHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
+        .toString();
       mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
     }
 
@@ -62,6 +67,7 @@ async function GetCalculate(observation: Observation) {
       Number(observation.integrationTime),
       iTimeUnits
     );
+    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
     const params = new URLSearchParams({
       rx_band: `Band ${observation.observingBand}`,
@@ -70,7 +76,9 @@ async function GetCalculate(observation: Observation) {
       array_configuration: getSubArray(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
-      frequency: observation.centralFrequency,
+      frequency: sensCalHelpers.format
+        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .toString(),
       bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
@@ -117,7 +125,7 @@ async function GetCalculate(observation: Observation) {
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
         ?.toString(),
       pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
-      freq_centre: observation.centralFrequency?.toString(),
+      freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     });
