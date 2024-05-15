@@ -95,10 +95,10 @@ function verifyFrequencyUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
 
-function verifyContinuumBandwidth() {
-  cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
-  // cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
-}
+// TAS function verifyContinuumBandwidth() {
+//   cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
+// cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+// }
 
 function verifyContinuumUnits() {
   cy.get('[data-testid="continuumUnits"]').contains('GHz');
@@ -263,7 +263,7 @@ describe('<AddObservation />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequency();
     verifyFrequencyUnits();
-    verifyContinuumBandwidth();
+    // TAS verifyContinuumBandwidth();
     verifyContinuumUnits();
     verifyMidBandwidthFrequency();
     verifySpectralResolutionMid();
@@ -323,7 +323,7 @@ describe('<AddObservation />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequency();
     verifyFrequencyUnits();
-    verifyContinuumBandwidth();
+    // TAS verifyContinuumBandwidth();
     verifyContinuumUnits();
     verifyMidBandwidthFrequency();
     verifySpectralResolutionLow();

@@ -7,8 +7,7 @@ import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
-  STATUS_ERROR,
-  TYPE_CONTINUUM
+  STATUS_ERROR
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
