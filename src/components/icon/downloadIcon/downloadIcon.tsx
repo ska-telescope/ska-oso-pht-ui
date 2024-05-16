@@ -1,18 +1,25 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
 import { Download } from '@mui/icons-material';
+import Icon from '../icon/Icon';
 
 interface DownloadIconProps {
-  toolTip: string;
+  disabled?: boolean;
   onClick: Function;
+  toolTip?: string;
 }
 
-export default function DownloadIcon({ toolTip = '', onClick }: DownloadIconProps) {
+export default function DownloadIcon({
+  disabled = false,
+  onClick,
+  toolTip = ''
+}: DownloadIconProps) {
   return (
-    <Tooltip test-Id="downloadIcon" title={toolTip} arrow>
-      <IconButton aria-label="download" onClick={() => onClick()} style={{ cursor: 'pointer' }}>
-        <Download />
-      </IconButton>
-    </Tooltip>
+    <Icon
+      disabled={disabled}
+      onClick={onClick}
+      icon={<Download />}
+      testId="downloadIcon"
+      toolTip={toolTip}
+    />
   );
 }

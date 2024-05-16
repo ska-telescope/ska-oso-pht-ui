@@ -1,24 +1,21 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
 import { FileCopyRounded } from '@mui/icons-material';
+import Icon from '../icon/Icon';
 
 interface CloneIconProps {
   disabled?: boolean;
   onClick: Function;
-  toolTip: string;
+  toolTip?: string;
 }
 
 export default function CloneIcon({ disabled = false, onClick, toolTip = '' }: CloneIconProps) {
   return (
-    <Tooltip title={toolTip} arrow>
-      <IconButton
-        aria-label="clone"
-        disabled={disabled}
-        onClick={() => onClick()}
-        style={{ cursor: 'pointer' }}
-      >
-        <FileCopyRounded />
-      </IconButton>
-    </Tooltip>
+    <Icon
+      disabled={disabled}
+      onClick={onClick}
+      icon={<FileCopyRounded />}
+      testId="cloneIcon"
+      toolTip={toolTip}
+    />
   );
 }
