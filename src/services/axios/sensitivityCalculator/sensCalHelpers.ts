@@ -1,4 +1,5 @@
 import { OBSERVATION } from '../../../utils/constants';
+import { Sensitivity } from '../../../utils/types/sensitivityCalculatorResultsTypes';
 
 const sensCalHelpers = {
   format: {
@@ -26,10 +27,7 @@ const sensCalHelpers = {
      * @param precision the number of d.p. to display the result to
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
-    convertSensitivityToDisplayValue(
-      sensitivity: number,
-      precision = 2
-    ): { value: string; units: string } {
+    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): Sensitivity {
       // TODO: create a proper type
       // TODO: add tests (cypress?)
       if (Number(sensitivity)) {
