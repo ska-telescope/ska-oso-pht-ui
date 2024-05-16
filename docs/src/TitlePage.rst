@@ -1,6 +1,6 @@
 Title Page
 ~~~~~~~~~~
-:ref:`Figure 4 <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
+:numref:`Figure %s <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
 
 Entering Title and Creating a proposal
 ======================================
@@ -11,6 +11,7 @@ Entering Title and Creating a proposal
 
 
 - The proposal title allows a maximum of 50 words.
+- The title field saccepts latex syntax - which can be previewed by clicking the eye icon
 - Under proposal types you can select a :ref:`proposal category <proposaltypes>`. Once selected, click |icocreate| to create a proposal and proceed to the next page.
 
 .. tip:: 
@@ -28,7 +29,7 @@ Entering Title and Creating a proposal
    :width: 100%
    :alt: title screen in light mode
 
-   Figure 4: The title page in light mode.
+   The title page in light mode.
  
 
 

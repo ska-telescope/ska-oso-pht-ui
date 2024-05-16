@@ -1,7 +1,7 @@
 General Page
 ~~~~~~~~~~~~
 The general page allows you to provide the abstract and select the science category of your proposal.
-:ref:`Figure 6 <figure6>` shows the general page in light and dark mode.
+:numref:`Figure %s <figure6>` shows the general page in light and dark mode.
 
 .. _figure6:
 
@@ -9,7 +9,7 @@ The general page allows you to provide the abstract and select the science categ
    :width: 100%
    :alt: screen in light & dark mode 
    
-   :ref:`Figure 6 <figure6>` : Light and dark mode of the general page.
+   Light and dark mode of the general page.
 
 Layout and Navigation
 ++++++++++++++++++++++
@@ -17,7 +17,7 @@ Layout and Navigation
 The General Page has a clear structure:
 
 - Top section: Displays the cycle of the current proposal  ( auto-populated).
-- Abstract area: A text box to write your proposal abstract (maximum 250 words). It accepts latex syntax and you can preview the compiled pdf.
+- Abstract area: A text box to write your proposal abstract (maximum 250 words). It accepts latex syntax - which can be previewed by clicking the eye icon
 - Science Category: A drop down to select the relevant science category  see :ref:`Science Category Table <sciencecat>` for typical Options.
 
 .. _sciencecat:

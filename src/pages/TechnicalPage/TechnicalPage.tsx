@@ -1,16 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import DownloadButton from '../../components/button/download/DownloadButton';
 
 const PAGE = 6;
 
@@ -68,10 +68,10 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + t('pdfDownload.technical') + t('fileType.pdf');
+      const selectedFile = `${prsl_id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -110,7 +110,7 @@ export default function TechnicalPage() {
         <Grid item xs={2} />
         <Grid item xs={2}>
           <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('uploadPDF.technical.label')}
+            {t('uploadPDF.label')}
           </Typography>
           <FileUpload
             chooseFileTypes=".pdf"
@@ -125,11 +125,13 @@ export default function TechnicalPage() {
             uploadFunction={uploadPDFTtoSignedUrl}
             status={uploadButtonStatus}
           />
-          {getProposal().technicalPDF != null && (
-            <DownloadIcon
-              toolTip={t('pdfDownload.technical.toolTip')}
-              onClick={downloadPdfToSignedUrl}
-            />
+          {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
+            <Box pt={1}>
+              <DownloadButton
+                toolTip={t('pdfDownload.technical.toolTip')}
+                onClick={downloadPdfToSignedUrl}
+              />
+            </Box>
           )}
         </Grid>
         <Grid item xs={6}>
@@ -141,16 +143,7 @@ export default function TechnicalPage() {
                 </Typography>
               }
             />
-            <CardContent sx={{ height: '55vh' }}>
-              <object
-                data="https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
-                type="application/pdf"
-                width="100%"
-                height="100%"
-              >
-                <p>{t('error.pdf')}</p>
-              </object>
-            </CardContent>
+            <CardContent sx={{ height: '55vh' }}></CardContent>
           </Card>
         </Grid>
         <Grid item xs={2} />

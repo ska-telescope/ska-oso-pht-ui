@@ -384,11 +384,11 @@ export const OBSERVATION = {
     { lookup: 4, value: '11.85' }
   ],
   ContinuumBandwidth: [
-    { lookup: 0, value: '75' },
-    { lookup: 1, value: '0.7' },
-    { lookup: 2, value: '0.8' },
-    { lookup: 3, value: '0.8' },
-    { lookup: 4, value: '0.8' }
+    { lookup: 0, value: 75 },
+    { lookup: 1, value: 0.7 },
+    { lookup: 2, value: 0.8 },
+    { lookup: 3, value: 0.8 },
+    { lookup: 4, value: 0.8 }
   ],
   SpectralResolution: [
     { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
@@ -578,7 +578,7 @@ export const TEXT_ENTRY_PARAMS = {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
     // eslint-disable-next-line no-useless-escape
-    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='/]*$/
+    PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',

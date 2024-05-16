@@ -3,13 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { DownloadRounded } from '@mui/icons-material';
 
-export default function DownloadButton() {
+interface DownloadButtonProps {
+  disabled?: boolean;
+  onClick: Function;
+}
+export default function DownloadButton({ disabled = false, onClick }: DownloadButtonProps) {
   const { t } = useTranslation('pht');
 
   const title = t('downloadBtn.label');
 
-  const onClick = () => {
-    // TODO
+  const ClickFunction = () => {
+    //TODO:
+    onClick();
   };
 
   return (
@@ -18,8 +23,8 @@ export default function DownloadButton() {
       color={ButtonColorTypes.Inherit}
       icon={<DownloadRounded />}
       label={title}
-      disabled
-      onClick={onClick}
+      onClick={ClickFunction}
+      disabled={disabled}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
     />

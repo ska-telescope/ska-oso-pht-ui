@@ -6,9 +6,9 @@ copyright = '2023, SKAO'
 author = 'SKAO, (Trevor A Swain)'
 
 # The short X.Y version
-version = '0.1.2'
+version = '0.2.0'
 # The full version, including alpha/beta/rc tags
-release = '0.1.2'
+release = '0.2.0'
 
 # -- General configuration ---------------------------------------------------
 
@@ -87,3 +87,11 @@ intersphinx_mapping = {}
 # -- Options for todo extension ----------------------------------------------
 
 todo_include_todos = True
+
+numfig = True
+
+numfig_format={
+    'figure': 'Figure %s :',
+    'table': 'Table %s',
+    'code-block': 'Listing %s'
+}

@@ -60,7 +60,8 @@
     "helper": "Please enter your abstract information.",
     "maxChar": "2300",
     "maxWord": "250",
-    "minDisplayRows": "5"
+    "minDisplayRows": "5",
+    "latexPreviewTitle": "Abstract LaTeX Preview"
   },
   "actions": {
     "label": "Actions"
@@ -224,7 +225,8 @@
     "help": "GROUP OBSERVATIONS HELP",
     "new": "New Group",
     "none": "None",
-    "idPrefix": "group-"
+    "idPrefix": "group-",
+    "toolTip": "Add a group so that the observation can be executed concurrently"
   },
   "id": {
     "label": "Id"
@@ -242,6 +244,10 @@
   },
   "inviteTeamMember": {
     "label": "Invite Team Member"
+  },
+  "latex": {
+    "toolTip": "Preview the content using LeTeX format",
+    "previewTitle": "LaTeX Preview"
   },
   "lastName": {
     "label": "Last Name",
@@ -319,7 +325,8 @@
       "2": "Calibrated Visibilities",
       "3": "Image Products 1 : Image Cubes",
       "4": "Image Products 2 : UV Grids",
-      "5": "LSM Catalogue"
+      "5": "LSM Catalogue",
+      "many": "{{count}} selected"
     }
   },
   "observationDetails": {
@@ -414,7 +421,7 @@
     }
   },
   "rightAscension": {
-    "help": "Right ascension HELP",
+    "help": "Right ascension HELP: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
     "label": "Right ascension"
   },
   "robust": {
@@ -450,10 +457,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "RIGHT ASCENSION: This field takes the right ascension of a target in a string or in degress"
+        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit."
       },
       "2": {
-        "value": "DECLINATION: "
+        "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degrees. Declinations below 5 degrees cannot be observed for MID observations and below 10 degrees for LOW observations."
       }
     },
     "label": {
@@ -491,7 +498,7 @@
     "label": "Spatial Imaging"
   },
   "sdp": {
-    "label": "SDP"
+    "label": "SDP Data"
   },
   "search": {
     "label": "Search"
@@ -533,7 +540,7 @@
     "units8": "mjy/beam",
     "units9": "arcsecs2",
     "units10": "k",
-    "units11": "rad/m2"
+    "units11": "Hours"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
@@ -701,7 +708,7 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
-      "title": "SDP",
+      "title": "SDP Data",
       "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "8": {
@@ -727,7 +734,7 @@
     },
     "13": {
       "title": "Data Product",
-      "desc": "Add a data product(s) to your proposal. You can select more than 1 data products for an observation set."
+      "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     }
   },
   "label": {

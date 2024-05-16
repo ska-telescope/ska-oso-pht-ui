@@ -52,7 +52,7 @@ module.exports = () => {
           }
         },
         {
-          test: /\.s[ac]ss$/i,
+          test: /\.(sass|less|css)$/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
         {

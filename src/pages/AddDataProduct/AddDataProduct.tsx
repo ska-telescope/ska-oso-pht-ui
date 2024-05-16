@@ -14,16 +14,20 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { NAV } from '../../utils/constants';
+import { NAV, OBSERVATION } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
+import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 // TODO : Improved validation
 // TODO : Add documentation page specifically for Adding a Data product
 // TODO : Replace individual tick-boxes with a mapping
+// TODO : Need to make ImageSize numeric, with a dropdown for units
+// TODO : Move ImageWeighting to a separate component as it is also on the Observation Page
 
 const BACK_PAGE = 7;
 const PAGE = 13;
+const PIXEL_SIZE = 33;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -32,6 +36,7 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const [baseObservations, setBaseObservations] = React.useState(null);
   const [observations, setObservations] = React.useState('0');
   const [dp1, setDP1] = React.useState(false);
   const [dp2, setDP2] = React.useState(false);
@@ -48,25 +53,31 @@ export default function AddDataProduct() {
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
+    const theOptions = [
+      ...getProposal()?.observations?.map(e => ({
+        label: e.id,
+        value: e.id,
+        weighting: e.imageWeighting,
+        pixelSize: PIXEL_SIZE // TODO : We need to get this from the SensCalc properly
+      }))
+    ];
+    setBaseObservations(theOptions);
   }, []);
 
-  const observationsField = () => {
-    const getOptions = () => {
-      const theOptions = [
-        { label: t('observations.all'), value: 0 },
-        ...getProposal()?.observations?.map(e => ({
-          label: e.id,
-          value: e.id
-        }))
-      ];
-      return theOptions;
-    };
+  React.useEffect(() => {
+    if (observations && baseObservations) {
+      const temp = baseObservations.find(e => e.value === observations);
+      setWeighting(temp ? temp.weighting : null);
+      setPixelSize(temp ? temp.pixelSize : null);
+    }
+  }, [baseObservations, observations]);
 
+  const observationsField = () => {
     return (
       <>
-        {getOptions() && (
+        {baseObservations && (
           <DropDown
-            options={getOptions()}
+            options={baseObservations}
             testId="observations"
             value={observations}
             setValue={setObservations}
@@ -83,18 +94,35 @@ export default function AddDataProduct() {
   };
 
   const tickElement = (key: number, value: boolean, setter: Function) => (
-    <TickBox
-      key={key}
-      label={t(FIELD_OBS + '.' + key)}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
+    <FieldWrapper
+      label={key === 1 ? t('observatoryDataProduct.label') : ''}
       labelWidth={LABEL_WIDTH}
-      testId={'observatoryDataProduct' + key}
-      checked={value}
-      onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
-      onChange={() => setter(!value)}
-    />
+    >
+      <TickBox
+        key={key}
+        label={t(FIELD_OBS + '.' + key)}
+        labelBold
+        labelPosition={LABEL_POSITION.END}
+        labelWidth={11}
+        testId={'observatoryDataProduct' + key}
+        checked={value}
+        onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
+        onChange={() => setter(!value)}
+      />
+    </FieldWrapper>
   );
+
+  const dataProductsField = () => {
+    return (
+      <>
+        {tickElement(1, dp1, setDP1)}
+        {tickElement(2, dp2, setDP2)}
+        {tickElement(3, dp3, setDP3)}
+        {tickElement(4, dp4, setDP4)}
+        {tickElement(5, dp5, setDP5)}
+      </>
+    );
+  };
 
   const imageSizeField = () => (
     <TextEntry
@@ -121,20 +149,22 @@ export default function AddDataProduct() {
       setValue={setPixelSize}
       onFocus={() => helpComponent(t('pixelSize.help'))}
       required
+      disabled
     />
   );
 
-  const weightingField = () => (
-    <TextEntry
-      label={t('weighting.label')}
+  const imageWeightingField = () => (
+    <DropDown
+      options={OBSERVATION.ImageWeighting}
+      testId="imageWeighting"
+      value={weighting}
+      label={t('imageWeighting.label')}
       labelBold
       labelPosition={LABEL_POSITION.START}
       labelWidth={LABEL_WIDTH}
-      testId="weighting"
-      value={weighting}
-      setValue={setWeighting}
-      onFocus={() => helpComponent(t('weighting.help'))}
+      onFocus={() => helpComponent(t('imageWeighting.help'))}
       required
+      disabled
     />
   );
 
@@ -143,7 +173,7 @@ export default function AddDataProduct() {
 
     const enabled = () => {
       const dp = dp1 || dp2 || dp3 || dp4 || dp5;
-      return dp && imageSize.length > 0 && pixelSize.length > 0 && weighting.length > 0;
+      return dp && pixelSize !== '' && imageSize?.length > 0;
     };
 
     const addToProposal = () => {
@@ -227,14 +257,10 @@ export default function AddDataProduct() {
             spacing={2}
           >
             <Grid item>{observationsField()}</Grid>
-            <Grid item>{tickElement(1, dp1, setDP1)}</Grid>
-            <Grid item>{tickElement(2, dp2, setDP2)}</Grid>
-            <Grid item>{tickElement(3, dp3, setDP3)}</Grid>
-            <Grid item>{tickElement(4, dp4, setDP4)}</Grid>
-            <Grid item>{tickElement(5, dp5, setDP5)}</Grid>
+            <Grid item>{dataProductsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
-            <Grid item>{weightingField()}</Grid>
+            <Grid item>{imageWeightingField()}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={3} ml={5}>

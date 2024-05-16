@@ -70,6 +70,7 @@ export default function calculateSensitivityCalculatorResults(
   const observationTypeLabel: string = OBS_TYPES[observation.type];
 
   const theResults = {
+    id: target.name,
     title: target.name,
     status: STATUS_OK,
     section1: [
