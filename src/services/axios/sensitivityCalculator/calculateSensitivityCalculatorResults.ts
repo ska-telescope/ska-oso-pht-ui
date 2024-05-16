@@ -125,7 +125,7 @@ export default function calculateSensitivityCalculatorResults(
         },
         {
           field: 'spectralSurfaceBrightnessSensitivity',
-          value: spectralSbsDisplay?.value,
+          value: spectralSbsDisplay?.value.toString(),
           units: spectralSbsDisplay?.units
         }
       ]
@@ -133,7 +133,7 @@ export default function calculateSensitivityCalculatorResults(
     section3: [
       {
         field: 'integrationTime',
-        value: observation.integrationTime,
+        value: observation.integrationTime.toString(),
         units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
       }
     ]
