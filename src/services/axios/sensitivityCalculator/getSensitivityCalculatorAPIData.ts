@@ -36,7 +36,7 @@ export const SENSCALC_LOADING: SensCalcResult = {
   status: STATUS_PARTIAL
 };
 
-function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
+async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
@@ -48,36 +48,40 @@ function getSensCalc(observation: Observation, target: Target): Promise<SensCalc
     }
   };
 
-  return fetchSensCalc(observation, target)
-    .then(output => {
-      if ('error' in output) {
+  try {
+    const output = await fetchSensCalc(observation, target);
+
+    if ('error' in output) {
+      let err = SENSCALC_ERROR;
+      err.title = target.name;
+      err.error = output.error;
+      return err;
+    }
+
+    if ('calculate' in output) {
+      if ('error' in output.weighting) {
         let err = SENSCALC_ERROR;
         err.title = target.name;
-        err.error = output.error;
+        err.error = output.weighting.error.detail.split('\n')[0];
         return err;
       }
-      if ('calculate' in output) {
-        if ('error' in output.weighting) {
-          let err = SENSCALC_ERROR;
-          err.title = target.name;
-          err.error = output.weighting.error.detail.split('\n')[0];
-          return err;
-        }
+    }
+
+    if ('weighting' in output) {
+      if ('error' in output.weighting) {
+        let err = SENSCALC_ERROR;
+        err.title = target.name;
+        err.error = output.weighting.error.detail.split('\n')[0];
+        return err;
       }
-      if ('weighting' in output) {
-        if ('error' in output.weighting) {
-          let err = SENSCALC_ERROR;
-          err.title = target.name;
-          err.error = output.weighting.error.detail.split('\n')[0];
-          return err;
-        }
-      }
-      return calculateSensitivityCalculatorResults(output, observation, target);
-    })
-    .catch(e => {
-      const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
-      return results as SensCalcResult;
-    });
+    }
+
+    const results = await calculateSensitivityCalculatorResults(output, observation, target);
+    return results;
+  } catch (e) {
+    const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+    return results as SensCalcResult;
+  }
 }
 
 async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
@@ -99,14 +103,13 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting
   */
 
-  console.log('observation', observation);
+  const promises = [GetCalculate(observation), GetWeighting(observation, observation.type)];
 
-  const calculate = await GetCalculate(observation);
-  const weighting = await GetWeighting(observation, observation.type);
-  const weightingLine =
-    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_ZOOM) : null;
-  /*const weightingLine =
-    observation.type !== TYPE_ZOOM ? await GetWeighting(observation, TYPE_CONTINUUM) : null;*/
+  if (observation.type !== TYPE_ZOOM) {
+    promises.push(GetWeighting(observation, TYPE_ZOOM));
+  }
+
+  const [calculate, weighting, weightingLine] = await Promise.all(promises);
 
   const response = {
     calculate,
