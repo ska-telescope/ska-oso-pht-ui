@@ -97,7 +97,7 @@ export type SensitivityCalculatorAPIResponseMid = {
           sensitivity: number;
           line_sensitivity: number;
         };
-      }
+      };
     };
   };
   weighting: {

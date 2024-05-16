@@ -7,8 +7,7 @@ import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
-  STATUS_ERROR,
-  TYPE_CONTINUUM
+  STATUS_ERROR
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
@@ -76,7 +75,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
       }
     }
 
-       const results = await calculateSensitivityCalculatorResults(output, observation, target);
+    const results = await calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
     const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
@@ -103,22 +102,22 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting
   */
 
-    const promises = [GetCalculate(observation), GetWeighting(observation, observation.type)];
+  const promises = [GetCalculate(observation), GetWeighting(observation, observation.type)];
 
-    if (observation.type !== TYPE_ZOOM) {
-      promises.push(GetWeighting(observation, TYPE_ZOOM));
-    }
-  
-    const [calculate, weighting, weightingLine] = await Promise.all(promises);
-  
-    const response = {
-      calculate,
-      weighting,
-      weightingLine
-    };
-  
-    helpers.transform.trimObject(response);
-    return response;
+  if (observation.type !== TYPE_ZOOM) {
+    promises.push(GetWeighting(observation, TYPE_ZOOM));
+  }
+
+  const [calculate, weighting, weightingLine] = await Promise.all(promises);
+
+  const response = {
+    calculate,
+    weighting,
+    weightingLine
+  };
+
+  helpers.transform.trimObject(response);
+  return response;
 }
 
 export default getSensCalc;

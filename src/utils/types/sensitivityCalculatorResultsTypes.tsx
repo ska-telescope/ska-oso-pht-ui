@@ -1,4 +1,4 @@
 export type Sensitivity = {
-    value: string,
-    units: string
-}
+  value: string;
+  units: string;
+};

@@ -148,16 +148,14 @@ const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow): nu
     : 0;
 
 const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (
-    (response.calculate.data.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor
-  );
+  (response.calculate.data.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor;
 
 const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-    sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-      response.weighting.beam_size[0].beam_maj_scaled,
-      response.weighting.beam_size[0].beam_min_scaled,
-      1
-    );
+  sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+    response.weighting.beam_size[0].beam_maj_scaled,
+    response.weighting.beam_size[0].beam_min_scaled,
+    1
+  );
 
 const getSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number) =>
   sense * response.weighting.sbs_conv_factor[0];
@@ -188,18 +186,18 @@ const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): nu
     ? Number(response.weighting.data.confusion_noise.value[0])
     : 0;
 
-const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => 
-  (response.calculate?.data?.data?.result.sensitivity ?? 0) * response.weighting?.data?.weighting_factor;
+const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
+  (response.calculate?.data?.data?.result.sensitivity ?? 0) *
+  response.weighting?.data?.weighting_factor;
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) =>
-    sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-      response.weighting.data.beam_size[0].beam_maj_scaled,
-      response.weighting.data.beam_size[0].beam_min_scaled,
-      1
-    );
+  sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+    response.weighting.data.beam_size[0].beam_maj_scaled,
+    response.weighting.data.beam_size[0].beam_min_scaled,
+    1
+  );
 
 const getSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number) =>
-
   sense * response.weighting.data.sbs_conv_factor[0];
 
 /* -------------- */
@@ -209,7 +207,7 @@ const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponse
 
 const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
   (response.calculate.data?.data?.result?.sensitivity ?? 0) *
-response.weightingLine.data.weighting_factor;
+  response.weightingLine.data.weighting_factor;
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) =>
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
