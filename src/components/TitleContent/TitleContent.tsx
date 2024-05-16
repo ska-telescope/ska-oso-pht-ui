@@ -241,12 +241,12 @@ export default function TitleContent({ page }: TitleContentProps) {
         labelPosition={LABEL_POSITION.START}
         required
         testId="titleId"
-        value={getProposal().title}
+        value={getProposal()?.title}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
-        errorText={validateWordCount(getProposal().title)}
-        helperText={helperFunction(getProposal().title)}
+        errorText={validateWordCount(getProposal()?.title)}
+        helperText={helperFunction(getProposal()?.title)}
       />
     );
   };
