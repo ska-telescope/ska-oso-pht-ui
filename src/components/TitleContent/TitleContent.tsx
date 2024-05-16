@@ -62,6 +62,8 @@ export default function TitleContent({ page }: TitleContentProps) {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
+  const getTitle = () => getProposal()?.title;
+
   const setTheErrorText = (str: string) => setErrorText(t(str));
 
   const handleDialogResponse = () => {
@@ -248,12 +250,12 @@ export default function TitleContent({ page }: TitleContentProps) {
         labelPosition={LABEL_POSITION.START}
         required
         testId="titleId"
-        value={getProposal().title}
+        value={getTitle()}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
-        errorText={validateWordCount(getProposal().title)}
-        helperText={helperFunction(getProposal().title)}
+        errorText={validateWordCount(getTitle())}
+        helperText={helperFunction(getTitle())}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
@@ -332,7 +334,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         </Grid>
       )}
       <LatexPreviewModal
-        value={getProposal().title}
+        value={getTitle()}
         open={openTitleLatexModal}
         onClose={handleCloseTitleLatexModal}
         title={t('latex.previewTitle')}
