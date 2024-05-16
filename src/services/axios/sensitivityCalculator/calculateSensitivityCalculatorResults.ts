@@ -212,12 +212,10 @@ const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): nu
     : 0;
 };
 
-const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
-  (response.calculate?.data?.result?.sensitivity ?? 0) * response.weighting?.data?.weighting_factor;
+const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => 
+  (response.calculate?.data?.data?.result.sensitivity ?? 0) * response.weighting?.data?.weighting_factor;
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) => {
-  console.log('::: in getBeamSizeMID');
-  console.log('::: response', response);
   try {
     sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
       response.weighting.data.beam_size[0].beam_maj_scaled,
@@ -241,8 +239,10 @@ const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponse
 
 const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => {
   console.log('::: in getSpectralWeightedSensitivityMID', response);
-  (response.calculate.data?.data?.result?.sensitivity ?? 0) *
-  response.weightingLine.data.weighting_factor;
+  console.log('::: response.calculate.data?.data?.result?.sensitivity', response.calculate.data?.data?.result?.sensitivity);
+  console.log('::: response.weightingLine.data.weighting_factor', response.weightingLine.data.weighting_factor);
+  return (response.calculate.data?.data?.result?.sensitivity ?? 0) *
+response.weightingLine.data.weighting_factor;
 };
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) => {
@@ -259,9 +259,9 @@ const getSpectralSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense:
 
 /********************************************************************************************/
 
-const getSensitivity = (confusionNoise: number, weightedSensitivity: number) => {
+const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number => {
   console.log('::: in getSensitivity');
   console.log('::: confusionNoise', confusionNoise);
   console.log('::: weightedSensitivity', weightedSensitivity);
-  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
+  return sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
 }

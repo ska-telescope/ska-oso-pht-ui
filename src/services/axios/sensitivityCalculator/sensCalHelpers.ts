@@ -1,4 +1,5 @@
 import { OBSERVATION } from '../../../utils/constants';
+import { Sensitivity } from '../../../utils/types/sensitivityCalculatorResultsTypes'
 
 const sensCalHelpers = {
   format: {
@@ -29,7 +30,7 @@ const sensCalHelpers = {
     convertSensitivityToDisplayValue(
       sensitivity: number,
       precision = 2
-    ): { value: string; units: string } {
+    ): Sensitivity {
       console.log('::: in convertSensitivityToDisplayValue', sensitivity);
       // TODO: create a proper type
       // TODO: add tests (cypress?)
