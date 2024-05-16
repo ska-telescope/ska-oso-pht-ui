@@ -6,7 +6,7 @@ import {
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING
+  OBSERVATION_TYPE_SENSCALC
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -31,7 +31,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
+      ? OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase() + '/'
       : '';
 
   const getSubArray = () => {
@@ -59,7 +59,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       dec_str: '00:00:00.0', // to get from target
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
-      calculator_mode: OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING[inMode],
+      calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
       taper: observation.tapering?.toString()
     });
 
@@ -100,6 +100,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
   }
 
   try {
+    console.log('REQUEST URL: ', `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`);
     const result = await axios.get(
       `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
       AXIOS_CONFIG

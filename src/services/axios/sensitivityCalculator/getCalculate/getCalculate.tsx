@@ -6,7 +6,8 @@ import {
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  OBSERVATION_TYPE_SENSCALC
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -82,7 +83,7 @@ async function GetCalculate(observation: Observation) {
       bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
-      calculator_mode: 'continuum',
+      calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
       taper: observation.tapering?.toString(),
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
