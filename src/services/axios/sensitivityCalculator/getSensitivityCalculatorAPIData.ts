@@ -50,10 +50,8 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output = await fetchSensCalc(observation, target);
-    console.log('OUTPUT', output);
 
     if ('error' in output) {
-      console.log('error in output', output);
       let err = SENSCALC_ERROR;
       err.title = target.name;
       err.error = output.error;
@@ -62,7 +60,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
     if ('calculate' in output) {
       if ('error' in output.weighting) {
-        console.log('error in calculate weighting', output.weighting);
         let err = SENSCALC_ERROR;
         err.title = target.name;
         err.error = output.weighting.error.detail.split('\n')[0];
@@ -72,7 +69,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
     if ('weighting' in output) {
       if ('error' in output.weighting) {
-        console.log('error in weighting', output.weighting);
         let err = SENSCALC_ERROR;
         err.title = target.name;
         err.error = output.weighting.error.detail.split('\n')[0];
@@ -81,11 +77,9 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     }
 
        const results = await calculateSensitivityCalculatorResults(output, observation, target);
-    console.log('RESULTS OK', results);
     return results;
   } catch (e) {
     const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
-    console.log('RESULTS ERR', results);
     return results as SensCalcResult;
   }
 }

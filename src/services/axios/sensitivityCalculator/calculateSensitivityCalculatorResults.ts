@@ -13,10 +13,6 @@ export default function calculateSensitivityCalculatorResults(
   observation: Observation,
   target: Target
 ): SensCalcResult {
-  console.log('::: in calculateSensitivityCalculatorResults', );
-  console.log('::: response test', response);
-  console.log('::: observation', observation);
-  console.log('::: target', target);
   const isLOW = () => observation.telescope === TELESCOPE_LOW_NUM;
   const weightedSensitivity = isLOW()
     ? getWeightedSensitivityLOW(response)
@@ -24,29 +20,21 @@ export default function calculateSensitivityCalculatorResults(
   const confusionNoise: number = isLOW()
     ? getConfusionNoiseLOW(response)
     : getConfusionNoiseMID(response);
-  console.log('::: CHECK0');
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  console.log('::: CHECK0 -2');
   const beamSize = isLOW() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
-  console.log('::: CHECK1');
   const sbs = isLOW()
     ? getSBSLOW(response, totalSensitivity)
     : getSBSMID(response, totalSensitivity);
-  console.log('::: CHECK1 -2');
   const spectralWeightedSensitivity = isLOW()
     ? getSpectralWeightedSensitivityLOW(response)
     : getSpectralWeightedSensitivityMID(response);
-    console.log('spectralWeightedSensitivity', spectralWeightedSensitivity);
-    console.log('::: CHECK1 -3');
   const spectralConfusionNoise = isLOW()
     ? getSpectralConfusionNoiseLOW(response)
     : getSpectralConfusionNoiseMID(response);
-    console.log('::: CHECK1 -4');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
-  console.log('::: CHECK2');
   const spectralBeamSize = isLOW()
     ? getSpectralBeamSizeLOW(response)
     : getSpectralBeamSizeMID(response);
@@ -66,27 +54,20 @@ export default function calculateSensitivityCalculatorResults(
   const beamSizeDisplay = { value: beamSize, units: 'arcsecs2' };
   const sbsDisplay = { value: sbs, units: 'k' };
 
-  console.log('::: CHECK3');
   const spectralConfusionNoiseDisplay =
     observation.type === TYPE_CONTINUUM
       ? sensCalHelpers.format.convertSensitivityToDisplayValue(spectralConfusionNoise)
       : { value: '', units: '' };
-  console.log('::: CHECK 3-2');
-  console.log('spectralTotalSensitivity', spectralTotalSensitivity);
   const spectralWeightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralWeightedSensitivity
   );
-  console.log('::: CHECK 3-3');
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralTotalSensitivity
   );
-  console.log('::: CHECK4');
   const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsecs2' };
   const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
-
-  console.log('::: I AM HERE');
 
   const theResults = {
     title: target.name,
@@ -156,7 +137,6 @@ export default function calculateSensitivityCalculatorResults(
       }
     ]
   };
-  console.log('::: theResults', theResults);
   return theResults as SensCalcResult;
 }
 
@@ -167,20 +147,17 @@ const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow): nu
     ? Number(response.weighting.confusion_noise.value[0])
     : 0;
 
-const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) => {
-  return (
+const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
+  (
     (response.calculate.data.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor
   );
-};
 
-const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) => {
-    console.log('::: in getBeamSizeLOW');
+const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
     sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
       response.weighting.beam_size[0].beam_maj_scaled,
       response.weighting.beam_size[0].beam_min_scaled,
       1
     );
-  };
 
 const getSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number) =>
   sense * response.weighting.sbs_conv_factor[0];
@@ -206,27 +183,20 @@ const getSpectralSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense:
 
 /******************************************* MID ********************************************/
 
-const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): number => {
-  return response.weighting.data.confusion_noise.value
+const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): number =>
+  response.weighting.data.confusion_noise.value
     ? Number(response.weighting.data.confusion_noise.value[0])
     : 0;
-};
 
 const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => 
   (response.calculate?.data?.data?.result.sensitivity ?? 0) * response.weighting?.data?.weighting_factor;
 
-const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) => {
-  try {
+const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) =>
     sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
       response.weighting.data.beam_size[0].beam_maj_scaled,
       response.weighting.data.beam_size[0].beam_min_scaled,
       1
     );
-  } catch (e) {
-    console.log('e', e);
-    return { error: e };
-  }
-  }
 
 const getSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number) =>
 
@@ -237,31 +207,21 @@ const getSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number)
 const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid) =>
   response.weightingLine.data.confusion_noise.value[0];
 
-const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => {
-  console.log('::: in getSpectralWeightedSensitivityMID', response);
-  console.log('::: response.calculate.data?.data?.result?.sensitivity', response.calculate.data?.data?.result?.sensitivity);
-  console.log('::: response.weightingLine.data.weighting_factor', response.weightingLine.data.weighting_factor);
-  return (response.calculate.data?.data?.result?.sensitivity ?? 0) *
+const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
+  (response.calculate.data?.data?.result?.sensitivity ?? 0) *
 response.weightingLine.data.weighting_factor;
-};
 
-const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) => {
-  console.log('::: in getSpectralBeamSizeMID', getSpectralBeamSizeMID);
+const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) =>
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     response.weightingLine.data.beam_size[0].beam_maj_scaled,
     response.weightingLine.data.beam_size[0].beam_min_scaled,
     1
   );
-};
 
 const getSpectralSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number) =>
   sense * response.weightingLine.data.sbs_conv_factor[0];
 
 /********************************************************************************************/
 
-const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number => {
-  console.log('::: in getSensitivity');
-  console.log('::: confusionNoise', confusionNoise);
-  console.log('::: weightedSensitivity', weightedSensitivity);
-  return sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
-}
+const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
+  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
