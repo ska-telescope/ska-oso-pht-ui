@@ -14,7 +14,7 @@ export default function ViewIcon({ disabled = false, onClick, toolTip = '' }: Vi
       disabled={disabled}
       onClick={onClick}
       icon={<VisibilityRounded />}
-      testId="trashIcon"
+      testId="viewIcon"
       toolTip={toolTip}
     />
   );
