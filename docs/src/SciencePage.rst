@@ -1,5 +1,5 @@
-Science Justification Page
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Science and Technical Justification Page
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload a ascience justification in a portable document format (pdf).
 
