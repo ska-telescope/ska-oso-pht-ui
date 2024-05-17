@@ -20,10 +20,11 @@ import Observation from 'utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
+import Target from '../../../../utils/types/target';
 
 const URL_WEIGHTING = `weighting`;
 
-async function GetWeighting(observation: Observation, inMode: number) {
+async function GetWeighting(observation: Observation, target: Target, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const getTelescope = () =>
@@ -39,6 +40,21 @@ async function GetWeighting(observation: Observation, inMode: number) {
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     return arrConfig.map;
   };
+
+  // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
+  function rightAscension() {
+    return target.ra
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
+
+  function declination() {
+    return target.dec
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
 
   /*********************************************************** MID *********************************************************/
 
@@ -56,7 +72,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
       zoom_frequencies: sensCalHelpers.format
         .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
-      dec_str: '00:00:00.0', // to get from target
+      dec_str: declination(),
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING[inMode],
@@ -68,13 +84,17 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   /*********************************************************** LOW *********************************************************/
 
+  function pointingCentre() {
+    return rightAscension() + ' ' + declination();
+  }
+
   function mapQueryLowWeighting(): URLSearchParams {
     const params = new URLSearchParams({
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
-      pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
+      pointing_centre: pointingCentre(),
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
     });
     return params;
