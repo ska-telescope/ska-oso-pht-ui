@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { OBSERVATION, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { DataGrid } from '@ska-telescope/ska-gui-components';
@@ -52,32 +52,20 @@ export default function SdpDataPage() {
   }, [validateToggle]);
 
   const getODPString = inArr => {
-    let count = 0;
     let str = '';
-    if (inArr[0]) {
-      count++;
-      str = '1';
+    for (let i = 0; i < inArr.length; i++) {
+      if (inArr[i]) {
+        if (str.length > 0) {
+          str += ', ';
+        }
+        const res = i + 1;
+        const tmp = t('observatoryDataProduct.options.' + res);
+        str += tmp;
+        console.log('TREVOR', tmp, str);
+      }
     }
-    if (inArr[1]) {
-      count++;
-      str = '3';
-    }
-    if (inArr[2]) {
-      count++;
-      str = '4';
-    }
-    if (inArr[3]) {
-      count++;
-      str = '4';
-    }
-    if (inArr[4]) {
-      count++;
-      str = '5';
-    }
-    return t(
-      count > 1 ? 'observatoryDataProduct.options.many' : 'observatoryDataProduct.options.' + str,
-      { count }
-    );
+    console.log('TREVOR OUTPUT => ', str);
+    return str;
   };
 
   const extendedColumnsObservations = [
@@ -85,34 +73,44 @@ export default function SdpDataPage() {
       {
         field: 'observations',
         headerName: t('observations.dp.label'),
-        flex: 1,
+        flex: 0.5,
         disableClickEventBubbling: true
       },
       {
         field: 'observatoryDataProduct',
         headerName: t('observatoryDataProduct.label'),
-        flex: 1,
+        flex: 2,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { observatoryDataProduct: number } }) =>
-          getODPString(e.row.observatoryDataProduct)
+        renderCell: (e: { row: { observatoryDataProduct: number } }) => (
+          <Tooltip
+            data-testid="odp-values"
+            title={getODPString(e.row.observatoryDataProduct)}
+            arrow
+          >
+            <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
+          </Tooltip>
+        )
       },
       {
         field: 'imageSize',
         headerName: t('imageSize.label'),
-        flex: 1,
+        flex: 0.5,
         disableClickEventBubbling: true
       },
       {
         field: 'pixelSize',
         headerName: t('pixelSize.label'),
-        flex: 1,
+        flex: 0.5,
         disableClickEventBubbling: true
       },
       {
         field: 'weighting',
         headerName: t('imageWeighting.label'),
         flex: 1,
-        disableClickEventBubbling: true
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { weighting: number } }) => {
+          return OBSERVATION.ImageWeighting[e.row.weighting].label;
+        }
       },
       {
         field: 'id',
@@ -174,7 +172,7 @@ export default function SdpDataPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.observations?.length > 0 ? true : false);
+  const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
   const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
   const errorMessage = () => 'page.' + PAGE + errorSuffix();

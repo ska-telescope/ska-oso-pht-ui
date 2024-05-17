@@ -254,8 +254,8 @@ export default function TitleContent({ page }: TitleContentProps) {
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
-        errorText={validateWordCount(getTitle())}
-        helperText={helperFunction(getTitle())}
+        errorText={validateWordCount(getProposal().title)}
+        helperText={helperFunction(getProposal().title)}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
