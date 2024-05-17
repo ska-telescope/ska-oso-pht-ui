@@ -2,7 +2,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
-import TrashIcon from './trashIcon';
+import ViewIcon from './viewIcon';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
@@ -12,21 +12,21 @@ function mounting(theTheme: any) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <TrashIcon onClick={cy.stub().as('setValue')} toolTip={TOOLTIP} />
+      <ViewIcon onClick={cy.stub().as('setValue')} toolTip={TOOLTIP} />
     </ThemeProvider>
   );
 }
 
 function validateClick() {
-  cy.get('[data-testid="trashIcon"]').click();
+  cy.get('[data-testid="viewIcon"]').click();
 }
 
 function validateToolTip() {
-  cy.get('[data-testid="trashIcon"]').trigger('mouseover');
+  cy.get('[data-testid="viewIcon"]').trigger('mouseover');
   cy.contains(TOOLTIP).should('be.visible');
 }
 
-describe('<TrashIcon />', () => {
+describe('<ViewIcon />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);

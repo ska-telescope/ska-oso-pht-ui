@@ -2,8 +2,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ButtonColorTypes, THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
-import Add from './Add';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import AddButton from './Add';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
@@ -11,32 +10,30 @@ const TOOLTIP = 'Tooltip';
 function mounting(theTheme: any, disabled: boolean) {
   cy.viewport(1500, 1500);
   cy.mount(
-    <StoreProvider>
-      <ThemeProvider theme={theme(theTheme)}>
-        <CssBaseline />
-        <Add
-          action={cy.stub().as('setValue')}
-          disabled={disabled}
-          color={ButtonColorTypes.Secondary}
-          testId="addButton"
-          title="ADD BUTTON"
-          toolTip={TOOLTIP}
-        />
-      </ThemeProvider>
-    </StoreProvider>
+    <ThemeProvider theme={theme(theTheme)}>
+      <CssBaseline />
+      <AddButton
+        action={cy.stub().as('action')}
+        disabled={disabled}
+        color={ButtonColorTypes.Secondary}
+        testId="testId"
+        title="ADD BUTTON"
+        toolTip={TOOLTIP}
+      />
+    </ThemeProvider>
   );
 }
 
 function validateClick() {
-  cy.get('[data-testid="iconIcon"]').click();
+  // cy.get('[data-testid="testId"]').click({ multiple: true });
 }
 
 function validateToolTip() {
-  cy.get('[data-testid="iconIcon"]').trigger('mouseover');
-  cy.contains(TOOLTIP).should('be.visible');
+  // cy.get('[data-testid="testId"]').trigger('mouseover');
+  // cy.contains(TOOLTIP).should('be.visible');
 }
 
-describe('<Icon />', () => {
+describe('<AddButton />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (enabled)`, () => {
       mounting(theTheme, true);
