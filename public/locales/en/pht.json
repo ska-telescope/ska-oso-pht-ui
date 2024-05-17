@@ -368,7 +368,9 @@
   },
   "pixelSize": {
     "label": "Pixel Size",
-    "help": "PIXEL SIZE HELP"
+    "help": "PIXEL SIZE HELP",
+    "notFound": "No value found",
+    "precision": 4
   },
   "proposalId": {
     "label": "Proposal Id"
