@@ -15,7 +15,7 @@ import {
   MockResponseLowWeightingContinuum,
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
-import Observation from 'utils/types/observation';
+import Observation from '../../../../utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
@@ -35,8 +35,8 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    return arrConfig.map;
+    const arrConfig = array?.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig?.map;
   };
 
   /*********************************************************** MID *********************************************************/
@@ -48,7 +48,7 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
-    const params = new URLSearchParams({
+    const params = {
       frequency: sensCalHelpers.format
         .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
@@ -60,23 +60,30 @@ async function GetWeighting(observation: Observation, inMode: number) {
       array_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
       taper: observation.tapering?.toString()
-    });
+    };
+    const urlSearchParams = new URLSearchParams
+    for(let key in params)
+      urlSearchParams.append(key, params[key]);
 
-    return params;
+    return urlSearchParams
   }
 
   /*********************************************************** LOW *********************************************************/
 
   function mapQueryLowWeighting(): URLSearchParams {
-    const params = new URLSearchParams({
+    const params = {
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams
+    for(let key in params)
+      urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams
   }
 
   /*************************************************************************************************************************/

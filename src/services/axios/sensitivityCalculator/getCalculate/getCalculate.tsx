@@ -30,8 +30,8 @@ async function GetCalculate(observation: Observation) {
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    return arrConfig.map;
+    const arrConfig = array?.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig?.map;
   };
 
   /*********************************************************** MID *********************************************************/
@@ -70,7 +70,7 @@ async function GetCalculate(observation: Observation) {
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
-    const params = new URLSearchParams({
+    const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: '00:00:00.0', // TODO: get from target
       dec_str: '00:00:00.0', // TODO: get from target
@@ -87,8 +87,12 @@ async function GetCalculate(observation: Observation) {
       taper: observation.tapering?.toString(),
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams
+    for(let key in params)
+      urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams
   }
 
   /*********************************************************** LOW *********************************************************/
@@ -120,7 +124,7 @@ async function GetCalculate(observation: Observation) {
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
-    const params = new URLSearchParams({
+    const params = {
       subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
@@ -129,8 +133,12 @@ async function GetCalculate(observation: Observation) {
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams
+    for(let key in params)
+      urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams
   }
 
   /*************************************************************************************************************************/
