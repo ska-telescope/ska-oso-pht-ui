@@ -1,29 +1,28 @@
 export type SensitivityCalculatorAPIResponseLow = {
   calculate: {
     data: {
-      continuum_sensitivity: {
+      continuum_sensitivity?: {
         value: number;
         units: string;
       };
-      ontinuum_subband_sensitivities: [];
-      spectral_sensitivity: {
+      spectral_sensitivity?: {
         value: number;
-        units: string;
-      };
-      spectropolarimetry_results: {
+        unit: string;
+    },
+      spectropolarimetry_results?: {
         fwhm_of_the_rmsf: {
-          value: number;
-          units: string;
-        };
-        max_faraday_depth_extent: {
-          value: number;
-          units: string;
-        };
-        max_faraday_depth: {
-          value: number;
-          units: string;
-        };
-      };
+            value: number,
+            unit: string
+        },
+        max_faraday_depth_extent?: {
+            value: number;
+            unit: string;
+        },
+        max_faraday_depth?: {
+            value: number;
+            unit: string;
+        }
+      }
     };
   };
   weighting: {

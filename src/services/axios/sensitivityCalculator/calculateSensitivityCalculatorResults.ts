@@ -1,12 +1,12 @@
 import sensCalHelpers from './sensCalHelpers';
-import Observation from 'utils/types/observation';
+import Observation from '../../../utils/types/observation';
 import { SensCalcResult } from './getSensitivityCalculatorAPIData';
-import { OBS_TYPES, STATUS_OK, TELESCOPE_LOW_NUM, TYPE_CONTINUUM } from '../../../utils/constants';
+import { OBS_TYPES, STATUS_OK, TELESCOPE_LOW_NUM, TYPE_CONTINUUM, TYPE_ZOOM } from '../../../utils/constants';
 import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
 } from './../../../utils/types/sensitivityCalculatorAPIResponse';
-import Target from 'utils/types/target';
+import Target from '../../../utils/types/target';
 
 export default function calculateSensitivityCalculatorResults(
   response: any,
@@ -14,20 +14,27 @@ export default function calculateSensitivityCalculatorResults(
   target: Target
 ): SensCalcResult {
   const isLOW = () => observation.telescope === TELESCOPE_LOW_NUM;
+  console.log('1 -');
   const weightedSensitivity = isLOW()
-    ? getWeightedSensitivityLOW(response)
+    ? getWeightedSensitivityLOW(response, observation.type)
     : getWeightedSensitivityMID(response);
+  console.log('1 -1');
   const confusionNoise: number = isLOW()
     ? getConfusionNoiseLOW(response)
     : getConfusionNoiseMID(response);
+  console.log('1 -2');
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
+  console.log('1 -3');
   const beamSize = isLOW() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
+  console.log('1 -4');
   const sbs = isLOW()
     ? getSBSLOW(response, totalSensitivity)
     : getSBSMID(response, totalSensitivity);
+  console.log('2 -');
   const spectralWeightedSensitivity = isLOW()
     ? getSpectralWeightedSensitivityLOW(response)
     : getSpectralWeightedSensitivityMID(response);
+  console.log('3 -');
   const spectralConfusionNoise = isLOW()
     ? getSpectralConfusionNoiseLOW(response)
     : getSpectralConfusionNoiseMID(response);
@@ -35,9 +42,11 @@ export default function calculateSensitivityCalculatorResults(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
+  console.log('4 -');
   const spectralBeamSize = isLOW()
     ? getSpectralBeamSizeLOW(response)
     : getSpectralBeamSizeMID(response);
+  console.log('5 -');
   const spectralSbs = isLOW()
     ? getSpectralSBSLOW(response, spectralTotalSensitivity)
     : getSpectralSBSMID(response, spectralTotalSensitivity);
@@ -148,8 +157,11 @@ const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow): nu
     ? Number(response.weighting.confusion_noise.value[0])
     : 0;
 
-const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (response.calculate.data.continuum_sensitivity.value ?? 0) * response.weighting.weighting_factor;
+const getWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow, type:number) => {
+  const sensitivity = type === TYPE_ZOOM ? response.calculate.data.spectral_sensitivity?.value : response.calculate.data.continuum_sensitivity?.value;
+  return (sensitivity ?? 0) * response.weighting.weighting_factor;
+}
+  
 
 const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
@@ -167,7 +179,7 @@ const getSpectralConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponse
   response.weightingLine.confusion_noise.value[0];
 
 const getSpectralWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (response.calculate.data.spectral_sensitivity.value ?? 0) *
+  (response.calculate.data.spectral_sensitivity?.value ?? 0) *
   response.weightingLine.weighting_factor;
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
@@ -187,7 +199,7 @@ const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): nu
     ? Number(response.weighting.data.confusion_noise.value[0])
     : 0;
 
-const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
+const getWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) => // TO DO
   (response.calculate?.data?.data?.result.sensitivity ?? 0) *
   response.weighting?.data?.weighting_factor;
 
