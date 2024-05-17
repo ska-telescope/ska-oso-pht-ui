@@ -22,38 +22,6 @@
     "sendInvite": "Send invitation",
     "validate": "Validate"
   },
-  "dropdown": {
-    "telescope": {
-      "1": {
-        "array": {
-          "0": "DATA ERROR",
-          "1": "AA0.5",
-          "2": "AA1",
-          "3": "AA2",
-          "7": "AA* (15-m antennas only)",
-          "9": "AA4 (15-m antennas only)",
-          "20": "Custom"
-        }
-      },
-      "2": {
-        "array": {
-          "0": "DATA ERROR",
-          "1": "AA0.5",
-          "2": "AA1",
-          "3": "AA2",
-          "4": "AA2 (core only)",
-          "5": "AA*",
-          "6": "AA* (core only)",
-          "8": "AA4",
-          "10": "AA4 (core only)",
-          "20": "Custom"
-        },
-        "robust": {
-          "1": "n/a"
-        }
-      }
-    }
-  },
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
