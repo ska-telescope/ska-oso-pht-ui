@@ -34,7 +34,6 @@ export default function SensCalcDisplayMultiple({
           results.push(rec);
           return;
         }
-        console.log('::: tmp', tmp);
         const tempResults = {
           id: tmp.id,
           error: tmp.error,

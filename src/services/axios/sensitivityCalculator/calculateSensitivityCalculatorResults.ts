@@ -33,11 +33,11 @@ export default function calculateSensitivityCalculatorResults(
   console.log('2 -');
   const spectralWeightedSensitivity = isLOW()
     ? getSpectralWeightedSensitivityLOW(response, observation.type)
-    : getSpectralWeightedSensitivityMID(response);
+    : getSpectralWeightedSensitivityMID(response, observation.type);
   console.log('3 -');
   const spectralConfusionNoise = isLOW()
     ? getSpectralConfusionNoiseLOW(response, observation.type)
-    : getSpectralConfusionNoiseMID(response);
+    : getSpectralConfusionNoiseMID(response, observation.type);
   console.log('3 -1');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
@@ -46,11 +46,11 @@ export default function calculateSensitivityCalculatorResults(
   console.log('4 -');
   const spectralBeamSize = isLOW()
     ? getSpectralBeamSizeLOW(response, observation.type)
-    : getSpectralBeamSizeMID(response);
+    : getSpectralBeamSizeMID(response, observation.type);
   console.log('5 -');
   const spectralSbs = isLOW()
     ? getSpectralSBSLOW(response, spectralTotalSensitivity, observation.type)
-    : getSpectralSBSMID(response, spectralTotalSensitivity);
+    : getSpectralSBSMID(response, spectralTotalSensitivity, observation.type);
   console.log('5 -1');
   const confusionNoiseDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     confusionNoise
@@ -200,9 +200,7 @@ const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, t
 }
 
 const getSpectralSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number, type: number) => {
-  console.log('::: in getSpectralSBSLOW', 'response', response);
   const conv_factor = type === TYPE_ZOOM ? response?.weighting?.sbs_conv_factor[0] : response?.weightingLine?.sbs_conv_factor[0];
-  console.log('::: conv factor, response', conv_factor);
   return sense * conv_factor;
 }
 
@@ -230,22 +228,31 @@ const getSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number)
 
 /* -------------- */
 
-const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid) =>
-  response.weightingLine.data.confusion_noise.value[0];
+const getSpectralConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid, type: number) => {
+  const spectralConfusionNoise = type === TYPE_ZOOM ? response.weighting.data.confusion_noise.value[0] : response.weightingLine.data.confusion_noise.value[0];
+  return spectralConfusionNoise;
+}
 
-const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid) =>
-  (response.calculate.data?.data?.result?.sensitivity ?? 0) *
-  response.weightingLine.data.weighting_factor;
+const getSpectralWeightedSensitivityMID = (response: SensitivityCalculatorAPIResponseMid, type: number) =>
+  {
+    const weighting_factor = type === TYPE_ZOOM ? response.weighting?.data.weighting_factor : response.weightingLine?.data.weighting_factor;
+    return (response.calculate.data?.data?.result?.sensitivity ?? 0) *
+    weighting_factor;
+  }
 
-const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid) =>
-  sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-    response.weightingLine.data.beam_size[0].beam_maj_scaled,
-    response.weightingLine.data.beam_size[0].beam_min_scaled,
+const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, type: number) => {
+  const beams = type === TYPE_ZOOM ? response.weighting.data.beam_size : response.weightingLine.data.beam_size;
+  return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+    beams[0].beam_maj_scaled,
+    beams[0].beam_min_scaled,
     1
   );
+}
 
-const getSpectralSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number) =>
-  sense * response.weightingLine.data.sbs_conv_factor[0];
+const getSpectralSBSMID = (response: SensitivityCalculatorAPIResponseMid, sense: number, type: number) => {
+  const conv_factor = type === TYPE_ZOOM ? response?.weighting?.data.sbs_conv_factor[0] : response?.weightingLine?.data.sbs_conv_factor[0];
+  return sense * conv_factor;
+}
 
 /********************************************************************************************/
 
