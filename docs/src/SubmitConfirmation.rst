@@ -1,6 +1,10 @@
 Submit Confirmation Page
 ========================
 
+:numref:`Figure %s <submitpage>`
+
+.. _submitpage:
+
 .. figure:: /images/submitConfirmation.png
    :width: 90%
    :alt: screen in light & dark mode 

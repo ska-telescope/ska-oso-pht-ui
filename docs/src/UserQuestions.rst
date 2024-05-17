@@ -30,6 +30,5 @@ Minimal FAQs for the MVP
 Additional Notes
 ================
 
-- You can also find answers to many common questions within the SKAO Help Desk or User Guide.
 - Be sure to check the proposal guidelines and deadlines carefully before submitting your proposal.
 - The support team is available to assist you with any questions or concerns you may have throughout the proposal process.

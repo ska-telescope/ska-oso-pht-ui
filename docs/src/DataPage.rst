@@ -2,7 +2,7 @@ SDP Data Page
 ~~~~~~~~~
 
 The SDP (Science Data Processor) page is linked with the observation page so observation sets can be specified for which a data product is requested. Here, you can request a single or multiple sdp data products for an observation set or all observation sets added to your proposal.
-:ref:`Figure <datapage>` shows the layout of the sdp data page in light mode when no data product has been added to observation set(s).
+:numref:`Figure %s <datapage>` shows the layout of the sdp data page in light mode when no data product has been added to observation set(s).
 
 
 .. |icosdp| image:: /images/addsdp.png
@@ -28,7 +28,7 @@ The are two parts to the SDP data page:
 
 To add SDP data products to an observation, click the  |icosdp| button. once data products 
 have been added to your observation set(s), the SDP data landing page will 
-display a table as shown in :ref:`Figure <datapage1>`. This table displays the following:
+display a table as shown in :numref:`Figure %s <datapage1>`. This table displays the following:
 
   - *Observations*: Observation selected for which the sdp data product(s) is added.
   - *Observatory Data Product*: Selected data products(s).
@@ -53,7 +53,7 @@ display a table as shown in :ref:`Figure <datapage1>`. This table displays the f
 1. **Data Product Management**
 
 - Clicking on the |icosdp| button takes the user to a page where parameters of the 
-  data product(s) can be specified as shown in :ref:`Figure <datapage2>`
+  data product(s) can be specified as shown in :numref:`Figure %s <datapage2>`
 
 .. _datapage2:
 

@@ -1,6 +1,6 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
-On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
 and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
 
@@ -18,7 +18,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light & dark mode 
 
-   Observation Set page.
+   Observation page in light mode.
 
 
 .. _obspage1:
@@ -27,7 +27,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light & dark mode 
 
-   Observation Set page in light and dark mode.
+   Observation page with when observation set(s) added in light and dark mode.
 
 
 Layout and Navigation

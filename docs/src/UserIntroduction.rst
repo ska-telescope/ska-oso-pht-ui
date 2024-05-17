@@ -70,12 +70,16 @@ Common elements are recurring components found across multiple pages in the tool
 Additional Notes
 ================
 
-- You need to be logged in to access the landing page and its features.
+- You need to be logged in to access the landing page and its features  :numref:`Figure %s <landpage>`.
+
+.. _landpage:
 
 .. figure:: /images/landingPage.png
    :width: 90%
    :align: center
    :alt: screen in light & dark mode
+
+   Landing page.
 
 Additionally, :numref:`Figure %s <figure2>` provides three funtions which are navigation, status and validation of each page as outlined below.
 

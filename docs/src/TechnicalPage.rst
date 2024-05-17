@@ -3,6 +3,9 @@ Technical Justification Page
 
 This guide explains the "Technical Page", where you upload your technical justification  document.
 
+:numref:`Figure %s <techpage>`
+
+.. _techpage:
 .. figure:: /images/technicalPage.png
    :width: 90%
    :alt: screen in light & dark mode 
@@ -15,36 +18,8 @@ The Technical Justification Page has a clear and consistent layout:
 - Upload area: A designated section with an "Upload PDF" button.
 - Preview option: In the center, is a "Preview" button, that allows you to check your uploaded document.
 
-Navigation Elements
-===================
 
-- Home: (Top left corner) Returns you to the Landing Page.
-- Title Page: (Bottom left corner) Takes you back to the Title Page.
-- Save: (Top left) Saves your progress on the Team Page.
-- Validate: (Top right) Checks if all required information is filled correctly.
-- Submit: (Top right corner, initially grayed out) Becomes clickable only when all proposal details are entered and validated.
-- Data: (Bottom right corner) Moves you to the next page for data details.
 
-Additional Features
-===================
-
-- SKAO Standard Header and Footer: Provides branding and navigation to other resources.
-- Sun/Moon Mode Toggle: (Top right corner) Adjusts the page contrast for accessibility.
-
-.. figure:: /images/sunMoonBtn.png
-   :width: 5%
-   :alt: light/dark Button
-
-.. figure:: /images/sciencePage.png
-   :width: 90%
-   :alt: screen in light & dark mode 
-   
-- A status indicator at the top shows the validation status of each page in the flow.
-- Each status indicator, when clicked, will navigate to the appropriate page
-
-.. figure:: /images/pageStatus.png
-   :width: 90%
-   :alt: page status icons/navigation
 
 Key Information and Actions
 ===========================
