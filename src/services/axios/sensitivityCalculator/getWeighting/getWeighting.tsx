@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
@@ -100,7 +99,10 @@ async function GetWeighting(observation: Observation, inMode: number) {
   }
 
   try {
-    console.log('REQUEST URL: ', `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`);
+    console.log(
+      'REQUEST URL: ',
+      `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`
+    );
     const result = await axios.get(
       `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
       AXIOS_CONFIG

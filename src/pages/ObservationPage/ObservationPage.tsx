@@ -147,9 +147,7 @@ export default function ObservationPage() {
           <Typography variant="body1">{t('arrayConfiguration.' + rec.telescope)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            { t('subArrayConfiguration.' + rec.subarray)}
-          </Typography>
+          <Typography variant="body1">{t('subArrayConfiguration.' + rec.subarray)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t('observationType.' + rec.type)}</Typography>
