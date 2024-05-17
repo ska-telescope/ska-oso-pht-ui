@@ -370,7 +370,7 @@
     "label": "Pixel Size",
     "help": "PIXEL SIZE HELP",
     "notFound": "No value found",
-    "precision": 4
+    "precision": 3
   },
   "proposalId": {
     "label": "Proposal Id"

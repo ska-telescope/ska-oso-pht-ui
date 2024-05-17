@@ -9,15 +9,16 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 
-function mounting(theTheme: any) {
+function mounting(theTheme: any, disabled: boolean) {
   cy.viewport(1500, 1500);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Icon
-          onClick={cy.stub().as('setValue')}
+          disabled={disabled}
           icon={<Download />}
+          onClick={cy.stub().as('setValue')}
           testId="iconIcon"
           toolTip={TOOLTIP}
         />
@@ -37,8 +38,13 @@ function validateToolTip() {
 
 describe('<Icon />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
+    it(`Theme ${theTheme}: Renders (enabled)`, () => {
+      mounting(theTheme, true);
+      validateClick();
+      validateToolTip();
+    });
+    it(`Theme ${theTheme}: Renders (disabled)`, () => {
+      mounting(theTheme, false);
       validateClick();
       validateToolTip();
     });

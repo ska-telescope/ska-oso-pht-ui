@@ -60,7 +60,7 @@ export default function AddDataProduct() {
     const arr =
       rec.sensCalc?.section1?.length > 2 ? rec.sensCalc.section1[3].value.split(' x ') : [];
     if (arr.length > 1) {
-      const newValue = Number(arr[0]);
+      const newValue = Number(arr[1]);
       return (newValue / DIVIDER).toFixed(t('pixelSize.precision'));
     } else {
       return t('pixelSize.notFound');
