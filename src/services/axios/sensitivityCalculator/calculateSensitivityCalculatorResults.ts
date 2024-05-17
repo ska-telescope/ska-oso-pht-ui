@@ -32,35 +32,40 @@ export default function calculateSensitivityCalculatorResults(
     : getSBSMID(response, totalSensitivity);
   console.log('2 -');
   const spectralWeightedSensitivity = isLOW()
-    ? getSpectralWeightedSensitivityLOW(response)
+    ? getSpectralWeightedSensitivityLOW(response, observation.type)
     : getSpectralWeightedSensitivityMID(response);
   console.log('3 -');
   const spectralConfusionNoise = isLOW()
-    ? getSpectralConfusionNoiseLOW(response)
+    ? getSpectralConfusionNoiseLOW(response, observation.type)
     : getSpectralConfusionNoiseMID(response);
+  console.log('3 -1');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
   console.log('4 -');
   const spectralBeamSize = isLOW()
-    ? getSpectralBeamSizeLOW(response)
+    ? getSpectralBeamSizeLOW(response, observation.type)
     : getSpectralBeamSizeMID(response);
   console.log('5 -');
   const spectralSbs = isLOW()
-    ? getSpectralSBSLOW(response, spectralTotalSensitivity)
+    ? getSpectralSBSLOW(response, spectralTotalSensitivity, observation.type)
     : getSpectralSBSMID(response, spectralTotalSensitivity);
-
+  console.log('5 -1');
   const confusionNoiseDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     confusionNoise
   );
+  console.log('6 -');
   const weightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     weightedSensitivity
   );
+  console.log('7 -');
   const totalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
+  console.log('8 -');
   const beamSizeDisplay = { value: beamSize, units: 'arcsecs2' };
+  console.log('9 -');
   const sbsDisplay = { value: sbs, units: 'k' };
 
   const spectralConfusionNoiseDisplay =
@@ -175,22 +180,32 @@ const getSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number)
 
 /* -------------- */
 
-const getSpectralConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  response.weightingLine.confusion_noise.value[0];
+const getSpectralConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
+  const spectralConfusionNoise = type === TYPE_ZOOM ? response.weighting.confusion_noise.value[0] : response.weightingLine.confusion_noise.value[0];
+  return spectralConfusionNoise;
+}
 
-const getSpectralWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) =>
-  (response.calculate.data.spectral_sensitivity?.value ?? 0) *
-  response.weightingLine.weighting_factor;
+const getSpectralWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow, type:number) => {
+  const weighting_factor = type === TYPE_ZOOM ? response.weighting.weighting_factor : response.weightingLine.weighting_factor;
+  return (response.calculate.data.spectral_sensitivity?.value ?? 0) * weighting_factor;
+}
 
-const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =>
+const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
+  const beams = type === TYPE_ZOOM ? response.weighting.beam_size : response.weightingLine.beam_size;
   sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-    response.weightingLine.beam_size[0].beam_maj_scaled,
-    response.weightingLine.beam_size[0].beam_min_scaled,
+    beams[0].beam_maj_scaled,
+    beams[0].beam_min_scaled,
     1
   );
+}
 
-const getSpectralSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number) =>
-  sense * response.weightingLine.sbs_conv_factor[0];
+const getSpectralSBSLOW = (response: SensitivityCalculatorAPIResponseLow, sense: number, type: number) => {
+  console.log('::: in getSpectralSBSLOW', 'response', response);
+  const conv_factor = type === TYPE_ZOOM ? response?.weighting?.sbs_conv_factor[0] : response?.weightingLine?.sbs_conv_factor[0];
+  console.log('::: conv factor, response', conv_factor);
+  return sense * conv_factor;
+}
+
 
 /******************************************* MID ********************************************/
 
