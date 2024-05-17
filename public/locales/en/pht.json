@@ -561,11 +561,12 @@
     "3": "AA2",
     "4": "AA2 (core only)",
     "5": "AA*",
-    "6": "AA* (core only)",
-    "7": "AA* (15-m antennas only)",
+    "6": "AA* (15-m antennas only)",
+    "7": "AA* (core only)",
     "8": "AA4",
     "9": "AA4 (15-m antennas only)",
-    "10": "AA4 (core only)",
+    "10": "AA*/AA4 (13.5-m antennas only)",
+    "11": "AA4 (core only)",
     "20": "Custom"
   },
   "suppliedType": {
