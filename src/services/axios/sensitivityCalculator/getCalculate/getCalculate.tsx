@@ -13,10 +13,11 @@ import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockRe
 import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import Target from '../../../../utils/types/target';
 
 const URL_CALCULATE = `calculate`;
 
-async function GetCalculate(observation: Observation) {
+async function GetCalculate(observation: Observation, target: Target) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const getTelescope = () =>
@@ -32,6 +33,21 @@ async function GetCalculate(observation: Observation) {
     const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
     return arrConfig.map;
   };
+
+  // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
+  function rightAscension() {
+    return target.ra
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
+
+  function declination() {
+    return target.dec
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
 
   /*********************************************************** MID *********************************************************/
 
@@ -52,7 +68,7 @@ async function GetCalculate(observation: Observation) {
     } else {
       const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
       mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
-        .convertFrequencytoHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
+        .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
         .toString();
       mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
     }
@@ -71,13 +87,13 @@ async function GetCalculate(observation: Observation) {
 
     const params = new URLSearchParams({
       rx_band: `Band ${observation.observingBand}`,
-      ra_str: '00:00:00.0', // TODO: get from target
-      dec_str: '00:00:00.0', // TODO: get from target
+      ra_str: rightAscension(),
+      dec_str: declination(),
       array_configuration: getSubArray(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       frequency: sensCalHelpers.format
-        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
       bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
       resolution: '0',
@@ -100,6 +116,10 @@ async function GetCalculate(observation: Observation) {
   }
 
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
+
+  function pointingCentre() {
+    return rightAscension() + ' ' + declination();
+  }
 
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
@@ -124,7 +144,7 @@ async function GetCalculate(observation: Observation) {
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
         ?.toString(),
-      pointing_centre: '00:00:00.0 00:00:00.0', // TODO: get from target (Right Ascension + Declination)
+      pointing_centre: pointingCentre(),
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters

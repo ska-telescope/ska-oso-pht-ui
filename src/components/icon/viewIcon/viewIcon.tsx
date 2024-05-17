@@ -1,18 +1,21 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
 import { VisibilityRounded } from '@mui/icons-material';
+import Icon from '../icon/Icon';
 
 interface ViewIconProps {
-  toolTip: string;
+  disabled?: boolean;
   onClick: Function;
+  toolTip?: string;
 }
 
-export default function ViewIcon({ toolTip = '', onClick }: ViewIconProps) {
+export default function ViewIcon({ disabled = false, onClick, toolTip = '' }: ViewIconProps) {
   return (
-    <Tooltip title={toolTip} arrow>
-      <IconButton aria-label="view" onClick={() => onClick()} style={{ cursor: 'pointer' }}>
-        <VisibilityRounded />
-      </IconButton>
-    </Tooltip>
+    <Icon
+      disabled={disabled}
+      onClick={onClick}
+      icon={<VisibilityRounded />}
+      testId="viewIcon"
+      toolTip={toolTip}
+    />
   );
 }

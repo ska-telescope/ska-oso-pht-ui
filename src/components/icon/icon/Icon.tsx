@@ -9,7 +9,7 @@ interface IconProps {
   toolTip: string;
 }
 
-export default function Icon({ disabled = false, icon, onClick, testId, toolTip = '' }: IconProps) {
+export default function Icon({ disabled = false, icon, onClick, testId, toolTip }: IconProps) {
   return (
     <Tooltip data-testid={testId} title={toolTip} arrow>
       <span>

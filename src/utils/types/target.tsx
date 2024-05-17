@@ -26,8 +26,11 @@ type Target = {
   decUnit: string;
   id: number;
   name: string;
+  latitude: string;
+  longitude: string;
   ra: string;
   raUnit: string;
+  redshift: string;
   referenceFrame: number;
   vel: string;
   velUnit: string;
