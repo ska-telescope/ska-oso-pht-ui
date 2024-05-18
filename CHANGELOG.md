@@ -1,2 +1,4 @@
 CHANGELOG
 ~~~~~~~~~
+
+../../CHANGELOG.md

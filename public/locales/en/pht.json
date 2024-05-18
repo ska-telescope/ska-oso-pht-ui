@@ -192,7 +192,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "EMAIL HELP"
+    "help": "The email is a requied field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct."
   },
   "fileName": {
     "label": "File name"
@@ -215,7 +215,7 @@
   },
   "firstName": {
     "label": "First Name",
-    "help": "FIRST NAME HELP"
+    "help": "Requires the first name of the principal investigator or co-investigator."
   },
   "frequencyUnits": {
     "help": "FREQUENCY UNITS HELP"
@@ -251,7 +251,7 @@
   },
   "lastName": {
     "label": "Last Name",
-    "help": "LAST NAME HELP"
+    "help": "Last name of the principal investigator or co-investigator."
   },
   "listOfTargets": {
     "label": "List of Targets",
@@ -259,7 +259,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "NAME HELP"
+    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD and NED. However, you can provide an abitrary target/object name and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -388,8 +388,8 @@
   },
   "proposalType": {
     "label": "Proposal Types",
-    "help1": "Below are the available Proposal Types that can be used as a basis for a new proposal.",
-    "help2": "A description of the different types is provided as an aid as to the correct type to be selected to allow the proposal to be completed as required",
+    "help1": "Below are the available Proposal Types.",
+    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type to be selected",
     "help3": "Proposal sub-types are optional",
     "help4": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
   },
@@ -445,7 +445,7 @@
     "13": "Transients",
     "14": "VLBI",
     "label": "Science Category",
-    "help": "CATEGORY: Select a category that best describes your proposal."
+    "help": "Select a category that best describes the science of your proposal."
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
@@ -550,11 +550,11 @@
     "email": "Please enter a valid email address."
   },
   "spectralAveraging": {
-    "help": "Spectral Averaging HELP",
+    "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
     "label": "Spectral Averaging"
   },
   "spectralResolution": {
-    "help": "SPECTRAL RESOLUTION HELP",
+    "help": "High spectral resolution allows you to Identify and separate closely spaced spectral lines, Analyze fine details in the composition, temperature, and velocity of your targets/objects, Detect subtle shifts in wavelength due to Doppler effects or chemical composition changes.",
     "label": "Spectral Resolution"
   },
   "srcNet": {
@@ -631,13 +631,13 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "NO TARGET ASSOCIATED WITH THIS PROPOSAL"
+    "empty": "THERE IS NO TARGET ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
     "label": "Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "This title should be used to allow for the identification of this proposal in a list of proposals",
+    "help": "Provide the title of your proposal. This field supports latex syntax.", 
     "helper": "Please enter your title information"
   },
   "updated": {
