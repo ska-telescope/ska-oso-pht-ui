@@ -8,21 +8,21 @@ export type SensitivityCalculatorAPIResponseLow = {
       spectral_sensitivity?: {
         value: number;
         unit: string;
-    },
+      };
       spectropolarimetry_results?: {
         fwhm_of_the_rmsf: {
-            value: number,
-            unit: string
-        },
+          value: number;
+          unit: string;
+        };
         max_faraday_depth_extent?: {
-            value: number;
-            unit: string;
-        },
+          value: number;
+          unit: string;
+        };
         max_faraday_depth?: {
-            value: number;
-            unit: string;
-        }
-      }
+          value: number;
+          unit: string;
+        };
+      };
     };
   };
   weighting: {

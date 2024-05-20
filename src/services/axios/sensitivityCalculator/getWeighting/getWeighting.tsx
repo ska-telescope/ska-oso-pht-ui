@@ -61,11 +61,10 @@ async function GetWeighting(observation: Observation, inMode: number) {
       calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
       taper: observation.tapering?.toString()
     };
-    const urlSearchParams = new URLSearchParams
-    for(let key in params)
-      urlSearchParams.append(key, params[key]);
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
 
-    return urlSearchParams
+    return urlSearchParams;
   }
 
   /*********************************************************** LOW *********************************************************/
@@ -79,11 +78,10 @@ async function GetWeighting(observation: Observation, inMode: number) {
       pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
     };
-    const urlSearchParams = new URLSearchParams
-    for(let key in params)
-      urlSearchParams.append(key, params[key]);
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
 
-    return urlSearchParams
+    return urlSearchParams;
   }
 
   /*************************************************************************************************************************/

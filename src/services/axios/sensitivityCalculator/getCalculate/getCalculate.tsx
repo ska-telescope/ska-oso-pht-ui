@@ -88,11 +88,10 @@ async function GetCalculate(observation: Observation) {
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
     };
-    const urlSearchParams = new URLSearchParams
-    for(let key in params)
-      urlSearchParams.append(key, params[key]);
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
 
-    return urlSearchParams
+    return urlSearchParams;
   }
 
   /*********************************************************** LOW *********************************************************/
@@ -134,11 +133,10 @@ async function GetCalculate(observation: Observation) {
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     };
-    const urlSearchParams = new URLSearchParams
-    for(let key in params)
-      urlSearchParams.append(key, params[key]);
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
 
-    return urlSearchParams
+    return urlSearchParams;
   }
 
   /*************************************************************************************************************************/
