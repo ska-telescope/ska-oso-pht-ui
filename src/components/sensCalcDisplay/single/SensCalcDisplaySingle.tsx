@@ -27,7 +27,9 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
   const hasError = () => row?.sensCalc?.error?.length > 0;
 
   const FieldFetch: any = (type: string, suffix: string) => {
-    const observationTypeLabel: string = OBS_TYPES[row?.sensCalc?.results?.section2 ? 0 : 1];
+    const observationTypeLabel: string = row?.sensCalc?.hasOwnProperty('section2')
+      ? OBS_TYPES[1]
+      : OBS_TYPES[0];
     if (row?.sensCalc?.section1) {
       const result = row?.sensCalc?.section1.find(
         item => item.field === `${observationTypeLabel}${suffix}`

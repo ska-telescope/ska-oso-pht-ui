@@ -6,7 +6,8 @@ import {
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  OBSERVATION_TYPE_SENSCALC
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -30,8 +31,8 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    return arrConfig.map;
+    const arrConfig = array?.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig?.map;
   };
 
   // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
@@ -85,7 +86,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
-    const params = new URLSearchParams({
+    const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: rightAscension(),
       dec_str: declination(),
@@ -98,12 +99,15 @@ async function GetCalculate(observation: Observation, target: Target) {
       bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
-      calculator_mode: 'continuum',
+      calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
       taper: observation.tapering?.toString(),
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams;
   }
 
   /*********************************************************** LOW *********************************************************/
@@ -139,7 +143,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
-    const params = new URLSearchParams({
+    const params = {
       subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
@@ -148,8 +152,11 @@ async function GetCalculate(observation: Observation, target: Target) {
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams;
   }
 
   /*************************************************************************************************************************/

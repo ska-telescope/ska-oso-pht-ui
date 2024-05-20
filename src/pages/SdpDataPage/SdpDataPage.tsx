@@ -61,10 +61,8 @@ export default function SdpDataPage() {
         const res = i + 1;
         const tmp = t('observatoryDataProduct.options.' + res);
         str += tmp;
-        console.log('TREVOR', tmp, str);
       }
     }
-    console.log('TREVOR OUTPUT => ', str);
     return str;
   };
 
