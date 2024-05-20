@@ -1,8 +1,8 @@
 import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
+import { DownloadRounded } from '@mui/icons-material';
 import BaseButton from '../Base/Button';
 
-interface AddButtonProps {
+interface DownloadButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -11,19 +11,19 @@ interface AddButtonProps {
   toolTip?: string;
 }
 
-export default function AddButton({
+export default function DownloadButton({
   disabled = false,
   action,
+  title = 'downloadBtn.label',
   primary = false,
-  title = 'button.add',
   testId,
   toolTip
-}: AddButtonProps) {
+}: DownloadButtonProps) {
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<AddIcon />}
+      icon={<DownloadRounded />}
       primary={primary}
       testId={testId}
       title={title}

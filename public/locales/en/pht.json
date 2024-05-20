@@ -9,7 +9,6 @@
   "no": "No",
   "button": {
     "add": "Add",
-    "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirmDeleteMember": "Confirm Team Member Deletion",
@@ -43,7 +42,8 @@
     "warning": "Please wait whilst we create a new proposal"
   },
   "addTarget": {
-    "label": "Add Target"
+    "label": "Add Target",
+    "toolTip": "Will add the target to the list associated with the proposal"
   },
   "apiVersion": {
     "label": "API Version"

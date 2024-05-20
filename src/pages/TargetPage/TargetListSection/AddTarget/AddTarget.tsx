@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
-import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../../../utils/types/proposal';
@@ -11,6 +10,7 @@ import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
+import AddButton from '../../../../components/button/Add/Add';
 
 interface AddTargetProps {
   raType: number;
@@ -65,12 +65,15 @@ export default function AddTarget({ raType }: AddTargetProps) {
       0
     );
     const newTarget = {
-      ra,
-      raUnit: raType.toString(),
       dec,
       decUnit: raType.toString(),
       id: highestId + 1,
       name,
+      latitude: null,
+      longitude: null,
+      ra,
+      raUnit: raType.toString(),
+      redshift: null,
       referenceFrame,
       vel,
       velUnit: velType.toString()
@@ -188,7 +191,13 @@ export default function AddTarget({ raType }: AddTargetProps) {
           )}
           <Grid item xs={12}>
             <Box p={1}>
-              <AddTargetButton disabled={disabled()} onClick={clickFunction} />
+              <AddButton
+                action={clickFunction}
+                disabled={disabled()}
+                testId="addTargetButton"
+                title="addTarget.label"
+                toolTip="addTarget.toolTip"
+              />
             </Box>
           </Grid>
         </Grid>
