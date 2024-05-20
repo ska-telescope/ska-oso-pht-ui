@@ -55,10 +55,17 @@ export default function AddDataProduct() {
     return temp ? temp.imageWeighting : 0;
   };
 
-  const getPixelSize = rec =>
-    rec.sensCalc?.section1?.length > 2
-      ? rec.sensCalc.section1[3].value.split(' x ')[0]
-      : 'NOT FOUND';
+  const getPixelSize = rec => {
+    const DIVIDER = 3;
+    const arr =
+      rec.sensCalc?.section1?.length > 2 ? rec.sensCalc.section1[3].value.split(' x ') : [];
+    if (arr.length > 1) {
+      const newValue = Number(arr[1]);
+      return (newValue / DIVIDER).toFixed(t('pixelSize.precision'));
+    } else {
+      return t('pixelSize.notFound');
+    }
+  };
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));

@@ -161,9 +161,7 @@ export default function ObservationPage() {
           <Typography variant="body1">{t('arrayConfiguration.' + rec.telescope)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {t('dropdown.telescope.' + rec.telescope + '.array.' + rec.subarray)}
-          </Typography>
+          <Typography variant="body1">{t('subArrayConfiguration.' + rec.subarray)}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t('observationType.' + rec.type)}</Typography>
@@ -301,7 +299,7 @@ export default function ObservationPage() {
         disableClickEventBubbling: true,
         renderCell: (e: { row: { telescope: number; subarray: number } }) => {
           if (e.row.telescope) {
-            return t(`dropdown.telescope.${e.row.telescope}.array.${e.row.subarray}`);
+            return t(`subArrayConfiguration.${e.row.subarray}`);
           }
           return t('arrayConfiguration.0');
         }
