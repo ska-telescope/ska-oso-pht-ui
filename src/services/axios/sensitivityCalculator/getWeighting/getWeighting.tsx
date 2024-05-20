@@ -124,10 +124,6 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   }
 
   try {
-    console.log(
-      'REQUEST URL: ',
-      `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`
-    );
     const result = await axios.get(
       `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
       AXIOS_CONFIG

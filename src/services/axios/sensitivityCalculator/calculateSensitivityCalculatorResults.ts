@@ -20,58 +20,43 @@ export default function calculateSensitivityCalculatorResults(
   target: Target
 ): SensCalcResult {
   const isLOW = () => observation.telescope === TELESCOPE_LOW_NUM;
-  console.log('1 -');
   const weightedSensitivity = isLOW()
     ? getWeightedSensitivityLOW(response, observation.type)
     : getWeightedSensitivityMID(response);
-  console.log('1 -1');
   const confusionNoise: number = isLOW()
     ? getConfusionNoiseLOW(response)
     : getConfusionNoiseMID(response);
-  console.log('1 -2');
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  console.log('1 -3');
   const beamSize = isLOW() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
-  console.log('1 -4');
   const sbs = isLOW()
     ? getSBSLOW(response, totalSensitivity)
     : getSBSMID(response, totalSensitivity);
-  console.log('2 -');
   const spectralWeightedSensitivity = isLOW()
     ? getSpectralWeightedSensitivityLOW(response, observation.type)
     : getSpectralWeightedSensitivityMID(response, observation.type);
-  console.log('3 -');
   const spectralConfusionNoise = isLOW()
     ? getSpectralConfusionNoiseLOW(response, observation.type)
     : getSpectralConfusionNoiseMID(response, observation.type);
-  console.log('3 -1');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
-  console.log('4 -');
   const spectralBeamSize = isLOW()
     ? getSpectralBeamSizeLOW(response, observation.type)
     : getSpectralBeamSizeMID(response, observation.type);
-  console.log('5 -');
   const spectralSbs = isLOW()
     ? getSpectralSBSLOW(response, spectralTotalSensitivity, observation.type)
     : getSpectralSBSMID(response, spectralTotalSensitivity, observation.type);
-  console.log('5 -1');
   const confusionNoiseDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     confusionNoise
   );
-  console.log('6 -');
   const weightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     weightedSensitivity
   );
-  console.log('7 -');
   const totalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     totalSensitivity
   );
-  console.log('8 -');
   const beamSizeDisplay = { value: beamSize, units: 'arcsecs2' };
-  console.log('9 -');
   const sbsDisplay = { value: sbs, units: 'k' };
 
   const spectralConfusionNoiseDisplay =
