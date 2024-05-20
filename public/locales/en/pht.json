@@ -519,7 +519,12 @@
   },
   "spectralAveraging": {
     "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
-    "label": "Spectral Averaging"
+    "label": "Spectral Averaging",
+    "range": {
+      "lower": 1,
+      "upper": 27624,
+      "error": "Values are outside of allowed range"
+    }
   },
   "spectralResolution": {
     "help": "High spectral resolution allows you to Identify and separate closely spaced spectral lines, Analyze fine details in the composition, temperature, and velocity of your targets/objects, Detect subtle shifts in wavelength due to Doppler effects or chemical composition changes.",
@@ -606,7 +611,7 @@
     "label": "Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "Provide the title of your proposal. This field supports latex syntax.", 
+    "help": "Provide the title of your proposal. This field supports latex syntax.",
     "helper": "Please enter your title information"
   },
   "updated": {
