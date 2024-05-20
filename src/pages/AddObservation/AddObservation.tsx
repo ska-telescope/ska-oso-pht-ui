@@ -481,6 +481,35 @@ export default function AddObservation() {
   };
 
   const spectralAveragingField = () => {
+    const errorMessage = () => {
+      const min = Number(t('spectralAveraging.range.lower'));
+      const max = Number(t('spectralAveraging.range.upper'));
+      return spectralAveraging < min || spectralAveraging > max
+        ? t('spectralAveraging.range.error')
+        : '';
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            testId="spectral"
+            value={String(spectralAveraging)}
+            setValue={setSpectralAveraging}
+            label={t('spectralAveraging.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('spectralAveraging.help'))}
+            required
+            errorText={errorMessage()}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const spectralAveragingDropdown = () => {
     const getOptions = () => OBSERVATION.SpectralAveraging;
 
     return (
@@ -1089,7 +1118,7 @@ export default function AddObservation() {
                     {spectralResolutionField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {spectralAveragingField()}
+                    {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {effectiveResolutionField()}
