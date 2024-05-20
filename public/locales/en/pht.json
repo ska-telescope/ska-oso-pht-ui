@@ -259,7 +259,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD and NED. However, you can provide an abitrary target/object name and enter the coordinate values."
+    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an abitrary target/object name which can contain any charater and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -684,7 +684,7 @@
     },
     "1": {
       "title": "Team",
-      "desc": "TEAM. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Principal investigators should ensure Co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation."
     },
     "2": {
       "title": "General",
