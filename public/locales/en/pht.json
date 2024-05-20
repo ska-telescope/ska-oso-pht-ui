@@ -293,8 +293,7 @@
       "2": "Calibrated Visibilities",
       "3": "Image Products 1 : Image Cubes",
       "4": "Image Products 2 : UV Grids",
-      "5": "LSM Catalogue",
-      "many": "{{count}} selected"
+      "5": "LSM Catalogue"
     }
   },
   "observationDetails": {
@@ -337,7 +336,9 @@
   },
   "pixelSize": {
     "label": "Pixel Size",
-    "help": "PIXEL SIZE HELP"
+    "help": "PIXEL SIZE HELP",
+    "notFound": "No value found",
+    "precision": 3
   },
   "proposalId": {
     "label": "Proposal Id"
@@ -675,7 +676,7 @@
       "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
     },
     "7": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OSERVATIONS FOR THIS PROPOSAL",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "title": "SDP Data",
       "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"

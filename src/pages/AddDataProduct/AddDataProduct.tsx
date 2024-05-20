@@ -27,7 +27,6 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
-const PIXEL_SIZE = 33;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -51,14 +50,31 @@ export default function AddDataProduct() {
   const FIELD_OBS = 'observatoryDataProduct.options';
   const LABEL_WIDTH = 5;
 
+  const getImageWeighting = (id: string) => {
+    const temp = getProposal()?.observations.find(e => e.id === id);
+    return temp ? temp.imageWeighting : 0;
+  };
+
+  const getPixelSize = rec => {
+    const DIVIDER = 3;
+    const arr =
+      rec.sensCalc?.section1?.length > 2 ? rec.sensCalc.section1[3].value.split(' x ') : [];
+    if (arr.length > 1) {
+      const newValue = Number(arr[1]);
+      return (newValue / DIVIDER).toFixed(t('pixelSize.precision'));
+    } else {
+      return t('pixelSize.notFound');
+    }
+  };
+
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
     const theOptions = [
-      ...getProposal()?.observations?.map(e => ({
-        label: e.id,
-        value: e.id,
-        weighting: e.imageWeighting,
-        pixelSize: PIXEL_SIZE // TODO : We need to get this from the SensCalc properly
+      ...getProposal()?.targetObservation?.map(e => ({
+        label: e.observationId,
+        value: e.observationId,
+        weighting: getImageWeighting(e.observationId),
+        pixelSize: getPixelSize(e)
       }))
     ];
     setBaseObservations(theOptions);

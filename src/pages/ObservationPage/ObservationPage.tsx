@@ -87,6 +87,20 @@ export default function ObservationPage() {
       }
     });
     setElementsT(temp);
+
+    const temp2 = [];
+    getProposal().targetObservation.forEach(rec => {
+      if (rec => rec.targetId === target?.id && rec.observationId === currId) {
+        temp2.push({
+          targetId: rec.targetId,
+          observationId: currId,
+          sensCalc: results
+        });
+      } else {
+        temp2.push(rec);
+      }
+    });
+    setProposal({ ...getProposal(), targetObservation: temp2 });
   };
 
   React.useEffect(() => {
