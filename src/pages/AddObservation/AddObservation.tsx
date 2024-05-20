@@ -84,13 +84,6 @@ export default function AddObservation() {
   React.useEffect(() => {
     const newId = generateId(t('addObservation.idPrefix'), 6);
     setMyObsId(newId);
-
-    // const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-    // if (usedTelescope === 2) {
-    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.lowLower')));
-    // } else if (usedTelescope === 1) {
-    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.midLower')));
-    // }
   }, []);
 
   React.useEffect(() => {
@@ -146,27 +139,11 @@ export default function AddObservation() {
     details
   ]);
 
-  function observationLookup(inValue) {
-    const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
-    const lookup = record?.lookup;
-    if (lookup !== null) {
-      setEffective(inValue[record.lookup].value);
-    }
-  }
-
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
   }, []);
 
   React.useEffect(() => {
-    const arr = [
-      OBSERVATION.EffectiveResolutionOBLow,
-      OBSERVATION.EffectiveResolutionOB1,
-      OBSERVATION.EffectiveResolutionOB2,
-      OBSERVATION.EffectiveResolutionOB5a,
-      OBSERVATION.EffectiveResolutionOB5b
-    ];
-    observationLookup(arr[observingBand]);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
     setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
   }, [spectralAveraging, observingBand]);
@@ -785,6 +762,42 @@ export default function AddObservation() {
   };
 
   const effectiveResolutionField = () => {
+    const calculateEffectiveResolution = () => {
+      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const resolution = spectralResolutionValue[0];
+      const centralFrequency = getScaledValue(frequency, 1000000000, '*');
+      console.log('returned from getScaledValue', centralFrequency);
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      console.log('returned from calculateVelocity', velocity);
+      return `${effectiveResolution} kHz ( ${velocity})`;
+    };
+
+    const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+      const speedOfLight = 299792458;
+      const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
+      if (velocity < 1000) {
+        return velocity.toFixed(precision) + ' m/s';
+      } else {
+        return (velocity / 1000).toFixed(precision) + ' km/s';
+      }
+    };
+
+    const getScaledValue = (value: any, multiplier: number, operator: string) => {
+      let val_scaled = 0;
+      switch (operator) {
+        case '*':
+          val_scaled = value * multiplier;
+          break;
+        case '/':
+          val_scaled = value / multiplier;
+          break;
+        default:
+          val_scaled = value;
+      }
+      return val_scaled;
+    };
+
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
@@ -792,7 +805,8 @@ export default function AddObservation() {
         labelPosition={LABEL_POSITION.START}
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
-        value={effective}
+        value={calculateEffectiveResolution()}
+        setValue={setEffective}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
