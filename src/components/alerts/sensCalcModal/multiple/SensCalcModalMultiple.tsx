@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
-import CancelButton from '../../../button/cancel/CancelButton';
+import CancelButton from '../../../button/CancelButton/Cancel';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
-import TeamInviteButton from '../../../components/button/teamInvite/TeamInviteButton';
+import TeamInviteButton from '../../../components/button/TeamInviteButton/TeamInviteButton';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
