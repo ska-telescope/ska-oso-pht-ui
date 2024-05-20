@@ -1,6 +1,6 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
-On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add an observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
 and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
 
@@ -18,7 +18,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light & dark mode 
 
-   Observation Set page.
+   Observation page in light mode.
 
 
 .. _obspage1:
@@ -27,7 +27,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light & dark mode 
 
-   Observation Set page in light and dark mode.
+   Observation page with when observation set(s) added in light and dark mode.
 
 
 Layout and Navigation
@@ -36,22 +36,22 @@ Layout and Navigation
 The Observation Page consists of two distinct sections see :numref:`Figure %s <obspage1>`:
 
 
-1. Observation set list table which shows a table that displays the following details :
+1. Observation set table which displays the following details :
   
-   - observation Id: unique id for each observation set.
-   - observation group id: displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
-   - array: Array of the observation set i.e if MID or LOW.
-   - sub-array: This displays the sub-array of observation set.
-   - type of observation: If continuum or zoom.
-   - Sensitivity Calculation status: clicking on this status will open a modal with the results. See :numref:`Figure %s <senscal>`. 
-   - *actions* : only delete action is available at the moment.
+   - **observation Id** : unique id for each observation set.
+   - **observation group id** : displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
+   - **array** : Array of the observation set i.e if MID or LOW.
+   - **sub-array** : This displays the sub-array of the observation set.
+   - **type of observation** : If continuum or zoom.
+   - **Sensitivity Calculation status** : clicking on this status will open a modal with the results. See :numref:`Figure %s <senscal>`. 
+   - **actions** : only delete action is available at the moment.
 
-2. Target List: This view allow you to add target(s) by clicking on the check box.
+2. Target List: 
    
    - Select targets associated with the chosen observation set by ticking the checkboxes. Use "Selected" and "Not Selected" buttons for filtering.
-   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation for that target. Hovering on this will display the status and clicking will display the target level results from the sensitivity calculator.
-   - The sensitivity based on the sensitivity calculator result.
-   - The beam size based on the sensitivity calculator result.
+   - The status icon next to each linked target-observation shows the status of a Sensitivity Calculation for that target. Hovering over this will display the status and clicking will display the target level results from the sensitivity calculator.
+   - The *total sensitivity* based on the sensitivity calculator result.
+   - The *beam size* based on the sensitivity calculator result.
 
 
 .. tip:: 
@@ -115,6 +115,3 @@ Next Steps
 
 After adding observation set(s) you can proceed to the "Technical" page or any other page. 
 
-.. admonition:: Confirmation Summary
-
-   Ensure proposal is saved regularly

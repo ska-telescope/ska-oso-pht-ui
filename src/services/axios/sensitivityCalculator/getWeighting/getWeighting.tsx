@@ -1,12 +1,11 @@
 import axios from 'axios';
 import {
-  OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING
+  OBSERVATION_TYPE_SENSCALC
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -16,14 +15,15 @@ import {
   MockResponseLowWeightingContinuum,
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
-import Observation from 'utils/types/observation';
+import Observation from '../../../../utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
+import Target from '../../../../utils/types/target';
 
 const URL_WEIGHTING = `weighting`;
 
-async function GetWeighting(observation: Observation, inMode: number) {
+async function GetWeighting(observation: Observation, target: Target, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const getTelescope = () =>
@@ -31,14 +31,29 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
+      ? OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase() + '/'
       : '';
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
-    const arrConfig = array.subarray.find(obj => obj.value === observation.subarray);
-    return arrConfig.map;
+    const arrConfig = array?.subarray.find(obj => obj.value === observation.subarray);
+    return arrConfig?.map;
   };
+
+  // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
+  function rightAscension() {
+    return target.ra
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
+
+  function declination() {
+    return target.dec
+      .replace('+', '')
+      .replace('-', '')
+      .replace(' ', '');
+  }
 
   /*********************************************************** MID *********************************************************/
 
@@ -49,35 +64,44 @@ async function GetWeighting(observation: Observation, inMode: number) {
 
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
-    const params = new URLSearchParams({
+    const params = {
       frequency: sensCalHelpers.format
-        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
       zoom_frequencies: sensCalHelpers.format
-        .convertFrequencytoHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
-      dec_str: '00:00:00.0', // to get from target
+      dec_str: declination(),
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
-      calculator_mode: OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING[inMode],
+      calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
       taper: observation.tapering?.toString()
-    });
+    };
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
 
-    return params;
+    return urlSearchParams;
   }
 
   /*********************************************************** LOW *********************************************************/
 
+  function pointingCentre() {
+    return rightAscension() + ' ' + declination();
+  }
+
   function mapQueryLowWeighting(): URLSearchParams {
-    const params = new URLSearchParams({
+    const params = {
       weighting_mode: OBSERVATION.ImageWeighting.find(
         obj => obj.value === observation.imageWeighting
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
-      pointing_centre: '00:00:00.0 00:00:00.0', // to get from target
+      pointing_centre: pointingCentre(),
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
-    });
-    return params;
+    };
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
+
+    return urlSearchParams;
   }
 
   /*************************************************************************************************************************/

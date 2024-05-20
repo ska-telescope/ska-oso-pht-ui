@@ -114,7 +114,7 @@ const sensCalHelpers = {
         precision
       )}`;
     },
-    convertFrequencytoHz(frequencyValue, frequencyUnits): number {
+    convertFrequencyToHz(frequencyValue, frequencyUnits): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,

@@ -18,7 +18,7 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
-export const OBSERVATION_TYPE_SENSCALC_MID_WEIGHTING = ['line', 'continuum'];
+export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 
 export const LAST_PAGE = 9;
 
@@ -172,7 +172,7 @@ export const OBSERVATION = {
           numOfStations: 0
         },
         {
-          value: 7,
+          value: 8,
           map: 'AA4',
           label: 'AA4',
           numOf15mAntennas: 133,
@@ -181,16 +181,16 @@ export const OBSERVATION = {
         },
         {
           value: 9,
-          map: 'AA4 (13.5-m antennas only)',
-          label: 'AA4 (13.5-m antennas only)',
+          map: 'AA4 (15-m antennas only)',
+          label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
           numOfStations: 0
         },
         {
           value: 10,
-          map: 'AA4 (15-m antennas only)',
-          label: 'AA4 (15-m antennas only)',
+          map: 'AA*/AA4 (13.5-m antennas only)',
+          label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
           numOfStations: 0
@@ -266,7 +266,7 @@ export const OBSERVATION = {
           numOfStations: 307
         },
         {
-          value: 6,
+          value: 7,
           map: 'LOW_AAstar_core_all',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
@@ -274,7 +274,7 @@ export const OBSERVATION = {
           numOfStations: 199
         },
         {
-          value: 7,
+          value: 8,
           map: 'LOW_AA4_all',
           label: 'AA4',
           numOf15mAntennas: 0,
@@ -282,7 +282,7 @@ export const OBSERVATION = {
           numOfStations: 512
         },
         {
-          value: 8,
+          value: 11,
           map: 'LOW_AA4_core_all',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,

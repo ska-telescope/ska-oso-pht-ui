@@ -15,6 +15,7 @@ On the landing is a summary table of the proposals associated with you. These wi
 investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` list your proposals with the following information:
 
 - Proposal ID : Unique identifier for each proposal.
+- Category : The main categoy of the proposal. 
 - Cycle : SKAO observing cycle associated with the proposals.
 - Title : Proposal title.
 - PI : Principal Investigator of the proposal.
@@ -31,7 +32,7 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
    :alt: screen in light & dark mode of the landing page
    :class: with-border
 
-   The Landing page in light and dark mode.
+   The Landing page in light mode.
 
 
 
