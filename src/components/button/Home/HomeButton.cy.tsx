@@ -22,11 +22,11 @@ function mounting(theTheme: any, disabled: boolean) {
 
 function validateClick() {
   cy.get('[data-testid="testId"]').click();
-  cy.get('[data-testid="testId"]').should('not.be.disabled')
+  cy.get('[data-testid="testId"]').should('not.be.disabled');
 }
 
 function validateDisabled() {
-  cy.get('[data-testid="testId"]').should('be.disabled')
+  cy.get('[data-testid="testId"]').should('be.disabled');
 }
 
 function validateToolTip() {
