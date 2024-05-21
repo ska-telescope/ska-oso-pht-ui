@@ -389,9 +389,9 @@
   "proposalType": {
     "label": "Proposal Types",
     "help1": "Below are the available Proposal Types.",
-    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type to be selected",
+    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
     "help3": "Proposal sub-types are optional",
-    "help4": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
+    "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
   },
   "members": {
     "label": "Members",
@@ -411,7 +411,7 @@
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
     "0": "Heliocentric",
-    "1": "Local Standard of Rest"
+    "1": "Kinematic Local Standard of Rest"
   },
   "resolve": {
     "label": "Resolve",
