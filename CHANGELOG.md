@@ -1,4 +1,6 @@
 CHANGELOG
-~~~~~~~~~
+
+```
 
 ../../CHANGELOG.md
+```
