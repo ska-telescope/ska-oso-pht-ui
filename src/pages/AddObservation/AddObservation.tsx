@@ -790,7 +790,32 @@ export default function AddObservation() {
     );
   };
 
-  const effectiveResolutionField = () => {
+  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+    const speedOfLight = 299792458;
+    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
+    if (velocity < 1000) {
+      return velocity.toFixed(precision) + ' m/s';
+    } else {
+      return (velocity / 1000).toFixed(precision) + ' km/s';
+    }
+  };
+
+  const getScaledValue = (value: any, multiplier: number, operator: string) => {
+    let val_scaled = 0;
+    switch (operator) {
+      case '*':
+        val_scaled = value * multiplier;
+        break;
+      case '/':
+        val_scaled = value / multiplier;
+        break;
+      default:
+        val_scaled = value;
+    }
+    return val_scaled;
+  };
+
+  const effectiveResolutionFieldMid = () => {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
       const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
@@ -800,29 +825,29 @@ export default function AddObservation() {
       return `${effectiveResolution} kHz ( ${velocity})`;
     };
 
-    const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-      const speedOfLight = 299792458;
-      const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
-      if (velocity < 1000) {
-        return velocity.toFixed(precision) + ' m/s';
-      } else {
-        return (velocity / 1000).toFixed(precision) + ' km/s';
-      }
-    };
+    return (
+      <TextEntry
+        label={t('effectiveResolution.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        testId="effective"
+        value={calculateEffectiveResolution()}
+        setValue={setEffective}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        required
+      />
+    );
+  };
 
-    const getScaledValue = (value: any, multiplier: number, operator: string) => {
-      let val_scaled = 0;
-      switch (operator) {
-        case '*':
-          val_scaled = value * multiplier;
-          break;
-        case '/':
-          val_scaled = value / multiplier;
-          break;
-        default:
-          val_scaled = value;
-      }
-      return val_scaled;
+  const effectiveResolutionFieldLow = () => {
+    const calculateEffectiveResolution = () => {
+      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const resolution = spectralResolutionValue[0];
+      const centralFrequency = getScaledValue(frequency, 1000000, '*');
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
     };
 
     return (
@@ -1121,7 +1146,7 @@ export default function AddObservation() {
                     {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {effectiveResolutionField()}
+                    {isLow() ? effectiveResolutionFieldLow() : effectiveResolutionFieldMid()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {taperingField()}
