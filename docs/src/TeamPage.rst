@@ -1,8 +1,8 @@
 Team Page
 ~~~~~~~~~
 
-Once on the team page --> see :numref:`Figure %s <figure5>`,  you can move between pages where you can click on the page name as seen in 
-:numref:`Figure %s <figure5>`. See progress status indicated by the navigation bar "top center" of the page.
+Once on the team page, see :numref:`Figure %s <figure5>`,  you can move between pages where you can click on the page name as seen in 
+:numref:`Figure %s <figure5>` ( see progress status indicated by the navigation bar "top center" of the page).
 
 
 
@@ -28,9 +28,9 @@ Once on the team page --> see :numref:`Figure %s <figure5>`,  you can move betwe
 Layout and Navigation
 =====================
 
-The Team Page has two main sections:
+The Team Page has two sections:
 
-1. Team Member List (Left)
+1. A list of Team Members (Left)
 
 - Displays a table with information about each team member
 
@@ -44,9 +44,8 @@ The Team Page has two main sections:
 2. Team Management Options (Right)
 
 - Invite Team Members: Fill the form to invite collaborators. Once the required fields are filled the "Send Invitation" button will become active.
-- Dynamic Help: Content changes dependant upon the focused field.
-- Import from File: Not available at the moment.
-- Search for a Member: Not available at the moment.
+- Import from File: *Not available at the moment*.
+- Search for a Member: *Not available at the moment*.
 
 
 
@@ -55,12 +54,6 @@ Key Information and Actions
 ===========================
 
 - View and manage your proposal team.
-- Invite new collaborators and assign PI roles.
+- Invite new collaborators.
 - Import team members from a file or find existing users.
 
-
-Additional Notes
-================
-
-- Dynamic help is available, when you hover over fields, for descriptions. 
-- Remember to save your progress regularly using the "Save" button.

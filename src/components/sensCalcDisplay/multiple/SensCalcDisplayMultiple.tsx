@@ -44,12 +44,12 @@ export default function SensCalcDisplayMultiple({
           field3: tmp.section1?.length > 2 ? tmp.section1[2].value : '',
           field4: tmp.section1?.length > 3 ? tmp.section1[3].value : '',
           field5: tmp.section1?.length > 4 ? tmp.section1[4].value : '',
-          field6: tmp.section1?.length > 0 ? tmp.section2[0].value : '',
-          field7: tmp.section1?.length > 1 ? tmp.section2[1].value : '',
-          field8: tmp.section1?.length > 2 ? tmp.section2[2].value : '',
-          field9: tmp.section1?.length > 3 ? tmp.section2[3].value : '',
-          field10: tmp.section1?.length > 4 ? tmp.section2[4].value : '',
-          field11: tmp.section1?.length > 0 ? tmp.section3[0].value : ''
+          field6: tmp.section2?.length > 0 ? tmp.section2[0].value : '',
+          field7: tmp.section2?.length > 1 ? tmp.section2[1].value : '',
+          field8: tmp.section2?.length > 2 ? tmp.section2[2].value : '',
+          field9: tmp.section2?.length > 3 ? tmp.section2[3].value : '',
+          field10: tmp.section2?.length > 4 ? tmp.section2[4].value : '',
+          field11: tmp.section2?.length > 0 ? tmp.section3[0].value : ''
         };
         results.push(tempResults);
       });

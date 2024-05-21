@@ -31,13 +31,11 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    SciencePage
    TargetPage
    ObservationPage
-   ObsSensCalc
-   TechnicalPage
    DataPage
    SrcNetPage
    SubmitConfirmation
    UserQuestions
-   UserTroubleshooting
+   UserTroubleShooting
    UserFeedback
    UserFuture
 

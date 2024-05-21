@@ -90,7 +90,7 @@ export default function ProposalDisplay({
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
-  const subarray = (tel: number, arr: number) => t(`dropdown.telescope.${tel}.array.${arr}`);
+  const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
   const observationType = (type: number) => t(`observationType.${type}`);
 
   const pageTitle = (title: string) => (
