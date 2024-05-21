@@ -38,9 +38,9 @@ Entering Title and Creating a proposal
 .. csv-table:: Proposal Types
    :header: "Proposal Type", "Initials", "Description"
 
-    "Standard Proposal", "PI", "Standard Observing Proposal"
-    "Key Science Project", "KSP", "A large science project that requires observing time allocations over a period longer than one cycle."
-    "Director's Discretionary Time Proposal", "DDT", "Does not follow the normal proposal submission policies. It only requires approval from DG?"
+    "Standard (PI) Proposal", "PI", "A standard PI proposal is an observing proposal initiated following a Call for Proposals and is typically completed within a single time allocation  cycle.  Standard  proposals  are  typically  submitted  by  a  small team led by a Principal Investigator."
+    "Key Science Project", "KSP", "Proposals  for  Key  Science  Projects  (KSP) will  be  for  relatively  large  resources  allocations  (time and compute) for observing programmes   that   cannot   be   completed   within   a   single   time   allocation cycle. Proposals for KSPs will be received and  reviewed  at  a  time  and  cadence  that  differs  from  the  regular  call for proposals."
+    "Director's Discretionary Time Proposal", "DDT", "DDT proposals (that could not reasonably have been submitted in the  normal  cycle)  can  be  submitted  at  any  time  needing  only  the  approval of the Director-General."
 
 
 .. _subproposaltypes: 
@@ -48,10 +48,10 @@ Entering Title and Creating a proposal
 .. csv-table:: Sub-Proposal types
    :header: "Proposal Sub-Type", "Initials", "Description"
 
-    "Target of Opportunity", "ToO", "A target of opportunity observing proposal"
-    "Joint SKA proposal", "JSP", " proposal that requires both SKA-Mid and SKA-Low telescopes"
-    "Coordinated Proposal", "CP", "A proposal requiring observing to be coordinated with another facility( either ground or space based) with user-specified scheduling constraints provided."
-    "Long Term Proposal", "LTP", "A proposal that spans multiple proposal cycles. This differs from KSP as LTP typically needs small amounts of time spread over more than one cycle and KSP requires a lot of observing time."
+    "Target of Opportunity", "ToO", "These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA."
+    "Joint SKA proposal", "JSP", "A proposal that requires both SKA1-LOWand SKA1-MIDtelescopes to achieve the science goals. Such proposals may be linked so that observations can be executed contemporaneously."
+    "Coordinated Proposal", "CP", "A  proposal  requiring  observing  to  be  coordinated  with  another  facility    (either    ground- or   space-based)    with    user-specified scheduling constraints provided. The SKA Observatory will seek to establish  relationships  with  key,  complementary  facilities  (e.g.,  ALMA)  to  facilitate  CPs.  Proposals  for  VLBI  will be  considered  as  Coordinated Proposals."
+    "Long Term Proposal", "LTP", "These are for projects that require more than one time allocationcycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP."
 
 
 
