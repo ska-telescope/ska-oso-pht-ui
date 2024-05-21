@@ -606,7 +606,7 @@
     "label": "Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "Provide the title of your proposal. This field supports latex syntax.", 
+    "help": "Provide the title of your proposal. This field supports latex syntax.",
     "helper": "Please enter your title information"
   },
   "updated": {
