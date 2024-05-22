@@ -332,9 +332,9 @@ export const OBSERVATION = {
     { lookup: 2, label: 'AA1', value: '0.7' },
     { lookup: 3, label: 'AA2', value: '0.7' },
     { lookup: 5, label: 'AA*', value: '0.7975' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7975' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
     { lookup: 8, label: 'AA4', value: '0.7975' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7975' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
     { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.7975' },
     { lookup: 20, label: 'Custom', value: '0.7975' }
   ],
@@ -357,6 +357,17 @@ export const OBSERVATION = {
     { lookup: 2, value: 0.8 },
     { lookup: 3, value: 0.8 },
     { lookup: 4, value: 0.8 }
+  ],
+  ContinuumBandwidthOB1: [
+    { lookup: 1, label: 'AA0.5', value: '0.7' },
+    { lookup: 2, label: 'AA1', value: '0.7' },
+    { lookup: 3, label: 'AA2', value: '0.7' },
+    { lookup: 5, label: 'AA*', value: '0.435' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
+    { lookup: 8, label: 'AA4', value: '0.435' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.435' },
+    { lookup: 20, label: 'Custom', value: '0.435' }
   ],
   SpectralResolution: [
     { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
