@@ -1,8 +1,9 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
-import AddButton from './Add';
+import BaseButton from './Button';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
@@ -12,12 +13,12 @@ function mounting(theTheme: any, disabled: boolean) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <AddButton
+      <BaseButton
         action={cy.stub().as('action')}
         disabled={disabled}
-        primary
+        icon={<AddIcon />}
         testId="testId"
-        title="BUTTON"
+        title="BASE BUTTON"
         toolTip={TOOLTIP}
       />
     </ThemeProvider>
@@ -33,7 +34,7 @@ function validateToolTip() {
   // cy.contains(TOOLTIP).should('be.visible');
 }
 
-describe('<AddButton />', () => {
+describe('<BaseButton />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (enabled)`, () => {
       mounting(theTheme, true);

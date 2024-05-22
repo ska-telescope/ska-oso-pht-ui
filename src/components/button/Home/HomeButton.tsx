@@ -1,29 +1,39 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import HomeIcon from '@mui/icons-material/Home';
+import BaseButton from '../Base/Button';
 import { PATH } from '../../../utils/constants';
 
-export default function HomeButton() {
-  const { t } = useTranslation('pht');
+interface HomeButtonProps {
+  title?: string;
+  disabled?: boolean;
+  primary?: boolean;
+  testId?: string;
+  toolTip?: string;
+}
+
+export default function HomeButton({
+  disabled = false,
+  title = 'button.home',
+  primary = false,
+  testId,
+  toolTip
+}: HomeButtonProps) {
   const navigate = useNavigate();
 
   const ClickFunction = () => {
     navigate(PATH[0]);
   };
 
-  const title = t('button.home');
-
   return (
-    <Button
-      ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Inherit}
+    <BaseButton
+      action={ClickFunction}
+      disabled={disabled}
       icon={<HomeIcon />}
-      label={title}
-      onClick={ClickFunction}
-      testId={`${title}Button`}
-      variant={ButtonVariantTypes.Contained}
+      primary={primary}
+      testId={testId}
+      title={title}
+      toolTip={toolTip}
     />
   );
 }
