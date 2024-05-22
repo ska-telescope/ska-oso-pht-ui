@@ -11,7 +11,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import DownloadButton from '../../components/button/DownloadButton/Download';
+import DownloadButton from '../../components/button/Download/Download';
 
 const PAGE = 3;
 
