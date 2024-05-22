@@ -144,14 +144,26 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
+    let record = '';
+
     if (observingBand === 0) {
-      //low
-      setFrequency('55');
+      setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
     }
     if (observingBand === 1) {
-      const record = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
+      record = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
       const value = record?.value;
       setFrequency(value);
+    }
+    if (observingBand === 2) {
+      record = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
+      const value = record?.value;
+      setFrequency(value);
+    }
+    if (observingBand === 3) {
+      setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
+    }
+    if (observingBand === 4) {
+      setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
     }
     setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
   }, [observingBand, subarrayConfig]);

@@ -326,6 +326,7 @@ export const OBSERVATION = {
     { label: '12', value: 12, lookup: 6 },
     { label: '24', value: 24, lookup: 7 }
   ],
+  CentralFrequencyOBLow: [{ value: '200' }],
   CentralFrequencyOB1: [
     { lookup: 1, label: 'AA0.5', value: '0.7' },
     { lookup: 2, label: 'AA1', value: '0.7' },
@@ -337,6 +338,19 @@ export const OBSERVATION = {
     { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.7975' },
     { lookup: 20, label: 'Custom', value: '0.7975' }
   ],
+  CentralFrequencyOB2: [
+    { lookup: 1, label: 'AA0.5', value: '1.355' },
+    { lookup: 2, label: 'AA1', value: '1.355' },
+    { lookup: 3, label: 'AA2', value: '1.355' },
+    { lookup: 5, label: 'AA*', value: '1.31' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '1.355' },
+    { lookup: 8, label: 'AA4', value: '1.31' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '1.355' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '1.31' },
+    { lookup: 20, label: 'Custom', value: '1.31' }
+  ],
+  CentralFrequencyOB5a: [{ value: '6.55' }],
+  CentralFrequencyOB5b: [{ value: '11.85' }],
   ContinuumBandwidth: [
     { lookup: 0, value: 75 },
     { lookup: 1, value: 0.7 },
