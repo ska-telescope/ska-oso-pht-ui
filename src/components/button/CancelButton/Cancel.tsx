@@ -1,8 +1,8 @@
 import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
+import ClearIcon from '@mui/icons-material/Clear';
 import BaseButton from '../Base/Button';
 
-interface AddButtonProps {
+interface CancelButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -11,19 +11,19 @@ interface AddButtonProps {
   toolTip?: string;
 }
 
-export default function AddButton({
+export default function CancelButton({
   disabled = false,
   action,
+  title = 'button.cancel',
   primary = false,
-  title = 'button.add',
   testId,
   toolTip
-}: AddButtonProps) {
+}: CancelButtonProps) {
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<AddIcon />}
+      icon={<ClearIcon />}
       primary={primary}
       testId={testId}
       title={title}
