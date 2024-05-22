@@ -17,10 +17,8 @@
     "close": "Close",
     "create": "Create",
     "home": "Home",
-    "save": "Save",
     "submit": "Submit",
-    "sendInvite": "Send invitation",
-    "validate": "Validate"
+    "sendInvite": "Send invitation"
   },
   "abstract": {
     "label": "Abstract",
@@ -397,6 +395,10 @@
     "help": "ROBUST HELP",
     "label": "Robust"
   },
+  "saveBtn": {
+    "label": "Save",
+    "success": "Save was successful"
+  },
   "scienceCategory": {
     "1": "Cosmology",
     "2": "Cradle of Life",
@@ -619,6 +621,10 @@
   },
   "uploadPDF": {
     "label": "Upload PDF"
+  },
+  "validationBtn": {
+    "label": "Validation",
+    "success": "Validation was successful"
   },
   "velocity": {
     "label": "Velocity",
