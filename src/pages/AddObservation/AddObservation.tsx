@@ -170,6 +170,11 @@ export default function AddObservation() {
     if (observingBand === 3) {
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
       setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
+        e => e.lookup === subarrayConfig
+      );
+      const value2 = continuumBandwidth?.value;
+      setContinuumBandwidth(value2);
     }
     if (observingBand === 4) {
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);

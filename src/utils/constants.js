@@ -380,6 +380,14 @@ export const OBSERVATION = {
     { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.72' },
     { lookup: 20, label: 'Custom', value: '0.72' }
   ],
+  ContinuumBandwidthOB5a: [
+    { lookup: 1, label: 'AA0.5', value: '0.8' },
+    { lookup: 2, label: 'AA1', value: '0.8' },
+    { lookup: 3, label: 'AA2', value: '0.8' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '3.9' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '3.9' },
+    { lookup: 20, label: 'Custom', value: '3.9' }
+  ],
   SpectralResolution: [
     { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
     { lookup: 1, value: '13.44 kHz (5.8 km/s)' },
