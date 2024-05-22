@@ -144,12 +144,21 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
-    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
+    if (observingBand === 0) {
+      //low
+      setFrequency('55');
+    }
+    if (observingBand === 1) {
+      const record = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
+      const value = record?.value;
+      setFrequency(value);
+    }
     setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
-  }, [spectralAveraging, observingBand]);
+  }, [observingBand, subarrayConfig]);
 
+  //rework spectral res based on frequency
   React.useEffect(() => {
-    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
+    const record = OBSERVATION.CentralFrequencyOB1.find(e => e.value === frequency);
     const lookup = record?.lookup;
     if (lookup !== null) {
       setSpectralResolution(OBSERVATION.SpectralResolution[lookup]?.value);
