@@ -172,7 +172,6 @@ export default function TargetListSection() {
                 label={t('importFromFile.label')}
                 {...a11yProps(1)}
                 sx={{ border: '1px solid grey' }}
-                disabled
               />
               <Tab
                 label={t('spatialImaging.label')}
