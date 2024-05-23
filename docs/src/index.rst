@@ -41,6 +41,6 @@ It also includes modular federation, exposing the ReactSkeleton component, which
 
 .. toctree::
    :maxdepth: 1
-   :caption: Releases
+   :caption: Changelog
 
    CHANGELOG.rst
