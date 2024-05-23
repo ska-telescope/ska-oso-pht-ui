@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
-import CancelButton from '../../button/CancelButton/Cancel';
-import ConfirmButton from '../../button/ConfirmButton/Confirm';
+import CancelButton from '../../button/Cancel/Cancel';
+import ConfirmButton from '../../button/Confirm/Confirm';
 
 interface AlertDialogProps {
   open: boolean;
