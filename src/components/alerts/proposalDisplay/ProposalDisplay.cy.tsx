@@ -16,7 +16,7 @@ function mounting(theTheme) {
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
-        <Router location="/" navigator={undefined} history={undefined}>
+        <Router location="/" navigator={undefined}>
           <ProposalDisplay
             onClose={cy.stub().as('handleCancel')}
             onConfirm={cy.stub().as('handleConfirm')}

@@ -115,7 +115,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                   {!backPage && <HomeButton />}
                 </Grid>
                 <Grid item>
-                  {pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} />}
+                  {pageNo < LAST_PAGE && (
+                    <SaveButton action={() => updateProposal()} testId="saveButtonTestId" />
+                  )}
                 </Grid>
               </Grid>
             </Grid>
