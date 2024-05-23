@@ -358,6 +358,17 @@ export const OBSERVATION = {
     { lookup: 3, value: 0.8 },
     { lookup: 4, value: 0.8 }
   ],
+  ContinuumBandwidthOBLow: [
+    { lookup: 1, label: 'AA0.5', value: '75' },
+    { lookup: 2, label: 'AA1', value: '75' },
+    { lookup: 3, label: 'AA2', value: '150' },
+    { lookup: 4, label: 'AA2 (core only)', value: '150' },
+    { lookup: 5, label: 'AA*', value: '300' },
+    { lookup: 7, label: 'AA* (core only)', value: '300' },
+    { lookup: 8, label: 'AA4', value: '300' },
+    { lookup: 11, label: 'AA4 (core only)', value: '300' },
+    { lookup: 20, label: 'Custom', value: '300' }
+  ],
   ContinuumBandwidthOB1: [
     { lookup: 1, label: 'AA0.5', value: '0.7' },
     { lookup: 2, label: 'AA1', value: '0.7' },
