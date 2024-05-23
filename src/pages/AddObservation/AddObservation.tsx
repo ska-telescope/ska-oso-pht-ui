@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -210,7 +209,6 @@ export default function AddObservation() {
         <AddButton
           action={() => buttonClicked(groupObservation)}
           disabled={addGroupObsDisabled}
-          color={ButtonColorTypes.Inherit}
           testId="addGroupButton"
           toolTip="groupObservations.toolTip"
         />
@@ -536,7 +534,7 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied;
 
     return (
-      <Box pt={1}>
+      <Box pb={2}>
         <DropDown
           options={getOptions()}
           testId="suppliedType"
@@ -554,7 +552,7 @@ export default function AddObservation() {
     const getOptions = () => (suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : []);
 
     return (
-      <Box pt={1}>
+      <Box>
         <DropDown
           options={getOptions()}
           testId="suppliedUnits"
@@ -588,16 +586,14 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Units;
 
     return (
-      <Box pt={0}>
-        <DropDown
-          options={getOptions()}
-          testId="continuumUnits"
-          value={continuumUnits}
-          setValue={setContinuumUnits}
-          label=""
-          onFocus={() => helpComponent(t('continuumUnits.help'))}
-        />
-      </Box>
+      <DropDown
+        options={getOptions()}
+        testId="continuumUnits"
+        value={continuumUnits}
+        setValue={setContinuumUnits}
+        label=""
+        onFocus={() => helpComponent(t('continuumUnits.help'))}
+      />
     );
   };
 
@@ -607,39 +603,28 @@ export default function AddObservation() {
       return suppliedValue <= min ? t('suppliedValue.range.error') : '';
     };
     return (
-      <TextEntry
-        errorText={errorMessage()}
-        label=""
-        testId="suppliedValue"
-        value={String(suppliedValue)}
-        setValue={setSuppliedValue}
-        onFocus={() => helpComponent(t('suppliedValue.help'))}
-        required
-      />
+      <Box sx={{ height: '5rem' }}>
+        <NumberEntry
+          errorText={errorMessage()}
+          label=""
+          testId="suppliedValue"
+          value={suppliedValue}
+          setValue={setSuppliedValue}
+          onFocus={() => helpComponent(t('suppliedValue.help'))}
+          suffix={suppliedUnitsField()}
+          required
+        />
+      </Box>
     );
   };
 
-  // TODO : Need to update the spacing
   const suppliedField = () => (
     <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={LABEL_WIDTH_SELECT}>
         {suppliedTypeField()}
       </Grid>
       <Grid item xs={12 - LABEL_WIDTH_SELECT}>
-        <Grid
-          spacing={0}
-          container
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Grid item xs={9}>
-            {suppliedValueField()}
-          </Grid>
-          <Grid item xs={3}>
-            {suppliedUnitsField()}
-          </Grid>
-        </Grid>
+        {suppliedValueField()}
       </Grid>
     </Grid>
   );
@@ -818,10 +803,13 @@ export default function AddObservation() {
   const effectiveResolutionFieldMid = () => {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
       return `${effectiveResolution} kHz ( ${velocity})`;
     };
 
@@ -843,10 +831,13 @@ export default function AddObservation() {
   const effectiveResolutionFieldLow = () => {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
       return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
     };
 
@@ -994,6 +985,11 @@ export default function AddObservation() {
     );
   };
 
+  const addButtonDisabled = () => {
+    // TODO : We need to ensure we are able to progress.
+    return false;
+  };
+
   const pageFooter = () => {
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
@@ -1053,7 +1049,12 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <AddButton title={'button.add'} action={buttonClicked} />
+            <AddButton
+              action={buttonClicked}
+              disabled={addButtonDisabled()}
+              primary
+              title={'button.add'}
+            />
           </Grid>
         </Grid>
       </Paper>

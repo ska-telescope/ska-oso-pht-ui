@@ -129,7 +129,7 @@ export default function TechnicalPage() {
             <Box pt={1}>
               <DownloadButton
                 toolTip={t('pdfDownload.technical.toolTip')}
-                onClick={downloadPdfToSignedUrl}
+                action={downloadPdfToSignedUrl}
               />
             </Box>
           )}
