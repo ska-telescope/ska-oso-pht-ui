@@ -5,7 +5,7 @@ import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import HomeButton from '../../button/Home/Home';
-import SaveButton from '../../button/Save/SaveButton';
+import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
@@ -55,7 +55,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     navigate(NAV[backPage]);
   };
 
-  const handleSaveClick = response => {
+  const updateProposalResponse = response => {
     if (response && !response.error) {
       // Handle successful response
       setAxiosSaveError('Success');
@@ -65,6 +65,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       setAxiosSaveError(response.error);
       setAxiosSaveErrorColor(AlertColorTypes.Error);
     }
+  };
+
+  const updateProposal = async () => {
+    const response = await PutProposal(getProposal(), 'Draft');
+    updateProposalResponse(response);
   };
 
   const submitClicked = () => {
@@ -119,7 +124,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                 </Grid>
                 <Grid item>
                   {!axiosSaveError && pageNo < LAST_PAGE && (
-                    <SaveButton onClick={handleSaveClick} />
+                    <SaveButton action={() => updateProposal()} />
                   )}
                   {axiosSaveError ? (
                     <TimedAlert

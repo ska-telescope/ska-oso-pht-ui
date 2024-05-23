@@ -1,6 +1,7 @@
 import React from 'react';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import BaseButton from '../Base/Button';
+import { Box } from '@mui/material';
 
 interface ResolveButtonProps {
   title?: string;
@@ -20,14 +21,16 @@ export default function ResolveButton({
   toolTip
 }: ResolveButtonProps) {
   return (
-    <BaseButton
-      action={action}
-      disabled={disabled}
-      icon={<MyLocationIcon />}
-      primary={primary}
-      testId={testId}
-      title={title}
-      toolTip={toolTip}
-    />
+    <Box pb={1}>
+      <BaseButton
+        action={action}
+        disabled={disabled}
+        icon={<MyLocationIcon />}
+        primary={primary}
+        testId={testId}
+        title={title}
+        toolTip={toolTip}
+      />
+    </Box>
   );
 }
