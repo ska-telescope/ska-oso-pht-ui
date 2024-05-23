@@ -17,7 +17,7 @@ export default function ValidateButton({ onClick }) {
     onClick(response);
   };
 
-  const title = t('button.validate');
+  const title = t('validationBtn.label');
 
   return (
     <Button
