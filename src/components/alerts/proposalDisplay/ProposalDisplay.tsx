@@ -120,7 +120,7 @@ export default function ProposalDisplay({
   const pageFooter = () => (
     <Grid container direction="row" justifyContent="space-between" alignItems="center">
       <Grid item>
-        <CancelButton action={handleCancel} title="button.close" />
+        <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
         <DownloadButton disabled action={handleDownload} />
