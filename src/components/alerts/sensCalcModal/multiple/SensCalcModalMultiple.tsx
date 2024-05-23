@@ -187,7 +187,7 @@ export default function SensCalcModalMultiple({
     >
       <Card variant="outlined">
         <CardHeader
-          action={<CancelButton onClick={handleClose} label="button.close" />}
+          action={<CancelButton action={handleClose} title="button.close" />}
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {

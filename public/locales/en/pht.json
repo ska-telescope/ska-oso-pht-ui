@@ -91,7 +91,7 @@
       "midUpper": 0.8,
       "lowLower": 0,
       "lowUpper": 75,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "continuumUnits": {
@@ -155,7 +155,7 @@
     "range": {
       "lower": 15,
       "upper": 59.2,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "email": {
@@ -523,7 +523,7 @@
     "range": {
       "lower": 1,
       "upper": 27624,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "spectralResolution": {
@@ -555,7 +555,7 @@
     "range": {
       "lower": 0,
       "upper": 32,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "subArrayConfiguration": {
@@ -585,7 +585,7 @@
     "help": "SUPPLIED VALUE HELP",
     "range": {
       "lower": 0,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     },
     "default": 600
   },
@@ -644,7 +644,7 @@
     "range": {
       "lower": 3,
       "upper": 25,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "weighting": {

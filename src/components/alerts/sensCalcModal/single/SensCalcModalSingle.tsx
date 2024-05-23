@@ -50,7 +50,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
     >
       <Card variant="outlined">
         <CardHeader
-          action={<CancelButton onClick={handleClose} label="button.close" />}
+          action={<CancelButton action={handleClose} title="button.close" />}
           avatar={
             <StatusIcon
               ariaTitle=""
