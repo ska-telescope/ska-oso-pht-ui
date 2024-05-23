@@ -333,7 +333,7 @@ export const OBSERVATION = {
     { label: '12', value: 12, lookup: 6 },
     { label: '24', value: 24, lookup: 7 }
   ],
-  CentralFrequencyOBLow: [{ value: '200' }],
+  CentralFrequencyOBLow: [{ lookup: 0, value: '200' }],
   CentralFrequencyOB1: [
     { lookup: 1, label: 'AA0.5', value: '0.7' },
     { lookup: 2, label: 'AA1', value: '0.7' },
@@ -414,6 +414,7 @@ export const OBSERVATION = {
     { lookup: 3, value: '13.44 kHz (615.1 m/s)' },
     { lookup: 4, value: '13.44 kHz (340.0 m/s)' }
   ],
+  SpectralResolutionLow: [{ lookup: 0, value: '5.43 kHz (8.1 km/s)' }],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },
