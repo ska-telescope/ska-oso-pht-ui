@@ -124,7 +124,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                 </Grid>
                 <Grid item>
                   {!axiosSaveError && pageNo < LAST_PAGE && (
-                    <SaveButton action={() => updateProposal()} />
+                    <SaveButton action={() => updateProposal()} testId="saveButtonTestId" />
                   )}
                   {axiosSaveError ? (
                     <TimedAlert

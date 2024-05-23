@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -210,7 +209,6 @@ export default function AddObservation() {
         <AddButton
           action={() => buttonClicked(groupObservation)}
           disabled={addGroupObsDisabled}
-          color={ButtonColorTypes.Inherit}
           testId="addGroupButton"
           toolTip="groupObservations.toolTip"
         />
@@ -818,10 +816,13 @@ export default function AddObservation() {
   const effectiveResolutionFieldMid = () => {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
       return `${effectiveResolution} kHz ( ${velocity})`;
     };
 
@@ -843,10 +844,13 @@ export default function AddObservation() {
   const effectiveResolutionFieldLow = () => {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolution = spectralResolutionValue[0] * spectralAveraging;
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
       return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
     };
 
