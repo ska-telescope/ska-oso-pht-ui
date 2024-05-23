@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, TextField, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   ButtonColorTypes,
@@ -568,20 +568,59 @@ export default function AddObservation() {
   };
 
   const frequencyUnitsField = () => {
-    const getOptions = () => OBSERVATION.Units;
+    // const getOptions = () => OBSERVATION.Units;
+    // here
+    const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value == telescope).CentralFrequencyUnits;
 
-    return (
-      <Box pt={0}>
-        <DropDown
-          options={getOptions()}
-          testId="frequencyUnits"
-          value={frequencyUnits}
-          setValue={setFrequencyUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      </Box>
-    );
+    if (FrequencyUnitOptions.length === 1) {
+      const value = FrequencyUnitOptions[0].toString(); // extract option value as string
+      console.log('value', value );
+      // TODO
+      /*
+      - display label but pass value
+      - change style of textfield
+
+      <NumberEntry
+            errorText={errorMessage()}
+            label={t('elevation.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            testId="elevation"
+            value={elevation}
+            setValue={setElevation}
+            onFocus={() => helpComponent(t('elevation.help'))}
+            suffix={elevationUnitsField()}
+          />
+      */
+      return (
+        <Box pt={0}>
+          <TextEntry
+            value={FrequencyUnitOptions[0].label}
+            label=""
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('frequencyUnits.help'))}
+            testId="frequencyUnits"
+          />
+        </Box>
+      );
+    } else {
+      return (
+        <Box pt={0}>
+          <DropDown
+            options={FrequencyUnitOptions}
+            testId="frequencyUnits"
+            value={frequencyUnits}
+            setValue={setFrequencyUnits}
+            label=""
+            onFocus={() => helpComponent(t('frequencyUnits.help'))}
+          />
+        </Box>
+      );
+    }
   };
 
   const continuumUnitsField = () => {
