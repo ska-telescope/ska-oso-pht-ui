@@ -1,5 +1,15 @@
 import React from 'react';
+import { Typography } from '@mui/material';
+import BaseButton from '../../../../components/button/Base/Button';
 
-export default function TargetFileImport() {
-  return <h3>To be implemented at a later date</h3>;
+interface TargetFileImportProps {
+  raType: number;
+}
+
+export default function TargetFileImport({ raType }: TargetFileImportProps) {
+  return (
+    <>
+      <Typography>{raType}</Typography>
+    </>
+  );
 }

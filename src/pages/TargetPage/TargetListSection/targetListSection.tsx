@@ -182,7 +182,7 @@ export default function TargetListSection() {
             </Tabs>
           </Box>
           {value === 0 && <AddTarget raType={raType} />}
-          {value === 1 && <TargetFileImport />}
+          {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
