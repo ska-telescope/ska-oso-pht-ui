@@ -351,13 +351,6 @@ export const OBSERVATION = {
   ],
   CentralFrequencyOB5a: [{ value: '6.55' }],
   CentralFrequencyOB5b: [{ value: '11.85' }],
-  ContinuumBandwidth: [
-    { lookup: 0, value: 75 },
-    { lookup: 1, value: 0.7 },
-    { lookup: 2, value: 0.8 },
-    { lookup: 3, value: 0.8 },
-    { lookup: 4, value: 0.8 }
-  ],
   ContinuumBandwidthOBLow: [
     { lookup: 1, label: 'AA0.5', value: '75' },
     { lookup: 2, label: 'AA1', value: '75' },
