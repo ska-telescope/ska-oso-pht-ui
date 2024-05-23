@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import HomeButton from '../../button/Home/HomeButton';
+import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/SaveButton';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
