@@ -16,7 +16,7 @@ context('PROPOSAL HANDLING TOOL', () => {
 
   it('Footer : Verify Version', () => {
     cy.get('[data-testid="footerId"]')
-      .contains('0.2.0')
+      .contains('0.3.0')
       .should('be.visible');
   });
 

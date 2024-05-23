@@ -14,6 +14,13 @@ export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 
+export const STATUS = {
+  OK: STATUS_OK,
+  ERROR: STATUS_ERROR,
+  PARTIAL: STATUS_PARTIAL,
+  INITIAL: STATUS_INITIAL
+};
+
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
