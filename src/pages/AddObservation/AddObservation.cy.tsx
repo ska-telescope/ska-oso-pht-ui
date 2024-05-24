@@ -9,7 +9,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-function verifyArrayConfiguration1AndSubArrayConfig() {
+function verifySubArrayConfiguration() {
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="2"]').click();
@@ -17,21 +17,12 @@ function verifyArrayConfiguration1AndSubArrayConfig() {
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
-/*
-function verifyArrayConfiguration2AndSubArrayConfig() {
-  cy.get('[data-testid="arrayConfig"]').contains('arrayConfiguration.1');
-  cy.get('[data-testid="arrayConfig"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="arrayConfiguration"]').contains('arrayConfiguration.2');
-  cy.get('[data-testid="helpPanelId"]').contains('arrayConfiguration.help');
-
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
-  cy.get('[data-testid="subarrayConfig"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
-  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
+function verifyObservingBandLow() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="0"]').click();
+  cy.get('[data-testid="observingBand"]').contains('Low Band (50 - 350 MHz)');
+  cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
 }
-*/
 
 function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').contains('Integration Time');
@@ -75,12 +66,18 @@ function verifyObservationTypeContinuum() {
   cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
-function verifyCentralFrequency() {
-  // cy.get('[data-testid="centralFrequency"]').type('test central frequency');
-  // cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
+function verifyCentralFrequencyContinuumMidBand() {
+  cy.get('[id="frequency"]').should('have.value', 0.7975);
+  cy.get('[id="frequency"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
+}
+function verifyCentralFrequencyContinuumLowBand() {
+  cy.get('[id="frequency"]').should('have.value', 200);
+  cy.get('[id="frequency"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
 
-function verifyObservingBand() {
+function verifyObservingBandMidBand2() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 2 (0.95 - 1.76 GHz)');
@@ -95,108 +92,118 @@ function verifyFrequencyUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
 
-// TAS function verifyContinuumBandwidth() {
-//   cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
-// cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
-// }
+function verifyContinuumBandwidthContinuumMidBand() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 0.435);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+}
+
+function verifyContinuumBandwidthContinuumLowBand() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 300);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+}
 
 function verifyContinuumUnits() {
   cy.get('[data-testid="continuumUnits"]').contains('GHz');
-  // cy.get('[data-testid="continuumUnits"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  // cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
-}
-
-function verifyMidBandwidthFrequency() {
-  // TAS cy.get('[data-testid="continuumBandwidth"] input#continuumBandwidth').should(
-  // TAS   'contain.value',
-  // TAS   'test continuum bandwidth frequency'
-  // TAS );
-  // cy.get('[data-testid="bandwidth"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="bandwidth"]').contains('6.25 MHz');
-  // cy.get('[data-testid="helpPanelId"]').contains('bandWidth.help');
+  cy.get('[data-testid="continuumUnits"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
+  cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
 function verifyLowBandwidthFrequency() {
   cy.get('[data-testid="bandwidth"]').contains('24.4 KHz');
-  // cy.get('[data-testid="bandwidth"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="bandwidth"]').contains('48.8 KHz');
-  // cy.get('[data-testid="helpPanelId"]').contains('bandWidth.help');
+  cy.get('[data-testid="bandwidth"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="bandwidth"]').contains('48.8 KHz');
+  cy.get('[data-testid="helpPanelId"]').contains('bandWidth.help');
 }
 
 function verifySpectralResolutionLow() {
-  // cy.get('[data-testid="spectralResolution"]').contains('14.1 Hz');
-  // cy.get('[data-testid="spectralResolution"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="spectralResolution"]').contains('28.3 Hz');
-  // cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+  cy.get('[id="spectralResolution"]').should('have.value', '5.43 kHz (8.1 km/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
 
 function verifySpectralResolutionMid() {
-  // cy.get('[data-testid="spectralResolution"]').contains('0.21 KHz');
-  // cy.get('[data-testid="spectralResolution"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="spectralResolution"]').contains('0.42 KHz');
-  // cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.1 km/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+}
+
+function verifySpectralResolutionZoomBandMid() {
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
 
 function verifySpectralAveraging() {
   cy.get('[data-testid="spectral"]').contains('1');
 }
 function verifySpectralAveragingLow() {
-  cy.get('[id="spectral"]').type('1');
-  cy.get('[id="spectral"]').should('have.value', 11);
+  cy.get('[id="spectral"]').click();
+  cy.get('[id="spectral"]').should('have.value', '1');
 }
 
-function verifyEffectiveResolution() {
-  // cy.get('[data-testid="effective"]').type('test effective resolution');
-  // cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+function verifyEffectiveResolutionContinuumMidBand() {
+  cy.get('[id="effective"]').should('have.value', '13.44 kHz (5.1 km/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+}
+
+function verifyEffectiveResolutionZoomMidBand() {
+  cy.get('[id="effective"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+}
+
+function verifyEffectiveResolutionContinuumLowBand() {
+  cy.get('[id="effective"]').should('have.value', '5.43 kHz (8.1 km/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
 
 function verifyTapering() {
   cy.get('[data-testid="tapering"]').contains('No tapering');
-  // cy.get('[data-testid="tapering"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="tapering"]').contains('0.250"');
-  // cy.get('[data-testid="helpPanelId"]').contains('tapering.help');
+  cy.get('[data-testid="tapering"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="tapering"]').contains('0.250"');
+  cy.get('[data-testid="helpPanelId"]').contains('tapering.help');
 }
 
 function verifyImageWeighting() {
   cy.get('[data-testid="imageWeighting"]').contains('Uniform');
-  // cy.get('[data-testid="imageWeighting"]').click();
-  // cy.get('[data-value="0"]').click();
-  // cy.get('[data-testid="imageWeighting"]').contains('Natural');
-  // cy.get('[data-testid="helpPanelId"]').contains('imageWeighting.help');
+  cy.get('[data-testid="imageWeighting"]').click();
+  cy.get('[data-value="0"]').click();
+  cy.get('[data-testid="imageWeighting"]').contains('Natural');
+  cy.get('[data-testid="helpPanelId"]').contains('imageWeighting.help');
 }
 
 function verifySubBands() {
-  // cy.get('[data-testid="subBands"]').click();
-  // cy.get('[data-testid="subBands"]').type('2');
-  // cy.get('[data-testid="helpPanelId"]').contains('subBands.help');
+  cy.get('[id="subBands"]').should('have.value', 1);
+  cy.get('[id="subBands"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('subBands.help');
 }
 
-function verifynumOf15mAntennas() {
+function verifyNumOf15mAntennas() {
+  //change of band needed to enable antenna field
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
   cy.get('[data-testid="numOf15mAntennas"]').click();
+  //verify value when active
   cy.get('[data-testid="helpPanelId"]').contains('numOf15mAntennas.help');
 }
 
-function verifynumOf13mAntennas() {
-  cy.get('[data-testid="observingBand"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="subarrayConfig"]').click();
-  cy.get('[data-value="20"]').click();
+function verifyNumOf13mAntennas() {
   cy.get('[data-testid="numOf13mAntennas"]').click();
+  //verify value when active
   cy.get('[data-testid="helpPanelId"]').contains('numOf13mAntennas.help');
 }
 
-function verifynumOfStations() {
+function verifyNumOfStations() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="0"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
@@ -252,51 +259,49 @@ describe('<AddObservation />', () => {
 
   it('Verify user input available for observation type Continuum and Array Config MID', () => {
     mounting(THEME_LIGHT);
-    verifyDetailsField();
-    verifyArrayConfiguration1AndSubArrayConfig();
-    verifyObservingBand();
-    verifynumOf15mAntennas();
-    verifynumOf13mAntennas();
+    verifyObservingBandMidBand2();
+    verifySubArrayConfiguration();
+    verifyNumOf15mAntennas();
+    verifyNumOf13mAntennas();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
-    verifyCentralFrequency();
+    verifyCentralFrequencyContinuumMidBand();
     verifyFrequencyUnits();
-    // TAS verifyContinuumBandwidth();
+    verifyContinuumBandwidthContinuumMidBand();
     verifyContinuumUnits();
-    verifyMidBandwidthFrequency();
     verifySpectralResolutionMid();
     verifySpectralAveraging();
-    verifyEffectiveResolution();
+    verifyEffectiveResolutionContinuumMidBand();
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
+    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mounting(THEME_LIGHT);
     verifyDetailsField();
-    verifyArrayConfiguration1AndSubArrayConfig();
-    verifyObservingBand();
+    verifySubArrayConfiguration();
+    verifyObservingBandMidBand2();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnits();
-    // verifyMidBandwidthFrequency();
-    verifySpectralResolutionMid();
+    verifySpectralResolutionZoomBandMid();
     verifySpectralAveraging();
-    verifyEffectiveResolution();
+    verifyEffectiveResolutionZoomMidBand();
     verifyTapering();
     verifyImageWeighting();
-    verifynumOf15mAntennas();
-    verifynumOf13mAntennas();
+    verifyNumOf15mAntennas();
+    verifyNumOf13mAntennas();
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mounting(THEME_LIGHT);
-    // verifyArrayConfiguration2AndSubArrayConfig();
+    verifyObservingBandLow();
     verifyDetailsField();
     verifyElevationField();
     verifyWeatherField();
@@ -306,29 +311,29 @@ describe('<AddObservation />', () => {
     verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
-    verifyEffectiveResolution();
+    verifyEffectiveResolutionContinuumLowBand();
     verifyTapering();
     verifyImageWeighting();
-    verifynumOfStations();
+    verifyNumOfStations();
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
     mounting(THEME_LIGHT);
-    // verifyArrayConfiguration2AndSubArrayConfig();
+    verifyObservingBandLow();
+    verifySubArrayConfiguration();
     verifyDetailsField();
-    verifynumOfStations();
+    verifyNumOfStations();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
-    verifyCentralFrequency();
+    verifyCentralFrequencyContinuumLowBand();
     verifyFrequencyUnits();
-    // TAS verifyContinuumBandwidth();
+    verifyContinuumBandwidthContinuumLowBand();
     verifyContinuumUnits();
-    verifyMidBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
-    verifyEffectiveResolution();
+    verifyEffectiveResolutionContinuumLowBand();
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
