@@ -407,14 +407,18 @@ export const OBSERVATION = {
     { lookup: 9, label: 'AA4 (15-m antennas only)', value: '5' },
     { lookup: 20, label: 'Custom', value: '5' }
   ],
-  SpectralResolution: [
-    { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
+  SpectralResolutionObLow: [{ value: '5.43 kHz (8.1 km/s)' }],
+  SpectralResolutionOb1: [
     { lookup: 1, value: '13.44 kHz (5.8 km/s)' },
-    { lookup: 2, value: '13.44 kHz (3.0 km/s)' },
-    { lookup: 3, value: '13.44 kHz (615.1 m/s)' },
-    { lookup: 4, value: '13.44 kHz (340.0 m/s)' }
+    { lookup: 2, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 3, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 5, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 6, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 8, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 9, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 10, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 20, value: '13.44 kHz (5.1 km/s)' }
   ],
-  SpectralResolutionLow: [{ lookup: 0, value: '5.43 kHz (8.1 km/s)' }],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },
