@@ -1,7 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid, InputLabel, Paper, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  InputLabel,
+  Paper,
+  Typography
+} from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   ButtonColorTypes,
@@ -569,7 +577,8 @@ export default function AddObservation() {
 
   const frequencyUnitsField = () => {
     const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value == telescope).CentralFrequencyUnits;
+    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
+      .CentralFrequencyUnits;
     if (FrequencyUnitOptions.length === 1) {
       return (
         <Box pt={0}>

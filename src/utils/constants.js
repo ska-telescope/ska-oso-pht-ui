@@ -322,9 +322,7 @@ export const OBSERVATION = {
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
       ],
-      CentralFrequencyUnits: [
-        { label: 'MHz', value: 1 },
-      ]
+      CentralFrequencyUnits: [{ label: 'MHz', value: 1 }]
     }
   ],
   ImageWeighting: [
