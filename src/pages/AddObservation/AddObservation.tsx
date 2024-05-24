@@ -868,7 +868,7 @@ export default function AddObservation() {
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      return `${effectiveResolution} kHz ( ${velocity})`;
+      return `${effectiveResolution} kHz (${velocity})`;
     };
 
     return (
@@ -893,7 +893,7 @@ export default function AddObservation() {
       const resolution = spectralResolutionValue[0];
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
+      return `${effectiveResolution.toFixed(2)} kHz (${velocity})`;
     };
 
     return (
