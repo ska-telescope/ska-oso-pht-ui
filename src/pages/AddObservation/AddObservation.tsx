@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -578,10 +577,10 @@ export default function AddObservation() {
             label=""
             labelBold
             labelPosition={LABEL_POSITION.BOTTOM}
-            labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('frequencyUnits.help'))}
             testId="frequencyUnits"
             suffix={FrequencyUnitOptions[0].label}
+            disabled
           />
         </Box>
       );
