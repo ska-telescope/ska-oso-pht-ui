@@ -95,6 +95,15 @@ function verifyFrequencyUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
 
+function verifyFrequencyUnitsLow() {
+  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
+  cy.get('[data-testid="frequencyUnits"]')
+      .find('input[type="text"]')
+      .should('have.attr', 'type', 'text')
+  cy.get('[data-testid="frequencyUnits"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
+}
+
 // TAS function verifyContinuumBandwidth() {
 //   cy.get('[data-testid="continuumBandwidth"]').type('test continuum bandwidth frequency');
 // cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
@@ -302,7 +311,7 @@ describe('<AddObservation />', () => {
     verifyWeatherField();
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
-    verifyFrequencyUnits();
+    verifyFrequencyUnitsLow();
     verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
@@ -322,7 +331,7 @@ describe('<AddObservation />', () => {
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequency();
-    verifyFrequencyUnits();
+    verifyFrequencyUnitsLow();
     // TAS verifyContinuumBandwidth();
     verifyContinuumUnits();
     verifyMidBandwidthFrequency();
