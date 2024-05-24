@@ -568,42 +568,20 @@ export default function AddObservation() {
   };
 
   const frequencyUnitsField = () => {
-    // const getOptions = () => OBSERVATION.Units;
-    // here
     const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value == telescope).CentralFrequencyUnits;
-
     if (FrequencyUnitOptions.length === 1) {
-      const value = FrequencyUnitOptions[0].toString(); // extract option value as string
-      console.log('value', value );
-      // TODO
-      /*
-      - display label but pass value
-      - change style of textfield
-
-      <NumberEntry
-            errorText={errorMessage()}
-            label={t('elevation.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LABEL_WIDTH_OPT1}
-            testId="elevation"
-            value={elevation}
-            setValue={setElevation}
-            onFocus={() => helpComponent(t('elevation.help'))}
-            suffix={elevationUnitsField()}
-          />
-      */
       return (
         <Box pt={0}>
           <TextEntry
-            value={FrequencyUnitOptions[0].label}
+            value=""
             label=""
             labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelPosition={LABEL_POSITION.BOTTOM}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('frequencyUnits.help'))}
             testId="frequencyUnits"
+            suffix={FrequencyUnitOptions[0].label}
           />
         </Box>
       );
