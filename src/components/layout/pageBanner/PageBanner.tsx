@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import HomeButton from '../../button/Home/HomeButton';
-import SaveButton from '../../button/Save/SaveButton';
+import HomeButton from '../../button/Home/Home';
+import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/SubmitButton';
 import ValidateButton from '../../button/Validate/ValidateButton';
@@ -55,12 +55,17 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     navigate(NAV[backPage]);
   };
 
-  const handleSaveClick = response => {
+  const updateProposalResponse = response => {
     if (response && !response.error) {
       NotifyOK('saveBtn.success');
     } else {
       NotifyError(response.error);
     }
+  };
+
+  const updateProposal = async () => {
+    const response = await PutProposal(getProposal(), 'Draft');
+    updateProposalResponse(response);
   };
 
   const submitClicked = () => {
@@ -109,7 +114,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                   )}
                   {!backPage && <HomeButton />}
                 </Grid>
-                <Grid item>{pageNo < LAST_PAGE && <SaveButton onClick={handleSaveClick} />}</Grid>
+                <Grid item>
+                  {pageNo < LAST_PAGE && (
+                    <SaveButton action={() => updateProposal()} testId="saveButtonTestId" />
+                  )}
+                </Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>

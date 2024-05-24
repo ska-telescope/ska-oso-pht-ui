@@ -164,30 +164,6 @@ export default function GeneralPage() {
     />
   );
 
-  /* TODO : Retained for future use
-  const subCategoryField = () => (
-    <Grid pt={2} container direction="row" alignItems="baseline" justifyContent="flex-start">
-      <Grid item xs={6}>
-        <Typography>{t('scienceSubCategory.label')}</Typography>
-      </Grid>
-      <Grid item xs={6}>
-        <DropDown
-          options={getSubCategoryOptions()}
-          disabled={
-            getProposal().category < 1 ||
-            GENERAL.ScienceCategory[getProposal().category - 1].subCategory.length < 2
-          }
-          testId="subCategoryId"
-          value={getProposal().subCategory}
-          setValue={(e: number) => setProposal({ ...getProposal(), subCategory: e })}
-          label=""
-          onFocus={() => helpComponent(t('scienceSubCategory.help'))}
-        />
-      </Grid>
-    </Grid>
-  );
-  */
-
   return (
     <Shell page={PAGE}>
       <Grid
