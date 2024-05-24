@@ -566,20 +566,37 @@ export default function AddObservation() {
   };
 
   const frequencyUnitsField = () => {
-    const getOptions = () => OBSERVATION.Units;
-
-    return (
-      <Box pt={0}>
-        <DropDown
-          options={getOptions()}
-          testId="frequencyUnits"
-          value={frequencyUnits}
-          setValue={setFrequencyUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      </Box>
-    );
+    const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
+      .CentralFrequencyUnits;
+    if (FrequencyUnitOptions.length === 1) {
+      return (
+        <Box pt={0}>
+          <TextEntry
+            value=""
+            label=""
+            labelBold
+            labelPosition={LABEL_POSITION.BOTTOM}
+            onFocus={() => helpComponent(t('frequencyUnits.help'))}
+            testId="frequencyUnits"
+            suffix={FrequencyUnitOptions[0].label}
+          />
+        </Box>
+      );
+    } else {
+      return (
+        <Box pt={0}>
+          <DropDown
+            options={FrequencyUnitOptions}
+            testId="frequencyUnits"
+            value={frequencyUnits}
+            setValue={setFrequencyUnits}
+            label=""
+            onFocus={() => helpComponent(t('frequencyUnits.help'))}
+          />
+        </Box>
+      );
+    }
   };
 
   const continuumUnitsField = () => {
@@ -804,7 +821,7 @@ export default function AddObservation() {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
-      const resolution = spectralResolutionValue[0];
+      const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
       const velocity = calculateVelocity(
         Number(resolution) * spectralAveraging * 1000,
@@ -832,7 +849,7 @@ export default function AddObservation() {
     const calculateEffectiveResolution = () => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
-      const resolution = spectralResolutionValue[0];
+      const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
       const velocity = calculateVelocity(
         Number(resolution) * spectralAveraging * 1000,
