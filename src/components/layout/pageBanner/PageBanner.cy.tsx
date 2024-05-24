@@ -50,7 +50,7 @@ describe('PUT proposal (SAVE)', () => {
     );
   });
   it('displays request message in Alert component on request, Request Failed', () => {
-    cy.get('[data-testid="button.saveButton"]').click();
+    cy.get('[data-testid="saveButtonTestId"]').click();
     // TODO: Add verification of popup which lasts a few seconds
   });
 });

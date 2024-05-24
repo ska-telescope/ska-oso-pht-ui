@@ -145,10 +145,10 @@ function verifySpectralResolutionMid() {
 
 function verifySpectralAveraging() {
   cy.get('[data-testid="spectral"]').contains('1');
-  // cy.get('[data-testid="spectral"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="spectral"]').contains('2');
-  // cy.get('[data-testid="helpPanelId"]').contains('spectralAveraging.help');
+}
+function verifySpectralAveragingLow() {
+  cy.get('[id="spectral"]').type('1');
+  cy.get('[id="spectral"]').should('have.value', 11);
 }
 
 function verifyEffectiveResolution() {
@@ -305,7 +305,7 @@ describe('<AddObservation />', () => {
     verifyFrequencyUnits();
     verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
-    verifySpectralAveraging();
+    verifySpectralAveragingLow();
     verifyEffectiveResolution();
     verifyTapering();
     verifyImageWeighting();
@@ -327,7 +327,7 @@ describe('<AddObservation />', () => {
     verifyContinuumUnits();
     verifyMidBandwidthFrequency();
     verifySpectralResolutionLow();
-    verifySpectralAveraging();
+    verifySpectralAveragingLow();
     verifyEffectiveResolution();
     verifyTapering();
     verifySubBands();

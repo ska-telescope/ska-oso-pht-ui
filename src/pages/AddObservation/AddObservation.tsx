@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  ButtonColorTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -84,13 +83,6 @@ export default function AddObservation() {
   React.useEffect(() => {
     const newId = generateId(t('addObservation.idPrefix'), 6);
     setMyObsId(newId);
-
-    // const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-    // if (usedTelescope === 2) {
-    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.lowLower')));
-    // } else if (usedTelescope === 1) {
-    //   setContinuumBandwidth(Number(t('continuumBandWidth.range.midLower')));
-    // }
   }, []);
 
   React.useEffect(() => {
@@ -146,27 +138,11 @@ export default function AddObservation() {
     details
   ]);
 
-  function observationLookup(inValue) {
-    const record = OBSERVATION.SpectralAveraging.find(e => e.value === spectralAveraging);
-    const lookup = record?.lookup;
-    if (lookup !== null) {
-      setEffective(inValue[record.lookup].value);
-    }
-  }
-
   React.useEffect(() => {
     helpComponent(t('observingBand.help'));
   }, []);
 
   React.useEffect(() => {
-    const arr = [
-      OBSERVATION.EffectiveResolutionOBLow,
-      OBSERVATION.EffectiveResolutionOB1,
-      OBSERVATION.EffectiveResolutionOB2,
-      OBSERVATION.EffectiveResolutionOB5a,
-      OBSERVATION.EffectiveResolutionOB5b
-    ];
-    observationLookup(arr[observingBand]);
     setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
     setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
   }, [spectralAveraging, observingBand]);
@@ -233,7 +209,6 @@ export default function AddObservation() {
         <AddButton
           action={() => buttonClicked(groupObservation)}
           disabled={addGroupObsDisabled}
-          color={ButtonColorTypes.Inherit}
           testId="addGroupButton"
           toolTip="groupObservations.toolTip"
         />
@@ -504,6 +479,35 @@ export default function AddObservation() {
   };
 
   const spectralAveragingField = () => {
+    const errorMessage = () => {
+      const min = Number(t('spectralAveraging.range.lower'));
+      const max = Number(t('spectralAveraging.range.upper'));
+      return spectralAveraging < min || spectralAveraging > max
+        ? t('spectralAveraging.range.error')
+        : '';
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <NumberEntry
+            testId="spectral"
+            value={String(spectralAveraging)}
+            setValue={setSpectralAveraging}
+            label={t('spectralAveraging.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('spectralAveraging.help'))}
+            required
+            errorText={errorMessage()}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const spectralAveragingDropdown = () => {
     const getOptions = () => OBSERVATION.SpectralAveraging;
 
     return (
@@ -530,7 +534,7 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Supplied;
 
     return (
-      <Box pt={1}>
+      <Box pb={2}>
         <DropDown
           options={getOptions()}
           testId="suppliedType"
@@ -548,7 +552,7 @@ export default function AddObservation() {
     const getOptions = () => (suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : []);
 
     return (
-      <Box pt={1}>
+      <Box>
         <DropDown
           options={getOptions()}
           testId="suppliedUnits"
@@ -582,16 +586,14 @@ export default function AddObservation() {
     const getOptions = () => OBSERVATION.Units;
 
     return (
-      <Box pt={0}>
-        <DropDown
-          options={getOptions()}
-          testId="continuumUnits"
-          value={continuumUnits}
-          setValue={setContinuumUnits}
-          label=""
-          onFocus={() => helpComponent(t('continuumUnits.help'))}
-        />
-      </Box>
+      <DropDown
+        options={getOptions()}
+        testId="continuumUnits"
+        value={continuumUnits}
+        setValue={setContinuumUnits}
+        label=""
+        onFocus={() => helpComponent(t('continuumUnits.help'))}
+      />
     );
   };
 
@@ -601,39 +603,28 @@ export default function AddObservation() {
       return suppliedValue <= min ? t('suppliedValue.range.error') : '';
     };
     return (
-      <TextEntry
-        errorText={errorMessage()}
-        label=""
-        testId="suppliedValue"
-        value={String(suppliedValue)}
-        setValue={setSuppliedValue}
-        onFocus={() => helpComponent(t('suppliedValue.help'))}
-        required
-      />
+      <Box sx={{ height: '5rem' }}>
+        <NumberEntry
+          errorText={errorMessage()}
+          label=""
+          testId="suppliedValue"
+          value={suppliedValue}
+          setValue={setSuppliedValue}
+          onFocus={() => helpComponent(t('suppliedValue.help'))}
+          suffix={suppliedUnitsField()}
+          required
+        />
+      </Box>
     );
   };
 
-  // TODO : Need to update the spacing
   const suppliedField = () => (
     <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={LABEL_WIDTH_SELECT}>
         {suppliedTypeField()}
       </Grid>
       <Grid item xs={12 - LABEL_WIDTH_SELECT}>
-        <Grid
-          spacing={0}
-          container
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Grid item xs={9}>
-            {suppliedValueField()}
-          </Grid>
-          <Grid item xs={3}>
-            {suppliedUnitsField()}
-          </Grid>
-        </Grid>
+        {suppliedValueField()}
       </Grid>
     </Grid>
   );
@@ -784,7 +775,44 @@ export default function AddObservation() {
     );
   };
 
-  const effectiveResolutionField = () => {
+  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+    const speedOfLight = 299792458;
+    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
+    if (velocity < 1000) {
+      return velocity.toFixed(precision) + ' m/s';
+    } else {
+      return (velocity / 1000).toFixed(precision) + ' km/s';
+    }
+  };
+
+  const getScaledValue = (value: any, multiplier: number, operator: string) => {
+    let val_scaled = 0;
+    switch (operator) {
+      case '*':
+        val_scaled = value * multiplier;
+        break;
+      case '/':
+        val_scaled = value / multiplier;
+        break;
+      default:
+        val_scaled = value;
+    }
+    return val_scaled;
+  };
+
+  const effectiveResolutionFieldMid = () => {
+    const calculateEffectiveResolution = () => {
+      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
+      const resolution = spectralResolutionValue[0];
+      const centralFrequency = getScaledValue(frequency, 1000000000, '*');
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
+      return `${effectiveResolution} kHz ( ${velocity})`;
+    };
+
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
@@ -792,7 +820,36 @@ export default function AddObservation() {
         labelPosition={LABEL_POSITION.START}
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
-        value={effective}
+        value={calculateEffectiveResolution()}
+        setValue={setEffective}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        required
+      />
+    );
+  };
+
+  const effectiveResolutionFieldLow = () => {
+    const calculateEffectiveResolution = () => {
+      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
+      const resolution = spectralResolutionValue[0];
+      const centralFrequency = getScaledValue(frequency, 1000000, '*');
+      const velocity = calculateVelocity(
+        Number(resolution) * spectralAveraging * 1000,
+        centralFrequency
+      );
+      return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
+    };
+
+    return (
+      <TextEntry
+        label={t('effectiveResolution.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH_STD}
+        testId="effective"
+        value={calculateEffectiveResolution()}
+        setValue={setEffective}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
@@ -928,6 +985,11 @@ export default function AddObservation() {
     );
   };
 
+  const addButtonDisabled = () => {
+    // TODO : We need to ensure we are able to progress.
+    return false;
+  };
+
   const pageFooter = () => {
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
@@ -987,7 +1049,12 @@ export default function AddObservation() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <AddButton title={'button.add'} action={buttonClicked} />
+            <AddButton
+              action={buttonClicked}
+              disabled={addButtonDisabled()}
+              primary
+              title={'button.add'}
+            />
           </Grid>
         </Grid>
       </Paper>
@@ -1077,10 +1144,10 @@ export default function AddObservation() {
                     {spectralResolutionField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {spectralAveragingField()}
+                    {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {effectiveResolutionField()}
+                    {isLow() ? effectiveResolutionFieldLow() : effectiveResolutionFieldMid()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {taperingField()}

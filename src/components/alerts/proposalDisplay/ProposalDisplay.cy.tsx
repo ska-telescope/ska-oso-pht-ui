@@ -6,6 +6,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import ProposalDisplay from './ProposalDisplay';
 import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
+import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -15,11 +16,13 @@ function mounting(theTheme) {
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
-        <ProposalDisplay
-          onClose={cy.stub().as('handleCancel')}
-          onConfirm={cy.stub().as('handleConfirm')}
-          open
-        />
+        <Router location="/" navigator={undefined}>
+          <ProposalDisplay
+            onClose={cy.stub().as('handleCancel')}
+            onConfirm={cy.stub().as('handleConfirm')}
+            open
+          />
+        </Router>
       </ThemeProvider>
     </StoreProvider>
   );
@@ -41,8 +44,8 @@ describe('Content', () => {
     mounting(THEME_LIGHT);
   });
   it('verify content', () => {
-    cy.get('[data-testid="button.closeButton"]').click();
-    cy.get('[data-testid="downloadBtn.labelButton"]').should('be.visible');
+    cy.get('[aria-label="downloadBtn.label"]').should('be.visible');
+    cy.get('[data-testId="cancelButtonTestId"]').click();
   });
 });
 

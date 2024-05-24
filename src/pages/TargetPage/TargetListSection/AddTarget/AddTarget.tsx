@@ -3,14 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
-import AddTargetButton from '../../../../components/button/AddTarget/AddTargetButton';
 import VelocityField from '../../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../../../utils/types/proposal';
-import ResolveButton from '../../../../components/button/Resolve/ResolveButton';
+import ResolveButton from '../../../../components/button/Resolve/Resolve';
 import ReferenceFrameField from '../../../../components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '../../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../../components/fields/skyDirection/SkyDirection2';
+import AddButton from '../../../../components/button/Add/Add';
+import GetCoordinates from '../../../../services/axios/getCoordinates/getCoordinates';
 
 interface AddTargetProps {
   raType: number;
@@ -65,12 +66,15 @@ export default function AddTarget({ raType }: AddTargetProps) {
       0
     );
     const newTarget = {
-      ra,
-      raUnit: raType.toString(),
       dec,
       decUnit: raType.toString(),
       id: highestId + 1,
       name,
+      latitude: null,
+      longitude: null,
+      ra,
+      raUnit: raType.toString(),
+      redshift: null,
       referenceFrame,
       vel,
       velUnit: velType.toString()
@@ -90,7 +94,7 @@ export default function AddTarget({ raType }: AddTargetProps) {
     clearForm();
   };
 
-  const handleResolveClick = (response: { error: any; split: (arg0: string) => any }) => {
+  const processCoordinatesResults = response => {
     if (response && !response.error) {
       const values = response.split(' ');
       setRA(values[1]);
@@ -106,6 +110,11 @@ export default function AddTarget({ raType }: AddTargetProps) {
     }
   };
 
+  const getCoordinates = async (targetName: string, skyUnits: number) => {
+    const response = await GetCoordinates(targetName, skyUnits);
+    processCoordinatesResults(response);
+  };
+
   const nameField = () => {
     return (
       <Grid p={1}>
@@ -118,9 +127,7 @@ export default function AddTarget({ raType }: AddTargetProps) {
           testId="name"
           value={name}
           setValue={setName}
-          suffix={
-            <ResolveButton targetName={name} skyUnits={raType} onClick={handleResolveClick} />
-          }
+          suffix={<ResolveButton action={() => getCoordinates(name, raType)} />}
           onFocus={() => helpComponent(t('name.help'))}
           errorText={nameFieldError}
         />
@@ -188,7 +195,13 @@ export default function AddTarget({ raType }: AddTargetProps) {
           )}
           <Grid item xs={12}>
             <Box p={1}>
-              <AddTargetButton disabled={disabled()} onClick={clickFunction} />
+              <AddButton
+                action={clickFunction}
+                disabled={disabled()}
+                testId="addTargetButton"
+                title="addTarget.label"
+                toolTip="addTarget.toolTip"
+              />
             </Box>
           </Grid>
         </Grid>

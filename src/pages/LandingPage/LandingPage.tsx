@@ -13,8 +13,14 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { EMPTY_STATUS, NAV, SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS } from '../../utils/constants';
-import AddProposalButton from '../../components/button/AddProposal/AddProposalButton';
+import {
+  EMPTY_STATUS,
+  NAV,
+  SEARCH_TYPE_OPTIONS,
+  PROPOSAL_STATUS,
+  PATH
+} from '../../utils/constants';
+import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
@@ -136,6 +142,7 @@ export default function LandingPage() {
   };
 
   const deleteConfirmed = () => {
+    // TODO : We need to access a delete endpoint here
     setOpenDeleteDialog(false);
   };
 
@@ -199,6 +206,10 @@ export default function LandingPage() {
 
   const filteredData = proposals ? filterProposals() : [];
 
+  const clickFunction = () => {
+    navigate(PATH[1]);
+  };
+
   return (
     <>
       <Grid p={6} container direction="column" alignItems="center" justifyContent="center">
@@ -207,7 +218,12 @@ export default function LandingPage() {
 
       <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
         <Grid item xs={2}>
-          <AddProposalButton />
+          <AddButton
+            action={clickFunction}
+            testId="addProposalButton"
+            title="addProposal.label"
+            toolTip="addProposal.toolTip"
+          />
         </Grid>
         <Grid item xs={2}>
           <DropDown

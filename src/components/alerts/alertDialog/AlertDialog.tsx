@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
-import CancelButton from '../../button/cancel/CancelButton';
-import ConfirmButton from '../../button/confirm/ConfirmButton';
+import CancelButton from '../../button/Cancel/Cancel';
+import ConfirmButton from '../../button/Confirm/Confirm';
 
 interface AlertDialogProps {
   open: boolean;
@@ -52,10 +52,10 @@ export default function AlertDialog({
       <DialogActions>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
-            <CancelButton onClick={handleCancel} />
+            <CancelButton action={handleCancel} />
           </Grid>
           <Grid item>
-            <ConfirmButton onClick={handleContinue} />
+            <ConfirmButton action={handleContinue} />
           </Grid>
         </Grid>
       </DialogActions>

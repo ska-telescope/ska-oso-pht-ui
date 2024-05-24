@@ -1,8 +1,8 @@
 import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 import BaseButton from '../Base/Button';
 
-interface AddButtonProps {
+interface SaveButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -11,19 +11,19 @@ interface AddButtonProps {
   toolTip?: string;
 }
 
-export default function AddButton({
+export default function SaveButton({
   disabled = false,
   action,
+  title = 'button.save',
   primary = false,
-  title = 'button.add',
   testId,
   toolTip
-}: AddButtonProps) {
+}: SaveButtonProps) {
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<AddIcon />}
+      icon={<SaveIcon />}
       primary={primary}
       testId={testId}
       title={title}

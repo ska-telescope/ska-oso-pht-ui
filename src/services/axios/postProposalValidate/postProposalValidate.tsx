@@ -3,7 +3,7 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 
 async function PostProposalValidate(proposal) {
   if (USE_LOCAL_DATA) {
-    return 'success';
+    return 'LOCAL DATA success';
   }
 
   try {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
-import CancelButton from '../../../button/cancel/CancelButton';
+import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
@@ -187,7 +187,7 @@ export default function SensCalcModalMultiple({
     >
       <Card variant="outlined">
         <CardHeader
-          action={<CancelButton onClick={handleClose} label="button.close" />}
+          action={<CancelButton action={handleClose} title="button.close" />}
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {

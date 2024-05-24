@@ -10,7 +10,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
-import DownloadButton from '../../components/button/download/DownloadButton';
+import DownloadButton from '../../components/button/Download/Download';
 
 const PAGE = 6;
 
@@ -129,7 +129,7 @@ export default function TechnicalPage() {
             <Box pt={1}>
               <DownloadButton
                 toolTip={t('pdfDownload.technical.toolTip')}
-                onClick={downloadPdfToSignedUrl}
+                action={downloadPdfToSignedUrl}
               />
             </Box>
           )}

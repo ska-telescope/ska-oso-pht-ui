@@ -4,14 +4,14 @@ import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import CancelButton from '../../button/cancel/CancelButton';
-import ConfirmButton from '../../button/confirm/ConfirmButton';
+import CancelButton from '../../button/Cancel/Cancel';
+import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
 import { GENERAL, Projects } from '../../../utils/constants';
 import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
-import DownloadButton from '../../button/download/DownloadButton';
+import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
@@ -120,14 +120,14 @@ export default function ProposalDisplay({
   const pageFooter = () => (
     <Grid container direction="row" justifyContent="space-between" alignItems="center">
       <Grid item>
-        <CancelButton onClick={handleCancel} label="button.close" />
+        <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
-        <DownloadButton disabled onClick={handleDownload} />
+        <DownloadButton disabled action={handleDownload} />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
-          <ConfirmButton onClick={handleConfirm} label={onConfirmLabel} />
+          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
         </Grid>
       )}
     </Grid>

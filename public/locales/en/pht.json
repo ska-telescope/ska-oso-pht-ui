@@ -9,7 +9,6 @@
   "no": "No",
   "button": {
     "add": "Add",
-    "addTarget": "Add target",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "confirmDeleteMember": "Confirm Team Member Deletion",
@@ -17,10 +16,8 @@
     "close": "Close",
     "create": "Create",
     "home": "Home",
-    "save": "Save",
     "submit": "Submit",
-    "sendInvite": "Send invitation",
-    "validate": "Validate"
+    "sendInvite": "Send invitation"
   },
   "abstract": {
     "label": "Abstract",
@@ -45,7 +42,8 @@
     "warning": "Please wait whilst we create a new proposal"
   },
   "addTarget": {
-    "label": "Add Target"
+    "label": "Add Target",
+    "toolTip": "Will add the target to the list associated with the proposal"
   },
   "apiVersion": {
     "label": "API Version"
@@ -91,7 +89,7 @@
       "midUpper": 0.8,
       "lowLower": 0,
       "lowUpper": 75,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "continuumUnits": {
@@ -155,7 +153,7 @@
     "range": {
       "lower": 15,
       "upper": 59.2,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "email": {
@@ -357,9 +355,9 @@
   "proposalType": {
     "label": "Proposal Types",
     "help1": "Below are the available Proposal Types.",
-    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type to be selected",
+    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
     "help3": "Proposal sub-types are optional",
-    "help4": "It is possible to be able to change this at a later date, however be aware that this may cause information already entered to be lost"
+    "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
   },
   "members": {
     "label": "Members",
@@ -379,7 +377,7 @@
     "label": "Reference Frame",
     "help": "REFERENCE FRAME HELP",
     "0": "Heliocentric",
-    "1": "Local Standard of Rest"
+    "1": "Kinematic Local Standard of Rest"
   },
   "resolve": {
     "label": "Resolve",
@@ -396,6 +394,10 @@
   "robust": {
     "help": "ROBUST HELP",
     "label": "Robust"
+  },
+  "saveBtn": {
+    "label": "Save",
+    "success": "Save was successful"
   },
   "scienceCategory": {
     "1": "Cosmology",
@@ -519,7 +521,12 @@
   },
   "spectralAveraging": {
     "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
-    "label": "Spectral Averaging"
+    "label": "Spectral Averaging",
+    "range": {
+      "lower": 1,
+      "upper": 27624,
+      "error": "Value is outside of allowed range"
+    }
   },
   "spectralResolution": {
     "help": "High spectral resolution allows you to Identify and separate closely spaced spectral lines, Analyze fine details in the composition, temperature, and velocity of your targets/objects, Detect subtle shifts in wavelength due to Doppler effects or chemical composition changes.",
@@ -550,7 +557,7 @@
     "range": {
       "lower": 0,
       "upper": 32,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "subArrayConfiguration": {
@@ -580,7 +587,7 @@
     "help": "SUPPLIED VALUE HELP",
     "range": {
       "lower": 0,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     },
     "default": 600
   },
@@ -606,7 +613,7 @@
     "label": "Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "Provide the title of your proposal. This field supports latex syntax.", 
+    "help": "Provide the title of your proposal. This field supports latex syntax.",
     "helper": "Please enter your title information"
   },
   "updated": {
@@ -614,6 +621,10 @@
   },
   "uploadPDF": {
     "label": "Upload PDF"
+  },
+  "validationBtn": {
+    "label": "Validation",
+    "success": "Validation was successful"
   },
   "velocity": {
     "label": "Velocity",
@@ -639,7 +650,7 @@
     "range": {
       "lower": 3,
       "upper": 25,
-      "error": "Values are outside of allowed range"
+      "error": "Value is outside of allowed range"
     }
   },
   "weighting": {
