@@ -142,6 +142,7 @@ export default function LandingPage() {
   };
 
   const deleteConfirmed = () => {
+    // TODO : We need to access a delete endpoint here
     setOpenDeleteDialog(false);
   };
 

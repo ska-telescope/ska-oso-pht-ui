@@ -120,14 +120,14 @@ export default function ProposalDisplay({
   const pageFooter = () => (
     <Grid container direction="row" justifyContent="space-between" alignItems="center">
       <Grid item>
-        <CancelButton onClick={handleCancel} label="button.close" />
+        <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
-        <DownloadButton disabled onClick={handleDownload} />
+        <DownloadButton disabled action={handleDownload} />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
-          <ConfirmButton onClick={handleConfirm} label={onConfirmLabel} />
+          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
         </Grid>
       )}
     </Grid>

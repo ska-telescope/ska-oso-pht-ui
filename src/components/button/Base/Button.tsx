@@ -16,7 +16,7 @@ interface BaseButtonProps {
 export default function BaseButton({
   disabled = false,
   action,
-  title = '',
+  title = 'button.add',
   icon,
   primary = false,
   testId,
@@ -33,11 +33,11 @@ export default function BaseButton({
     }
   };
 
-  const theTitle = t(title ? title : 'button.add');
+  const theTitle = t(title);
 
   return (
     <Button
-      ariaDescription={`${theTitle}Button`}
+      ariaDescription={`${theTitle} Button`}
       color={primary ? ButtonColorTypes.Secondary : ButtonColorTypes.Inherit}
       disabled={disabled}
       icon={icon}
