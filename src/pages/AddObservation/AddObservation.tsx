@@ -580,7 +580,6 @@ export default function AddObservation() {
             onFocus={() => helpComponent(t('frequencyUnits.help'))}
             testId="frequencyUnits"
             suffix={FrequencyUnitOptions[0].label}
-            disabled
           />
         </Box>
       );
