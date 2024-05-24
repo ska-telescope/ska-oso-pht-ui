@@ -152,8 +152,8 @@ export default function AddObservation() {
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
         e => e.lookup === subarrayConfig
       );
-      const value2 = continuumBandwidth?.value;
-      setContinuumBandwidth(value2);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(OBSERVATION.SpectralResolutionObLow[0].value);
     }
     if (observingBand === 1) {
@@ -167,43 +167,40 @@ export default function AddObservation() {
       const lookup = record?.lookup;
       const spectralResolution = OBSERVATION.SpectralResolutionOb1.find(e => e.lookup === lookup);
       const valueSpectralResolution = spectralResolution?.value;
-      console.log('chloe..', valueSpectralResolution);
       setSpectralResolution(valueSpectralResolution);
     }
     if (observingBand === 2) {
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
-      const value = centralFrequency?.value;
-      setFrequency(value);
+      const valueCentralFrequency = centralFrequency?.value;
+      setFrequency(valueCentralFrequency);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
-      const value2 = continuumBandwidth?.value;
-      setContinuumBandwidth(value2);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      const record = OBSERVATION.CentralFrequencyOB2.find(e => e.value === frequency);
+      const lookup = record?.lookup;
+      const spectralResolution = OBSERVATION.SpectralResolutionOb2.find(e => e.lookup === lookup);
+      const valueSpectralResolution = spectralResolution?.value;
+      setSpectralResolution(valueSpectralResolution);
     }
     if (observingBand === 3) {
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
         e => e.lookup === subarrayConfig
       );
-      const value2 = continuumBandwidth?.value;
-      setContinuumBandwidth(value2);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      setSpectralResolution(OBSERVATION.SpectralResolutionOb5a[0].value);
     }
     if (observingBand === 4) {
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
         e => e.lookup === subarrayConfig
       );
-      const value2 = continuumBandwidth?.value;
-      setContinuumBandwidth(value2);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      setSpectralResolution(OBSERVATION.SpectralResolutionOb5b[0].value);
     }
   }, [observingBand, subarrayConfig, frequency]);
-
-  // //rework spectral res based on frequency
-  // React.useEffect(() => {
-  //   const record = OBSERVATION.CentralFrequencyOB1.find(e => e.value === frequency);
-  //   const lookup = record?.lookup;
-  //   if (lookup !== null) {
-  //     setSpectralResolution(OBSERVATION.SpectralResolution[lookup]?.value);
-  //   }
-  // }, [frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
