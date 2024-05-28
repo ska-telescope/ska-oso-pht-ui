@@ -1,4 +1,4 @@
 export type ValueUnitPair = {
-    value: number;
-    unit: string;
-}
+  value: number;
+  unit: string;
+};

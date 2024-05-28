@@ -3,7 +3,7 @@ import DataProduct, { DataProductSDPsBackend, DataProductSRCNetBackend } from '.
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { ResultBackend } from './result';
-import { ScienceProgrammeBackend } from './scienceProgrammes';
+// import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
 import TeamMember, { TeamMemberBackend } from './teamMember';
@@ -43,7 +43,7 @@ export type ProposalBackend = {
     created_on: string;
     last_modified_by: string;
     last_modified_on: string;
-  }
+  };
   cycle: string;
   info: {
     title: string;
