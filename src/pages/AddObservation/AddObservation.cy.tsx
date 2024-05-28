@@ -84,6 +84,11 @@ function verifyCentralFrequencyContinuumOb5aSubArrayValue20() {
   cy.get('[id="frequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
+function verifyCentralFrequencyContinuumOb5bSubArrayValue20() {
+  cy.get('[id="frequency"]').should('have.value', 11.85);
+  cy.get('[id="frequency"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
+}
 function verifyCentralFrequencyContinuumLowBand() {
   cy.get('[id="frequency"]').should('have.value', 200);
   cy.get('[id="frequency"]').click();
@@ -104,6 +109,13 @@ function verifyObservingBandMidBand5a() {
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
 }
 
+function verifyObservingBandMidBand5b() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="4"]').click();
+  cy.get('[data-testid="observingBand"]').contains('Band 5b (8.3 - 15.4 GHz)');
+  cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+}
+
 function verifyFrequencyUnits() {
   cy.get('[data-testid="frequencyUnits"]').contains('GHz');
   cy.get('[data-testid="frequencyUnits"]').click();
@@ -120,6 +132,12 @@ function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {
 
 function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 3.9);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+}
+
+function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 5);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
@@ -172,6 +190,12 @@ function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
 
+function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (340.0 m/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+}
+
 function verifySpectralResolutionZoomBandMid() {
   cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
   cy.get('[id="spectralResolution"]').click();
@@ -194,6 +218,11 @@ function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
 
 function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
   cy.get('[id="effective"]').should('have.value', '13.44 kHz (615.1 m/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+}
+function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
+  cy.get('[id="effective"]').should('have.value', '13.44 kHz (340.0 m/s)');
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -341,6 +370,27 @@ describe('<AddObservation />', () => {
     verifySpectralResolutionContinuumOb5aSubArrayValue20();
     verifySpectralAveraging();
     verifyEffectiveResolutionContinuumOb5aSubArrayValue20();
+    verifyTapering();
+    verifySubBands();
+    verifyImageWeighting();
+    verifyDetailsField();
+  });
+
+  it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5b & SubArrayValue 20)', () => {
+    mounting(THEME_LIGHT);
+    verifyObservingBandMidBand5b();
+    verifySubArrayConfigurationCustom();
+    verifyElevationField();
+    verifyWeatherField();
+    verifyObservationTypeContinuum();
+    verifySuppliedTypeValueAndUnits();
+    verifyCentralFrequencyContinuumOb5bSubArrayValue20();
+    verifyFrequencyUnits();
+    verifyContinuumBandwidthContinuumOb5bSubArrayValue20();
+    verifyContinuumUnits();
+    verifySpectralResolutionContinuumOb5bSubArrayValue20();
+    verifySpectralAveraging();
+    verifyEffectiveResolutionContinuumOb5bSubArrayValue20();
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
