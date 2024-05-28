@@ -17,6 +17,13 @@ function verifySubArrayConfiguration() {
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
+function verifySubArrayConfigurationCustom() {
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.20');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
+}
+
 function verifyObservingBandLow() {
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="0"]').click();
@@ -66,8 +73,14 @@ function verifyObservationTypeContinuum() {
   cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
-function verifyCentralFrequencyContinuumMidBand() {
+function verifyCentralFrequencyContinuumOb1SubArrayValue20() {
   cy.get('[id="frequency"]').should('have.value', 0.7975);
+  cy.get('[id="frequency"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
+}
+
+function verifyCentralFrequencyContinuumOb5aSubArrayValue20() {
+  cy.get('[id="frequency"]').should('have.value', 6.55);
   cy.get('[id="frequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
@@ -84,6 +97,13 @@ function verifyObservingBandMidBand2() {
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
 }
 
+function verifyObservingBandMidBand5a() {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="3"]').click();
+  cy.get('[data-testid="observingBand"]').contains('Band 5a (4.6 - 8.5 GHz)');
+  cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+}
+
 function verifyFrequencyUnits() {
   cy.get('[data-testid="frequencyUnits"]').contains('GHz');
   cy.get('[data-testid="frequencyUnits"]').click();
@@ -92,8 +112,14 @@ function verifyFrequencyUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
 
-function verifyContinuumBandwidthContinuumMidBand() {
+function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 0.435);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+}
+
+function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 3.9);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
@@ -134,8 +160,14 @@ function verifySpectralResolutionLow() {
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
 
-function verifySpectralResolutionMid() {
+function verifySpectralResolutionContinuumOb1SubArrayValue20() {
   cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.1 km/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+}
+
+function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (615.1 m/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
@@ -154,8 +186,14 @@ function verifySpectralAveragingLow() {
   cy.get('[id="spectral"]').should('have.value', '1');
 }
 
-function verifyEffectiveResolutionContinuumMidBand() {
+function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
   cy.get('[id="effective"]').should('have.value', '13.44 kHz (5.1 km/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+}
+
+function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
+  cy.get('[id="effective"]').should('have.value', '13.44 kHz (615.1 m/s)');
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -265,7 +303,7 @@ describe('<AddObservation />', () => {
     cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
   });
 
-  it('Verify user input available for observation type Continuum and Array Config MID', () => {
+  it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mounting(THEME_LIGHT);
     verifyObservingBandMidBand2();
     verifySubArrayConfiguration();
@@ -275,13 +313,34 @@ describe('<AddObservation />', () => {
     verifyWeatherField();
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
-    verifyCentralFrequencyContinuumMidBand();
+    verifyCentralFrequencyContinuumOb1SubArrayValue20();
     verifyFrequencyUnits();
-    verifyContinuumBandwidthContinuumMidBand();
+    verifyContinuumBandwidthContinuumOb1SubArrayValue20();
     verifyContinuumUnits();
-    verifySpectralResolutionMid();
+    verifySpectralResolutionContinuumOb1SubArrayValue20();
     verifySpectralAveraging();
-    verifyEffectiveResolutionContinuumMidBand();
+    verifyEffectiveResolutionContinuumOb1SubArrayValue20();
+    verifyTapering();
+    verifySubBands();
+    verifyImageWeighting();
+    verifyDetailsField();
+  });
+
+  it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5a & SubArrayValue 20)', () => {
+    mounting(THEME_LIGHT);
+    verifyObservingBandMidBand5a();
+    verifySubArrayConfigurationCustom();
+    verifyElevationField();
+    verifyWeatherField();
+    verifyObservationTypeContinuum();
+    verifySuppliedTypeValueAndUnits();
+    verifyCentralFrequencyContinuumOb5aSubArrayValue20();
+    verifyFrequencyUnits();
+    verifyContinuumBandwidthContinuumOb5aSubArrayValue20();
+    verifyContinuumUnits();
+    verifySpectralResolutionContinuumOb5aSubArrayValue20();
+    verifySpectralAveraging();
+    verifyEffectiveResolutionContinuumOb5aSubArrayValue20();
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
