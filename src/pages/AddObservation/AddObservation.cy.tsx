@@ -117,6 +117,12 @@ function verifyContinuumUnits() {
   // cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
+function verifyContinuumUnitsLow() {
+  cy.get('[data-testid="continuumUnits"]').contains('MHz');
+  cy.get('[data-testid="continuumUnits"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
+}
+
 function verifyMidBandwidthFrequency() {
   // TAS cy.get('[data-testid="continuumBandwidth"] input#continuumBandwidth').should(
   // TAS   'contain.value',
@@ -333,7 +339,7 @@ describe('<AddObservation />', () => {
     verifyCentralFrequency();
     verifyFrequencyUnitsLow();
     // TAS verifyContinuumBandwidth();
-    verifyContinuumUnits();
+    verifyContinuumUnitsLow();
     verifyMidBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();

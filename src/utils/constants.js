@@ -227,7 +227,7 @@ export const OBSERVATION = {
         { label: '100 MHz', value: 6 },
         { label: '200 MHz', value: 7 }
       ],
-      CentralFrequencyUnits: [
+      CentralFrequencyAndBandWidthUnits: [
         { label: 'GHz', value: 1 },
         { label: 'MHz', value: 2 },
         { label: 'KHz', value: 3 },
@@ -322,7 +322,7 @@ export const OBSERVATION = {
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
       ],
-      CentralFrequencyUnits: [{ label: 'MHz', value: 1 }]
+      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1 }]
     }
   ],
   ImageWeighting: [
