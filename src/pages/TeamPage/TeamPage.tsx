@@ -5,7 +5,7 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
@@ -13,6 +13,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
@@ -180,12 +181,7 @@ export default function TeamPage() {
               />
             )}
             {getRows()?.length === 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Error}
-                fontSize={20}
-                message={t('members.empty')}
-                testId="helpPanelId"
-              />
+              <Alert color={AlertColorTypes.Error} text={t('members.empty')} testId="helpPanelId" />
             )}
           </Grid>
           <Grid item md={6} xs={11}>
