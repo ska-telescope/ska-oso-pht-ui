@@ -22,7 +22,7 @@ export type ObservationSetBackend = {
             type: string;
             value: number;
             unit: string;
-        },
+        };
         spectral_resolution: string;
         effective_resolution: string;
         image_weighting: string;

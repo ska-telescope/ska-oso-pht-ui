@@ -59,7 +59,7 @@ export type ProposalBackend = {
     observation_sets: ObservationSetBackend[];
     data_product_sdps: DataProductSDPsBackend[];
     data_product_src_nets: DataProductSRCNetBackend[];
-    results: ResultBackend[]; // TODO: make continuum specific results optional
+    results: ResultBackend[];
   };
 };
 
