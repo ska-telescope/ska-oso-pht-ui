@@ -14,16 +14,25 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
 import { TeamMemberBackend } from '../../../utils/types/teamMember';
 import { TargetBackend } from 'utils/types/target';
+import { ObservationSetBackend } from 'utils/types/observationSet';
 
-const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
+const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   return rec.id;
 };
 
+/*
 const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
   return rec2 ? rec2.id : null;
+};
+*/
+
+const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[] }) => {
+  const project = Projects.find(({ title }) => title === inValue.main_type);
+  const subProjects = inValue.sub_type.map(subType => project.subProjects.find(({ title }) => title === subType));
+  return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
 
 const getTeamMembers = (inValue: TeamMemberBackend[]) => {
@@ -77,6 +86,7 @@ const getIntegrationTimeUnits = (inValue: String) => {
   return unitsList.find(u => u.label === inValue)?.value;
 };
 
+/*
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -96,7 +106,29 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   }
   return results;
 };
+*/
 
+const getObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    const arr = inValue[i].array_details.array === 'MID' ? 1 : 2;
+    const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].array_details.subarray);
+    results.push({
+      id: inValue[i].observation_set_id,
+      telescope: arr,
+      subarray: sub ? sub.value : 0,
+      type: inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1,
+      imageWeighting: inValue[i].observation_type_details?.image_weighting,
+      observingBand: inValue[i].observing_band,
+      // integrationTime: inValue[i].integration_time, // coming from sens calc results?
+      // integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units), // coming from sens calc results?
+      centralFrequency: inValue[i].observation_type_details?.central_frequency
+    });
+  }
+  return results;
+};
+
+/*
 const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -109,7 +141,24 @@ const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
   }
   return results;
 };
+*/
 
+const getGroupObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    if (inValue[i].group_id) {
+      const observationSetId = inValue[i].observation_set_id;
+      const observationId = observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
+      results.push({
+        observationId: observationId,
+        groupId: inValue[i].group_id
+      });
+    }
+  }
+  return results;
+};
+
+/* // old mapping - keeping it here for a bit during the transition
 function mapping(inRec: ProposalBackend): Proposal {
   return {
     id: inRec.prsl_id,
@@ -126,6 +175,31 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.proposal_info.targets),
     observations: getObservations(inRec.proposal_info.science_programmes),
     groupObservations: getGroupObservations(inRec.proposal_info.science_programmes),
+    targetObservation: [],
+    technicalPDF: null,
+    technicalLoadStatus: 0,
+    dataProducts: [],
+    pipeline: ''
+  };
+}
+*/
+
+function mapping(inRec: ProposalBackend): Proposal {
+  return {
+    id: inRec.prsl_id,
+    title: inRec.info.title,
+    proposalType: getProposalType(inRec.info.proposal_type),
+    proposalSubType: getProposalSubTypeType(inRec.info.proposal_type),
+    team: getTeamMembers(inRec.info.investigators),
+    abstract: inRec.info.abstract,
+    category: getCategory(inRec.info.science_category),
+    subCategory: [getSubCategory()],
+    sciencePDF: null,
+    scienceLoadStatus: 0,
+    targetOption: 1,
+    targets: getTargets(inRec.info.targets), // TODO
+    observations: getObservations(inRec.info.observation_sets),
+    groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [],
     technicalPDF: null,
     technicalLoadStatus: 0,
