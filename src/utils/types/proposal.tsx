@@ -7,6 +7,7 @@ import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
 import TeamMember, { TeamMemberBackend } from './teamMember';
+import { ObservationSetBackend } from './observationSet';
 
 /*
 export type ProposalBackend = {
@@ -31,7 +32,7 @@ export type ProposalBackend = {
 */
 
 export type ProposalBackend = {
-  prsl_id: string;
+  prsl_id: string; // TODO: modify type names as prsl?
   status: string;
   submitted_by: string;
   submitted_on: string;
@@ -55,7 +56,7 @@ export type ProposalBackend = {
     targets: TargetBackend[];
     documents: DocumentBackend[];
     investigators: TeamMemberBackend[]; // TODO: create investigatorBackend type instead of teamMember
-    observation_sets: ScienceProgrammeBackend[]; // TODO: create ObservationSetBackend type instead of ScienceProgrammeBackend
+    observation_sets: ObservationSetBackend[];
     data_product_sdps: DataProductSDPsBackend[];
     data_product_src_nets: DataProductSRCNetBackend[];
     results: ResultBackend[]; // TODO: make continuum specific results optional
