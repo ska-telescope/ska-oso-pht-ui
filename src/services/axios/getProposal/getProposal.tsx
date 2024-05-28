@@ -11,10 +11,9 @@ import {
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
-import { TeamMemberBackend } from '../../../utils/types/teamMember';
 import { TargetBackend } from 'utils/types/target';
 import { ObservationSetBackend } from 'utils/types/observationSet';
+import { InvestigatorBackend } from 'utils/types/investigator';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
@@ -22,6 +21,7 @@ const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => 
 };
 
 /*
+// old getProposalSubTypeType
 const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
@@ -35,6 +35,8 @@ const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[]
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
 
+/*
+// old getTeamMembers
 const getTeamMembers = (inValue: TeamMemberBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -44,6 +46,24 @@ const getTeamMembers = (inValue: TeamMemberBackend[]) => {
       lastName: inValue[i].last_name,
       email: inValue[i].email,
       country: inValue[i].country,
+      affiliation: inValue[i].organization,
+      phdThesis: inValue[i].for_phd,
+      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+      pi: inValue[i].principal_investigator
+    });
+  }
+  return results;
+};
+*/
+
+const getTeamMembers = (inValue: InvestigatorBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    results.push({
+      id: i + 1,
+      firstName: inValue[i].given_name,
+      lastName: inValue[i].family_name,
+      email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
@@ -62,6 +82,8 @@ const getSubCategory = () => {
   return 1;
 };
 
+/*
+// old getTargets
 const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -80,6 +102,26 @@ const getTargets = (inValue: TargetBackend[]) => {
   }
   return results;
 };
+*/
+
+const getTargets = (inValue: TargetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    const e = inValue[i];
+    results.push({
+      dec: e.reference_coordinate.dec?.toString(),
+      decUnits: e.reference_coordinate.unit,
+      id: e.target_id !== "" ? e.target_id:  i + 1,
+      name: e.reference_coordinate.kind, // TODO: check this is correct
+      ra: e.reference_coordinate.ra?.toString(),
+      raUnits: e.reference_coordinate.unit,
+      referenceFrame: e.reference_coordinate.reference_frame,
+      vel: e.radial_velocity.quantity.value?.toString(),
+      velUnits: e.radial_velocity.quantity.unit
+    });
+  }
+  return results;
+};
 
 const getIntegrationTimeUnits = (inValue: String) => {
   const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
@@ -87,6 +129,7 @@ const getIntegrationTimeUnits = (inValue: String) => {
 };
 
 /*
+// old getObservations
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -129,6 +172,7 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
 };
 
 /*
+// old getGroupObservations
 const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {

@@ -8,6 +8,7 @@ import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
 import TeamMember, { TeamMemberBackend } from './teamMember';
 import { ObservationSetBackend } from './observationSet';
+import { InvestigatorBackend } from './investigator';
 
 /*
 export type ProposalBackend = {
@@ -55,7 +56,7 @@ export type ProposalBackend = {
     science_category: string;
     targets: TargetBackend[];
     documents: DocumentBackend[];
-    investigators: TeamMemberBackend[]; // TODO: create investigatorBackend type instead of teamMember
+    investigators: InvestigatorBackend[];
     observation_sets: ObservationSetBackend[];
     data_product_sdps: DataProductSDPsBackend[];
     data_product_src_nets: DataProductSRCNetBackend[];
