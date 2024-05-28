@@ -6,7 +6,7 @@ import { ResultBackend } from './result';
 // import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember, { TeamMemberBackend } from './teamMember';
+import TeamMember from './teamMember';
 import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 

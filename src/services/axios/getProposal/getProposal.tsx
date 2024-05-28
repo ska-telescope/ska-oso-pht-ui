@@ -31,7 +31,9 @@ const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }
 
 const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[] }) => {
   const project = Projects.find(({ title }) => title === inValue.main_type);
-  const subProjects = inValue.sub_type.map(subType => project.subProjects.find(({ title }) => title === subType));
+  const subProjects = inValue.sub_type.map(subType =>
+    project.subProjects.find(({ title }) => title === subType)
+  );
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
 
@@ -111,7 +113,7 @@ const getTargets = (inValue: TargetBackend[]) => {
     results.push({
       dec: e.reference_coordinate.dec?.toString(),
       decUnits: e.reference_coordinate.unit,
-      id: e.target_id !== "" ? e.target_id:  i + 1,
+      id: e.target_id !== '' ? e.target_id : i + 1,
       name: e.reference_coordinate.kind, // TODO: check this is correct
       ra: e.reference_coordinate.ra?.toString(),
       raUnits: e.reference_coordinate.unit,
@@ -123,10 +125,12 @@ const getTargets = (inValue: TargetBackend[]) => {
   return results;
 };
 
+/*
 const getIntegrationTimeUnits = (inValue: String) => {
   const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
   return unitsList.find(u => u.label === inValue)?.value;
 };
+*/
 
 /*
 // old getObservations
@@ -155,12 +159,17 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'MID' ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].array_details.subarray);
+    const sub = OBSERVATION.array[arr - 1].subarray.find(
+      p => p.label === inValue[i].array_details.subarray
+    );
     results.push({
       id: inValue[i].observation_set_id,
       telescope: arr,
       subarray: sub ? sub.value : 0,
-      type: inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1,
+      type:
+        inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
+          ? 0
+          : 1,
       imageWeighting: inValue[i].observation_type_details?.image_weighting,
       observingBand: inValue[i].observing_band,
       // integrationTime: inValue[i].integration_time, // coming from sens calc results?
@@ -192,7 +201,8 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   for (let i = 0; i < inValue.length; i++) {
     if (inValue[i].group_id) {
       const observationSetId = inValue[i].observation_set_id;
-      const observationId = observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
+      const observationId =
+        observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
       results.push({
         observationId: observationId,
         groupId: inValue[i].group_id
