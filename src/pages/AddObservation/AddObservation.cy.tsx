@@ -9,7 +9,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-function verifySubArrayConfiguration() {
+function verifySubArrayConfigurationValue2() {
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="2"]').click();
@@ -335,7 +335,7 @@ describe('<AddObservation />', () => {
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mounting(THEME_LIGHT);
     verifyObservingBandMidBand2();
-    verifySubArrayConfiguration();
+    verifySubArrayConfigurationValue2();
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
     verifyElevationField();
@@ -400,7 +400,7 @@ describe('<AddObservation />', () => {
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mounting(THEME_LIGHT);
     verifyDetailsField();
-    verifySubArrayConfiguration();
+    verifySubArrayConfigurationValue2();
     verifyObservingBandMidBand2();
     verifyElevationField();
     verifyWeatherField();
@@ -437,7 +437,7 @@ describe('<AddObservation />', () => {
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
     mounting(THEME_LIGHT);
     verifyObservingBandLow();
-    verifySubArrayConfiguration();
+    verifySubArrayConfigurationValue2();
     verifyDetailsField();
     verifyNumOfStations();
     verifyElevationField();
