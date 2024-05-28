@@ -47,5 +47,3 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 8. SRC Net page:
     - Automatically valid as nothing is there
-
-
