@@ -5,10 +5,10 @@ import PublishIcon from '@mui/icons-material/Publish';
 
 interface SubmitButtonProps {
   disabled: boolean;
-  onClick: Function;
+  action: Function;
 }
 
-export default function SubmitButton({ disabled, onClick }: SubmitButtonProps) {
+export default function SubmitButton({ disabled, action }: SubmitButtonProps) {
   const { t } = useTranslation('pht');
 
   const title = t('button.submit');
@@ -20,7 +20,7 @@ export default function SubmitButton({ disabled, onClick }: SubmitButtonProps) {
       disabled={disabled}
       icon={<PublishIcon />}
       label={title}
-      onClick={onClick}
+      onClick={action}
       testId={`${title}Button`}
       variant={ButtonVariantTypes.Contained}
     />

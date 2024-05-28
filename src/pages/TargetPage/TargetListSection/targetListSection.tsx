@@ -6,13 +6,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import AddTarget from './AddTarget/AddTarget';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
+import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
@@ -145,12 +146,7 @@ export default function TargetListSection() {
           />
         )}
         {getProposal().targets.length === 0 && (
-          <InfoCard
-            color={InfoCardColorTypes.Error}
-            fontSize={20}
-            message={t('targets.empty')}
-            testId="helpPanelId"
-          />
+          <Alert color={AlertColorTypes.Error} text={t('targets.empty')} testId="helpPanelId" />
         )}
       </Grid>
       <Grid item md={6} xs={11}>

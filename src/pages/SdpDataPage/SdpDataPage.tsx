@@ -1,16 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Tooltip, Typography } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { OBSERVATION, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { DataGrid } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import AddButton from '../../components/button/Add/Add';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import Alert from '../..//components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import ErrorPanel from '../../components/info/errorPanel/errorPanel';
 import { PATH } from '../../utils/constants';
 
 const PAGE = 7;
@@ -173,7 +173,7 @@ export default function SdpDataPage() {
   const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
   const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
-  const errorMessage = () => 'page.' + PAGE + errorSuffix();
+  const errorMessage = () => t('page.' + PAGE + errorSuffix());
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);
@@ -194,9 +194,7 @@ export default function SdpDataPage() {
             />
           )}
           {getRows().length === 0 && (
-            <Box pt={2}>
-              <ErrorPanel msg={errorMessage()} />
-            </Box>
+            <Alert color={AlertColorTypes.Error} text={errorMessage()} testId="helpPanelId" />
           )}
         </Grid>
       </Grid>
