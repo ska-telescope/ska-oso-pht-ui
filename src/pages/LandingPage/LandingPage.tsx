@@ -1,15 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes,
-  InfoCard,
-  InfoCardColorTypes
+  AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
@@ -26,7 +24,7 @@ import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
-import TimedAlert from '../../components/alerts/timedAlert/TimedAlert';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 
 export default function LandingPage() {
@@ -81,13 +79,12 @@ export default function LandingPage() {
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
-      setAxiosViewError(response);
       updateAppContent1(null);
       updateAppContent2(null);
       updateAppContent3(null);
+      setAxiosViewError(response);
       return false;
     } else {
-      setAxiosViewError('');
       updateAppContent1(EMPTY_STATUS);
       updateAppContent2(response);
       updateAppContent3(response);
@@ -244,22 +241,17 @@ export default function LandingPage() {
         </Grid>
       </Grid>
 
-      {axiosViewError && <TimedAlert color={AlertColorTypes.Error} text={axiosViewError} />}
       {!axiosViewError && (
         <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
           <Grid item>
-            {axiosError && (
-              <TimedAlert clear={setAxiosError} color={AlertColorTypes.Error} text={axiosError} />
-            )}
-            {!axiosError && (!filteredData || filteredData.length === 0) && (
-              <InfoCard
-                color={InfoCardColorTypes.Info}
-                fontSize={20}
-                message={t('proposals.empty')}
+            {(!filteredData || filteredData.length === 0) && (
+              <Alert
+                color={AlertColorTypes.Info}
+                text={t('proposals.empty')}
                 testId="helpPanelId"
               />
             )}
-            {!axiosError && filteredData.length > 0 && (
+            {filteredData.length > 0 && (
               <DataGrid
                 testId="dataGridId"
                 rows={filteredData}
@@ -294,6 +286,27 @@ export default function LandingPage() {
           onConfirmLabel=""
         />
       )}
+      <Paper
+        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        elevation={0}
+      >
+        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid item>
+            {axiosViewError && (
+              <Alert
+                color={AlertColorTypes.Error}
+                testId="axiosViewErrorTestId"
+                text={axiosViewError}
+              />
+            )}
+          </Grid>
+          <Grid item>
+            {axiosError && (
+              <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
+            )}
+          </Grid>
+        </Grid>
+      </Paper>
     </>
   );
 }

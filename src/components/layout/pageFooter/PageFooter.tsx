@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import NextPageButton from '../../button/NextPage/NextPageButton';
-import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
+import NextPageButton from '../../button/NextPage/NextPage';
+import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import { LAST_PAGE, NAV } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
@@ -92,13 +92,14 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
       <Grid p={1} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
           {usedPageNo > 0 && (
-            <PreviousPageButton label={prevLabel()} page={usedPageNo} func={prevPageNav} />
+            <PreviousPageButton label={prevLabel()} page={usedPageNo} action={prevPageNav} />
           )}
         </Grid>
         <Grid item>
           {(application.content5 as Notification)?.message?.length > 0 && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
+              testId="timeAlertFooter"
               text={(application.content5 as Notification)?.message}
             />
           )}
@@ -109,7 +110,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
               disabled={buttonDisabled}
               label={nextLabel()}
               page={usedPageNo}
-              func={nextPageClicked}
+              action={nextPageClicked}
             />
           )}
         </Grid>
