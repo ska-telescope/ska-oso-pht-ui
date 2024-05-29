@@ -1,246 +1,46 @@
-default:
-  image: node:20.2.0-alpine3.18
-
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  KUBE_HOST: 'https://k8s.stfc.skao.int'
-  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+  a11y_urls: 'https://www.skao.int/'
+  JS_NODE_VERSION: 21
+  TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
 stages:
-  - dependencies
   - lint
   - build
   - test
   - scan
   - pages
   - deploy
-  - integration
-  - staging
   - accessibility
   - publish
 
-#Install basic dependencies using yarn
-install_dependencies:
-  stage: dependencies
-  tags:
-    - k8srunner
+js-test:
+  image: ${TEST_IMAGE}
   before_script:
-    - rm -rf node_modules
-  script:
-    - npm config set registry https://registry.npmjs.org/
-    - yarn install --immutable
-  cache:
-    paths:
-      - node_modules/
-    policy: push
-
-#Run the static code analysis
-code_analysis:
-  stage: lint
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/reports
-  script:
-    - npm config set registry https://registry.npmjs.org/
-    - yarn install --immutable
-    - yarn code-analysis
-    - mv linting.xml build/reports/linting.xml
-  artifacts:
-    paths:
-      - build/
-
-# run the cypress test coverage reports
-test_and_coverage:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
-  stage: test
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/reports
-    - mkdir -p build/.nyc_output
-    - yarn install --frozen-lockfile
-  script:
-    - yarn start &
-    - yarn test:component:headless
-    - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: build/reports/cobertura-coverage.xml
-    paths:
-      - build/
-
-# list the current top level dependencies for the project
-list_dependencies:
-  stage: test
-  tags:
-    - k8srunner
-  allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - npm config set registry https://registry.npmjs.org/
-    - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-    paths:
-      - .public
-
-test-counts:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
-  stage: test
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/tests
-    - yarn install --immutable
-  script:
-    - yarn test:cypress:component:ci
-    - yarn merge-reports
-  artifacts:
-    paths:
-      - build/
-
-# Build the application
-build:
-  stage: build
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - npm config set registry https://registry.npmjs.org/
-    - yarn install --immutable
-    - yarn build
-
-# export the report
-pages:
-  stage: pages
-  tags:
-    - k8srunner
-  dependencies:
-    - test-counts
-    - test_and_coverage
-    - list_dependencies
-    - code_quality
-  script:
-    - mv public/* .
-    - cp -r build/* public
-    - cp -r .public/* public
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
-
-########################## PHT SPECIFIC STUFF BELOW HERE #################################
-
-.info_script: &info_script
-  - |-
-    echo "Status of pods in $KUBE_NAMESPACE namespace:"
-    kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
-    echo "Addresses to connect to the deployment of the PHT: "
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
-    echo "Backend API:"
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v1/ui/"
-
-.dev_env: &dev_env
-  variables:
-    KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
-    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
-  environment:
-    name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
-
-info-dev-environment:
-  <<: *dev_env
-  script:
-    - *info_script
-
-info-integration:
-  script:
-    - *info_script
-
-info-staging:
-  script:
-    - *info_script
-
-deploy-dev-environment:
-  <<: *dev_env
-
-test-dev-environment:
-  <<: *dev_env
-
-stop-dev-environment:
-  <<: *dev_env
-
-########################## PHT SPECIFIC STUFF ABOVE HERE #################################
+    - apt update && apt install -y make ## needed because base image does not have these packages
+    - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
+    - 'make help | grep js-test'
+    - make js-install-reinstall ## needed to re-install cypress
 
 include:
-  - template: Code-Quality.gitlab-ci.yml
   - template: 'Verify/Accessibility.gitlab-ci.yml'
-  # Docs pages
   - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+    file: 'gitlab-ci/includes/js.gitlab-ci.yml'
     # OCI Images
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+    # Helm Chart
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+    # K8s check
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/k8s.gitlab-ci.yml'
     # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalisers eg: badges
+  # .post step finalizers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
-    # helm chart
+  # Docs pages
   - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
-    # deploy steps
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
-
-code_quality:
-  # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
-  artifacts:
-    paths: [gl-code-quality-report.json]
-  # disable dind service as it's not needed for k8srunner runners
-  services: []
-  tags:
-    - k8srunner
-  # We need to merge the rules with what we have here on template rules
-  # https://gitlab.com/ska-telescope/templates-repository/-/blob/master/gitlab-ci/includes/rules.gitlab-ci.yml
-  # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
-  rules:
-    - if: '$CODE_QUALITY_DISABLED'
-      when: never
-    # don't run branch pipeline if there are open MRs
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    # run on MRs
-    - if: $CI_MERGE_REQUEST_IID
-    # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    # For tags, create a pipeline.
-    - if: '$CI_COMMIT_TAG'
-    # run on branches
-    - if: '$CI_COMMIT_BRANCH'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
