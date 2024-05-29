@@ -1048,7 +1048,7 @@ export default function AddObservation() {
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
-        bandwidth: bandwidth,
+        bandwidth: bandwidth, // TODO: add units + check continuum bandwidth also
         spectralAveraging: spectralAveraging,
         tapering: tapering,
         imageWeighting: imageWeighting,
