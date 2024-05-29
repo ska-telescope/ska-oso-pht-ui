@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 
-export default function ValidateButton({ action }) {
+export default function ValidateButton({ action, toolTip }) {
   const { t } = useTranslation('pht');
 
   const title = t('validationBtn.label');
@@ -15,7 +15,7 @@ export default function ValidateButton({ action }) {
       icon={<FactCheckIcon />}
       label={title}
       onClick={action}
-      testId={`${title}Button`}
+      testId={toolTip}
       variant={ButtonVariantTypes.Contained}
     />
   );

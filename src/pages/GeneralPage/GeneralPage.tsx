@@ -61,11 +61,6 @@ export default function GeneralPage() {
     if (getProposal()?.category > 0) {
       count++;
     }
-    /* TODO : Retained for future use
-    if (getProposal()?.subCategory > 0) {
-      count++;
-    }
-    */
 
     setTheProposalState(result[count]);
   }, [validateToggle]);
@@ -73,15 +68,6 @@ export default function GeneralPage() {
   const checkCategory = (id: number) => {
     setProposal({ ...getProposal(), category: id, subCategory: [1] });
   };
-
-  /* TODO : Retained for future use
-  const getSubCategoryOptions = () => {
-    if (getProposal().category) {
-      return GENERAL.ScienceCategory[getProposal().category - 1].subCategory;
-    }
-    return [{ label: '', value: 0 }];
-  };
-  */
 
   const cycleField = () => (
     <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>

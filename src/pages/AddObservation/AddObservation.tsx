@@ -143,8 +143,8 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
-    let centralFrequency = '';
-    let continuumBandwidth = '';
+    let centralFrequency = null;
+    let continuumBandwidth = null;
 
     if (observingBand === 0) {
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
@@ -1107,18 +1107,8 @@ export default function AddObservation() {
     );
   };
 
-  // center '+' icon on addGroup button
-  // TODO: do this the MUI way
-  const styles = `
-    .buttonGroupContainer .css-1d6wzja-MuiButton-startIcon{
-      margin-left: 0!important;
-      margin-right: 0!important;
-    }
-  `;
-
   return (
     <>
-      <style>{styles}</style>
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>
           <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />

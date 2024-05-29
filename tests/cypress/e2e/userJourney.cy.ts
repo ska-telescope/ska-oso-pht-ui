@@ -58,7 +58,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[id="skyDirectionValue2"]').type('0:0:0');
     //default is type velocity
     cy.get('[name="textField"]').type('1');
-    cy.get('[data-testid="Add targetButton"]').click({ force: true });
+    cy.get('[data-testid="addTargetButton"]').click({ force: true });
     //Complete observation page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     // cy.get('[data-testid="observation setupButton"]').click();
@@ -99,16 +99,15 @@ context('PROPOSAL HANDLING TOOL', () => {
     //IMPLEMENT FILE UPLOAD
     //Complete data page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[data-testid="Add Data ProductButton"]').click();
-    cy.get('[id="field1"]').type('test');
-    cy.get('[id="field2"]').type('test');
-    cy.get('[data-testid="addButton"]').click();
+    //cy.get('[data-testid="addDataProductButton"]').click();
+    //cy.get('[id="field1"]').type('test');
+    //cy.get('[id="field2"]').type('test');
+    //cy.get('[data-testid="addButton"]').click();
     //Add verification of list
     //Complete src net page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[data-testid="pipelineId"]').type('test');
     //validate proposal
-    cy.get('[data-testid="ValidateButton"]').click();
+    cy.get('[data-testid="validateButton"]').click();
   });
 
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {

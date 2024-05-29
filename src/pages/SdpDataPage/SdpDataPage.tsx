@@ -180,7 +180,7 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
         <Grid item xs={10}>
-          <AddButton title="dataProduct.button" action={PATH[3]} disabled={!hasObservations()} />
+          <AddButton action={PATH[3]} disabled={!hasObservations()} title="dataProduct.button" toolTip="addDataProductButton" />
           {getRows().length > 0 && (
             <DataGrid
               rows={getRows()}
