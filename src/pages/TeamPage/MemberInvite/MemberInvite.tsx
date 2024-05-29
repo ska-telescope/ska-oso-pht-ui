@@ -173,7 +173,7 @@ export default function MemberInvite() {
         required
       />
     </Box>
-    );
+  );
 
   const lastNameField = () => (
     <Box p={1}>
@@ -190,7 +190,7 @@ export default function MemberInvite() {
         required
       />
     </Box>
-    );
+  );
 
   const emailField = () => (
     <Box p={1}>
@@ -207,7 +207,7 @@ export default function MemberInvite() {
         required
       />
     </Box>
-    );
+  );
 
   const piField = () => (
     <Box pl={1}>
@@ -222,7 +222,7 @@ export default function MemberInvite() {
         onFocus={() => helpComponent(t('pi.help'))}
       />
     </Box>
-    );
+  );
 
   const phdThesisField = () => (
     <Box pl={1}>
@@ -237,7 +237,7 @@ export default function MemberInvite() {
         onFocus={() => helpComponent(t('phdThesis.help'))}
       />
     </Box>
-    );
+  );
 
   return (
     <>

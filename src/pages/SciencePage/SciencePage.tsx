@@ -67,7 +67,7 @@ export default function SciencePage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-${  t('pdfDownload.science.label')  }${t('fileType.pdf')}`;
+      const selectedFile = `${proposal.id}-${t('pdfDownload.science.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {

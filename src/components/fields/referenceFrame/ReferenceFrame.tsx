@@ -25,7 +25,7 @@ export default function ReferenceFrameField({
 
   const OPTIONS = [0, 1];
 
-  const getOptions = () => OPTIONS.map(e => ({ label: t(`${FIELD  }.${  e}`), value: e }));
+  const getOptions = () => OPTIONS.map(e => ({ label: t(`${FIELD}.${e}`), value: e }));
 
   return (
     <Box p={1} sx={{ width: '100%' }}>
@@ -34,7 +34,7 @@ export default function ReferenceFrameField({
         testId={FIELD}
         value={value}
         setValue={setValue}
-        label={t(`${FIELD  }.label`)}
+        label={t(`${FIELD}.label`)}
         labelBold={labelBold}
         labelPosition={labelPosition}
         labelWidth={labelWidth}

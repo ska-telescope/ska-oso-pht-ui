@@ -1,6 +1,12 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@mui/material';
-import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer , StatusIcon } from '@ska-telescope/ska-gui-components';
+import {
+  Alert,
+  AlertColorTypes,
+  SPACER_VERTICAL,
+  Spacer,
+  StatusIcon
+} from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import CancelButton from '../../../button/Cancel/Cancel';
 import { SensCalcResult } from '../../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
@@ -30,7 +36,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         </Typography>
       </Grid>
       <Grid item xs={6}>
-        <Typography id={`${eId  }Label`} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
+        <Typography id={`${eId}Label`} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
           {eValue} 
           {' '}
           {eUnits}
@@ -84,7 +90,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
             {data?.section1?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
             {data?.section1?.map(rec =>
               displayElement(
-                t(`sensitivityCalculatorResults.${  rec.field}`),
+                t(`sensitivityCalculatorResults.${rec.field}`),
                 rec.value,
                 rec.units,
                 rec.field
@@ -93,7 +99,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
             {data?.section2?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
             {data?.section2?.map(rec =>
               displayElement(
-                t(`sensitivityCalculatorResults.${  rec.field}`),
+                t(`sensitivityCalculatorResults.${rec.field}`),
                 rec.value,
                 rec.units,
                 rec.field
@@ -102,7 +108,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
             {data?.section3?.length && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
             {data?.section3?.map(rec =>
               displayElement(
-                t(`sensitivityCalculatorResults.${  rec.field}`),
+                t(`sensitivityCalculatorResults.${rec.field}`),
                 rec.value,
                 rec.units,
                 rec.field

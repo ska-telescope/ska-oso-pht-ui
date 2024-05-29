@@ -9,7 +9,7 @@ import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/c
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
-import ViewIcon from "../icon/viewIcon/viewIcon";
+import ViewIcon from '../icon/viewIcon/viewIcon';
 
 interface TitleContentProps {
   page: number;
@@ -220,7 +220,7 @@ export default function TitleContent({ page }: TitleContentProps) {
       <Typography variant="body1">{t('changeProposal.content1')}</Typography>
       <Typography variant="body1">{t('changeProposal.content2')}</Typography>
     </Grid>
-    );
+  );
 
   const titleField = () => {
     const MAX_CHAR = Number(t('title.maxChar'));
@@ -235,9 +235,8 @@ export default function TitleContent({ page }: TitleContentProps) {
         return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
           title
         )} / ${MAX_WORD}`;
-      } 
-        return '';
-      
+      }
+      return '';
     }
 
     const helperFunction = (title: string) =>
@@ -292,7 +291,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="subtitle1">{`${t('proposalType.label')  } *`}</Typography>
+              <Typography variant="subtitle1">{`${t('proposalType.label')} *`}</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="body2">{t('proposalType.help1')}</Typography>

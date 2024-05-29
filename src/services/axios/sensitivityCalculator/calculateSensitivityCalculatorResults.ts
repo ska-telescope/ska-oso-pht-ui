@@ -11,7 +11,7 @@ import {
 import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
-} from "../../../utils/types/sensitivityCalculatorAPIResponse";
+} from '../../../utils/types/sensitivityCalculatorAPIResponse';
 import Target from '../../../utils/types/target';
 
 export default function calculateSensitivityCalculatorResults(

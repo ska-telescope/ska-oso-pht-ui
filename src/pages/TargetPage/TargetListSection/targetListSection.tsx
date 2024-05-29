@@ -53,10 +53,10 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t(`skyDirection.label.1.${  raType}`)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t(`skyDirection.label.1.${raType}`)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.ra}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t(`skyDirection.label.2.${  raType}`)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t(`skyDirection.label.2.${raType}`)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.dec}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.label')} labelWidth={LABEL_WIDTH}>
@@ -77,8 +77,8 @@ export default function TargetListSection() {
 
   const columns = [
     { field: 'name', headerName: t('name.label'), width: 200 },
-    { field: 'ra', headerName: t(`skyDirection.label.1.${  raType}`), width: 150 },
-    { field: 'dec', headerName: t(`skyDirection.label.2.${  raType}`), width: 150 },
+    { field: 'ra', headerName: t(`skyDirection.label.1.${raType}`), width: 150 },
+    { field: 'dec', headerName: t(`skyDirection.label.2.${raType}`), width: 150 },
     { field: 'vel', headerName: t('velocity.1'), width: 100 },
     {
       field: 'id',
@@ -88,11 +88,7 @@ export default function TargetListSection() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <EditIcon
-            onClick={() => editIconClicked()}
-            disabled
-            toolTip="Currently disabled"
-          />
+          <EditIcon onClick={() => editIconClicked()} disabled toolTip="Currently disabled" />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
         </>
       )

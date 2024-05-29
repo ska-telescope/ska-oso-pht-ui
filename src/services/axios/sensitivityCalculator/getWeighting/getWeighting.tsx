@@ -31,7 +31,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? `${OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase()  }/`
+      ? `${OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase()}/`
       : '';
 
   const getSubArray = () => {
@@ -86,7 +86,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   /** ********************************************************* LOW ******************************************************** */
 
   function pointingCentre() {
-    return `${rightAscension()  } ${  declination()}`;
+    return `${rightAscension()} ${declination()}`;
   }
 
   function mapQueryLowWeighting(): URLSearchParams {
@@ -106,9 +106,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   /** ********************************************************************************************************************** */
 
-  const getQueryParams = () => observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryLowWeighting()
-      : mapQueryMidWeighting();
+  const getQueryParams = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? mapQueryLowWeighting() : mapQueryMidWeighting();
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {

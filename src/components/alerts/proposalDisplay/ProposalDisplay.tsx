@@ -55,7 +55,7 @@ export default function ProposalDisplay({
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-${  fileType  }${t('fileType.pdf')}`;
+      const selectedFile = `${proposal.id}-${fileType}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
@@ -69,9 +69,7 @@ export default function ProposalDisplay({
   const proposalType = () => {
     const pType = getProposal().proposalType;
     const proposalName =
-      !pType || pType < 1
-        ? t('displayProposal.noneSelected')
-        : Projects[pType - 1].title;
+      !pType || pType < 1 ? t('displayProposal.noneSelected') : Projects[pType - 1].title;
     return `${proposalName}`;
   };
 

@@ -66,7 +66,7 @@ export default function TechnicalPage() {
   const downloadPdfToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-${  t('pdfDownload.technical.label')  }${t('fileType.pdf')}`;
+      const selectedFile = `${proposal.id}-${t('pdfDownload.technical.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {

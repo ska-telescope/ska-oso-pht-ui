@@ -69,7 +69,7 @@ function App() {
           copyrightFunc={setShowCopyright}
           testId="footerId"
           version={REACT_APP_VERSION}
-          versionTooltip={`${t('apiVersion.label')  } : ${  apiVersion}`}
+          versionTooltip={`${t('apiVersion.label')} : ${apiVersion}`}
         >
           <Typography pt={1} variant="body1">
             {LOCAL_DATA}

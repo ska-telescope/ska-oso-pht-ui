@@ -138,7 +138,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                 justifyContent="space-between"
               >
                 <Grid item>
-                  {pageNo < LAST_PAGE && <ValidateButton action={validateClicked} toolTip="validateButton"/>}
+                  {pageNo < LAST_PAGE && (
+                    <ValidateButton action={validateClicked} toolTip="validateButton" />
+                  )}
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (

@@ -1,4 +1,4 @@
-import { Proposal } from "./types/proposal";
+import { Proposal } from './types/proposal';
 import {
   TEXT_ENTRY_PARAMS,
   Projects,
@@ -19,7 +19,8 @@ export const generateId = (prefix: string, length: number) => {
   return prefix + result;
 };
 
-export const countWords = (text: string) => !text
+export const countWords = (text: string) =>
+  !text
     ? 0
     : text
         .trim()
@@ -34,7 +35,6 @@ export const helpers = {
       setErrorText: Function,
       textType?: string
     ): boolean {
-
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {

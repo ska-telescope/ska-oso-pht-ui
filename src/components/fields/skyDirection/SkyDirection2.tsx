@@ -23,12 +23,12 @@ export default function SkyDirection2Field({
 
   const SkyDirectionValueText = () => (
     <TextEntry
-      label={t(`${FIELD  }.label.2.${  skyUnits.toString()}`)}
+      label={t(`${FIELD}.label.2.${skyUnits.toString()}`)}
       labelBold
       labelPosition={LABEL_POSITION.START}
       labelWidth={labelWidth}
-      suffix={t(`${FIELD  }.units.2.${  skyUnits.toString()}`)}
-      testId={`${FIELD  }Value2`}
+      suffix={t(`${FIELD}.units.2.${skyUnits.toString()}`)}
+      testId={`${FIELD}Value2`}
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
@@ -38,12 +38,12 @@ export default function SkyDirection2Field({
 
   const SkyDirectionValueNumber = () => (
     <NumberEntry
-      label={t(`${FIELD  }.label.2.${  skyUnits.toString()}`)}
+      label={t(`${FIELD}.label.2.${skyUnits.toString()}`)}
       labelBold
       labelPosition={LABEL_POSITION.START}
       labelWidth={labelWidth}
-      suffix={t(`${FIELD  }.units.2.${  skyUnits.toString()}`)}
-      testId={`${FIELD  }Value`}
+      suffix={t(`${FIELD}.units.2.${skyUnits.toString()}`)}
+      testId={`${FIELD}Value`}
       value={value}
       setValue={setValue}
       onFocus={valueFocus}

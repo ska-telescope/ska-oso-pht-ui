@@ -53,12 +53,11 @@ const sensCalHelpers = {
           units: 'Jy/beam'
         };
         // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
-      } 
-        return {
-          value: sensitivity.toFixed(precision),
-          units: ''
-        };
-      
+      }
+      return {
+        value: sensitivity.toFixed(precision),
+        units: ''
+      };
     },
     convertIntegrationTimeToSeconds(integrationTime: number, unit: string): number {
       let seconds = 0;

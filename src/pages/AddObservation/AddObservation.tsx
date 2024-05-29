@@ -208,7 +208,7 @@ export default function AddObservation() {
   const options = (prefix: string, arr: number[]) => {
     const results = [];
     arr.forEach(element => {
-      results.push({ label: t(`${prefix  }.${  element}`), value: element });
+      results.push({ label: t(`${prefix}.${element}`), value: element });
     });
     return results;
   };
@@ -222,9 +222,8 @@ export default function AddObservation() {
         const lastGroup = groups[groups.length - 1];
         const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
         return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
-      } 
-        return `${t('groupObservations.idPrefix')}1`;
-      
+      }
+      return `${t('groupObservations.idPrefix')}1`;
     };
 
     const buttonClicked = groupObservationValue => {
@@ -313,12 +312,11 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       if (usedTelescope > 0) {
         return OBSERVATION.array[usedTelescope - 1].subarray.map(e => ({
-            label: t(`subArrayConfiguration.${  e.value}`),
-            value: e.value
-          }));
-      } 
-        return [];
-      
+          label: t(`subArrayConfiguration.${e.value}`),
+          value: e.value
+        }));
+      }
+      return [];
     };
 
     return (
@@ -361,7 +359,8 @@ export default function AddObservation() {
   );
 
   const observingBandField = () => {
-    const getOptions = () => BANDWIDTH_TELESCOPE || [{ label: 'Not applicable', telescope: 2, value: 0 }];
+    const getOptions = () =>
+      BANDWIDTH_TELESCOPE || [{ label: 'Not applicable', telescope: 2, value: 0 }];
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -514,7 +513,7 @@ export default function AddObservation() {
         />
       </Grid>
     </Grid>
-    );
+  );
 
   const spectralAveragingField = () => {
     const errorMessage = () => {
@@ -621,20 +620,19 @@ export default function AddObservation() {
           />
         </Box>
       );
-    } 
-      return (
-        <Box pt={0}>
-          <DropDown
-            options={FrequencyUnitOptions}
-            testId="frequencyUnits"
-            value={frequencyUnits}
-            setValue={setFrequencyUnits}
-            label=""
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-          />
-        </Box>
-      );
-    
+    }
+    return (
+      <Box pt={0}>
+        <DropDown
+          options={FrequencyUnitOptions}
+          testId="frequencyUnits"
+          value={frequencyUnits}
+          setValue={setFrequencyUnits}
+          label=""
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
+      </Box>
+    );
   };
 
   const continuumUnitsField = () => {
@@ -758,7 +756,7 @@ export default function AddObservation() {
         />
       </Grid>
     </Grid>
-    );
+  );
 
   const SubBandsField = () => {
     const errorMessage = () => {
@@ -804,7 +802,8 @@ export default function AddObservation() {
         return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
           ? t('continuumBandWidth.range.error')
           : '';
-      } if (usedTelescope === 1) {
+      }
+      if (usedTelescope === 1) {
         return continuumBandwidth <= midMin || continuumBandwidth > midMax
           ? t('continuumBandWidth.range.error')
           : '';
@@ -833,10 +832,9 @@ export default function AddObservation() {
     const speedOfLight = 299792458;
     const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
     if (velocity < 1000) {
-      return `${velocity.toFixed(precision)  } m/s`;
-    } 
-      return `${(velocity / 1000).toFixed(precision)  } km/s`;
-    
+      return `${velocity.toFixed(precision)} m/s`;
+    }
+    return `${(velocity / 1000).toFixed(precision)} km/s`;
   };
 
   const getScaledValue = (value: any, multiplier: number, operator: string) => {
@@ -920,7 +918,7 @@ export default function AddObservation() {
         {numOf13mAntennasField()}
       </Grid>
     </Grid>
-    );
+  );
 
   const NumOf15mAntennasField = () => {
     const validate = (e: number) => {
@@ -1031,10 +1029,9 @@ export default function AddObservation() {
     );
   };
 
-  const addButtonDisabled = () => 
+  const addButtonDisabled = () =>
     // TODO : We need to ensure we are able to progress.
-     false
-  ;
+    false;
 
   const pageFooter = () => {
     const addObservationToProposal = () => {

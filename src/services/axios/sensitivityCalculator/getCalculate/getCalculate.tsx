@@ -26,7 +26,7 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? `${OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase()  }/`
+      ? `${OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase()}/`
       : '';
 
   const getSubArray = () => {
@@ -71,7 +71,7 @@ async function GetCalculate(observation: Observation, target: Target) {
       modeSpecificParameters.zoom_frequencies = sensCalHelpers.format
         .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
         .toString();
-        modeSpecificParameters.zoom_resolutions = observation.effectiveResolution?.toString();
+      modeSpecificParameters.zoom_resolutions = observation.effectiveResolution?.toString();
     }
 
     const weighting = OBSERVATION.ImageWeighting.find(
@@ -122,7 +122,7 @@ async function GetCalculate(observation: Observation, target: Target) {
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
 
   function pointingCentre() {
-    return `${rightAscension()  } ${  declination()}`;
+    return `${rightAscension()} ${declination()}`;
   }
 
   function mapQueryCalculateLow(): URLSearchParams {
@@ -161,9 +161,8 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   /** ********************************************************************************************************************** */
 
-  const getQueryParams = () => observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryCalculateLow()
-      : mapQueryCalculateMid();
+  const getQueryParams = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? mapQueryCalculateLow() : mapQueryCalculateMid();
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {

@@ -5,12 +5,14 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL , PATH } from '../../utils/constants';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL, PATH } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
 import SensCalcDisplayMultiple from '../../components/sensCalcDisplay/multiple/SensCalcDisplayMultiple';
-import getSensCalc, { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import getSensCalc, {
+  SENSCALC_LOADING
+} from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
@@ -156,13 +158,13 @@ export default function ObservationPage() {
   const alertContent = (rec: any) => (
     <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
       <FieldWrapper label={t('arrayConfiguration.label')} labelWidth={LABEL_WIDTH}>
-        <Typography variant="body1">{t(`arrayConfiguration.${  rec.telescope}`)}</Typography>
+        <Typography variant="body1">{t(`arrayConfiguration.${rec.telescope}`)}</Typography>
       </FieldWrapper>
       <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
-        <Typography variant="body1">{t(`subArrayConfiguration.${  rec.subarray}`)}</Typography>
+        <Typography variant="body1">{t(`subArrayConfiguration.${rec.subarray}`)}</Typography>
       </FieldWrapper>
       <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
-        <Typography variant="body1">{t(`observationType.${  rec.type}`)}</Typography>
+        <Typography variant="body1">{t(`observationType.${rec.type}`)}</Typography>
       </FieldWrapper>
 
       <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
@@ -171,7 +173,7 @@ export default function ObservationPage() {
         </Grid>
       </Grid>
     </Grid>
-    );
+  );
 
   const AddObservationTarget = (row: any) => {
     const rec = {
@@ -277,7 +279,8 @@ export default function ObservationPage() {
         headerName: t('observations.group'),
         flex: 0.75,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => observationGroupIds((e.row.id as unknown) as string)
+        renderCell: (e: { row: { id: number } }) =>
+          observationGroupIds((e.row.id as unknown) as string)
       },
       {
         field: 'telescope',
@@ -337,7 +340,7 @@ export default function ObservationPage() {
               toolTip={t('observations.delete')}
             />
           </>
-          )
+        )
       }
     ]
   ];
@@ -350,15 +353,16 @@ export default function ObservationPage() {
         sortable: false,
         flex: 0.6,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => currObs ? (
-          <Box pr={1}>
-            <TickBox
-              label=""
-              testId="linkedTickBox"
-              checked={isTargetSelected(e.row.id)}
-              onChange={() => targetSelectedToggle(e.row)}
-            />
-          </Box>
+        renderCell: (e: { row: { id: number } }) =>
+          currObs ? (
+            <Box pr={1}>
+              <TickBox
+                label=""
+                testId="linkedTickBox"
+                checked={isTargetSelected(e.row.id)}
+                onChange={() => targetSelectedToggle(e.row)}
+              />
+            </Box>
           ) : (
             <></>
           )
@@ -380,7 +384,9 @@ export default function ObservationPage() {
         sortable: false,
         flex: 5,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: any }) => <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />
+        renderCell: (e: { row: any }) => (
+          <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />
+        )
       }
     ]
   ];
@@ -398,7 +404,8 @@ export default function ObservationPage() {
     return [];
   };
 
-  const filteredByObservation = obId => elementsT.filter(e => e.observationId === obId).map(e => e.sensCalc);
+  const filteredByObservation = obId =>
+    elementsT.filter(e => e.observationId === obId).map(e => e.sensCalc);
 
   return (
     <Shell page={PAGE}>

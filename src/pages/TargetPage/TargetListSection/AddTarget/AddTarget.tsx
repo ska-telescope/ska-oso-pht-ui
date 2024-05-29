@@ -131,7 +131,7 @@ export default function AddTarget({ raType }: AddTargetProps) {
         errorText={nameFieldError}
       />
     </Grid>
-    );
+  );
 
   return (
     <Grid

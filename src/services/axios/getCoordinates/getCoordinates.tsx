@@ -33,32 +33,16 @@ const mapping = (
       }
 ) => {
   if (response.equatorial) {
-    return (
-      `${response.equatorial.dec 
-      } ${ 
-      response.equatorial.ra 
-      } ${ 
-      response.equatorial.redshift 
-      } ${ 
-      response.equatorial.velocity 
-      } ${ 
-      MOCK_UNITS[0].toLowerCase()}`
-    );
-  } if (response.galactic) {
-    return (
-      `${response.galactic.lon 
-      } ${ 
-      response.galactic.lat 
-      } ${ 
-      response.galactic.redshift 
-      } ${ 
-      response.galactic.velocity 
-      } ${ 
-      MOCK_UNITS[1].toLowerCase()}`
-    );
-  } 
-    return { error: 'resolve.error.results' };
-  
+    return `${response.equatorial.dec} ${response.equatorial.ra} ${response.equatorial.redshift} ${
+      response.equatorial.velocity
+    } ${MOCK_UNITS[0].toLowerCase()}`;
+  }
+  if (response.galactic) {
+    return `${response.galactic.lon} ${response.galactic.lat} ${response.galactic.redshift} ${
+      response.galactic.velocity
+    } ${MOCK_UNITS[1].toLowerCase()}`;
+  }
+  return { error: 'resolve.error.results' };
 };
 
 async function GetCoordinates(targetName: string, skyUnits: number) {

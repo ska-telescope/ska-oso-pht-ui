@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
-import { Alert, AlertColorTypes, DataGrid , StatusIcon } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes, DataGrid, StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
@@ -49,15 +49,13 @@ export default function SensCalcModalMultiple({
   }
 
   const headerDisplay = (inStr: string, inUnits: string) => {
-    const unit = inUnits.length > 0 ? ` ${  t(`sensitivityCalculatorResults.${inUnits}`)}` : '';
+    const unit = inUnits.length > 0 ? ` ${t(`sensitivityCalculatorResults.${inUnits}`)}` : '';
     const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
     const arr = sent.split(' ');
     i = 0;
     let count = 0;
     return (
-      <Stack>
-        {arr.map(rec => HeaderLine(rec, unit.length > 0 && arr.length === ++count))}
-      </Stack>
+      <Stack>{arr.map(rec => HeaderLine(rec, unit.length > 0 && arr.length === ++count))}</Stack>
     );
   };
 
@@ -151,16 +149,16 @@ export default function SensCalcModalMultiple({
           <Box pt={1}>
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: e.row.status ? t(`statusValue.${  e.row.status}`) : '',
-                  error: e.row.error
-                })}
+                status: e.row.status ? t(`statusValue.${e.row.status}`) : '',
+                error: e.row.error
+              })}
               testId="statusId"
               icon
               level={e.row.status}
               size={SIZE}
             />
           </Box>
-          )
+        )
       }
     ]
   ];
@@ -186,7 +184,7 @@ export default function SensCalcModalMultiple({
           avatar={(
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: level ? t(`statusValue.${  level}`) : '',
+                status: level ? t(`statusValue.${level}`) : '',
                 error: levelError
               })}
               testId="statusId"
@@ -197,7 +195,7 @@ export default function SensCalcModalMultiple({
             />
           )}
           component={Box}
-          title={`${t('sensitivityCalculatorResults.title')  } (${  observation.id  })`}
+          title={`${t('sensitivityCalculatorResults.title')} (${observation.id})`}
           titleTypographyProps={{
             align: 'center',
             fontWeight: 'bold',

@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
-import { OBSERVATION, STATUS_ERROR, STATUS_OK , PATH } from '../../utils/constants';
+import { OBSERVATION, STATUS_ERROR, STATUS_OK, PATH } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import Alert from "../../components/alerts/standardAlert/StandardAlert";
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 
@@ -58,7 +58,7 @@ export default function SdpDataPage() {
           str += ', ';
         }
         const res = i + 1;
-        const tmp = t(`observatoryDataProduct.options.${  res}`);
+        const tmp = t(`observatoryDataProduct.options.${res}`);
         str += tmp;
       }
     }
@@ -105,7 +105,8 @@ export default function SdpDataPage() {
         headerName: t('imageWeighting.label'),
         flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { weighting: number } }) => OBSERVATION.ImageWeighting[e.row.weighting].label
+        renderCell: (e: { row: { weighting: number } }) =>
+          OBSERVATION.ImageWeighting[e.row.weighting].label
       },
       {
         field: 'id',
@@ -167,10 +168,10 @@ export default function SdpDataPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.targetObservation?.length > 0);
+  const hasObservations = () => getProposal()?.targetObservation?.length > 0;
   const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
-  const errorMessage = () => t(`page.${  PAGE  }${errorSuffix()}`);
+  const errorMessage = () => t(`page.${PAGE}${errorSuffix()}`);
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);
@@ -180,7 +181,12 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
         <Grid item xs={10}>
-          <AddButton action={PATH[3]} disabled={!hasObservations()} title="dataProduct.button" toolTip="addDataProductButton" />
+          <AddButton
+            action={PATH[3]}
+            disabled={!hasObservations()}
+            title="dataProduct.button"
+            toolTip="addDataProductButton"
+          />
           {getRows().length > 0 && (
             <DataGrid
               rows={getRows()}

@@ -73,7 +73,7 @@ export default function GeneralPage() {
     <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
       <Grid item xs={4}>
         <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1">
-          {`${t('cycle.label')  } *`}
+          {`${t('cycle.label')} *`}
         </Typography>
       </Grid>
       <Grid item xs={8}>
@@ -101,9 +101,8 @@ export default function GeneralPage() {
         return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
           title
         )} / ${MAX_WORD}`;
-      } 
-        return '';
-      
+      }
+      return '';
     }
 
     return (
