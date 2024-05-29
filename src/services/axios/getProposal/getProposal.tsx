@@ -238,7 +238,7 @@ function mapping(inRec: ProposalBackend): Proposal {
 }
 */
 
-function mapping(inRec: ProposalBackend): Proposal {
+function mapping(inRec: ProposalBackend): Proposal { // TODO: check mapping and add new fields
   return {
     id: inRec.prsl_id,
     title: inRec.info.title,
@@ -248,16 +248,16 @@ function mapping(inRec: ProposalBackend): Proposal {
     abstract: inRec.info.abstract,
     category: getCategory(inRec.info.science_category),
     subCategory: [getSubCategory()],
-    sciencePDF: null,
+    sciencePDF: null, // TODO: map to DocumentBackend?
     scienceLoadStatus: 0,
     targetOption: 1,
-    targets: getTargets(inRec.info.targets), // TODO
+    targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [],
-    technicalPDF: null,
+    technicalPDF: null, // TODO: map to DocumentBackend?
     technicalLoadStatus: 0,
-    dataProducts: [],
+    dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
 }

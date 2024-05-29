@@ -33,7 +33,7 @@ export type ProposalBackend = {
 */
 
 export type ProposalBackend = {
-  prsl_id: string; // TODO: modify type names as prsl?
+  prsl_id: string;
   status: string;
   submitted_by: string;
   submitted_on: string;
