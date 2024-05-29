@@ -2,8 +2,8 @@ export type DataProductSDPsBackend = {
   data_products_sdp_id: string;
   options: string[];
   observation_set_refs: string[];
-  pixel_size: string;
-  weighting: string;
+  pixel_size?: string;
+  weighting?: string;
 };
 
 export type DataProductSRCNetBackend = {

@@ -1,9 +1,9 @@
 import { ValueUnitPair } from './valueUnitPair';
 
 export type ResultBackend = {
-  observation_set_ref: string;
-  target_ref: string;
-  result_details: {
+  observation_set_ref?: string;
+  target_ref?: string;
+  result_details?: {
     supplied_type: string;
     weighted_continuum_sensitivity?: ValueUnitPair;
     weighted_spectral_sensitivity: ValueUnitPair;
@@ -16,6 +16,6 @@ export type ResultBackend = {
     };
   };
   continuum_confusion_noise?: ValueUnitPair;
-  synthesized_beam_size: ValueUnitPair;
-  spectral_confusion_noise: ValueUnitPair;
+  synthesized_beam_size?: ValueUnitPair;
+  spectral_confusion_noise?: ValueUnitPair;
 };

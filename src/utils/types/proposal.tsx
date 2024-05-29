@@ -35,10 +35,10 @@ export type ProposalBackend = {
 export type ProposalBackend = {
   prsl_id: string;
   status: string;
-  submitted_by: string;
-  submitted_on: string;
+  submitted_by?: string;
+  submitted_on?: string;
   investigator_refs: string[];
-  metadata: {
+  metadata?: {
     version: number;
     created_by: string;
     created_on: string;
