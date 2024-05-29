@@ -7,7 +7,8 @@ import {
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC
+  OBSERVATION_TYPE_SENSCALC,
+  TYPE_ZOOM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -86,6 +87,9 @@ async function GetCalculate(observation: Observation, target: Target) {
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
 
+    console.log('Calculate Mid observation', observation);
+    console.log('get mode', getMode());
+
     const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: rightAscension(),
@@ -96,7 +100,8 @@ async function GetCalculate(observation: Observation, target: Target) {
       frequency: sensCalHelpers.format
         .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
-      bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
+      // bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
+      bandwidth: observation.type === TYPE_ZOOM ? observation.bandwidth : observation.continuumBandwidth,
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
@@ -113,10 +118,10 @@ async function GetCalculate(observation: Observation, target: Target) {
   /*********************************************************** LOW *********************************************************/
 
   interface ModeSpecificParametersLow {
-    bandwidth_mhz?: string;
+    bandwidth_mhz?: number;
     spectral_averaging_factor?: string;
     spectral_resolution_hz?: string;
-    total_bandwidth_khz?: string;
+    total_bandwidth_khz?: number;
   }
 
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
@@ -128,7 +133,8 @@ async function GetCalculate(observation: Observation, target: Target) {
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
-      mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
+      const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
+      mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(splitContinuumBandwidth[0], splitContinuumBandwidth[1]);
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
     } else {
       // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
@@ -136,13 +142,24 @@ async function GetCalculate(observation: Observation, target: Target) {
       mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
       //TODO check value mapping, does it need conversion?
       const value2 = 48.8;
-      mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
+      // mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
+      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth;
+      const splitBandwidth: string[] = observation.bandwidth.split(' ');
+      /*const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+      const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
+      .CentralFrequencyAndBandWidthUnits;*/
+      const telescopeBandwidthValues = OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
+      const bandWidthValue = telescopeBandwidthValues.find(item => item.value.toString() === splitBandwidth[0]); // TODO check this is working as intended
+      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(bandWidthValue, splitBandwidth[1]); // TODO check this is working as intended
       //TODO check value mapping, does it need conversion?
       // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
+
+    console.log('Calculate Low observation', observation);
+    console.log('get mode', getMode());
     const params = {
       subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format

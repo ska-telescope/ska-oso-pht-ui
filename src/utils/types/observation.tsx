@@ -10,13 +10,13 @@ type Observation = {
   weather?: number; // only for MID
   elevation: number;
   centralFrequency: string;
-  bandwidth: number;
+  bandwidth: string; // only for zoom
+  continuumBandwidth: string; // only for continuum
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID
   imageWeighting: number;
   integrationTime: number;
   integrationTimeUnits: number;
-  // continuumBandwidth?: number; // used where? => same as bandwidth
   spectralResolution: string;
   effectiveResolution: number;
   numSubBands?: number; // only for MID

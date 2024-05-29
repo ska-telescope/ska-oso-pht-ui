@@ -125,6 +125,29 @@ const sensCalHelpers = {
         throw new Error('Invalid frequency unit');
       }
       return frequencyValue * unitMap[frequencyUnits];
+    },
+    convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number { 
+      const unitMap: { [key: string]: number } = { 
+        GHz: 1000, 
+        MHz: 1, 
+        kHz: 0.001, 
+        Hz: 0.000001 }; 
+      if (!unitMap[bandwidthUnits]) { 
+        throw new Error('Invalid bandwidth unit'); 
+      } 
+      return bandwidthValue * unitMap[bandwidthUnits]; 
+    },
+    convertBandwidthToKHz(bandwidthValue, bandwidthUnits): number {
+      const unitMap: { [key: string]: number } = {
+        GHz: 1000000,
+        MHz: 1000,
+        kHz: 1,
+        Hz: 0.001
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
     }
   },
   calculate: {

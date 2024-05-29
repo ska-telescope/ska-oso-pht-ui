@@ -565,6 +565,7 @@ export default function AddObservation() {
     );
   };
 
+  // HERE 1
   const frequencyUnitsField = () => {
     const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
@@ -599,6 +600,7 @@ export default function AddObservation() {
     }
   };
 
+  // HERE 2
   const continuumUnitsField = () => {
     const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
     const BandwidthUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
@@ -1035,7 +1037,9 @@ export default function AddObservation() {
         - check/remove OBSERVATION.Units below to use new 
         - check continuumbandwidth / bandwidth values and units passed to sens calc
       */
-
+      // HERE
+      console.log('bandwidth', bandwidth);
+      console.log('continuumBandwidth', continuumBandwidth);
       const newObservation = {
         id: myObsId,
         telescope: usedTelescope,
@@ -1048,7 +1052,13 @@ export default function AddObservation() {
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
-        bandwidth: bandwidth, // TODO: add units + check continuum bandwidth also
+        // bandwidth: bandwidth, // TODO: add units + check continuum bandwidth also
+        bandwidth: `${bandwidth} ${
+          OBSERVATION.Units.find(unit => unit.value === continuumUnits).label
+        }`,
+        continuumBandwidth: `${continuumBandwidth} ${
+          OBSERVATION.Units.find(unit => unit.value === continuumUnits).label
+        }`,
         spectralAveraging: spectralAveraging,
         tapering: tapering,
         imageWeighting: imageWeighting,
@@ -1062,6 +1072,7 @@ export default function AddObservation() {
         numStations: numOfStations,
         details: details
       };
+      console.log('newObservation', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation],
