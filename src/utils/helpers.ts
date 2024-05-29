@@ -1,4 +1,4 @@
-import { Proposal } from 'utils/types/proposal';
+import { Proposal } from "./types/proposal";
 import {
   TEXT_ENTRY_PARAMS,
   Projects,
@@ -19,14 +19,12 @@ export const generateId = (prefix: string, length: number) => {
   return prefix + result;
 };
 
-export const countWords = (text: string) => {
-  return !text
+export const countWords = (text: string) => !text
     ? 0
     : text
         .trim()
         .split(/\s+/)
         .filter(Boolean).length;
-};
 
 export const helpers = {
   validate: {
@@ -36,7 +34,6 @@ export const helpers = {
       setErrorText: Function,
       textType?: string
     ): boolean {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
 
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
@@ -61,7 +58,7 @@ export const helpers = {
       Object.keys(obj).forEach(key => {
         const value = obj[key];
         if (value === undefined || value === '' || value === null) {
-          if (key === 'submitted_by' || key === 'submitted_on' || key === 'abstract') return; //TODO: review null values in data model
+          if (key === 'submitted_by' || key === 'submitted_on' || key === 'abstract') return; // TODO: review null values in data model
           delete obj[key];
         } else if (typeof value === 'object') {
           this.trimObject(value);

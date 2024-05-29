@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import IconButton from '@mui/material/IconButton';
+import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
-import IconButton from '@mui/material/IconButton';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
-import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -87,7 +87,7 @@ export default function GeneralPage() {
     <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
       <Grid item xs={4}>
         <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1">
-          {t('cycle.label') + ' *'}
+          {`${t('cycle.label')  } *`}
         </Typography>
       </Grid>
       <Grid item xs={8}>
@@ -115,7 +115,9 @@ export default function GeneralPage() {
         return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
           title
         )} / ${MAX_WORD}`;
-      }
+      } 
+        return '';
+      
     }
 
     return (
@@ -131,7 +133,7 @@ export default function GeneralPage() {
           onFocus={() => helpComponent(t('abstract.help'))}
           helperText={helperFunction(getProposal().abstract)}
           errorText={validateWordCount(getProposal().abstract)}
-          suffix={
+          suffix={(
             <IconButton
               aria-label="preview latex"
               edge="end"
@@ -139,7 +141,7 @@ export default function GeneralPage() {
             >
               <VisibilitySharpIcon />
             </IconButton>
-          }
+          )}
         />
         <LatexPreviewModal
           value={getProposal().abstract}

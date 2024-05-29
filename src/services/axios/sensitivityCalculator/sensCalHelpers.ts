@@ -26,7 +26,7 @@ const sensCalHelpers = {
      * @param sensitivity the sensitivity returned from the API in uJy/beam
      * @param precision the number of d.p. to display the result to
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
-     * **/
+     * * */
     convertSensitivityToDisplayValue(sensitivity: number, precision = 2): Sensitivity {
       // TODO: create a proper type
       // TODO: add tests (cypress?)
@@ -53,12 +53,12 @@ const sensCalHelpers = {
           units: 'Jy/beam'
         };
         // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
-      } else {
+      } 
         return {
           value: sensitivity.toFixed(precision),
           units: ''
         };
-      }
+      
     },
     convertIntegrationTimeToSeconds(integrationTime: number, unit: string): number {
       let seconds = 0;
@@ -104,13 +104,13 @@ const sensCalHelpers = {
      * @param beam_maj_scaled in degrees
      * @param precision the number of d.p. to display the result to
      * @returns {string} a string of the format '4.6" x 7.9"'
-     * **/
+     * * */
     convertBeamValueDegreesToDisplayValue(
-      beam_maj_scaled: number,
-      beam_min_scaled: number,
+      beamMajorScaled: number,
+      beamMinorScaled: number,
       precision = 3
     ): string {
-      return `${(beam_maj_scaled * 3600).toFixed(precision)} x ${(beam_min_scaled * 3600).toFixed(
+      return `${(beamMajorScaled * 3600).toFixed(precision)} x ${(beamMinorScaled * 3600).toFixed(
         precision
       )}`;
     },

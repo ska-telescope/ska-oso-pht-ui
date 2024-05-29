@@ -4,9 +4,7 @@ import MockProposals from './mockProposals';
 import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
 
 // TODO : Need to do this properly
-const getPI = (_inValue: any) => {
-  return 'THE PI NAME';
-};
+const getPI = () => 'THE PI NAME';
 
 function mappingList(inRec: ProposalsBackend[]): Proposals[] {
   const output = [];
@@ -16,7 +14,7 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
       category: inRec[i].proposal_info.proposal_type.main_type,
       title: inRec[i].proposal_info.title,
       cycle: inRec[i].proposal_info.cycle,
-      pi: getPI(inRec[i].proposal_info.investigator),
+      pi: getPI(), // inRec[i].proposal_info.investigator),
       cpi: 'CPI',
       status: inRec[i].status,
       lastUpdated: new Date().toDateString(), // TODO : Needs to be the correct data

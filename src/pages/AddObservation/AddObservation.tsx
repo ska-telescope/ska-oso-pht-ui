@@ -206,9 +206,9 @@ export default function AddObservation() {
 
   // TODO : We should move this to a utility at some point
   const options = (prefix: string, arr: number[]) => {
-    let results = [];
+    const results = [];
     arr.forEach(element => {
-      results.push({ label: t(prefix + '.' + element), value: element });
+      results.push({ label: t(`${prefix  }.${  element}`), value: element });
     });
     return results;
   };
@@ -222,9 +222,9 @@ export default function AddObservation() {
         const lastGroup = groups[groups.length - 1];
         const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
         return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
-      } else {
+      } 
         return `${t('groupObservations.idPrefix')}1`;
-      }
+      
     };
 
     const buttonClicked = groupObservationValue => {
@@ -312,13 +312,13 @@ export default function AddObservation() {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       if (usedTelescope > 0) {
-        return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
-          return {
-            label: t('subArrayConfiguration.' + e.value),
+        return OBSERVATION.array[usedTelescope - 1].subarray.map(e => ({
+            label: t(`subArrayConfiguration.${  e.value}`),
             value: e.value
-          };
-        });
-      }
+          }));
+      } 
+        return [];
+      
     };
 
     return (
@@ -361,11 +361,7 @@ export default function AddObservation() {
   );
 
   const observingBandField = () => {
-    const getOptions = () => {
-      return BANDWIDTH_TELESCOPE
-        ? BANDWIDTH_TELESCOPE
-        : [{ label: 'Not applicable', telescope: 2, value: 0 }];
-    };
+    const getOptions = () => BANDWIDTH_TELESCOPE || [{ label: 'Not applicable', telescope: 2, value: 0 }];
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -389,9 +385,7 @@ export default function AddObservation() {
   };
 
   const arrayField = () => {
-    const getOptions = () => {
-      return TELESCOPES;
-    };
+    const getOptions = () => TELESCOPES;
 
     return (
       <Grid pt={1} spacing={0} container direction="row">
@@ -505,24 +499,22 @@ export default function AddObservation() {
     );
   };
 
-  const spectralResolutionField = () => {
-    return (
-      <Grid pt={1} spacing={0} container direction="row">
-        <Grid item xs={FIELD_WIDTH_OPT1}>
-          <TextEntry
-            testId="spectralResolution"
-            value={spectralResolution}
-            label={t('spectralResolution.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LABEL_WIDTH_OPT1}
-            onFocus={() => helpComponent(t('spectralResolution.help'))}
-            required
-          />
-        </Grid>
+  const spectralResolutionField = () => (
+    <Grid pt={1} spacing={0} container direction="row">
+      <Grid item xs={FIELD_WIDTH_OPT1}>
+        <TextEntry
+          testId="spectralResolution"
+          value={spectralResolution}
+          label={t('spectralResolution.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_OPT1}
+          onFocus={() => helpComponent(t('spectralResolution.help'))}
+          required
+        />
       </Grid>
+    </Grid>
     );
-  };
 
   const spectralAveragingField = () => {
     const errorMessage = () => {
@@ -629,7 +621,7 @@ export default function AddObservation() {
           />
         </Box>
       );
-    } else {
+    } 
       return (
         <Box pt={0}>
           <DropDown
@@ -642,7 +634,7 @@ export default function AddObservation() {
           />
         </Box>
       );
-    }
+    
   };
 
   const continuumUnitsField = () => {
@@ -750,25 +742,23 @@ export default function AddObservation() {
     );
   };
 
-  const centralFrequencyField = () => {
-    return (
-      <Grid pt={1} spacing={0} container direction="row">
-        <Grid item xs={FIELD_WIDTH_OPT1}>
-          <TextEntry
-            label={t('centralFrequency.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LABEL_WIDTH_OPT1}
-            testId="frequency"
-            value={frequency}
-            onFocus={() => helpComponent(t('centralFrequency.help'))}
-            required
-            suffix={frequencyUnitsField()}
-          />
-        </Grid>
+  const centralFrequencyField = () => (
+    <Grid pt={1} spacing={0} container direction="row">
+      <Grid item xs={FIELD_WIDTH_OPT1}>
+        <TextEntry
+          label={t('centralFrequency.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_OPT1}
+          testId="frequency"
+          value={frequency}
+          onFocus={() => helpComponent(t('centralFrequency.help'))}
+          required
+          suffix={frequencyUnitsField()}
+        />
       </Grid>
+    </Grid>
     );
-  };
 
   const SubBandsField = () => {
     const errorMessage = () => {
@@ -814,11 +804,12 @@ export default function AddObservation() {
         return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
           ? t('continuumBandWidth.range.error')
           : '';
-      } else if (usedTelescope === 1) {
+      } if (usedTelescope === 1) {
         return continuumBandwidth <= midMin || continuumBandwidth > midMax
           ? t('continuumBandWidth.range.error')
           : '';
       }
+      return '';
     };
 
     return (
@@ -842,25 +833,25 @@ export default function AddObservation() {
     const speedOfLight = 299792458;
     const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
     if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
+      return `${velocity.toFixed(precision)  } m/s`;
+    } 
+      return `${(velocity / 1000).toFixed(precision)  } km/s`;
+    
   };
 
   const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
+    let valScaled = 0;
     switch (operator) {
       case '*':
-        val_scaled = value * multiplier;
+        valScaled = value * multiplier;
         break;
       case '/':
-        val_scaled = value / multiplier;
+        valScaled = value / multiplier;
         break;
       default:
-        val_scaled = value;
+        valScaled = value;
     }
-    return val_scaled;
+    return valScaled;
   };
 
   const effectiveResolutionFieldMid = () => {
@@ -913,25 +904,23 @@ export default function AddObservation() {
     );
   };
 
-  const AntennasFields = () => {
-    return (
-      <Grid pb={0} pt={1} container direction="row">
-        <Grid item pt={1} xs={5}>
-          <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
-            <Typography sx={{ fontWeight: subarrayConfig === 20 ? 'bold' : 'normal' }}>
-              {t('numOfAntennas.label')}
-            </Typography>
-          </InputLabel>
-        </Grid>
-        <Grid item xs={4}>
-          {NumOf15mAntennasField()}
-        </Grid>
-        <Grid item xs={3}>
-          {numOf13mAntennasField()}
-        </Grid>
+  const AntennasFields = () => (
+    <Grid pb={0} pt={1} container direction="row">
+      <Grid item pt={1} xs={5}>
+        <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
+          <Typography sx={{ fontWeight: subarrayConfig === 20 ? 'bold' : 'normal' }}>
+            {t('numOfAntennas.label')}
+          </Typography>
+        </InputLabel>
       </Grid>
+      <Grid item xs={4}>
+        {NumOf15mAntennasField()}
+      </Grid>
+      <Grid item xs={3}>
+        {numOf13mAntennasField()}
+      </Grid>
+    </Grid>
     );
-  };
 
   const NumOf15mAntennasField = () => {
     const validate = (e: number) => {
@@ -1042,10 +1031,10 @@ export default function AddObservation() {
     );
   };
 
-  const addButtonDisabled = () => {
+  const addButtonDisabled = () => 
     // TODO : We need to ensure we are able to progress.
-    return false;
-  };
+     false
+  ;
 
   const pageFooter = () => {
     const addObservationToProposal = () => {
@@ -1057,25 +1046,25 @@ export default function AddObservation() {
         subarray: subarrayConfig,
         linked: '0',
         type: observationType,
-        observingBand: observingBand,
-        weather: weather,
-        elevation: elevation,
+        observingBand,
+        weather,
+        elevation,
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
-        bandwidth: bandwidth,
-        spectralAveraging: spectralAveraging,
-        tapering: tapering,
-        imageWeighting: imageWeighting,
+        bandwidth,
+        spectralAveraging,
+        tapering,
+        imageWeighting,
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
-        spectralResolution: spectralResolution,
+        spectralResolution,
         effectiveResolution: 0,
         numSubBands: subBands,
         num15mAntennas: numOf15mAntennas,
         num13mAntennas: numOf13mAntennas,
         numStations: numOfStations,
-        details: details
+        details
       };
       setProposal({
         ...getProposal(),
@@ -1110,7 +1099,7 @@ export default function AddObservation() {
               action={buttonClicked}
               disabled={addButtonDisabled()}
               primary
-              title={'button.add'}
+              title="button.add"
             />
           </Grid>
         </Grid>
@@ -1156,7 +1145,7 @@ export default function AddObservation() {
               <Grid item xs={XS_TOP}>
                 {groupObservationsField()}
               </Grid>
-              <Grid item xs={XS_TOP}></Grid>
+              <Grid item xs={XS_TOP} />
               <Grid item xs={XS_TOP}>
                 {observingBandField()}
               </Grid>
@@ -1221,7 +1210,7 @@ export default function AddObservation() {
                   <Grid item xs={XS_BOTTOM}>
                     {detailsField()}
                   </Grid>
-                  <Grid item xs={XS_BOTTOM}></Grid>
+                  <Grid item xs={XS_BOTTOM} />
                 </Grid>
               </CardContent>
             </Card>

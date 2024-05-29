@@ -36,9 +36,7 @@ export default function PHT() {
   return (
     <Router basename={env.REACT_APP_SKA_PHT_BASE_URL || '/'}>
       <Routes>
-        {ROUTES.map((ROUTE, index) => {
-          return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
-        })}
+        {ROUTES.map((ROUTE, index) => <Route key={index} path={ROUTE.path} element={ROUTE.element} />)}
       </Routes>
     </Router>
   );

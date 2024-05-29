@@ -53,10 +53,10 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('skyDirection.label.1.' + raType)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t(`skyDirection.label.1.${  raType}`)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.ra}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('skyDirection.label.2.' + raType)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t(`skyDirection.label.2.${  raType}`)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.dec}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.label')} labelWidth={LABEL_WIDTH}>
@@ -77,8 +77,8 @@ export default function TargetListSection() {
 
   const columns = [
     { field: 'name', headerName: t('name.label'), width: 200 },
-    { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
-    { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
+    { field: 'ra', headerName: t(`skyDirection.label.1.${  raType}`), width: 150 },
+    { field: 'dec', headerName: t(`skyDirection.label.2.${  raType}`), width: 150 },
     { field: 'vel', headerName: t('velocity.1'), width: 100 },
     {
       field: 'id',
@@ -90,7 +90,7 @@ export default function TargetListSection() {
         <>
           <EditIcon
             onClick={() => editIconClicked()}
-            disabled={true}
+            disabled
             toolTip="Currently disabled"
           />
           <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
@@ -123,11 +123,11 @@ export default function TargetListSection() {
     const LAB_WIDTH = 5;
     return (
       <>
-        <Grid item md={GRID_OFFSET} xs={0}></Grid>
+        <Grid item md={GRID_OFFSET} xs={0} />
         <Grid item md={GRID_WIDTH} xs={11}>
           <ReferenceCoordinatesField labelWidth={LAB_WIDTH} setValue={setRAType} value={raType} />
         </Grid>
-        <Grid item md={12 - GRID_OFFSET - GRID_WIDTH} xs={0}></Grid>
+        <Grid item md={12 - GRID_OFFSET - GRID_WIDTH} xs={0} />
       </>
     );
   };

@@ -60,7 +60,7 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusLoading.' + row?.sensCalc?.status),
+                  status: t(`statusLoading.${  row?.sensCalc?.status}`),
                   error: row?.sensCalc?.error
                 })}
                 testId="statusId"

@@ -62,9 +62,9 @@ export default function AddDataProduct() {
     if (arr.length > 1) {
       const newValue = Number(arr[1]);
       return (newValue / DIVIDER).toFixed(t('pixelSize.precision'));
-    } else {
+    } 
       return t('pixelSize.notFound');
-    }
+    
   };
 
   React.useEffect(() => {
@@ -88,26 +88,24 @@ export default function AddDataProduct() {
     }
   }, [baseObservations, observations]);
 
-  const observationsField = () => {
-    return (
-      <>
-        {baseObservations && (
-          <DropDown
-            options={baseObservations}
-            testId="observations"
-            value={observations}
-            setValue={setObservations}
-            label={t('observations.single')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
-            labelWidth={LABEL_WIDTH}
-            onFocus={() => helpComponent(t('observations.dp.help'))}
-            required
-          />
+  const observationsField = () => (
+    <>
+      {baseObservations && (
+      <DropDown
+        options={baseObservations}
+        testId="observations"
+        value={observations}
+        setValue={setObservations}
+        label={t('observations.single')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('observations.dp.help'))}
+        required
+      />
         )}
-      </>
+    </>
     );
-  };
 
   const tickElement = (key: number, value: boolean, setter: Function) => (
     <FieldWrapper
@@ -116,11 +114,11 @@ export default function AddDataProduct() {
     >
       <TickBox
         key={key}
-        label={t(FIELD_OBS + '.' + key)}
+        label={t(`${FIELD_OBS  }.${  key}`)}
         labelBold
         labelPosition={LABEL_POSITION.END}
         labelWidth={11}
-        testId={'observatoryDataProduct' + key}
+        testId={`observatoryDataProduct${  key}`}
         checked={value}
         onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
         onChange={() => setter(!value)}
@@ -128,17 +126,15 @@ export default function AddDataProduct() {
     </FieldWrapper>
   );
 
-  const dataProductsField = () => {
-    return (
-      <>
-        {tickElement(1, dp1, setDP1)}
-        {tickElement(2, dp2, setDP2)}
-        {tickElement(3, dp3, setDP3)}
-        {tickElement(4, dp4, setDP4)}
-        {tickElement(5, dp5, setDP5)}
-      </>
+  const dataProductsField = () => (
+    <>
+      {tickElement(1, dp1, setDP1)}
+      {tickElement(2, dp2, setDP2)}
+      {tickElement(3, dp3, setDP3)}
+      {tickElement(4, dp4, setDP4)}
+      {tickElement(5, dp5, setDP5)}
+    </>
     );
-  };
 
   const imageSizeField = () => (
     <TextEntry

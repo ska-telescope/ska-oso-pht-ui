@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { ScienceProgrammeBackend } from '../../../utils/types/scienceProgrammes';
+import { TargetBackend } from '../../../utils/types/target';
 import {
   AXIOS_CONFIG,
   GENERAL,
@@ -11,9 +13,7 @@ import {
 } from '../../../utils/constants';
 import MockProposal from './mockProposal';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
 import { TeamMemberBackend } from '../../../utils/types/teamMember';
-import { TargetBackend } from 'utils/types/target';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
@@ -27,7 +27,7 @@ const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }
 };
 
 const getTeamMembers = (inValue: TeamMemberBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     results.push({
       id: i + 1,
@@ -49,12 +49,10 @@ const getCategory = (cat: String) => {
   return rec ? rec.value : 0;
 };
 
-const getSubCategory = () => {
-  return 1;
-};
+const getSubCategory = () => 1;
 
 const getTargets = (inValue: TargetBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     const e = inValue[i];
     results.push({
@@ -78,7 +76,7 @@ const getIntegrationTimeUnits = (inValue: String) => {
 };
 
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].subarray);
@@ -98,7 +96,7 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
 };
 
 const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     if (inValue[i].groupId) {
       results.push({

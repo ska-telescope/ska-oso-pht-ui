@@ -20,9 +20,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   };
 
   const getLevel = () => (level > 5 ? 0 : level);
-  const pageName = () => {
-    return t(`page.${page}.title`);
-  };
+  const pageName = () => t(`page.${page}.title`);
 
   return (
     <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
@@ -30,11 +28,11 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         <StatusIcon
           ariaTitle={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: getLevel() ? t('statusValue.' + getLevel()) : ''
+            status: getLevel() ? t(`statusValue.${  getLevel()}`) : ''
           })}
           ariaDescription={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: getLevel() ? t('statusValue.' + getLevel()) : ''
+            status: getLevel() ? t(`statusValue.${  getLevel()}`) : ''
           })}
           testId="statusId"
           icon

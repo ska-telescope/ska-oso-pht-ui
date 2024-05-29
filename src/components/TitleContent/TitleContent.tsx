@@ -9,7 +9,7 @@ import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/c
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
-import ViewIcon from '../../components/icon/viewIcon/viewIcon';
+import ViewIcon from "../icon/viewIcon/viewIcon";
 
 interface TitleContentProps {
   page: number;
@@ -139,7 +139,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={
+              avatar={(
                 <Avatar
                   variant="rounded"
                   style={{
@@ -151,14 +151,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              }
-              title={
+              )}
+              title={(
                 <Typography variant="h6" component="div" maxWidth={200}>
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              }
+              )}
             />
           </CardActionArea>
         </Card>
@@ -182,7 +182,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <CardActionArea>
             <CardHeader
-              avatar={
+              avatar={(
                 <Avatar
                   variant="rounded"
                   style={{
@@ -194,14 +194,14 @@ export default function TitleContent({ page }: TitleContentProps) {
                     {code}
                   </Typography>
                 </Avatar>
-              }
-              title={
+              )}
+              title={(
                 <Typography variant="h6" component="div">
                   <Tooltip title={description} arrow>
                     <Typography>{title}</Typography>
                   </Tooltip>
                 </Typography>
-              }
+              )}
             />
           </CardActionArea>
         </Card>
@@ -209,20 +209,18 @@ export default function TitleContent({ page }: TitleContentProps) {
     );
   }
 
-  const alertContent = () => {
-    return (
-      <Grid
-        p={2}
-        container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        <Typography variant="body1">{t('changeProposal.content1')}</Typography>
-        <Typography variant="body1">{t('changeProposal.content2')}</Typography>
-      </Grid>
+  const alertContent = () => (
+    <Grid
+      p={2}
+      container
+      direction="column"
+      alignItems="space-evenly"
+      justifyContent="space-around"
+    >
+      <Typography variant="body1">{t('changeProposal.content1')}</Typography>
+      <Typography variant="body1">{t('changeProposal.content2')}</Typography>
+    </Grid>
     );
-  };
 
   const titleField = () => {
     const MAX_CHAR = Number(t('title.maxChar'));
@@ -237,7 +235,9 @@ export default function TitleContent({ page }: TitleContentProps) {
         return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
           title
         )} / ${MAX_WORD}`;
-      }
+      } 
+        return '';
+      
     }
 
     const helperFunction = (title: string) =>
@@ -252,8 +252,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         testId="titleId"
         value={getTitle()}
         setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
-        }
+          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')}
         errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title)}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
@@ -276,10 +275,10 @@ export default function TitleContent({ page }: TitleContentProps) {
             <Grid item xs={5}>
               {titleField()}
             </Grid>
-            <Grid item xs={1}></Grid>
+            <Grid item xs={1} />
             <Grid item xs={3}>
               <Typography variant="body2">{t('title.help')}</Typography>
-              <Typography pr={2} variant="body2" sx={{ fontStyle: 'italic' }}></Typography>
+              <Typography pr={2} variant="body2" sx={{ fontStyle: 'italic' }} />
             </Grid>
           </Grid>
 
@@ -293,7 +292,7 @@ export default function TitleContent({ page }: TitleContentProps) {
             spacing={2}
           >
             <Grid item xs={2}>
-              <Typography variant="subtitle1">{t('proposalType.label') + ' *'}</Typography>
+              <Typography variant="subtitle1">{`${t('proposalType.label')  } *`}</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography variant="body2">{t('proposalType.help1')}</Typography>

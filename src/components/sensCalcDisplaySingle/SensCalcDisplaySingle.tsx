@@ -1,8 +1,8 @@
 import React from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 // import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import { SENSCALC_EMPTY_MOCKED } from '../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
 import { IconButton } from '@mui/material';
+import { SENSCALC_EMPTY_MOCKED } from '../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
 import SensCalcModalSingle from '../alerts/sensCalcModal/single/SensCalcModalSingle';
 import Observation from '../../utils/types/observation';
 import Target from '../../utils/types/target';
@@ -23,10 +23,10 @@ export default function SensCalcDisplaySingle({
   const [openDialog, setOpenDialog] = React.useState(false);
   const [results] = React.useState(SENSCALC_EMPTY_MOCKED);
 
-  //React.useEffect(
+  // React.useEffect(
   //  () => setResults(selected ? getSensCalc(observation, target) : SENSCALC_EMPTY_MOCKED),
   //  [selected]
-  //);
+  // );
 
   const IconClicked = () => {
     setOpenDialog(true);

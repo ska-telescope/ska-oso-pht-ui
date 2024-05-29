@@ -33,7 +33,7 @@ export default function TechnicalPage() {
   };
 
   const setFile = (theFile: File) => {
-    //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
+    // TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), technicalPDF: theFile });
   };
 
@@ -47,10 +47,9 @@ export default function TechnicalPage() {
 
     try {
       const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-technical.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-technical.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
+      if (typeof signedUrl !== 'string') new Error('Not able to Get Technical PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
@@ -67,8 +66,7 @@ export default function TechnicalPage() {
   const downloadPdfToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${  t('pdfDownload.technical.label')  }${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
@@ -137,13 +135,13 @@ export default function TechnicalPage() {
         <Grid item xs={6}>
           <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
             <CardHeader
-              title={
+              title={(
                 <Typography variant="h6" data-testid="pdfPreviewLabel">
                   {t('pdfPreview.label')}
                 </Typography>
-              }
+              )}
             />
-            <CardContent sx={{ height: '55vh' }}></CardContent>
+            <CardContent sx={{ height: '55vh' }} />
           </Card>
         </Grid>
         <Grid item xs={2} />

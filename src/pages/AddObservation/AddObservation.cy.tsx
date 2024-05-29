@@ -3,9 +3,9 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { BrowserRouter } from 'react-router-dom';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../services/theme/theme';
 import AddObservation from './AddObservation';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -262,19 +262,19 @@ function verifySubBands() {
 }
 
 function verifyNumOf15mAntennas() {
-  //change of band needed to enable antenna field
+  // change of band needed to enable antenna field
   cy.get('[data-testid="observingBand"]').click();
   cy.get('[data-value="1"]').click();
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="20"]').click();
   cy.get('[data-testid="numOf15mAntennas"]').click();
-  //verify value when active
+  // verify value when active
   cy.get('[data-testid="helpPanelId"]').contains('numOf15mAntennas.help');
 }
 
 function verifyNumOf13mAntennas() {
   cy.get('[data-testid="numOf13mAntennas"]').click();
-  //verify value when active
+  // verify value when active
   cy.get('[data-testid="helpPanelId"]').contains('numOf13mAntennas.help');
 }
 

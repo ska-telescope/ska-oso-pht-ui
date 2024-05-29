@@ -39,15 +39,13 @@ export default function VelocityField({
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
 
-    const getOptions = () => {
-      return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
-    };
+    const getOptions = () => OPTIONS.map(e => ({ label: t(`${FIELD  }.${  e}`), value: e }));
 
     return (
       <Box pt={1} pr={1}>
         <DropDown
           options={getOptions()}
-          testId={FIELD + 'Type'}
+          testId={`${FIELD  }Type`}
           value={valueType}
           setValue={setValueType}
           label=""
@@ -57,30 +55,26 @@ export default function VelocityField({
     );
   };
 
-  const VelocityValueField = () => {
-    return (
-      <TextEntry
-        label=""
-        testId={FIELD + 'Value'}
-        value={value}
-        setValue={setValue}
-        suffix={valueType === VELOCITY ? VelocityUnitField() : ''}
-        onFocus={valueFocus}
-      />
+  const VelocityValueField = () => (
+    <TextEntry
+      label=""
+      testId={`${FIELD  }Value`}
+      value={value}
+      setValue={setValue}
+      suffix={valueType === VELOCITY ? VelocityUnitField() : ''}
+      onFocus={valueFocus}
+    />
     );
-  };
 
   const VelocityUnitField = () => {
     const OPTIONS = [0, 1];
 
-    const getOptions = () => {
-      return OPTIONS.map(e => ({ label: t(FIELD + '.units.' + e), value: e }));
-    };
+    const getOptions = () => OPTIONS.map(e => ({ label: t(`${FIELD  }.units.${  e}`), value: e }));
 
     return (
       <DropDown
         options={getOptions()}
-        testId={FIELD + 'Type'}
+        testId={`${FIELD  }Type`}
         value={valueUnit}
         setValue={setValueUnit}
         label=""

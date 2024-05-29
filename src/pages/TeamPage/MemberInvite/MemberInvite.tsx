@@ -158,96 +158,86 @@ export default function MemberInvite() {
     clearForm();
   };
 
-  const firstNameField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('firstName.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH}
-          testId="firstName"
-          value={firstName}
-          setValue={setFirstName}
-          onFocus={() => helpComponent(t('firstName.help'))}
-          errorText={errorTextFirstName}
-          required
-        />
-      </Box>
+  const firstNameField = () => (
+    <Box p={1}>
+      <TextEntry
+        label={t('firstName.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="firstName"
+        value={firstName}
+        setValue={setFirstName}
+        onFocus={() => helpComponent(t('firstName.help'))}
+        errorText={errorTextFirstName}
+        required
+      />
+    </Box>
     );
-  };
 
-  const lastNameField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('lastName.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH}
-          testId="lastName"
-          value={lastName}
-          setValue={setLastName}
-          onFocus={() => helpComponent(t('lastName.help'))}
-          errorText={errorTextLastName}
-          required
-        />
-      </Box>
+  const lastNameField = () => (
+    <Box p={1}>
+      <TextEntry
+        label={t('lastName.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="lastName"
+        value={lastName}
+        setValue={setLastName}
+        onFocus={() => helpComponent(t('lastName.help'))}
+        errorText={errorTextLastName}
+        required
+      />
+    </Box>
     );
-  };
 
-  const emailField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('email.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH}
-          testId="email"
-          value={email}
-          setValue={setEmail}
-          errorText={t(errorTextEmail)}
-          onFocus={() => helpComponent(t('email.help'))}
-          required
-        />
-      </Box>
+  const emailField = () => (
+    <Box p={1}>
+      <TextEntry
+        label={t('email.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="email"
+        value={email}
+        setValue={setEmail}
+        errorText={t(errorTextEmail)}
+        onFocus={() => helpComponent(t('email.help'))}
+        required
+      />
+    </Box>
     );
-  };
 
-  const piField = () => {
-    return (
-      <Box pl={1}>
-        <TickBox
-          label={t('pi.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH}
-          testId="piCheckbox"
-          checked={pi}
-          onChange={handleCheckboxChangePI}
-          onFocus={() => helpComponent(t('pi.help'))}
-        />
-      </Box>
+  const piField = () => (
+    <Box pl={1}>
+      <TickBox
+        label={t('pi.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="piCheckbox"
+        checked={pi}
+        onChange={handleCheckboxChangePI}
+        onFocus={() => helpComponent(t('pi.help'))}
+      />
+    </Box>
     );
-  };
 
-  const phdThesisField = () => {
-    return (
-      <Box pl={1}>
-        <TickBox
-          label={t('phdThesis.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH}
-          testId="PhDCheckbox"
-          checked={phdThesis}
-          onChange={handleCheckboxChangePhD}
-          onFocus={() => helpComponent(t('phdThesis.help'))}
-        />
-      </Box>
+  const phdThesisField = () => (
+    <Box pl={1}>
+      <TickBox
+        label={t('phdThesis.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="PhDCheckbox"
+        checked={phdThesis}
+        onChange={handleCheckboxChangePhD}
+        onFocus={() => helpComponent(t('phdThesis.help'))}
+      />
+    </Box>
     );
-  };
 
   return (
     <>

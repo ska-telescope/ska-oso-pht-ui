@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import {
   OBSERVATION,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
@@ -17,7 +18,6 @@ import {
 } from './mockResponseLowWeighting';
 import Observation from '../../../../utils/types/observation';
 // import sensCalHelpers from '../sensCalHelpers';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
 
@@ -31,7 +31,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase() + '/'
+      ? `${OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase()  }/`
       : '';
 
   const getSubArray = () => {
@@ -55,7 +55,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       .replace(' ', '');
   }
 
-  /*********************************************************** MID *********************************************************/
+  /** ********************************************************* MID ******************************************************** */
 
   function mapQueryMidWeighting(): URLSearchParams {
     const weighting = OBSERVATION.ImageWeighting.find(
@@ -78,15 +78,15 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       taper: observation.tapering?.toString()
     };
     const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+    for (const key in params) urlSearchParams.append(key, params[key]);
 
     return urlSearchParams;
   }
 
-  /*********************************************************** LOW *********************************************************/
+  /** ********************************************************* LOW ******************************************************** */
 
   function pointingCentre() {
-    return rightAscension() + ' ' + declination();
+    return `${rightAscension()  } ${  declination()}`;
   }
 
   function mapQueryLowWeighting(): URLSearchParams {
@@ -99,18 +99,16 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
     };
     const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+    for (const key in params) urlSearchParams.append(key, params[key]);
 
     return urlSearchParams;
   }
 
-  /*************************************************************************************************************************/
+  /** ********************************************************************************************************************** */
 
-  const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM
+  const getQueryParams = () => observation.telescope === TELESCOPE_LOW_NUM
       ? mapQueryLowWeighting()
       : mapQueryMidWeighting();
-  };
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {

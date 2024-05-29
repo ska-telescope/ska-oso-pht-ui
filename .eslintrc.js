@@ -69,7 +69,8 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off', //  Should re-introduce at some point
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-explicit-any': 'off' // TAS : disabled for now
+    '@typescript-eslint/no-explicit-any': 'off', // TAS : disabled for now
+    '@typescript-eslint/no-shadow': 'off'
   },
   env: {
     browser: true,

@@ -3,9 +3,9 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { BrowserRouter } from 'react-router-dom';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../services/theme/theme';
 import ObservationPage from './ObservationPage';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 

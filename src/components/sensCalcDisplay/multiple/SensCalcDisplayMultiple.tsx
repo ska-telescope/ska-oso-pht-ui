@@ -93,7 +93,7 @@ export default function SensCalcDisplayMultiple({
       <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
         <StatusIcon
           ariaTitle={t('sensitivityCalculatorResults.status', {
-            status: t('statusLoading.' + getLevel()),
+            status: t(`statusLoading.${  getLevel()}`),
             error: getError()
           })}
           testId="statusId"

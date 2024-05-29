@@ -43,7 +43,7 @@ export default function BaseButton({
       icon={icon}
       label={theTitle}
       onClick={ClickFunction}
-      testId={testId ? testId : 'BaseButton'}
+      testId={testId || 'BaseButton'}
       toolTip={toolTip?.length ? t(toolTip) : ''}
       variant={ButtonVariantTypes.Contained}
     />
