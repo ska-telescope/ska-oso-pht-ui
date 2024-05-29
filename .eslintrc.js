@@ -56,16 +56,16 @@ module.exports = {
     'react/no-array-index-key': 'off', // TAS : disabled for now
     'react/no-unstable-nested-components': 'off', // TAS : disabled for now
     'react/require-default-props': 'off', // TAS : disabled for now
-    'no-case-declarations': 'off',  // TAS : disabled for now
-    'no-restricted-syntax': 'off',  // TAS : disabled for now
+    'no-case-declarations': 'off', // TAS : disabled for now
+    'no-restricted-syntax': 'off', // TAS : disabled for now
     'no-shadow': 'off',
     'no-unsafe-optional-chaining': 'off', // TAS : disabled for now
     'no-use-before-define': 'off', // TAS : disabled for now
-    '@typescript-eslint/no-shadow': ['warn'],  // TAS : changed from Error
+    '@typescript-eslint/no-shadow': ['warn'], // TAS : changed from Error
     'no-bitwise': 'off',
     'no-new': 'off', // TAS : disabled for now
     'no-prototype-builtins': 'off', // TAS : disabled for now
-    'radix': 'off', // TAS : disabled for now
+    radix: 'off', // TAS : disabled for now
     '@typescript-eslint/ban-types': 'off', //  Should re-introduce at some point
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-var-requires': 'off',
