@@ -1,7 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
-import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { Proposal } from '../../../../utils/types/proposal';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { FileUpload, FileUploadStatus, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import TimedAlert from '../../../../components/alerts/timedAlert/TimedAlert';
+import Papa from 'papaparse';
 
 interface TargetFileImportProps {
   raType: number;
@@ -9,7 +13,13 @@ interface TargetFileImportProps {
 
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { t } = useTranslation('pht');
+
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+  const [result, setResult] = React.useState([])
+  const [uploadCsvError, setUploadCsvError] = React.useState('')
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const setFile = (theFile: File) => {
     console.log('theFile', theFile);
@@ -22,41 +32,137 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   //   setUploadButtonStatus(status);
   // };
 
-  const uploadPdftoSignedUrl = async theFile => {
-    // setUploadStatus(FileUploadStatus.PENDING);
-    // try {
-    //   const proposal = getProposal();
-    //   const prsl_id = proposal.id;
-    //   const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`);
-    //   if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
-    //   const uploadResult = await PutUploadPDF(signedUrl, theFile);
-    //   if (uploadResult.error) {
-    //     throw new Error('Science PDF Not Uploaded');
-    //   }
-    //   setUploadStatus(FileUploadStatus.OK);
-    // } catch (e) {
-    //   setFile(null);
-    //   setUploadStatus(FileUploadStatus.ERROR);
-    // }
+
+  const AddTheTargetGalatic = (id, name, latitude, longitude) => {
+    console.log('AddTheTarget name', name)
+    const newTarget = { //Default values from AddTarget.tsx
+      dec: '',
+      decUnit: raType.toString(),
+      id,
+      name,
+      latitude,
+      longitude,
+      ra: '',
+      raUnit: raType.toString(),
+      redshift: null,
+      referenceFrame: 0,
+      vel: '',
+      velUnit: '0'
+    };
+
+    return newTarget
+  };
+
+  const AddTheTargetEquatorial = (id, name, ra, dec) => {
+    console.log('AddTheTarget name', name)
+    const newTarget = { //Default values from AddTarget.tsx
+      dec,
+      decUnit: raType.toString(),
+      id,
+      name,
+      latitude: null,
+      longitude: null,
+      ra,
+      raUnit: raType.toString(),
+      redshift: null,
+      referenceFrame: 0,
+      vel: '',
+      velUnit: '0'
+    };
+
+    return newTarget
+  };
+
+  const validateUploadCsv = async theFile => {
+
+    console.log('uploadPdftoSignedUrl theFile', theFile)
+
+    const validEquatorialCsvHeader = ['name', 'ra', 'dec']
+    const validGalacticCsvHeader = ['name', 'longitude', 'latitude']
+
+    if (theFile) {
+
+      setUploadCsvError('')
+
+      Papa.parse(theFile, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          try {
+            console.log('papa result', result);
+            console.log('papa result.data', result.data);
+
+            const highestId = getProposal().targets.reduce(
+              (acc, target) => (target.id > acc ? target.id : acc),
+              -1
+            );
+            console.log('highestId', highestId)
+
+            //check schema
+            let errorInRows = false
+            if (raType === 0) { //equatorial
+              console.log('validEquatorialCsvHeader', validEquatorialCsvHeader)
+              console.log('result.header equatorial', result.meta.fields)
+              // check
+              if (JSON.stringify(result.meta.fields) != JSON.stringify(validEquatorialCsvHeader)) throw "CSV equatorial schema not valid"
+              console.log('equatorial ok')
+              const targets = result.data.reduce((result, target, index) => {
+                if (target.name && target.ra && target.dec) {
+                  result.push(AddTheTargetEquatorial(index + highestId + 1, target.name, target.ra, target.dec))
+                } else {
+                  console.log('equatorial null found')
+                  errorInRows = true
+                }
+                return result
+              }, [])
+              console.log('targets', targets)
+              console.log('targets appended', [...getProposal().targets, ...targets])
+              setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] })
+            } else { //galactic
+              if (JSON.stringify(result.meta.fields) != JSON.stringify(validGalacticCsvHeader)) throw "CSV galactic schema not valid"
+              console.log('galactic ok')
+              const targets = result.data.reduce((result, target, index) => {
+                if (target.name && target.latitude && target.longitude) {
+                  result.push(AddTheTargetGalatic(index + highestId + 1, target.name, target.latitude, target.longitude))
+                } else {
+                  console.log('galactic null found')
+                  errorInRows = true
+                }
+                return result
+              }, [])
+              console.log('targets', targets)
+              console.log('targets appended', [...getProposal().targets, ...targets])
+              setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] })
+            }
+            if (errorInRows) throw "Partialy uploaded - some rows contain empty values which will be omitted"
+          } catch (e) {
+            console.log('error in catch ', e)
+            setUploadCsvError(e)
+          }
+        },
+        error: (message) => {
+          console.log('papa error message', message)
+        }
+
+
+      });
+    }
   };
 
   return (
     <>
-      <Typography>{raType}</Typography>
-
       <FileUpload
+        chooseLabel={t('uploadCsvBtn.label')}
         chooseFileTypes=".csv"
         clearLabel={t('clearBtn.label')}
         clearToolTip={t('clearBtn.toolTip')}
         direction="column"
-        //file={getProposal()?.sciencePDF}
         maxFileWidth={25}
-        setFile={setFile}
-        //setStatus={setUploadStatus}
-        testId="fileUpload"
-        uploadFunction={uploadPdftoSignedUrl}
-        //status={uploadButtonStatus}
+        //setFile={setFile}
+        testId="csvUpload"
+        uploadFunction={validateUploadCsv}
       />
+      {uploadCsvError && <TimedAlert color={AlertColorTypes.Error} text={uploadCsvError} />}
     </>
   );
 }

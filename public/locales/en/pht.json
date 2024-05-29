@@ -619,6 +619,9 @@
   "updated": {
     "label": "Last Updated"
   },
+  "uploadCsvBtn": {
+    "label": "Upload CSV File"
+  },
   "uploadPDF": {
     "label": "Upload PDF"
   },
