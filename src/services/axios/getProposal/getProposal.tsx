@@ -238,7 +238,8 @@ function mapping(inRec: ProposalBackend): Proposal {
 }
 */
 
-function mapping(inRec: ProposalBackend): Proposal { // TODO: check mapping and add new fields
+function mapping(inRec: ProposalBackend): Proposal {
+  // TODO: check mapping and add new fields
   return {
     id: inRec.prsl_id,
     title: inRec.info.title,
