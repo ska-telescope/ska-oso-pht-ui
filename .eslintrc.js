@@ -34,7 +34,7 @@ module.exports = {
         'error',
         {
           name: 'prop-types',
-          message: 'Please add TypeScript typings to props instead.',
+          message: 'Please add TypeScript typings to props instead',
         },
       ],
       'import/extensions': 'off',
