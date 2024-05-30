@@ -118,7 +118,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,
-        kHz: 1000,
+        kHz: 1000, // TODO: CHECk Kh or kh
         Hz: 1
       };
       if (!unitMap[frequencyUnits]) {
@@ -130,8 +130,9 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = { 
         GHz: 1000, 
         MHz: 1, 
-        kHz: 0.001, 
-        Hz: 0.000001 }; 
+        kHz: 0.001, // TODO: CHECk Kh or kh
+        Hz: 0.000001 
+      }; 
       if (!unitMap[bandwidthUnits]) { 
         throw new Error('Invalid bandwidth unit'); 
       } 
@@ -141,7 +142,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000,
         MHz: 1000,
-        kHz: 1,
+        KHz: 1,
         Hz: 0.001
       };
       if (!unitMap[bandwidthUnits]) {

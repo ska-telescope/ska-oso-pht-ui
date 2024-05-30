@@ -10,7 +10,7 @@ type Observation = {
   weather?: number; // only for MID
   elevation: number;
   centralFrequency: string;
-  bandwidth: string; // only for zoom
+  bandwidth: number; // only for zoom
   continuumBandwidth: string; // only for continuum
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID

@@ -139,27 +139,17 @@ async function GetCalculate(observation: Observation, target: Target) {
     } else {
       // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
       const value = 16;
-      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
-      //TODO check value mapping, does it need conversion?
-      const value2 = 48.8;
-      // mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
-      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth;
-      const splitBandwidth: string[] = observation.bandwidth.split(' ');
-      /*const telescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
-      .CentralFrequencyAndBandWidthUnits;*/
+      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix // TODO: use spectral_resolution_hz and convert units if necessary
+      // const splitBandwidth: string[] = observation.bandwidth.split(' ');
       const telescopeBandwidthValues = OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-      const bandWidthValue = telescopeBandwidthValues.find(item => item.value.toString() === splitBandwidth[0]); // TODO check this is working as intended
-      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(bandWidthValue, splitBandwidth[1]); // TODO check this is working as intended
-      //TODO check value mapping, does it need conversion?
-      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
+      const bandWidthValue = telescopeBandwidthValues.find(item => item.value === observation.bandwidth);
+      const splitBandWidthValue: string[] = bandWidthValue.label.split(' ');
+      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(splitBandWidthValue[0], splitBandWidthValue[1]);
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
 
-    console.log('Calculate Low observation', observation);
-    console.log('get mode', getMode());
     const params = {
       subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format
@@ -170,6 +160,7 @@ async function GetCalculate(observation: Observation, target: Target) {
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     };
+    console.log('params:::', params);
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 

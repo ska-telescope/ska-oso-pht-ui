@@ -1053,9 +1053,7 @@ export default function AddObservation() {
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
         // bandwidth: bandwidth, // TODO: add units + check continuum bandwidth also
-        bandwidth: `${bandwidth} ${
-          OBSERVATION.Units.find(unit => unit.value === continuumUnits).label
-        }`,
+        bandwidth: bandwidth,
         continuumBandwidth: `${continuumBandwidth} ${
           OBSERVATION.Units.find(unit => unit.value === continuumUnits).label
         }`,
