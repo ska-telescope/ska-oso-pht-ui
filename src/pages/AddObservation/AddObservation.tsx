@@ -616,17 +616,7 @@ export default function AddObservation() {
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
       .CentralFrequencyUnits;
     if (FrequencyUnitOptions.length === 1) {
-      return (
-        <TextEntry
-          value=""
-          label=""
-          labelBold
-          labelPosition={LABEL_POSITION.BOTTOM}
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-          testId="frequencyUnits"
-          suffix={FrequencyUnitOptions[0].label}
-        />
-      );
+      return FrequencyUnitOptions[0].label;
     } else {
       return (
         <DropDown
