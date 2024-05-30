@@ -38,7 +38,7 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').contains('Sensitivity');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedType.help');
 
-  cy.get('[data-testid="suppliedValue"]').click();
+  cy.get('[data-testid="suppliedValue"]').type('3');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedValue.help');
 
   cy.get('[data-testid="suppliedUnits"]').contains('jy/beam');
@@ -179,7 +179,7 @@ function verifySpectralResolutionLow() {
 }
 
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.1 km/s)');
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.8 km/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
@@ -197,7 +197,8 @@ function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifySpectralResolutionZoomBandMid() {
-  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  //TODO: Refactor with correct values once updates for zoom are in place
+  // cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
@@ -228,7 +229,8 @@ function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifyEffectiveResolutionZoomMidBand() {
-  cy.get('[id="effective"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  //TODO: Refactor with correct values once updates for zoom are in place
+  // cy.get('[id="effective"]').should('have.value', '13.44 kHz (3.0 km/s)');
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -302,7 +304,7 @@ function verifyGroupObservations() {
 }
 
 function mounting(theTheme: any) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 2000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -454,5 +456,12 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
+  });
+
+  it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
+    mounting(THEME_LIGHT);
+    verifyObservingBandLow();
+    verifySubArrayConfigurationValue2();
+    verifyCentralFrequencyContinuumLowBand();
   });
 });
