@@ -8,6 +8,8 @@ import TimedAlert from '../../../../components/alerts/timedAlert/TimedAlert';
 import Notification from '../../../../utils/types/notification';
 import Papa from 'papaparse';
 
+const NOTIFICATION_DELAY_IN_SECONDS = 10;
+
 interface TargetFileImportProps {
   raType: number;
 }
@@ -21,7 +23,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const AddTheTargetGalatic = (id, name, latitude, longitude) => {
+  const AddTheTargetGalactic = (id, name, latitude, longitude) => {
     console.log('AddTheTarget name', name);
     const newTarget = {
       //Default values from AddTarget.tsx
@@ -124,7 +126,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
               const targets = result.data.reduce((result, target, index) => {
                 if (target.name && target.latitude && target.longitude) {
                   result.push(
-                    AddTheTargetGalatic(
+                    AddTheTargetGalactic(
                       index + highestId + 1,
                       target.name,
                       target.latitude,
@@ -162,8 +164,9 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   };
 
   function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
-    const rec: d = {
+    const rec: Notification = {
       level: lvl,
+      delay: NOTIFICATION_DELAY_IN_SECONDS,
       message: t(str),
       okRequired: false
     };

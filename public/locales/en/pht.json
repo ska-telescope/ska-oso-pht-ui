@@ -621,7 +621,7 @@
   },
   "uploadCsvBtn": {
     "label": "Upload CSV File",
-    "uploadSuccessMsg":"All targets in CSV are uploaded"
+    "uploadSuccessMsg": "All targets in CSV are uploaded"
   },
   "uploadPDF": {
     "label": "Upload PDF"
