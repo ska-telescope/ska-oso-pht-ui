@@ -1,9 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Grid } from '@mui/material';
 import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { FileUpload, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import TimedAlert from '../../../../components/alerts/timedAlert/TimedAlert';
+import Notification from '../../../../utils/types/notification';
 import Papa from 'papaparse';
 
 interface TargetFileImportProps {
@@ -13,8 +15,9 @@ interface TargetFileImportProps {
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { t } = useTranslation('pht');
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [uploadCsvError, setUploadCsvError] = React.useState('');
+  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -73,6 +76,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
         header: true,
         skipEmptyLines: true,
         complete: result => {
+          setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
             console.log('papa result', result);
             console.log('papa result.data', result.data);
@@ -138,33 +142,55 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
               setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             }
             if (errorInRows)
-              throw 'Partialy uploaded - some rows contain empty values which will be omitted';
+              throw 'Partially uploaded - some rows contain empty values which will be omitted';
+            setUploadButtonStatus(FileUploadStatus.OK);
+            NotifyOK(t('uploadCsvBtn.uploadSuccessMsg'));
           } catch (e) {
             console.log('error in catch ', e);
             setUploadCsvError(e);
+            NotifyError(e);
+            setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
         error: message => {
-          console.log('papa error message', message);
+          setUploadCsvError('Error on parser: ' + message);
+          setUploadButtonStatus(FileUploadStatus.ERROR);
+          NotifyError(message);
         }
       });
     }
   };
 
+  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+    const rec: d = {
+      level: lvl,
+      message: t(str),
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+
   return (
-    <>
+    <Grid p={2}>
       <FileUpload
         chooseLabel={t('uploadCsvBtn.label')}
         chooseFileTypes=".csv"
         clearLabel={t('clearBtn.label')}
         clearToolTip={t('clearBtn.toolTip')}
-        direction="column"
+        direction="row"
         maxFileWidth={25}
         //setFile={setFile}
         testId="csvUpload"
         uploadFunction={validateUploadCsv}
+        status={uploadButtonStatus}
       />
       {uploadCsvError && <TimedAlert color={AlertColorTypes.Error} text={uploadCsvError} />}
-    </>
+      {uploadButtonStatus === FileUploadStatus.OK && (
+        <TimedAlert color={AlertColorTypes.Success} text={t('uploadCsvBtn.uploadSuccessMsg')} />
+      )}
+    </Grid>
   );
 }

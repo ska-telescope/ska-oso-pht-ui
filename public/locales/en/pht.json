@@ -620,7 +620,8 @@
     "label": "Last Updated"
   },
   "uploadCsvBtn": {
-    "label": "Upload CSV File"
+    "label": "Upload CSV File",
+    "uploadSuccessMsg":"All targets in CSV are uploaded"
   },
   "uploadPDF": {
     "label": "Upload PDF"
