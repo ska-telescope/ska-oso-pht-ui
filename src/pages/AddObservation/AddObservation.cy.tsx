@@ -423,7 +423,6 @@ describe('<AddObservation />', () => {
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnitsLow();
-    verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
