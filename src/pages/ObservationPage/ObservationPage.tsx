@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, InfoCard, InfoCardColorTypes, TickBox } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
@@ -11,6 +11,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
 import SensCalcDisplayMultiple from '../../components/sensCalcDisplay/multiple/SensCalcDisplayMultiple';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
@@ -440,10 +441,9 @@ export default function ObservationPage() {
               />
             )}
             {!hasObservations() && (
-              <InfoCard
-                color={InfoCardColorTypes.Error}
-                fontSize={20}
-                message={t('error.noObservations')}
+              <Alert
+                color={AlertColorTypes.Error}
+                text={t('error.noObservations')}
                 testId="helpPanelId"
               />
             )}
@@ -487,10 +487,9 @@ export default function ObservationPage() {
                 />
               )}
               {!hasTargets() && (
-                <InfoCard
-                  color={InfoCardColorTypes.Error}
-                  fontSize={20}
-                  message={t('targets.empty')}
+                <Alert
+                  color={AlertColorTypes.Error}
+                  text={t('targets.empty')}
                   testId="helpPanelId"
                 />
               )}

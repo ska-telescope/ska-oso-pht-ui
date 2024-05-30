@@ -14,7 +14,7 @@ interface SaveButtonProps {
 export default function SaveButton({
   disabled = false,
   action,
-  title = 'button.save',
+  title = 'saveBtn.label',
   primary = false,
   testId,
   toolTip
