@@ -340,27 +340,106 @@ export const OBSERVATION = {
     { label: '12', value: 12, lookup: 6 },
     { label: '24', value: 24, lookup: 7 }
   ],
-  CentralFrequency: [
-    { lookup: 0, value: '200' },
-    { lookup: 1, value: '0.7' },
-    { lookup: 2, value: '1.355' },
-    { lookup: 3, value: '6.55' },
-    { lookup: 4, value: '11.85' }
+  CentralFrequencyOBLow: [{ lookup: 0, value: '200' }],
+  CentralFrequencyOB1: [
+    { lookup: 1, label: 'AA0.5', value: '0.7' },
+    { lookup: 2, label: 'AA1', value: '0.7' },
+    { lookup: 3, label: 'AA2', value: '0.7' },
+    { lookup: 5, label: 'AA*', value: '0.7975' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
+    { lookup: 8, label: 'AA4', value: '0.7975' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.7975' },
+    { lookup: 20, label: 'Custom', value: '0.7975' }
   ],
-  ContinuumBandwidth: [
-    { lookup: 0, value: 75 },
-    { lookup: 1, value: 0.7 },
-    { lookup: 2, value: 0.8 },
-    { lookup: 3, value: 0.8 },
-    { lookup: 4, value: 0.8 }
+  CentralFrequencyOB2: [
+    { lookup: 1, label: 'AA0.5', value: '1.355' },
+    { lookup: 2, label: 'AA1', value: '1.355' },
+    { lookup: 3, label: 'AA2', value: '1.355' },
+    { lookup: 5, label: 'AA*', value: '1.31' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '1.355' },
+    { lookup: 8, label: 'AA4', value: '1.31' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '1.355' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '1.31' },
+    { lookup: 20, label: 'Custom', value: '1.31' }
   ],
-  SpectralResolution: [
-    { lookup: 0, value: '5.43 kHz (8.1 km/s)' },
+  CentralFrequencyOB5a: [{ value: '6.55' }],
+  CentralFrequencyOB5b: [{ value: '11.85' }],
+  ContinuumBandwidthOBLow: [
+    { lookup: 1, label: 'AA0.5', value: '75' },
+    { lookup: 2, label: 'AA1', value: '75' },
+    { lookup: 3, label: 'AA2', value: '150' },
+    { lookup: 4, label: 'AA2 (core only)', value: '150' },
+    { lookup: 5, label: 'AA*', value: '300' },
+    { lookup: 7, label: 'AA* (core only)', value: '300' },
+    { lookup: 8, label: 'AA4', value: '300' },
+    { lookup: 11, label: 'AA4 (core only)', value: '300' },
+    { lookup: 20, label: 'Custom', value: '300' }
+  ],
+  ContinuumBandwidthOB1: [
+    { lookup: 1, label: 'AA0.5', value: '0.7' },
+    { lookup: 2, label: 'AA1', value: '0.7' },
+    { lookup: 3, label: 'AA2', value: '0.7' },
+    { lookup: 5, label: 'AA*', value: '0.435' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
+    { lookup: 8, label: 'AA4', value: '0.435' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.435' },
+    { lookup: 20, label: 'Custom', value: '0.435' }
+  ],
+  ContinuumBandwidthOB2: [
+    { lookup: 1, label: 'AA0.5', value: '0.8' },
+    { lookup: 2, label: 'AA1', value: '0.8' },
+    { lookup: 3, label: 'AA2', value: '0.8' },
+    { lookup: 5, label: 'AA*', value: '0.72' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.81' },
+    { lookup: 8, label: 'AA4', value: '0.72' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.81' },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.72' },
+    { lookup: 20, label: 'Custom', value: '0.72' }
+  ],
+  ContinuumBandwidthOB5a: [
+    { lookup: 1, label: 'AA0.5', value: '0.8' },
+    { lookup: 2, label: 'AA1', value: '0.8' },
+    { lookup: 3, label: 'AA2', value: '0.8' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '3.9' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '3.9' },
+    { lookup: 20, label: 'Custom', value: '3.9' }
+  ],
+  ContinuumBandwidthOB5b: [
+    { lookup: 1, label: 'AA0.5', value: '0.8' },
+    { lookup: 2, label: 'AA1', value: '0.8' },
+    { lookup: 3, label: 'AA2', value: '0.8' },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: '5' },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '5' },
+    { lookup: 20, label: 'Custom', value: '5' }
+  ],
+  SpectralResolutionObLow: [{ value: '5.43 kHz (8.1 km/s)' }],
+  SpectralResolutionOb1: [
     { lookup: 1, value: '13.44 kHz (5.8 km/s)' },
-    { lookup: 2, value: '13.44 kHz (3.0 km/s)' },
-    { lookup: 3, value: '13.44 kHz (615.1 m/s)' },
-    { lookup: 4, value: '13.44 kHz (340.0 m/s)' }
+    { lookup: 2, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 3, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 5, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 6, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 8, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 9, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 10, value: '13.44 kHz (5.1 km/s)' },
+    { lookup: 20, value: '13.44 kHz (5.1 km/s)' }
   ],
+  SpectralResolutionOb2: [
+    { lookup: 1, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 2, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 3, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 5, value: '13.44 kHz (3.1 km/s)' },
+    { lookup: 6, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 8, value: '13.44 kHz (3.1 km/s)' },
+    { lookup: 9, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 10, value: '13.44 kHz (3.1 km/s)' },
+    { lookup: 20, value: '13.44 kHz (3.1 km/s)' }
+  ],
+
+  SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
+  SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },

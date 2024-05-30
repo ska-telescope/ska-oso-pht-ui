@@ -143,17 +143,63 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
-    setFrequency(OBSERVATION.CentralFrequency[observingBand].value);
-    setContinuumBandwidth(OBSERVATION.ContinuumBandwidth[observingBand].value);
-  }, [spectralAveraging, observingBand]);
+    let centralFrequency = '';
+    let continuumBandwidth = '';
 
-  React.useEffect(() => {
-    const record = OBSERVATION.CentralFrequency.find(e => e.value === frequency);
-    const lookup = record?.lookup;
-    if (lookup !== null) {
-      setSpectralResolution(OBSERVATION.SpectralResolution[lookup]?.value);
+    if (observingBand === 0) {
+      setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
+        e => e.lookup === subarrayConfig
+      );
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      setSpectralResolution(OBSERVATION.SpectralResolutionObLow[0].value);
     }
-  }, [frequency]);
+    if (observingBand === 1) {
+      centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
+      const valueCentralFrequency = centralFrequency?.value;
+      setFrequency(valueCentralFrequency);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(e => e.lookup === subarrayConfig);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      const record = OBSERVATION.CentralFrequencyOB1.find(e => e.value === frequency);
+      const lookup = record?.lookup;
+      const spectralResolution = OBSERVATION.SpectralResolutionOb1.find(e => e.lookup === lookup);
+      const valueSpectralResolution = spectralResolution?.value;
+      setSpectralResolution(valueSpectralResolution);
+    }
+    if (observingBand === 2) {
+      centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
+      const valueCentralFrequency = centralFrequency?.value;
+      setFrequency(valueCentralFrequency);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      const record = OBSERVATION.CentralFrequencyOB2.find(e => e.value === frequency);
+      const lookup = record?.lookup;
+      const spectralResolution = OBSERVATION.SpectralResolutionOb2.find(e => e.lookup === lookup);
+      const valueSpectralResolution = spectralResolution?.value;
+      setSpectralResolution(valueSpectralResolution);
+    }
+    if (observingBand === 3) {
+      setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
+        e => e.lookup === subarrayConfig
+      );
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      setSpectralResolution(OBSERVATION.SpectralResolutionOb5a[0].value);
+    }
+    if (observingBand === 4) {
+      setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
+        e => e.lookup === subarrayConfig
+      );
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
+      setSpectralResolution(OBSERVATION.SpectralResolutionOb5b[0].value);
+    }
+  }, [observingBand, subarrayConfig, frequency]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -842,11 +888,8 @@ export default function AddObservation() {
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
-      const velocity = calculateVelocity(
-        Number(resolution) * spectralAveraging * 1000,
-        centralFrequency
-      );
-      return `${effectiveResolution} kHz ( ${velocity})`;
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      return `${effectiveResolution} kHz (${velocity})`;
     };
 
     return (
@@ -870,11 +913,8 @@ export default function AddObservation() {
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const velocity = calculateVelocity(
-        Number(resolution) * spectralAveraging * 1000,
-        centralFrequency
-      );
-      return `${effectiveResolution.toFixed(2)} kHz ( ${velocity})`;
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      return `${effectiveResolution.toFixed(2)} kHz (${velocity})`;
     };
 
     return (

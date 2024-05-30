@@ -1,26 +1,21 @@
 import React from 'react';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { NAV } from '../../../utils/constants';
 
 interface PreviousPageProps {
   label?: string;
   page?: number;
-  func: Function;
+  action: Function;
 }
 
-export default function PreviousPageButton({ label = '', page = 0, func }: PreviousPageProps) {
-  const ClickFunction = () => {
-    func(page === 0 ? NAV.length - 1 : page - 1);
-  };
-
+export default function PreviousPageButton({ label = '', page = 0, action }: PreviousPageProps) {
   return (
     <Button
       ariaDescription={`${label}Button`}
       color={ButtonColorTypes.Inherit}
       icon={<ArrowBackIosIcon />}
       label={label}
-      onClick={ClickFunction}
+      onClick={action}
       testId={`${label}Button`}
       variant={ButtonVariantTypes.Contained}
     />
