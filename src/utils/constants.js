@@ -318,7 +318,7 @@ export const OBSERVATION = {
         { label: '97.7 KHz', value: 3 },
         { label: '195.3 KHz', value: 4 },
         { label: '390.6 KHz', value: 5 },
-        { label: '781.3 KHz', value: 6 },
+        { label: '781.2 KHz', value: 6 },
         { label: '1562.5 KHz', value: 7 },
         { label: '3125.0 KHz', value: 8 }
       ],

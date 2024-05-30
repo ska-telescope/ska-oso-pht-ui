@@ -149,6 +149,18 @@ const sensCalHelpers = {
         throw new Error('Invalid bandwidth unit');
       }
       return bandwidthValue * unitMap[bandwidthUnits];
+    },
+    convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
+      const unitMap: { [key: string]: number } = {
+        GHz: 1000000000,
+        MHz: 1000000,
+        kHz: 1000,
+        Hz: 1
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
     }
   },
   calculate: {

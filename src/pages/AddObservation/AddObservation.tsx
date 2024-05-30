@@ -610,6 +610,7 @@ export default function AddObservation() {
         <Box pt={0}>
           <TextEntry
             value=""
+            // setValue={setContinuumUnits(BandwidthUnitOptions[0].label)}
             label=""
             labelBold
             labelPosition={LABEL_POSITION.BOTTOM}
