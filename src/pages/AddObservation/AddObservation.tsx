@@ -199,7 +199,7 @@ export default function AddObservation() {
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(OBSERVATION.SpectralResolutionOb5b[0].value);
     }
-  }, [observingBand, subarrayConfig, frequency]);
+  }, [observingBand, subarrayConfig]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -617,30 +617,26 @@ export default function AddObservation() {
       .CentralFrequencyUnits;
     if (FrequencyUnitOptions.length === 1) {
       return (
-        <Box pt={0}>
-          <TextEntry
-            value=""
-            label=""
-            labelBold
-            labelPosition={LABEL_POSITION.BOTTOM}
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-            testId="frequencyUnits"
-            suffix={FrequencyUnitOptions[0].label}
-          />
-        </Box>
+        <TextEntry
+          value=""
+          label=""
+          labelBold
+          labelPosition={LABEL_POSITION.BOTTOM}
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+          testId="frequencyUnits"
+          suffix={FrequencyUnitOptions[0].label}
+        />
       );
     } else {
       return (
-        <Box pt={0}>
-          <DropDown
-            options={FrequencyUnitOptions}
-            testId="frequencyUnits"
-            value={frequencyUnits}
-            setValue={setFrequencyUnits}
-            label=""
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-          />
-        </Box>
+        <DropDown
+          options={FrequencyUnitOptions}
+          testId="frequencyUnits"
+          value={frequencyUnits}
+          setValue={setFrequencyUnits}
+          label=""
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
       );
     }
   };
@@ -751,19 +747,59 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
+    const errorMessage = () => {
+      const lowMin = Number(t('centralFrequency.range.lowLower'));
+      const lowMax = Number(t('centralFrequency.range.lowUpper'));
+      const band1Min = Number(t('centralFrequency.range.band1Lower'));
+      const band1Max = Number(t('centralFrequency.range.band1Upper'));
+      const band2Min = Number(t('centralFrequency.range.band2Lower'));
+      const band2Max = Number(t('centralFrequency.range.band2Upper'));
+      const band3Min = Number(t('centralFrequency.range.band3Lower'));
+      const band3Max = Number(t('centralFrequency.range.band3Upper'));
+      const band4Min = Number(t('centralFrequency.range.band4Lower'));
+      const band4Max = Number(t('centralFrequency.range.band4Upper'));
+      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+
+      if (usedTelescope === 2) {
+        return frequency < lowMin || frequency > lowMax ? t('centralFrequency.range.lowError') : '';
+      }
+      if (usedTelescope === 1) {
+        switch (observingBand) {
+          case 1:
+            return frequency < band1Min || frequency > band1Max
+              ? t('centralFrequency.range.midError')
+              : '';
+          case 2:
+            return frequency < band2Min || frequency > band2Max
+              ? t('centralFrequency.range.midError')
+              : '';
+          case 3:
+            return frequency < band3Min || frequency > band3Max
+              ? t('centralFrequency.range.midError')
+              : '';
+          case 4:
+            return frequency < band4Min || frequency > band4Max
+              ? t('centralFrequency.range.midError')
+              : '';
+        }
+      }
+    };
+
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <TextEntry
+          <NumberEntry
             label={t('centralFrequency.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
+            setValue={setFrequency}
             onFocus={() => helpComponent(t('centralFrequency.help'))}
             required
             suffix={frequencyUnitsField()}
+            errorText={errorMessage()}
           />
         </Grid>
       </Grid>

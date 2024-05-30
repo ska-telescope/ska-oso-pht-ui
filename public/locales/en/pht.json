@@ -64,8 +64,18 @@
     "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
-      "lower": 0,
-      "error": "Value cannot be negative"
+      "lowLower": 50,
+      "lowUpper": 350,
+      "lowError": "Please enter a number between 50 and 350",
+      "midError": "Observing frequency out of range",
+      "band1Lower": 0.35,
+      "band1Upper": 1.05,
+      "band2Lower": 0.95,
+      "band2Upper": 1.76,
+      "band3Lower": 4.6,
+      "band3Upper": 8.5,
+      "band4Lower": 8.3,
+      "band4Upper": 15.4
     }
   },
   "changeProposal": {
