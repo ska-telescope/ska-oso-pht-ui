@@ -1,3 +1,12 @@
+/*
+TODO:
+- test getProposal mapping with data and map all new properties
+- update mapping from frontend to backend
+- check if there are new properties to include in the frontend types?
+- rename MockProposalBackendNew as MockProposalBackend and remove "old" MockProposalBackend when ready
+- tidy up and remove all old mapping functions in this file
+*/
+
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
@@ -9,7 +18,7 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import MockProposal from './mockProposal';
+import MockProposal from './mockProposal'; // TODO: use MockProposalBackendNew and remove old mock when ready
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { TargetBackend } from 'utils/types/target';
 import { ObservationSetBackend } from 'utils/types/observationSet';
@@ -158,9 +167,9 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
 const getObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
-    const arr = inValue[i].array_details.array === 'MID' ? 1 : 2;
+    const arr = inValue[i].array_details[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(
-      p => p.label === inValue[i].array_details.subarray
+      p => p.label === inValue[i].array_details[i].subarray
     );
     results.push({
       id: inValue[i].observation_set_id,

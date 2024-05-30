@@ -16,8 +16,7 @@ export type ObservationTypeDetailsBackend = {
   central_frequency?: ValueUnitPair;
   supplied?: {
     type: string;
-    value: number;
-    unit?: string;
+    quantity: ValueUnitPair;
   };
   spectral_resolution?: string;
   effective_resolution?: string;
