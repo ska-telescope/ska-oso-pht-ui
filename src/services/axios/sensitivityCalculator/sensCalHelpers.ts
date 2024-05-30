@@ -118,7 +118,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,
-        kHz: 1000, // TODO: CHECk Kh or kh
+        KHz: 1000,
         Hz: 1
       };
       if (!unitMap[frequencyUnits]) {
@@ -130,7 +130,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,
-        kHz: 0.001, // TODO: CHECk Kh or kh
+        KHz: 0.001,
         Hz: 0.000001
       };
       if (!unitMap[bandwidthUnits]) {
@@ -154,7 +154,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,
-        kHz: 1000,
+        KHz: 1000,
         Hz: 1
       };
       if (!unitMap[bandwidthUnits]) {
