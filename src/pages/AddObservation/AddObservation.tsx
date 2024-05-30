@@ -1053,11 +1053,10 @@ export default function AddObservation() {
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
-        // bandwidth: bandwidth, // TODO: add units + check continuum bandwidth also
         bandwidth: bandwidth,
-        continuumBandwidth: `${continuumBandwidth} ${
-          OBSERVATION.Units.find(unit => unit.value === continuumUnits).label
-        }`,
+        continuumBandwidth: `${continuumBandwidth} ${OBSERVATION.array
+          .find(array => array.value === usedTelescope).CentralFrequencyAndBandWidthUnits
+          .find(unit => unit.value === continuumUnits).label}`,
         spectralAveraging: spectralAveraging,
         tapering: tapering,
         imageWeighting: imageWeighting,
