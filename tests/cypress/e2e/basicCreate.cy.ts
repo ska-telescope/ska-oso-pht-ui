@@ -6,12 +6,14 @@ context('PROPOSAL HANDLING TOOL', () => {
 
   it('Content : Create basic proposal', () => {
     //
-    // Check what we see on the landing page 
+    // Check what we see on the landing page
     //
     cy.get('[data-testid="skaoLogo"]').should('be.visible');
     cy.get('[data-testid="Brightness7Icon"]').should('be.visible');
     //
-    cy.get('[data-testid="footerId"]').contains('0.3.0').should('be.visible');
+    cy.get('[data-testid="footerId"]')
+      .contains('0.3.0')
+      .should('be.visible');
     //
     cy.get('[data-testid="addProposalButton"]').click();
     //
