@@ -446,7 +446,7 @@ describe('<AddObservation />', () => {
     verifyFrequencyUnitsLow();
 
     verifyContinuumUnitsLow();
-   
+
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
