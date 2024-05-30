@@ -15,6 +15,7 @@ interface TimedAlertProps {
 
 export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
+  const [isMounted, setIsMounted] = React.useState(false)
   const { updateAppContent5 } = storageObject.useStore();
 
   function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
@@ -27,20 +28,69 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
   }
 
   React.useEffect(() => {
-    const setClear = () => {
-      Notify('', AlertColorTypes.Info);
-    };
-
-    const timer = () => {
-      setTimeout(() => {
-        setClear();
-        setShow(false);
-      }, delay * SECS);
-    };
-
-    setShow(true);
-    timer();
+   // console.log('useEffect isMounted', isMounted)
+  
+    // if(true){
+    //   const setClear = () => {
+    //     Notify('', AlertColorTypes.Info);
+    //   };
+  
+    //   console.log('delay * SECS', delay * SECS)
+  
+    //   const timer = () => {
+    //     setTimeout(() => {
+    //       setClear();
+    //       setShow(false);
+    //     }, delay * SECS);
+    //   };
+  
+    //   setShow(true);
+    //   timer();
+    // }
+    setIsMounted(true)
   }, []);
+
+  React.useEffect(() => {
+    if (isMounted) {
+      const setClear = () => {
+        Notify('', AlertColorTypes.Info);
+      };
+
+      console.log('delay * SECS', delay * SECS)
+
+      const timer = () => {
+        setTimeout(() => {
+          setClear();
+          setShow(false);
+        }, delay * SECS);
+      };
+
+      setShow(true);
+      timer();
+    }
+
+  }, [isMounted]);
+
+  // React.useEffect(() => {
+    
+  //   const setClear = () => {
+  //     Notify('', AlertColorTypes.Info);
+  //   };
+
+  //   console.log('delay * SECS', delay * SECS)
+
+  //   const timer = () => {
+  //     setTimeout(() => {
+  //       setClear();
+  //       setShow(false);
+  //     }, delay * SECS);
+  //   };
+
+  //   setShow(true);
+  //   timer();
+  // }, []);
+
+  
 
   return <>{show && <StandardAlert color={color} testId={testId} text={text} />}</>;
 }

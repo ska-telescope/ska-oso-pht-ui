@@ -101,6 +101,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
               color={(application.content5 as Notification)?.level}
               testId="timeAlertFooter"
               text={(application.content5 as Notification)?.message}
+              delay={10}
             />
           )}
         </Grid>
