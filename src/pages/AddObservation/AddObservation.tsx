@@ -143,8 +143,8 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
-    let centralFrequency = '';
-    let continuumBandwidth = '';
+    let centralFrequency;
+    let continuumBandwidth;
 
     if (observingBand === 0) {
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
