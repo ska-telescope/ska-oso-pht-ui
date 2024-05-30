@@ -117,7 +117,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                       action={prevPageNav}
                     />
                   )}
-                  {!backPage && <HomeButton />}
+                  {!backPage && <HomeButton testId="homeButtonTestId" />}
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (
