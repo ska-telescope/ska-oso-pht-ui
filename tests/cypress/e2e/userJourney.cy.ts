@@ -1,5 +1,6 @@
 context('PROPOSAL HANDLING TOOL', () => {
   beforeEach(() => {
+    cy.viewport(1500, 1500);
     cy.visit('http://localhost:6101/');
   });
 
