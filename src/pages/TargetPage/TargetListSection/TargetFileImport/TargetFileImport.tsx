@@ -190,10 +190,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
         uploadFunction={validateUploadCsv}
         status={uploadButtonStatus}
       />
-      {uploadCsvError && <TimedAlert color={AlertColorTypes.Error} text={uploadCsvError} />}
+      {/* {uploadCsvError && <TimedAlert color={AlertColorTypes.Error} text={uploadCsvError} />}
       {uploadButtonStatus === FileUploadStatus.OK && (
         <TimedAlert color={AlertColorTypes.Success} text={t('uploadCsvBtn.uploadSuccessMsg')} />
-      )}
+      )} */}
     </Grid>
   );
 }
