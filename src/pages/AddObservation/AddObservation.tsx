@@ -15,6 +15,7 @@ import {
   NAV,
   OBSERVATION,
   OBSERVATION_TYPE,
+  TELESCOPE_LOW_NUM,
   TELESCOPES,
   TYPE_CONTINUUM
 } from '../../utils/constants';
@@ -199,7 +200,7 @@ export default function AddObservation() {
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(OBSERVATION.SpectralResolutionOb5b[0].value);
     }
-  }, [observingBand, subarrayConfig, frequency]);
+  }, [observingBand, subarrayConfig]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -616,31 +617,17 @@ export default function AddObservation() {
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope)
       .CentralFrequencyAndBandWidthUnits;
     if (FrequencyUnitOptions.length === 1) {
-      return (
-        <Box pt={0}>
-          <TextEntry
-            value=""
-            label=""
-            labelBold
-            labelPosition={LABEL_POSITION.BOTTOM}
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-            testId="frequencyUnits"
-            suffix={FrequencyUnitOptions[0].label}
-          />
-        </Box>
-      );
+      return FrequencyUnitOptions[0].label;
     } else {
       return (
-        <Box pt={0}>
-          <DropDown
-            options={FrequencyUnitOptions}
-            testId="frequencyUnits"
-            value={frequencyUnits}
-            setValue={setFrequencyUnits}
-            label=""
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-          />
-        </Box>
+        <DropDown
+          options={FrequencyUnitOptions}
+          testId="frequencyUnits"
+          value={frequencyUnits}
+          setValue={setFrequencyUnits}
+          label=""
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
       );
     }
   };
@@ -770,19 +757,40 @@ export default function AddObservation() {
   };
 
   const centralFrequencyField = () => {
+    const errorMessage = () => {
+      const lowMin = Number(t('centralFrequency.range.lowLower'));
+      const lowMax = Number(t('centralFrequency.range.lowUpper'));
+      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+
+      if (usedTelescope === TELESCOPE_LOW_NUM) {
+        return frequency < lowMin || frequency > lowMax ? t('centralFrequency.range.lowError') : '';
+      } else {
+        if (observingBand != null) {
+          const bandMin = Number(t('centralFrequency.range.bandLower' + observingBand));
+          const bandMax = Number(t('centralFrequency.range.bandUpper' + observingBand));
+
+          return frequency < bandMin || frequency > bandMax
+            ? t('centralFrequency.range.midError')
+            : '';
+        }
+      }
+    };
+
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
-          <TextEntry
+          <NumberEntry
             label={t('centralFrequency.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
+            setValue={setFrequency}
             onFocus={() => helpComponent(t('centralFrequency.help'))}
             required
             suffix={frequencyUnitsField()}
+            errorText={errorMessage()}
           />
         </Grid>
       </Grid>
