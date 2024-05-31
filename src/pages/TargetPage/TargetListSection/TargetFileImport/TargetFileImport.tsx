@@ -83,23 +83,23 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             console.log('papa result', result);
             console.log('papa result.data', result.data);
 
-            // const highestId = getProposal().targets.reduce(
-            //   (acc, target) => (target.id > acc ? target.id : acc),
-            //   -1
-            // );
+            const highestId = getProposal().targets.reduce(
+              (acc, target) => (target.id > acc ? target.id : acc),
+              -1
+            );
 
-            const getHighestId = () => {
-              try {
-                return getProposal().targets.reduce(
-                  (acc, target) => (target.id > acc ? target.id : acc),
-                  -1
-                );
-              } catch {
-                return -1;
-              }
-            };
+            // const getHighestId = () => {
+            //   try {
+            //     return getProposal().targets.reduce(
+            //       (acc, target) => (target.id > acc ? target.id : acc),
+            //       -1
+            //     );
+            //   } catch {
+            //     return -1;
+            //   }
+            // };
 
-            const highestId = getHighestId();
+            // const highestId = getHighestId();
 
             console.log('highestId', highestId);
 
@@ -171,7 +171,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
         error: message => {
           setUploadCsvError('Error on parser: ' + message);
           setUploadButtonStatus(FileUploadStatus.ERROR);
-          NotifyError(message);
+          NotifyError('Error on parser: ' + message);
         }
       });
     }

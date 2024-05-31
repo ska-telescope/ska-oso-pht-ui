@@ -52,13 +52,33 @@ context('PROPOSAL HANDLING TOOL', () => {
     //IMPLEMENT FILE UPLOAD
     //Complete target page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    //manual input of target co-ordinates
-    cy.get('[id="name"]').type('M1');
-    cy.get('[id="skyDirectionValue1"]').type('0:0:0');
-    cy.get('[id="skyDirectionValue2"]').type('0:0:0');
-    //default is type velocity
-    cy.get('[name="textField"]').type('1');
-    cy.get('[data-testid="Add targetButton"]').click({ force: true });
+    // //manual input of target co-ordinates
+    // cy.get('[id="name"]').type('M1');
+    // cy.get('[id="skyDirectionValue1"]').type('0:0:0');
+    // cy.get('[id="skyDirectionValue2"]').type('0:0:0');
+    // //default is type velocity
+    // cy.get('[name="textField"]').type('1');
+    // cy.get('[data-testid="Add targetButton"]').click({ force: true });
+
+    //import target from file 
+    cy.get('[id="simple-tab-1"]').click()
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_equatorial_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_equatorial_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click()
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'name1')
+      .should('contain', '05:34:30.900')
+      .should('contain', '+22:00:53.000')
+      .should('have.length', 7);
+
     //Complete observation page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     // cy.get('[data-testid="observation setupButton"]').click();
