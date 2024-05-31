@@ -86,6 +86,7 @@ export const helpers = {
     SUBMIT = STATUS: submitted
     */
     convertProposalToBackendFormat(proposal: Proposal, status: string) {
+      // TODO: move to axios service + map to new backend format
       const project = Projects.find(p => p.id === proposal.proposalType);
       // TODO : We need to update so that 0 - n entries are added.
       const subProject = project?.subProjects.find(sp => sp.id === proposal.proposalSubType[0]);
