@@ -24,6 +24,7 @@ export default function SciencePage() {
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   // TODO : Implement later - const [numPages, setNumPages] = React.useState(null);
   const [pageNumber] = React.useState(1);
+  const [currentFile, setCurrentFile] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -40,6 +41,7 @@ export default function SciencePage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), sciencePDF: theFile });
+    setCurrentFile(theFile);
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
