@@ -20,7 +20,7 @@ export default function TeamInviteButton({ disabled, onClick }: TeamInviteButton
       label={title}
       onClick={onClick}
       icon={<EmailIcon />}
-      testId={`${title}Button`}
+      testId="teamInviteButton"
       variant={ButtonVariantTypes.Contained}
       disabled={disabled}
     />

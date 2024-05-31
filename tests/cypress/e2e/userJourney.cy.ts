@@ -17,8 +17,8 @@ context('PROPOSAL HANDLING TOOL', () => {
 
   it('Footer : Verify Version', () => {
     cy.get('[data-testid="footerId"]')
-      .contains('0.3.0')
-      .should('be.visible');
+    .should('be.visible')
+      .contains('0.3.0');
   });
 
   it('Content : Create proposal, complete all sections as required and then submit', () => {
@@ -29,10 +29,10 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').click();
     //Complete team page
-    cy.get('[data-testid="firstName"]').type('User');
-    cy.get('[data-testid="lastName"]').type('Name');
-    cy.get('[data-testid="email"]').type('username@test.com');
-    cy.get('[data-testid="Send invitationButton"]').click({ force: true });
+    cy.get('[data-testid="firstName"]').should('be.visible').type('User');
+    cy.get('[data-testid="lastName"]').should('be.visible').type('Name');
+    cy.get('[data-testid="email"]').should('be.visible').type('username@test.com');
+    cy.get('[data-testid="teamInviteButton"]').should('be.visible').click({ force: true });
     cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
       .children('div[role="row"]')
       .should('contain', 'User')
