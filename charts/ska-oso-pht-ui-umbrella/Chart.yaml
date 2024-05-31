@@ -2,12 +2,12 @@ apiVersion: v2
 name: ska-oso-pht-ui-umbrella
 description: Helm umbrella chart for Observation Design Tool application
 type: application
-version: 0.3.0
-appVersion: 0.3.0
+version: 0.3.1
+appVersion: 0.3.1
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 dependencies:
 - name: ska-oso-pht-ui
-  version: 0.3.0
+  version: 0.3.1
   repository: file://../ska-oso-pht-ui
 
 # PHT services provides services required by the PHT UI and acts as the proxy

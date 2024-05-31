@@ -1,3 +1,4 @@
+/*
 export type TargetBackend = {
   declination: string;
   declination_unit: string;
@@ -6,6 +7,36 @@ export type TargetBackend = {
   right_ascension_unit: string;
   velocity: string;
   velocity_unit: string;
+};
+*/
+
+import { ValueUnitPair } from './valueUnitPair';
+
+export type TargetBackend = {
+  target_id: string;
+  pointing_pattern: {
+    active: string;
+    parameters: [
+      {
+        kind: string;
+        offset_x_arcsec: number;
+        offset_y_arcsec: number;
+      }
+    ];
+  };
+  reference_coordinate: {
+    kind: string;
+    ra: number;
+    dec: number;
+    unit: string[];
+    reference_frame: string;
+  };
+  radial_velocity: {
+    quantity: ValueUnitPair;
+    definition: string;
+    reference_frame: string;
+    redshift: number;
+  };
 };
 
 /************************************************************************************
