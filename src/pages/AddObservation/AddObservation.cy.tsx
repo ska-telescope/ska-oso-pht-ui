@@ -148,12 +148,7 @@ function verifyContinuumBandwidthContinuumLowBand() {
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 function verifyFrequencyUnitsLow() {
-  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="frequencyUnits"]')
-    .find('input[type="text"]')
-    .should('have.attr', 'type', 'text');
-  cy.get('[data-testid="frequencyUnits"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
+  cy.get('[data-testid="frequency"]').contains('MHz');
 }
 
 function verifyContinuumUnits() {
