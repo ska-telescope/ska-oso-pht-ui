@@ -170,6 +170,14 @@ function verifyContinuumUnitsLow() {
   cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
+function verifyLowBandwidthFrequency() {
+  cy.get('[data-testid="bandwidth"]').contains('24.4 KHz');
+  cy.get('[data-testid="bandwidth"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="bandwidth"]').contains('48.8 KHz');
+  cy.get('[data-testid="helpPanelId"]').contains('bandWidth.help');
+}
+
 function verifySpectralResolutionLow() {
   cy.get('[id="spectralResolution"]').should('have.value', '5.43 kHz (8.1 km/s)');
   cy.get('[id="spectralResolution"]').click();
@@ -423,6 +431,7 @@ describe('<AddObservation />', () => {
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnitsLow();
+    verifyLowBandwidthFrequency();
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
@@ -444,9 +453,7 @@ describe('<AddObservation />', () => {
     verifyCentralFrequencyContinuumLowBand();
     verifyContinuumBandwidthContinuumLowBand();
     verifyFrequencyUnitsLow();
-
     verifyContinuumUnitsLow();
-
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
