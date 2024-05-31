@@ -7,6 +7,8 @@
 -include .make/k8s.mk
 -include .make/js.mk
 
+JS_SERVE_PORT = 6101 ## serve port
+
 k8s-do-test:
 	@echo "Nothing to do here yet!"
 	@mkdir -p build; echo "0" > build/status
