@@ -1,10 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Box, Card, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+
 import Shell from '../../components/layout/Shell/Shell';
-// import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
@@ -20,6 +22,8 @@ export default function SciencePage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+  // TODO : Implement later - const [numPages, setNumPages] = React.useState(null);
+  const [pageNumber] = React.useState(1);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -43,13 +47,15 @@ export default function SciencePage() {
     setUploadButtonStatus(status);
   };
 
+  // TODO : Need to get this to work with the loaded file.
+  const getPreviewName = () => 'https://www.orimi.com/pdf-test.pdf';
+
   const uploadPdftoSignedUrl = async theFile => {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const signedUrl = await GetPresignedUploadUrl(`${prsl_id}-science.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -68,8 +74,7 @@ export default function SciencePage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const prsl_id = proposal.id;
-      const selectedFile = `${prsl_id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
@@ -97,6 +102,10 @@ export default function SciencePage() {
     count += getProposal()?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
     setTheProposalState(result[count]);
   }, [validateToggle]);
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    // TODO : Implement usage later -   setNumPages(numPages);
+  };
 
   return (
     <Shell page={PAGE}>
@@ -130,21 +139,16 @@ export default function SciencePage() {
             <Box pt={1}>
               <DownloadButton
                 toolTip={t('pdfDownload.science.toolTip')}
-                onClick={downloadPDFToSignedUrl}
+                action={downloadPDFToSignedUrl}
               />
             </Box>
           )}
         </Grid>
         <Grid item xs={6}>
-          <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
-            <CardHeader
-              title={
-                <Typography variant="h6" data-testid="pdfPreviewLabel">
-                  {t('pdfPreview.label')}
-                </Typography>
-              }
-            />
-            <CardContent sx={{ height: '55vh' }}></CardContent>
+          <Card>
+            <Document file={getPreviewName()} onLoadSuccess={onDocumentLoadSuccess}>
+              <Page pageNumber={pageNumber} />
+            </Document>
           </Card>
         </Grid>
         <Grid item xs={2} />
