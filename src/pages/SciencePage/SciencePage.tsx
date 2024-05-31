@@ -1,10 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
@@ -14,6 +12,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import DownloadButton from '../../components/button/Download/Download';
+import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 
 const PAGE = 3;
 
@@ -22,8 +21,6 @@ export default function SciencePage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
-  // TODO : Implement later - const [numPages, setNumPages] = React.useState(null);
-  const [pageNumber] = React.useState(1);
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
@@ -48,9 +45,6 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
     setUploadButtonStatus(status);
   };
-
-  // TODO : Need to get this to work with the loaded file.
-  const getPreviewName = () => 'https://www.orimi.com/pdf-test.pdf';
 
   const uploadPdftoSignedUrl = async theFile => {
     setUploadStatus(FileUploadStatus.PENDING);
@@ -105,10 +99,6 @@ export default function SciencePage() {
     setTheProposalState(result[count]);
   }, [validateToggle]);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    // TODO : Implement usage later -   setNumPages(numPages);
-  };
-
   return (
     <Shell page={PAGE}>
       <Grid
@@ -147,11 +137,7 @@ export default function SciencePage() {
           )}
         </Grid>
         <Grid item xs={6}>
-          <Card>
-            <Document file={getPreviewName()} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page pageNumber={pageNumber} />
-            </Document>
-          </Card>
+          <PDFViewer file={currentFile} />
         </Grid>
         <Grid item xs={2} />
       </Grid>

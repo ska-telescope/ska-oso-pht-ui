@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
@@ -11,6 +11,7 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import DownloadButton from '../../components/button/Download/Download';
+import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 
 const PAGE = 6;
 
@@ -19,6 +20,7 @@ export default function TechnicalPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+  const [currentFile, setCurrentFile] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -35,6 +37,7 @@ export default function TechnicalPage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), technicalPDF: theFile });
+    setCurrentFile(theFile);
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
@@ -135,16 +138,7 @@ export default function TechnicalPage() {
           )}
         </Grid>
         <Grid item xs={6}>
-          <Card variant="outlined" sx={{ height: '60vh', width: '100%' }}>
-            <CardHeader
-              title={
-                <Typography variant="h6" data-testid="pdfPreviewLabel">
-                  {t('pdfPreview.label')}
-                </Typography>
-              }
-            />
-            <CardContent sx={{ height: '55vh' }}></CardContent>
-          </Card>
+          <PDFViewer file={currentFile} />
         </Grid>
         <Grid item xs={2} />
       </Grid>

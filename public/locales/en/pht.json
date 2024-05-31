@@ -716,7 +716,10 @@
     "13": {
       "title": "Data Product",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
-    }
+    },
+    "next": "Next",
+    "pageOf": "Page {{current}} of {{max}}",
+    "previous": "Previous"
   },
   "label": {
     "button": {
