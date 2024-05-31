@@ -4,7 +4,6 @@ import { Grid } from '@mui/material';
 import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import TimedAlert from '../../../../components/alerts/timedAlert/TimedAlert';
 import Notification from '../../../../utils/types/notification';
 import Papa from 'papaparse';
 
@@ -72,8 +71,6 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     const validGalacticCsvHeader = ['name', 'longitude', 'latitude'];
 
     if (theFile) {
-      setUploadCsvError('');
-
       Papa.parse(theFile, {
         header: true,
         skipEmptyLines: true,
@@ -111,7 +108,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
               console.log('result.header equatorial', result.meta.fields);
               // check
               if (JSON.stringify(result.meta.fields) !== JSON.stringify(validEquatorialCsvHeader))
-                throw 'CSV equatorial schema not valid';
+                throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               console.log('equatorial ok');
               const targets = result.data.reduce((result, target, index) => {
                 if (target.name && target.ra && target.dec) {
@@ -135,7 +132,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             } else {
               //galactic
               if (JSON.stringify(result.meta.fields) !== JSON.stringify(validGalacticCsvHeader))
-                throw 'CSV galactic schema not valid';
+                throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
               console.log('galactic ok');
               const targets = result.data.reduce((result, target, index) => {
                 if (target.name && target.latitude && target.longitude) {
@@ -157,21 +154,18 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
               console.log('targets appended', [...getProposal().targets, ...targets]);
               setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             }
-            if (errorInRows)
-              throw 'Partially uploaded - some rows contain empty values which will be omitted';
+            if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             NotifyOK(t('uploadCsvBtn.uploadSuccessMsg'));
           } catch (e) {
             console.log('error in catch ', e);
-            setUploadCsvError(e);
             NotifyError(e);
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
         error: message => {
-          setUploadCsvError('Error on parser: ' + message);
           setUploadButtonStatus(FileUploadStatus.ERROR);
-          NotifyError('Error on parser: ' + message);
+          NotifyError(t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message);
         }
       });
     }
