@@ -12,8 +12,9 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="Brightness7Icon"]').should('be.visible');
     //
     cy.get('[data-testid="footerId"]')
-      .contains('0.3.0')
-      .should('be.visible');
+      .should('be.visible')
+      .contains('0.3.0');
+
     //
     cy.get('[data-testid="addProposalButton"]').click();
     //
