@@ -7,7 +7,8 @@ import {
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC
+  OBSERVATION_TYPE_SENSCALC,
+  TYPE_ZOOM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -50,6 +51,20 @@ async function GetCalculate(observation: Observation, target: Target) {
       .replace(' ', '');
   }
 
+  function getZoomBandwidthValueUnit() {
+    const telescopeBandwidthValues = OBSERVATION.array.find(
+      item => item.value === observation.telescope
+    ).bandWidth;
+    const bandWidthValue = telescopeBandwidthValues.find(
+      item => item.value === observation.bandwidth
+    ).label;
+    return bandWidthValue.split(' ');
+  }
+
+  function getContinuumBandwidthValueUnit() {
+    return observation.continuumBandwidth.split(' ');
+  }
+
   /*********************************************************** MID *********************************************************/
 
   interface ModeSpecificParametersMid {
@@ -85,6 +100,10 @@ async function GetCalculate(observation: Observation, target: Target) {
       iTimeUnits
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
+    const bandwidthValueUnit: string[] =
+      observation.type === TYPE_ZOOM
+        ? getZoomBandwidthValueUnit()
+        : getContinuumBandwidthValueUnit();
 
     const params = {
       rx_band: `Band ${observation.observingBand}`,
@@ -96,7 +115,10 @@ async function GetCalculate(observation: Observation, target: Target) {
       frequency: sensCalHelpers.format
         .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
-      bandwidth: observation.bandwidth ? observation.bandwidth?.toString() : '0',
+      bandwidth: sensCalHelpers.format.convertBandwidthToHz(
+        bandwidthValueUnit[0],
+        bandwidthValueUnit[1]
+      ), // mid zoom and mid continuum bandwidth should be sent in Hz
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
@@ -113,10 +135,10 @@ async function GetCalculate(observation: Observation, target: Target) {
   /*********************************************************** LOW *********************************************************/
 
   interface ModeSpecificParametersLow {
-    bandwidth_mhz?: string;
+    bandwidth_mhz?: number;
     spectral_averaging_factor?: string;
     spectral_resolution_hz?: string;
-    total_bandwidth_khz?: string;
+    total_bandwidth_khz?: number;
   }
 
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
@@ -128,21 +150,28 @@ async function GetCalculate(observation: Observation, target: Target) {
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
-      mode_specific_parameters.bandwidth_mhz = observation.bandwidth?.toString();
+      const bandwidthValueUnit: string[] = getContinuumBandwidthValueUnit();
+      // const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
+      mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
+        bandwidthValueUnit[0],
+        bandwidthValueUnit[1]
+      ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
     } else {
       // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
       const value = 16;
-      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix
-      //TODO check value mapping, does it need conversion?
-      const value2 = 48.8;
-      mode_specific_parameters.total_bandwidth_khz = value2?.toString(); // temp fix
-      //TODO check value mapping, does it need conversion?
-      // mode_specific_parameters.total_bandwidth_khz = observation.bandwidth?.toString();
+      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix // TODO: use spectral_resolution_hz and convert units if necessary
+
+      const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(
+        bandwidthValueUnit[0],
+        bandwidthValueUnit[1]
+      ); // low zoom bandwidth should be sent in KHz
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
       observation.integrationTimeUnits
     );
+
     const params = {
       subarray_configuration: getSubArray(),
       duration: sensCalHelpers.format
