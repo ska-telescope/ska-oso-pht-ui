@@ -49,7 +49,7 @@ describe('Content', () => {
         mimeType: 'text/csv'
       });
     });
-    cy.get('[testid="csvUploadFilename"]').contains('target.csv');
+    cy.get('[testid="csvUploadFilename"]').contains('target_equatorial_valid.csv');
     //TODO: identify getTarget not iterable
     //cy.get('[data-testid="csvUploadUploadButton"]').click();
   });
