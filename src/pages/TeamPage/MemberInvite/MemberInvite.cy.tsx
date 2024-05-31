@@ -181,30 +181,30 @@ describe('Content', () => {
   describe('Form Validation', () => {
     it('Button disabled if First Name input is empty', () => {
       cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button disabled if Last Name input is empty', () => {
       cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button disabled if Email input is empty', () => {
       cy.get('[data-testid="email"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button disabled if Email has incorrect format', () => {
       const incorrectText = 'email@';
       cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button disabled if First Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="firstName"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button disabled if Last Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
       cy.get('[data-testid="lastName"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      cy.get('[data-testid="teamInviteButton"]').should('be.visible');
     });
     it('Button NOT disabled if all fields have correct format', () => {
       const firstName = 'Alia';
@@ -213,7 +213,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]').should('not.be.disabled');
+      cy.get('[data-testid="teamInviteButton"]').should('not.be.disabled');
     });
     it('Button clickable if all fields have correct format', () => {
       const firstName = 'Alia';
@@ -222,7 +222,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]')
+      cy.get('[data-testid="teamInviteButton"]')
         .should('be.enabled')
         .click();
     });
@@ -255,7 +255,7 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]').click();
+      cy.get('[data-testid="teamInviteButton"]').click();
     });
   });
 });
