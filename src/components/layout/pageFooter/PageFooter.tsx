@@ -99,7 +99,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
           {(application.content5 as Notification)?.message?.length > 0 && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
-              delay={10}
+              delay={(application.content5 as Notification)?.delay}
               testId="timeAlertFooter"
               text={(application.content5 as Notification)?.message}
             />
