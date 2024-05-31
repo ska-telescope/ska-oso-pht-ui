@@ -15,6 +15,7 @@ import {
   NAV,
   OBSERVATION,
   OBSERVATION_TYPE,
+  TELESCOPE_LOW_NUM,
   TELESCOPES,
   TYPE_CONTINUUM
 } from '../../utils/constants';
@@ -740,37 +741,18 @@ export default function AddObservation() {
     const errorMessage = () => {
       const lowMin = Number(t('centralFrequency.range.lowLower'));
       const lowMax = Number(t('centralFrequency.range.lowUpper'));
-      const band1Min = Number(t('centralFrequency.range.band1Lower'));
-      const band1Max = Number(t('centralFrequency.range.band1Upper'));
-      const band2Min = Number(t('centralFrequency.range.band2Lower'));
-      const band2Max = Number(t('centralFrequency.range.band2Upper'));
-      const band3Min = Number(t('centralFrequency.range.band3Lower'));
-      const band3Max = Number(t('centralFrequency.range.band3Upper'));
-      const band4Min = Number(t('centralFrequency.range.band4Lower'));
-      const band4Max = Number(t('centralFrequency.range.band4Upper'));
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
-      if (usedTelescope === 2) {
+      if (usedTelescope === TELESCOPE_LOW_NUM) {
         return frequency < lowMin || frequency > lowMax ? t('centralFrequency.range.lowError') : '';
-      }
-      if (usedTelescope === 1) {
-        switch (observingBand) {
-          case 1:
-            return frequency < band1Min || frequency > band1Max
-              ? t('centralFrequency.range.midError')
-              : '';
-          case 2:
-            return frequency < band2Min || frequency > band2Max
-              ? t('centralFrequency.range.midError')
-              : '';
-          case 3:
-            return frequency < band3Min || frequency > band3Max
-              ? t('centralFrequency.range.midError')
-              : '';
-          case 4:
-            return frequency < band4Min || frequency > band4Max
-              ? t('centralFrequency.range.midError')
-              : '';
+      } else {
+        if (observingBand != null) {
+          const bandMin = Number(t('centralFrequency.range.bandLower' + observingBand));
+          const bandMax = Number(t('centralFrequency.range.bandUpper' + observingBand));
+
+          return frequency < bandMin || frequency > bandMax
+            ? t('centralFrequency.range.midError')
+            : '';
         }
       }
     };

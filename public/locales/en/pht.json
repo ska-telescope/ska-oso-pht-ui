@@ -68,14 +68,14 @@
       "lowUpper": 350,
       "lowError": "Please enter a number between 50 and 350",
       "midError": "Observing frequency out of range",
-      "band1Lower": 0.35,
-      "band1Upper": 1.05,
-      "band2Lower": 0.95,
-      "band2Upper": 1.76,
-      "band3Lower": 4.6,
-      "band3Upper": 8.5,
-      "band4Lower": 8.3,
-      "band4Upper": 15.4
+      "bandLower1": 0.35,
+      "bandUpper1": 1.05,
+      "bandLower2": 0.95,
+      "bandUpper2": 1.76,
+      "bandLower3": 4.6,
+      "bandUpper3": 8.5,
+      "bandLower4": 8.3,
+      "bandUpper4": 15.4
     }
   },
   "changeProposal": {
