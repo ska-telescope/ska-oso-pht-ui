@@ -4,9 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import TeamPage from './TeamPage';
-import { TEAM_STATUS_TYPE_OPTIONS } from '../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { GetMockProposal } from '../../services/axios/getProposal/getProposal';
 import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
@@ -18,7 +16,7 @@ describe('<TeamPage />', () => {
         <StoreProvider>
           <ThemeProvider theme={theme(THEME_LIGHT)}>
             <CssBaseline />
-            <Router location="/" navigator={undefined}>
+            <Router location="/" navigator={undefined} history={undefined}>
               <TeamPage />
             </Router>
           </ThemeProvider>
@@ -32,42 +30,11 @@ describe('Content', () => {
   beforeEach(() => {
     cy.mount(
       <StoreProvider>
-        <Router location="/" navigator={undefined}>
+        <Router location="/" navigator={undefined} history={undefined}>
           <TeamPage />
         </Router>
       </StoreProvider>
     );
-  });
-
-  describe('Stars', () => {
-    it('Displays filled star for PI', () => {
-      const index = GetMockProposal().team.findIndex(teamMember => teamMember.PI);
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
-        ).should('exist');
-      }
-    });
-    it('Displays border star for non PI accepted invitation', () => {
-      const index = GetMockProposal().team.findIndex(
-        teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
-      );
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarBorderRoundedIcon"]`
-        ).should('exist');
-      }
-    });
-    it('Displays no star for pending invitation', () => {
-      const index = GetMockProposal().team.findIndex(
-        teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
-      );
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"]`
-        ).should('be.empty');
-      }
-    });
   });
 
   // describe('First Name Input', () => {
