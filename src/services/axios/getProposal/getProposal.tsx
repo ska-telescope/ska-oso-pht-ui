@@ -1,3 +1,12 @@
+/*
+TODO:
+- test getProposal mapping with data and map all new properties
+- update mapping from frontend to backend
+- check if there are new properties to include in the frontend types?
+- rename MockProposalBackendNew as MockProposalBackend and remove "old" MockProposalBackend when ready
+- tidy up and remove all old mapping functions in this file
+*/
+
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
@@ -9,23 +18,36 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import MockProposal from './mockProposal';
+import MockProposal from './mockProposal'; // TODO: use MockProposalBackendNew and remove old mock when ready
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { ScienceProgrammeBackend } from 'utils/types/scienceProgrammes';
-import { TeamMemberBackend } from '../../../utils/types/teamMember';
 import { TargetBackend } from 'utils/types/target';
+import { ObservationSetBackend } from 'utils/types/observationSet';
+import { InvestigatorBackend } from 'utils/types/investigator';
 
-const getProposalType = (inValue: { main_type: string; sub_type: string }) => {
+const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   return rec.id;
 };
 
+/*
+// old getProposalSubTypeType
 const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
   const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
   return rec2 ? rec2.id : null;
 };
+*/
 
+const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[] }) => {
+  const project = Projects.find(({ title }) => title === inValue.main_type);
+  const subProjects = inValue.sub_type.map(subType =>
+    project.subProjects.find(({ title }) => title === subType)
+  );
+  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+};
+
+/*
+// old getTeamMembers
 const getTeamMembers = (inValue: TeamMemberBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -35,6 +57,24 @@ const getTeamMembers = (inValue: TeamMemberBackend[]) => {
       lastName: inValue[i].last_name,
       email: inValue[i].email,
       country: inValue[i].country,
+      affiliation: inValue[i].organization,
+      phdThesis: inValue[i].for_phd,
+      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
+      pi: inValue[i].principal_investigator
+    });
+  }
+  return results;
+};
+*/
+
+const getTeamMembers = (inValue: InvestigatorBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    results.push({
+      id: i + 1,
+      firstName: inValue[i].given_name,
+      lastName: inValue[i].family_name,
+      email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
       status: TEAM_STATUS_TYPE_OPTIONS.accepted,
@@ -53,6 +93,8 @@ const getSubCategory = () => {
   return 1;
 };
 
+/*
+// old getTargets
 const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -71,12 +113,36 @@ const getTargets = (inValue: TargetBackend[]) => {
   }
   return results;
 };
+*/
 
+const getTargets = (inValue: TargetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    const e = inValue[i];
+    results.push({
+      dec: e.reference_coordinate.dec?.toString(),
+      decUnits: e.reference_coordinate.unit,
+      id: e.target_id !== '' ? e.target_id : i + 1,
+      name: e.reference_coordinate.kind, // TODO: check this is correct
+      ra: e.reference_coordinate.ra?.toString(),
+      raUnits: e.reference_coordinate.unit,
+      referenceFrame: e.reference_coordinate.reference_frame,
+      vel: e.radial_velocity.quantity.value?.toString(),
+      velUnits: e.radial_velocity.quantity.unit
+    });
+  }
+  return results;
+};
+
+/*
 const getIntegrationTimeUnits = (inValue: String) => {
   const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
   return unitsList.find(u => u.label === inValue)?.value;
 };
+*/
 
+/*
+// old getObservations
 const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -96,7 +162,35 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
   }
   return results;
 };
+*/
 
+const getObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    const arr = inValue[i].array_details[i].array === 'MID' ? 1 : 2;
+    const sub = OBSERVATION.array[arr - 1].subarray.find(
+      p => p.label === inValue[i].array_details[i].subarray
+    );
+    results.push({
+      id: inValue[i].observation_set_id,
+      telescope: arr,
+      subarray: sub ? sub.value : 0,
+      type:
+        inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
+          ? 0
+          : 1,
+      imageWeighting: inValue[i].observation_type_details?.image_weighting,
+      observingBand: inValue[i].observing_band,
+      // integrationTime: inValue[i].integration_time, // coming from sens calc results?
+      // integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units), // coming from sens calc results?
+      centralFrequency: inValue[i].observation_type_details?.central_frequency
+    });
+  }
+  return results;
+};
+
+/*
+// old getGroupObservations
 const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -109,7 +203,25 @@ const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
   }
   return results;
 };
+*/
 
+const getGroupObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    if (inValue[i].group_id) {
+      const observationSetId = inValue[i].observation_set_id;
+      const observationId =
+        observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
+      results.push({
+        observationId: observationId,
+        groupId: inValue[i].group_id
+      });
+    }
+  }
+  return results;
+};
+
+/* // old mapping - keeping it here for a bit during the transition
 function mapping(inRec: ProposalBackend): Proposal {
   return {
     id: inRec.prsl_id,
@@ -130,6 +242,32 @@ function mapping(inRec: ProposalBackend): Proposal {
     technicalPDF: null,
     technicalLoadStatus: 0,
     dataProducts: [],
+    pipeline: ''
+  };
+}
+*/
+
+function mapping(inRec: ProposalBackend): Proposal {
+  // TODO: check mapping and add new fields
+  return {
+    id: inRec.prsl_id,
+    title: inRec.info.title,
+    proposalType: getProposalType(inRec.info.proposal_type),
+    proposalSubType: getProposalSubTypeType(inRec.info.proposal_type),
+    team: getTeamMembers(inRec.info.investigators),
+    abstract: inRec.info.abstract,
+    category: getCategory(inRec.info.science_category),
+    subCategory: [getSubCategory()],
+    sciencePDF: null, // TODO: map to DocumentBackend?
+    scienceLoadStatus: 0,
+    targetOption: 1,
+    targets: getTargets(inRec.info.targets),
+    observations: getObservations(inRec.info.observation_sets),
+    groupObservations: getGroupObservations(inRec.info.observation_sets),
+    targetObservation: [],
+    technicalPDF: null, // TODO: map to DocumentBackend?
+    technicalLoadStatus: 0,
+    dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
 }

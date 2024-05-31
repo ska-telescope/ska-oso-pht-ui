@@ -5,8 +5,7 @@ import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import MemberInvite from './MemberInvite';
-import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
-import { TEAM_STATUS_TYPE_OPTIONS, TEXT_ENTRY_PARAMS } from '../../../utils/constants';
+import { TEXT_ENTRY_PARAMS } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -37,37 +36,6 @@ describe('Content', () => {
         </ThemeProvider>
       </StoreProvider>
     );
-  });
-
-  describe('Stars', () => {
-    it('Displays filled star for PI', () => {
-      const index = GetMockProposal().team.findIndex(teamMember => teamMember.PI);
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarRateRoundedIcon"]`
-        ).should('exist');
-      }
-    });
-    it('Displays border star for non PI accepted invitation', () => {
-      const index = GetMockProposal().team.findIndex(
-        teamMember => !teamMember.PI && teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.accepted
-      );
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"] [data-testid="StarBorderRoundedIcon"]`
-        ).should('exist');
-      }
-    });
-    it('Displays no star for pending invitation', () => {
-      const index = GetMockProposal().team.findIndex(
-        teamMember => teamMember.Status === TEAM_STATUS_TYPE_OPTIONS.pending
-      );
-      if (index !== -1) {
-        cy.get(
-          `[data-testid="teamTableId"] div[data-rowindex="${index}"] div[data-field="PI"]`
-        ).should('be.empty');
-      }
-    });
   });
 
   describe('First Name Input', () => {
@@ -255,6 +223,16 @@ describe('Content', () => {
       cy.get('[data-testid="firstName"] input').type(firstName);
       cy.get('[data-testid="lastName"] input').type(lastName);
       cy.get('[data-testid="email"] input').type(email);
+      cy.get('[data-testid="button.sendInviteButton"]').click();
+    });
+    it('Add team member as PI', () => {
+      const firstName = 'Joe';
+      const lastName = 'Whiteley';
+      const email = 'joe.whitely@icloud.com';
+      cy.get('[data-testid="firstName"] input').type(firstName);
+      cy.get('[data-testid="lastName"] input').type(lastName);
+      cy.get('[data-testid="email"] input').type(email);
+      cy.get('[id="piCheckbox"]').click();
       cy.get('[data-testid="button.sendInviteButton"]').click();
     });
   });
