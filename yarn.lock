@@ -2478,10 +2478,10 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.2.tgz#5981a8db18b56ba38ef0efb7d995b12aa7b51918"
   integrity sha512-sXXKG+uL9IrKqViTtao2Ws6dy0znu9sOaP1di/jKGW1M6VssO8vlpXCQcpZ+jisQ1tTFAC5Jo/EOzFbggBagFQ==
 
-"@ska-telescope/ska-gui-components@^1.0.27":
-  version "1.0.27"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.27.tgz#a671fcdd2a81ed03a8ac532d250ce53f1fa49f78"
-  integrity sha512-1OHzg9W8ekLEoPQ2a+m9kDGS0dG39R1btCyjsQ3KpMuqsUs4S9GHyTMVTHQDFcp3esw9hfEYCg1c5Kt6XP4u4w==
+"@ska-telescope/ska-gui-components@^1.0.28":
+  version "1.0.28"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-1.0.28.tgz#dbb20c3afe8ab74f3f106a19a75622322e921d85"
+  integrity sha512-aDmE9IrhRQj3wVmd6xj+mHf6R9DdaAm7QU/qTb1rHtq587CpIe6HgDKGRN/aBzfqI72JY+X7Qosou54+ulOFYQ==
   dependencies:
     "@mui/icons-material" "^5.15.19"
     "@mui/lab" "^5.0.0-alpha.170"
