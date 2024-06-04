@@ -166,7 +166,7 @@ export default function AddObservation() {
       const spectralResolution = OBSERVATION.SpectralResolutionOb1.find(
         e => e.lookup === valueCentralFrequency
       );
-      setSpectralResolution(spectralResolution.value);
+      setSpectralResolution(spectralResolution?.value);
     }
     if (observingBand === 2) {
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
@@ -178,7 +178,7 @@ export default function AddObservation() {
       const spectralResolution = OBSERVATION.SpectralResolutionOb2.find(
         e => e.lookup === valueCentralFrequency
       );
-      setSpectralResolution(spectralResolution.value);
+      setSpectralResolution(spectralResolution?.value);
     }
     if (observingBand === 3) {
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
