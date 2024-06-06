@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -13,7 +13,9 @@ import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
+const LOCAL_PREFIX = 'http://localhost:6101/';
 const PAGE = 3;
 
 export default function SciencePage() {
@@ -22,6 +24,10 @@ export default function SciencePage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
+
+  const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
+  const handleOpenPDFViewer = () => setOpenPDFViewer(true);
+  const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -101,24 +107,13 @@ export default function SciencePage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        spacing={1}
-        p={3}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        <Grid item xs={2} />
-        <Grid item xs={2}>
-          <Typography variant="body2" data-testid="uploadPdfLabel">
-            {t('uploadPDF.label')}
-          </Typography>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid item xs={6}>
           <FileUpload
             chooseFileTypes=".pdf"
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
-            direction="column"
+            direction="row"
             file={getProposal()?.sciencePDF}
             maxFileWidth={25}
             setFile={setFile}
@@ -127,20 +122,28 @@ export default function SciencePage() {
             uploadFunction={uploadPdftoSignedUrl}
             status={uploadButtonStatus}
           />
+        </Grid>
+      </Grid>
+      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
+        <Grid item>
           {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <Box pt={1}>
-              <DownloadButton
-                toolTip={t('pdfDownload.science.toolTip')}
-                action={downloadPDFToSignedUrl}
-              />
-            </Box>
+            <PDFPreviewButton toolTip={t('pdfPreview.science')} action={handleOpenPDFViewer} />
           )}
         </Grid>
-        <Grid item xs={6}>
-          <PDFViewer file={currentFile} />
+        <Grid item>
+          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
+            <DownloadButton
+              toolTip={t('pdfDownload.science.toolTip')}
+              action={downloadPDFToSignedUrl}
+            />
+          )}
         </Grid>
-        <Grid item xs={2} />
       </Grid>
+      <PDFViewer
+        open={openPDFViewer}
+        onClose={handleClosePDFViewer}
+        url={LOCAL_PREFIX + currentFile}
+      />
     </Shell>
   );
 }
