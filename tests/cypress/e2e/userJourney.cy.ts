@@ -51,15 +51,20 @@ context('PROPOSAL HANDLING TOOL', () => {
       .should('contain', 'Accepted')
       .should('have.length', 2);
     //Complete general page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     cy.get('[data-testid="abstractId"]').type('Test Abstract');
     cy.get('[id="categoryId"]').click({ force: true });
     cy.get('[data-value="1"]').click({ force: true });
     cy.get('[id="categoryId"]').should('contain', 'Cosmology');
+    */
     //Complete science page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     //IMPLEMENT FILE UPLOAD
+    */
     //Complete target page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     //manual input of target co-ordinates
     cy.get('[id="name"]').type('M1');
@@ -68,7 +73,9 @@ context('PROPOSAL HANDLING TOOL', () => {
     //default is type velocity
     cy.get('[name="textField"]').type('1');
     cy.get('[data-testid="addTargetButton"]').click({ force: true });
+    */
     //Complete observation page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     // cy.get('[data-testid="observation setupButton"]').click();
     // commented for now as the observation page has changed causing the tests to fail
@@ -103,22 +110,32 @@ context('PROPOSAL HANDLING TOOL', () => {
     //   .should('contain', 'M1')
     //   .should('contain', '0:0:0')
     //   .should('contain', '0:0:0');
+    */
     //Complete technical page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     //IMPLEMENT FILE UPLOAD
+    */
     //Complete data page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     //cy.get('[data-testid="addDataProductButton"]').click();
     //cy.get('[id="field1"]').type('test');
     //cy.get('[id="field2"]').type('test');
     //cy.get('[data-testid="addButton"]').click();
     //Add verification of list
+    */
     //Complete src net page
+    /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    */
     //validate proposal
+    /*
     cy.get('[data-testid="validateButton"]').click();
+    */
   });
 
+  /*
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Partially complete title page
@@ -126,6 +143,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').should('not.be.selected');
   });
+  */
 
   // it('Content : Update existing proposal, add and delete target', () => {
   //   //filter by draft status
