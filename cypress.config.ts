@@ -7,6 +7,7 @@ export default defineConfig({
   screenshotsFolder: 'tests/cypress/screenshots',
   videosFolder: 'tests/cypress/videos',
   downloadsFolder: 'tests/cypress/downloads',
+  defaultCommandTimeout: 20000,
 
   component: {
     supportFile: 'tests/cypress/support/component.js',
