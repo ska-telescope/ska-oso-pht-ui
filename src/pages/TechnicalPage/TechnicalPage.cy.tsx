@@ -9,40 +9,26 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function mounting(theTheme: any) {
+  cy.viewport(1500, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <TechnicalPage />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
 describe('<TechnicalPage />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <Router location="/" navigator={undefined}>
-              <TechnicalPage />
-            </Router>
-          </ThemeProvider>
-        </StoreProvider>
-      );
+    it(`Theme ${theTheme}: Renders & has choose button`, () => {
+      mounting(theTheme);
+      cy.get('[data-testid="SearchIcon"]').click();
+      cy.get('[data-testid="fileUploadChooseButton"]').contains('Choose file');
     });
   }
-  it(`Verify upload file elements`, () => {
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <TechnicalPage />
-        </Router>
-      </StoreProvider>
-    );
-    cy.get('[data-testid="SearchIcon"]').click();
-  });
-
-  it(`Verify pdf preview elements`, () => {
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <TechnicalPage />
-        </Router>
-      </StoreProvider>
-    );
-    // cy.get('[data-testid="pdfPreviewLabel"]').contains('PDF Preview');
-  });
 });
