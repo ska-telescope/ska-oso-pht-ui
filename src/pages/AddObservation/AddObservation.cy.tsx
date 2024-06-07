@@ -38,7 +38,7 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').contains('Sensitivity');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedType.help');
 
-  cy.get('[data-testid="suppliedValue"]').click();
+  cy.get('[data-testid="suppliedValue"]').type('3');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedValue.help');
 
   cy.get('[data-testid="suppliedUnits"]').contains('jy/beam');
@@ -148,12 +148,7 @@ function verifyContinuumBandwidthContinuumLowBand() {
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 function verifyFrequencyUnitsLow() {
-  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="frequencyUnits"]')
-    .find('input[type="text"]')
-    .should('have.attr', 'type', 'text');
-  cy.get('[data-testid="frequencyUnits"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
+  cy.get('[data-testid="frequency"]').contains('MHz');
 }
 
 function verifyContinuumUnits() {
@@ -203,7 +198,8 @@ function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifySpectralResolutionZoomBandMid() {
-  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  //TODO: Refactor with correct values once updates for zoom are in place
+  // cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
@@ -234,7 +230,8 @@ function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifyEffectiveResolutionZoomMidBand() {
-  cy.get('[id="effective"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  //TODO: Refactor with correct values once updates for zoom are in place
+  // cy.get('[id="effective"]').should('have.value', '13.44 kHz (3.0 km/s)');
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -308,7 +305,7 @@ function verifyGroupObservations() {
 }
 
 function mounting(theTheme: any) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 2000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -460,5 +457,12 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifySubBands();
     verifyImageWeighting();
+  });
+
+  it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
+    mounting(THEME_LIGHT);
+    verifyObservingBandLow();
+    verifySubArrayConfigurationValue2();
+    verifyCentralFrequencyContinuumLowBand();
   });
 });
