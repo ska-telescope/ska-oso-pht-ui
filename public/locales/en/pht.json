@@ -629,6 +629,14 @@
   "updated": {
     "label": "Last Updated"
   },
+  "uploadCsvBtn": {
+    "label": "Upload CSV File",
+    "uploadSuccessMsg": "All targets in CSV are uploaded",
+    "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
+    "uploadErrorEquatorialNotValidMsg": "CSV equatorial schema not valid",
+    "uploadErrorGalacticNotValidMsg": "CSV galactic schema not valid",
+    "uploadErrorUnknownParserMsg": "Unknown error in CSV parser - "
+  },
   "uploadPDF": {
     "label": "Upload PDF"
   },
