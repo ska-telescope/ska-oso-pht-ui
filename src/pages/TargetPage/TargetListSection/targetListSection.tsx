@@ -17,13 +17,14 @@ import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
+import { RA_TYPE_EQUATORIAL } from '../../../utils/constants';
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openDialog, setOpenDialog] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
-  const [raType, setRAType] = React.useState(0);
+  const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
 
   const editIconClicked = async () => {
     alert(t('error.iconClicked'));
@@ -168,7 +169,6 @@ export default function TargetListSection() {
                 label={t('importFromFile.label')}
                 {...a11yProps(1)}
                 sx={{ border: '1px solid grey' }}
-                disabled
               />
               <Tab
                 label={t('spatialImaging.label')}
@@ -179,7 +179,7 @@ export default function TargetListSection() {
             </Tabs>
           </Box>
           {value === 0 && <AddTarget raType={raType} />}
-          {value === 1 && <TargetFileImport />}
+          {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
