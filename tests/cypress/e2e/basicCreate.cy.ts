@@ -1,21 +1,26 @@
+
+export function startingPoint() {
+  cy.viewport(1500, 1500);
+  cy.visit('http://localhost:6101/');
+}
+
+function landingPage() {
+  cy.get('[data-testid="skaoLogo"]').should('be.visible');
+  cy.get('[data-testid="Brightness7Icon"]').should('be.visible');
+  cy.get('[data-testid="footerId"]')
+  .should('be.visible')
+  .contains('0.3.0');
+
+  cy.get('[data-testid="addProposalButton"]').should('be.visible');
+}
+
 context('PROPOSAL HANDLING TOOL', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
-    cy.visit('http://localhost:6101/');
+    startingPoint();
   });
 
   it('Content : Create basic proposal', () => {
-    //
-    // Check what we see on the landing page
-    //
-    cy.get('[data-testid="skaoLogo"]').should('be.visible');
-    cy.get('[data-testid="Brightness7Icon"]').should('be.visible');
-    //
-    cy.get('[data-testid="footerId"]')
-      .should('be.visible')
-      .contains('0.3.0');
-
-    //
+    landingPage();
     cy.get('[data-testid="addProposalButton"]').click();
     //
     // Complete title page
