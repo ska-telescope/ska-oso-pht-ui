@@ -1,18 +1,19 @@
 import * as React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography } from '@mui/material';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../utils/types/notification';
+import StandardAlert from '../standardAlert/StandardAlert';
 
 const SECS = 1000;
 
 interface TimedAlertProps {
   color: AlertColorTypes;
   delay?: number;
+  testId: string;
   text: string;
 }
 
-export default function TimedAlert({ color, delay = 2, text }: TimedAlertProps) {
+export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
   const { updateAppContent5 } = storageObject.useStore();
 
@@ -40,14 +41,5 @@ export default function TimedAlert({ color, delay = 2, text }: TimedAlertProps) 
     setShow(true);
     timer();
   }, []);
-
-  return (
-    <>
-      {show && (
-        <Alert testId="timedAlertId" color={color}>
-          <Typography>{text}</Typography>
-        </Alert>
-      )}
-    </>
-  );
+  return <>{show && <StandardAlert color={color} testId={testId} text={text} />}</>;
 }

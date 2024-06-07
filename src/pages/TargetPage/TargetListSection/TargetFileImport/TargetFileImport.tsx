@@ -5,6 +5,7 @@ import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../../utils/types/notification';
+import { RA_TYPE_EQUATORIAL } from '../../../../utils/constants';
 import Papa from 'papaparse';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -61,6 +62,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     return newTarget;
   };
 
+  const isSameHeader = (header1, header2) => {
+    return JSON.stringify(header1) === JSON.stringify(header2);
+  };
+
   const validateUploadCsv = async theFile => {
     const validEquatorialCsvHeader = ['name', 'ra', 'dec'];
     const validGalacticCsvHeader = ['name', 'longitude', 'latitude'];
@@ -78,10 +83,12 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             );
 
             let errorInRows = false;
-            if (raType === 0) {
-              if (JSON.stringify(result.meta.fields) !== JSON.stringify(validEquatorialCsvHeader))
+            let targets;
+
+            if (raType === RA_TYPE_EQUATORIAL) {
+              if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
-              const targets = result.data.reduce((result, target, index) => {
+              targets = result.data.reduce((result, target, index) => {
                 if (target.name && target.ra && target.dec) {
                   result.push(
                     AddTheTargetEquatorial(
@@ -96,11 +103,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
                 }
                 return result;
               }, []);
-              setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             } else {
-              if (JSON.stringify(result.meta.fields) !== JSON.stringify(validGalacticCsvHeader))
+              if (!isSameHeader(result.meta.fields, validGalacticCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
-              const targets = result.data.reduce((result, target, index) => {
+              targets = result.data.reduce((result, target, index) => {
                 if (target.name && target.latitude && target.longitude) {
                   result.push(
                     AddTheTargetGalactic(
@@ -115,8 +121,8 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
                 }
                 return result;
               }, []);
-              setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             }
+            setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             NotifyOK(t('uploadCsvBtn.uploadSuccessMsg'));
@@ -155,7 +161,6 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
         clearToolTip={t('clearBtn.toolTip')}
         direction="row"
         maxFileWidth={25}
-        //setFile={setFile}
         testId="csvUpload"
         uploadFunction={validateUploadCsv}
         status={uploadButtonStatus}
