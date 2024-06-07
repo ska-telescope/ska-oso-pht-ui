@@ -180,7 +180,7 @@ function verifySpectralResolutionLow() {
 }
 
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.8 km/s)');
+  cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.1 km/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
