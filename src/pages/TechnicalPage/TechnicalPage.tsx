@@ -15,7 +15,6 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
-const LOCAL_PREFIX = 'http://localhost:6101/';
 const PAGE = 6;
 
 export default function TechnicalPage() {
@@ -26,7 +25,6 @@ export default function TechnicalPage() {
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
-  const handleOpenPDFViewer = () => setOpenPDFViewer(true);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -87,6 +85,21 @@ export default function TechnicalPage() {
     }
   };
 
+  const previewSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+        setCurrentFile(signedUrl);
+        setOpenPDFViewer(true);
+      }
+    } catch (e) {
+      new Error(t('pdfDownload.error'));
+    }
+  };
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -127,7 +140,7 @@ export default function TechnicalPage() {
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton toolTip={t('pdfPreview.technical')} action={handleOpenPDFViewer} />
+            <PDFPreviewButton toolTip={t('pdfPreview.technical')} action={previewSignedUrl} />
           )}
         </Grid>
         <Grid item>
@@ -139,11 +152,7 @@ export default function TechnicalPage() {
           )}
         </Grid>
       </Grid>
-      <PDFViewer
-        open={openPDFViewer}
-        onClose={handleClosePDFViewer}
-        url={LOCAL_PREFIX + currentFile}
-      />
+      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
 }

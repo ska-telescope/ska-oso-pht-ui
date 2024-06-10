@@ -15,7 +15,6 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
-const LOCAL_PREFIX = 'http://localhost:6101/';
 const PAGE = 3;
 
 export default function SciencePage() {
@@ -26,7 +25,6 @@ export default function SciencePage() {
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
-  const handleOpenPDFViewer = () => setOpenPDFViewer(true);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -79,8 +77,24 @@ export default function SciencePage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
+      console.log('TREVOR downloadPDFToSignedUrl', selectedFile, signedUrl);
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
+      }
+    } catch (e) {
+      new Error(t('pdfDownload.error'));
+    }
+  };
+
+  const previewSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+        setCurrentFile(signedUrl);
+        setOpenPDFViewer(true);
       }
     } catch (e) {
       new Error(t('pdfDownload.error'));
@@ -127,7 +141,7 @@ export default function SciencePage() {
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton toolTip={t('pdfPreview.science')} action={handleOpenPDFViewer} />
+            <PDFPreviewButton toolTip={t('pdfPreview.science')} action={previewSignedUrl} />
           )}
         </Grid>
         <Grid item>
@@ -139,11 +153,7 @@ export default function SciencePage() {
           )}
         </Grid>
       </Grid>
-      <PDFViewer
-        open={openPDFViewer}
-        onClose={handleClosePDFViewer}
-        url={LOCAL_PREFIX + currentFile}
-      />
+      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
 }
