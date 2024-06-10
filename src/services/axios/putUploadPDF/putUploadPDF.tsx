@@ -18,8 +18,6 @@ async function PutUploadPDF(signedUrl, selectedFile) {
         'Content-Type': 'multipart/form-data'
       }
     });
-
-    console.log('TREVOR result.data', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

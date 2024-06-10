@@ -76,8 +76,6 @@ export default function SciencePage() {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-
-      console.log('TREVOR downloadPDFToSignedUrl', selectedFile, signedUrl);
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
       }
