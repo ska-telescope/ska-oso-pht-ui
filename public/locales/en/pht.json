@@ -95,13 +95,16 @@
     "help": "Continuum BANDWIDTH HELP",
     "label": "Continuum BandWidth",
     "range": {
-      "midLower": 0,
-      "midUpper": 0.8,
-      "lowLower": 0,
-      "lowUpper": 75,
-      "error": "Value is outside of allowed range"
-    }
+      "error": "Value is outside of allowed range",
+      "maxExceeded": "Value is outside of allowed range"
+    },
+    "invalid" : "invalid!"
   },
+  "minChannelWidthHz": {
+    "mid": 13.44e3,
+    "low": 5425.34722
+  },
+
   "continuumUnits": {
     "help": "CONTINUUM UNITS HELP"
   },

@@ -827,23 +827,73 @@ export default function AddObservation() {
       </Grid>
     );
   };
-  const continuumBandwidthField = () => {
-    const errorMessage = () => {
-      const lowMin = Number(t('continuumBandWidth.range.lowLower'));
-      const lowMax = Number(t('continuumBandWidth.range.lowUpper'));
-      const midMin = Number(t('continuumBandWidth.range.midLower'));
-      const midMax = Number(t('continuumBandWidth.range.midUpper'));
-      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
-      if (usedTelescope === 2) {
-        return continuumBandwidth <= lowMin || continuumBandwidth > lowMax
-          ? t('continuumBandWidth.range.error')
-          : '';
-      } else if (usedTelescope === 1) {
-        return continuumBandwidth <= midMin || continuumBandwidth > midMax
-          ? t('continuumBandWidth.range.error')
-          : '';
-      }
+  //modified params from SC, subarray type was ArrayDropDownValue
+  const bandwidthFieldValidator = (frequency: number, bandwidth: number, observingMode: string, subarrayType: string) => {
+    //TODO: Implement example ranges in constants file
+    const rangeErrorMessage = this.config?.validationErrors?.find(e => e.errorName === "bandwidthRangeError")?.errorMessage;
+    const minimumChannelWidthErrorMessage = this.config?.validationErrors?.find(e => e.errorName === "bandwidthSmallerThanChannel")?.errorMessage;
+    const contBandwidthMaximumExceededMessage = this.config?.validationErrors?.find(e => e.errorName === "contBandwidthMaximumExceeded")?.errorMessage;
+    if (bandwidth < t('minChannelWidthHz.mid')) {
+      return { 'minimumChannelWidthError': minimumChannelWidthErrorMessage };
+    }
+
+    const maxContBandwidthHz = midMaxContBandwidthHzForSubarray.get(subarrayType.label as MidSubarrayId);
+    if (maxContBandwidthHz && bandwidth > maxContBandwidthHz) {
+      //TODO: Use message in the error message as per the sensitivity calculator
+      const message = contBandwidthMaximumExceededMessage?.replace("%s", (maxContBandwidthHz * 1e-6).toString());
+      return t('continuumBandWidth.range.maxExceeded')
+    }
+
+    if (!isBandwidthContained(frequency, bandwidth, observingMode, subarrayType)) {
+      return t('continuumBandWidth.range.error')
+    }
+    return null;
+  };
+
+  const isBandwidthContained = (scaledFrequency: number, scaledBandwidth: number, observingMode: string, subarrayType: string) => {
+    const scaledFrequencyNum = Number(scaledFrequency);
+    const halfBandwidth = Number(scaledBandwidth) / 2.0;
+
+    const lowerBound: number = scaledFrequencyNum - halfBandwidth;
+    const upperBound: number = scaledFrequencyNum + halfBandwidth;
+
+    const bandLimits = getBandLimits(observingMode, subarrayType);
+
+    return !(lowerBound < bandLimits[0] || upperBound > bandLimits[1]);
+  }
+
+  const getBandLimits = (observingMode: string, subarrayType: string) => {
+    const fieldObservingMode = observingMode
+    if (!fieldObservingMode) {
+      return [];
+    }
+    //TODO: Implement as per the Sensitivity Calculator
+    const bandLimits = fieldObservingMode.defaultValue.find((e: any) => e.mode === observingMode).bandLimits;
+
+    const hasSKA = subarrayType.n_ska > 0;
+    const hasMeerkat = subarrayType.n_meer > 0;
+
+    let key: string;
+    if (hasMeerkat && !hasSKA) {
+      key = "meerkat";
+    } else if (hasSKA && !hasMeerkat) {
+      key = "ska";
+    } else {
+      key = "mixed";
+    }
+    return bandLimits.find((e: any) => e.type === key).limits;
+  }
+
+  const continuumBandwidthField = () => {
+    const validateContinuumBandwidth = () => {
+      const scaledCentralFrequency = getScaledValue(frequency, 1000000000, '*');
+      const scaledBandwidth = getScaledValue(continuumBandwidth, 1000000000, '*');
+      // observingMode = for example "Band 1"
+      // subarrayType = for example AA4
+      //TODO: Supply values observingmode and subarraytype rather than hardcoding an example
+      const errors = bandwidthFieldValidator(scaledCentralFrequency, scaledBandwidth, "Band 1", "AA4");
+      return errors ? t('continuumBandWidth.invalid') : '';
     };
 
     return (
@@ -854,11 +904,11 @@ export default function AddObservation() {
         labelWidth={LABEL_WIDTH_STD}
         suffix={continuumUnitsField()}
         testId="continuumBandwidth"
-        value={continuumBandwidth}
+        value={validateContinuumBandwidth()}
         setValue={setContinuumBandwidth}
         onFocus={() => helpComponent(t('continuumBandWidth.help'))}
         required
-        errorText={errorMessage()}
+        errorText={bandwidthFieldValidator()}
       />
     );
   };
