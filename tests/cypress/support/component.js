@@ -1,6 +1,6 @@
 import '@cypress/code-coverage/support';
 import './commands';
-import 'cypress-file-upload'
+import 'cypress-file-upload';
 
 import { mount } from 'cypress/react18';
 

@@ -92,8 +92,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   return (
     <>
       <Grid
-        p={1}
-        pt={1}
+        pl={2}
+        pr={2}
         container
         direction="row"
         alignItems="center"
@@ -111,11 +111,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
               >
                 <Grid item>
                   {backPage > 0 && (
-                    <PreviousPageButton
-                      label={t('button.cancel')}
-                      page={pageNo}
-                      action={prevPageNav}
-                    />
+                    <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />
                   )}
                   {!backPage && <HomeButton />}
                 </Grid>
