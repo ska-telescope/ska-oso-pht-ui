@@ -15,7 +15,6 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
-const LOCAL_PREFIX = 'http://localhost:6101/';
 const PAGE = 3;
 
 export default function SciencePage() {
@@ -44,12 +43,17 @@ export default function SciencePage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), sciencePDF: theFile });
-    setCurrentFile(theFile);
+    //setCurrentFile(theFile);
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
     setUploadButtonStatus(status);
+  };
+
+  const generateDownloadPdfUrlForPreview = () => {
+    const url = downloadPDFToSignedUrl(false);
+    setCurrentFile(url);
   };
 
   const uploadPdftoSignedUrl = async theFile => {
@@ -67,21 +71,27 @@ export default function SciencePage() {
         throw new Error('Science PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      generateDownloadPdfUrlForPreview();
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
     }
   };
 
-  const downloadPDFToSignedUrl = async () => {
+  const downloadPDFToSignedUrl = async (isOpenWindow = true) => {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+      if (
+        isOpenWindow &&
+        (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null)
+      ) {
         window.open(signedUrl, '_blank');
       }
+
+      return signedUrl;
     } catch (e) {
       new Error(t('pdfDownload.error'));
     }
@@ -139,11 +149,7 @@ export default function SciencePage() {
           )}
         </Grid>
       </Grid>
-      <PDFViewer
-        open={openPDFViewer}
-        onClose={handleClosePDFViewer}
-        url={LOCAL_PREFIX + currentFile}
-      />
+      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
 }
