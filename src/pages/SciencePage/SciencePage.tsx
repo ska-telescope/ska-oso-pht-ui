@@ -43,7 +43,6 @@ export default function SciencePage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), sciencePDF: theFile });
-    //setCurrentFile(theFile);
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
