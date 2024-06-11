@@ -1,5 +1,5 @@
 import React from 'react';
-import { VisibilityRounded } from '@mui/icons-material';
+import View from '@mui/icons-material/VisibilityRounded';
 import Icon from '../icon/Icon';
 
 interface ViewIconProps {
@@ -13,7 +13,7 @@ export default function ViewIcon({ disabled = false, onClick, toolTip = '' }: Vi
     <Icon
       disabled={disabled}
       onClick={onClick}
-      icon={<VisibilityRounded />}
+      icon={<View />}
       testId="viewIcon"
       toolTip={toolTip}
     />

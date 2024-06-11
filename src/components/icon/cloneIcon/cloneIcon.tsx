@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileCopyRounded } from '@mui/icons-material';
+import FileCopyIcon from '@mui/icons-material/FileCopyRounded';
 import Icon from '../icon/Icon';
 
 interface CloneIconProps {
@@ -13,7 +13,7 @@ export default function CloneIcon({ disabled = false, onClick, toolTip = '' }: C
     <Icon
       disabled={disabled}
       onClick={onClick}
-      icon={<FileCopyRounded />}
+      icon={<FileCopyIcon />}
       testId="cloneIcon"
       toolTip={toolTip}
     />

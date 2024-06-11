@@ -1,5 +1,5 @@
 import React from 'react';
-import { DeleteRounded } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/DeleteRounded';
 import Icon from '../icon/Icon';
 
 interface TrashIconProps {
@@ -13,7 +13,7 @@ export default function TrashIcon({ disabled = false, onClick, toolTip = '' }: T
     <Icon
       disabled={disabled}
       onClick={onClick}
-      icon={<DeleteRounded />}
+      icon={<DeleteIcon />}
       testId="trashIcon"
       toolTip={toolTip}
     />
