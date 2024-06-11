@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
-import CancelButton from '../../../button/Cancel/Cancel';
-import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
-import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes, DataGrid, StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
 import { OBS_TYPES } from '../../../../utils/constants';
 
@@ -50,17 +49,13 @@ export default function SensCalcModalMultiple({
   }
 
   const headerDisplay = (inStr: string, inUnits: string) => {
-    const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
+    const unit = inUnits.length > 0 ? ` ${t(`sensitivityCalculatorResults.${inUnits}`)}` : '';
     const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
     const arr = sent.split(' ');
     i = 0;
     let count = 0;
     return (
-      <Stack>
-        {arr.map(rec => {
-          return HeaderLine(rec, unit.length > 0 && arr.length === ++count);
-        })}
-      </Stack>
+      <Stack>{arr.map(rec => HeaderLine(rec, unit.length > 0 && arr.length === ++count))}</Stack>
     );
   };
 
@@ -150,22 +145,20 @@ export default function SensCalcModalMultiple({
         sortable: false,
         width: 50,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { status: number; error: string } }) => {
-          return (
-            <Box pt={1}>
-              <StatusIcon
-                ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: e.row.status ? t('statusValue.' + e.row.status) : '',
-                  error: e.row.error
-                })}
-                testId="statusId"
-                icon
-                level={e.row.status}
-                size={SIZE}
-              />
-            </Box>
-          );
-        }
+        renderCell: (e: { row: { status: number; error: string } }) => (
+          <Box pt={1}>
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: e.row.status ? t(`statusValue.${e.row.status}`) : '',
+                error: e.row.error
+              })}
+              testId="statusId"
+              icon
+              level={e.row.status}
+              size={SIZE}
+            />
+          </Box>
+        )
       }
     ]
   ];
@@ -188,10 +181,10 @@ export default function SensCalcModalMultiple({
       <Card variant="outlined">
         <CardHeader
           action={<CancelButton action={handleClose} title="button.close" />}
-          avatar={
+          avatar={(
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: level ? t('statusValue.' + level) : '',
+                status: level ? t(`statusValue.${level}`) : '',
                 error: levelError
               })}
               testId="statusId"
@@ -200,9 +193,9 @@ export default function SensCalcModalMultiple({
               size={SIZE}
               text=""
             />
-          }
+          )}
           component={Box}
-          title={t('sensitivityCalculatorResults.title') + ' (' + observation.id + ')'}
+          title={`${t('sensitivityCalculatorResults.title')} (${observation.id})`}
           titleTypographyProps={{
             align: 'center',
             fontWeight: 'bold',

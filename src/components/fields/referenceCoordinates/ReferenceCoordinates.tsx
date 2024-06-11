@@ -22,18 +22,16 @@ export default function ReferenceCoordinatesField({
   const ReferenceCoordinatesValueField = () => {
     const OPTIONS = [0, 1];
 
-    const getOptions = () => {
-      return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
-    };
+    const getOptions = () => OPTIONS.map(e => ({ label: t(`${FIELD}.${e}`), value: e }));
 
     return (
       <Box pt={1}>
         <DropDown
           options={getOptions()}
-          testId={FIELD + 'Type'}
+          testId={`${FIELD}Type`}
           value={value}
           setValue={setValue}
-          label={t(FIELD + '.label')}
+          label={t(`${FIELD}.label`)}
           labelBold
           labelPosition={LABEL_POSITION.START}
           labelWidth={labelWidth}

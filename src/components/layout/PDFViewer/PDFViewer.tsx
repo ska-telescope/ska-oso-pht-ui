@@ -26,48 +26,38 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
 
   const goToNextPage = () => setPageNumber(pageNumber + 1 >= numPages ? numPages : pageNumber + 1);
 
-  const displayPages = () => {
-    return (
-      <Typography p={2} variant="body1">
-        {numPages > 1 ? t('page.pageOf', { current: pageNumber, max: numPages }) : ''}
-      </Typography>
-    );
-  };
+  const displayPages = () => (
+    <Typography p={2} variant="body1">
+      {numPages > 1 ? t('page.pageOf', { current: pageNumber, max: numPages }) : ''}
+    </Typography>
+  );
 
   const handleClose = () => {
     onClose();
   };
 
-  const displayNavigation = () => {
-    return (
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={1}
-      >
-        <Grid item>
-          {numPages > 1 && (
-            <PreviousPageButton
-              disabled={pageNumber === 1}
-              label={t('page.previous')}
-              action={goToPrevPage}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {numPages > 1 && (
-            <NextPageButton
-              disabled={pageNumber === numPages}
-              label={t('page.next')}
-              action={goToNextPage}
-            />
-          )}
-        </Grid>
+  const displayNavigation = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+      <Grid item>
+        {numPages > 1 && (
+          <PreviousPageButton
+            disabled={pageNumber === 1}
+            label={t('page.previous')}
+            action={goToPrevPage}
+          />
+        )}
       </Grid>
-    );
-  };
+      <Grid item>
+        {numPages > 1 && (
+          <NextPageButton
+            disabled={pageNumber === numPages}
+            label={t('page.next')}
+            action={goToNextPage}
+          />
+        )}
+      </Grid>
+    </Grid>
+  );
 
   return (
     <Dialog

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
-import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import Papa from 'papaparse';
+import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
 import { RA_TYPE_EQUATORIAL } from '../../../../utils/constants';
-import Papa from 'papaparse';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -24,7 +24,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
 
   const AddTheTargetGalactic = (id, name, latitude, longitude) => {
     const newTarget = {
-      //Default values from AddTarget.tsx
+      // Default values from AddTarget.tsx
       dec: '',
       decUnit: raType.toString(),
       id,
@@ -44,7 +44,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
 
   const AddTheTargetEquatorial = (id, name, ra, dec) => {
     const newTarget = {
-      //Default values from AddTarget.tsx
+      // Default values from AddTarget.tsx
       dec,
       decUnit: raType.toString(),
       id,
@@ -62,9 +62,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     return newTarget;
   };
 
-  const isSameHeader = (header1, header2) => {
-    return JSON.stringify(header1) === JSON.stringify(header2);
-  };
+  const isSameHeader = (header1, header2) => JSON.stringify(header1) === JSON.stringify(header2);
 
   const validateUploadCsv = async theFile => {
     const validEquatorialCsvHeader = ['name', 'ra', 'dec'];

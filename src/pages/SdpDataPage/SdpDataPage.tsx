@@ -2,16 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { OBSERVATION, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import { OBSERVATION, STATUS_ERROR, STATUS_OK, PATH } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import AddButton from '../../components/button/Add/Add';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import Alert from '../..//components/alerts/standardAlert/StandardAlert';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import { PATH } from '../../utils/constants';
 
 const PAGE = 7;
 const DATAGRID_HEIGHT = 450;
@@ -59,7 +58,7 @@ export default function SdpDataPage() {
           str += ', ';
         }
         const res = i + 1;
-        const tmp = t('observatoryDataProduct.options.' + res);
+        const tmp = t(`observatoryDataProduct.options.${res}`);
         str += tmp;
       }
     }
@@ -106,9 +105,8 @@ export default function SdpDataPage() {
         headerName: t('imageWeighting.label'),
         flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { weighting: number } }) => {
-          return OBSERVATION.ImageWeighting[e.row.weighting].label;
-        }
+        renderCell: (e: { row: { weighting: number } }) =>
+          OBSERVATION.ImageWeighting[e.row.weighting].label
       },
       {
         field: 'id',
@@ -116,7 +114,7 @@ export default function SdpDataPage() {
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => (
+        renderCell: () => (
           <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
         )
       }
@@ -170,10 +168,10 @@ export default function SdpDataPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
+  const hasObservations = () => getProposal()?.targetObservation?.length > 0;
   const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
-  const errorMessage = () => t('page.' + PAGE + errorSuffix());
+  const errorMessage = () => t(`page.${PAGE}${errorSuffix()}`);
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);

@@ -2,10 +2,10 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import theme from '../../services/theme/theme';
-import TargetPage from './TargetPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { Router } from 'react-router-dom';
+import theme from '../../services/theme/theme';
+import TargetPage from './TargetPage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 

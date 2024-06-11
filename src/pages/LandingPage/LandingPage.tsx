@@ -84,12 +84,11 @@ export default function LandingPage() {
       updateAppContent3(null);
       setAxiosViewError(response);
       return false;
-    } else {
-      updateAppContent1(EMPTY_STATUS);
-      updateAppContent2(response);
-      updateAppContent3(response);
-      return true;
     }
+    updateAppContent1(EMPTY_STATUS);
+    updateAppContent2(response);
+    updateAppContent3(response);
+    return true;
   };
 
   const goToTitlePage = () => {
@@ -100,7 +99,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       setOpenViewDialog(true);
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 
@@ -108,7 +107,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 
@@ -116,7 +115,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       setOpenCloneDialog(true);
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 
@@ -125,7 +124,7 @@ export default function LandingPage() {
     setProposal({
       ...getProposal(),
       id: null,
-      title: getProposal().title + ' ' + t('cloneProposal.suffix')
+      title: `${getProposal().title} ${t('cloneProposal.suffix')}`
     });
     goToTitlePage();
   };
@@ -158,7 +157,7 @@ export default function LandingPage() {
       field: 'status',
       headerName: t('status.label'),
       width: 100,
-      renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+      renderCell: (e: { row: any }) => t(`proposalStatus.${e.row.status}`)
     },
     { field: 'lastUpdated', headerName: t('updated.label'), width: 150 },
     {

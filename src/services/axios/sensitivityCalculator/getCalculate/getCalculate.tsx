@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import {
   AXIOS_CONFIG,
   OBSERVATION_TYPE_BACKEND,
@@ -14,7 +15,6 @@ import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockRe
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 
 const URL_CALCULATE = `calculate`;
@@ -27,7 +27,7 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getMode = () =>
     observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
+      ? `${OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase()}/`
       : '';
 
   const getSubArray = () => {
@@ -65,7 +65,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     return observation.continuumBandwidth.split(' ');
   }
 
-  /*********************************************************** MID *********************************************************/
+  /** ********************************************************* MID ******************************************************** */
 
   interface ModeSpecificParametersMid {
     n_subbands?: string;
@@ -75,18 +75,18 @@ async function GetCalculate(observation: Observation, target: Target) {
   }
 
   function mapQueryCalculateMid(): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParametersMid = {};
+    const modeSpecificParameters: ModeSpecificParametersMid = {};
     if (observation.type === TYPE_CONTINUUM) {
-      mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      mode_specific_parameters.resolution = (
+      modeSpecificParameters.n_subbands = observation.numSubBands?.toString();
+      modeSpecificParameters.resolution = (
         Number(observation.spectralResolution.split(' ')[0]) * 1000
       ).toString(); // resolution should be sent in Hz
     } else {
       const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
-      mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
+      modeSpecificParameters.zoom_frequencies = sensCalHelpers.format
         .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
         .toString();
-      mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
+      modeSpecificParameters.zoom_resolutions = observation.effectiveResolution?.toString();
     }
 
     const weighting = OBSERVATION.ImageWeighting.find(
@@ -124,15 +124,15 @@ async function GetCalculate(observation: Observation, target: Target) {
       calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
       taper: observation.tapering?.toString(),
       integration_time: iTime?.toString(),
-      ...mode_specific_parameters
+      ...modeSpecificParameters
     };
     const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+    for (const key in params) urlSearchParams.append(key, params[key]);
 
     return urlSearchParams;
   }
 
-  /*********************************************************** LOW *********************************************************/
+  /** ********************************************************* LOW ******************************************************** */
 
   interface ModeSpecificParametersLow {
     bandwidth_mhz?: number;
@@ -144,26 +144,26 @@ async function GetCalculate(observation: Observation, target: Target) {
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
 
   function pointingCentre() {
-    return rightAscension() + ' ' + declination();
+    return `${rightAscension()} ${declination()}`;
   }
 
   function mapQueryCalculateLow(): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParametersLow = {};
+    const modeSpecificParameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
       const bandwidthValueUnit: string[] = getContinuumBandwidthValueUnit();
       // const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
-      mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
+      modeSpecificParameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
       ); // low continuum bandwidth should be sent in MH
-      mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
+      modeSpecificParameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
     } else {
-      // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
+      // modeSpecificParameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
       const value = 16;
-      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix // TODO: use spectral_resolution_hz and convert units if necessary
+      modeSpecificParameters.spectral_resolution_hz = value?.toString(); // temp fix // TODO: use spectral_resolution_hz and convert units if necessary
 
       const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(
+      modeSpecificParameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
       ); // low zoom bandwidth should be sent in KHz
@@ -180,21 +180,18 @@ async function GetCalculate(observation: Observation, target: Target) {
       pointing_centre: pointingCentre(),
       freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
       elevation_limit: observation.elevation?.toString(),
-      ...mode_specific_parameters
+      ...modeSpecificParameters
     };
     const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+    for (const key in params) urlSearchParams.append(key, params[key]);
 
     return urlSearchParams;
   }
 
-  /*************************************************************************************************************************/
+  /** ********************************************************************************************************************** */
 
-  const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryCalculateLow()
-      : mapQueryCalculateMid();
-  };
+  const getQueryParams = () =>
+    observation.telescope === TELESCOPE_LOW_NUM ? mapQueryCalculateLow() : mapQueryCalculateMid();
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {

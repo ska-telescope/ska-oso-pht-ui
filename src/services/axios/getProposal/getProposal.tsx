@@ -8,6 +8,9 @@ TODO:
 */
 
 import axios from 'axios';
+import { TargetBackend } from '../../../utils/types/target';
+import { ObservationSetBackend } from '../../../utils/types/observationSet';
+import { InvestigatorBackend } from '../../../utils/types/investigator';
 import {
   AXIOS_CONFIG,
   GENERAL,
@@ -20,9 +23,6 @@ import {
 } from '../../../utils/constants';
 import MockProposal from './mockProposal'; // TODO: use MockProposalBackendNew and remove old mock when ready
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { TargetBackend } from 'utils/types/target';
-import { ObservationSetBackend } from 'utils/types/observationSet';
-import { InvestigatorBackend } from 'utils/types/investigator';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
   const rec = Projects.find(p => p.title === inValue.main_type);
@@ -68,7 +68,7 @@ const getTeamMembers = (inValue: TeamMemberBackend[]) => {
 */
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     results.push({
       id: i + 1,
@@ -89,9 +89,7 @@ const getCategory = (cat: String) => {
   return rec ? rec.value : 0;
 };
 
-const getSubCategory = () => {
-  return 1;
-};
+const getSubCategory = () => 1;
 
 /*
 // old getTargets
@@ -116,7 +114,7 @@ const getTargets = (inValue: TargetBackend[]) => {
 */
 
 const getTargets = (inValue: TargetBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     const e = inValue[i];
     results.push({
@@ -165,7 +163,7 @@ const getObservations = (inValue: ScienceProgrammeBackend[]) => {
 */
 
 const getObservations = (inValue: ObservationSetBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details[i].array === 'MID' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(
@@ -206,14 +204,14 @@ const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
 */
 
 const getGroupObservations = (inValue: ObservationSetBackend[]) => {
-  let results = [];
+  const results = [];
   for (let i = 0; i < inValue.length; i++) {
     if (inValue[i].group_id) {
       const observationSetId = inValue[i].observation_set_id;
       const observationId =
         observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
       results.push({
-        observationId: observationId,
+        observationId,
         groupId: inValue[i].group_id
       });
     }

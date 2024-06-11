@@ -39,12 +39,12 @@ function App() {
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const theStorage = {
-    help: help,
-    helpToggle: helpToggle,
-    telescope: telescope,
+    help,
+    helpToggle,
+    telescope,
     themeMode: themeMode.mode,
-    toggleTheme: toggleTheme,
-    updateTelescope: updateTelescope
+    toggleTheme,
+    updateTelescope
   };
 
   return (
@@ -69,12 +69,12 @@ function App() {
           copyrightFunc={setShowCopyright}
           testId="footerId"
           version={REACT_APP_VERSION}
-          versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
+          versionTooltip={`${t('apiVersion.label')} : ${apiVersion}`}
         >
           <Typography pt={1} variant="body1">
             {LOCAL_DATA}
           </Typography>
-          <Typography variant="body1"></Typography>
+          <Typography variant="body1" />
         </Footer>
       </React.Suspense>
     </ThemeProvider>

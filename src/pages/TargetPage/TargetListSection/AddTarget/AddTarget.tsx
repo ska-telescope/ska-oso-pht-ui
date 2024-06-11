@@ -115,25 +115,23 @@ export default function AddTarget({ raType }: AddTargetProps) {
     processCoordinatesResults(response);
   };
 
-  const nameField = () => {
-    return (
-      <Grid p={1}>
-        <TextEntry
-          required
-          label={t('name.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="name"
-          value={name}
-          setValue={setName}
-          suffix={<ResolveButton action={() => getCoordinates(name, raType)} />}
-          onFocus={() => helpComponent(t('name.help'))}
-          errorText={nameFieldError}
-        />
-      </Grid>
-    );
-  };
+  const nameField = () => (
+    <Grid p={1}>
+      <TextEntry
+        required
+        label={t('name.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LAB_WIDTH}
+        testId="name"
+        value={name}
+        setValue={setName}
+        suffix={<ResolveButton action={() => getCoordinates(name, raType)} />}
+        onFocus={() => helpComponent(t('name.help'))}
+        errorText={nameFieldError}
+      />
+    </Grid>
+  );
 
   return (
     <Grid
@@ -184,7 +182,7 @@ export default function AddTarget({ raType }: AddTargetProps) {
           {velType === VELOCITY && (
             <Grid item xs={12}>
               <ReferenceFrameField
-                labelBold={true}
+                labelBold
                 labelPosition={LABEL_POSITION.START}
                 labelWidth={LAB_WIDTH}
                 onFocus={() => helpComponent(t('referenceFrame.help'))}
