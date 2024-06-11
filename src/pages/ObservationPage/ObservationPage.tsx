@@ -91,7 +91,7 @@ export default function ObservationPage() {
 
     const temp2 = [];
     getProposal().targetObservation.forEach(rec => {
-      if (rec => rec.targetId === target?.id && rec.observationId === currId) {
+      if (rec && rec.targetId === target?.id && rec.observationId === currId) {
         temp2.push({
           targetId: rec.targetId,
           observationId: currId,

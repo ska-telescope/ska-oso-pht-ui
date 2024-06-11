@@ -3,16 +3,17 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 interface PreviousPageProps {
-  label?: string;
-  page?: number;
   action: Function;
+  disabled?: boolean;
+  label?: string;
 }
 
-export default function PreviousPageButton({ label = '', page = 0, action }: PreviousPageProps) {
+export default function PreviousPageButton({ action, disabled, label = '' }: PreviousPageProps) {
   return (
     <Button
       ariaDescription={`${label}Button`}
       color={ButtonColorTypes.Inherit}
+      disabled={disabled}
       icon={<ArrowBackIosIcon />}
       label={label}
       onClick={action}

@@ -99,7 +99,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       setOpenViewDialog(true);
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 
@@ -107,7 +107,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       goToTitlePage();
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 
@@ -115,7 +115,7 @@ export default function LandingPage() {
     if (await getTheProposal(id)) {
       setOpenCloneDialog(true);
     } else {
-      alert(t('error.iconClicked'));
+      // alert(t('error.iconClicked'));
     }
   };
 

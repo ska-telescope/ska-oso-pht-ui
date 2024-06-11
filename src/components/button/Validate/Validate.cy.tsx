@@ -21,7 +21,7 @@ function mounting(theTheme: any, disabled: boolean) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <ValidateButton action={cy.stub().as('action')} />
+      <ValidateButton action={cy.stub().as('action')} disabled={disabled} />
     </ThemeProvider>
   );
 }

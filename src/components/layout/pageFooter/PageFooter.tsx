@@ -15,10 +15,9 @@ import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
-  children?: JSX.Element;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false, children }: PageFooterProps) {
+export default function PageFooter({ pageNo, buttonDisabled = false }: PageFooterProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
@@ -91,9 +90,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     >
       <Grid p={1} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
-          {usedPageNo > 0 && (
-            <PreviousPageButton label={prevLabel()} page={usedPageNo} action={prevPageNav} />
-          )}
+          {usedPageNo > 0 && <PreviousPageButton action={prevPageNav} label={prevLabel()} />}
         </Grid>
         <Grid item>
           {(application.content5 as Notification)?.message?.length > 0 && (

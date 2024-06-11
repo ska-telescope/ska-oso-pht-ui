@@ -26,7 +26,7 @@ export default function TargetListSection() {
   const [raType, setRAType] = React.useState(0);
 
   const editIconClicked = async () => {
-    alert(t('error.iconClicked'));
+    // alert(t('error.iconClicked'));
   };
 
   const deleteIconClicked = () => {
