@@ -833,17 +833,19 @@ export default function AddObservation() {
   //modified params from SC, subarray type was ArrayDropDownValue
   const bandwidthFieldValidator = (frequency: number, bandwidth: number, observingMode: string, subarrayType: string) => {
     //TODO: Implement example ranges in constants file
-    const rangeErrorMessage = t('continuumBandWidth.range.error')
-    const minimumChannelWidthErrorMessage = t('bandWidth.bandwidthSmallerThanChannelError');
+    const minimumChannelWidthErrorMessage = t('bandWidth.range.SmallerThanChannel'); // TODO: put this in bandwidth instead
+    const contBandwidthMaximumExceededMessage = t('bandWidth.range.MaximumExceeded');// TODO: put this in bandwidth instead
     if (bandwidth < MIN_CHANNEL_WIDTH_HZ.mid) {
-      return { 'minimumChannelWidthError': minimumChannelWidthErrorMessage };
+      return t('continuumBandWidth.range.error'); // TODO: check if we need to use continuumBandWidth or bandwidth?
     }
-
-    const maxContBandwidthHz = midMaxContBandwidthHzForSubarray.get(subarrayType.label as MidSubarrayId);
+    const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+    let subarrayType2 = 'AA1'; // TODO: use subbarayType parameter instead
+    const maxContBandwidthHz = OBSERVATION?.array?.find(e => e.value === usedTelescope).subarray?.find(e => e.label === subarrayType2)?.maxContinuumBandwidthHZ;
     if (maxContBandwidthHz && bandwidth > maxContBandwidthHz) {
       //TODO: Use message in the error message as per the sensitivity calculator
       const message = contBandwidthMaximumExceededMessage?.replace("%s", (maxContBandwidthHz * 1e-6).toString());
-      return t('continuumBandWidth.range.maxExceeded')
+      // return t('continuumBandWidth.range.maxExceeded')
+      return message // TODO: Not working yet as error message even when in range
     }
 
     if (!isBandwidthContained(frequency, bandwidth, observingMode, subarrayType)) {
@@ -894,7 +896,7 @@ export default function AddObservation() {
       // subarrayType = for example AA4
       //TODO: Supply values observingmode and subarraytype rather than hardcoding an example
       const errors = bandwidthFieldValidator(scaledCentralFrequency, scaledBandwidth, "Band 1", "AA4");
-      return errors ? t('continuumBandWidth.invalid') : '';
+      return errors ? errors : '';
     };
 
     return (
@@ -905,11 +907,12 @@ export default function AddObservation() {
         labelWidth={LABEL_WIDTH_STD}
         suffix={continuumUnitsField()}
         testId="continuumBandwidth"
-        value={validateContinuumBandwidth()}
+        // value={validateContinuumBandwidth()}
+        value={continuumBandwidth}
         setValue={setContinuumBandwidth}
         onFocus={() => helpComponent(t('continuumBandWidth.help'))}
         required
-        errorText={bandwidthFieldValidator()}
+        errorText={validateContinuumBandwidth()}
       />
     );
   };

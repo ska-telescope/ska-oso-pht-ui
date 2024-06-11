@@ -147,7 +147,8 @@ export const OBSERVATION = {
           label: 'AA0.5',
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6
         },
         {
           value: 2,
@@ -155,7 +156,8 @@ export const OBSERVATION = {
           label: 'AA1',
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6
         },
         {
           value: 3,
@@ -163,7 +165,8 @@ export const OBSERVATION = {
           label: 'AA2',
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6
         },
         {
           value: 5,
@@ -172,6 +175,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 80,
           numOf13mAntennas: 64,
           numOfStations: 0
+          // if no maxContinuumBandwidthHZ, the full bandwidth is allowed
         },
         {
           value: 6,
@@ -179,7 +183,7 @@ export const OBSERVATION = {
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
         },
         {
           value: 8,
@@ -187,7 +191,7 @@ export const OBSERVATION = {
           label: 'AA4',
           numOf15mAntennas: 133,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
         },
         {
           value: 9,
@@ -195,7 +199,7 @@ export const OBSERVATION = {
           label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
         },
         {
           value: 10,
@@ -203,7 +207,7 @@ export const OBSERVATION = {
           label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
         },
         {
           value: 20,
@@ -211,7 +215,7 @@ export const OBSERVATION = {
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
         }
       ],
       robust: [
@@ -247,7 +251,8 @@ export const OBSERVATION = {
           label: 'AA0.5',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 6
+          numOfStations: 6,
+          maxContinuumBandwidthHZ: 75e6
         },
         {
           value: 2,
@@ -255,7 +260,8 @@ export const OBSERVATION = {
           label: 'AA1',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 18
+          numOfStations: 18,
+          maxContinuumBandwidthHZ: 75e6
         },
         {
           value: 3,
@@ -263,7 +269,8 @@ export const OBSERVATION = {
           label: 'AA2',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 64
+          numOfStations: 64,
+          maxContinuumBandwidthHZ: 150e6
         },
         {
           value: 4,
@@ -271,7 +278,8 @@ export const OBSERVATION = {
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 40
+          numOfStations: 40,
+          maxContinuumBandwidthHZ: 150e6
         },
         {
           value: 5,
@@ -279,7 +287,8 @@ export const OBSERVATION = {
           label: 'AA*',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 307
+          numOfStations: 307,
+          // if no maxContinuumBandwidthHZ, the full bandwidth is allowed
         },
         {
           value: 7,
