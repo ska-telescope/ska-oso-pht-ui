@@ -8,7 +8,11 @@ interface PreviousPageProps {
   label?: string;
 }
 
-export default function PreviousPageButton({ action, disabled, label = '' }: PreviousPageProps) {
+export default function PreviousPageButton({
+  action,
+  disabled = false,
+  label = ''
+}: PreviousPageProps) {
   return (
     <Button
       ariaDescription={`${label}Button`}

@@ -6,17 +6,24 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 interface NextPageProps {
   label?: string;
   page?: number;
+  primary?: boolean;
   action: Function;
   disabled?: boolean;
 }
 
-export default function NextPageButton({ label = '', page = 0, action, disabled }: NextPageProps) {
+export default function NextPageButton({
+  label = '',
+  page = 0,
+  primary = false,
+  action,
+  disabled
+}: NextPageProps) {
   const getIcon = () => (page < 0 ? <AddIcon /> : <ArrowForwardIosIcon />);
 
   return (
     <Button
       ariaDescription={`${label}Button`}
-      color={ButtonColorTypes.Secondary}
+      color={primary ? ButtonColorTypes.Secondary : ButtonColorTypes.Inherit}
       disabled={disabled}
       icon={getIcon()}
       label={label}

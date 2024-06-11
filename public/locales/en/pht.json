@@ -303,7 +303,8 @@
     "toolTip": "Status of the {{pageName}} page : {{status}}"
   },
   "pdfPreview": {
-    "label": "PDF Preview"
+    "label": "PDF Preview",
+    "science": "This is the PDF preview button on the Science page"
   },
   "phdThesis": {
     "label": "for PhD Thesis",
@@ -619,6 +620,14 @@
   "updated": {
     "label": "Last Updated"
   },
+  "uploadCsvBtn": {
+    "label": "Upload CSV File",
+    "uploadSuccessMsg": "All targets in CSV are uploaded",
+    "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
+    "uploadErrorEquatorialNotValidMsg": "CSV equatorial schema not valid",
+    "uploadErrorGalacticNotValidMsg": "CSV galactic schema not valid",
+    "uploadErrorUnknownParserMsg": "Unknown error in CSV parser - "
+  },
   "uploadPDF": {
     "label": "Upload PDF"
   },
@@ -716,7 +725,10 @@
     "13": {
       "title": "Data Product",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
-    }
+    },
+    "next": "Next",
+    "pageOf": "Page {{current}} of {{max}}",
+    "previous": "Previous"
   },
   "label": {
     "button": {

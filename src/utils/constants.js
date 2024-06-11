@@ -27,6 +27,9 @@ export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 
+export const RA_TYPE_EQUATORIAL = 0;
+export const RA_TYPE_GALACTIC = 1;
+
 export const LAST_PAGE = 9;
 
 export const AXIOS_CONFIG = {

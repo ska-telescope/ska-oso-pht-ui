@@ -72,8 +72,27 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[id="skyDirectionValue2"]').type('0:0:0');
     //default is type velocity
     cy.get('[name="textField"]').type('1');
-    cy.get('[data-testid="addTargetButton"]').click({ force: true });
-    */
+    cy.get('[data-testid="Add targetButton"]').click({ force: true });
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_equatorial_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_equatorial_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'name1')
+      .should('contain', '05:34:30.900')
+      .should('contain', '+22:00:53.000')
+      .should('have.length', 7);
+
     //Complete observation page
     /*
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
@@ -144,6 +163,211 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="CreateButton"]').should('not.be.selected');
   });
   */
+
+  it('Content : Begin to create proposal, then in Target page to add equatorial target with csv with valid csv', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_equatorial_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_equatorial_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'equatorial1')
+      .should('contain', '05:34:30.900')
+      .should('contain', '+22:00:53.000')
+      .should('have.length', 7);
+  });
+
+  it('Content : Begin to create proposal, then in Target page to add equatorial target with csv with invalid csv (correct schema with partial empty rows)', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_equatorial_invalid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_equatorial_invalid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'equatorial4')
+      .should('contain', '05:34:30.900')
+      .should('contain', '+22:00:53.000')
+      .should('have.length', 4);
+  });
+
+  it('Content : Begin to create proposal, then in Target page to add equatorial target with csv with invalid csv (incorrect schema)', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_galactic_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_galactic_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get(
+      'div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    ).should('not.exist');
+  });
+
+  it('Content : Begin to create proposal, then in Target page to add galactic target with valid csv', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.get('[data-testid="referenceCoordinatesType"]').click();
+    cy.get('[data-value="1"]').click();
+
+    cy.fixture('target_galactic_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_galactic_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'galactic1')
+      // TODO: enable checking after fixing galatic lat lon not displayed properly
+      // .should('contain', '+11:55:00.00')
+      // .should('contain', '+33:55:00.00')
+      .should('have.length', 7);
+  });
+
+  it('Content : Begin to create proposal, then in Target page to add galactic target with csv with invalid csv (correct schema with partial empty rows)', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    // import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    // Choose galactic
+    cy.get('[data-testid="referenceCoordinatesType"]').click();
+    cy.get('[data-value="1"]').click();
+
+    cy.fixture('target_galactic_invalid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_galactic_invalid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'galactic4')
+      // TODO: enable checking after fixing galatic lat lon not displayed properly
+      // .should('contain', '+44:55:00.00')
+      // .should('contain', '+33:55:00.00')
+      .should('have.length', 4);
+  });
+
+  it('Content : Begin to create proposal, then in Target page to add galactic target with csv with invalid csv (incorrect schema)', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    //Complete title page
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+
+    // Go to target page
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+
+    // Choose galactic
+    cy.get('[data-testid="referenceCoordinatesType"]').click();
+    cy.get('[data-value="1"]').click();
+
+    //import target from file
+    cy.get('[id="simple-tab-1"]').click();
+    cy.get('input[type="file"]').as('fileInput');
+
+    cy.fixture('target_equatorial_valid.csv').then(fileContent => {
+      cy.get('@fileInput').attachFile({
+        fileContent: fileContent.toString(),
+        fileName: 'target_equatorial_valid.csv',
+        mimeType: 'text/csv'
+      });
+    });
+    cy.get('[data-testid="csvUploadUploadButton"]').click();
+    cy.get(
+      'div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
+    ).should('not.exist');
+  });
 
   // it('Content : Update existing proposal, add and delete target', () => {
   //   //filter by draft status
