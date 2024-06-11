@@ -9,40 +9,39 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function mountingBasic(theTheme: any) {
+  cy.viewport(1500, 1500);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <GeneralPage />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
 describe('<GeneralPage />', () => {
   describe('Theme', () => {
     for (const theTheme of THEME) {
       it(`Theme ${theTheme}: Renders`, () => {
-        cy.mount(
-          <StoreProvider>
-            <ThemeProvider theme={theme(theTheme)}>
-              <CssBaseline />
-              <Router location="/" navigator={undefined}>
-                <GeneralPage />
-              </Router>
-            </ThemeProvider>
-          </StoreProvider>
-        );
+        mountingBasic(theTheme);
       });
     }
   });
 
   describe('Content', () => {
     beforeEach(() => {
-      cy.mount(
-        <StoreProvider>
-          <Router location="/" navigator={undefined}>
-            <GeneralPage />
-          </Router>
-        </StoreProvider>
-      );
+      mountingBasic(THEME_LIGHT);
     });
     //
     describe('abstract TextEntry', () => {
       it('latex preview button', () => {
         //TODO: Investigate why .type isn't working
         cy.get('[id="abstractId"]').type('hello');
-        cy.get('[data-testid="VisibilitySharpIcon"]').click();
+        cy.get('[data-testid="viewIcon"]').click();
         cy.get('[id="modal-modal-title"]').contains('abstract.latexPreviewTitle');
       });
       //     it('abstract updated with user input', () => {
