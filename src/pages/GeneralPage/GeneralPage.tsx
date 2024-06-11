@@ -8,9 +8,8 @@ import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
-import IconButton from '@mui/material/IconButton';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
-import VisibilitySharpIcon from '@mui/icons-material/VisibilitySharp';
+import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -131,15 +130,7 @@ export default function GeneralPage() {
           onFocus={() => helpComponent(t('abstract.help'))}
           helperText={helperFunction(getProposal().abstract)}
           errorText={validateWordCount(getProposal().abstract)}
-          suffix={
-            <IconButton
-              aria-label="preview latex"
-              edge="end"
-              onClick={handleOpenAbstractLatexModal}
-            >
-              <VisibilitySharpIcon />
-            </IconButton>
-          }
+          suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
           value={getProposal().abstract}

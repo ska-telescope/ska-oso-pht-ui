@@ -1,5 +1,5 @@
 import React from 'react';
-import { DownloadRounded } from '@mui/icons-material';
+import DownloadIcon from '@mui/icons-material/DownloadRounded';
 import BaseButton from '../Base/Button';
 
 interface DownloadButtonProps {
@@ -23,7 +23,7 @@ export default function DownloadButton({
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<DownloadRounded />}
+      icon={<DownloadIcon />}
       primary={primary}
       testId={testId}
       title={title}
