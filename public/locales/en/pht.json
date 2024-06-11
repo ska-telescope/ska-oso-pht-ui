@@ -58,7 +58,8 @@
   },
   "bandWidth": {
     "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
-    "label": "Band Width"
+    "label": "Band Width",
+    "bandwidthSmallerThanChannelError": "Bandwidth must be larger than the channel width (13.44 kHz)"
   },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
@@ -100,11 +101,6 @@
     },
     "invalid" : "invalid!"
   },
-  "minChannelWidthHz": {
-    "mid": 13.44e3,
-    "low": 5425.34722
-  },
-
   "continuumUnits": {
     "help": "CONTINUUM UNITS HELP"
   },

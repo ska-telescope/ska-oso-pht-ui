@@ -475,6 +475,11 @@ export const OBSERVATION = {
   ]
 };
 
+export const MIN_CHANNEL_WIDTH_HZ = {
+    mid: 13.44e3,
+    low: 5425.34722,
+  };
+
 export const TARGETS = {
   'No Target': null,
   'Create Mosaic': null

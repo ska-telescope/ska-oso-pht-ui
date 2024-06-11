@@ -17,7 +17,8 @@ import {
   OBSERVATION_TYPE,
   TELESCOPE_LOW_NUM,
   TELESCOPES,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  MIN_CHANNEL_WIDTH_HZ
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
@@ -828,13 +829,13 @@ export default function AddObservation() {
     );
   };
 
+  /* HERE */
   //modified params from SC, subarray type was ArrayDropDownValue
   const bandwidthFieldValidator = (frequency: number, bandwidth: number, observingMode: string, subarrayType: string) => {
     //TODO: Implement example ranges in constants file
-    const rangeErrorMessage = this.config?.validationErrors?.find(e => e.errorName === "bandwidthRangeError")?.errorMessage;
-    const minimumChannelWidthErrorMessage = this.config?.validationErrors?.find(e => e.errorName === "bandwidthSmallerThanChannel")?.errorMessage;
-    const contBandwidthMaximumExceededMessage = this.config?.validationErrors?.find(e => e.errorName === "contBandwidthMaximumExceeded")?.errorMessage;
-    if (bandwidth < t('minChannelWidthHz.mid')) {
+    const rangeErrorMessage = t('continuumBandWidth.range.error')
+    const minimumChannelWidthErrorMessage = t('bandWidth.bandwidthSmallerThanChannelError');
+    if (bandwidth < MIN_CHANNEL_WIDTH_HZ.mid) {
       return { 'minimumChannelWidthError': minimumChannelWidthErrorMessage };
     }
 
