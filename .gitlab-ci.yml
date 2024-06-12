@@ -1,5 +1,6 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  KUBE_HOST: 'https://k8s.stfc.skao.int'
   a11y_urls: 'https://www.skao.int/'
   JS_NODE_VERSION: 21
   TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
