@@ -11,6 +11,8 @@ stages:
   - scan
   - pages
   - deploy
+  - integration
+  - staging
   - accessibility
   - publish
 
@@ -21,6 +23,48 @@ js-test:
     - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
     - 'make help | grep js-test'
     - make js-install-reinstall ## needed to re-install cypress
+
+########################## PHT SPECIFIC STUFF BELOW HERE #################################
+
+.info_script: &info_script
+  - |-
+    echo "Status of pods in $KUBE_NAMESPACE namespace:"
+    kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
+    echo "Addresses to connect to the deployment of the PHT: "
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
+    echo "Backend API:"
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v1/ui/"
+
+.dev_env: &dev_env
+  variables:
+    KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
+    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+  environment:
+    name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
+
+info-dev-environment:
+  <<: *dev_env
+  script:
+    - *info_script
+
+info-integration:
+  script:
+    - *info_script
+
+info-staging:
+  script:
+    - *info_script
+
+deploy-dev-environment:
+  <<: *dev_env
+
+test-dev-environment:
+  <<: *dev_env
+
+stop-dev-environment:
+  <<: *dev_env
+
+########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 include:
   - template: 'Verify/Accessibility.gitlab-ci.yml'
@@ -44,3 +88,6 @@ include:
   # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+  # deploy steps
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
