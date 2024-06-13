@@ -16,16 +16,6 @@ function mountingBasic(theTheme: any) {
   );
 }
 
-function mounting(theTheme: any, disabled: boolean) {
-  cy.viewport(1500, 1500);
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <ValidateButton action={cy.stub().as('action')} />
-    </ThemeProvider>
-  );
-}
-
 function validateClick() {
   // cy.get('[data-testid="testId"]').click({ multiple: true });
 }
@@ -39,16 +29,6 @@ describe('<ValidateButton />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (basic)`, () => {
       mountingBasic(theTheme);
-      validateClick();
-      validateToolTip();
-    });
-    it(`Theme ${theTheme}: Renders (enabled)`, () => {
-      mounting(theTheme, true);
-      validateClick();
-      validateToolTip();
-    });
-    it(`Theme ${theTheme}: Renders (disabled)`, () => {
-      mounting(theTheme, false);
       validateClick();
       validateToolTip();
     });

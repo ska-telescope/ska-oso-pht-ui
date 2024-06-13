@@ -4,14 +4,14 @@ import { USE_LOCAL_DATA } from '../../../utils/constants';
 async function PutUploadPDF(signedUrl, selectedFile) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';
 
-  //TODO: revisit error handling when s3 credential is added to the backend
+  // TODO: revisit error handling when s3 credential is added to the backend
 
   if (USE_LOCAL_DATA) {
     return `${UPLOAD_URL_DUMMY}`;
   }
 
   try {
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append('file', selectedFile);
     const result = await axios.put(`${signedUrl}`, formData, {
       headers: {

@@ -11,7 +11,7 @@ import {
 import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
-} from './../../../utils/types/sensitivityCalculatorAPIResponse';
+} from '../../../utils/types/sensitivityCalculatorAPIResponse';
 import Target from '../../../utils/types/target';
 
 export default function calculateSensitivityCalculatorResults(
@@ -146,7 +146,7 @@ export default function calculateSensitivityCalculatorResults(
   return theResults as SensCalcResult;
 }
 
-/******************************************* MID ********************************************/
+/** ***************************************** MID ******************************************* */
 
 const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
   response.weighting.confusion_noise.value
@@ -188,11 +188,11 @@ const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   type: number
 ) => {
-  const weighting_factor =
+  const weightingFactor =
     type === TYPE_ZOOM
       ? response.weighting.weighting_factor
       : response.weightingLine.weighting_factor;
-  return (response.calculate.data.spectral_sensitivity?.value ?? 0) * weighting_factor;
+  return (response.calculate.data.spectral_sensitivity?.value ?? 0) * weightingFactor;
 };
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
@@ -210,14 +210,14 @@ const getSpectralSBSLOW = (
   sense: number,
   type: number
 ) => {
-  const conv_factor =
+  const conversionFactor =
     type === TYPE_ZOOM
       ? response?.weighting?.sbs_conv_factor[0]
       : response?.weightingLine?.sbs_conv_factor[0];
-  return sense * conv_factor;
+  return sense * conversionFactor;
 };
 
-/******************************************* MID ********************************************/
+/** ***************************************** MID ******************************************* */
 
 const getConfusionNoiseMID = (response: SensitivityCalculatorAPIResponseMid): number =>
   response.weighting.data.confusion_noise.value
@@ -257,11 +257,11 @@ const getSpectralWeightedSensitivityMID = (
   response: SensitivityCalculatorAPIResponseMid,
   type: number
 ) => {
-  const weighting_factor =
+  const weightingFactor =
     type === TYPE_ZOOM
       ? response.weighting?.data.weighting_factor
       : response.weightingLine?.data.weighting_factor;
-  return (response.calculate.data?.data?.result?.sensitivity ?? 0) * weighting_factor;
+  return (response.calculate.data?.data?.result?.sensitivity ?? 0) * weightingFactor;
 };
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, type: number) => {
@@ -279,14 +279,14 @@ const getSpectralSBSMID = (
   sense: number,
   type: number
 ) => {
-  const conv_factor =
+  const conversionFactor =
     type === TYPE_ZOOM
       ? response?.weighting?.data.sbs_conv_factor[0]
       : response?.weightingLine?.data.sbs_conv_factor[0];
-  return sense * conv_factor;
+  return sense * conversionFactor;
 };
 
-/********************************************************************************************/
+/** ***************************************************************************************** */
 
 const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
   sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);

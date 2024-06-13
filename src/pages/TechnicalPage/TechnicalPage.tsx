@@ -40,7 +40,7 @@ export default function TechnicalPage() {
   };
 
   const setFile = (theFile: File) => {
-    //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
+    // TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), technicalPDF: theFile });
     setCurrentFile(theFile);
   };
@@ -57,7 +57,7 @@ export default function TechnicalPage() {
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-technical.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
+      if (typeof signedUrl !== 'string') new Error('Not able to Get Technical PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
@@ -74,7 +74,7 @@ export default function TechnicalPage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${t('pdfDownload.technical.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
@@ -88,7 +88,7 @@ export default function TechnicalPage() {
   const previewSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${t('pdfDownload.technical.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {

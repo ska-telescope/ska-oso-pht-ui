@@ -35,12 +35,12 @@ export default function StandardAlert({ color, testId, text }: StandardAlertProp
         alignItems="center"
       >
         <Grid item>
-          <StatusIcon icon level={getLevel(color)} size={FONTSIZE} testId={testId + 'Icon'} />
+          <StatusIcon icon level={getLevel(color)} size={FONTSIZE} testId={`${testId}Icon`} />
         </Grid>
         <Grid item>
           <Typography>{text}</Typography>
         </Grid>
-        <Grid item></Grid>
+        <Grid item />
       </Grid>
     </Alert>
   );

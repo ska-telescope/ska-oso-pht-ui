@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
@@ -14,7 +15,6 @@ import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 
 interface PageBannerProps {

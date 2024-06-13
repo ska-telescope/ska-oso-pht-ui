@@ -10,15 +10,14 @@ import { LAST_PAGE, NAV } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
-import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
+import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 
 interface PageFooterProps {
   pageNo: number;
   buttonDisabled?: boolean;
-  children?: JSX.Element;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false, children }: PageFooterProps) {
+export default function PageFooter({ pageNo, buttonDisabled = false }: PageFooterProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();

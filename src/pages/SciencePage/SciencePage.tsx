@@ -40,7 +40,7 @@ export default function SciencePage() {
   };
 
   const setFile = (theFile: File) => {
-    //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
+    // TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     setProposal({ ...getProposal(), sciencePDF: theFile });
     setCurrentFile(theFile);
   };
@@ -57,7 +57,7 @@ export default function SciencePage() {
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-science.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
+      if (typeof signedUrl !== 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
@@ -74,7 +74,7 @@ export default function SciencePage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${t('pdfDownload.science.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
@@ -87,7 +87,7 @@ export default function SciencePage() {
   const previewSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${t('pdfDownload.science.label')}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {

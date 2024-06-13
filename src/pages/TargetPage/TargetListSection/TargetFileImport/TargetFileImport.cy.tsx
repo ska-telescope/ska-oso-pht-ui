@@ -2,9 +2,9 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../../services/theme/theme';
 import TargetFileImport from './TargetFileImport';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -51,7 +51,7 @@ describe('Content', () => {
       });
     });
     cy.get('[testid="csvUploadFilename"]').contains('target_equatorial_valid.c...');
-    //TODO: identify getTarget not iterable
-    //cy.get('[data-testid="csvUploadUploadButton"]').click();
+    // TODO: identify getTarget not iterable
+    // cy.get('[data-testid="csvUploadUploadButton"]').click();
   });
 });

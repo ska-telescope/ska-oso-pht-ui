@@ -10,7 +10,7 @@ import {
   STATUS_ERROR
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
-import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
+import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
 
 export type SensCalcResult = {
   id?: string;
@@ -51,7 +51,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const output = await fetchSensCalc(observation, target);
 
     if ('error' in output) {
-      let err = SENSCALC_ERROR;
+      const err = SENSCALC_ERROR;
       err.title = target.name;
       err.error = output.error;
       return err;
@@ -59,7 +59,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
     if ('calculate' in output) {
       if ('error' in output.weighting) {
-        let err = SENSCALC_ERROR;
+        const err = SENSCALC_ERROR;
         err.title = target.name;
         err.error = output.weighting.error.detail.split('\n')[0];
         return err;
@@ -68,7 +68,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
     if ('weighting' in output) {
       if ('error' in output.weighting) {
-        let err = SENSCALC_ERROR;
+        const err = SENSCALC_ERROR;
         err.title = target.name;
         err.error = output.weighting.error.detail.split('\n')[0];
         return err;
@@ -78,7 +78,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const results = await calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
-    const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+    const results = { ...SENSCALC_LOADING, status: STATUS_ERROR };
     return results as SensCalcResult;
   }
 }

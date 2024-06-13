@@ -4,6 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
@@ -12,7 +13,6 @@ import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/Download/Download';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
@@ -49,13 +49,13 @@ export default function ProposalDisplay({
   };
 
   const handleDownload = () => {
-    //TODO
+    // TODO
   };
 
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
+      const selectedFile = `${proposal.id}-${fileType}${t('fileType.pdf')}`;
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
@@ -209,7 +209,9 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {getProposal().id}-science{t('fileType.pdf')}
+            {getProposal().id}
+            -science
+            {t('fileType.pdf')}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.science.toolTip')}
@@ -311,7 +313,9 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
-            {getProposal().id}-technical{t('fileType.pdf')}
+            {getProposal().id}
+            -technical
+            {t('fileType.pdf')}
           </Typography>
           <DownloadIcon
             toolTip={t('pdfDownload.technical.toolTip')}

@@ -2,9 +2,9 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import Loader from './Loader';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
