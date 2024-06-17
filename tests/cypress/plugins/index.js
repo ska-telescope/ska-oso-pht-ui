@@ -1,4 +1,7 @@
 /* eslint-disable global-require */
-module.exports = on => {
+const cucumber = require('cypress-cucumber-preprocessor').default;
+
+module.exports = (on, config) => {
   on('task', require('@cypress/code-coverage/task'));
+  on('file:preprocessor', cucumber());
 };
