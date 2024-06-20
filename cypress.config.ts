@@ -32,6 +32,6 @@ export default defineConfig({
       // implement node event listeners here
       on('file:preprocessor', cucumber())
     },
-    specPattern: 'tests/cypress/e2e/**/*',
-  },
+    specPattern: 'cypress/integration/**'
+  }
 });

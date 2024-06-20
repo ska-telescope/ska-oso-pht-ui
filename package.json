@@ -42,9 +42,9 @@
     "nth-check": "^2.0.1",
     "postcss": "^8.4.31"
   },
-  "cypress-cucumber-preprocessor":{
+  "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true,
-    "step_definitions": "tests/cypress/e2e/features/OpenGoogleImages"
+    "step_definitions": "cypress/integration/stepDefinitions/"
   },
   "dependencies": {
     "@babel/preset-env": "^7.21.4",
@@ -57,6 +57,7 @@
     "@react-pdf/renderer": "^3.4.2",
     "@ska-telescope/ska-gui-components": "^1.0.28",
     "@ska-telescope/ska-gui-local-storage": "^1.0.1",
+    "@testing-library/cypress": "^10.0.2",
     "axios": "^1.6.3",
     "babel-core": "6",
     "bundle-loader": "^0.5.6",
