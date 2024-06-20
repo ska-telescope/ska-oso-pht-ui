@@ -1,10 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
-const cucumber = require  ('cypress-cucumber-preprocessor').default;
-import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
-import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
-import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild';
+const cucumber = require('cypress-cucumber-preprocessor').default;
 
 export default defineConfig({
   fixturesFolder: 'tests/cypress/fixtures',
@@ -27,11 +24,10 @@ export default defineConfig({
   },
 
   e2e: {
-    supportFile: 'tests/cypress/support/e2e.js',
     setupNodeEvents(on, config) {
       // implement node event listeners here
-      on('file:preprocessor', cucumber())
+      on('file:preprocessor', cucumber());
     },
-    specPattern: 'cypress/integration/**'
+    specPattern: 'cypress/integration/*.feature'
   }
 });

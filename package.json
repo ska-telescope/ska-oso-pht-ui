@@ -44,7 +44,7 @@
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true,
-    "step_definitions": "cypress/integration/stepDefinitions/"
+    "step_definitions": "cypress/integration/"
   },
   "dependencies": {
     "@babel/preset-env": "^7.21.4",
