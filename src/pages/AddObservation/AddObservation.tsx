@@ -15,6 +15,7 @@ import {
   NAV,
   OBSERVATION,
   OBSERVATION_TYPE,
+  OBSERVATION_TYPE_CONTINUUM,
   TELESCOPE_LOW_NUM,
   TELESCOPES,
   TYPE_CONTINUUM
@@ -203,6 +204,8 @@ export default function AddObservation() {
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
 
+  const isContinuumOnly = () => subarrayConfig === 1;
+
   // TODO : We should move this to a utility at some point
   const options = (prefix: string, arr: number[]) => {
     let results = [];
@@ -345,6 +348,25 @@ export default function AddObservation() {
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
           options={options('observationType', OBSERVATION_TYPE)}
+          testId="observationType"
+          value={observationType}
+          setValue={setObservationType}
+          label={t('observationType.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_OPT1}
+          onFocus={() => helpComponent(t('observationType.help'))}
+          required
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const observationTypeFieldContinuumOnly = () => (
+    <Grid pt={1} spacing={0} container direction="row">
+      <Grid item xs={FIELD_WIDTH_OPT1}>
+        <DropDown
+          options={options('observationType', OBSERVATION_TYPE_CONTINUUM)}
           testId="observationType"
           value={observationType}
           setValue={setObservationType}
@@ -1215,7 +1237,9 @@ export default function AddObservation() {
                   justifyContent="space-evenly"
                 >
                   <Grid item xs={XS_BOTTOM}>
-                    {observationTypeField()}
+                    {isContinuumOnly()
+                      ? observationTypeFieldContinuumOnly()
+                      : observationTypeField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {suppliedField()}
