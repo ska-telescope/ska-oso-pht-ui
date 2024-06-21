@@ -204,7 +204,17 @@ export default function AddObservation() {
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
 
-  const isContinuumOnly = () => subarrayConfig === 1;
+  const isContinuumOnly = () => {
+    if (isLow()) {
+      if (subarrayConfig === 1 || subarrayConfig === 2) {
+        return true;
+      }
+    } else {
+      if (subarrayConfig === 1 || subarrayConfig === 2 || subarrayConfig === 3) {
+        return true;
+      }
+    }
+  };
 
   // TODO : We should move this to a utility at some point
   const options = (prefix: string, arr: number[]) => {
