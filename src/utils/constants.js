@@ -25,8 +25,6 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 
-export const OBSERVATION_TYPE_CONTINUUM = [TYPE_CONTINUUM];
-
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 

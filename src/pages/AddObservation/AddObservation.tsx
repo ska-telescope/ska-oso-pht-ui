@@ -15,7 +15,6 @@ import {
   NAV,
   OBSERVATION,
   OBSERVATION_TYPE,
-  OBSERVATION_TYPE_CONTINUUM,
   TELESCOPE_LOW_NUM,
   TELESCOPES,
   TYPE_CONTINUUM
@@ -376,7 +375,10 @@ export default function AddObservation() {
     <Grid pt={1} spacing={0} container direction="row">
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
-          options={options('observationType', OBSERVATION_TYPE_CONTINUUM)}
+          options={options(
+            'observationType',
+            OBSERVATION_TYPE.filter(e => e === TYPE_CONTINUUM)
+          )}
           testId="observationType"
           value={observationType}
           setValue={setObservationType}
@@ -793,13 +795,15 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       if (usedTelescope === TELESCOPE_LOW_NUM) {
-        return frequency < lowMin || frequency > lowMax ? t('centralFrequency.range.lowError') : '';
+        return Number(frequency) < lowMin || Number(frequency) > lowMax
+          ? t('centralFrequency.range.lowError')
+          : '';
       } else {
         if (observingBand != null) {
           const bandMin = Number(t('centralFrequency.range.bandLower' + observingBand));
           const bandMax = Number(t('centralFrequency.range.bandUpper' + observingBand));
 
-          return frequency < bandMin || frequency > bandMax
+          return Number(frequency) < bandMin || Number(frequency) > bandMax
             ? t('centralFrequency.range.midError')
             : '';
         }
