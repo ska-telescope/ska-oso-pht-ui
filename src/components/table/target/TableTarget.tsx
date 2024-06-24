@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Checkbox, TablePagination } from '@mui/material';
+import { Box, TablePagination } from '@mui/material';
 import Observation from '../../../utils/types/observation';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 
@@ -44,7 +44,7 @@ export default function TableTarget({ data, observation = null }: TableTargetPro
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
@@ -52,32 +52,30 @@ export default function TableTarget({ data, observation = null }: TableTargetPro
 
   /*********************************************/
 
-  
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-    <TableContainer component={Paper}>
-      <Table aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>{t('name.label')}</TableCell>
-            <TableCell>{t('rightAscension.label')}</TableCell>
-            <TableCell>{t('declination.label')}</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row, index) => {
-            const isItemSelected = isSelected(row.id);
-            const labelId = `enhanced-table-checkbox-${index}`;
-            return (
-              <TableRow
+        <TableContainer component={Paper}>
+          <Table aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>{t('name.label')}</TableCell>
+                <TableCell>{t('rightAscension.label')}</TableCell>
+                <TableCell>{t('declination.label')}</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map((row, index) => {
+                const isItemSelected = isSelected(row.id);
+                const labelId = `enhanced-table-checkbox-${index}`;
+                return (
+                  <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
+                    onClick={event => handleClick(event, row.id)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -89,28 +87,23 @@ export default function TableTarget({ data, observation = null }: TableTargetPro
                       <TickBox
                         checked={isItemSelected}
                         disabled={!observation}
-                        label='  '
+                        label="  "
                         labelPosition={LABEL_POSITION.END}
-                        testId='targetTableTickBox'
+                        testId="targetTableTickBox"
                       />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
+                    <TableCell component="th" id={labelId} scope="row" padding="none">
                       {row.name}
                     </TableCell>
                     <TableCell>{row.ra}</TableCell>
                     <TableCell>{row.dec}</TableCell>
                   </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    <TablePagination
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={data.length}
@@ -119,7 +112,7 @@ export default function TableTarget({ data, observation = null }: TableTargetPro
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-    </Paper>
+      </Paper>
     </Box>
   );
 }

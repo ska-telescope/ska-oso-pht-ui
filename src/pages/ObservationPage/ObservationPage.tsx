@@ -438,7 +438,9 @@ export default function ObservationPage() {
                 columns={extendedColumnsObservations}
                 height={450}
                 onRowClick={e => setCurrObs(e.row.rec)}
-                onRowSelectionModelChange={e => {setObRow(e)}}
+                onRowSelectionModelChange={e => {
+                  setObRow(e);
+                }}
                 testId="observationDetails"
                 rowSelectionModel={obRow}
               />

@@ -52,39 +52,36 @@ export default function TableObservation({ data, rowsPage = 10 }: TableObservati
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-    <TableContainer component={Paper}>
-      <Table aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>{t('observations.id')}</TableCell>
-            <TableCell>{t('observations.group')}</TableCell>
-            <TableCell>{t('arrayConfiguration.short')}</TableCell>
-            <TableCell>{t('subArrayConfiguration.short')}</TableCell>
-            <TableCell>{t('observationType.short')}</TableCell>
-            <TableCell></TableCell>
-            <TableCell>{t('actions.label')}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <TableRow
-              key={row.id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.id}
-              </TableCell>
-              <TableCell>{observationGroupIds((row.id as unknown) as string)}</TableCell>
-              <TableCell>{t(`arrayConfiguration.${row.telescope}`)}</TableCell>
-              <TableCell>{t(`subArrayConfiguration.${row.subarray}`)}</TableCell>
-              <TableCell>{t(`observationType.${row.type}`)}</TableCell>
-              <TableCell>{t(`observationType.${row.type}`)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    <TablePagination
+        <TableContainer component={Paper}>
+          <Table aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('observations.id')}</TableCell>
+                <TableCell>{t('observations.group')}</TableCell>
+                <TableCell>{t('arrayConfiguration.short')}</TableCell>
+                <TableCell>{t('subArrayConfiguration.short')}</TableCell>
+                <TableCell>{t('observationType.short')}</TableCell>
+                <TableCell></TableCell>
+                <TableCell>{t('actions.label')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map(row => (
+                <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {row.id}
+                  </TableCell>
+                  <TableCell>{observationGroupIds((row.id as unknown) as string)}</TableCell>
+                  <TableCell>{t(`arrayConfiguration.${row.telescope}`)}</TableCell>
+                  <TableCell>{t(`subArrayConfiguration.${row.subarray}`)}</TableCell>
+                  <TableCell>{t(`observationType.${row.type}`)}</TableCell>
+                  <TableCell>{t(`observationType.${row.type}`)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={data.length}
@@ -93,7 +90,7 @@ export default function TableObservation({ data, rowsPage = 10 }: TableObservati
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-    </Paper>
+      </Paper>
     </Box>
   );
 }
