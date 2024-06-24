@@ -1130,7 +1130,7 @@ export default function AddObservation() {
             .CentralFrequencyAndBandWidthUnits.find(unit => unit.value === continuumUnits).label
         }`,
         spectralAveraging: spectralAveraging,
-        tapering: tapering, // TODO use value instead of dropwdown id. See how's that calculated on the sens calc
+        tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
