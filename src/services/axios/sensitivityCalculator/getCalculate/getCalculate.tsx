@@ -122,7 +122,10 @@ async function GetCalculate(observation: Observation, target: Target) {
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
-      taper: observation.tapering === 'No tapering' ? 0 : observation.tapering.replace('"', '').replace(' ', ''),
+      taper:
+        observation.tapering === 'No tapering'
+          ? 0
+          : observation.tapering.replace('"', '').replace(' ', ''),
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
     };

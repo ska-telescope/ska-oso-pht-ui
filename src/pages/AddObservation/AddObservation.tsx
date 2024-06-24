@@ -1135,7 +1135,7 @@ export default function AddObservation() {
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
         spectralResolution: spectralResolution,
-        effectiveResolution: 0, // TODO what does it need to be? 
+        effectiveResolution: 0, // TODO what does it need to be?
         numSubBands: subBands,
         num15mAntennas: numOf15mAntennas,
         num13mAntennas: numOf13mAntennas,
