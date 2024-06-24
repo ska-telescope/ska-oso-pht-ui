@@ -203,6 +203,18 @@ export default function AddObservation() {
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
 
+  const isContinuumOnly = () => {
+    if (isLow()) {
+      if (subarrayConfig === 1 || subarrayConfig === 2) {
+        return true;
+      }
+    } else {
+      if (subarrayConfig === 1 || subarrayConfig === 2 || subarrayConfig === 3) {
+        return true;
+      }
+    }
+  };
+
   // TODO : We should move this to a utility at some point
   const options = (prefix: string, arr: number[]) => {
     let results = [];
@@ -345,6 +357,28 @@ export default function AddObservation() {
       <Grid item xs={FIELD_WIDTH_OPT1}>
         <DropDown
           options={options('observationType', OBSERVATION_TYPE)}
+          testId="observationType"
+          value={observationType}
+          setValue={setObservationType}
+          label={t('observationType.label')}
+          labelBold
+          labelPosition={LABEL_POSITION.START}
+          labelWidth={LABEL_WIDTH_OPT1}
+          onFocus={() => helpComponent(t('observationType.help'))}
+          required
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const observationTypeFieldContinuumOnly = () => (
+    <Grid pt={1} spacing={0} container direction="row">
+      <Grid item xs={FIELD_WIDTH_OPT1}>
+        <DropDown
+          options={options(
+            'observationType',
+            OBSERVATION_TYPE.filter(e => e === TYPE_CONTINUUM)
+          )}
           testId="observationType"
           value={observationType}
           setValue={setObservationType}
@@ -761,13 +795,15 @@ export default function AddObservation() {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
 
       if (usedTelescope === TELESCOPE_LOW_NUM) {
-        return frequency < lowMin || frequency > lowMax ? t('centralFrequency.range.lowError') : '';
+        return Number(frequency) < lowMin || Number(frequency) > lowMax
+          ? t('centralFrequency.range.lowError')
+          : '';
       } else {
         if (observingBand != null) {
           const bandMin = Number(t('centralFrequency.range.bandLower' + observingBand));
           const bandMax = Number(t('centralFrequency.range.bandUpper' + observingBand));
 
-          return frequency < bandMin || frequency > bandMax
+          return Number(frequency) < bandMin || Number(frequency) > bandMax
             ? t('centralFrequency.range.midError')
             : '';
         }
@@ -1215,7 +1251,9 @@ export default function AddObservation() {
                   justifyContent="space-evenly"
                 >
                   <Grid item xs={XS_BOTTOM}>
-                    {observationTypeField()}
+                    {isContinuumOnly()
+                      ? observationTypeFieldContinuumOnly()
+                      : observationTypeField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {suppliedField()}
