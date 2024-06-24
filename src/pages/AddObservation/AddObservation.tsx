@@ -322,8 +322,11 @@ export default function AddObservation() {
   const subArrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+      const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
+      let subArrayOption = OBSERVATION.array[usedTelescope - 1].subarray;
       if (usedTelescope > 0) {
-        return OBSERVATION.array[usedTelescope - 1].subarray.map(e => {
+        if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
+        return subArrayOption.map(e => {
           return {
             label: t('subArrayConfiguration.' + e.value),
             value: e.value

@@ -120,6 +120,8 @@ function verifyObservingBandMidBand5a() {
   cy.get('[data-value="3"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 5a (4.6 - 8.5 GHz)');
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+  cy.get('[data-testid="subarrayConfig"]').click({ force: true });
+  cy.get('[data-value="5"]').should('not.exist'); //AA*
 }
 
 function verifyObservingBandMidBand5b() {
@@ -127,6 +129,8 @@ function verifyObservingBandMidBand5b() {
   cy.get('[data-value="4"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 5b (8.3 - 15.4 GHz)');
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+  cy.get('[data-testid="subarrayConfig"]').click({ force: true });
+  cy.get('[data-value="5"]').should('not.exist'); //AA*
 }
 
 function verifyFrequencyUnits() {
