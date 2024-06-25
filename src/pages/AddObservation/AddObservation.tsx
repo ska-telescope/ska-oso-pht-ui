@@ -46,7 +46,8 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(1);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(8);
+  const [subarrayConfigBand5, setSubarrayConfigBand5] = React.useState(9);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(Number(t('elevation.default')));
@@ -335,14 +336,32 @@ export default function AddObservation() {
       }
     };
 
+    const selectSubArrayConfigValue = () => {
+      const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
+      if (isBand5 > 0) {
+        return subarrayConfigBand5;
+      } else {
+        return subarrayConfig;
+      }
+    };
+
+    const selectSubArrayConfig = () => {
+      const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
+      if (isBand5 > 0) {
+        return setSubarrayConfigBand5;
+      } else {
+        return setSubarrayConfig;
+      }
+    };
+
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <DropDown
             options={getSubArrayOptions()}
             testId="subarrayConfig"
-            value={subarrayConfig}
-            setValue={setSubarrayConfig}
+            value={selectSubArrayConfigValue()}
+            setValue={selectSubArrayConfig}
             label={t('subArrayConfiguration.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
