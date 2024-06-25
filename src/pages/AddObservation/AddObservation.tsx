@@ -338,20 +338,12 @@ export default function AddObservation() {
 
     const selectSubArrayConfigValue = () => {
       const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
-      if (isBand5 > 0) {
-        return subarrayConfigBand5;
-      } else {
-        return subarrayConfig;
-      }
+      return isBand5 ? subarrayConfigBand5 : subarrayConfig;
     };
 
     const selectSubArrayConfig = () => {
       const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
-      if (isBand5 > 0) {
-        return setSubarrayConfigBand5;
-      } else {
-        return setSubarrayConfig;
-      }
+      return isBand5 ? setSubarrayConfigBand5 : setSubarrayConfig;
     };
 
     return (
