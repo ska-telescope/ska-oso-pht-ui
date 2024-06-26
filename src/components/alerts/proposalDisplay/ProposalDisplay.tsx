@@ -205,7 +205,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('pdfDownload.science.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
@@ -307,7 +307,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('pdfDownload.technical.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>
