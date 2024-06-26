@@ -10,7 +10,7 @@ async function PostProposalValidate(proposal) {
   try {
     const URL_PATH = `/proposals/validate`;
     // TODO: add testing for proposal conversion format
-    const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
+    const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, 'draft');
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
