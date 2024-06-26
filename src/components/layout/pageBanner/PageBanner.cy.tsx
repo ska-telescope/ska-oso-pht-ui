@@ -6,7 +6,6 @@ import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import PageBanner from './PageBanner';
-import { SKA_PHT_API_URL } from 'utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -67,14 +66,20 @@ describe('POST proposal (VALIDATE)', () => {
     );
   });
   it('displays validate error message in Alert component on request, Request Failed', () => {
-    cy.intercept('POST', 'http://localhost:6101/__cypress/iframes/undefined/proposals/validate', { statusCode: 500, body: 'Internal Server Error' }).as('apiCall500')
+    cy.intercept('POST', 'http://localhost:6101/__cypress/iframes/undefined/proposals/validate', {
+      statusCode: 500,
+      body: 'Internal Server Error'
+    }).as('apiCall500');
     cy.get('[data-testid="validationBtn.labelButton"]').click();
     cy.wait('@apiCall500');
     // TODO: Add verification of popup which lasts a few seconds
     // cy.contains('Internal Server Error')
   });
   it('displays validate confirmation message in Alert component on request, Request Success', () => {
-    cy.intercept('POST', 'http://localhost:6101/__cypress/iframes/undefined/proposals/validate', { statusCode: 200, body: 'OK' }).as('apiCallOK')
+    cy.intercept('POST', 'http://localhost:6101/__cypress/iframes/undefined/proposals/validate', {
+      statusCode: 200,
+      body: 'OK'
+    }).as('apiCallOK');
     cy.get('[data-testid="validationBtn.labelButton"]').click();
     cy.wait('@apiCallOK');
     // TODO: Add verification of popup which lasts a few seconds
