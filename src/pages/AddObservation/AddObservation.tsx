@@ -1122,7 +1122,7 @@ export default function AddObservation() {
         type: observationType,
         observingBand: observingBand,
         weather: weather,
-        elevation: elevation,
+        elevation: elevation, // TODO: add min_elevation field and use it for LOW
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
@@ -1133,12 +1133,12 @@ export default function AddObservation() {
             .CentralFrequencyAndBandWidthUnits.find(unit => unit.value === continuumUnits).label
         }`,
         spectralAveraging: spectralAveraging,
-        tapering: tapering,
+        tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
         spectralResolution: spectralResolution,
-        effectiveResolution: 0,
+        effectiveResolution: 0, // TODO what does it need to be?
         numSubBands: subBands,
         num15mAntennas: numOf15mAntennas,
         num13mAntennas: numOf13mAntennas,
