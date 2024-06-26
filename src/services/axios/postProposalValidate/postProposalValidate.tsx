@@ -11,7 +11,11 @@ async function PostProposalValidate(proposal) {
     const URL_PATH = `/proposals/validate`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
-    const result = await axios.post(`${SKA_PHT_API_URL}${URL_PATH}`, convertedProposal, AXIOS_CONFIG);
+    const result = await axios.post(
+      `${SKA_PHT_API_URL}${URL_PATH}`,
+      convertedProposal,
+      AXIOS_CONFIG
+    );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorMessage = `${e?.message}: ${e?.response?.data?.message}`;
