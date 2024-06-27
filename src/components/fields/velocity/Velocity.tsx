@@ -29,12 +29,18 @@ export default function VelocityField({
   valueUnitFocus
 }: VelocityFieldProps) {
   const { t } = useTranslation('pht');
+  const [vType, setVType] = React.useState(0);
   const FIELD = 'velocity';
   const VELOCITY = 0;
 
   React.useEffect(() => {
     setValue('');
   }, [valueType]);
+
+  const setTheType = (e:any) => {
+    setVType(e);
+    setValueType(e);
+  }
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
@@ -48,8 +54,8 @@ export default function VelocityField({
         <DropDown
           options={getOptions()}
           testId={FIELD + 'Type'}
-          value={valueType}
-          setValue={setValueType}
+          value={vType}
+          setValue={setTheType}
           label=""
           onFocus={valueTypeFocus}
         />
@@ -80,7 +86,7 @@ export default function VelocityField({
     return (
       <DropDown
         options={getOptions()}
-        testId={FIELD + 'Type'}
+        testId={FIELD + 'Unit'}
         value={valueUnit}
         setValue={setValueUnit}
         label=""

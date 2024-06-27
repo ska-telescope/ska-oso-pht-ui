@@ -10,32 +10,55 @@ import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
-import AddTarget from './AddTarget/AddTarget';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
+import TargetEntry from '../../../components/targetEntry/TargetEntry';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL } from '../../../utils/constants';
+import Target from '../../../utils/types/target';
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent2 } = storageObject.useStore();
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
+  const [newTarget, setNewTarget] = React.useState(null);
   const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
 
-  const editIconClicked = async () => {
-    alert(t('error.iconClicked'));
-  };
+  React.useEffect(() => {
+    initNewTarget()
+  }, []);
+
+  const initNewTarget = () => {
+    const rec:Target = {
+      dec: '',
+      decUnit: '',
+      id: 0,
+      name: '',
+      latitude: '',
+      longitude: '',
+      ra: '',
+      raUnit: '',
+      redshift: '',
+      referenceFrame: 0,
+      vel: '',
+      velType: 0,
+      velUnit: ''
+    }
+    setNewTarget(rec);
+  }
 
   const deleteIconClicked = () => {
-    setOpenDialog(true);
+    setOpenDeleteDialog(true);
   };
 
-  const closeDeleteDialog = () => {
-    setOpenDialog(false);
+  const closeDialog = () => {
+    setOpenDeleteDialog(false);
+    setOpenEditDialog(false);
   };
 
   const deleteConfirmed = () => {
@@ -43,7 +66,18 @@ export default function TargetListSection() {
     const obs2 = getProposal().targetObservation.filter(e => e.targetId !== currentTarget);
     setProposal({ ...getProposal(), targets: obs1, targetObservation: obs2 });
     setCurrentTarget(0);
-    closeDeleteDialog();
+    closeDialog();
+  };
+
+  const editIconClicked = async () => {
+    setOpenEditDialog(true);
+  };
+  
+  const editConfirmed = () => {
+    const obs1 = getProposal().targets.map(e => e.id === newTarget.id ? newTarget : e);
+    setProposal({ ...getProposal(), targets: obs1 });
+    setCurrentTarget(0);
+    closeDialog();
   };
 
   const alertContent = () => {
@@ -91,10 +125,8 @@ export default function TargetListSection() {
         <>
           <EditIcon
             onClick={() => editIconClicked()}
-            disabled={true}
-            toolTip="Currently disabled"
-          />
-          <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
+            toolTip={t('editTarget.toolTip')} />
+          <TrashIcon onClick={deleteIconClicked} toolTip={t('deleteTarget.toolTip')} />
         </>
       )
     }
@@ -178,19 +210,30 @@ export default function TargetListSection() {
               />
             </Tabs>
           </Box>
-          {value === 0 && <AddTarget raType={raType} />}
+          {value === 0 && <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />}
           {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
-      {openDialog && (
+      {openDeleteDialog && (
         <AlertDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          open={openDeleteDialog}
+          onClose={() => closeDialog()}
           onDialogResponse={deleteConfirmed}
           title="deleteTarget.label"
         >
           {alertContent()}
+        </AlertDialog>
+      )}
+      {openEditDialog && (
+        <AlertDialog
+          open={openEditDialog}
+          onClose={() => closeDialog()}
+          onDialogResponse={editConfirmed}
+          maxWidth='lg'
+          title="editTarget.label"
+        >
+          {<TargetEntry id={getProposal().targets.find(p => p.id === currentTarget).id} raType={raType} setTarget={setNewTarget} target={newTarget} />}
         </AlertDialog>
       )}
     </Grid>

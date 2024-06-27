@@ -64,7 +64,10 @@ type Target = {
   redshift: string;
   referenceFrame: number;
   vel: string;
+  velType: number;
   velUnit: string;
 };
 
 export default Target;
+
+

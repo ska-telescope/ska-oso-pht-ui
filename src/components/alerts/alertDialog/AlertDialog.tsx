@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
+import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 
@@ -8,6 +8,7 @@ interface AlertDialogProps {
   open: boolean;
   onClose: Function;
   onDialogResponse: Function;
+  maxWidth?: Breakpoint;
   title?: string;
   children?: JSX.Element | JSX.Element[];
 }
@@ -16,6 +17,7 @@ export default function AlertDialog({
   open,
   onClose,
   onDialogResponse,
+  maxWidth = 'md',
   title = '',
   children
 }: AlertDialogProps) {
@@ -40,7 +42,7 @@ export default function AlertDialog({
   return (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth={maxWidth}
       open={open}
       onClose={handleCancel}
       aria-labelledby="alert-dialog-title"
