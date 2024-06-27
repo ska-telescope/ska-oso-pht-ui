@@ -157,7 +157,7 @@
     "label": "Effective Resolution"
   },
   "elevation": {
-    "help": "ELEVATION HELP",
+    "help": "This is the lowest angle above the horizon at which you want the telescope to observe your targets. Minimum elevation for the LOW and MID telescopes is 15 deg.",
     "label": "Minimum Elevation",
     "units": "deg",
     "default": 45,
@@ -229,7 +229,7 @@
   },
   "lastName": {
     "label": "Last Name",
-    "help": "Last name of the principal investigator or co-investigator."
+    "help": "Last name or family name of the principal investigator or co-investigator."
   },
   "listOfTargets": {
     "label": "List of Targets",
@@ -368,10 +368,10 @@
   },
   "proposalType": {
     "label": "Proposal Types",
-    "help1": "Below are the available Proposal Types.",
-    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
-    "help3": "Proposal sub-types are optional",
-    "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
+    "help1": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
+    "help2": "Proposal sub-types are optional",
+    "help3": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost",
+    "help4" : ""
   },
   "members": {
     "label": "Team Members",
@@ -624,22 +624,22 @@
     "empty": "THERE IS NO TARGET ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
-    "label": "Title",
+    "label": "Proposal Title",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "Provide the title of your proposal. This field supports latex syntax.",
-    "helper": "Please enter your title information"
+    "help": "",
+    "helper": "Please enter your title information. This field supports latex syntax."
   },
   "updated": {
     "label": "Last Updated"
   },
   "uploadCsvBtn": {
     "label": "Upload CSV File",
-    "uploadSuccessMsg": "All targets in CSV are uploaded",
+    "uploadSuccessMsg": "All targets in file are uploaded",
     "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
-    "uploadErrorEquatorialNotValidMsg": "CSV equatorial schema not valid",
-    "uploadErrorGalacticNotValidMsg": "CSV galactic schema not valid",
-    "uploadErrorUnknownParserMsg": "Unknown error in CSV parser - "
+    "uploadErrorEquatorialNotValidMsg": "Equatorial schema not valid",
+    "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
+    "uploadErrorUnknownParserMsg": "Unknown error in file parser - "
   },
   "uploadPDF": {
     "label": "Upload PDF"
@@ -650,7 +650,7 @@
   },
   "velocity": {
     "label": "Velocity",
-    "help": "VELOCITY HELP",
+    "help": "Specify the radial velocity if needed but this field is optional. Using the resolve button will auto-populate this field if value is in SIMBAD.",
     "units": {
       "0": "km/s",
       "1": "m/s"
@@ -682,7 +682,7 @@
   "page": {
     "0": {
       "title": "Title",
-      "desc": "TITLE. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "1": {
       "title": "Team",
