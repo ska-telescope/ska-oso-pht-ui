@@ -25,7 +25,7 @@ describe('<AddProposal />', () => {
     });
   }
 });
-
+// TODO: move POST proposal/ bad request test where create button is -> title page
 describe('POST proposal/ bad request', () => {
   beforeEach(() => {
     // cy.intercept('POST', `{$SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
@@ -56,7 +56,7 @@ describe('PUT proposal (SAVE)', () => {
     }).as('apiCallSave500');
     cy.get('[data-testid="saveButtonTestId"]').click();
     cy.wait('@apiCallSave500');
-    // TODO: Add verification of popup which lasts a few seconds
+    // TODO: Add verification of popup which lasts a few seconds with user journey
   });
   it('displays request message in Alert component on save request, Request OK', () => {
     cy.intercept('PUT', `/__cypress/iframes/undefined/proposals/undefined`, {
@@ -65,7 +65,7 @@ describe('PUT proposal (SAVE)', () => {
     }).as('apiCallSaveOK');
     cy.get('[data-testid="saveButtonTestId"]').click();
     cy.wait('@apiCallSaveOK');
-    // TODO: Add verification of popup which lasts a few seconds
+    // TODO: Add verification of popup which lasts a few seconds with user journey
   });
 });
 
@@ -86,8 +86,7 @@ describe('POST proposal (VALIDATE)', () => {
     }).as('apiCallValidate500');
     cy.get('[data-testid="validationBtn.labelButton"]').click();
     cy.wait('@apiCallValidate500');
-    // TODO: Add verification of popup which lasts a few seconds
-    // cy.contains('Internal Server Error')
+    // TODO: Add verification of popup which lasts a few seconds with user journey
   });
   it('displays validate confirmation message in Alert component on validate request, Request Success', () => {
     cy.intercept('POST', '/__cypress/iframes/undefined/proposals/validate', {
@@ -96,6 +95,6 @@ describe('POST proposal (VALIDATE)', () => {
     }).as('apiCallValidateOK');
     cy.get('[data-testid="validationBtn.labelButton"]').click();
     cy.wait('@apiCallValidateOK');
-    // TODO: Add verification of popup which lasts a few seconds
+    // TODO: Add verification of popup which lasts a few seconds with user journey
   });
 });
