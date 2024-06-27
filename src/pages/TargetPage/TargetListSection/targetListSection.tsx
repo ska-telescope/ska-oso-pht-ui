@@ -30,11 +30,11 @@ export default function TargetListSection() {
   const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
 
   React.useEffect(() => {
-    initNewTarget()
+    initNewTarget();
   }, []);
 
   const initNewTarget = () => {
-    const rec:Target = {
+    const rec: Target = {
       dec: '',
       decUnit: '',
       id: 0,
@@ -48,9 +48,9 @@ export default function TargetListSection() {
       vel: '',
       velType: 0,
       velUnit: ''
-    }
+    };
     setNewTarget(rec);
-  }
+  };
 
   const deleteIconClicked = () => {
     setOpenDeleteDialog(true);
@@ -72,9 +72,9 @@ export default function TargetListSection() {
   const editIconClicked = async () => {
     setOpenEditDialog(true);
   };
-  
+
   const editConfirmed = () => {
-    const obs1 = getProposal().targets.map(e => e.id === newTarget.id ? newTarget : e);
+    const obs1 = getProposal().targets.map(e => (e.id === newTarget.id ? newTarget : e));
     setProposal({ ...getProposal(), targets: obs1 });
     setCurrentTarget(0);
     closeDialog();
@@ -123,9 +123,7 @@ export default function TargetListSection() {
       disableClickEventBubbling: true,
       renderCell: () => (
         <>
-          <EditIcon
-            onClick={() => editIconClicked()}
-            toolTip={t('editTarget.toolTip')} />
+          <EditIcon onClick={() => editIconClicked()} toolTip={t('editTarget.toolTip')} />
           <TrashIcon onClick={deleteIconClicked} toolTip={t('deleteTarget.toolTip')} />
         </>
       )
@@ -210,7 +208,9 @@ export default function TargetListSection() {
               />
             </Tabs>
           </Box>
-          {value === 0 && <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />}
+          {value === 0 && (
+            <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />
+          )}
           {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
         </Box>
@@ -230,10 +230,17 @@ export default function TargetListSection() {
           open={openEditDialog}
           onClose={() => closeDialog()}
           onDialogResponse={editConfirmed}
-          maxWidth='lg'
+          maxWidth="lg"
           title="editTarget.label"
         >
-          {<TargetEntry id={getProposal().targets.find(p => p.id === currentTarget).id} raType={raType} setTarget={setNewTarget} target={newTarget} />}
+          {
+            <TargetEntry
+              id={getProposal().targets.find(p => p.id === currentTarget).id}
+              raType={raType}
+              setTarget={setNewTarget}
+              target={newTarget}
+            />
+          }
         </AlertDialog>
       )}
     </Grid>

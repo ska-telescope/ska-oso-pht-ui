@@ -69,5 +69,3 @@ type Target = {
 };
 
 export default Target;
-
-

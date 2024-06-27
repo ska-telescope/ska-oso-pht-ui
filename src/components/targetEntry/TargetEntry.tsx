@@ -135,67 +135,77 @@ export default function TargetEntry({ id, raType, setTarget, target }: TargetEnt
     processCoordinatesResults(response);
   };
 
-  const nameField = () => <Grid item p={1} xs={12}>
-        <TextEntry
-          required
-          label={t('name.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="name"
-          value={target?.name}
-          setValue={setName}
-          suffix={<ResolveButton action={() => getCoordinates(target?.name, raType)} />}
-          onFocus={() => helpComponent(t('name.help'))}
-          errorText={nameFieldError}
-        />
-      </Grid>;
+  const nameField = () => (
+    <Grid item p={1} xs={12}>
+      <TextEntry
+        required
+        label={t('name.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LAB_WIDTH}
+        testId="name"
+        value={target?.name}
+        setValue={setName}
+        suffix={<ResolveButton action={() => getCoordinates(target?.name, raType)} />}
+        onFocus={() => helpComponent(t('name.help'))}
+        errorText={nameFieldError}
+      />
+    </Grid>
+  );
 
-  const skyDirection1Field = () => <Grid item xs={12}>
-        <SkyDirection1
-          labelWidth={LAB_WIDTH}
-          setValue={setRA}
-          skyUnits={raType}
-          value={target?.ra}
-          valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
-        />
-      </Grid>;
+  const skyDirection1Field = () => (
+    <Grid item xs={12}>
+      <SkyDirection1
+        labelWidth={LAB_WIDTH}
+        setValue={setRA}
+        skyUnits={raType}
+        value={target?.ra}
+        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+      />
+    </Grid>
+  );
 
-  const skyDirection2Field = () => <Grid item xs={12}>
-        <SkyDirection2
-          labelWidth={LAB_WIDTH}
-          setValue={setDec}
-          skyUnits={raType}
-          value={target?.dec}
-          valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
-        />
-      </Grid>;
+  const skyDirection2Field = () => (
+    <Grid item xs={12}>
+      <SkyDirection2
+        labelWidth={LAB_WIDTH}
+        setValue={setDec}
+        skyUnits={raType}
+        value={target?.dec}
+        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+      />
+    </Grid>
+  );
 
-  const velocityField = () => <Grid item xs={12}>
-        <VelocityField
-          labelWidth={LAB_WIDTH}
-          setValue={setVel}
-          setValueType={setVelType}
-          setValueUnit={setVelUnit}
-          value={target?.vel}
-          valueType={target?.velType}
-          valueUnit={target?.velUnit}
-          valueFocus={() => helpComponent(t('velocity.help'))}
-          valueTypeFocus={() => helpComponent(t('velocity.help'))}
-          valueUnitFocus={() => helpComponent(t('velocity.help'))}
-        />
-      </Grid>;
+  const velocityField = () => (
+    <Grid item xs={12}>
+      <VelocityField
+        labelWidth={LAB_WIDTH}
+        setValue={setVel}
+        setValueType={setVelType}
+        setValueUnit={setVelUnit}
+        value={target?.vel}
+        valueType={target?.velType}
+        valueUnit={target?.velUnit}
+        valueFocus={() => helpComponent(t('velocity.help'))}
+        valueTypeFocus={() => helpComponent(t('velocity.help'))}
+        valueUnitFocus={() => helpComponent(t('velocity.help'))}
+      />
+    </Grid>
+  );
 
-  const referenceFrameField = () => <Grid item xs={12}>
-        <ReferenceFrameField
-          labelBold={true}
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          onFocus={() => helpComponent(t('referenceFrame.help'))}
-          setValue={setReferenceFrame}
-          value={target?.referenceFrame}
-        />
-      </Grid>;
+  const referenceFrameField = () => (
+    <Grid item xs={12}>
+      <ReferenceFrameField
+        labelBold={true}
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LAB_WIDTH}
+        onFocus={() => helpComponent(t('referenceFrame.help'))}
+        setValue={setReferenceFrame}
+        value={target?.referenceFrame}
+      />
+    </Grid>
+  );
 
   const emptyField = () => <Grid item p={4} xs={12} />;
 

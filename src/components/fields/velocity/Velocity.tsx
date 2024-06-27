@@ -37,10 +37,10 @@ export default function VelocityField({
     setValue('');
   }, [valueType]);
 
-  const setTheType = (e:any) => {
+  const setTheType = (e: any) => {
     setVType(e);
     setValueType(e);
-  }
+  };
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];

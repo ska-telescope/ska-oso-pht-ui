@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
+import {
+  Breakpoint,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Typography
+} from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 
