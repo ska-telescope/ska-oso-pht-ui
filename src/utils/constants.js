@@ -149,9 +149,9 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 export const Projects = [
   {
     id: 1,
-    title: 'Standard Proposal',
+    title: 'Standard Principal Investigator Proposal',
     code: 'PI',
-    description: 'Standard Observing Proposal',
+    description: 'A standard PI proposal is an observing proposal initiated following a Call for Proposals and is typically completed within a single time allocation  cycle.  Standard  proposals  are  typically  submitted  by  a  small team led by a Principal Investigator.',
     subProjects: [
       {
         id: 1,
@@ -191,7 +191,7 @@ export const Projects = [
         id: 1,
         title: 'Target of opportunity',
         code: 'ToO',
-        description: 'A target of opportunity observing proposal'
+        description: 'These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA.'
       },
       {
         id: 2,
@@ -210,7 +210,7 @@ export const Projects = [
         id: 4,
         title: 'Long term proposal',
         code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+        description: 'These are for projects that require more than one time allocation cycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP'
       }
     ]
   },
@@ -225,13 +225,13 @@ export const Projects = [
         id: 1,
         title: 'Target of opportunity',
         code: 'ToO',
-        description: 'A target of opportunity observing proposal'
+        description: 'These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA.'
       },
       {
         id: 2,
         title: 'Joint SKA proposal',
         code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        description: 'A proposal that requires both SKA-MID and SKA-LOW telescopes'
       },
       {
         id: 3,

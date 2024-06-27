@@ -290,14 +290,14 @@
   },
   "observationType": {
     "label": "Observation Type",
-    "help": "OBSERVATION TYPE HELP",
+    "help": "Specify if the observation type is continuum or zoom. Note that not all sub-arrays have zoom mode so this option is available based on the sub-array chosen.",
     "short": "Type",
     "0": "Zoom",
     "1": "Continuum"
   },
   "observatoryDataProduct": {
     "label": "Observatory Data Product",
-    "help": "OBSERVATORY DATA PRODUCT HELP",
+    "help": "Select the desired data product. You can select multiple by checking the appropriate boxes",
     "options": {
       "1": "Raw Visibility Data",
       "2": "Calibrated Visibilities",
