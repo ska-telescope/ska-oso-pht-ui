@@ -180,11 +180,11 @@
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
     "science": {
-      "label": "science",
+      "label": "Science Justification",
       "toolTip": "This is the download button of the file on the Science Page"
     },
     "technical": {
-      "label": "technical",
+      "label": "Technical Justification",
       "toolTip": "This is the download button of the file on the Science Page"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
@@ -371,7 +371,7 @@
     "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
   },
   "members": {
-    "label": "Members",
+    "label": "Team Members",
     "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
   },
   "noSpecificTarget": {

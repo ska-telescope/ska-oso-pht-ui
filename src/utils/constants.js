@@ -24,6 +24,7 @@ export const STATUS = {
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 
@@ -122,11 +123,11 @@ export const TELESCOPES = [
 ];
 
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0 },
-  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 }, // Band 1
-  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 }, // Band 2
-  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 }, // Band 5a
-  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4 } // Band 5b
+  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0, isBand5: false },
+  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1, isBand5: false }, // Band 1
+  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2, isBand5: false }, // Band 2
+  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3, isBand5: true }, // Band 5a
+  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4, isBand5: true } // Band 5b
 ];
 
 export const TELESCOPE_LOW_NUM = 2;
@@ -147,7 +148,8 @@ export const OBSERVATION = {
           label: 'AA0.5',
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
           value: 2,
@@ -155,7 +157,8 @@ export const OBSERVATION = {
           label: 'AA1',
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
           value: 3,
@@ -163,7 +166,8 @@ export const OBSERVATION = {
           label: 'AA2',
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
           value: 5,
@@ -171,7 +175,8 @@ export const OBSERVATION = {
           label: 'AA*',
           numOf15mAntennas: 80,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
           value: 6,
@@ -179,7 +184,8 @@ export const OBSERVATION = {
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
           value: 8,
@@ -187,7 +193,8 @@ export const OBSERVATION = {
           label: 'AA4',
           numOf15mAntennas: 133,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
           value: 9,
@@ -195,7 +202,8 @@ export const OBSERVATION = {
           label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
           value: 10,
@@ -203,7 +211,8 @@ export const OBSERVATION = {
           label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
           value: 20,
@@ -211,7 +220,8 @@ export const OBSERVATION = {
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         }
       ],
       robust: [
@@ -247,7 +257,8 @@ export const OBSERVATION = {
           label: 'AA0.5',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 6
+          numOfStations: 6,
+          disableForBand5: false
         },
         {
           value: 2,
@@ -255,7 +266,8 @@ export const OBSERVATION = {
           label: 'AA1',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 18
+          numOfStations: 18,
+          disableForBand5: false
         },
         {
           value: 3,
@@ -263,7 +275,8 @@ export const OBSERVATION = {
           label: 'AA2',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 64
+          numOfStations: 64,
+          disableForBand5: false
         },
         {
           value: 4,
@@ -271,7 +284,8 @@ export const OBSERVATION = {
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 40
+          numOfStations: 40,
+          disableForBand5: false
         },
         {
           value: 5,
@@ -279,7 +293,8 @@ export const OBSERVATION = {
           label: 'AA*',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 307
+          numOfStations: 307,
+          disableForBand5: false
         },
         {
           value: 7,
@@ -287,7 +302,8 @@ export const OBSERVATION = {
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 199
+          numOfStations: 199,
+          disableForBand5: false
         },
         {
           value: 8,
@@ -295,7 +311,8 @@ export const OBSERVATION = {
           label: 'AA4',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 512
+          numOfStations: 512,
+          disableForBand5: false
         },
         {
           value: 11,
@@ -303,7 +320,8 @@ export const OBSERVATION = {
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 224
+          numOfStations: 224,
+          disableForBand5: false
         },
         {
           value: 20,
@@ -311,7 +329,8 @@ export const OBSERVATION = {
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         }
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2

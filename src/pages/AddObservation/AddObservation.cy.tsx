@@ -16,6 +16,13 @@ function verifySubArrayConfigurationValue2() {
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
+function verifySubArrayConfigurationValue4() {
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="4"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.4');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
+}
 
 function verifySubArrayConfigurationCustom() {
   cy.get('[data-testid="subarrayConfig"]').click();
@@ -66,6 +73,12 @@ function verifyObservationTypeZoom() {
   cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
 }
 
+function verifyObservationTypeZoomUnavailable() {
+  cy.get('[data-testid="observationType"]').contains('observationType.1');
+  cy.get('[data-testid="observationType"]').click();
+  cy.get('[data-testid="observationType"]').should('not.contain.value', 'observationType.0');
+}
+
 function verifyObservationTypeContinuum() {
   cy.get('[data-testid="observationType"]').contains('observationType.1');
   cy.get('[data-testid="observationType"]').click();
@@ -107,6 +120,8 @@ function verifyObservingBandMidBand5a() {
   cy.get('[data-value="3"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 5a (4.6 - 8.5 GHz)');
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+  cy.get('[data-testid="subarrayConfig"]').click({ force: true });
+  cy.get('[data-value="5"]').should('not.exist'); //AA*
 }
 
 function verifyObservingBandMidBand5b() {
@@ -114,6 +129,8 @@ function verifyObservingBandMidBand5b() {
   cy.get('[data-value="4"]').click();
   cy.get('[data-testid="observingBand"]').contains('Band 5b (8.3 - 15.4 GHz)');
   cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+  cy.get('[data-testid="subarrayConfig"]').click({ force: true });
+  cy.get('[data-value="5"]').should('not.exist'); //AA*
 }
 
 function verifyFrequencyUnits() {
@@ -403,7 +420,7 @@ describe('<AddObservation />', () => {
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mounting(THEME_LIGHT);
     verifyDetailsField();
-    verifySubArrayConfigurationValue2();
+    verifySubArrayConfigurationValue4();
     verifyObservingBandMidBand2();
     verifyElevationField();
     verifyWeatherField();
@@ -423,6 +440,7 @@ describe('<AddObservation />', () => {
     mounting(THEME_LIGHT);
     verifyObservingBandLow();
     verifyDetailsField();
+    verifySubArrayConfigurationValue4();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
@@ -435,6 +453,13 @@ describe('<AddObservation />', () => {
     verifyTapering();
     verifyImageWeighting();
     verifyNumOfStations();
+  });
+
+  it('Verify Array Config LOW and observation type Zoom is not available with certain sub-bands ', () => {
+    mounting(THEME_LIGHT);
+    verifyObservingBandLow();
+    verifySubArrayConfigurationValue2();
+    verifyObservationTypeZoomUnavailable();
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {

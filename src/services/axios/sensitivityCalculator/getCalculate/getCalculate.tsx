@@ -122,7 +122,10 @@ async function GetCalculate(observation: Observation, target: Target) {
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
-      taper: observation.tapering?.toString(),
+      taper:
+        observation.tapering === 'No tapering'
+          ? 0
+          : observation.tapering.replace('"', '').replace(' ', ''),
       integration_time: iTime?.toString(),
       ...mode_specific_parameters
     };
@@ -139,6 +142,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     spectral_averaging_factor?: string;
     spectral_resolution_hz?: string;
     total_bandwidth_khz?: number;
+    n_subbands?: string;
   }
 
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
@@ -157,6 +161,7 @@ async function GetCalculate(observation: Observation, target: Target) {
         bandwidthValueUnit[1]
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
+      mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
     } else {
       // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
       const value = 16;
