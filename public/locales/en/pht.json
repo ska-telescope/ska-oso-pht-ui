@@ -26,7 +26,7 @@
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
-    "latexPreviewTitle": "Abstract LaTeX Preview"
+    "latexPreviewTitle": "Abstract Preview"
   },
   "actions": {
     "label": "Actions"
@@ -51,7 +51,7 @@
   "arrayConfiguration": {
     "label": "Array Configuration",
     "short": "Array",
-    "help": "Specify an array a configuration. Currently the SKA has two arrays which is the MID and LOW.",
+    "help": "Specify an array a configuration. Currently the SKA has two arrays - SKA-MID and SKA-LOW.",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
@@ -61,7 +61,7 @@
     "label": "Band Width"
   },
   "centralFrequency": {
-    "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
+    "help": "Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
       "lowLower": 50,
@@ -297,7 +297,7 @@
   },
   "observatoryDataProduct": {
     "label": "Observatory Data Product",
-    "help": "Select the desired data product. You can select multiple by checking the appropriate boxes",
+    "help": "Select the desired data product. You can select multiple by checking the appropriate boxes.",
     "options": {
       "1": "Raw Visibility Data",
       "2": "Calibrated Visibilities",
@@ -307,7 +307,7 @@
     }
   },
   "observationDetails": {
-    "help": "OBSERVATION DETAILS HELP",
+    "help": "Provide any further details about specific targets or any other considerations about observation(s).",
     "label": "Details",
     "minDisplayRows": "5"
   },
@@ -330,20 +330,6 @@
     "label": "Primary Investigator",
     "help": "PI HELP",
     "short": "PI"
-  },
-  "pipeline": {
-    "label": "Pipeline",
-    "help": "PIPELINE HELP",
-    "helper": "Please enter your pipeline information",
-    "options": {
-      "1": "Visibility receive",
-      "2": "‘Real-time’ pointing calibration'",
-      "3": "Visibility pre-processing",
-      "4": "Mid self-cal / ICal",
-      "5": "Low self-cal / ICal",
-      "6": "‘Real-time’ gain calibration",
-      "7": "Distributed Gridding/Imaging"
-    }
   },
   "pixelSize": {
     "label": "Pixel Size",
@@ -690,7 +676,7 @@
     },
     "2": {
       "title": "General",
-      "desc": "GENERAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "3": {
       "title": "Science",
@@ -702,21 +688,21 @@
     },
     "5": {
       "title": "Observation",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "6": {
       "title": "Technical",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "title": "SDP Data",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "8": {
       "title": "SRC Net",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "9": {
       "title": "Title",
