@@ -1,6 +1,6 @@
 import React from 'react';
 import Shell from '../../components/layout/Shell/Shell';
-import TitleContent from '../../components/TitleContent/TitleContent';
+import TitleContent from '../../components/titleContentTemp/TitleContent';
 
 const PAGE = 0;
 

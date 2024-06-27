@@ -123,7 +123,8 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "content1": "NOTE : Selections to the observations will also be removed"
+    "content1": "NOTE : Selections to the observations will also be removed",
+    "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
     "label": "Delete this team member ? "
@@ -151,6 +152,10 @@
     "toolTip": "Edit proposal",
     "disabled": "This function is not available"
   },
+  "editTarget": {
+    "label": "Edit this target ? ",
+    "toolTip": "Edit the target"
+  },
   "effectiveResolution": {
     "help": "EFFECTIVE RESOLUTION HELP",
     "label": "Effective Resolution"
@@ -168,7 +173,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a requied field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct."
+    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct."
   },
   "fileName": {
     "label": "File name"
@@ -235,7 +240,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an abitrary target/object name which can contain any charater and enter the coordinate values."
+    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -749,7 +754,7 @@
     "button": {
       "docs": "Click here for PHT documentation",
       "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/latest/UserIntroduction.html",
-      "mode": "Colour Mode Toggle",
+      "mode": "Color Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
     }
