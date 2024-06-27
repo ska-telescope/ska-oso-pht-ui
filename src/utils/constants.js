@@ -522,8 +522,7 @@ export const Projects = [
         id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        description: 'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
       },
       {
         id: 4,
@@ -537,8 +536,7 @@ export const Projects = [
     id: 2,
     title: 'Key Science Project',
     code: 'KSP',
-    description:
-      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    description: 'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
     subProjects: [
       {
         id: 1,
@@ -556,8 +554,7 @@ export const Projects = [
         id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        description: 'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
       },
       {
         id: 4,
@@ -571,8 +568,7 @@ export const Projects = [
     id: 3,
     title: "Director's Discretionary Time Proposal",
     code: 'DDT',
-    description:
-      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    description: "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
     subProjects: [
       {
         id: 1,
@@ -590,8 +586,7 @@ export const Projects = [
         id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        description: 'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
       }
     ]
   }
