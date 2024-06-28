@@ -151,15 +151,17 @@ export default function AddObservation() {
     if (observingBand === 0) {
       console.log('observationType', observationType);
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
-      continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
-        e => e.lookup === subarrayConfig
-      );
-      const valueContinuumBandwidth = continuumBandwidth?.value;
-      setContinuumBandwidth(valueContinuumBandwidth);
+      if (observationType === 1) {
+        continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
+          e => e.lookup === subarrayConfig
+        );
+        const valueContinuumBandwidth = continuumBandwidth?.value;
+        setContinuumBandwidth(valueContinuumBandwidth);
+      }
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionObLow[0].value
-          : OBSERVATION.SpectralResolutionObLowZoom[0].value
+          : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth).value
       );
     }
     if (observingBand === 1) {
@@ -218,7 +220,7 @@ export default function AddObservation() {
           : OBSERVATION.SpectralResolutionOb5bZoom[0].value
       );
     }
-  }, [observingBand, subarrayConfig, observationType]);
+  }, [observingBand, subarrayConfig, observationType, bandwidth]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
