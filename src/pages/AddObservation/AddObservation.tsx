@@ -149,7 +149,6 @@ export default function AddObservation() {
 
     // HERE
     if (observingBand === 0) {
-      console.log('observationType', observationType);
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
       if (observationType === 1) {
         continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
@@ -215,7 +214,7 @@ export default function AddObservation() {
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionOb5a[0].value
-          : OBSERVATION.SpectralResolutionOb5aZoom[0].value
+          : OBSERVATION.SpectralResolutionOb5aZoom.find(item => item.bandWidthValue === bandwidth).value
       );
     }
     if (observingBand === 4) {

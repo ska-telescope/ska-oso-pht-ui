@@ -490,7 +490,15 @@ export const OBSERVATION = {
     { lookup: '1.355', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
     { lookup: '1.355', value: '13.44 kHz (3.0 km/s)', bandWidthValue: 7 }
   ],
-  SpectralResolutionOb5aZoom: [{ value: '0.21 kHz (9.6 m/s)' }],
+  SpectralResolutionOb5aZoom: [
+    { value: '0.21 kHz (9.6 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (19.2 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (38.4 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (76.9 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (153.8 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (307.6 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (615.1 m/s)', bandWidthValue: 7 }
+  ],
   SpectralResolutionOb5bZoom: [{ value: '0.21 kHz (5.3 m/s)' }],
   Tapering: [
     { label: 'No tapering', value: 1 },
