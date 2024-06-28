@@ -192,12 +192,17 @@ export default function AddObservation() {
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      const spectralResolutionKey =
-        observationType === 1 ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom';
-      const spectralResolution = OBSERVATION[`${spectralResolutionKey}`].find(
-        e => e.lookup === valueCentralFrequency
-      );
-      setSpectralResolution(spectralResolution?.value);
+      if (observationType === 1) {
+        const spectralResolution = OBSERVATION['SpectralResolutionOb2'].find(
+          e => e.lookup === valueCentralFrequency
+        );
+        setSpectralResolution(spectralResolution?.value);
+      } else {
+        const spectralResolution = OBSERVATION['SpectralResolutionOb2Zoom'].find(
+          e => e.lookup === valueCentralFrequency && e.bandWidthValue == bandwidth
+        );
+        setSpectralResolution(spectralResolution?.value);
+      }
     }
     if (observingBand === 3) {
       // Band 5a
