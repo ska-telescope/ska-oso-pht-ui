@@ -168,15 +168,22 @@ export default function AddObservation() {
       centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
-      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(e => e.lookup === subarrayConfig);
-      const valueContinuumBandwidth = continuumBandwidth?.value;
-      setContinuumBandwidth(valueContinuumBandwidth);
-      const spectralResolutionKey =
-        observationType === 1 ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom';
-      const spectralResolution = OBSERVATION[`${spectralResolutionKey}`].find(
-        e => e.lookup === valueCentralFrequency
-      );
-      setSpectralResolution(spectralResolution?.value);
+      if (observationType === 1) {
+        continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(e => e.lookup === subarrayConfig);
+        const valueContinuumBandwidth = continuumBandwidth?.value;
+        setContinuumBandwidth(valueContinuumBandwidth);
+      }
+      if (observationType == 1) {
+        const spectralResolution = OBSERVATION['SpectralResolutionOb1'].find(
+          e => e.lookup === valueCentralFrequency
+        );
+        setSpectralResolution(spectralResolution?.value);
+      } else {
+        const spectralResolution = OBSERVATION['SpectralResolutionOb1Zoom'].find(
+          e => e.lookup === valueCentralFrequency && e.bandWidthValue == bandwidth
+        );
+        setSpectralResolution(spectralResolution?.value);
+      }
     }
     if (observingBand === 2) {
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
