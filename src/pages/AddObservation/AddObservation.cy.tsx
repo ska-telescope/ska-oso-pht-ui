@@ -196,6 +196,12 @@ function verifySpectralResolutionLow() {
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
 
+function verifySpectralResolutionLowZoom() {
+  cy.get('[id="spectralResolution"]').should('have.value', '14.1 kHz (21.2 km/s)');
+  cy.get('[id="spectralResolution"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
+}
+
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
   cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (5.1 km/s)');
   cy.get('[id="spectralResolution"]').click();
@@ -255,6 +261,12 @@ function verifyEffectiveResolutionZoomMidBand() {
 
 function verifyEffectiveResolutionContinuumLowBand() {
   cy.get('[id="effective"]').should('have.value', '5.43 kHz (8.1 km/s)');
+  cy.get('[id="effective"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
+}
+
+function verifyEffectiveResolutionZoomLowBand() {
+  cy.get('[id="effective"]').should('have.value', '14.10 kHz (21.1 km/s)'); // TODO: change value once value for Zoom Effective Res properly set
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -447,9 +459,9 @@ describe('<AddObservation />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnitsLow();
     verifyLowBandwidthFrequency();
-    verifySpectralResolutionLow();
+    verifySpectralResolutionLowZoom();
     verifySpectralAveragingLow();
-    verifyEffectiveResolutionContinuumLowBand();
+    verifyEffectiveResolutionZoomLowBand();
     verifyTapering();
     verifyImageWeighting();
     verifyNumOfStations();
