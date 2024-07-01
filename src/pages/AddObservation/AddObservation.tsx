@@ -228,7 +228,7 @@ export default function AddObservation() {
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionOb5b[0].value
-          : OBSERVATION.SpectralResolutionOb5bZoom[0].value
+          : OBSERVATION.SpectralResolutionOb5bZoom.find(item => item.bandWidthValue === bandwidth).value
       );
     }
   }, [observingBand, subarrayConfig, observationType, bandwidth]);

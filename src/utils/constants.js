@@ -447,7 +447,7 @@ export const OBSERVATION = {
   ],
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
-  // each spectral resolution matches a bandwidth value
+  // the spectral resolution matches a bandwidth value
   SpectralResolutionObLowZoom: [
     { value: '14.1 Hz (21.2 km/s)', bandWidthValue: 1 },
     { value: '28.3 Hz (42.4 km/s)', bandWidthValue: 2 },
@@ -458,6 +458,7 @@ export const OBSERVATION = {
     { value: '904.2 Hz (1.4 km/s)', bandWidthValue: 7 },
     { value: '1808.4 Hz (2.7 km/s)', bandWidthValue: 8 },
   ],
+  // the spectral resolution matches a lookup and bandwidth value
   SpectralResolutionOb1Zoom: [
     { lookup: '0.7975', value: '0.21 kHz (78.9 m/s)', bandWidthValue: 1 },
     { lookup: '0.7975', value: '0.42 kHz (157.9 m/s)', bandWidthValue: 2 },
@@ -490,6 +491,7 @@ export const OBSERVATION = {
     { lookup: '1.355', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
     { lookup: '1.355', value: '13.44 kHz (3.0 km/s)', bandWidthValue: 7 }
   ],
+  // the spectral resolution matches a bandwidth value
   SpectralResolutionOb5aZoom: [
     { value: '0.21 kHz (9.6 m/s)', bandWidthValue: 1 },
     { value: '0.42 kHz (19.2 m/s)', bandWidthValue: 2 },
@@ -499,7 +501,15 @@ export const OBSERVATION = {
     { value: '6.72 kHz (307.6 m/s)', bandWidthValue: 6 },
     { value: '13.44 kHz (615.1 m/s)', bandWidthValue: 7 }
   ],
-  SpectralResolutionOb5bZoom: [{ value: '0.21 kHz (5.3 m/s)' }],
+  SpectralResolutionOb5bZoom: [
+    { value: '0.21 kHz (5.3 m/s)', bandWidthValue: 1  },
+    { value: '0.42 kHz (10.6 m/s)', bandWidthValue: 2  },
+    { value: '0.84 kHz (21.3 m/s)', bandWidthValue: 3  },
+    { value: '1.68 kHz (42.5 m/s)', bandWidthValue: 4  },
+    { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5  },
+    { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6  },
+    { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7  },
+  ],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },
