@@ -147,7 +147,8 @@ export default function AddObservation() {
   React.useEffect(() => {
     let centralFrequency;
     let continuumBandwidth;
-
+    console.log('ob', observingBand);
+    console.log('subarrayConfig', subarrayConfig);
     // HERE
     if (observingBand === 0) {
       console.log('observationType', observationType);
@@ -194,10 +195,14 @@ export default function AddObservation() {
     if (observingBand === 3) {
       // Band 5a
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
+      console.log('subarrayConfig', subarrayConfig);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
         e => e.lookup === subarrayConfig
       );
+      console.log('continuumB', continuumBandwidth);
+
       const valueContinuumBandwidth = continuumBandwidth?.value;
+      console.log('continuumB', valueContinuumBandwidth);
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
         observationType === 1
