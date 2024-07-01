@@ -13,7 +13,7 @@ type Observation = {
   bandwidth: number; // only for zoom
   continuumBandwidth: string; // only for continuum
   spectralAveraging?: number; // only for LOW
-  tapering?: number; // only for MID
+  tapering?: string; // only for MID
   imageWeighting: number;
   integrationTime: number;
   integrationTimeUnits: number;

@@ -24,7 +24,7 @@ import Target from '../../utils/types/target';
 const PAGE = 5;
 const LABEL_WIDTH = 6;
 
-export default function ObservationPage() {
+export default function ObservationPageOriginal() {
   const { t } = useTranslation('pht');
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
@@ -36,7 +36,6 @@ export default function ObservationPage() {
   const [elementsO, setElementsO] = React.useState(null);
   const [elementsT, setElementsT] = React.useState(null);
   const [row, setRow] = React.useState(null);
-  const [obRow, setObRow] = React.useState(0);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -438,11 +437,7 @@ export default function ObservationPage() {
                 columns={extendedColumnsObservations}
                 height={450}
                 onRowClick={e => setCurrObs(e.row.rec)}
-                onRowSelectionModelChange={e => {
-                  setObRow(e);
-                }}
                 testId="observationDetails"
-                rowSelectionModel={obRow}
               />
             )}
             {!hasObservations() && (

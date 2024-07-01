@@ -148,14 +148,20 @@ export default function AddObservation() {
     let centralFrequency;
     let continuumBandwidth;
 
+    // HERE
     if (observingBand === 0) {
+      console.log('observationType', observationType);
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
         e => e.lookup === subarrayConfig
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      setSpectralResolution(OBSERVATION.SpectralResolutionObLow[0].value);
+      setSpectralResolution(
+        observationType === 1
+          ? OBSERVATION.SpectralResolutionObLow[0].value
+          : OBSERVATION.SpectralResolutionObLowZoom[0].value
+      );
     }
     if (observingBand === 1) {
       centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
@@ -164,7 +170,9 @@ export default function AddObservation() {
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(e => e.lookup === subarrayConfig);
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      const spectralResolution = OBSERVATION.SpectralResolutionOb1.find(
+      const spectralResolutionKey =
+        observationType === 1 ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom';
+      const spectralResolution = OBSERVATION[`${spectralResolutionKey}`].find(
         e => e.lookup === valueCentralFrequency
       );
       setSpectralResolution(spectralResolution?.value);
@@ -176,30 +184,42 @@ export default function AddObservation() {
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      const spectralResolution = OBSERVATION.SpectralResolutionOb2.find(
+      const spectralResolutionKey =
+        observationType === 1 ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom';
+      const spectralResolution = OBSERVATION[`${spectralResolutionKey}`].find(
         e => e.lookup === valueCentralFrequency
       );
       setSpectralResolution(spectralResolution?.value);
     }
     if (observingBand === 3) {
+      // Band 5a
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
         e => e.lookup === subarrayConfig
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      setSpectralResolution(OBSERVATION.SpectralResolutionOb5a[0].value);
+      setSpectralResolution(
+        observationType === 1
+          ? OBSERVATION.SpectralResolutionOb5a[0].value
+          : OBSERVATION.SpectralResolutionOb5aZoom[0].value
+      );
     }
     if (observingBand === 4) {
+      // Band 5b
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
         e => e.lookup === subarrayConfig
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      setSpectralResolution(OBSERVATION.SpectralResolutionOb5b[0].value);
+      setSpectralResolution(
+        observationType === 1
+          ? OBSERVATION.SpectralResolutionOb5b[0].value
+          : OBSERVATION.SpectralResolutionOb5bZoom[0].value
+      );
     }
-  }, [observingBand, subarrayConfig]);
+  }, [observingBand, subarrayConfig, observationType]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
@@ -1133,7 +1153,7 @@ export default function AddObservation() {
         type: observationType,
         observingBand: observingBand,
         weather: weather,
-        elevation: elevation,
+        elevation: elevation, // TODO: add min_elevation field and use it for LOW
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
@@ -1144,12 +1164,12 @@ export default function AddObservation() {
             .CentralFrequencyAndBandWidthUnits.find(unit => unit.value === continuumUnits).label
         }`,
         spectralAveraging: spectralAveraging,
-        tapering: tapering,
+        tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
         spectralResolution: spectralResolution,
-        effectiveResolution: 0,
+        effectiveResolution: 0, // TODO what does it need to be?
         numSubBands: subBands,
         num15mAntennas: numOf15mAntennas,
         num13mAntennas: numOf13mAntennas,
