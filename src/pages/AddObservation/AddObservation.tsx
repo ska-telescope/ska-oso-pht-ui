@@ -147,8 +147,8 @@ export default function AddObservation() {
     let centralFrequency;
     let continuumBandwidth;
 
-    // HERE
     if (observingBand === 0) {
+      // Band Low
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
       if (observationType === 1) {
         continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
@@ -575,12 +575,24 @@ export default function AddObservation() {
   };
 
   const spectralResolutionField = () => {
+    function setSpectralResolutionDisplayValue(spectralResolution) {
+      //zoom mode
+      if ( observationType === 0 ) {
+        const spectralResolutionSplit = spectralResolution.split('Hz');
+        const roundedRes = Number(spectralResolutionSplit[0]).toFixed(1);
+        return `${roundedRes} Hz ${spectralResolutionSplit[1]}`;
+      // continuum mode
+      } else {
+        return spectralResolution;
+      }
+    }
+
     return (
       <Grid pt={1} spacing={0} container direction="row">
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <TextEntry
             testId="spectralResolution"
-            value={spectralResolution}
+            value={setSpectralResolutionDisplayValue(spectralResolution)}
             label={t('spectralResolution.label')}
             labelBold
             labelPosition={LABEL_POSITION.START}
@@ -936,11 +948,19 @@ export default function AddObservation() {
   };
 
   const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+    console.log('//////////////////////////');
+    console.log('resolutionHz', resolutionHz);
+    console.log('frequencyHz', frequencyHz);
+    console.log('precision', precision);
+    // resolutionHz = 14.128508391203704;
+    console.log('resolutionHz', resolutionHz);
     const speedOfLight = 299792458;
     const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
     if (velocity < 1000) {
+      console.log('velocity', velocity.toFixed(precision) + ' m/s');
       return velocity.toFixed(precision) + ' m/s';
     } else {
+      console.log('velocity', (velocity / 1000).toFixed(precision) + ' km/s');
       return (velocity / 1000).toFixed(precision) + ' km/s';
     }
   };
@@ -987,12 +1007,20 @@ export default function AddObservation() {
 
   const effectiveResolutionFieldLow = () => {
     const calculateEffectiveResolution = () => {
-      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const unit = observationType === 0 ? 'Hz' : 'kHz';
+      const spectralResolutionValue = String(spectralResolution).split(unit);
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
+      console.log('effectiveResolution', effectiveResolution);
       const resolution = Number(spectralResolutionValue[0]);
+      console.log('resolution', resolution);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      return `${effectiveResolution.toFixed(2)} kHz (${velocity})`;
+      console.log('centralFrequency', centralFrequency);
+      // const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency, 2);
+      // spectralAveraging is not used for velocity calculation for zoom
+      const velocity = observationType === 0 ? calculateVelocity(resolution * 1000, centralFrequency) : calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      console.log('velocity', velocity);
+      const decimal = observationType === 0 ? 1 : 2;
+      return `${effectiveResolution.toFixed(decimal)} ${unit} (${velocity})`;
     };
 
     return (

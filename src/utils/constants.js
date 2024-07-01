@@ -448,6 +448,7 @@ export const OBSERVATION = {
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
   // the spectral resolution matches a bandwidth value
+  /*
   SpectralResolutionObLowZoom: [
     { value: '14.1 Hz (21.2 km/s)', bandWidthValue: 1 },
     { value: '28.3 Hz (42.4 km/s)', bandWidthValue: 2 },
@@ -457,6 +458,17 @@ export const OBSERVATION = {
     { value: '452.1 Hz (677.7 km/s)', bandWidthValue: 6 },
     { value: '904.2 Hz (1.4 km/s)', bandWidthValue: 7 },
     { value: '1808.4 Hz (2.7 km/s)', bandWidthValue: 8 },
+  ],
+  */
+  SpectralResolutionObLowZoom: [
+    { value: '14.128508391203704 Hz (21.2 km/s)', bandWidthValue: 1 },
+    { value: '28.25701678240741 Hz (42.4 km/s)', bandWidthValue: 2 },
+    { value: '56.51403356481482 Hz (84.7 km/s)', bandWidthValue: 3 },
+    { value: '113.02806712962963 Hz (169.4 km/s)', bandWidthValue: 4 },
+    { value: '226.05613425925927 Hz (338.8 km/s)', bandWidthValue: 5 },
+    { value: '452.11226851851853 Hz (677.7 km/s)', bandWidthValue: 6 },
+    { value: '904.2245370370371 Hz (1.4 km/s)', bandWidthValue: 7 },
+    { value: '1808.4490740740741 Hz (2.7 km/s)', bandWidthValue: 8 },
   ],
   // the spectral resolution matches a lookup and bandwidth value
   SpectralResolutionOb1Zoom: [
