@@ -1010,16 +1010,10 @@ export default function AddObservation() {
       const unit = observationType === 0 ? 'Hz' : 'kHz';
       const spectralResolutionValue = String(spectralResolution).split(unit);
       const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
-      console.log('effectiveResolution', effectiveResolution);
       const resolution = Number(spectralResolutionValue[0]);
-      console.log('resolution', resolution);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      console.log('centralFrequency', centralFrequency);
-      // const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency, 2);
-      // spectralAveraging is not used for velocity calculation for zoom
-      const velocity = observationType === 0 ? calculateVelocity(resolution * 1000, centralFrequency) : calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      console.log('velocity', velocity);
-      const decimal = observationType === 0 ? 1 : 2;
+      const decimal = observationType === 1 ? 2 : 1;
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
       return `${effectiveResolution.toFixed(decimal)} ${unit} (${velocity})`;
     };
 
