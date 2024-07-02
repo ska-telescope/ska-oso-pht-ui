@@ -468,7 +468,7 @@ export const OBSERVATION = {
     { value: '226.05613425925927 Hz (338.8 km/s)', bandWidthValue: 5 },
     { value: '452.11226851851853 Hz (677.7 km/s)', bandWidthValue: 6 },
     { value: '904.2245370370371 Hz (1.4 km/s)', bandWidthValue: 7 },
-    { value: '1808.4490740740741 Hz (2.7 km/s)', bandWidthValue: 8 },
+    { value: '1808.4490740740741 Hz (2.7 km/s)', bandWidthValue: 8 }
   ],
   // the spectral resolution matches a lookup and bandwidth value
   SpectralResolutionOb1Zoom: [
@@ -485,7 +485,7 @@ export const OBSERVATION = {
     { lookup: '0.7', value: '1.68 kHz (719.5 m/s)', bandWidthValue: 4 },
     { lookup: '0.7', value: '3.36 kHz (1.4 km/s)', bandWidthValue: 5 },
     { lookup: '0.7', value: '6.72 kHz (2.9 km/s)', bandWidthValue: 6 },
-    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)', bandWidthValue: 7 },
+    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)', bandWidthValue: 7 }
   ],
   SpectralResolutionOb2Zoom: [
     { lookup: '1.31', value: '0.21 kHz (48.1 m/s)', bandWidthValue: 1 },
@@ -514,13 +514,13 @@ export const OBSERVATION = {
     { value: '13.44 kHz (615.1 m/s)', bandWidthValue: 7 }
   ],
   SpectralResolutionOb5bZoom: [
-    { value: '0.21 kHz (5.3 m/s)', bandWidthValue: 1  },
-    { value: '0.42 kHz (10.6 m/s)', bandWidthValue: 2  },
-    { value: '0.84 kHz (21.3 m/s)', bandWidthValue: 3  },
-    { value: '1.68 kHz (42.5 m/s)', bandWidthValue: 4  },
-    { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5  },
-    { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6  },
-    { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7  },
+    { value: '0.21 kHz (5.3 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (10.6 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (21.3 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (42.5 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7 }
   ],
   Tapering: [
     { label: 'No tapering', value: 1 },
