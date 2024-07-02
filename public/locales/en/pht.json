@@ -57,11 +57,11 @@
     "2": "LOW"
   },
   "bandWidth": {
-    "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
+    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option.",
     "label": "Band Width"
   },
   "centralFrequency": {
-    "help": "Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
+    "help": "Specify a central frequency which should be within the selected band and must be fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
       "lowLower": 50,
@@ -92,7 +92,7 @@
     "confirm": "Clone this proposal"
   },
   "continuumBandWidth": {
-    "help": "Continuum BANDWIDTH HELP",
+    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option.",
     "label": "Continuum BandWidth",
     "range": {
       "error": "Value is outside of allowed range"
