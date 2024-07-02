@@ -1023,7 +1023,10 @@ export default function AddObservation() {
       const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
       const decimal = observationType === 1 ? 2 : 1;
-      const velocity = observationType === 1 ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency) : calculateVelocity(resolution * spectralAveraging, centralFrequency);
+      const velocity =
+        observationType === 1
+          ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
+          : calculateVelocity(resolution * spectralAveraging, centralFrequency);
       return `${effectiveResolution.toFixed(decimal)} ${unit} (${velocity})`;
     };
 
