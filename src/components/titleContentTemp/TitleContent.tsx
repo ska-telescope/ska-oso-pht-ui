@@ -9,7 +9,7 @@ import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/c
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
-import ViewIcon from '../../components/icon/viewIcon/viewIcon';
+import ViewIcon from '../icon/viewIcon/viewIcon';
 
 interface TitleContentProps {
   page: number;
