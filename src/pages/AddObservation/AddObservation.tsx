@@ -147,11 +147,7 @@ export default function AddObservation() {
   React.useEffect(() => {
     let centralFrequency;
     let continuumBandwidth;
-    console.log('ob', observingBand);
-    console.log('subarrayConfig', subarrayConfig);
-    // HERE
     if (observingBand === 0) {
-      console.log('observationType', observationType);
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
         e => e.lookup === subarrayConfig
@@ -195,14 +191,10 @@ export default function AddObservation() {
     if (observingBand === 3) {
       // Band 5a
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
-      console.log('subarrayConfig', subarrayConfig);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
-        e => e.lookup === subarrayConfig
+        e => e.lookup === subarrayConfigBand5
       );
-      console.log('continuumB', continuumBandwidth);
-
       const valueContinuumBandwidth = continuumBandwidth?.value;
-      console.log('continuumB', valueContinuumBandwidth);
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
         observationType === 1
@@ -214,7 +206,7 @@ export default function AddObservation() {
       // Band 5b
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
-        e => e.lookup === subarrayConfig
+        e => e.lookup === subarrayConfigBand5
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
@@ -224,7 +216,7 @@ export default function AddObservation() {
           : OBSERVATION.SpectralResolutionOb5bZoom[0].value
       );
     }
-  }, [observingBand, subarrayConfig, observationType]);
+  }, [observingBand, subarrayConfig, subarrayConfigBand5, observationType]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
