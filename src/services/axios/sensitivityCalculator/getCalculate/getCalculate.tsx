@@ -87,8 +87,12 @@ async function GetCalculate(observation: Observation, target: Target) {
         .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
         .toString();
       // convert Khz to Hz as effective Resolution should be sent in Hz
-      const effectiveResMultiplier = String(observation.effectiveResolution).includes("kHz") ? 1000 : 1;
-      mode_specific_parameters.zoom_resolutions = (Number(observation.effectiveResolution.split(' ')[0]) * effectiveResMultiplier).toString();
+      const effectiveResMultiplier = String(observation.effectiveResolution).includes('kHz')
+        ? 1000
+        : 1;
+      mode_specific_parameters.zoom_resolutions = (
+        Number(observation.effectiveResolution.split(' ')[0]) * effectiveResMultiplier
+      ).toString();
     }
 
     const weighting = OBSERVATION.ImageWeighting.find(
@@ -160,7 +164,9 @@ async function GetCalculate(observation: Observation, target: Target) {
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
     } else {
-      const spectralResValue = observation.spectralResolution.includes("kHz") ? Number(observation.spectralResolution.split(' ')[0]) * 1000 : Number(observation.spectralResolution.split(' ')[0]);
+      const spectralResValue = observation.spectralResolution.includes('kHz')
+        ? Number(observation.spectralResolution.split(' ')[0]) * 1000
+        : Number(observation.spectralResolution.split(' ')[0]);
       mode_specific_parameters.spectral_resolution_hz = spectralResValue?.toString();
 
       const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();

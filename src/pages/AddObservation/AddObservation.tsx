@@ -980,7 +980,7 @@ export default function AddObservation() {
     return val_scaled;
   };
 
-  const effectiveResolutionFieldMid = () => {
+  const EffectiveResolutionFieldMid = () => {
     React.useEffect(() => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
       const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
@@ -1005,7 +1005,7 @@ export default function AddObservation() {
     );
   };
 
-  const effectiveResolutionFieldLow = () => {
+  const EffectiveResolutionFieldLow = () => {
     React.useEffect(() => {
       const unit = observationType === 0 ? 'Hz' : 'kHz';
       const spectralResolutionValue = String(spectralResolution).split(unit);
@@ -1016,10 +1016,11 @@ export default function AddObservation() {
         observationType === 1
           ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
           : calculateVelocity(resolution * spectralAveraging, centralFrequency);
-      const effectiveValue = `${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`;
+      const effectiveValue = `${(resolution * spectralAveraging).toFixed(
+        decimal
+      )} ${unit} (${velocity})`;
       setEffective(effectiveValue);
     }, [spectralResolution, spectralAveraging, observationType, frequency]);
-  
 
     return (
       <TextEntry
@@ -1332,7 +1333,7 @@ export default function AddObservation() {
                     {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {isLow() ? effectiveResolutionFieldLow() : effectiveResolutionFieldMid()}
+                    {isLow() ? EffectiveResolutionFieldLow() : EffectiveResolutionFieldMid()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {taperingField()}
