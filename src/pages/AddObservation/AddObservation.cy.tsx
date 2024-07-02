@@ -10,17 +10,25 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 function verifySubArrayConfigurationValue2() {
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.8');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="2"]').click();
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.2');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 function verifySubArrayConfigurationValue4() {
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.8');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="4"]').click();
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.4');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
+}
+
+function verifySubArrayConfigurationValue20() {
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.8');
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.20');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
@@ -432,8 +440,8 @@ describe('<AddObservation />', () => {
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mounting(THEME_LIGHT);
     verifyDetailsField();
-    verifySubArrayConfigurationValue4();
     verifyObservingBandMidBand2();
+    verifySubArrayConfigurationValue20();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();

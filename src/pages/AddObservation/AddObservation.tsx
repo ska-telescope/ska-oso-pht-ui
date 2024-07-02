@@ -46,7 +46,8 @@ export default function AddObservation() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(1);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(8);
+  const [subarrayConfigBand5, setSubarrayConfigBand5] = React.useState(9);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [elevation, setElevation] = React.useState(Number(t('elevation.default')));
@@ -146,10 +147,7 @@ export default function AddObservation() {
   React.useEffect(() => {
     let centralFrequency;
     let continuumBandwidth;
-
-    // HERE
     if (observingBand === 0) {
-      console.log('observationType', observationType);
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
         e => e.lookup === subarrayConfig
@@ -194,7 +192,7 @@ export default function AddObservation() {
       // Band 5a
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
-        e => e.lookup === subarrayConfig
+        e => e.lookup === subarrayConfigBand5
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
@@ -208,7 +206,7 @@ export default function AddObservation() {
       // Band 5b
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
-        e => e.lookup === subarrayConfig
+        e => e.lookup === subarrayConfigBand5
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
@@ -218,10 +216,12 @@ export default function AddObservation() {
           : OBSERVATION.SpectralResolutionOb5bZoom[0].value
       );
     }
-  }, [observingBand, subarrayConfig, observationType]);
+  }, [observingBand, subarrayConfig, subarrayConfigBand5, observationType]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
+
+  const isBand5 = () => BANDWIDTH_TELESCOPE[observingBand].isBand5;
 
   const isContinuumOnly = () => {
     if (isLow()) {
@@ -339,6 +339,40 @@ export default function AddObservation() {
     );
   };
 
+  const subArrayFieldBand5 = () => {
+    const getSubArrayOptions = () => {
+      const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
+      let subArrayOption = OBSERVATION.array[usedTelescope - 1].subarray;
+      if (usedTelescope > 0) {
+        if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
+        return subArrayOption.map(e => {
+          return {
+            label: t('subArrayConfiguration.' + e.value),
+            value: e.value
+          };
+        });
+      }
+    };
+
+    return (
+      <Grid pt={1} spacing={0} container direction="row">
+        <Grid item xs={FIELD_WIDTH_OPT1}>
+          <DropDown
+            options={getSubArrayOptions()}
+            testId="subarrayConfig"
+            value={subarrayConfigBand5}
+            setValue={setSubarrayConfigBand5}
+            label={t('subArrayConfiguration.label')}
+            labelBold
+            labelPosition={LABEL_POSITION.START}
+            labelWidth={LABEL_WIDTH_OPT1}
+            onFocus={() => helpComponent(t('subArrayConfiguration.help'))}
+            required
+          />
+        </Grid>
+      </Grid>
+    );
+  };
   const subArrayField = () => {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
@@ -1252,7 +1286,7 @@ export default function AddObservation() {
                 {arrayField()}
               </Grid>
               <Grid item xs={XS_TOP}>
-                {subArrayField()}
+                {isBand5() ? subArrayFieldBand5() : subArrayField()}
               </Grid>
               <Grid item xs={XS_TOP}>
                 {isLow() ? NumOfStationsField() : AntennasFields()}
