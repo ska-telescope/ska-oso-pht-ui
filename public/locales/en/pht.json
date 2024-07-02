@@ -648,7 +648,7 @@
   },
   "validationBtn": {
     "label": "Validation",
-    "success": "Validation was successful"
+    "success": "Proposal is Valid"
   },
   "velocity": {
     "label": "Velocity",
