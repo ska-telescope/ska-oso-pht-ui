@@ -23,7 +23,7 @@ function mounting(theTheme) {
   );
 }
 
-describe('<StandardAlert />', () => {
+describe('<TimedAlert />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
