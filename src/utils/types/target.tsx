@@ -46,6 +46,12 @@ export type TargetBackend = {
  ***********************************************************************************/
 
 /************************************************************************************
+ *  NOTE : velType is currently mapped as follows:
+    "0": "Velocity",
+    "1": "Redshift"
+ ***********************************************************************************/
+
+/************************************************************************************
  *  NOTE : velUnit is currently mapped as follows:
  *   ''  : No units
  *   '0' : "km/s"
@@ -63,6 +69,7 @@ type Target = {
   raUnit: string;
   redshift: string;
   referenceFrame: number;
+  velType: number;
   vel: string;
   velUnit: string;
 };

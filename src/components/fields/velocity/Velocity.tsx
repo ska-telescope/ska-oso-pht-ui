@@ -29,12 +29,24 @@ export default function VelocityField({
   valueUnitFocus
 }: VelocityFieldProps) {
   const { t } = useTranslation('pht');
+  const [vType, setVType] = React.useState(0);
+  const [vUnit, setVUnit] = React.useState(0);
   const FIELD = 'velocity';
   const VELOCITY = 0;
 
   React.useEffect(() => {
     setValue('');
   }, [valueType]);
+
+  const setTheType = e => {
+    setVType(e);
+    setValueType(e);
+  };
+
+  const setTheUnit = e => {
+    setVUnit(e);
+    setValueUnit(e);
+  };
 
   const VelocityTypeField = () => {
     const OPTIONS = [0, 1];
@@ -48,8 +60,8 @@ export default function VelocityField({
         <DropDown
           options={getOptions()}
           testId={FIELD + 'Type'}
-          value={valueType}
-          setValue={setValueType}
+          value={vType}
+          setValue={setTheType}
           label=""
           onFocus={valueTypeFocus}
         />
@@ -80,9 +92,9 @@ export default function VelocityField({
     return (
       <DropDown
         options={getOptions()}
-        testId={FIELD + 'Type'}
-        value={valueUnit}
-        setValue={setValueUnit}
+        testId={FIELD + 'Units'}
+        value={vUnit}
+        setValue={setTheUnit}
         label=""
         onFocus={valueUnitFocus}
       />
@@ -99,7 +111,7 @@ export default function VelocityField({
         justifyContent="space-between"
       >
         <Grid item xs={labelWidth}>
-          {VelocityTypeField()}
+          {valueType !== null && VelocityTypeField()}
         </Grid>
         <Grid item xs={12 - labelWidth}>
           {VelocityValueField()}
