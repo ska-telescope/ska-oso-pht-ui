@@ -13,7 +13,7 @@ import VelocityField from '../fields/velocity/Velocity';
 import HelpPanel from '../info/helpPanel/helpPanel';
 import GetCoordinates from '../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../utils/types/target';
-import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '../../utils/constants';
+import { RA_TYPE_EQUATORIAL } from '../../utils/constants';
 
 interface TargetEntryProps {
   id?: any;
@@ -135,58 +135,73 @@ export default function TargetEntry({ id, raType, setTarget, target }: TargetEnt
     processCoordinatesResults(response);
   };
 
-  const nameField = () => <Grid item p={1} xs={12}>
-        <TextEntry
-          required
-          label={t('name.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LAB_WIDTH}
-          testId="name"
-          value={target?.name}
-          setValue={setName}
-          suffix={<ResolveButton action={() => getCoordinates(target?.name, raType)} />}
-          onFocus={() => helpComponent(t('name.help'))}
-          errorText={nameFieldError}
-        />
-      </Grid>;
+  const nameField = () => (
+    <Grid item p={1} xs={12}>
+      <TextEntry
+        required
+        label={t('name.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LAB_WIDTH}
+        testId="name"
+        value={target?.name}
+        setValue={setName}
+        suffix={
+          <ResolveButton
+            action={() => getCoordinates(target?.name, raType)}
+            testId="resolveButton"
+          />
+        }
+        onFocus={() => helpComponent(t('name.help'))}
+        errorText={nameFieldError}
+      />
+    </Grid>
+  );
 
-  const skyDirection1Field = () => <Grid item xs={12}>
-        <SkyDirection1
-          labelWidth={LAB_WIDTH}
-          setValue={setRA}
-          skyUnits={raType}
-          value={target?.ra}
-          valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
-        />
-      </Grid>;
+  const skyDirection1Field = () => (
+    <Grid item xs={12}>
+      <SkyDirection1
+        labelWidth={LAB_WIDTH}
+        setValue={setRA}
+        skyUnits={raType}
+        value={target?.ra}
+        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+      />
+    </Grid>
+  );
 
-  const skyDirection2Field = () => <Grid item xs={12}>
-        <SkyDirection2
-          labelWidth={LAB_WIDTH}
-          setValue={setDec}
-          skyUnits={raType}
-          value={target?.dec}
-          valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
-        />
-      </Grid>;
+  const skyDirection2Field = () => (
+    <Grid item xs={12}>
+      <SkyDirection2
+        labelWidth={LAB_WIDTH}
+        setValue={setDec}
+        skyUnits={raType}
+        value={target?.dec}
+        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+      />
+    </Grid>
+  );
 
-  const velocityField = () => <Grid item xs={12}>
-        <VelocityField
-          labelWidth={LAB_WIDTH}
-          setValue={setVel}
-          setValueType={setVelType}
-          setValueUnit={setVelUnit}
-          value={target?.vel}
-          valueType={target?.velType}
-          valueUnit={target?.velUnit}
-          valueFocus={() => helpComponent(t('velocity.help'))}
-          valueTypeFocus={() => helpComponent(t('velocity.help'))}
-          valueUnitFocus={() => helpComponent(t('velocity.help'))}
-        />
-      </Grid>;
+  const velocityField = () => (
+    <Grid item xs={12}>
+      <VelocityField
+        labelWidth={LAB_WIDTH}
+        setValue={setVel}
+        setValueType={setVelType}
+        setValueUnit={setVelUnit}
+        value={target?.vel}
+        valueType={target?.velType}
+        valueUnit={target?.velUnit}
+        valueFocus={() => helpComponent(t('velocity.help'))}
+        valueTypeFocus={() => helpComponent(t('velocity.help'))}
+        valueUnitFocus={() => helpComponent(t('velocity.help'))}
+      />
+    </Grid>
+  );
 
-  const referenceFrameField = () => <Grid item xs={12}>
+  const referenceFrameField = () => (
+    <Grid item xs={12}>
+      {target?.velType === RA_TYPE_EQUATORIAL && (
         <ReferenceFrameField
           labelBold={true}
           labelPosition={LABEL_POSITION.START}
@@ -195,9 +210,9 @@ export default function TargetEntry({ id, raType, setTarget, target }: TargetEnt
           setValue={setReferenceFrame}
           value={target?.referenceFrame}
         />
-      </Grid>;
-
-  const emptyField = () => <Grid item p={4} xs={12} />;
+      )}
+    </Grid>
+  );
 
   return (
     <Grid
@@ -214,8 +229,7 @@ export default function TargetEntry({ id, raType, setTarget, target }: TargetEnt
           {skyDirection1Field()}
           {skyDirection2Field()}
           {velocityField()}
-          {target?.velType === RA_TYPE_EQUATORIAL && referenceFrameField()}
-          {target?.velType === RA_TYPE_GALACTIC && emptyField()}
+          {referenceFrameField()}
           {!id && (
             <Grid item xs={12}>
               <Box p={1}>
