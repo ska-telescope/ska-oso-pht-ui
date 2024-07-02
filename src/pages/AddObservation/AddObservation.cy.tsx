@@ -17,10 +17,18 @@ function verifySubArrayConfigurationValue2() {
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 function verifySubArrayConfigurationValue4() {
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.9');
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.8');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="4"]').click();
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.4');
+  cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
+}
+
+function verifySubArrayConfigurationValue20() {
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.8');
+  cy.get('[data-testid="subarrayConfig"]').click();
+  cy.get('[data-value="20"]').click();
+  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.20');
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
 
@@ -433,7 +441,7 @@ describe('<AddObservation />', () => {
     mounting(THEME_LIGHT);
     verifyDetailsField();
     verifyObservingBandMidBand2();
-    verifySubArrayConfigurationValue4();
+    verifySubArrayConfigurationValue20();
     verifyElevationField();
     verifyWeatherField();
     verifyObservationTypeZoom();
