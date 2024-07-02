@@ -183,7 +183,6 @@ export default function AddObservation() {
         );
         setSpectralResolution(spectralResolution?.value);
       } else {
-        console.log('::: in HERE');
         const spectralResolution = OBSERVATION['SpectralResolutionOb1Zoom'].find(
           e => e.lookup === valueCentralFrequency && e.bandWidthValue === bandwidth
         );
@@ -957,19 +956,11 @@ export default function AddObservation() {
   };
 
   const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    console.log('//////////////////////////');
-    console.log('resolutionHz', resolutionHz);
-    console.log('frequencyHz', frequencyHz);
-    console.log('precision', precision);
-    // resolutionHz = 14.128508391203704;
-    console.log('resolutionHz', resolutionHz);
     const speedOfLight = 299792458;
     const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
     if (velocity < 1000) {
-      console.log('velocity', velocity.toFixed(precision) + ' m/s');
       return velocity.toFixed(precision) + ' m/s';
     } else {
-      console.log('velocity', (velocity / 1000).toFixed(precision) + ' km/s');
       return (velocity / 1000).toFixed(precision) + ' km/s';
     }
   };
@@ -990,14 +981,15 @@ export default function AddObservation() {
   };
 
   const effectiveResolutionFieldMid = () => {
-    const calculateEffectiveResolution = () => {
+    React.useEffect(() => {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
+      const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      return `${effectiveResolution} kHz (${velocity})`;
-    };
+      const effectiveValue = `${effectiveResolutionValue} kHz (${velocity})`;
+      setEffective(effectiveValue);
+    }, [spectralResolution, spectralAveraging, observationType, frequency]);
 
     return (
       <TextEntry
@@ -1006,20 +998,17 @@ export default function AddObservation() {
         labelPosition={LABEL_POSITION.START}
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
-        value={calculateEffectiveResolution()}
-        setValue={setEffective}
+        value={effective}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
     );
   };
 
-  // HERE
   const effectiveResolutionFieldLow = () => {
-    const calculateEffectiveResolution = () => {
+    React.useEffect(() => {
       const unit = observationType === 0 ? 'Hz' : 'kHz';
       const spectralResolutionValue = String(spectralResolution).split(unit);
-      const effectiveResolution = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
       const decimal = observationType === 1 ? 2 : 1;
@@ -1027,8 +1016,10 @@ export default function AddObservation() {
         observationType === 1
           ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
           : calculateVelocity(resolution * spectralAveraging, centralFrequency);
-      return `${effectiveResolution.toFixed(decimal)} ${unit} (${velocity})`;
-    };
+      const effectiveValue = `${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`;
+      setEffective(effectiveValue);
+    }, [spectralResolution, spectralAveraging, observationType, frequency]);
+  
 
     return (
       <TextEntry
@@ -1037,8 +1028,7 @@ export default function AddObservation() {
         labelPosition={LABEL_POSITION.START}
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
-        value={calculateEffectiveResolution()}
-        setValue={setEffective}
+        value={effective} //
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
@@ -1206,7 +1196,7 @@ export default function AddObservation() {
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
         spectralResolution: spectralResolution,
-        effectiveResolution: 0,
+        effectiveResolution: effective,
         numSubBands: subBands,
         num15mAntennas: numOf15mAntennas,
         num13mAntennas: numOf13mAntennas,
