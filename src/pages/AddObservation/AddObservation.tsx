@@ -147,6 +147,7 @@ export default function AddObservation() {
     let centralFrequency;
     let continuumBandwidth;
 
+    // HERE
     if (observingBand === 0) {
       // Band Low
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
@@ -165,6 +166,7 @@ export default function AddObservation() {
       );
     }
     if (observingBand === 1) {
+      // Band 1
       centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
@@ -181,6 +183,7 @@ export default function AddObservation() {
         );
         setSpectralResolution(spectralResolution?.value);
       } else {
+        console.log('::: in HERE');
         const spectralResolution = OBSERVATION['SpectralResolutionOb1Zoom'].find(
           e => e.lookup === valueCentralFrequency && e.bandWidthValue === bandwidth
         );
@@ -188,6 +191,7 @@ export default function AddObservation() {
       }
     }
     if (observingBand === 2) {
+      // Band 2
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
@@ -581,12 +585,12 @@ export default function AddObservation() {
 
   const spectralResolutionField = () => {
     function setSpectralResolutionDisplayValue(spectralResolution) {
-      //zoom mode
-      if (observationType === 0) {
+      // low zoom mode
+      if (observationType === 0 && observingBand === 0) {
         const spectralResolutionSplit = spectralResolution.split('Hz');
         const roundedRes = Number(spectralResolutionSplit[0]).toFixed(1);
         return `${roundedRes} Hz ${spectralResolutionSplit[1]}`;
-        // continuum mode
+        // low/mid continuum modes and mid zoom modes
       } else {
         return spectralResolution;
       }
@@ -1010,6 +1014,7 @@ export default function AddObservation() {
     );
   };
 
+  // HERE
   const effectiveResolutionFieldLow = () => {
     const calculateEffectiveResolution = () => {
       const unit = observationType === 0 ? 'Hz' : 'kHz';
