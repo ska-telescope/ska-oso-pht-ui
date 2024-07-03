@@ -75,7 +75,10 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
-      taper: observation.tapering?.toString()
+      taper:
+        observation.tapering === 'No tapering'
+          ? 0
+          : observation.tapering.replace('"', '').replace(' ', '')
     };
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);

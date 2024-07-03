@@ -1,14 +1,19 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 
-interface ShellProps {
+interface FieldWrapperProps {
   label?: string;
   labelWidth?: number;
   big?: boolean;
   children?: JSX.Element | JSX.Element[];
 }
 
-export default function Shell({ label, labelWidth = 3, big = false, children }: ShellProps) {
+export default function FieldWrapper({
+  label,
+  labelWidth = 3,
+  big = false,
+  children
+}: FieldWrapperProps) {
   const variant = big ? 'h6' : 'body2';
   const CONTENT_WIDTH_XS = 12 - labelWidth;
 

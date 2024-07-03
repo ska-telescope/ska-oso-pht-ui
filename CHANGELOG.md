@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+Future
+
+---
+
+1. Added the ability to Edit a target
+
 0.3.1
 
 ---

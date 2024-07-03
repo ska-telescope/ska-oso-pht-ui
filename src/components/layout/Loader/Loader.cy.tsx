@@ -8,7 +8,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<Legend />', () => {
+describe('<Loader />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       cy.mount(
