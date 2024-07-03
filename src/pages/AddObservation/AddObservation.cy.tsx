@@ -229,8 +229,7 @@ function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifySpectralResolutionZoomBandMid() {
-  //TODO: Refactor with correct values once updates for zoom are in place
-  // cy.get('[id="spectralResolution"]').should('have.value', '13.44 kHz (3.0 km/s)');
+  cy.get('[id="spectralResolution"]').should('have.value', '5.43 kHz (8.1 km/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
@@ -274,7 +273,7 @@ function verifyEffectiveResolutionContinuumLowBand() {
 }
 
 function verifyEffectiveResolutionZoomLowBand() {
-  cy.get('[id="effective"]').should('have.value', '28.3 Hz (42.4 m/s)'); // TODO: change value once value for Zoom Effective Res properly set
+  cy.get('[id="effective"]').should('have.value', '28.3 Hz (42.4 m/s)');
   cy.get('[id="effective"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('effectiveResolution.help');
 }
@@ -505,7 +504,7 @@ describe('<AddObservation />', () => {
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
   });
-
+  
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mounting(THEME_LIGHT);
     verifyObservingBandLow();
