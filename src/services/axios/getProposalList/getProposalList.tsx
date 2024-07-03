@@ -17,10 +17,10 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
       title: inRec[i].proposal_info.title,
       cycle: inRec[i].proposal_info.cycle,
       pi: getPI(inRec[i]),
-      cpi: 'CPI',
+      cpi: 'CPI', // TODO -> is it co principal investigator?
       status: inRec[i].status,
-      lastUpdated: new Date().toDateString(), // TODO : Needs to be the correct data
-      telescope: 'N/A'
+      lastUpdated: new Date(inRec[i].metadata.last_modified_on).toDateString(),
+      telescope: 'N/A' // TODO -> what to map to? telescopes in observations?
     };
     output.push(rec);
   }

@@ -11,6 +11,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
   try {
     const URL_PATH = `/proposals`;
     const convertedProposal = helpers.transform.convertProposalToBackendFormat(proposal, status);
+
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,

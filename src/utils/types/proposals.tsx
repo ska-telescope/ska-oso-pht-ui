@@ -1,3 +1,4 @@
+import { Metadata } from './metadata';
 import { ScienceProgrammeBackend } from './scienceProgrammes';
 import { TargetBackend } from './target';
 import { TeamMemberBackend } from './teamMember';
@@ -18,6 +19,7 @@ export type ProposalsBackend = {
     investigators: TeamMemberBackend[];
     science_programmes: ScienceProgrammeBackend[];
   };
+  metadata?: Metadata
 };
 
 export type Proposals = {

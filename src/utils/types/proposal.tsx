@@ -9,6 +9,7 @@ import TargetObservation from './targetObservation';
 import TeamMember from './teamMember';
 import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
+import { Metadata } from './metadata';
 
 /*
 export type ProposalBackend = {
@@ -38,13 +39,7 @@ export type ProposalBackend = {
   submitted_by?: string;
   submitted_on?: string;
   investigator_refs: string[];
-  metadata?: {
-    version: number;
-    created_by: string;
-    created_on: string;
-    last_modified_by: string;
-    last_modified_on: string;
-  };
+  metadata?: Metadata;
   cycle: string;
   info: {
     title: string;
