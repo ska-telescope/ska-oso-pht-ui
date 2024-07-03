@@ -411,7 +411,7 @@ function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
   cy.get('[id="effective"]').should('have.value', '0.84 kHz (192.2 m/s)');
 }
 
-function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution () {
+function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
   cy.get('[data-testid="bandwidth"]').contains('3.125 MHz');
   cy.get('[id="spectralResolution"]').should('have.value', '0.21 kHz (9.6 m/s)');
   cy.get('[id="spectral"]').contains('1');
@@ -428,7 +428,7 @@ function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution () {
   cy.get('[id="effective"]').should('have.value', '0.84 kHz (38.4 m/s)');
 }
 
-function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution () {
+function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
   cy.get('[data-testid="bandwidth"]').contains('3.125 MHz');
   cy.get('[id="spectralResolution"]').should('have.value', '0.21 kHz (5.3 m/s)');
   cy.get('[id="spectral"]').contains('1');
