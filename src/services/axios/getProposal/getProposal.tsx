@@ -25,6 +25,7 @@ import { ObservationSetBackend } from 'utils/types/observationSet';
 import { InvestigatorBackend } from 'utils/types/investigator';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
+  console.log('[getProposal] getProposalType inValue', inValue);
   const rec = Projects.find(p => p.title === inValue.main_type);
   return rec.id;
 };
