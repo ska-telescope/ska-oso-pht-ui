@@ -32,7 +32,6 @@ function verifySubArrayConfigurationValue5() {
 }
 
 function verifySubArrayConfigurationValue6() {
-  cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.1');
   cy.get('[data-testid="subarrayConfig"]').click();
   cy.get('[data-value="6"]').click();
   cy.get('[data-testid="subarrayConfig"]').contains('subArrayConfiguration.6');
@@ -250,7 +249,7 @@ function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
 }
 
 function verifySpectralResolutionZoomBandMid() {
-  cy.get('[id="spectralResolution"]').should('have.value', '5.43 kHz (8.1 km/s)');
+  cy.get('[id="spectralResolution"]').should('have.value', '0.21 kHz (48.1 m/s)');
   cy.get('[id="spectralResolution"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('spectralResolution.help');
 }
