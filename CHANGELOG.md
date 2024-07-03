@@ -8,6 +8,7 @@ Future
 ---
 
 1. Added the ability to Edit a target
+2. Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
 
 0.3.1
 
