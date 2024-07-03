@@ -285,6 +285,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    console.log('GETPROPOSAL DATA', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

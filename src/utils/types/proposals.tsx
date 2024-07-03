@@ -8,14 +8,14 @@ export type ProposalsBackend = {
   cycle: string;
   submitted_by: string;
   submitted_on: string;
-  info: {
+  proposal_info: {
     title: string;
     cycle: string;
     abstract: string;
     proposal_type: { main_type: string; sub_type: string };
     science_category: string;
     targets: TargetBackend[];
-    investigator: TeamMemberBackend[];
+    investigators: TeamMemberBackend[];
     science_programmes: ScienceProgrammeBackend[];
   };
 };

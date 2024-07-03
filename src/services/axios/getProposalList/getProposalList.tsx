@@ -3,9 +3,9 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 import MockProposals from './mockProposals';
 import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
 
-// TODO : Need to do this properly
 const getPI = (_inValue: any) => {
-  return 'THE PI NAME';
+  const principalInvestigator = _inValue.proposal_info.investigators.find(p => p.principal_investigator === true);
+  return `${principalInvestigator.first_name} ${principalInvestigator.last_name}`;
 };
 
 function mappingList(inRec: ProposalsBackend[]): Proposals[] {
@@ -13,10 +13,10 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposals = {
       id: inRec[i].prsl_id.toString(),
-      category: inRec[i].info.proposal_type.main_type,
-      title: inRec[i].info.title,
-      cycle: inRec[i].cycle,
-      pi: getPI(inRec[i].info.investigator),
+      category: inRec[i].proposal_info.proposal_type.main_type,
+      title: inRec[i].proposal_info.title,
+      cycle: inRec[i].proposal_info.cycle,
+      pi: getPI(inRec[i]),
       cpi: 'CPI',
       status: inRec[i].status,
       lastUpdated: new Date().toDateString(), // TODO : Needs to be the correct data
@@ -39,6 +39,7 @@ async function GetProposalList(): Promise<Proposals[] | string> {
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    console.log('GETPROPOSAL LIST', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return e.message;
