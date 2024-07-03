@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
-import TitleContent from '../../components/titleContentTemp/TitleContent';
+import TitleContent from '../../components/titleContent/TitleContent';
 import { EMPTY_PROPOSAL, EMPTY_STATUS } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 
