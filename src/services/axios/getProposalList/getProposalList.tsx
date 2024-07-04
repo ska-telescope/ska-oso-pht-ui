@@ -1,19 +1,20 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA, Projects } from '../../../utils/constants';
 import MockProposals from './mockProposals';
-import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 const getPI = (_inValue: any) => {
   const principalInvestigator = _inValue.info.investigators.find(p => p.principal_investigator === true);
   return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
 };
 
-function mappingList(inRec: ProposalsBackend[]): Proposals[] {
+function mappingList(inRec: ProposalBackend[]): Proposal[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
-    const rec: Proposals = {
+    const rec: Proposal = {
       id: inRec[i].prsl_id.toString(),
-      category: inRec[i].info.proposal_type.main_type,
+      // category: Projects.find(p => p.title === inRec[i].info.proposal_type.main_type).id
+      category: Projects.find(p => p.title === 'Standard Proposal').id, // TODO use proposal main_type once correct proposal can be created
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       pi: getPI(inRec[i]),
@@ -24,14 +25,14 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
     };
     output.push(rec);
   }
-  return output as Proposals[];
+  return output as Proposal[];
 }
 
-export function GetMockProposalList(): Proposals[] {
+export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposals);
 }
 
-async function GetProposalList(): Promise<Proposals[] | string> {
+async function GetProposalList(): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }

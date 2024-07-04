@@ -1,4 +1,6 @@
-const MockProposalBackendNew2 = {
+import { ProposalBackend } from '../../../utils/types/proposal';
+
+const MockProposalBackendNew2: ProposalBackend = {
     prsl_id: "prp-ska01-202204-01",
     status: "submitted",
     submitted_on: "2022-09-23T15:43:53.971548Z",
@@ -17,9 +19,9 @@ const MockProposalBackendNew2 = {
     info: {
       title: "The Milky Way View",
       proposal_type: {
-        main_type: "standard_proposal",
+        main_type: "Standard Proposal",
         sub_type: [
-          "coordinated_proposal"
+          "Coordinated Proposal"
         ]
       },
       abstract: "Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering",

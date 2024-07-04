@@ -18,31 +18,26 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import MockProposal from './mockProposal'; // TODO: use MockProposalBackendNew and remove old mock when ready
+import MockProposalBackendNew2 from './mockProposalBackendNew2'; // TODO: use MockProposalBackendNew and remove old mock when ready
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { TargetBackend } from 'utils/types/target';
 import { ObservationSetBackend } from 'utils/types/observationSet';
 import { InvestigatorBackend } from 'utils/types/investigator';
 
-const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
+const getProposalType = (inValue: { main_type: string; sub_type: string[] }): number => {
   console.log('[getProposal] getProposalType inValue', inValue);
-  const rec = Projects.find(p => p.title === inValue.main_type);
+  const main = 'Standard Proposal'; // TODO use proposal main_type once correct proposal can be created
+  const rec = Projects.find(p => p.title === main);
+  console.log('rec', rec);
   return rec.id;
 };
 
-/*
-// old getProposalSubTypeType
-const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
-  const rec = Projects.find(p => p.title === inValue.main_type);
-  const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
-  return rec2 ? rec2.id : null;
-};
-*/
-
-const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[] }) => {
-  const project = Projects.find(({ title }) => title === inValue.main_type);
+const getProposalSubType = (inValue: { main_type: string; sub_type: string[] }): number[] => {
+  // const project = Projects.find(({ title }) => title === inValue.main_type);
+  const project = Projects.find(({ title }) => title === 'Standard Proposal'); // TODO use proposal main_type once correct proposal can be created
   const subProjects = inValue.sub_type.map(subType =>
-    project.subProjects.find(({ title }) => title === subType)
+    // project.subProjects.find(({ title }) => title === subType)
+    project.subProjects.find(({ title }) => title === 'Coordinated Proposal')  // TODO use proposal sub_type once correct proposal can be created
   );
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
@@ -250,11 +245,13 @@ function mapping(inRec: ProposalBackend): Proposal {
 
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: check mapping and add new fields
+  console.log('::: in GET PROPOSAL MAPPING', inRec);
   return {
-    id: inRec.prsl_id,
+    id: inRec.prsl_id.toString(),
     title: inRec.info.title,
     proposalType: getProposalType(inRec.info.proposal_type),
-    proposalSubType: getProposalSubTypeType(inRec.info.proposal_type),
+    proposalSubType: getProposalSubType(inRec.info.proposal_type),
+    /*
     team: getTeamMembers(inRec.info.investigators),
     abstract: inRec.info.abstract,
     category: getCategory(inRec.info.science_category),
@@ -270,11 +267,12 @@ function mapping(inRec: ProposalBackend): Proposal {
     technicalLoadStatus: 0,
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
+    */
   };
 }
 
 export function GetMockProposal(): Proposal {
-  return mapping(MockProposal);
+  return mapping(MockProposalBackendNew2);
 }
 
 async function GetProposal(id: string): Promise<Proposal | string> {

@@ -62,6 +62,7 @@ export type ProposalBackend = {
 export type Proposal = {
   id: string;
   title: string;
+  cycle: string;
   proposalType: number;
   proposalSubType: number[];
   team: TeamMember[];
