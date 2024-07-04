@@ -9,7 +9,7 @@ export type ProposalsBackend = {
   cycle: string;
   submitted_by: string;
   submitted_on: string;
-  proposal_info: {
+  info: {
     title: string;
     cycle: string;
     abstract: string;

@@ -252,19 +252,19 @@ function mapping(inRec: ProposalBackend): Proposal {
   // TODO: check mapping and add new fields
   return {
     id: inRec.prsl_id,
-    title: inRec.proposal_info.title,
-    proposalType: getProposalType(inRec.proposal_info.proposal_type),
-    proposalSubType: getProposalSubTypeType(inRec.proposal_info.proposal_type),
-    team: getTeamMembers(inRec.proposal_info.investigators),
-    abstract: inRec.proposal_info.abstract,
-    category: getCategory(inRec.proposal_info.science_category),
+    title: inRec.info.title,
+    proposalType: getProposalType(inRec.info.proposal_type),
+    proposalSubType: getProposalSubTypeType(inRec.info.proposal_type),
+    team: getTeamMembers(inRec.info.investigators),
+    abstract: inRec.info.abstract,
+    category: getCategory(inRec.info.science_category),
     subCategory: [getSubCategory()],
     sciencePDF: null, // TODO: map to DocumentBackend?
     scienceLoadStatus: 0,
     targetOption: 1,
-    targets: getTargets(inRec.proposal_info.targets),
-    observations: getObservations(inRec.proposal_info.observation_sets),
-    groupObservations: getGroupObservations(inRec.proposal_info.observation_sets),
+    targets: getTargets(inRec.info.targets),
+    observations: getObservations(inRec.info.observation_sets),
+    groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [],
     technicalPDF: null, // TODO: map to DocumentBackend?
     technicalLoadStatus: 0,

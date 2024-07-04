@@ -4,8 +4,8 @@ import MockProposals from './mockProposals';
 import Proposals, { ProposalsBackend } from '../../../utils/types/proposals';
 
 const getPI = (_inValue: any) => {
-  const principalInvestigator = _inValue.proposal_info.investigators.find(p => p.principal_investigator === true);
-  return `${principalInvestigator.first_name} ${principalInvestigator.last_name}`;
+  const principalInvestigator = _inValue.info.investigators.find(p => p.principal_investigator === true);
+  return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
 };
 
 function mappingList(inRec: ProposalsBackend[]): Proposals[] {
@@ -13,9 +13,9 @@ function mappingList(inRec: ProposalsBackend[]): Proposals[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposals = {
       id: inRec[i].prsl_id.toString(),
-      category: inRec[i].proposal_info.proposal_type.main_type,
-      title: inRec[i].proposal_info.title,
-      cycle: inRec[i].proposal_info.cycle,
+      category: inRec[i].info.proposal_type.main_type,
+      title: inRec[i].info.title,
+      cycle: inRec[i].cycle,
       pi: getPI(inRec[i]),
       cpi: 'CPI', // TODO -> is it co principal investigator?
       status: inRec[i].status,

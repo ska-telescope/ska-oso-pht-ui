@@ -41,7 +41,7 @@ export type ProposalBackend = {
   investigator_refs: string[];
   metadata?: Metadata;
   cycle: string;
-  proposal_info: {
+  info: {
     title: string;
     proposal_type: {
       main_type: string;
