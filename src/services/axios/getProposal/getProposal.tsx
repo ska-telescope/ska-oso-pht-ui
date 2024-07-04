@@ -35,9 +35,10 @@ const getProposalType = (inValue: { main_type: string; sub_type: string[] }): nu
 const getProposalSubType = (inValue: { main_type: string; sub_type: string[] }): number[] => {
   // const project = Projects.find(({ title }) => title === inValue.main_type);
   const project = Projects.find(({ title }) => title === 'Standard Proposal'); // TODO use proposal main_type once correct proposal can be created
-  const subProjects = inValue.sub_type.map(subType =>
-    // project.subProjects.find(({ title }) => title === subType)
-    project.subProjects.find(({ title }) => title === 'Coordinated Proposal')  // TODO use proposal sub_type once correct proposal can be created
+  const subProjects = inValue.sub_type.map(
+    subType =>
+      // project.subProjects.find(({ title }) => title === subType)
+      project.subProjects.find(({ title }) => title === 'Coordinated Proposal') // TODO use proposal sub_type once correct proposal can be created
   );
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
@@ -250,7 +251,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     id: inRec.prsl_id.toString(),
     title: inRec.info.title,
     proposalType: getProposalType(inRec.info.proposal_type),
-    proposalSubType: getProposalSubType(inRec.info.proposal_type),
+    proposalSubType: getProposalSubType(inRec.info.proposal_type)
     /*
     team: getTeamMembers(inRec.info.investigators),
     abstract: inRec.info.abstract,

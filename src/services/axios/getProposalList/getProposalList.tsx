@@ -4,7 +4,9 @@ import MockProposals from './mockProposals';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 const getPI = (_inValue: any) => {
-  const principalInvestigator = _inValue.info.investigators.find(p => p.principal_investigator === true);
+  const principalInvestigator = _inValue.info.investigators.find(
+    p => p.principal_investigator === true
+  );
   return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
 };
 
