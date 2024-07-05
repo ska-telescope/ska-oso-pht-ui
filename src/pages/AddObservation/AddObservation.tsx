@@ -1015,17 +1015,33 @@ export default function AddObservation() {
     return val_scaled;
   };
 
-  const effectiveResolutionFieldMid = () => {
-    React.useEffect(() => {
-      const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
-      const resolution = Number(spectralResolutionValue[0]);
-      const centralFrequency = getScaledValue(frequency, 1000000000, '*');
-      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      const effectiveValue = `${effectiveResolutionValue} kHz (${velocity})`;
-      setEffective(effectiveValue);
-    }, [spectralResolution, spectralAveraging, observationType, frequency]);
+  const useEffectiveResolutionFieldMid = () => {
+    const spectralResolutionValue = String(spectralResolution).split('kHz');
+    const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
+    const resolution = Number(spectralResolutionValue[0]);
+    const centralFrequency = getScaledValue(frequency, 1000000000, '*');
+    const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+    return `${effectiveResolutionValue} kHz (${velocity})`;
+  };
 
+  const useEffectiveResolutionFieldLow = () => {
+    const unit = observationType === 0 ? 'Hz' : 'kHz';
+    const spectralResolutionValue = String(spectralResolution).split(unit);
+    const resolution = Number(spectralResolutionValue[0]);
+    const centralFrequency = getScaledValue(frequency, 1000000, '*');
+    const decimal = observationType === 1 ? 2 : 1;
+    const velocity =
+      observationType === 1
+        ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
+        : calculateVelocity(resolution * spectralAveraging, centralFrequency);
+    return `${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`;
+  };
+
+  React.useEffect(() => {
+    setEffective(isLow() ? useEffectiveResolutionFieldLow() : useEffectiveResolutionFieldMid());
+  }, [spectralResolution, spectralAveraging, observationType, frequency]);
+
+  const effectiveResolutionField = () => {
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
@@ -1037,39 +1053,8 @@ export default function AddObservation() {
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
-    );
-  };
-
-  const effectiveResolutionFieldLow = () => {
-    React.useEffect(() => {
-      const unit = observationType === 0 ? 'Hz' : 'kHz';
-      const spectralResolutionValue = String(spectralResolution).split(unit);
-      const resolution = Number(spectralResolutionValue[0]);
-      const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const decimal = observationType === 1 ? 2 : 1;
-      const velocity =
-        observationType === 1
-          ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
-          : calculateVelocity(resolution * spectralAveraging, centralFrequency);
-      const effectiveValue = `${(resolution * spectralAveraging).toFixed(
-        decimal
-      )} ${unit} (${velocity})`;
-      setEffective(effectiveValue);
-    }, [spectralResolution, spectralAveraging, observationType, frequency]);
-
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
-        labelWidth={LABEL_WIDTH_STD}
-        testId="effective"
-        value={effective} //
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        required
-      />
-    );
-  };
+    )
+  }
 
   const AntennasFields = () => {
     return (
@@ -1368,7 +1353,7 @@ export default function AddObservation() {
                     {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {isLow() ? effectiveResolutionFieldLow() : effectiveResolutionFieldMid()}
+                   { effectiveResolutionField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {taperingField()}
