@@ -2,28 +2,56 @@ import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA, Projects } from '../../../utils/constants';
 import MockProposals from './mockProposals';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { InvestigatorBackend } from '../../../utils/types/investigator';
+import TeamMember from 'utils/types/teamMember';
 
-const getPI = (_inValue: any) => {
-  const principalInvestigator = _inValue.info.investigators.find(
+const convertCategoryFormat = (_inValue: string): string => {
+  const words = _inValue.split('_');
+  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+  const formattedString = capitalizedWords.join(' ');
+  return formattedString;
+};
+
+  const getTeam = (investigators: InvestigatorBackend[] ):TeamMember[] => {    
+  const teamMembers = [];
+  for (let investigator of investigators) {
+    const teamMember = {
+      id: investigator.investigator_id,
+      firstName: investigator.given_name,
+      lastName: investigator.family_name,
+      email: investigator.email,
+      affiliation: investigator.organization,
+      phdThesis: investigator.for_phd,
+      status: 'unknown', // TODO check if we need to remove status for team member? not in backend anymore
+      pi: investigator.principal_investigator,
+    };
+    teamMembers.push(teamMember);
+  }
+ return teamMembers;
+};
+
+const getPI = (investigators: InvestigatorBackend[] ):string => {    
+  const principalInvestigator = investigators.find(
     p => p.principal_investigator === true
   );
   return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
-};
+}
 
 function mappingList(inRec: ProposalBackend[]): Proposal[] {
+  console.log('::: mappingList proposal inRec', inRec);
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposal = {
       id: inRec[i].prsl_id.toString(),
-      // category: Projects.find(p => p.title === inRec[i].info.proposal_type.main_type).id
-      category: Projects.find(p => p.title === 'Standard Proposal').id, // TODO use proposal main_type once correct proposal can be created
+      proposalType: Projects.find(p => p.title === convertCategoryFormat(inRec[i].info.proposal_type.main_type)).id,
+      proposalSubType: [], // TODO get subTypes and match it to ids
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
-      pi: getPI(inRec[i]),
-      cpi: 'CPI', // TODO -> is it co principal investigator?
+      team: getTeam(inRec[i].info.investigators),
+      pi: getPI(inRec[i].info.investigators),
       status: inRec[i].status,
       lastUpdated: new Date(inRec[i].metadata.last_modified_on).toDateString(),
-      telescope: 'N/A' // TODO -> what to map to? telescopes in observations?
+      // telescope: 'N/A' // TODO is this still needed? -> what to map to? telescopes in observations?
     };
     output.push(rec);
   }

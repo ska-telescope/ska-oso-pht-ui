@@ -1,3 +1,4 @@
+/*
 export type TeamMemberBackend = {
   investigator_id: number;
   given_name: string;
@@ -8,6 +9,7 @@ export type TeamMemberBackend = {
   for_phd: boolean;
   principal_investigator: boolean;
 };
+*/
 
 type TeamMember = {
   id: number;

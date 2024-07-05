@@ -316,26 +316,3 @@ const MockProposalBackendNew2: ProposalBackend = {
   }
 };
 export default MockProposalBackendNew2;
-
-const MockProposalBackendNew2ForSwagger = {
-  'prsl_id': 'prp-ska01-202204-01',
-  'status': 'submitted',
-  'submitted_on': '2022-09-23T15:43:53.971548Z',
-  'submitted_by': 'TestUser',
-  'investigator_refs': ['prp-ska01-202204-01'],
-  'metadata': {
-    'version': 1,
-    'created_by': 'TestUser',
-    'created_on': '2022-09-23T15:43:53.971548Z',
-    'last_modified_by': 'TestUser',
-    'last_modified_on': '2022-09-23T15:43:53.971548Z'
-  },
-  'cycle': 'SKA_5000_2023',
-  'info': {
-    'title': 'The Milky Way View',
-    'proposal_type': {
-      'main_type': 'Standard Proposal',
-      'sub_type': ['Coordinated Proposal']
-    }
-  }
-}
