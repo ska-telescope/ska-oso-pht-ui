@@ -1015,7 +1015,7 @@ export default function AddObservation() {
     return val_scaled;
   };
 
-  const useEffectiveResolutionFieldMid = () => {
+  const UseEffectiveResolutionFieldMid = () => {
     const spectralResolutionValue = String(spectralResolution).split('kHz');
     const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
     const resolution = Number(spectralResolutionValue[0]);
@@ -1024,7 +1024,7 @@ export default function AddObservation() {
     return `${effectiveResolutionValue} kHz (${velocity})`;
   };
 
-  const useEffectiveResolutionFieldLow = () => {
+  const UseEffectiveResolutionFieldLow = () => {
     const unit = observationType === 0 ? 'Hz' : 'kHz';
     const spectralResolutionValue = String(spectralResolution).split(unit);
     const resolution = Number(spectralResolutionValue[0]);
@@ -1038,7 +1038,7 @@ export default function AddObservation() {
   };
 
   React.useEffect(() => {
-    setEffective(isLow() ? useEffectiveResolutionFieldLow() : useEffectiveResolutionFieldMid());
+    setEffective(isLow() ? UseEffectiveResolutionFieldLow() : UseEffectiveResolutionFieldMid());
   }, [spectralResolution, spectralAveraging, observationType, frequency]);
 
   const effectiveResolutionField = () => {
@@ -1053,8 +1053,8 @@ export default function AddObservation() {
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
         required
       />
-    )
-  }
+    );
+  };
 
   const AntennasFields = () => {
     return (
@@ -1353,7 +1353,7 @@ export default function AddObservation() {
                     {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                   { effectiveResolutionField()}
+                    {effectiveResolutionField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {taperingField()}
