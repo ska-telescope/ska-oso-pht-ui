@@ -12,7 +12,25 @@ const convertCategoryFormat = (_inValue: string): string => {
   return formattedString;
 };
 
-  const getTeam = (investigators: InvestigatorBackend[] ):TeamMember[] => {    
+const getSubCategory = (proposalType: 
+  {
+    main_type: string;
+    sub_type: string[];
+  }
+  ): any => {
+  const project = Projects.find(({ title }) => title ===  convertCategoryFormat(proposalType.main_type));
+  const subTypesFormatted = [];
+  for (let subtype of proposalType.sub_type) {
+    subTypesFormatted.push(convertCategoryFormat(subtype));
+  }
+  const subProjects = subTypesFormatted.map(
+    subType =>
+      project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+    );
+  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+};
+
+const getTeam = (investigators: InvestigatorBackend[] ):TeamMember[] => {    
   const teamMembers = [];
   for (let investigator of investigators) {
     const teamMember = {
@@ -43,8 +61,8 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposal = {
       id: inRec[i].prsl_id.toString(),
-      proposalType: Projects.find(p => p.title === convertCategoryFormat(inRec[i].info.proposal_type.main_type)).id,
-      proposalSubType: [], // TODO get subTypes and match it to ids
+      category: Projects.find(p => p.title.toLowerCase() === convertCategoryFormat(inRec[i].info.proposal_type.main_type).toLowerCase()).id,
+      subCategory: getSubCategory(inRec[i].info.proposal_type), // TODO get subTypes and match it to ids
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),
@@ -55,6 +73,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
     };
     output.push(rec);
   }
+  console.log('output', output);
   return output as Proposal[];
 }
 

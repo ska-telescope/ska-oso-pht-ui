@@ -65,13 +65,11 @@ export type Proposal = {
   status: string;
   lastUpdated: string;
   cycle: string;
-  proposalType: number;
-  proposalSubType: number[];
+  category: number;
+  subCategory?: number[];
   team?: TeamMember[];
   pi?: string;
   abstract?: string;
-  category?: number;
-  subCategory?: number[];
   sciencePDF?: File | null;
   scienceLoadStatus?: number;
   targetOption?: number;
