@@ -1015,6 +1015,7 @@ export default function AddObservation() {
     return val_scaled;
   };
 
+  /*
   const UseEffectiveResolutionFieldMid = () => {
     const spectralResolutionValue = String(spectralResolution).split('kHz');
     const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
@@ -1039,6 +1040,33 @@ export default function AddObservation() {
 
   React.useEffect(() => {
     setEffective(isLow() ? UseEffectiveResolutionFieldLow() : UseEffectiveResolutionFieldMid());
+  }, [spectralResolution, spectralAveraging, observationType, frequency]);
+  */
+
+  React.useEffect(() => {
+    const useEffectiveResolutionFieldLow = () => {
+      const unit = observationType === 0 ? 'Hz' : 'kHz';
+      const spectralResolutionValue = String(spectralResolution).split(unit);
+      const resolution = Number(spectralResolutionValue[0]);
+      const centralFrequency = getScaledValue(frequency, 1000000, '*');
+      const decimal = observationType === 1 ? 2 : 1;
+      const velocity =
+        observationType === 1
+          ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
+          : calculateVelocity(resolution * spectralAveraging, centralFrequency);
+      return `${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`;
+    };
+
+    const useEffectiveResolutionFieldMid = () => {
+      const spectralResolutionValue = String(spectralResolution).split('kHz');
+      const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
+      const resolution = Number(spectralResolutionValue[0]);
+      const centralFrequency = getScaledValue(frequency, 1000000000, '*');
+      const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
+      return `${effectiveResolutionValue} kHz (${velocity})`;
+    };
+
+    setEffective(isLow() ? useEffectiveResolutionFieldLow() : useEffectiveResolutionFieldMid());
   }, [spectralResolution, spectralAveraging, observationType, frequency]);
 
   const effectiveResolutionField = () => {
