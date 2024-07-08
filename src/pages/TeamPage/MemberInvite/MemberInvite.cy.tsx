@@ -210,7 +210,7 @@ describe('Content', () => {
       cy.get('[data-testid="helpPanelId"]').contains('email.help');
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
-      cy.get('[testid="PhDCheckbox"] input').focus();
+      cy.get('[data-testid="PhDCheckbox"] input').focus();
       cy.get('[data-testid="helpPanelId"]').contains('phdThesis.help');
     });
   });

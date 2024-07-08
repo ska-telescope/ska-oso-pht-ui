@@ -207,7 +207,7 @@ export default function MemberInvite() {
           testId="email"
           value={email}
           setValue={setEmail}
-          errorText={t(errorTextEmail)}
+          errorText={errorTextEmail ? t(errorTextEmail) : ''}
           onFocus={() => helpComponent(t('email.help'))}
           required
         />

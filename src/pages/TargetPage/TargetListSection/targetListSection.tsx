@@ -18,13 +18,14 @@ import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL } from '../../../utils/constants';
+import { NEW_TARGET } from '../../../utils/types/target';
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [newTarget, setNewTarget] = React.useState(null);
+  const [newTarget, setNewTarget] = React.useState(NEW_TARGET);
   const [currentTarget, setCurrentTarget] = React.useState(null);
   const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
 
@@ -33,21 +34,7 @@ export default function TargetListSection() {
   }, []);
 
   const initTarget = () => {
-    setNewTarget({
-      dec: '',
-      decUnit: '',
-      id: 0,
-      latitude: '',
-      longitude: '',
-      name: '',
-      ra: '',
-      raUnit: '',
-      redshift: '',
-      referenceFrame: 0,
-      vel: '',
-      velType: 0,
-      velUnit: ''
-    });
+    setNewTarget(NEW_PARGET);
   };
 
   const deleteIconClicked = () => {
