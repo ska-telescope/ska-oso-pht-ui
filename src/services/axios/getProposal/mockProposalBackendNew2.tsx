@@ -1,4 +1,5 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
+import { ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
 
 const MockProposalBackendNew2: ProposalBackend = {
   prsl_id: 'prp-ska01-202204-01',
@@ -18,7 +19,7 @@ const MockProposalBackendNew2: ProposalBackend = {
     title: 'The Milky Way View',
     proposal_type: {
       main_type: 'standard_proposal', // TODO change to Standard Proposal once backend can accept it?
-      sub_type: ['coordinated_proposal']  // TODO change to Coordinated Proposal once backend can accept it?
+      sub_type: ['coordinated_proposal'] // TODO change to Coordinated Proposal once backend can accept it?
     },
     abstract:
       'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
