@@ -16,7 +16,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
 
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
-      proposalBackendFormat, // convertedProposal,
+      /*proposalBackendFormat,*/ convertedProposal,
       AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
