@@ -17,6 +17,10 @@ stages:
   - accessibility
   - publish
 
+js-lint:
+  before_script:
+    - rm node-modules
+
 js-test:
   image: ${TEST_IMAGE}
   before_script:
