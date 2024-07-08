@@ -1044,7 +1044,9 @@ export default function AddObservation() {
   */
 
   React.useEffect(() => {
-    const useEffectiveResolutionFieldLow = () => {
+    // TODO : Replace KHz / Hz with appropriate constants
+    // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
+    if (isLow()) {
       const unit = observationType === 0 ? 'Hz' : 'kHz';
       const spectralResolutionValue = String(spectralResolution).split(unit);
       const resolution = Number(spectralResolutionValue[0]);
@@ -1054,19 +1056,15 @@ export default function AddObservation() {
         observationType === 1
           ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
           : calculateVelocity(resolution * spectralAveraging, centralFrequency);
-      return `${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`;
-    };
-
-    const useEffectiveResolutionFieldMid = () => {
+      setEffective(`${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`);
+    } else {
       const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const effectiveResolutionValue = Number(spectralResolutionValue[0]) * spectralAveraging;
       const resolution = Number(spectralResolutionValue[0]);
+      const effectiveResolutionValue = resolution * spectralAveraging;
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
-      return `${effectiveResolutionValue} kHz (${velocity})`;
-    };
-
-    setEffective(isLow() ? useEffectiveResolutionFieldLow() : useEffectiveResolutionFieldMid());
+      setEffective(`${effectiveResolutionValue} kHz (${velocity})`);
+    }
   }, [spectralResolution, spectralAveraging, observationType, frequency]);
 
   const effectiveResolutionField = () => {
