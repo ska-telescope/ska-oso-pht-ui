@@ -19,7 +19,7 @@ stages:
 
 js-lint:
   before_script:
-    - rm node-modules
+    - make js-install-reinstall
 
 js-test:
   image: ${TEST_IMAGE}
