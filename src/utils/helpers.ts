@@ -163,18 +163,7 @@ export const helpers = {
             abstract: '',
             science_category: '',
             targets: [],
-            documents: [
-              {
-                document_id: 'doc_ref_01',
-                link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-                type: 'proposal_science'
-              },
-              {
-                document_id: 'doc_ref_02',
-                link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-                type: 'proposal_technical'
-              }
-            ],
+            documents: [],
             investigators: [
               {
                 investigator_id: 'prp-ska01-202204-01',
@@ -186,213 +175,10 @@ export const helpers = {
                 principal_investigator: DEFAULT_PI.pi
               }
             ],
-            observation_sets: [
-              {
-                observation_set_id: 'mid-001',
-                group_id: '2',
-                observing_band: 'mid_band_1',
-                array_details: {
-                  array: 'ska_mid',
-                  subarray: 'aa0.5',
-                  weather: 3,
-                  number_15_antennas: 0,
-                  number_13_antennas: 0,
-                  number_sub_bands: 0,
-                  elevation: 15,
-                  tapering: 'DUMMY'
-                },
-                observation_type_details: {
-                  observation_type: 'continuum',
-                  bandwidth: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  central_frequency: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  supplied: {
-                    type: 'integration',
-                    value: 0.0,
-                    unit: 'm / s',
-                    quantity: {
-                      value: -12.345,
-                      unit: 'm / s'
-                    }
-                  },
-                  spectral_resolution: 'DUMMY',
-                  effective_resolution: 'DUMMY',
-                  mage_weighting: 'DUMMY'
-                },
-                details: 'MID + Continuum'
-              },
-              {
-                observation_set_id: 'mid-002',
-                group_id: '2',
-                observing_band: 'mid_band_1',
-                array_details: {
-                  array: 'ska_mid',
-                  subarray: 'aa0.5',
-                  weather: 3,
-                  number_15_antennas: 0,
-                  number_13_antennas: 0,
-                  number_sub_bands: 0,
-                  elevation: 15,
-                  tapering: 'DUMMY'
-                },
-                observation_type_details: {
-                  observation_type: 'zoom',
-                  bandwidth: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  central_frequency: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  supplied: {
-                    type: 'sensitivity',
-                    value: 0.0,
-                    unit: 'm / s',
-                    quantity: {
-                      value: -12.345,
-                      unit: 'm / s'
-                    }
-                  },
-                  spectral_resolution: 'DUMMY',
-                  effective_resolution: 'DUMMY',
-                  image_weighting: 'DUMMY'
-                },
-                details: 'MID + Zoom'
-              },
-              {
-                observation_set_id: 'low-001',
-                group_id: '2',
-                observing_band: 'low_band',
-                array_details: {
-                  array: 'ska_low',
-                  subarray: 'aa0.5',
-                  number_of_stations: 1,
-                  spectral_averaging: 'DUMMY'
-                },
-                observation_type_details: {
-                  observation_type: 'continuum',
-                  bandwidth: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  central_frequency: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  supplied: {
-                    type: 'integration',
-                    value: 0.0,
-                    unit: 'm / s',
-                    quantity: {
-                      value: -12.345,
-                      unit: 'm / s'
-                    }
-                  },
-                  spectral_resolution: 'DUMMY',
-                  effective_resolution: 'DUMMY',
-                  image_weighting: 'DUMMY'
-                },
-                details: 'LOW + Continuum'
-              },
-              {
-                observation_set_id: 'low-002',
-                group_id: '2',
-                observing_band: 'low_band',
-                array_details: {
-                  array: 'ska_low',
-                  subarray: 'aa0.5',
-                  number_of_stations: 1,
-                  spectral_averaging: 'DUMMY'
-                },
-                observation_type_details: {
-                  observation_type: 'zoom',
-                  bandwidth: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  central_frequency: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  supplied: {
-                    type: 'sensitivity',
-                    value: 0.0,
-                    unit: 'm / s',
-                    quantity: {
-                      value: -12.345,
-                      unit: 'm / s'
-                    }
-                  },
-                  spectral_resolution: 'DUMMY',
-                  effective_resolution: 'DUMMY',
-                  image_weighting: 'DUMMY'
-                },
-                details: 'LOW + Zoom'
-              }
-            ],
-            data_product_sdps: [
-              {
-                data_products_sdp_id: 'SDP-1',
-                options: ['1', '2', '5'],
-                observation_set_refs: ['mid-001', 'low-001'],
-                image_size: 'IMAGE SIZE',
-                pixel_size: 'PIXEL SIZE',
-                weighting: 'WEIGHTING'
-              }
-            ],
-            data_product_src_nets: [
-              {
-                data_products_src_id: '2'
-              }
-            ],
-            results: [
-              {
-                observation_set_ref: 'low-002',
-                target_ref: '1',
-                result_details: {
-                  supplied_type: 'sensitivity',
-                  weighted_continuum_sensitivity: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  weighted_spectral_sensitivity: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  total_continuum_sensitivity: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  total_spectral_sensitivity: {
-                    value: 0.0,
-                    unit: 'm / s'
-                  },
-                  surface_brightness_sensitivity: {
-                    continuum: 0.0,
-                    spectral: 0.0,
-                    unit: 'm / s'
-                  }
-                },
-                continuum_confusion_noise: {
-                  value: 0.0,
-                  unit: 'm / s'
-                },
-                synthesized_beam_size: {
-                  value: 0.0,
-                  unit: 'm / s'
-                },
-                spectral_confusion_noise: {
-                  value: 0.0,
-                  unit: 'm / s'
-                }
-              }
-            ]
+            observation_sets: [],
+            data_product_sdps: [],
+            data_product_src_nets: [],
+            results: []
 
           /*
           targets: proposal?.targets?.map(target => ({
@@ -407,19 +193,6 @@ export const helpers = {
           */
          /*
           investigators: proposal.team?.map(teamMember => ({
-            investigators: [
-              { 
-                investigator_id: teamMember.id?.toString(),
-                first_name: teamMember?.firstName,
-                last_name: teamMember?.lastName,
-                email: teamMember?.email,
-                country: teamMember?.country,
-                organization: teamMember?.affiliation,
-                for_phd: teamMember?.phdThesis,
-                principal_investigator: teamMember?.pi
-              }
-            ],
-          })),
           science_programmes: scienceProgrammes
           */
         }
