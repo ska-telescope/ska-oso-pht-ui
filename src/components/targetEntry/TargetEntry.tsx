@@ -16,13 +16,13 @@ import Target from '../../utils/types/target';
 import { RA_TYPE_EQUATORIAL } from '../../utils/constants';
 
 interface TargetEntryProps {
-  id?: any;
+  id?: number;
   raType: number;
-  setTarget?: Function;
-  target?: Target;
+  setTarget: Function;
+  target: Target;
 }
 
-export default function TargetEntry({ id, raType, setTarget, target }: TargetEntryProps) {
+export default function TargetEntry({ id = 0, raType, setTarget, target }: TargetEntryProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
 

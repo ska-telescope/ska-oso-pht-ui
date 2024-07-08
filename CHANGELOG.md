@@ -7,7 +7,8 @@ Future
 
 ---
 
-1. Added the ability to Edit a target
+1. STAR-537 : Added the ability to Edit a target
+2. STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
 
 0.3.1
 

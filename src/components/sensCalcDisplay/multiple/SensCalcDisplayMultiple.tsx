@@ -10,12 +10,12 @@ const SIZE = 20;
 
 interface SensCalcDisplayMultipleProps {
   observation: Observation;
-  elementsT: [];
+  elementsT?: any[];
 }
 
 export default function SensCalcDisplayMultiple({
   observation,
-  elementsT
+  elementsT = []
 }: SensCalcDisplayMultipleProps) {
   const { t } = useTranslation('pht');
 
@@ -29,27 +29,29 @@ export default function SensCalcDisplayMultiple({
     const results = [];
     if (elementsT?.length > 0) {
       elementsT.forEach(rec => {
-        const tmp: any = rec;
-        if (tmp.status === STATUS_PARTIAL) {
+        if (typeof rec === 'undefined') {
+          return;
+        }
+        if (rec.status === STATUS_PARTIAL) {
           results.push(rec);
           return;
         }
         const tempResults = {
-          id: tmp.id,
-          error: tmp.error,
-          title: tmp.title,
-          status: tmp.status,
-          field1: tmp.section1?.length > 0 ? tmp.section1[0].value : '',
-          field2: tmp.section1?.length > 1 ? tmp.section1[1].value : '',
-          field3: tmp.section1?.length > 2 ? tmp.section1[2].value : '',
-          field4: tmp.section1?.length > 3 ? tmp.section1[3].value : '',
-          field5: tmp.section1?.length > 4 ? tmp.section1[4].value : '',
-          field6: tmp.section2?.length > 0 ? tmp.section2[0].value : '',
-          field7: tmp.section2?.length > 1 ? tmp.section2[1].value : '',
-          field8: tmp.section2?.length > 2 ? tmp.section2[2].value : '',
-          field9: tmp.section2?.length > 3 ? tmp.section2[3].value : '',
-          field10: tmp.section2?.length > 4 ? tmp.section2[4].value : '',
-          field11: tmp.section2?.length > 0 ? tmp.section3[0].value : ''
+          id: rec.id,
+          error: rec.error,
+          title: rec.title,
+          status: rec.status,
+          field1: rec.section1?.length > 0 ? rec.section1[0].value : '',
+          field2: rec.section1?.length > 1 ? rec.section1[1].value : '',
+          field3: rec.section1?.length > 2 ? rec.section1[2].value : '',
+          field4: rec.section1?.length > 3 ? rec.section1[3].value : '',
+          field5: rec.section1?.length > 4 ? rec.section1[4].value : '',
+          field6: rec.section2?.length > 0 ? rec.section2[0].value : '',
+          field7: rec.section2?.length > 1 ? rec.section2[1].value : '',
+          field8: rec.section2?.length > 2 ? rec.section2[2].value : '',
+          field9: rec.section2?.length > 3 ? rec.section2[3].value : '',
+          field10: rec.section2?.length > 4 ? rec.section2[4].value : '',
+          field11: rec.section2?.length > 0 ? rec.section3[0].value : ''
         };
         results.push(tempResults);
       });
@@ -59,19 +61,20 @@ export default function SensCalcDisplayMultiple({
 
   const getLevel = () => {
     let result = STATUS_INITIAL;
-    elementsT.forEach(rec => {
-      const e: any = rec;
-      switch (e.status) {
-        case STATUS_ERROR:
-          result = STATUS_ERROR;
-          return;
-        case STATUS_PARTIAL:
-          result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
-          return;
-        default:
-          if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
-            result = STATUS_OK;
-          }
+    elementsT?.forEach(rec => {
+      if (typeof rec !== 'undefined') {
+        switch (rec.status) {
+          case STATUS_ERROR:
+            result = STATUS_ERROR;
+            return;
+          case STATUS_PARTIAL:
+            result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
+            return;
+          default:
+            if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
+              result = STATUS_OK;
+            }
+        }
       }
     });
     return result;
@@ -80,9 +83,8 @@ export default function SensCalcDisplayMultiple({
   const getError = () => {
     let result = '';
     elementsT.forEach(rec => {
-      const e: any = rec;
-      if (e.status === STATUS_ERROR) {
-        result = e.error;
+      if (typeof rec !== 'undefined' && rec.status === STATUS_ERROR) {
+        result = rec.error;
       }
     });
     return result;
