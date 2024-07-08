@@ -211,7 +211,7 @@ describe('Content', () => {
         });
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
-      cy.get('[testid="PhDCheckbox"] input').focus();
+      cy.get('[data-testid="PhDCheckbox"] input').focus();
       cy.get('[data-testid="infoPanelId"] div.MuiCardHeader-content')
         .invoke('text')
         .then(helpTitle => {

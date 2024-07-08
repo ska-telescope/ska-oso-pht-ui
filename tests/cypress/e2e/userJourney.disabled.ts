@@ -351,7 +351,7 @@ context('PROPOSAL HANDLING TOOL', () => {
   //   //open draft proposal
   //   // cy.get('[data-testid="EditRoundedIcon"]').click();
   //   //navigate to target page
-  //   cy.get('[testid="pageTitle-4"]').click();
+  //   cy.get('[data-testid="pageTitle-4"]').click();
   //   //add target
   //   cy.get('[id="name"]').type('M1');
   //   cy.get('[id="skyDirectionValue1"]').type('0:0:0');
@@ -376,13 +376,13 @@ context('PROPOSAL HANDLING TOOL', () => {
   //   //open draft proposal
   //   cy.get('[data-testid="EditRoundedIcon"]').click();
   //   //navigate to team page
-  //   cy.get('[testid="pageTitle-1"]').click();
+  //   cy.get('[data-testid="pageTitle-1"]').click();
   //   //add team member as PI and select PhD thesis
   //   cy.get('[data-testid="firstName"]').type('User');
   //   cy.get('[data-testid="lastName"]').type('Name');
   //   cy.get('[data-testid="email"]').type('username@test.com');
-  //   cy.get('[testid="piCheckbox"]').click();
-  //   cy.get('[testid="PhDCheckbox"]').click();
+  //   cy.get('[data-testid="piCheckbox"]').click();
+  //   cy.get('[data-testid="PhDCheckbox"]').click();
   //   cy.get('[data-testid="Send invitationButton"]').click({ force: true });
   //   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
   //     .children('div[role="row"]')
