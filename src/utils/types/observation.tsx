@@ -18,7 +18,7 @@ type Observation = {
   integrationTime: number;
   integrationTimeUnits: number;
   spectralResolution: string;
-  effectiveResolution: number;
+  effectiveResolution: string;
   numSubBands?: number; // only for MID
   num15mAntennas?: number;
   num13mAntennas?: number;
