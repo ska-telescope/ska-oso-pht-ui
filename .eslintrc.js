@@ -74,8 +74,8 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-explicit-any': 'off', // TAS : disabled for now
     '@typescript-eslint/no-shadow': 'off',
-    '@typescript-eslint/prefer-as-const': 'off',  // TAS : disabled for now
-    'prefer-const': 'off'  // TAS : disabled for now
+    '@typescript-eslint/prefer-as-const': 'off', // TAS : disabled for now
+    'prefer-const': 'off' // TAS : disabled for now
   },
   env: {
     browser: true,
