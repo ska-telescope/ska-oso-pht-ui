@@ -9,8 +9,14 @@ Future
 
 1. STAR-537 : Added the ability to Edit a target
 2. STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-3. Observation page: 
+3. STAR-508 : Observation page: 
    - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+4. STAR-540 : Proposal mapping:
+   - Update getProposalList mapping to new backend proposal format
+   - Move front-end to backend mapping into putProposal and postProposal
+   - Update postProposal mapping
+   - Update proposal Backend types and Mocks
+5. STAR-529: Implment validation from OSD with validate endpoint
 
 0.3.1
 
