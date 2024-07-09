@@ -70,12 +70,11 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
     };
     output.push(rec);
   }
-  console.log('output', output);
   return output as Proposal[];
 }
 
 export function GetMockProposalList(): Proposal[] {
-  return mappingList(MockProposals);
+  return mappingList(MockProposals); // TODO create a mockProposals that matches the new backend format
 }
 
 async function GetProposalList(): Promise<Proposal[] | string> {
@@ -86,7 +85,6 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    console.log('GETPROPOSAL LIST', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return e.message;
