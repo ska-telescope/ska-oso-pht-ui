@@ -1,5 +1,6 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
+// this matches the proposal format on the PDM
 const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prp-ska01-202204-01',
   status: 'submitted',

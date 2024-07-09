@@ -1,7 +1,6 @@
 /*
 TODO:
 - test getProposal mapping with data and map all new properties
-- update mapping from frontend to backend
 - check if there are new properties to include in the frontend types?
 - tidy up and remove all old mapping functions in this file
 */

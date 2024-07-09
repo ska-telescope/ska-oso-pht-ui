@@ -3,6 +3,12 @@ import { AXIOS_CONFIG, DEFAULT_PI, GENERAL, Projects, SKA_PHT_API_URL, USE_LOCAL
 import { helpers } from '../../../utils/helpers';
 import { ProposalBackend } from '../../../utils/types/proposal';
 
+/*
+TODO:
+- test putProposal mapping with data and map all new properties
+- tidy up and remove all old mapping functions in this file
+*/
+
 function mappingPutProposal(proposal, status) {
 
   // TODO: add groupObservations to send to backend

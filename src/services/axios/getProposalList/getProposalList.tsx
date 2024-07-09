@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA, Projects } from '../../../utils/constants';
-import MockProposals from './mockProposals';
+import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import TeamMember from 'utils/types/teamMember';
@@ -74,7 +74,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
 }
 
 export function GetMockProposalList(): Proposal[] {
-  return mappingList(MockProposals); // TODO create a mockProposals that matches the new backend format
+  return mappingList(MockProposalBackendList);
 }
 
 async function GetProposalList(): Promise<Proposal[] | string> {
