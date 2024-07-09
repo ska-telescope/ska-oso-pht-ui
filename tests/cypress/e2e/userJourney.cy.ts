@@ -57,8 +57,8 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[id="skyDirectionValue1"]').type('0:0:0');
     cy.get('[id="skyDirectionValue2"]').type('0:0:0');
     //default is type velocity
-    cy.get('[name="textField"]').type('1');
-    cy.get('[data-testid="Add targetButton"]').click({ force: true });
+    cy.get('[data-testid="velocityValue"]').type('1');
+    cy.get('[data-testid="addTargetButton"]').click({ force: true });
 
     //import target from file
     cy.get('[id="simple-tab-1"]').click();
@@ -74,10 +74,10 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="csvUploadUploadButton"]').click();
     cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
       .children('div[role="row"]')
-      .should('contain', 'name1')
+      .should('contain', 'equatorial1')
       .should('contain', '05:34:30.900')
       .should('contain', '+22:00:53.000')
-      .should('have.length', 7);
+      .should('have.length', 8);
 
     //Complete observation page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
@@ -119,16 +119,14 @@ context('PROPOSAL HANDLING TOOL', () => {
     //IMPLEMENT FILE UPLOAD
     //Complete data page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[data-testid="Add Data ProductButton"]').click();
-    cy.get('[id="field1"]').type('test');
-    cy.get('[id="field2"]').type('test');
-    cy.get('[data-testid="addButton"]').click();
+    cy.get('[aria-label="Add Data Product"]').should('not.be.selected');
+    //TODO: update once page has functionality
     //Add verification of list
     //Complete src net page
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[data-testid="pipelineId"]').type('test');
+    //TODO: update once page has content
     //validate proposal
-    cy.get('[data-testid="ValidateButton"]').click();
+    cy.get('[data-testid="ValidationButton"]').click();
   });
 
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
