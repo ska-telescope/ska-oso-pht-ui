@@ -1,6 +1,6 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
-const MockProposalBackendNew2: ProposalBackend = {
+const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prp-ska01-202204-01',
   status: 'submitted',
   submitted_on: '2022-09-23T15:43:53.971548Z',
@@ -315,4 +315,4 @@ const MockProposalBackendNew2: ProposalBackend = {
     ]
   }
 };
-export default MockProposalBackendNew2;
+export default MockProposalBackend;

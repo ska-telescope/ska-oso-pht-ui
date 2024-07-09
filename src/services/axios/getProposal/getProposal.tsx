@@ -3,7 +3,6 @@ TODO:
 - test getProposal mapping with data and map all new properties
 - update mapping from frontend to backend
 - check if there are new properties to include in the frontend types?
-- rename MockProposalBackendNew as MockProposalBackend and remove "old" MockProposalBackend when ready
 - tidy up and remove all old mapping functions in this file
 */
 
@@ -18,7 +17,7 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import MockProposalBackendNew2 from './mockProposalBackendNew2'; // TODO: use MockProposalBackendNew and remove old mock when ready
+import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { TargetBackend } from 'utils/types/target';
 import { ObservationSetBackend } from 'utils/types/observationSet';
@@ -273,7 +272,7 @@ function mapping(inRec: ProposalBackend): Proposal {
 }
 
 export function GetMockProposal(): Proposal {
-  return mapping(MockProposalBackendNew2);
+  return mapping(MockProposalBackend);
 }
 
 async function GetProposal(id: string): Promise<Proposal | string> {
