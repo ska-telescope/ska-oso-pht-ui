@@ -23,10 +23,8 @@ import { ObservationSetBackend } from 'utils/types/observationSet';
 import { InvestigatorBackend } from 'utils/types/investigator';
 
 const getProposalType = (inValue: { main_type: string; sub_type: string[] }): number => {
-  console.log('[getProposal] getProposalType inValue', inValue);
   const main = 'Standard Proposal'; // TODO use proposal main_type once correct proposal can be created
   const rec = Projects.find(p => p.title === main);
-  console.log('rec', rec);
   return rec.id;
 };
 
@@ -244,7 +242,6 @@ function mapping(inRec: ProposalBackend): Proposal {
 
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: check mapping and add new fields
-  console.log('::: in GET PROPOSAL MAPPING', inRec);
   return {
     id: inRec.prsl_id.toString(),
     title: inRec.info.title,
@@ -282,7 +279,6 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    console.log('GETPROPOSAL DATA', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;
