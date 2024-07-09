@@ -34,7 +34,7 @@ export default function TargetListSection() {
   }, []);
 
   const initTarget = () => {
-    setNewTarget(NEW_PARGET);
+    setNewTarget(NEW_TARGET);
   };
 
   const deleteIconClicked = () => {
