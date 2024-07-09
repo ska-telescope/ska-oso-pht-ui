@@ -58,7 +58,11 @@
   },
   "bandWidth": {
     "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
-    "label": "Band Width"
+    "label": "Band Width",
+    "range": {
+      "SmallerThanChannel": "Bandwidth must be larger than the channel width (13.44 kHz)",
+      "MaximumExceeded": "Maximum bandwidth for this array assembly (%s MHz) exceeded"
+    }
   },
   "centralFrequency": {
     "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
@@ -95,12 +99,10 @@
     "help": "Continuum BANDWIDTH HELP",
     "label": "Continuum BandWidth",
     "range": {
-      "midLower": 0,
-      "midUpper": 0.8,
-      "lowLower": 0,
-      "lowUpper": 75,
-      "error": "Value is outside of allowed range"
-    }
+      "error": "Value is outside of allowed range",
+      "maxExceeded": "Value is outside of allowed range"
+    },
+    "invalid" : "invalid!"
   },
   "continuumUnits": {
     "help": "CONTINUUM UNITS HELP"

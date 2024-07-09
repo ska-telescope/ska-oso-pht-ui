@@ -149,6 +149,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
           numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6,
           disableForBand5: false
         },
         {
@@ -158,6 +159,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
           numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6,
           disableForBand5: false
         },
         {
@@ -167,6 +169,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
+          maxContinuumBandwidthHZ: 800e6,
           disableForBand5: false
         },
         {
@@ -176,6 +179,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 80,
           numOf13mAntennas: 64,
           numOfStations: 0,
+          // if no maxContinuumBandwidthHZ, the full bandwidth is allowed
           disableForBand5: true
         },
         {
@@ -258,6 +262,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 6,
+          maxContinuumBandwidthHZ: 75e6,
           disableForBand5: false
         },
         {
@@ -267,6 +272,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 18,
+          maxContinuumBandwidthHZ: 75e6,
           disableForBand5: false
         },
         {
@@ -276,6 +282,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 64,
+          maxContinuumBandwidthHZ: 150e6,
           disableForBand5: false
         },
         {
@@ -285,6 +292,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 40,
+          maxContinuumBandwidthHZ: 150e6,
           disableForBand5: false
         },
         {
@@ -294,6 +302,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 307,
+          // if no maxContinuumBandwidthHZ, the full bandwidth is allowed
           disableForBand5: false
         },
         {
@@ -554,6 +563,11 @@ export const OBSERVATION = {
     { label: 'KHz', value: 3 },
     { label: 'Hz', value: 4 }
   ]
+};
+
+export const MIN_CHANNEL_WIDTH_HZ = {
+  mid: 13.44e3,
+  low: 5425.34722
 };
 
 export const TARGETS = {
