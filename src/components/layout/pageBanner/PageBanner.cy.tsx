@@ -8,6 +8,27 @@ import theme from '../../../services/theme/theme';
 import PageBanner from './PageBanner';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
+const PAGE_NO = 5;
+
+export function verifyHeader(pageNo: number) {
+  // Standard buttons
+  cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
+  cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
+  cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
+  cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
+  // Status Array
+  cy.get('[data-testId="statusId1"]');
+  cy.get('[data-testId="statusId2"]');
+  cy.get('[data-testId="statusId3"]');
+  cy.get('[data-testId="statusId4"]');
+  cy.get('[data-testId="statusId5"]');
+  cy.get('[data-testId="statusId6"]');
+  cy.get('[data-testId="statusId7"]');
+  cy.get('[data-testId="statusId8"]');
+  // Title & Description
+  cy.get('#pageTitle').contains('PAGE.' + pageNo + '.TITLE');
+  cy.get('#pageDesc').contains('page.' + pageNo + '.desc');
+}
 
 describe('<PageBanner />', () => {
   for (const theTheme of THEME) {
@@ -17,11 +38,12 @@ describe('<PageBanner />', () => {
           <ThemeProvider theme={theme(theTheme)}>
             <CssBaseline />
             <Router location="/" navigator={undefined}>
-              <PageBanner pageNo={0} />
+              <PageBanner pageNo={PAGE_NO} />
             </Router>
           </ThemeProvider>
         </StoreProvider>
       );
+      verifyHeader(PAGE_NO);
     });
   }
 });
@@ -84,7 +106,7 @@ describe('POST proposal (VALIDATE)', () => {
       statusCode: 500,
       body: 'Internal Server Error'
     }).as('apiCallValidate500');
-    cy.get('[data-testid="validationBtn.labelButton"]').click();
+    cy.get('[data-testid="validationBtn.labelTestId"]').click();
     // cy.wait('@apiCallValidate500'); TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
@@ -93,7 +115,7 @@ describe('POST proposal (VALIDATE)', () => {
       statusCode: 200,
       body: 'OK'
     }).as('apiCallValidateOK');
-    cy.get('[data-testid="validationBtn.labelButton"]').click();
+    cy.get('[data-testid="validationBtn.labelTestId"]').click();
     // cy.wait('@apiCallValidateOK'); TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });

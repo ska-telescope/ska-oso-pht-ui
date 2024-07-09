@@ -24,14 +24,14 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
     setOpenDialog(true);
   };
 
-  const hasError = () => sensCalc?.sensCalc?.error?.length > 0;
+  const hasError = () => sensCalc?.error?.length > 0;
 
   const FieldFetch: any = (type: string, suffix: string) => {
-    const observationTypeLabel: string = sensCalc?.sensCalc?.hasOwnProperty('section2')
+    const observationTypeLabel: string = sensCalc?.hasOwnProperty('section2')
       ? OBS_TYPES[1]
       : OBS_TYPES[0];
-    if (sensCalc?.sensCalc?.section1) {
-      const result = sensCalc?.sensCalc?.section1.find(
+    if (sensCalc?.section1) {
+      const result = sensCalc?.section1.find(
         item => item.field === `${observationTypeLabel}${suffix}`
       );
       return result ? result[type] : '';
@@ -46,16 +46,16 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
           <Grid item xs={2}>
             <IconButton
               style={{ cursor: 'hand' }}
-              onClick={sensCalc?.sensCalc?.status === STATUS_OK ? IconClicked : null}
+              onClick={sensCalc?.status === STATUS_OK ? IconClicked : null}
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusLoading.' + sensCalc?.sensCalc?.status),
-                  error: sensCalc?.sensCalc?.error
+                  status: t('statusLoading.' + sensCalc?.status),
+                  error: sensCalc?.error
                 })}
                 testId="statusId"
                 icon
-                level={sensCalc?.sensCalc?.status}
+                level={sensCalc?.status}
                 size={SIZE}
               />
             </IconButton>
@@ -72,7 +72,7 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
           )}
           {hasError() && (
             <Grid item xs={10}>
-              {sensCalc?.sensCalc?.error}
+              {sensCalc?.error}
             </Grid>
           )}
         </Grid>
@@ -81,7 +81,7 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          data={sensCalc?.sensCalc}
+          data={sensCalc}
         />
       )}
     </>
