@@ -651,7 +651,7 @@ export const TEXT_ENTRY_PARAMS = {
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 
 export const DEFAULT_PI = {
-  id: 1,
+  id: 'prp-ska01-202204-01',
   firstName: 'Van Loo',
   lastName: 'Cheng',
   email: 'ask.lop@map.com',

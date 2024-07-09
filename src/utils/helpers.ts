@@ -115,9 +115,19 @@ export const helpers = {
         };
       });
 
-      console.log('Proposal front end', proposal);
+      console.log('Proposa coming from front end', proposal);
       console.log('Status', status);
       console.log('cycle', GENERAL.Cycle);
+
+      const convertCategoryFormat = (_inValue: string): string => {
+        console.log('convertCategoryFormat _inValue', _inValue);
+        const words = _inValue.split(' ');
+        const capitalizedWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
+        const formattedString = capitalizedWords.join('_');
+        console.log('formattedString', formattedString);
+        return formattedString;
+        // return _inValue;
+      };
 
       const transformedProposal: ProposalBackend = {
         /*
@@ -141,11 +151,11 @@ export const helpers = {
           )?.label,
           */
 
-          prsl_id: 'prp-ska01-202204-01',
+          prsl_id: proposal?.id?.toString(),
           status: status,
           submitted_on: '',
           submitted_by: '',
-          investigator_refs: ['prp-ska01-202204-01'],
+          investigator_refs: [DEFAULT_PI.id],
           metadata: {
             version: 1,
             created_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
@@ -157,7 +167,9 @@ export const helpers = {
           info: {
             title: proposal.title,
             proposal_type: {
-              main_type: 'standard_proposal', // TODO change to Standard Proposal once backend can accept it?
+              main_type: convertCategoryFormat(Projects.find(
+                p => p.id === proposal.proposalType
+              ).title),
               sub_type: ['coordinated_proposal'] // TODO change to Coordinated Proposal once backend can accept it?
             },
             abstract: '',
@@ -166,7 +178,7 @@ export const helpers = {
             documents: [],
             investigators: [
               {
-                investigator_id: 'prp-ska01-202204-01',
+                investigator_id: DEFAULT_PI.id,
                 given_name: DEFAULT_PI.firstName,
                 family_name: DEFAULT_PI.lastName,
                 email: DEFAULT_PI.email,
@@ -197,9 +209,9 @@ export const helpers = {
           */
         }
       };
-
       // trim undefined properties
       this.trimObject(transformedProposal);
+      console.log('transformed proposal', transformedProposal);
 
       return transformedProposal;
     }

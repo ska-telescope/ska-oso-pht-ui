@@ -65,8 +65,8 @@ export type Proposal = {
   status: string;
   lastUpdated: string;
   cycle: string;
-  category: number;
-  subCategory?: number[];
+  proposalType: number;
+  proposalSubType?: number[];
   team?: TeamMember[];
   pi?: string;
   abstract?: string;

@@ -54,12 +54,12 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposal = {
       id: inRec[i].prsl_id.toString(),
-      category: Projects.find(
+      proposalType: Projects.find(
         p =>
           p.title.toLowerCase() ===
           convertCategoryFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
       ).id,
-      subCategory: getSubCategory(inRec[i].info.proposal_type),
+      proposalSubType: getSubCategory(inRec[i].info.proposal_type),
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),
