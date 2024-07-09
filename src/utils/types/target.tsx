@@ -74,4 +74,21 @@ type Target = {
   velUnit: string;
 };
 
+// NOTE : This ensures that we can initialize to a known point.
+export const NEW_TARGET: Target = {
+  dec: '',
+  decUnit: '',
+  id: 0,
+  latitude: '',
+  longitude: '',
+  name: '',
+  ra: '',
+  raUnit: '',
+  redshift: '',
+  referenceFrame: 0,
+  vel: '',
+  velType: 0,
+  velUnit: ''
+};
+
 export default Target;

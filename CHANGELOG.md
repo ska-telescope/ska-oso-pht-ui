@@ -7,7 +7,10 @@ Future
 
 ---
 
-1. Added the ability to Edit a target
+1. STAR-537 : Added the ability to Edit a target
+2. STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
+3. Observation page: 
+   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
 
 0.3.1
 

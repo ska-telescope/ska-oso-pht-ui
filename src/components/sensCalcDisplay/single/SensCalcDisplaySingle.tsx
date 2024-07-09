@@ -13,41 +13,31 @@ const VALUE = 'value';
 const UNITS = 'units';
 
 interface SensCalcDisplaySingleProps {
-  row: any;
+  sensCalc: any;
   show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
     setOpenDialog(true);
   };
 
-  const hasError = () => row?.sensCalc?.error?.length > 0;
+  const hasError = () => sensCalc?.sensCalc?.error?.length > 0;
 
   const FieldFetch: any = (type: string, suffix: string) => {
-    const observationTypeLabel: string = row?.sensCalc?.hasOwnProperty('section2')
+    const observationTypeLabel: string = sensCalc?.sensCalc?.hasOwnProperty('section2')
       ? OBS_TYPES[1]
       : OBS_TYPES[0];
-    if (row?.sensCalc?.section1) {
-      const result = row?.sensCalc?.section1.find(
+    if (sensCalc?.sensCalc?.section1) {
+      const result = sensCalc?.sensCalc?.section1.find(
         item => item.field === `${observationTypeLabel}${suffix}`
       );
       return result ? result[type] : '';
     }
     return '';
   };
-
-  /* RETAINED FOR A WHILE, UNTIL WE ARE SURE IT IS NOT NEEDED
-  const IntegrationTime: any = type => {
-    if (row?.sensCalc?.section3) {
-      const result = row?.sensCalc?.section3.find(item => item.field === 'integrationTime');
-      return result ? result[type] : '';
-    }
-    return '';
-  };
-  */
 
   return (
     <>
@@ -56,16 +46,16 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
           <Grid item xs={2}>
             <IconButton
               style={{ cursor: 'hand' }}
-              onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
+              onClick={sensCalc?.sensCalc?.status === STATUS_OK ? IconClicked : null}
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusLoading.' + row?.sensCalc?.status),
-                  error: row?.sensCalc?.error
+                  status: t('statusLoading.' + sensCalc?.sensCalc?.status),
+                  error: sensCalc?.sensCalc?.error
                 })}
                 testId="statusId"
                 icon
-                level={row?.sensCalc?.status}
+                level={sensCalc?.sensCalc?.status}
                 size={SIZE}
               />
             </IconButton>
@@ -82,7 +72,7 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
           )}
           {hasError() && (
             <Grid item xs={10}>
-              {row?.sensCalc?.error}
+              {sensCalc?.sensCalc?.error}
             </Grid>
           )}
         </Grid>
@@ -91,7 +81,7 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          data={row?.sensCalc}
+          data={sensCalc?.sensCalc}
         />
       )}
     </>

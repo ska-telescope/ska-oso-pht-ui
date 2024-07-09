@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
@@ -16,11 +16,15 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
+import { validateObservationPage } from '../../utils/proposalValidation';
 import { PATH } from '../../utils/constants';
 import { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
+import TargetObservation from '../../utils/types/targetObservation';
 
+const DATA_GRID_TARGET = 390;
+const DATA_GRID_OBSERVATION = 450;
 const PAGE = 5;
 const LABEL_WIDTH = 6;
 
@@ -34,9 +38,10 @@ export default function ObservationPage() {
   const [notSelected, setNotSelected] = React.useState(true);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState(null);
+  const [elementsS, setElementsS] = React.useState(null);
   const [elementsT, setElementsT] = React.useState(null);
-  const [row, setRow] = React.useState(null);
-  const [obRow, setObRow] = React.useState(0);
+
+  const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -50,74 +55,89 @@ export default function ObservationPage() {
     updateAppContent1(temp);
   };
 
-  const setSensPending = (id: string) => {
-    const temp = [];
-    elementsT.forEach(rec => {
-      if (rec?.id === id) {
-        temp.push({
-          id: rec.id,
-          observationId: currObs.id,
-          name: rec.name,
-          ra: rec.ra,
-          dec: rec.dec,
-          rec: rec,
-          sensCalc: SENSCALC_LOADING
-        });
-        setRow(rec);
-      } else {
-        temp.push(rec);
-      }
-    });
-    setElementsT(temp);
+  const setTargetObservationStorage = (targetObservations: TargetObservation[]) => {
+    setProposal({ ...getProposal(), targetObservation: targetObservations });
   };
 
-  const setSensCalc = (results: any, target: any, currId: string) => {
-    const temp = [];
-    elementsT.forEach(rec => {
-      if (rec?.id === target?.id) {
-        temp.push({
-          id: rec.id,
-          observationId: currId,
-          name: rec.name,
-          ra: rec.ra,
-          dec: rec.dec,
-          rec: rec,
-          sensCalc: results
-        });
-      } else {
-        temp.push(rec);
-      }
-    });
-    setElementsT(temp);
+  const addTargetObservationStorage = (rec: TargetObservation) => {
+    setTargetObservationStorage([...getProposal().targetObservation, rec]);
+  };
 
-    const temp2 = [];
+  const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
+    const temp = [
+      {
+        targetId: target.id,
+        observationId: observationId,
+        sensCalc: results
+      }
+    ];
     getProposal().targetObservation.forEach(rec => {
-      if (rec => rec.targetId === target?.id && rec.observationId === currId) {
-        temp2.push({
-          targetId: rec.targetId,
-          observationId: currId,
-          sensCalc: results
-        });
-      } else {
-        temp2.push(rec);
+      if (
+        (rec: TargetObservation) =>
+          rec.targetId !== target.id || rec.observationId !== observationId
+      ) {
+        temp.push(rec);
       }
     });
-    setProposal({ ...getProposal(), targetObservation: temp2 });
+    setTargetObservationStorage(temp);
   };
 
-  React.useEffect(() => {
-    const getSensCalcData = async (ob: Observation, target: Target) => {
-      const response = await getSensCalc(ob, target);
-      if (response) {
-        setSensCalc(response, row.rec, currObs.id);
-      }
+  const popElementO = (rec: Observation) => {
+    return {
+      id: rec.id,
+      id2: rec.id, // Only here to satisfy syntax of DataGrid headers
+      rec: rec,
+      telescope: rec.telescope,
+      subarray: rec.subarray,
+      type: rec.type,
+      status: 0
     };
+  };
 
-    if (row) {
-      getSensCalcData(currObs, row.rec);
-      setRow(null);
+  // This type is required for the DataGrid showing the Targets
+  type ElementT = {
+    id: number;
+    name: string;
+    ra: string;
+    dec: string;
+    target: Target;
+  };
+
+  const popElementT = (rec: Target) => {
+    return {
+      id: rec.id,
+      name: rec.name,
+      ra: rec.ra,
+      dec: rec.dec,
+      target: rec
+    };
+  };
+
+  const getSensCalcData = async (target: Target) => {
+    const observationId = currObs.id;
+    const response = await getSensCalc(currObs, target);
+    if (response) {
+      setSensCalc(response, target, observationId);
     }
-  }, [row]);
+  };
+
+  const setSensCalcForTargetGrid = (target: Target, sensCalc: any) => {
+    const tmpTO = [{ targetId: target.id, observationId: currObs.id, sensCalc: sensCalc }];
+    elementsS.forEach(rec => {
+      if (rec => rec.targetId !== target.id || rec.observationId !== currObs.id) {
+        tmpTO.push(rec);
+      }
+    });
+    setElementsS(tmpTO);
+    if (sensCalc === SENSCALC_LOADING) {
+      getSensCalcData(target);
+    }
+  };
+
+  const setSensCalc = (results: any, target: Target, observationId: string) => {
+    setSensCalcForTargetGrid(target, results);
+    updateTargetObservationStorage(target, observationId, results);
+  };
 
   const editIconClicked = (row: any) => {
     setCurrObs(row.rec);
@@ -178,17 +198,14 @@ export default function ObservationPage() {
     );
   };
 
-  const AddObservationTarget = (row: any) => {
-    const rec = {
+  const AddObservationTarget = (target: Target) => {
+    const rec: TargetObservation = {
       observationId: currObs.id,
-      targetId: row.rec.id,
+      targetId: target.id,
       sensCalc: SENSCALC_LOADING
     };
-    setProposal({
-      ...getProposal(),
-      targetObservation: [...getProposal().targetObservation, rec]
-    });
-    setSensPending(row.rec.id);
+    addTargetObservationStorage(rec);
+    setSensCalcForTargetGrid(target, SENSCALC_LOADING);
   };
 
   function filterRecords(id: number) {
@@ -198,45 +215,27 @@ export default function ObservationPage() {
   }
 
   const DeleteObservationTarget = (row: any) => {
-    setProposal({ ...getProposal(), targetObservation: filterRecords(row.id) });
+    setTargetObservationStorage(filterRecords(row.id));
   };
 
-  const isTargetSelected = (id: number) =>
+  const isTargetSelected = (targetId: number) =>
     getProposal().targetObservation.filter(
-      entry => entry.observationId === currObs?.id && entry.targetId === id
+      entry => entry.observationId === currObs?.id && entry.targetId === targetId
     ).length > 0;
 
-  const targetSelectedToggle = (row: any) => {
-    if (isTargetSelected(row.id)) {
-      DeleteObservationTarget(row);
+  const targetSelectedToggle = (el: ElementT) => {
+    if (isTargetSelected(el.id)) {
+      DeleteObservationTarget(el.target);
     } else {
-      AddObservationTarget(row);
+      AddObservationTarget(el.target);
     }
   };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    // TODO: Unable to add units at the moment as they are not mapped correctly.
-    setElementsT(
-      getProposal().targets.map(rec => ({
-        id: rec.id,
-        rec: rec,
-        name: rec.name,
-        ra: rec.ra,
-        dec: rec.dec,
-        sensCalc: null
-      }))
-    );
-    setElementsO(
-      getProposal().observations.map(rec => ({
-        id: rec.id,
-        rec: rec,
-        telescope: rec.telescope,
-        subarray: rec.subarray,
-        type: rec.type,
-        status: 0
-      }))
-    );
+    setElementsO(getProposal().observations.map(rec => popElementO(rec)));
+    setElementsS(getProposal().targetObservation);
+    setElementsT(getProposal().targets.map(rec => popElementT(rec)));
   }, []);
 
   React.useEffect(() => {
@@ -244,10 +243,7 @@ export default function ObservationPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = hasObservations() ? 1 : 0;
-    count += hasTargetObservations() ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateObservationPage(getProposal()));
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {
@@ -267,8 +263,10 @@ export default function ObservationPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const hasTargetObservations = () =>
-    getProposal() && getProposal().targetObservation && getProposal().targetObservation.length > 0;
+  const getSensCalcForTargetGrid = (targetId: number) => {
+    const results = elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId);
+    return results?.sensCalc;
+  };
 
   const extendedColumnsObservations = [
     ...[
@@ -279,6 +277,7 @@ export default function ObservationPage() {
         disableClickEventBubbling: true
       },
       {
+        field: 'id2',
         headerName: t('observations.group'),
         flex: 0.75,
         disableClickEventBubbling: true,
@@ -359,13 +358,13 @@ export default function ObservationPage() {
         sortable: false,
         flex: 0.6,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => {
+        renderCell: (e: { row: ElementT }) => {
           return currObs ? (
             <Box pr={1}>
               <TickBox
                 label=""
                 testId="linkedTickBox"
-                checked={isTargetSelected(e.row.id)}
+                checked={isTargetSelected(e.row.target.id)}
                 onChange={() => targetSelectedToggle(e.row)}
               />
             </Box>
@@ -392,7 +391,12 @@ export default function ObservationPage() {
         flex: 5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          return <SensCalcDisplaySingle row={e.row} show={isTargetSelected(e.row.id)} />;
+          return (
+            <SensCalcDisplaySingle
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              show={isTargetSelected(e.row.id)}
+            />
+          );
         }
       }
     ]
@@ -411,8 +415,14 @@ export default function ObservationPage() {
     return [];
   };
 
-  const filteredByObservation = obId => {
-    return elementsT.filter(e => e.observationId === obId).map(e => e.sensCalc);
+  const filteredByObservation = (obId: string) => {
+    const results = [];
+    elementsS.forEach(rec => {
+      if (rec.observationId === obId) {
+        results.push(rec.sensCalc);
+      }
+    });
+    return results;
   };
 
   return (
@@ -436,13 +446,13 @@ export default function ObservationPage() {
               <DataGrid
                 rows={elementsO}
                 columns={extendedColumnsObservations}
-                height={450}
+                height={DATA_GRID_OBSERVATION}
                 onRowClick={e => setCurrObs(e.row.rec)}
-                onRowSelectionModelChange={e => {
-                  setObRow(e);
+                onRowSelectionModelChange={newRowSelectionModel => {
+                  setRowSelectionModel(newRowSelectionModel);
                 }}
+                rowSelectionModel={rowSelectionModel}
                 testId="observationDetails"
-                rowSelectionModel={obRow}
               />
             )}
             {!hasObservations() && (
@@ -487,7 +497,7 @@ export default function ObservationPage() {
                 <DataGrid
                   rows={filteredTargets()}
                   columns={extendedColumnsTargets}
-                  height={390}
+                  height={DATA_GRID_TARGET}
                   testId="linkedTargetDetails"
                 />
               )}

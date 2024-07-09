@@ -64,7 +64,7 @@ export default function TitleContent({ page }: TitleContentProps) {
 
   const getTitle = () => getProposal()?.title;
 
-  const setTheErrorText = (str: string) => setErrorText(t(str));
+  const setTheErrorText = (str: string) => setErrorText(str ? t(str) : '');
 
   const handleDialogResponse = () => {
     setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });

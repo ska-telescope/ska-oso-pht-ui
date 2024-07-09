@@ -447,17 +447,69 @@ export const OBSERVATION = {
   ],
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
-  SpectralResolutionObLowZoom: [{ value: '14.1 kHz (21.2 km/s)' }],
+  // the spectral resolution matches a bandwidth value
+  SpectralResolutionObLowZoom: [
+    { value: '14.128508391203704 Hz (21.2 m/s)', bandWidthValue: 1 },
+    { value: '28.25701678240741 Hz (42.4 m/s)', bandWidthValue: 2 },
+    { value: '56.51403356481482 Hz (84.7 m/s)', bandWidthValue: 3 },
+    { value: '113.02806712962963 Hz (169.4 m/s)', bandWidthValue: 4 },
+    { value: '226.05613425925927 Hz (338.8 m/s)', bandWidthValue: 5 },
+    { value: '452.11226851851853 Hz (677.7 m/s)', bandWidthValue: 6 },
+    { value: '904.2245370370371 Hz (1.4 km/s)', bandWidthValue: 7 },
+    { value: '1808.4490740740741 Hz (2.7 km/s)', bandWidthValue: 8 }
+  ],
+  // the spectral resolution matches a lookup and bandwidth value
   SpectralResolutionOb1Zoom: [
-    { lookup: '0.7975', value: '0.21 kHz (78.9 m/s)' },
-    { lookup: '0.7', value: '0.21 kHz (89.9 m/s)' }
+    { lookup: '0.7975', value: '0.21 kHz (78.9 m/s)', bandWidthValue: 1 },
+    { lookup: '0.7975', value: '0.42 kHz (157.9 m/s)', bandWidthValue: 2 },
+    { lookup: '0.7975', value: '0.84 kHz (315.8 m/s)', bandWidthValue: 3 },
+    { lookup: '0.7975', value: '1.68 kHz (631.5 m/s)', bandWidthValue: 4 },
+    { lookup: '0.7975', value: '3.36 kHz (1.3 m/s)', bandWidthValue: 5 },
+    { lookup: '0.7975', value: '6.72 kHz (2.5 m/s)', bandWidthValue: 6 },
+    { lookup: '0.7975', value: '13.44 kHz (5.1 m/s)', bandWidthValue: 7 },
+    { lookup: '0.7', value: '0.21 kHz (89.9 m/s)', bandWidthValue: 1 },
+    { lookup: '0.7', value: '0.42 kHz (179.9 m/s)', bandWidthValue: 2 },
+    { lookup: '0.7', value: '0.84 kHz (359.8 m/s)', bandWidthValue: 3 },
+    { lookup: '0.7', value: '1.68 kHz (719.5 m/s)', bandWidthValue: 4 },
+    { lookup: '0.7', value: '3.36 kHz (1.4 km/s)', bandWidthValue: 5 },
+    { lookup: '0.7', value: '6.72 kHz (2.9 km/s)', bandWidthValue: 6 },
+    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)', bandWidthValue: 7 }
   ],
   SpectralResolutionOb2Zoom: [
-    { lookup: '1.355', value: '0.21 kHz (46.5 m/s)' },
-    { lookup: '1.31', value: '0.21 kHz (48.1 m/s)' }
+    { lookup: '1.31', value: '0.21 kHz (48.1 m/s)', bandWidthValue: 1 },
+    { lookup: '1.31', value: '0.42 kHz (96.1 m/s)', bandWidthValue: 2 },
+    { lookup: '1.31', value: '0.84 kHz (192.2 m/s)', bandWidthValue: 3 },
+    { lookup: '1.31', value: '1.68 kHz (384.5 m/s)', bandWidthValue: 4 },
+    { lookup: '1.31', value: '3.36 kHz (768.9 m/s)', bandWidthValue: 5 },
+    { lookup: '1.31', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
+    { lookup: '1.31', value: '13.44 kHz (3.1 km/s)', bandWidthValue: 7 },
+    { lookup: '1.355', value: '0.21 kHz (46.5 m/s)', bandWidthValue: 1 },
+    { lookup: '1.355', value: '0.42 kHz (92.9 m/s)', bandWidthValue: 2 },
+    { lookup: '1.355', value: '0.84 kHz (185.8 m/s)', bandWidthValue: 3 },
+    { lookup: '1.355', value: '1.68 kHz (371.7 m/s)', bandWidthValue: 4 },
+    { lookup: '1.355', value: '3.36 kHz (743.4 m/s)', bandWidthValue: 5 },
+    { lookup: '1.355', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
+    { lookup: '1.355', value: '13.44 kHz (3.0 km/s)', bandWidthValue: 7 }
   ],
-  SpectralResolutionOb5aZoom: [{ value: '0.21 kHz (9.6 m/s)' }],
-  SpectralResolutionOb5bZoom: [{ value: '0.21 kHz (5.3 m/s)' }],
+  // the spectral resolution matches a bandwidth value
+  SpectralResolutionOb5aZoom: [
+    { value: '0.21 kHz (9.6 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (19.2 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (38.4 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (76.9 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (153.8 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (307.6 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (615.1 m/s)', bandWidthValue: 7 }
+  ],
+  SpectralResolutionOb5bZoom: [
+    { value: '0.21 kHz (5.3 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (10.6 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (21.3 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (42.5 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7 }
+  ],
   Tapering: [
     { label: 'No tapering', value: 1 },
     { label: '0.250"', value: 2 },

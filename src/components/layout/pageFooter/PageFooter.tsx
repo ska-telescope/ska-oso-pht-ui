@@ -34,7 +34,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
-      message: t(str),
+      message: str,
       okRequired: false
     };
     updateAppContent5(rec);
@@ -47,7 +47,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    NotifyWarning('addProposal.warning');
+    NotifyWarning(t('addProposal.warning'));
     const response = await PostProposal(getProposal(), 'draft');
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
