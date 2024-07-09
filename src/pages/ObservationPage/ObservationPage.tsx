@@ -439,7 +439,11 @@ export default function ObservationPage() {
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
-                <AddButton title="addObservation.button" action={PATH[2]} testId="addObservationButton" />
+                <AddButton
+                  title="addObservation.button"
+                  action={PATH[2]}
+                  testId="addObservationButton"
+                />
               </Grid>
             </Grid>
             {hasObservations() && (

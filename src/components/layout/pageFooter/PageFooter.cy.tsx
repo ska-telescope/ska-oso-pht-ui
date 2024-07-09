@@ -11,8 +11,8 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const PAGE_NO = 5;
 
 export function verifyFooter(pageNo: number) {
-  const prevLabel = 'page.' + ( pageNo - 1) + '.title';
-  const nextLabel = 'page.' + ( pageNo + 1) + '.title';
+  const prevLabel = 'page.' + (pageNo - 1) + '.title';
+  const nextLabel = 'page.' + (pageNo + 1) + '.title';
   cy.get('[data-testId="' + prevLabel + 'Button"]').contains(prevLabel);
   cy.get('[data-testId="' + nextLabel + 'Button"]').contains(nextLabel);
 }

@@ -16,23 +16,24 @@ function viewPort() {
 
 function getProposal(isEmpty: boolean) {
   if (false || isEmpty) {
-    cy.stub().as('getProposal').returns(
-      {
+    cy.stub()
+      .as('getProposal')
+      .returns({
         prsl_id: 1,
         status: 'draft',
         observations: [],
         targets: [],
         targetObservation: []
-      }
-    );
+      });
   } else {
-    cy.stub().as('getProposal').returns(
-      {
+    cy.stub()
+      .as('getProposal')
+      .returns({
         prsl_id: 1,
         status: 'draft',
         observations: [
           {
-            id: 1,
+            id: 1
             // telescope: number;
             // subarray: number;
             // linked: string;
@@ -78,8 +79,7 @@ function getProposal(isEmpty: boolean) {
           }
         ],
         targetObservation: []
-      }
-    );
+      });
   }
 }
 
@@ -96,7 +96,7 @@ export function verifyHeader(pageNo: number) {
   cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
   cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
-  cy.get('[data-testId="button.submitTestId"]').contains('button.submit');  // TODO DISABLED
+  cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
   // Status Array
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');
@@ -112,8 +112,8 @@ export function verifyHeader(pageNo: number) {
 }
 
 export function verifyFooter(pageNo: number) {
-  const prevLabel = 'page.' + ( pageNo - 1) + '.title';
-  const nextLabel = 'page.' + ( pageNo + 1) + '.title';
+  const prevLabel = 'page.' + (pageNo - 1) + '.title';
+  const nextLabel = 'page.' + (pageNo + 1) + '.title';
   cy.get('[data-testId="' + prevLabel + 'Button"]').contains(prevLabel);
   cy.get('[data-testId="' + nextLabel + 'Button"]').contains(nextLabel);
 }
@@ -147,8 +147,8 @@ function verifyWrapperTargets() {
 
 function verifyDataGridTargets() {
   cy.get('#targetObservationLabel').contains('targetObservation.label');
-  cy.get('[data-testId="selectedTickBox"]');   // TODO 
-  cy.get('[data-testId="notSelectedTickBox"]');   // TODO 
+  cy.get('[data-testId="selectedTickBox"]'); // TODO
+  cy.get('[data-testId="notSelectedTickBox"]'); // TODO
 }
 
 describe('<ObservationContent />', () => {
@@ -181,9 +181,7 @@ describe('<ObservationContent />', () => {
   });
 });
 
-
-
-    /*
+/*
     cy.get('[data-testid="Add observationButton"]').click();
     cy.get('[data-testid="observationDetails"]').should('contain', 'Telescope');
     cy.get('[data-testid="observationDetails"]').should('contain', 'Subarray');

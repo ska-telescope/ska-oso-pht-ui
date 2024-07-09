@@ -15,7 +15,7 @@ export function verifyHeader(pageNo: number) {
   cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
   cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
-  cy.get('[data-testId="button.submitTestId"]').contains('button.submit');  // TODO DISABLED
+  cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
   // Status Array
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');
