@@ -70,6 +70,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
     };
     output.push(rec);
   }
+  console.log('output', output);
   return output as Proposal[];
 }
 

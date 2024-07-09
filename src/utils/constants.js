@@ -576,7 +576,7 @@ export const Projects = [
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Proposal',
         code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
@@ -589,7 +589,7 @@ export const Projects = [
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long Term Proposal',
         code: 'LTP',
         description: 'A proposal that spans multiple PROPOSAL CYCLES'
       }
@@ -597,20 +597,20 @@ export const Projects = [
   },
   {
     id: 2,
-    title: 'Key Science Project',
+    title: 'Key Science Proposal',
     code: 'KSP',
     description:
       'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Proposal',
         code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
@@ -623,7 +623,7 @@ export const Projects = [
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long Term Proposal',
         code: 'LTP',
         description: 'A proposal that spans multiple PROPOSAL CYCLES'
       }
@@ -631,20 +631,20 @@ export const Projects = [
   },
   {
     id: 3,
-    title: "Director's Discretionary Time Proposal",
+    title: "Director Time Proposal",
     code: 'DDT',
     description:
       "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
+        title: 'Joint Proposal',
         code: 'JSP',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },

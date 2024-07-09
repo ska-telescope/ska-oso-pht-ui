@@ -87,9 +87,9 @@ export const helpers = {
     */
     convertProposalToBackendFormat(proposal: Proposal, status: string) {
       // TODO: move to axios service + map to new backend format
-      const project = Projects.find(p => p.id === proposal.category);
+      // const project = Projects.find(p => p.id === proposal.category);
       // TODO : We need to update so that 0 - n entries are added.
-      const subProject = project?.subProjects.find(sp => sp.id === proposal.subCategory[0]);
+      // const subProject = project?.subProjects.find(sp => sp.id === proposal.subCategory[0]);
 
       // TODO: add groupObservations to send to backend
 
@@ -122,12 +122,38 @@ export const helpers = {
       const convertCategoryFormat = (_inValue: string): string => {
         console.log('convertCategoryFormat _inValue', _inValue);
         const words = _inValue.split(' ');
-        const capitalizedWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
-        const formattedString = capitalizedWords.join('_');
+        const lowerCaseWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
+        const formattedString = lowerCaseWords.join('_');
         console.log('formattedString', formattedString);
         return formattedString;
-        // return _inValue;
       };
+
+      const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
+        // TODO find out exat spelling of all proposal types and sub proposal types in PDM to convert appropriately
+        const project = Projects.find(
+          ({ id }) => id === proposalType);
+        console.log('project', project);
+        const subTypes: string[] = [];
+        for (let subtype of proposalSubType) {
+          console.log('subtype', subtype);
+          const sub = project.subProjects.find(item => item.id === subtype);
+          console.log('sub', sub);
+          if (sub) {
+            const formattedSubType = convertCategoryFormat(sub.title);
+            subTypes.push(formattedSubType)
+          }
+        }
+        console.log('subTypes', subTypes);
+        return subTypes;
+        /*
+        const subProjects = subTypesFormatted.map(subType =>
+          project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+        );
+        return subProjects.filter(({ id }) => id).map(({ id }) => id);
+        */
+      };
+
+      console.log('PROPOSAl frontend format', proposal);
 
       const transformedProposal: ProposalBackend = {
         /*
@@ -170,7 +196,7 @@ export const helpers = {
               main_type: convertCategoryFormat(Projects.find(
                 p => p.id === proposal.proposalType
               ).title),
-              sub_type: ['coordinated_proposal'] // TODO change to Coordinated Proposal once backend can accept it?
+              sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
             },
             abstract: '',
             science_category: '',
