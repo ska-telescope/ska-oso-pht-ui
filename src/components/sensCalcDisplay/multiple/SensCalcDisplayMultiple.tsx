@@ -18,7 +18,6 @@ export default function SensCalcDisplayMultiple({
   elementsT = []
 }: SensCalcDisplayMultipleProps) {
   const { t } = useTranslation('pht');
-
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
@@ -92,7 +91,11 @@ export default function SensCalcDisplayMultiple({
 
   return (
     <>
-      <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={IconClicked}>
+      <IconButton
+        aria-label="SensCalc Status"
+        style={{ cursor: 'hand' }}
+        onClick={getLevel() !== STATUS_INITIAL ? IconClicked : null}
+      >
         <StatusIcon
           ariaTitle={t('sensitivityCalculatorResults.status', {
             status: t('statusLoading.' + getLevel()),
@@ -104,7 +107,8 @@ export default function SensCalcDisplayMultiple({
           size={SIZE}
         />
       </IconButton>
-      {observation && (
+      {openDialog ? 1 : 0}
+      {openDialog && (
         <SensCalcModalMultiple
           open={openDialog}
           onClose={() => setOpenDialog(false)}

@@ -263,8 +263,8 @@ export default function ObservationPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: number) => 
-     elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId)?.sensCalc;
+  const getSensCalcForTargetGrid = (targetId: number) =>
+    elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId)?.sensCalc;
 
   const extendedColumnsObservations = [
     ...[
