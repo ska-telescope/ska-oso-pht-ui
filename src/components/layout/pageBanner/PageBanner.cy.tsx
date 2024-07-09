@@ -77,7 +77,7 @@ describe('PUT proposal (SAVE)', () => {
       body: 'Internal Server Error'
     }).as('apiCallSave500');
     cy.get('[data-testid="saveButtonTestId"]').click();
-    // cy.wait('@apiCallSave500'); TODO investigate why the api call is not being triggered anymore
+    // cy.wait('@apiCallSave500'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
   it('displays request message in Alert component on save request, Request OK', () => {
@@ -86,7 +86,7 @@ describe('PUT proposal (SAVE)', () => {
       body: 'OK'
     }).as('apiCallSaveOK');
     cy.get('[data-testid="saveButtonTestId"]').click();
-    // cy.wait('@apiCallSaveOK'); TODO investigate why the api call is not being triggered anymore
+    // cy.wait('@apiCallSaveOK'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
 });
@@ -107,7 +107,7 @@ describe('POST proposal (VALIDATE)', () => {
       body: 'Internal Server Error'
     }).as('apiCallValidate500');
     cy.get('[data-testid="validationBtn.labelTestId"]').click();
-    // cy.wait('@apiCallValidate500'); TODO investigate why the api call is not being triggered anymore
+    // cy.wait('@apiCallValidate500'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
   it('displays validate confirmation message in Alert component on validate request, Request Success', () => {
@@ -116,7 +116,7 @@ describe('POST proposal (VALIDATE)', () => {
       body: 'OK'
     }).as('apiCallValidateOK');
     cy.get('[data-testid="validationBtn.labelTestId"]').click();
-    // cy.wait('@apiCallValidateOK'); TODO investigate why the api call is not being triggered anymore
+    // cy.wait('@apiCallValidateOK'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
 });
