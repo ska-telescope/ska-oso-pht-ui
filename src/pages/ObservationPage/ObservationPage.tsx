@@ -9,24 +9,30 @@ import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
-import SensCalcDisplayMultiple from '../../components/sensCalcDisplay/multiple/SensCalcDisplayMultiple';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
-import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { validateObservationPage } from '../../utils/proposalValidation';
-import { PATH } from '../../utils/constants';
+import {
+  PATH,
+  STATUS_ERROR,
+  STATUS_INITIAL,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from '../../utils/constants';
 import { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
+import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
+import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
+import StatusIconDisplay from '../../components/icon/status/statusIcon';
 
 const DATA_GRID_TARGET = 390;
 const DATA_GRID_OBSERVATION = 450;
 const PAGE = 5;
-const LABEL_WIDTH = 6;
+const SIZE = 20;
 
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
@@ -36,7 +42,8 @@ export default function ObservationPage() {
   const [currObs, setCurrObs] = React.useState(null);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState(null);
   const [elementsS, setElementsS] = React.useState(null);
   const [elementsT, setElementsT] = React.useState(null);
@@ -61,6 +68,37 @@ export default function ObservationPage() {
 
   const addTargetObservationStorage = (rec: TargetObservation) => {
     setTargetObservationStorage([...getProposal().targetObservation, rec]);
+  };
+
+  const getLevel = (obs: Observation) => {
+    let result = STATUS_INITIAL;
+    filteredByObservation(obs.id)?.forEach(rec => {
+      if (typeof rec !== 'undefined') {
+        switch (rec.status) {
+          case STATUS_ERROR:
+            result = STATUS_ERROR;
+            return;
+          case STATUS_PARTIAL:
+            result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
+            return;
+          default:
+            if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
+              result = STATUS_OK;
+            }
+        }
+      }
+    });
+    return result;
+  };
+
+  const getError = (obs: Observation) => {
+    let result = '';
+    filteredByObservation(obs.id)?.forEach(rec => {
+      if (typeof rec !== 'undefined' && rec.status === STATUS_ERROR) {
+        result = rec.error;
+      }
+    });
+    return result;
   };
 
   const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
@@ -147,11 +185,11 @@ export default function ObservationPage() {
 
   const deleteIconClicked = (row: any) => {
     setCurrObs(row.rec);
-    setOpenDialog(true);
+    setOpenDeleteDialog(true);
   };
 
   const closeDeleteDialog = () => {
-    setOpenDialog(false);
+    setOpenDeleteDialog(false);
   };
 
   const deleteConfirmed = () => {
@@ -176,36 +214,19 @@ export default function ObservationPage() {
     closeDeleteDialog();
   };
 
-  const alertContent = (rec: any) => {
-    return (
-      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
-        <FieldWrapper label={t('arrayConfiguration.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('arrayConfiguration.' + rec.telescope)}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('subArrayConfiguration.' + rec.subarray)}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('observationType.' + rec.type)}</Typography>
-        </FieldWrapper>
-
-        <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
-          <Grid item>
-            <Typography variant="caption">{t('deleteObservation.content1')}</Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-    );
-  };
-
   const addObservationTarget = (target: Target) => {
+    const ss = {
+      id: target.name,
+      status: STATUS_PARTIAL,
+      title: target.name
+    };
     const rec: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
-      sensCalc: SENSCALC_LOADING
+      sensCalc: ss
     };
     addTargetObservationStorage(rec);
-    setSensCalcForTargetGrid(target, SENSCALC_LOADING);
+    setSensCalcForTargetGrid(target, ss);
   };
 
   function filterRecords(id: number) {
@@ -319,7 +340,14 @@ export default function ObservationPage() {
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
-            <SensCalcDisplayMultiple observation={obs} elementsT={filteredByObservation(obs.id)} />
+            <StatusIconDisplay
+              error={getError(obs)}
+              level={getLevel(obs)}
+              onClick={() =>
+                getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
+              }
+              size={SIZE}
+            />
           );
         }
       },
@@ -514,15 +542,23 @@ export default function ObservationPage() {
           </Card>
         </Grid>
       </Grid>
-      {openDialog && (
-        <AlertDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          onDialogResponse={deleteConfirmed}
-          title="deleteObservation.label"
-        >
-          {alertContent(currObs)}
-        </AlertDialog>
+      {openDeleteDialog && (
+        <DeleteObservationConfirmation
+          action={deleteConfirmed}
+          observation={currObs}
+          open={openDeleteDialog}
+          setOpen={setOpenDeleteDialog}
+        />
+      )}
+      {openMultipleDialog && (
+        <SensCalcModalMultiple
+          open={openMultipleDialog}
+          onClose={() => setOpenMultipleDialog(false)}
+          data={filteredByObservation(currObs.id)}
+          observation={currObs}
+          level={getLevel(currObs)}
+          levelError={getError(currObs)}
+        />
       )}
     </Shell>
   );
