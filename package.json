@@ -30,7 +30,7 @@
     "test:cypress:component:ci": "cypress run --component --headless --browser chrome --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:cypress:component:chromium": "cypress run --component --headless --browser chromium --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:headless": "yarn cypress:run",
-    "test:e2e:headless": "cypress run --e2e --headless --browser chrome --config video=false"
+    "test:e2e:headless": "cypress run --e2e --headless --browser chromium --config video=false"
   },
   "resolutions": {
     "@cypress/request": "3.x.x",
