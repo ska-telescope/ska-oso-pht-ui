@@ -198,7 +198,7 @@ export default function ObservationPage() {
     );
   };
 
-  const AddObservationTarget = (target: Target) => {
+  const addObservationTarget = (target: Target) => {
     const rec: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
@@ -227,7 +227,7 @@ export default function ObservationPage() {
     if (isTargetSelected(el.id)) {
       DeleteObservationTarget(el.target);
     } else {
-      AddObservationTarget(el.target);
+      addObservationTarget(el.target);
     }
   };
 
@@ -263,10 +263,8 @@ export default function ObservationPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: number) => {
-    const results = elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId);
-    return results?.sensCalc;
-  };
+  const getSensCalcForTargetGrid = (targetId: number) => 
+     elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId)?.sensCalc;
 
   const extendedColumnsObservations = [
     ...[
