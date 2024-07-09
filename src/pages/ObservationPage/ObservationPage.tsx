@@ -233,9 +233,9 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations.map(rec => popElementO(rec)));
+    setElementsO(getProposal().observations?.map(rec => popElementO(rec)));
     setElementsS(getProposal().targetObservation);
-    setElementsT(getProposal().targets.map(rec => popElementT(rec)));
+    setElementsT(getProposal().targets?.map(rec => popElementT(rec)));
   }, []);
 
   React.useEffect(() => {
@@ -439,7 +439,7 @@ export default function ObservationPage() {
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
-                <AddButton title="addObservation.button" action={PATH[2]} />
+                <AddButton title="addObservation.button" action={PATH[2]} testId="addObservationButton" />
               </Grid>
             </Grid>
             {hasObservations() && (
@@ -459,7 +459,7 @@ export default function ObservationPage() {
               <Alert
                 color={AlertColorTypes.Error}
                 text={t('error.noObservations')}
-                testId="helpPanelId"
+                testId="noObservationsNotification"
               />
             )}
           </Grid>
@@ -468,7 +468,7 @@ export default function ObservationPage() {
           <Card variant="outlined">
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>
-                <Typography pt={1} variant="h6">
+                <Typography id="targetObservationLabel" pt={1} variant="h6">
                   {t('targetObservation.label')}
                 </Typography>
               </Grid>
@@ -486,7 +486,7 @@ export default function ObservationPage() {
                 <TickBox
                   disabled={!currObs}
                   label={t('notSelected.label')}
-                  testId="unlinkedTickBox"
+                  testId="notSelectedTickBox"
                   checked={notSelected}
                   onChange={() => setNotSelected(!notSelected)}
                 />
@@ -505,7 +505,7 @@ export default function ObservationPage() {
                 <Alert
                   color={AlertColorTypes.Error}
                   text={t('targets.empty')}
-                  testId="helpPanelId"
+                  testId="noTargetsNotification"
                 />
               )}
             </CardContent>

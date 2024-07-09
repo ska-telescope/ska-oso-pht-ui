@@ -36,7 +36,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
             pageName: pageName().toLowerCase(),
             status: getLevel() ? t('statusValue.' + getLevel()) : ''
           })}
-          testId="statusId"
+          testId={"statusId" + page}
           icon
           level={getLevel()}
           size={SIZE}
