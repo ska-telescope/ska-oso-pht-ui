@@ -4,28 +4,29 @@ import { AXIOS_CONFIG, DEFAULT_PI, GENERAL, Projects, SKA_PHT_API_URL, USE_LOCAL
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 // import MockProposalBackendNew2 from '../getProposal/mockProposalBackendNew2';
 
-const convertCategoryFormat = (_inValue: string): string => {
-  const words = _inValue.split(' ');
-  const lowerCaseWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
-  const formattedString = lowerCaseWords.join('_');
-  return formattedString;
-};
-
-const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
-  const project = Projects.find(
-    ({ id }) => id === proposalType);
-  const subTypes: string[] = [];
-  for (let subtype of proposalSubType) {
-    const sub = project.subProjects.find(item => item.id === subtype);
-    if (sub) {
-      const formattedSubType = convertCategoryFormat(sub.title);
-      subTypes.push(formattedSubType)
-    }
-  }
-  return subTypes;
-};
-
 function mappingPostProposal(proposal, status) {
+
+  const convertCategoryFormat = (_inValue: string): string => {
+    const words = _inValue.split(' ');
+    const lowerCaseWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
+    const formattedString = lowerCaseWords.join('_');
+    return formattedString;
+  };
+  
+  const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
+    const project = Projects.find(
+      ({ id }) => id === proposalType);
+    const subTypes: string[] = [];
+    for (let subtype of proposalSubType) {
+      const sub = project.subProjects.find(item => item.id === subtype);
+      if (sub) {
+        const formattedSubType = convertCategoryFormat(sub.title);
+        subTypes.push(formattedSubType)
+      }
+    }
+    return subTypes;
+  };
+  
   const transformedProposal: ProposalBackend = 
     {
       prsl_id: proposal?.id?.toString(),

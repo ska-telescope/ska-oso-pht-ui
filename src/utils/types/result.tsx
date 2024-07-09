@@ -10,7 +10,7 @@ export type ResultBackend = {
     total_continuum_sensitivity?: ValueUnitPair;
     total_spectral_sensitivity: ValueUnitPair;
     surface_brightness_sensitivity: {
-      continuum?: string;
+      continuum?: number;
       spectral: number;
       unit: string;
     };
