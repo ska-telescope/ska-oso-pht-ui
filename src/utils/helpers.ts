@@ -1,7 +1,4 @@
-import { Proposal, ProposalBackend } from 'utils/types/proposal';
-import {
-  TEXT_ENTRY_PARAMS,
-} from './constants';
+import { TEXT_ENTRY_PARAMS } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 

@@ -65,7 +65,7 @@ describe('search functionality', () => {
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
     //   .children('div[role="row"]')
-    //   .should('have.length', MockProposals.length);
+    //   .should('have.length', MockProposalBackendList.length);
   });
   it('returns 0 results when searching for "xxx"', () => {
     cy.get('[data-testid="searchId"]').type('xxx');
@@ -147,7 +147,7 @@ describe('filtering by proposal type', () => {
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
     //   .children('div[role="row"]')
-    //   .should('have.length', MockProposals.length);
+    //   .should('have.length', MockProposalBackendList.length);
   });
 });
 

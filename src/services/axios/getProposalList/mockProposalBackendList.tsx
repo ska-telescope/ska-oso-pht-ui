@@ -1,4 +1,4 @@
-import { ProposalBackend } from "../../../utils/types/proposal";
+import { ProposalBackend } from '../../../utils/types/proposal';
 
 // these matche the proposal format on the PDM
 const MockProposalBackendList: ProposalBackend[] = [

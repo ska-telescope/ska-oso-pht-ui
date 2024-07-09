@@ -631,7 +631,7 @@ export const Projects = [
   },
   {
     id: 3,
-    title: "Director Time Proposal",
+    title: 'Director Time Proposal',
     code: 'DDT',
     description:
       "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",

@@ -1,6 +1,12 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, DEFAULT_PI, GENERAL, Projects, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
-import { helpers } from '../../../utils/helpers';
+import {
+  AXIOS_CONFIG,
+  DEFAULT_PI,
+  GENERAL,
+  Projects,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import { ProposalBackend } from '../../../utils/types/proposal';
 
 /*
@@ -10,7 +16,6 @@ TODO:
 */
 
 function mappingPutProposal(proposal, status) {
-
   // TODO: add groupObservations to send to backend
 
   /*
@@ -45,14 +50,13 @@ function mappingPutProposal(proposal, status) {
   };
 
   const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
-    const project = Projects.find(
-      ({ id }) => id === proposalType);
+    const project = Projects.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
       const sub = project.subProjects.find(item => item.id === subtype);
       if (sub) {
         const formattedSubType = convertCategoryFormat(sub.title);
-        subTypes.push(formattedSubType)
+        subTypes.push(formattedSubType);
       }
     }
     return subTypes;
@@ -65,46 +69,44 @@ function mappingPutProposal(proposal, status) {
         category => category.value === proposal?.category
       )?.label,
       */
-      prsl_id: proposal?.id?.toString(),
-      status: status,
-      submitted_on: '',
-      submitted_by: '',
-      investigator_refs: [DEFAULT_PI.id],
-      metadata: {
-        version: 1,
-        created_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-        created_on: new Date().toDateString(),
-        last_modified_by: '',
-        last_modified_on: ''
+    prsl_id: proposal?.id?.toString(),
+    status: status,
+    submitted_on: '',
+    submitted_by: '',
+    investigator_refs: [DEFAULT_PI.id],
+    metadata: {
+      version: 1,
+      created_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
+      created_on: new Date().toDateString(),
+      last_modified_by: '',
+      last_modified_on: ''
+    },
+    cycle: GENERAL.Cycle,
+    info: {
+      title: proposal.title,
+      proposal_type: {
+        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
+        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
       },
-      cycle: GENERAL.Cycle,
-      info: {
-        title: proposal.title,
-        proposal_type: {
-          main_type: convertCategoryFormat(Projects.find(
-            p => p.id === proposal.proposalType
-          ).title),
-          sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
-        },
-        abstract: '',
-        science_category: '',
-        targets: [],
-        documents: [],
-        investigators: [
-          {
-            investigator_id: DEFAULT_PI.id,
-            given_name: DEFAULT_PI.firstName,
-            family_name: DEFAULT_PI.lastName,
-            email: DEFAULT_PI.email,
-            organization: DEFAULT_PI.affiliation,
-            for_phd: DEFAULT_PI.phdThesis,
-            principal_investigator: DEFAULT_PI.pi
-          }
-        ],
-        observation_sets: [],
-        data_product_sdps: [],
-        data_product_src_nets: [],
-        results: []
+      abstract: '',
+      science_category: '',
+      targets: [],
+      documents: [],
+      investigators: [
+        {
+          investigator_id: DEFAULT_PI.id,
+          given_name: DEFAULT_PI.firstName,
+          family_name: DEFAULT_PI.lastName,
+          email: DEFAULT_PI.email,
+          organization: DEFAULT_PI.affiliation,
+          for_phd: DEFAULT_PI.phdThesis,
+          principal_investigator: DEFAULT_PI.pi
+        }
+      ],
+      observation_sets: [],
+      data_product_sdps: [],
+      data_product_src_nets: [],
+      results: []
 
       /*
       targets: proposal?.targets?.map(target => ({
@@ -117,7 +119,7 @@ function mappingPutProposal(proposal, status) {
         declination_unit: '' // TODO: confirm what units should be expected
       })),
       */
-     /*
+      /*
       investigators: proposal.team?.map(teamMember => ({
       science_programmes: scienceProgrammes
       */
