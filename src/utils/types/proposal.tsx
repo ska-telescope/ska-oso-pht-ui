@@ -45,7 +45,7 @@ export type Proposal = {
   lastUpdatedBy: string;
   createdOn: string;
   createdBy: string;
-  version: number,
+  version: number;
   cycle: string;
   proposalType: number;
   proposalSubType?: number[];

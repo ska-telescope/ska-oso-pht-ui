@@ -79,7 +79,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       created_by: proposal.createdBy,
       created_on: proposal.createdOn,
       last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      last_modified_on: new Date().toDateString(),
+      last_modified_on: new Date().toDateString()
     },
     cycle: GENERAL.Cycle,
     info: {

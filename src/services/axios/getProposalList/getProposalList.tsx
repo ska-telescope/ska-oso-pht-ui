@@ -13,9 +13,7 @@ const convertTypeFormat = (_inValue: string): string => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(
-    ({ title }) => title === convertTypeFormat(proposalType.main_type)
-  );
+  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
   const subTypesFormatted = [];
   for (let subtype of proposalType.sub_type) {
     subTypesFormatted.push(convertTypeFormat(subtype));
@@ -63,14 +61,14 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalType: Projects.find(
         p =>
           p.title.toLowerCase() ===
-        convertTypeFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
+          convertTypeFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
       ).id,
       proposalSubType: getSubType(inRec[i].info.proposal_type),
       category: inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),
-      pi: getPI(inRec[i].info.investigators),
+      pi: getPI(inRec[i].info.investigators)
       // telescope: 'N/A' // TODO is this still needed? -> what to map to? telescopes in observations?
     };
     output.push(rec);

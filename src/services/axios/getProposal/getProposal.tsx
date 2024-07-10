@@ -17,23 +17,6 @@ import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from 'utils/types/investigator';
 
-const getProposalType = (inValue: { main_type: string; sub_type: string[] }): number => {
-  const main = 'Standard Proposal'; // TODO use proposal main_type once correct proposal can be created
-  const rec = Projects.find(p => p.title === main);
-  return rec.id;
-};
-
-const getProposalSubType = (inValue: { main_type: string; sub_type: string[] }): number[] => {
-  // const project = Projects.find(({ title }) => title === inValue.main_type);
-  const project = Projects.find(({ title }) => title === 'Standard Proposal'); // TODO use proposal main_type once correct proposal can be created
-  const subProjects = inValue.sub_type.map(
-    subType =>
-      // project.subProjects.find(({ title }) => title === subType)
-      project.subProjects.find(({ title }) => title === 'Coordinated Proposal') // TODO use proposal sub_type once correct proposal can be created
-  );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
-};
-
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -171,9 +154,7 @@ const convertTypeFormat = (_inValue: string): string => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(
-    ({ title }) => title === convertTypeFormat(proposalType.main_type)
-  );
+  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
   const subTypesFormatted = [];
   for (let subtype of proposalType.sub_type) {
     subTypesFormatted.push(convertTypeFormat(subtype));
@@ -192,7 +173,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     proposalType: Projects.find(
       p =>
         p.title.toLowerCase() ===
-      convertTypeFormat(inRec.info.proposal_type.main_type).toLowerCase()
+        convertTypeFormat(inRec.info.proposal_type.main_type).toLowerCase()
     ).id,
     proposalSubType: getSubType(inRec.info.proposal_type),
     status: inRec.status,
@@ -201,7 +182,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     createdOn: inRec.metadata.created_on,
     createdBy: inRec.metadata.created_by,
     version: inRec.metadata.version,
-    cycle: "", // TODO
+    cycle: '', // TODO
     team: getTeamMembers(inRec.info.investigators),
     pi: 'PI-Ref', // TODO
     abstract: inRec.info.abstract, // TODO

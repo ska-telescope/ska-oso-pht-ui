@@ -160,7 +160,13 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().team?.map((rec: TeamMember, index: number) => (
-            <Grid container key={index} direction="row" justifyContent="space-between" alignItems="center">
+            <Grid
+              container
+              key={index}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}
