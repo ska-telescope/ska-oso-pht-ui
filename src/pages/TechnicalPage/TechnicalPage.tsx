@@ -9,7 +9,7 @@ import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { validateTechnicalPage } from '../../utils/proposalValidation';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
@@ -112,10 +112,7 @@ export default function TechnicalPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = getProposal()?.technicalPDF ? 1 : 0;
-    count += getProposal()?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
 
   return (
