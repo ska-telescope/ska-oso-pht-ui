@@ -7,7 +7,7 @@ import {
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import { ProposalBackend } from '../../../utils/types/proposal';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 /*
 TODO:
@@ -15,7 +15,7 @@ TODO:
 - tidy up and remove all old mapping functions in this file
 */
 
-function mappingPutProposal(proposal, status) {
+function mappingPutProposal(proposal: Proposal, status: string) {
   // TODO: add groupObservations to send to backend
 
   /*
@@ -71,15 +71,15 @@ function mappingPutProposal(proposal, status) {
       */
     prsl_id: proposal?.id?.toString(),
     status: status,
-    submitted_on: '',
-    submitted_by: '',
+    submitted_on: '', // TODO
+    submitted_by: '', // TODO
     investigator_refs: [DEFAULT_PI.id],
     metadata: {
-      version: 1,
-      created_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      created_on: new Date().toDateString(),
-      last_modified_by: '',
-      last_modified_on: ''
+      version: proposal.version++,
+      created_by: proposal.createdBy,
+      created_on: proposal.createdOn,
+      last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
+      last_modified_on: new Date().toDateString(),
     },
     cycle: GENERAL.Cycle,
     info: {

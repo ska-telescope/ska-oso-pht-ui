@@ -11,28 +11,6 @@ import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
 
-/*
-export type ProposalBackend = {
-  prsl_id: string;
-  status: string;
-  submitted_by: string;
-  submitted_on: string;
-  proposal_info: {
-    title: string;
-    cycle: string;
-    abstract: string;
-    proposal_type: {
-      main_type: string;
-      sub_type: string;
-    };
-    science_category: string;
-    targets: TargetBackend[];
-    investigators: TeamMemberBackend[];
-    science_programmes: ScienceProgrammeBackend[];
-  };
-};
-*/
-
 export type ProposalBackend = {
   prsl_id: string;
   status: string;
@@ -64,9 +42,14 @@ export type Proposal = {
   title: string;
   status: string;
   lastUpdated: string;
+  lastUpdatedBy: string;
+  createdOn: string;
+  createdBy: string;
+  version: number,
   cycle: string;
   proposalType: number;
   proposalSubType?: number[];
+  category: string;
   team?: TeamMember[];
   pi?: string;
   abstract?: string;

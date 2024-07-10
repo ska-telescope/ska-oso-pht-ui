@@ -5,20 +5,20 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import TeamMember from 'utils/types/teamMember';
 
-const convertCategoryFormat = (_inValue: string): string => {
+const convertTypeFormat = (_inValue: string): string => {
   const words = _inValue.split('_');
   const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
   const formattedString = capitalizedWords.join(' ');
   return formattedString;
 };
 
-const getSubCategory = (proposalType: { main_type: string; sub_type: string[] }): any => {
+const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
   const project = Projects.find(
-    ({ title }) => title === convertCategoryFormat(proposalType.main_type)
+    ({ title }) => title === convertTypeFormat(proposalType.main_type)
   );
   const subTypesFormatted = [];
   for (let subtype of proposalType.sub_type) {
-    subTypesFormatted.push(convertCategoryFormat(subtype));
+    subTypesFormatted.push(convertTypeFormat(subtype));
   }
   const subProjects = subTypesFormatted.map(subType =>
     project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
@@ -54,18 +54,23 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposal = {
       id: inRec[i].prsl_id.toString(),
+      status: inRec[i].status,
+      lastUpdated: new Date(inRec[i].metadata.last_modified_on).toDateString(),
+      lastUpdatedBy: inRec[i].metadata.last_modified_by,
+      createdOn: inRec[i].metadata.created_on,
+      createdBy: inRec[i].metadata.created_by,
+      version: inRec[i].metadata.version,
       proposalType: Projects.find(
         p =>
           p.title.toLowerCase() ===
-          convertCategoryFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
+        convertTypeFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
       ).id,
-      proposalSubType: getSubCategory(inRec[i].info.proposal_type),
+      proposalSubType: getSubType(inRec[i].info.proposal_type),
+      category: inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),
       pi: getPI(inRec[i].info.investigators),
-      status: inRec[i].status,
-      lastUpdated: new Date(inRec[i].metadata.last_modified_on).toDateString()
       // telescope: 'N/A' // TODO is this still needed? -> what to map to? telescopes in observations?
     };
     output.push(rec);

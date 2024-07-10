@@ -9,7 +9,6 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-// import MockProposalBackendNew2 from '../getProposal/mockProposalBackendNew2';
 
 function mappingPostProposal(proposal, status) {
   const convertCategoryFormat = (_inValue: string): string => {
