@@ -16,6 +16,7 @@ async function PostProposalValidate(proposal) {
       convertedProposal,
       AXIOS_CONFIG
     );
+    console.log('validate api result', result, `${SKA_PHT_API_URL}${URL_PATH}`);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorMessage = `${e?.message}: ${e?.response?.data?.message}`;
