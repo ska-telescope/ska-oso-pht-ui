@@ -200,7 +200,6 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
-  console.log('cenverted proposal', convertedProposal);
   return convertedProposal;
 }
 
