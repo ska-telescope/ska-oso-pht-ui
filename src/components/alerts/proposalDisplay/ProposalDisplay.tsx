@@ -76,12 +76,12 @@ export default function ProposalDisplay({
   };
 
   const category = () => {
-    const proposalType = getProposal().category;
+    const proposalType = getProposal().proposalType;
     const proposalName =
       !proposalType || proposalType < 1
         ? t('displayProposal.noneSelected')
         : t(`scienceCategory.${proposalType}`);
-    const subCategory = getProposal().subCategory;
+    const subCategory = getProposal().proposalSubType;
     const subCategoryName =
       !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
         ? t('displayProposal.noneSelected')
