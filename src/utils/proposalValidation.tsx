@@ -42,7 +42,7 @@ export const validateSciencePage = (proposal: Proposal) => {
 
 // TODO : How do we capture and validate for 'No specific target' ?
 export const validateTargetPage = (proposal: Proposal) =>
-  proposal.targets.length ? STATUS_OK : STATUS_ERROR;
+  proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
 export const validateObservationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];

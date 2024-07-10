@@ -27,7 +27,7 @@ export default function TargetPage() {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
+    for (let i = 0; i < getProposalState()?.length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
@@ -66,7 +66,7 @@ export default function TargetPage() {
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
               <Tooltip title={t(`${TITLE[occ]}.toolTip`)} arrow>
-                <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
+                <Typography variant="h6" component="div" id={TITLE[occ]}>
                   {t(`${TITLE[occ]}.label`)}
                 </Typography>
               </Tooltip>
