@@ -113,6 +113,14 @@ const MockProposalBackendList: ProposalBackend[] = [
           observation_set_id: 'mid-001',
           group_id: '2',
           observing_band: 'mid_band_1',
+          elevation: {
+            default: 15,
+            description: 'Elevation from the horizon to be used',
+            maximum: 90,
+            minimum: 15,
+            title: 'Elevation',
+            type: 'integer'
+          },
           array_details: {
             array: 'ska_mid',
             subarray: 'aa0.5',
@@ -120,7 +128,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            elevation: 15,
             tapering: 'DUMMY'
           },
           observation_type_details: {
@@ -152,6 +159,14 @@ const MockProposalBackendList: ProposalBackend[] = [
           observation_set_id: 'mid-002',
           group_id: '2',
           observing_band: 'mid_band_1',
+          elevation: {
+            default: 15,
+            description: 'Elevation from the horizon to be used',
+            maximum: 90,
+            minimum: 15,
+            title: 'Elevation',
+            type: 'integer'
+          },
           array_details: {
             array: 'ska_mid',
             subarray: 'aa0.5',
@@ -159,7 +174,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            elevation: 15,
             tapering: 'DUMMY'
           },
           observation_type_details: {
@@ -428,6 +442,14 @@ const MockProposalBackendList: ProposalBackend[] = [
           observation_set_id: 'mid-001',
           group_id: '2',
           observing_band: 'mid_band_1',
+          elevation: {
+            default: 15,
+            description: 'Elevation from the horizon to be used',
+            maximum: 90,
+            minimum: 15,
+            title: 'Elevation',
+            type: 'integer'
+          },
           array_details: {
             array: 'ska_mid',
             subarray: 'aa0.5',
@@ -435,7 +457,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            elevation: 15,
             tapering: 'DUMMY'
           },
           observation_type_details: {
@@ -467,6 +488,14 @@ const MockProposalBackendList: ProposalBackend[] = [
           observation_set_id: 'mid-002',
           group_id: '2',
           observing_band: 'mid_band_1',
+          elevation: {
+            default: 15,
+            description: 'Elevation from the horizon to be used',
+            maximum: 90,
+            minimum: 15,
+            title: 'Elevation',
+            type: 'integer'
+          },
           array_details: {
             array: 'ska_mid',
             subarray: 'aa0.5',
@@ -474,7 +503,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            elevation: 15,
             tapering: 'DUMMY'
           },
           observation_type_details: {

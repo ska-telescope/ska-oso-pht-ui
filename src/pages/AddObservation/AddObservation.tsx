@@ -1227,7 +1227,7 @@ export default function AddObservation() {
         type: observationType,
         observingBand: observingBand,
         weather: weather,
-        elevation: elevation, // TODO: add min_elevation field and use it for LOW
+        elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capure info needed for ElevationBackend type and update sens calc mapping
         centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,

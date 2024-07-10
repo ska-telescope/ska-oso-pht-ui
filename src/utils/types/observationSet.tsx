@@ -1,10 +1,12 @@
 import { ValueUnitPair } from './valueUnitPair';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from './arrayDetails';
+import { ElevationBackend } from './Elevation';
 
 export type ObservationSetBackend = {
   observation_set_id: string;
   group_id?: string;
   observing_band?: string;
+  elevation?: ElevationBackend;
   array_details?: ArrayDetailsLowBackend | ArrayDetailsMidBackend;
   observation_type_details?: ObservationTypeDetailsBackend;
   details: string;
