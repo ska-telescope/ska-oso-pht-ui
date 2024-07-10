@@ -14,6 +14,12 @@ export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 
+export const TARGET_OPTION = {
+  LIST_OF_TARGETS: 1,
+  TARGET_MOSAIC: 2,
+  NO_SPECIFIC_TARGET: 3
+};
+
 export const STATUS = {
   OK: STATUS_OK,
   ERROR: STATUS_ERROR,

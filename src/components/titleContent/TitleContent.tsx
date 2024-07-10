@@ -5,9 +5,10 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
-import { Projects, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { Projects } from '../../utils/constants';
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
+import { validateTitlePage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../icon/viewIcon/viewIcon';
 
@@ -51,15 +52,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = 0;
-    if (getProposal()?.title?.length > 0) {
-      count++;
-    }
-    if (getProposal()?.proposalType !== 0) {
-      count++;
-    }
-    setTheProposalState(result[count]);
+    setTheProposalState(validateTitlePage(getProposal()));
   }, [validateToggle]);
 
   const getTitle = () => getProposal()?.title;

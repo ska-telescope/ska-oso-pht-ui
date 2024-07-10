@@ -7,8 +7,9 @@ import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import Shell from '../../components/layout/Shell/Shell';
-import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../utils/constants';
+import { validateTargetPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
+import { TARGET_OPTION } from '../../utils/constants';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
@@ -41,27 +42,7 @@ export default function TargetPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = 0;
-    switch (getProposal().targetOption) {
-      case 1: {
-        count += getProposal().targets.length ? 2 : 0;
-        setTheProposalState(result[count]);
-        return;
-      }
-      case 2: {
-        count = 2;
-        setTheProposalState(result[count]);
-        return;
-      }
-      case 3: {
-        count = 2;
-        setTheProposalState(result[count]);
-        return;
-      }
-      default:
-        setTheProposalState(result[count]);
-    }
+    setTheProposalState(validateTargetPage(getProposal()));
   }, [validateToggle]);
 
   const handleClick = (index: number) => {
@@ -107,9 +88,9 @@ export default function TargetPage() {
           alignItems="baseline"
           spacing={2}
         >
-          {targetCard(1)}
-          {targetCard(2)}
-          {targetCard(3)}
+          {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
+          {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
+          {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
         </Grid>
 
         <Grid

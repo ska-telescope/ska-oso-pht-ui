@@ -380,7 +380,7 @@
     "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
   },
   "noSpecificTarget": {
-    "label": "No specific Target",
+    "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {

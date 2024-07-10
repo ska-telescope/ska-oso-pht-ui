@@ -5,37 +5,78 @@ const MockProposal: ProposalBackend = {
   status: 'draft',
   submitted_by: '',
   submitted_on: '',
-  proposal_info: {
+  cycle: 'SKA_5000_2023',
+  investigator_refs: [],
+  info: {
     title: 'The Milky Way View Backend Format',
-    cycle: 'SKA_5000_2023',
     abstract: 'This is the Abstract',
-    proposal_type: { main_type: 'Standard Proposal', sub_type: 'Coordinated Proposal' },
+    proposal_type: { main_type: 'Standard Proposal', sub_type: ['Coordinated Proposal'] },
     science_category: 'Science Category',
     targets: [
       {
-        name: 'M28',
-        right_ascension: '22:33:55',
-        declination: '22:33:55',
-        velocity: '34.6',
-        velocity_unit: 'km/s',
-        right_ascension_unit: 'degrees',
-        declination_unit: 'dd:mm:ss'
+        target_id: 'M1',
+        pointing_pattern: {
+          active: '',
+          parameters: [
+            {
+              kind: '',
+              offset_x_arcsec: 0,
+              offset_y_arcsec: 0
+            }
+          ]
+        },
+        reference_coordinate: {
+          kind: '',
+          ra: 12345,
+          dec: 12345,
+          unit: [],
+          reference_frame: ''
+        },
+        radial_velocity: {
+          quantity: {
+            value: 123,
+            unit: ''
+          },
+          definition: '',
+          reference_frame: '',
+          redshift: 0
+        }
       },
       {
-        name: 'M1',
-        right_ascension: '22:33:55',
-        declination: '22:33:55',
-        velocity: '34.6',
-        velocity_unit: 'km/s',
-        right_ascension_unit: 'hh:mm:ss',
-        declination_unit: 'dd:mm:ss'
+        target_id: 'M2',
+        pointing_pattern: {
+          active: '',
+          parameters: [
+            {
+              kind: '',
+              offset_x_arcsec: 0,
+              offset_y_arcsec: 0
+            }
+          ]
+        },
+        reference_coordinate: {
+          kind: '',
+          ra: 12345,
+          dec: 12345,
+          unit: [],
+          reference_frame: ''
+        },
+        radial_velocity: {
+          quantity: {
+            value: 123,
+            unit: ''
+          },
+          definition: '',
+          reference_frame: '',
+          redshift: 0
+        }
       }
     ],
     investigators: [
       {
         investigator_id: 1,
-        first_name: 'Van Loo',
-        last_name: 'Cheng',
+        given_name: 'Van Loo',
+        family_name: 'Cheng',
         email: 'ask.lop@map.com',
         organization: 'University of Free',
         for_phd: true,
@@ -43,39 +84,19 @@ const MockProposal: ProposalBackend = {
       },
       {
         investigator_id: 2,
-        first_name: 'Van Loo',
-        last_name: 'Cheng',
-        country: 'Lagoon',
+        given_name: 'Van Loo',
+        family_name: 'Cheng',
+        email: 'ask.someoneElse@map.com',
         organization: 'University of Free',
         for_phd: false,
         principal_investigator: false
       }
     ],
-    science_programmes: [
-      {
-        array: 'MID',
-        subarray: 'AA1',
-        linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum',
-        image_weighting: 2,
-        observing_band: 1,
-        integration_time: 600,
-        integration_time_units: 'd',
-        central_frequency: 0,
-        groupId: 'group-1'
-      },
-      {
-        array: 'MID',
-        subarray: 'AA1',
-        linked_sources: ['M1', 'M2'],
-        observation_type: 'Continuum',
-        image_weighting: 2,
-        observing_band: 1,
-        integration_time: 600,
-        integration_time_units: 'd',
-        central_frequency: 0
-      }
-    ]
+    documents: [],
+    observation_sets: [],
+    data_product_sdps: [],
+    data_product_src_nets: [],
+    results: []
   }
 };
 

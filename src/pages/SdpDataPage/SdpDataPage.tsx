@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { OBSERVATION, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { OBSERVATION } from '../../utils/constants';
+import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
@@ -14,7 +15,7 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import { PATH } from '../../utils/constants';
 
 const PAGE = 7;
-const DATAGRID_HEIGHT = 450;
+const DATA_GRID_HEIGHT = 450;
 const LABEL_WIDTH = 6;
 
 export default function SdpDataPage() {
@@ -46,9 +47,7 @@ export default function SdpDataPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().dataProducts?.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateSDPPage(getProposal()));
   }, [validateToggle]);
 
   const getODPString = inArr => {
@@ -188,7 +187,7 @@ export default function SdpDataPage() {
             <DataGrid
               rows={getRows()}
               columns={extendedColumnsObservations}
-              height={DATAGRID_HEIGHT}
+              height={DATA_GRID_HEIGHT}
               onRowClick={clickRow}
               testId="observationDetails"
             />

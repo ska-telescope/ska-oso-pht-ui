@@ -7,7 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
@@ -60,9 +60,7 @@ export default function TeamPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().team?.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateTeamPage(getProposal()));
   }, [validateToggle]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
