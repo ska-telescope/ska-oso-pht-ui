@@ -19,11 +19,11 @@ const MockProposalBackend: ProposalBackend = {
     title: 'The Milky Way View',
     proposal_type: {
       main_type: 'standard_proposal',
-      sub_type: ['coordinated_proposal']
+      sub_type: ['coordinated_proposal', 'joint_proposal']
     },
     abstract:
       'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
-    science_category: 'Science Category',
+    science_category: 'Extra Galactic continuum',
     targets: [
       {
         target_id: 'M28',

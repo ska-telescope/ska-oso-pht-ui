@@ -369,11 +369,14 @@
     "under review": "Under Review"
   },
   "proposalType": {
-    "label": "Proposal Types",
+    "label": "Proposal Type",
     "help1": "Below are the available Proposal Types.",
     "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
     "help3": "Proposal sub-types are optional",
     "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
+  },
+  "subProposalType": {
+    "label": "Proposal Subtype"
   },
   "members": {
     "label": "Team Members",

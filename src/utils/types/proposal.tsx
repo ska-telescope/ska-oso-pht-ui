@@ -49,7 +49,7 @@ export type Proposal = {
   cycle: string;
   proposalType: number;
   proposalSubType?: number[];
-  category: string;
+  category: number;
   team?: TeamMember[];
   pi?: string;
   abstract?: string;

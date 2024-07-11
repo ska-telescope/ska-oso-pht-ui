@@ -75,6 +75,18 @@ export default function ProposalDisplay({
     return `${proposalName}`;
   };
 
+  const proposalSubType = () => {
+    const proposalType = getProposal().proposalType;
+    const subTypesTitles = [];
+    for (let subType of getProposal().proposalSubType) {
+      const proposalSubTypeTitle = Projects[proposalType - 1].subProjects.find(item => item.id === subType).title;
+      subTypesTitles.push(proposalSubTypeTitle);
+    }
+    console.log('subTypesTitles', subTypesTitles);
+    return subTypesTitles;
+  };
+
+  // Proposal Science Category
   const category = () => {
     const proposalType = getProposal().proposalType;
     const proposalName =
@@ -147,6 +159,23 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{proposalType()}</Typography>
+        </Grid>
+        <Grid item xs={LABEL_WIDTH}>
+          <Typography variant={LABEL_STYLE}>{t('subProposalType.label')}</Typography>
+        </Grid>
+        <Grid item xs={CONTENT_WIDTH}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="left"
+              >
+                {proposalSubType().map((rec: string, index: number) => (
+                  <Typography variant={CONTENT_STYLE} key={index} mr={2}>
+                      {rec}
+                  </Typography>
+                ))}
+              </Grid>
         </Grid>
       </Grid>
     </Grid>

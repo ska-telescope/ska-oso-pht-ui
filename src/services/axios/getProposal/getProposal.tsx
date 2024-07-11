@@ -11,7 +11,8 @@ import {
   Projects,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
-  USE_LOCAL_DATA
+  USE_LOCAL_DATA,
+  GENERAL
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -163,6 +164,11 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
 
+const getScienceCategory = (scienceCat: string) => {
+  const cat = GENERAL.ScienceCategory.find(cat => cat.label.toLowerCase() === scienceCat.toLowerCase()).value;
+  return cat ? cat : 1;
+}
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -185,7 +191,8 @@ function mapping(inRec: ProposalBackend): Proposal {
     team: getTeamMembers(inRec.info.investigators),
     pi: 'PI-Ref', // TODO
     abstract: inRec.info.abstract,
-    category: inRec.info.science_category,
+    category:  getScienceCategory(inRec.info.science_category),
+      // inRec.info.science_category,
     // subCategory: [1], // TODO // [getSubCategory()],
     subCategory: [getSubCategory()],
     sciencePDF: null, // TODO: map to DocumentBackend?
