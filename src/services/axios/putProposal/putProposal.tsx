@@ -103,7 +103,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           principal_investigator: DEFAULT_PI.pi
         }
       ],
-      observation_sets: [],
+      observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
       data_product_sdps: [],
       data_product_src_nets: [],
       results: []
