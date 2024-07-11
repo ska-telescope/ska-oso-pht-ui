@@ -41,10 +41,6 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
-  React.useEffect(() => {
-    console.log('TAS', data);
-  }, [data]);
-
   function HeaderLine(str: string, bold: boolean) {
     return (
       <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>

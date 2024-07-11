@@ -215,7 +215,7 @@
   "imageSize": {
     "label": "Image Size",
     "help": "Image Size",
-    "error": "Value must be greater that zero"
+    "error": "Value must be greater than zero"
   },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",
