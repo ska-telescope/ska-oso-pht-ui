@@ -42,7 +42,7 @@ const getCategory = (cat: String) => {
 };
 */
 
-const getSubCategory = () => {
+const getScienceSubCategory = () => { // TODO change this if/when user can choose a science subcategory
   return 1;
 };
 
@@ -172,9 +172,9 @@ const getScienceCategory = (scienceCat: string) => {
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
-  const convertedProposal = {
-    id: inRec.prsl_id, // TODO
-    title: inRec.info.title, // TODO
+  const convertedProposal: Proposal = {
+    id: inRec.prsl_id,
+    title: inRec.info.title,
     proposalType: Projects.find(
       p =>
         p.title.toLowerCase() ===
@@ -191,10 +191,8 @@ function mapping(inRec: ProposalBackend): Proposal {
     team: getTeamMembers(inRec.info.investigators),
     pi: 'PI-Ref', // TODO
     abstract: inRec.info.abstract,
-    scienceCategory:  getScienceCategory(inRec.info.science_category),
-      // inRec.info.science_category,
-    // subCategory: [1], // TODO // [getSubCategory()],
-    subCategory: [getSubCategory()],
+    scienceCategory: getScienceCategory(inRec.info.science_category),
+    scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: null, // TODO: map to DocumentBackend?
     scienceLoadStatus: 0, //TODO
     targetOption: 1, // TODO

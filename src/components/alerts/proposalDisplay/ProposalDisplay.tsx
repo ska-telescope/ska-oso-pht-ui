@@ -85,30 +85,10 @@ export default function ProposalDisplay({
     return subTypesTitles;
   };
 
-  // Proposal Science Category
   const scienceCategory = () => {
-    /*
-    const proposalType = getProposal().proposalType;
-    const proposalName =
-      !proposalType || proposalType < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceCategory.${proposalType}`);
-    const subCategory = getProposal().proposalSubType;
-    const subCategoryName =
-      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceSubCategory.${subCategory}`);
-    return `${proposalName} / ${subCategoryName}`;
-    */
-
-    // const cat = GENERAL.ScienceCategory.find(cat => cat.label.toLowerCase() === scienceCat.toLowerCase()).value;
-
-    /*
-    const scienceCategory = GENERAL.ScienceCategory.find(cat => cat.value === getProposal().scienceCategory).label;
-    return scienceCategory ? scienceCategory : null;
-    */
-   return getProposal().scienceCategory ? t(`scienceCategory.${getProposal().scienceCategory}`) : t(`scienceCategory.notSpecified`);
-   // TODO add science sub category
+   const scienceCategory = getProposal().scienceCategory ? t(`scienceCategory.${getProposal().scienceCategory}`) : t(`scienceCategory.notSpecified`);
+   const scienceSubCategory = getProposal().scienceSubCategory[0] ?  t(`scienceSubCategory.${getProposal().scienceSubCategory[0]}`) : t(`scienceSubCategory.${1}`);
+   return `${scienceCategory} / ${scienceSubCategory}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
