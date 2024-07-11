@@ -41,11 +41,9 @@ const getCategory = (cat: String) => {
 };
 */
 
-/*
 const getSubCategory = () => {
   return 1;
 };
-*/
 
 /*
 const getTargets = (inValue: TargetBackend[]) => {
@@ -167,6 +165,7 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
 
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
+  console.log('inRec getproposal', inRec);
   const convertedProposal = {
     id: inRec.prsl_id, // TODO
     title: inRec.info.title, // TODO
@@ -182,17 +181,18 @@ function mapping(inRec: ProposalBackend): Proposal {
     createdOn: inRec.metadata.created_on,
     createdBy: inRec.metadata.created_by,
     version: inRec.metadata.version,
-    cycle: '', // TODO
+    cycle: inRec.cycle,
     team: getTeamMembers(inRec.info.investigators),
     pi: 'PI-Ref', // TODO
-    abstract: inRec.info.abstract, // TODO
+    abstract: inRec.info.abstract,
     category: inRec.info.science_category,
-    subCategory: [1], // TODO // [getSubCategory()],
+    // subCategory: [1], // TODO // [getSubCategory()],
+    subCategory: [getSubCategory()],
     sciencePDF: null, // TODO: map to DocumentBackend?
     scienceLoadStatus: 0, //TODO
     targetOption: 1, // TODO
     targets: [], // TODO getTargets(inRec.info.targets),
-    observations: [], // TODO // getObservations(inRec.info.observation_sets),
+    observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
     technicalPDF: null, // TODO: map to DocumentBackend?
@@ -200,6 +200,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
+  console.log('convertedProposal getproposal', convertedProposal);
   return convertedProposal;
 }
 

@@ -112,6 +112,9 @@ const MockProposalBackend: ProposalBackend = {
         observation_set_id: 'mid-001',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: 15,
+        // TODO: use this once latest PDM changes merged
+        /*
         elevation: {
           default: 15,
           description: 'Elevation from the horizon to be used',
@@ -120,6 +123,7 @@ const MockProposalBackend: ProposalBackend = {
           title: 'Elevation',
           type: 'integer'
         },
+        */
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -140,7 +144,8 @@ const MockProposalBackend: ProposalBackend = {
             unit: 'm / s'
           },
           supplied: {
-            type: 'integration_time',
+            // type: 'integration_time', // TODO use this one latest PDM changes merged
+            type: 'integration',
             value: 0.0,
             unit: 'm / s',
             quantity: {
@@ -158,6 +163,9 @@ const MockProposalBackend: ProposalBackend = {
         observation_set_id: 'mid-002',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: 15,
+        // TODO: use this once latest PDM changes merged
+        /*
         elevation: {
           default: 15,
           description: 'Elevation from the horizon to be used',
@@ -166,6 +174,7 @@ const MockProposalBackend: ProposalBackend = {
           title: 'Elevation',
           type: 'integer'
         },
+        */
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -221,7 +230,8 @@ const MockProposalBackend: ProposalBackend = {
             unit: 'm / s'
           },
           supplied: {
-            type: 'integration_time',
+            // type: 'integration_time', // TODO use this one latest PDM changes merged
+            type: 'integration',
             value: 0.0,
             unit: 'm / s',
             quantity: {
