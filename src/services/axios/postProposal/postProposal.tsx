@@ -85,7 +85,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
 
   try {
     const URL_PATH = `/proposals`;
-    // const convertedProposal = mappingPostProposal(proposal, status); // TODO revert back to user proposal before merging
+    const convertedProposal = mappingPostProposal(proposal, status); // TODO revert back to user proposal before merging
     const proposalBackendFormat = MockProposalBackend;
 
     const result = await axios.post(

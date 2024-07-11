@@ -1,6 +1,6 @@
 import { ValueUnitPair } from './valueUnitPair';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from './arrayDetails';
-import { ElevationBackend } from './Elevation';
+// import { ElevationBackend } from './Elevation';
 
 export type ObservationSetBackend = {
   observation_set_id: string;

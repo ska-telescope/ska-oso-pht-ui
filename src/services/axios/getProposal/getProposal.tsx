@@ -42,7 +42,8 @@ const getCategory = (cat: String) => {
 };
 */
 
-const getScienceSubCategory = () => { // TODO change this if/when user can choose a science subcategory
+const getScienceSubCategory = () => {
+  // TODO change this if/when user can choose a science subcategory
   return 1;
 };
 
@@ -165,9 +166,11 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
 };
 
 const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory.find(cat => cat.label.toLowerCase() === scienceCat.toLowerCase()).value;
+  const cat = GENERAL.ScienceCategory.find(
+    cat => cat.label.toLowerCase() === scienceCat.toLowerCase()
+  ).value;
   return cat ? cat : null;
-}
+};
 
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed

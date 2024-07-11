@@ -79,16 +79,22 @@ export default function ProposalDisplay({
     const proposalType = getProposal().proposalType;
     const subTypesTitles = [];
     for (let subType of getProposal().proposalSubType) {
-      const proposalSubTypeTitle = Projects[proposalType - 1].subProjects.find(item => item.id === subType).title;
+      const proposalSubTypeTitle = Projects[proposalType - 1].subProjects.find(
+        item => item.id === subType
+      ).title;
       subTypesTitles.push(proposalSubTypeTitle);
     }
     return subTypesTitles;
   };
 
   const scienceCategory = () => {
-   const scienceCategory = getProposal().scienceCategory ? t(`scienceCategory.${getProposal().scienceCategory}`) : t(`scienceCategory.notSpecified`);
-   const scienceSubCategory = getProposal().scienceSubCategory[0] ?  t(`scienceSubCategory.${getProposal().scienceSubCategory[0]}`) : t(`scienceSubCategory.${1}`);
-   return `${scienceCategory} / ${scienceSubCategory}`;
+    const scienceCategory = getProposal().scienceCategory
+      ? t(`scienceCategory.${getProposal().scienceCategory}`)
+      : t(`scienceCategory.notSpecified`);
+    const scienceSubCategory = getProposal().scienceSubCategory[0]
+      ? t(`scienceSubCategory.${getProposal().scienceSubCategory[0]}`)
+      : t(`scienceSubCategory.${1}`);
+    return `${scienceCategory} / ${scienceSubCategory}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
@@ -154,18 +160,13 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('subProposalType.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="left"
-              >
-                {proposalSubType().map((rec: string, index: number) => (
-                  <Typography variant={CONTENT_STYLE} key={index} mr={2}>
-                      {rec}
-                  </Typography>
-                ))}
-              </Grid>
+          <Grid container direction="row" justifyContent="flex-start" alignItems="left">
+            {proposalSubType().map((rec: string, index: number) => (
+              <Typography variant={CONTENT_STYLE} key={index} mr={2}>
+                {rec}
+              </Typography>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
