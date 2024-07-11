@@ -7,55 +7,56 @@ Future
 
 ---
 
-1. STAR-537 : Added the ability to Edit a target
-2. STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-3. STAR-508 : Observation page: 
-   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-4. STAR-540 : Proposal mapping:
+* STAR-537 : Added the ability to Edit a target
+* STAR-547 : Migrate page validations into separate utility 
+* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
+* Observation page: 
+   - STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-540 : Proposal mapping:
    - Update getProposalList mapping to new backend proposal format
    - Move front-end to backend mapping into putProposal and postProposal
    - Update postProposal mapping
    - Update proposal Backend types and Mocks
-5. STAR-529: Implment validation from OSD with validate endpoint
+* STAR-529: Implement validation from OSD with validate endpoint
 
 0.3.1
 
 ---
 
-1. Changelog implemented
-2. Release version docs available
+* Changelog implemented
+* Release version docs available
 
 0.3.0
 
 ---
 
-1. Landing page:
+* Landing page:
    - Refined the action icons
    - Added proposal category to table
 
-2. Title Page:
+* Title Page:
    - Proposal sub-types is now optionally and users can choose multiple sub-types,
    - Users can use latex syntax and preview.
 
-3. Science and Technical justification pages:
+* Science and Technical justification pages:
    - Users can upload and download pdf
 
-4. Target page:
+* Target page:
    - Users can select between galactic and equatorial coordinates systems and this now affects the table and target input
    - Resolve button now updates the velocity and redshift
 
-5. Observation page:
+* Observation page:
    - Observation set is now linked to the sensitivity calculator when linked to target(s)
    - Users can add observation sets to group
    - Syntax validation added to more fields
 
-6. SDP data page:
+* SDP data page:
    - User can add data products for a given observation set
    - SDP data page now linked with observation page to pre-populate observation sets
 
-7. User Guide:
+* User Guide:
    - Updates based on changes
    - Field guided help ongoing
 
-8. SRC Net page:
+* SRC Net page:
    - Automatically valid as nothing is there
