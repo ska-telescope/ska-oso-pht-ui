@@ -129,11 +129,51 @@ export const TELESCOPES = [
 ];
 
 export const BANDWIDTH_TELESCOPE = [
-  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0, isBand5: false },
-  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1, isBand5: false }, // Band 1
-  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2, isBand5: false }, // Band 2
-  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3, isBand5: true }, // Band 5a
-  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4, isBand5: true } // Band 5b
+  {
+    label: 'Low Band (50 - 350 MHz)',
+    telescope: 2,
+    value: 0,
+    isBand5: false,
+    lower: 50,
+    upper: 350,
+    units: 'MHz'
+  },
+  {
+    label: 'Band 1 (0.35 - 1.05 GHz)',
+    telescope: 1,
+    value: 1,
+    isBand5: false,
+    lower: 0.35,
+    upper: 1.05,
+    units: 'GHz'
+  }, // Band 1
+  {
+    label: 'Band 2 (0.95 - 1.76 GHz)',
+    telescope: 1,
+    value: 2,
+    isBand5: false,
+    lower: 0.95,
+    upper: 1.76,
+    units: 'GHz'
+  }, // Band 2
+  {
+    label: 'Band 5a (4.6 - 8.5 GHz)',
+    telescope: 1,
+    value: 3,
+    isBand5: true,
+    lower: 4.6,
+    upper: 8.5,
+    units: 'GHz'
+  }, // Band 5a
+  {
+    label: 'Band 5b (8.3 - 15.4 GHz)',
+    telescope: 1,
+    value: 4,
+    isBand5: true,
+    lower: 8.3,
+    upper: 15.4,
+    units: 'GHz'
+  } // Band 5b
 ];
 
 export const TELESCOPE_LOW_NUM = 2;
