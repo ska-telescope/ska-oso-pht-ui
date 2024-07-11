@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, DEFAULT_PI, GENERAL, Projects, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  DEFAULT_PI,
+  GENERAL,
+  Projects,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 /*
