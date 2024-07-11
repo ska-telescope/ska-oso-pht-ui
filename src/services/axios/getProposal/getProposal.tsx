@@ -166,7 +166,7 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
 
 const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory.find(cat => cat.label.toLowerCase() === scienceCat.toLowerCase()).value;
-  return cat ? cat : 1;
+  return cat ? cat : null;
 }
 
 function mapping(inRec: ProposalBackend): Proposal {
@@ -191,7 +191,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     team: getTeamMembers(inRec.info.investigators),
     pi: 'PI-Ref', // TODO
     abstract: inRec.info.abstract,
-    category:  getScienceCategory(inRec.info.science_category),
+    scienceCategory:  getScienceCategory(inRec.info.science_category),
       // inRec.info.science_category,
     // subCategory: [1], // TODO // [getSubCategory()],
     subCategory: [getSubCategory()],

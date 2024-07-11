@@ -82,12 +82,12 @@ export default function ProposalDisplay({
       const proposalSubTypeTitle = Projects[proposalType - 1].subProjects.find(item => item.id === subType).title;
       subTypesTitles.push(proposalSubTypeTitle);
     }
-    console.log('subTypesTitles', subTypesTitles);
     return subTypesTitles;
   };
 
   // Proposal Science Category
-  const category = () => {
+  const scienceCategory = () => {
+    /*
     const proposalType = getProposal().proposalType;
     const proposalName =
       !proposalType || proposalType < 1
@@ -99,6 +99,16 @@ export default function ProposalDisplay({
         ? t('displayProposal.noneSelected')
         : t(`scienceSubCategory.${subCategory}`);
     return `${proposalName} / ${subCategoryName}`;
+    */
+
+    // const cat = GENERAL.ScienceCategory.find(cat => cat.label.toLowerCase() === scienceCat.toLowerCase()).value;
+
+    /*
+    const scienceCategory = GENERAL.ScienceCategory.find(cat => cat.value === getProposal().scienceCategory).label;
+    return scienceCategory ? scienceCategory : null;
+    */
+   return getProposal().scienceCategory ? t(`scienceCategory.${getProposal().scienceCategory}`) : t(`scienceCategory.notSpecified`);
+   // TODO add science sub category
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
@@ -227,10 +237,10 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('category.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('scienceCategory.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{category()}</Typography>
+          <Typography variant={CONTENT_STYLE}>{scienceCategory()}</Typography>
         </Grid>
       </Grid>
     </Grid>

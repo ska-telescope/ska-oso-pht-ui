@@ -108,9 +108,6 @@
   "cycle": {
     "label": "Cycle"
   },
-  "category": {
-    "label": "Category"
-  },
   "dataProduct": {
     "button": "Add Data Product"
   },
@@ -434,7 +431,8 @@
     "13": "Transients",
     "14": "VLBI",
     "label": "Science Category",
-    "help": "Select a category that best describes the science of your proposal."
+    "help": "Select a category that best describes the science of your proposal.",
+    "notSpecified": "Not specified"
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
