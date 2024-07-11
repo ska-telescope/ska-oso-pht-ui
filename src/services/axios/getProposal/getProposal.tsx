@@ -172,6 +172,10 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
+const getPI = (investigators: InvestigatorBackend[]) => {
+  return investigators.find(item => item.principal_investigator === true).investigator_id;
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -192,7 +196,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     version: inRec.metadata.version,
     cycle: inRec.cycle,
     team: getTeamMembers(inRec.info.investigators),
-    pi: 'PI-Ref', // TODO
+    pi: getPI(inRec.info.investigators),
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
