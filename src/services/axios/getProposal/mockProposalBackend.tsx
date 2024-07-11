@@ -47,7 +47,7 @@ const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: -12.345,
-            unit: 'm / s'
+            unit: 'm / s' // TODO change to 'm/s' and add a conversion function
           },
           definition: 'OPTICAL',
           reference_frame: 'LSRK',
