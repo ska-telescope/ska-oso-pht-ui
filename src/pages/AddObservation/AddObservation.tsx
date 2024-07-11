@@ -146,7 +146,7 @@ export default function AddObservation() {
     const PRECISION = 2;
     const lower = BANDWIDTH_TELESCOPE[observingBand].lower;
     const upper = BANDWIDTH_TELESCOPE[observingBand].upper;
-    const offset = ((upper - lower) / 2) + lower;
+    const offset = (upper - lower) / 2 + lower;
     const trimmed = Number(offset.toFixed(PRECISION));
     setContinuumBandwidth(trimmed);
   }, [observingBand]);
