@@ -14,10 +14,12 @@ export type DataProductSRCNetBackend = {
 type DataProduct = {
   id: number;
   observatoryDataProduct: boolean[];
-  observations: string;
-  imageSize: string;
-  pixelSize: string;
-  weighting: string;
+  observationId: string;
+  imageSizeValue: number;
+  imageSizeUnits: string;
+  pixelSizeValue: number;
+  pixelSizeUnits: string;
+  weighting: number;
 };
 
 export default DataProduct;
