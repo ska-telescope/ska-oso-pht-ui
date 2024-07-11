@@ -5,13 +5,15 @@ import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mu
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
-  LABEL_POSITION,
   NumberEntry,
+  LABEL_POSITION,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
+  LAB_IS_BOLD,
+  LAB_POSITION,
   NAV,
   OBSERVATION,
   OBSERVATION_TYPE,
@@ -24,6 +26,7 @@ import Proposal from '../../utils/types/proposal';
 import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
+import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -347,8 +350,8 @@ export default function AddObservation() {
             value={groupObservation}
             setValue={setGroupObservation}
             label={t('groupObservations.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('groupObservations.help'))}
             disabled={groupObservationId}
@@ -385,8 +388,8 @@ export default function AddObservation() {
             value={subarrayConfigBand5}
             setValue={setSubarrayConfigBand5}
             label={t('subArrayConfiguration.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('subArrayConfiguration.help'))}
             required
@@ -420,8 +423,8 @@ export default function AddObservation() {
             value={subarrayConfig}
             setValue={setSubarrayConfig}
             label={t('subArrayConfiguration.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('subArrayConfiguration.help'))}
             required
@@ -440,8 +443,8 @@ export default function AddObservation() {
           value={observationType}
           setValue={setObservationType}
           label={t('observationType.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('observationType.help'))}
           required
@@ -462,8 +465,8 @@ export default function AddObservation() {
           value={observationType}
           setValue={setObservationType}
           label={t('observationType.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('observationType.help'))}
           required
@@ -489,8 +492,8 @@ export default function AddObservation() {
             value={observingBand}
             setValue={setObservingBand}
             label={t('observingBand.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('observingBand.help'))}
             required
@@ -514,8 +517,8 @@ export default function AddObservation() {
             testId="arrayConfiguration"
             value={BANDWIDTH_TELESCOPE[observingBand].telescope}
             label={t('arrayConfiguration.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('arrayConfiguration.help'))}
           />
@@ -523,25 +526,6 @@ export default function AddObservation() {
       </Grid>
     );
   };
-
-  const imageWeightingField = () => (
-    <Grid pt={1} spacing={0} container direction="row">
-      <Grid item xs={FIELD_WIDTH_OPT1}>
-        <DropDown
-          options={OBSERVATION.ImageWeighting}
-          testId="imageWeighting"
-          value={imageWeighting}
-          setValue={setImageWeighting}
-          label={t('imageWeighting.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
-          labelWidth={LABEL_WIDTH_OPT1}
-          onFocus={() => helpComponent(t('imageWeighting.help'))}
-          required
-        />
-      </Grid>
-    </Grid>
-  );
 
   const taperingField = () => (
     <Grid pt={1} spacing={0} container direction="row">
@@ -552,8 +536,8 @@ export default function AddObservation() {
           value={tapering}
           setValue={setTapering}
           label={t('tapering.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_OPT1}
           onFocus={() => helpComponent(t('tapering.help'))}
           required
@@ -577,8 +561,8 @@ export default function AddObservation() {
             value={bandwidth}
             setValue={setBandwidth}
             label={t('bandWidth.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('bandWidth.help'))}
             required
@@ -606,8 +590,8 @@ export default function AddObservation() {
             value={robust}
             setValue={setRobust}
             label={t('robust.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('robust.help'))}
             required
@@ -637,8 +621,8 @@ export default function AddObservation() {
             testId="spectralResolution"
             value={setSpectralResolutionDisplayValue(spectralResolution)}
             label={t('spectralResolution.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('spectralResolution.help'))}
             required
@@ -665,8 +649,8 @@ export default function AddObservation() {
             value={String(spectralAveraging)}
             setValue={setSpectralAveraging}
             label={t('spectralAveraging.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('spectralAveraging.help'))}
             required
@@ -689,8 +673,8 @@ export default function AddObservation() {
             value={spectralAveraging}
             setValue={setSpectralAveraging}
             label={t('spectralAveraging.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             onFocus={() => helpComponent(t('spectralAveraging.help'))}
             required
@@ -765,7 +749,7 @@ export default function AddObservation() {
           <TextEntry
             value=""
             label=""
-            labelBold
+            labelBold={LAB_IS_BOLD}
             labelPosition={LABEL_POSITION.BOTTOM}
             onFocus={() => helpComponent(t('continuumUnits.help'))}
             testId="continuumUnits"
@@ -836,8 +820,8 @@ export default function AddObservation() {
           <NumberEntry
             errorText={errorMessage()}
             label={t('elevation.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="elevation"
             value={elevation}
@@ -865,8 +849,8 @@ export default function AddObservation() {
           <NumberEntry
             errorText={errorMessage()}
             label={t('weather.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="weather"
             value={weather}
@@ -906,8 +890,8 @@ export default function AddObservation() {
         <Grid item xs={FIELD_WIDTH_OPT1}>
           <NumberEntry
             label={t('centralFrequency.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="frequency"
             value={frequency}
@@ -940,8 +924,8 @@ export default function AddObservation() {
             <NumberEntry
               errorText={errorMessage()}
               label={t('subBands.label')}
-              labelBold
-              labelPosition={LABEL_POSITION.START}
+              labelBold={LAB_IS_BOLD}
+              labelPosition={LAB_POSITION}
               labelWidth={LABEL_WIDTH_OPT1}
               testId="subBands"
               value={subBands}
@@ -976,8 +960,8 @@ export default function AddObservation() {
     return (
       <NumberEntry
         label={t('continuumBandWidth.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH_STD}
         suffix={continuumUnitsField()}
         testId="continuumBandwidth"
@@ -1071,8 +1055,8 @@ export default function AddObservation() {
     return (
       <TextEntry
         label={t('effectiveResolution.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH_STD}
         testId="effective"
         value={effective}
@@ -1119,8 +1103,8 @@ export default function AddObservation() {
           <NumberEntry
             disabled={subarrayConfig !== 20}
             label={t('numOf15mAntennas.short')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="numOf15mAntennas"
             value={numOf15mAntennas}
@@ -1149,8 +1133,8 @@ export default function AddObservation() {
           <NumberEntry
             disabled={subarrayConfig !== 20}
             label={t('numOf13mAntennas.short')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="numOf13mAntennas"
             value={numOf13mAntennas}
@@ -1179,8 +1163,8 @@ export default function AddObservation() {
           <NumberEntry
             disabled={subarrayConfig !== 20}
             label={t('numOfStations.label')}
-            labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH_OPT1}
             testId="numOfStations"
             value={numOfStations}
@@ -1198,8 +1182,8 @@ export default function AddObservation() {
       <Box sx={{ height: LINE_OFFSET * numRows }}>
         <TextEntry
           label={t('observationDetails.label')}
-          labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_STD}
           testId="observationDetails"
           value={details}
@@ -1388,7 +1372,12 @@ export default function AddObservation() {
                     {SubBandsField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {imageWeightingField()}
+                    <ImageWeightingField
+                      labelWidth={LABEL_WIDTH_STD}
+                      onFocus={() => helpComponent(t('imageWeighting.help'))}
+                      setValue={setImageWeighting}
+                      value={imageWeighting}
+                    />
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {imageWeighting === 2 && robustField()}

@@ -21,7 +21,6 @@ import {
   STATUS_OK,
   STATUS_PARTIAL
 } from '../../utils/constants';
-import { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -159,21 +158,24 @@ export default function ObservationPage() {
     }
   };
 
-  const setSensCalcForTargetGrid = (target: Target, sensCalc: any) => {
-    const tmpTO = [{ targetId: target.id, observationId: currObs.id, sensCalc: sensCalc }];
+  const setSensCalcForTargetGrid = (observationId: string, target: Target, sensCalc: any) => {
+    const tmpTO = [{ targetId: target.id, observationId: observationId, sensCalc: sensCalc }];
     elementsS.forEach(rec => {
-      if (rec => rec.targetId !== target.id || rec.observationId !== currObs.id) {
+      if (
+        (rec: { targetId: number; observationId: string }) =>
+          rec.targetId !== target.id || rec.observationId !== observationId
+      ) {
         tmpTO.push(rec);
       }
     });
     setElementsS(tmpTO);
-    if (sensCalc === SENSCALC_LOADING) {
+    if (sensCalc?.status === STATUS_PARTIAL) {
       getSensCalcData(target);
     }
   };
 
   const setSensCalc = (results: any, target: Target, observationId: string) => {
-    setSensCalcForTargetGrid(target, results);
+    setSensCalcForTargetGrid(observationId, target, results);
     updateTargetObservationStorage(target, observationId, results);
   };
 
@@ -226,7 +228,7 @@ export default function ObservationPage() {
       sensCalc: ss
     };
     addTargetObservationStorage(rec);
-    setSensCalcForTargetGrid(target, ss);
+    setSensCalcForTargetGrid(currObs.id, target, ss);
   };
 
   function filterRecords(id: number) {

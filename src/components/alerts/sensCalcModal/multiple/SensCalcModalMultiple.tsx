@@ -41,6 +41,10 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
+  React.useEffect(() => {
+    console.log('TAS', data);
+  }, [data]);
+
   function HeaderLine(str: string, bold: boolean) {
     return (
       <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>
@@ -76,37 +80,49 @@ export default function SensCalcModalMultiple({
         field: 'field1',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label1, 'units1')
+        renderHeader: () => headerDisplay(label1, 'units1'),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[0].value : ''
       },
       {
         field: 'field2',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label2, 'units2')
+        renderHeader: () => headerDisplay(label2, 'units2'),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[1].value : ''
       },
       {
         field: 'field3',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label3, 'units3')
+        renderHeader: () => headerDisplay(label3, 'units3'),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[2].value : ''
       },
       {
         field: 'field4',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label4, 'units4')
+        renderHeader: () => headerDisplay(label4, 'units4'),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[3].value : ''
       },
       {
         field: 'field5',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label5, 'units5')
+        renderHeader: () => headerDisplay(label5, 'units5'),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[4].value : ''
       },
       {
         field: 'field6',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('spectralSensitivityWeighted', 'units6'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[0].value : '',
         optional: params => params.value !== null
       },
       {
@@ -114,6 +130,8 @@ export default function SensCalcModalMultiple({
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('spectralConfusionNoise', 'units7'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[1].value : '',
         optional: params => params.value !== null
       },
       {
@@ -121,6 +139,8 @@ export default function SensCalcModalMultiple({
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('spectralTotalSensitivity', 'units8'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[2].value : '',
         optional: params => params.value !== null
       },
       {
@@ -128,6 +148,8 @@ export default function SensCalcModalMultiple({
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('spectralSynthBeamSize', 'units9'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[3].value : '',
         optional: params => params.value !== null
       },
       {
@@ -135,6 +157,8 @@ export default function SensCalcModalMultiple({
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity', 'units10'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[4].value : '',
         optional: params => params.value !== null
       },
       {
@@ -142,6 +166,8 @@ export default function SensCalcModalMultiple({
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
         renderHeader: () => headerDisplay('integrationTime', 'units11'),
+        renderCell: (e: { row: { section3: { value: any }[] } }) =>
+          e.row.section3 ? e.row.section3[0].value : '',
         optional: params => params.value !== null
       },
       {
