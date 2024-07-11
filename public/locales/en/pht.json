@@ -51,13 +51,13 @@
   "arrayConfiguration": {
     "label": "Array Configuration",
     "short": "Array",
-    "help": "Specify an array a configuration. Currently the SKA has two arrays - SKA-MID and SKA-LOW.",
+    "help": "Specify an array a configuration. Currently the SKA has two arrays - SKA-MID (350MHz - 154GHz) and SKA-LOW (50MHz – 350 MHz).",
     "0": "Not specified",
     "1": "MID",
     "2": "LOW"
   },
   "bandWidth": {
-    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option.",
+    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID). You can also specify a custom bandwidth by selecting the custom option.",
     "label": "Band Width"
   },
   "centralFrequency": {
@@ -92,7 +92,7 @@
     "confirm": "Clone this proposal"
   },
   "continuumBandWidth": {
-    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option.",
+    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID). You can also specify a custom bandwidth by selecting the custom option.",
     "label": "Continuum BandWidth",
     "range": {
       "error": "Value is outside of allowed range"
@@ -186,34 +186,34 @@
     },
     "technical": {
       "label": "Technical Justification",
-      "toolTip": "This is the download button of the file on the Science Page"
+      "toolTip": "This is the download button of the file on the Technical Page"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "firstName": {
     "label": "First Name",
-    "help": "Requires the first name of the principal investigator or co-investigator."
+    "help": "Requires the first name of the investigators."
   },
   "frequencyUnits": {
     "help": "FREQUENCY UNITS HELP"
   },
   "groupObservations": {
     "label": "Group",
-    "help": "Add observations to a group using the add button. These observations may need to happen about the same time.",
+    "help": "Add observations to a group using the add button.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
-    "toolTip": "Add a group so that the observation can be executed concurrently"
+    "toolTip": "Add observations to a group using the add button."
   },
   "id": {
     "label": "Id"
   },
   "imageSize": {
     "label": "Image Size",
-    "help": "Specify the image size based on the selected data product(s)."
+    "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees."
   },
   "imageWeighting": {
-    "help": "IMAGE WEIGHTING HLP",
+    "help": "Imaging weighting.",
     "label": "Image Weighting"
   },
   "importFromFile": {
@@ -223,16 +223,16 @@
     "label": "Invite Team Member"
   },
   "latex": {
-    "toolTip": "Preview the content using LeTeX format",
+    "toolTip": "Preview.",
     "previewTitle": "LaTeX Preview"
   },
   "lastName": {
     "label": "Last Name",
-    "help": "Last name or family name of the principal investigator or co-investigator."
+    "help": "Last name or family name of the investigator."
   },
   "listOfTargets": {
     "label": "List of Targets",
-    "toolTip": "A list of target will be entered and/or imported from file"
+    "toolTip": "A list of target will be entered and/or imported from file."
   },
   "name": {
     "label": "Name",
@@ -271,7 +271,7 @@
     }
   },
   "observingBand": {
-    "help": "Observing Band HELP",
+    "help": "Select the observing band, noting that the array will be automaticsally populated based on band.",
     "label": "Observing Band"
   },
   "observations": {
