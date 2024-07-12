@@ -170,25 +170,25 @@ function verifyFrequencyUnits() {
 }
 
 function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 0.7);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 0.435);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 
 function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 6.55);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 3.9);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 
 function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 11.85);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 5);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 
 function verifyContinuumBandwidthContinuumLowBand() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 200);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 300);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }

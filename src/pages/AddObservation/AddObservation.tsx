@@ -146,20 +146,18 @@ export default function AddObservation() {
   }, []);
 
   React.useEffect(() => {
-    const PRECISION = 2;
-    const lower = BANDWIDTH_TELESCOPE[observingBand].lower;
-    const upper = BANDWIDTH_TELESCOPE[observingBand].upper;
-    const offset = (upper - lower) / 2 + lower;
-    const trimmed = Number(offset.toFixed(PRECISION));
-    setContinuumBandwidth(trimmed);
-  }, [observingBand]);
-
-  React.useEffect(() => {
     let centralFrequency;
-
+    let continuumBandwidth;
     if (observingBand === 0) {
       // Band Low
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
+      if (observationType === 1) {
+        continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
+          e => e.lookup === subarrayConfig
+        );
+        const valueContinuumBandwidth = continuumBandwidth?.value;
+        setContinuumBandwidth(valueContinuumBandwidth);
+      }
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionObLow[0].value
@@ -172,6 +170,13 @@ export default function AddObservation() {
       centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
+      if (observationType === 1) {
+        continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(
+          e => e.lookup === subarrayConfig
+        );
+        const valueContinuumBandwidth = continuumBandwidth?.value;
+        setContinuumBandwidth(valueContinuumBandwidth);
+      }
       if (observationType === 1) {
         const spectralResolution = OBSERVATION['SpectralResolutionOb1'].find(
           e => e.lookup === valueCentralFrequency
@@ -189,6 +194,9 @@ export default function AddObservation() {
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
       if (observationType === 1) {
         const spectralResolution = OBSERVATION['SpectralResolutionOb2'].find(
           e => e.lookup === valueCentralFrequency
@@ -204,6 +212,11 @@ export default function AddObservation() {
     if (observingBand === 3) {
       // Band 5a
       setFrequency(OBSERVATION.CentralFrequencyOB5a[0].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5a.find(
+        e => e.lookup === subarrayConfigBand5
+      );
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionOb5a[0].value
@@ -214,6 +227,11 @@ export default function AddObservation() {
     if (observingBand === 4) {
       // Band 5b
       setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
+      continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
+        e => e.lookup === subarrayConfigBand5
+      );
+      const valueContinuumBandwidth = continuumBandwidth?.value;
+      setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
         observationType === 1
           ? OBSERVATION.SpectralResolutionOb5b[0].value
