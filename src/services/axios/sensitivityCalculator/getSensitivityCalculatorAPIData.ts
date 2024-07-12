@@ -41,7 +41,8 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      return await getSensitivityCalculatorAPIData(observation, target);
+      const result = await getSensitivityCalculatorAPIData(observation, target);
+      return result;
     } catch (e) {
       return { error: e };
     }
@@ -78,7 +79,11 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const results = await calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
-    const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
+    const results = Object.assign({}, SENSCALC_LOADING, {
+      id: target.id,
+      title: target.name,
+      status: STATUS_ERROR
+    });
     return results as SensCalcResult;
   }
 }

@@ -1,5 +1,5 @@
 import { env } from '../env';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -7,37 +7,7 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
-export const ENTRY_HEIGHT = 40;
-
-export const STATUS_OK = 0;
-export const STATUS_ERROR = 1;
-export const STATUS_PARTIAL = 3;
-export const STATUS_INITIAL = 5;
-
-export const TARGET_OPTION = {
-  LIST_OF_TARGETS: 1,
-  TARGET_MOSAIC: 2,
-  NO_SPECIFIC_TARGET: 3
-};
-
-export const STATUS = {
-  OK: STATUS_OK,
-  ERROR: STATUS_ERROR,
-  PARTIAL: STATUS_PARTIAL,
-  INITIAL: STATUS_INITIAL
-};
-
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
-export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
-
-export const RA_TYPE_EQUATORIAL = 0;
-export const RA_TYPE_GALACTIC = 1;
-
-export const LAST_PAGE = 9;
+/*****************************************/
 
 export const AXIOS_CONFIG = {
   headers: {
@@ -45,88 +15,6 @@ export const AXIOS_CONFIG = {
     'Content-Type': 'application/json'
   }
 };
-
-export const NAV = [
-  '/proposal/title',
-  '/proposal/team',
-  '/proposal/general',
-  '/proposal/science',
-  '/proposal/target',
-  '/proposal/observation',
-  '/proposal/technical',
-  '/proposal/data',
-  '/proposal/src'
-];
-
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
-
-export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Draft', value: 'draft' },
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Withdrawn', value: 'withdrawn' },
-  { label: 'Rejected', value: 'rejected' }
-];
-
-export const PROPOSAL_STATUS = {
-  DRAFT: 'draft',
-  SUBMITTED: 'submitted',
-  ACCEPTED: 'accepted',
-  WITHDRAWN: 'withdrawn',
-  REJECTED: 'rejected'
-};
-
-export const TEAM_STATUS_TYPE_OPTIONS = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  rejected: 'Rejected'
-};
-
-export const GENERAL = {
-  Cycle: 'SKA_5000_2023',
-  Abstract:
-    'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
-
-  ScienceCategory: [
-    { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
-    { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
-    {
-      label: 'Epoch of Re-ionization',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 3
-    },
-    {
-      label: 'Extra Galactic continuum',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 4
-    },
-    {
-      label: 'Extra Galactic Spectral line',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 5
-    },
-    { label: 'Gravitational Waves', subCategory: [{ label: 'Not specified', value: 1 }], value: 6 },
-    {
-      label: 'High Energy Cosmic Particles',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 7
-    },
-    { label: 'HI Galaxy science', subCategory: [{ label: 'Not specified', value: 1 }], value: 8 },
-    { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
-    { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
-    { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
-    { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
-    { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
-    { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
-  ]
-};
-
-export const DEFAULT_HELP = ['', ' ', ''];
-
-export const TELESCOPES = [
-  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
-  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
-];
 
 export const BANDWIDTH_TELESCOPE = [
   {
@@ -176,12 +64,199 @@ export const BANDWIDTH_TELESCOPE = [
   } // Band 5b
 ];
 
-export const TELESCOPE_LOW_NUM = 2;
+export const DATA_PRODUCT = {
+  observatoryDataProduct: [
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
+  ],
+  pipeline: [
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
+  ]
+};
+export const DEFAULT_HELP = ['', ' ', ''];
 
-export const TEL = ['', 'Mid', 'Low'];
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const ENTRY_HEIGHT = 40;
 
+export const GENERAL = {
+  Cycle: 'SKA_5000_2023',
+  Abstract:
+    'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
+
+  ScienceCategory: [
+    { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
+    { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
+    {
+      label: 'Epoch of Re-ionization',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 3
+    },
+    {
+      label: 'Extra Galactic continuum',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 4
+    },
+    {
+      label: 'Extra Galactic Spectral line',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 5
+    },
+    { label: 'Gravitational Waves', subCategory: [{ label: 'Not specified', value: 1 }], value: 6 },
+    {
+      label: 'High Energy Cosmic Particles',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: 7
+    },
+    { label: 'HI Galaxy science', subCategory: [{ label: 'Not specified', value: 1 }], value: 8 },
+    { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
+    { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
+    { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
+    { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
+    { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
+    { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+  ]
+};
+
+export const IMAGE_SIZE_UNITS = {
+  ARCSECS: 'arcseconds',
+  ARCMINS: 'arcmins',
+  DEGREES: 'degrees'
+};
+
+export const LAB_IS_BOLD = true;
+export const LAB_POSITION = LABEL_POSITION.START;
+export const LAST_PAGE = 9;
+
+export const NAV = [
+  '/proposal/title',
+  '/proposal/team',
+  '/proposal/general',
+  '/proposal/science',
+  '/proposal/target',
+  '/proposal/observation',
+  '/proposal/technical',
+  '/proposal/data',
+  '/proposal/src'
+];
+
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+export const Projects = [
+  {
+    id: 1,
+    title: 'Standard Proposal',
+    code: 'PI',
+    description: 'Standard Observing Proposal',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Key Science Project',
+    code: 'KSP',
+    description:
+      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Director's Discretionary Time Proposal",
+    code: 'DDT',
+    description:
+      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      }
+    ]
+  }
+];
+export const PROPOSAL_STATUS = {
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  ACCEPTED: 'accepted',
+  WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected'
+};
+
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
 export const OBS_TYPES = ['spectral', 'continuum'];
-
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
+export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 export const OBSERVATION = {
   array: [
     {
@@ -602,125 +677,47 @@ export const OBSERVATION = {
   ]
 };
 
+export const RA_TYPE_EQUATORIAL = 0;
+export const RA_TYPE_GALACTIC = 1;
+
+export const SEARCH_TYPE_OPTIONS = [
+  { label: 'Draft', value: 'draft' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Accepted', value: 'accepted' },
+  { label: 'Withdrawn', value: 'withdrawn' },
+  { label: 'Rejected', value: 'rejected' }
+];
+export const STATUS_OK = 0;
+export const STATUS_ERROR = 1;
+export const STATUS_PARTIAL = 3;
+export const STATUS_INITIAL = 5;
+export const STATUS = {
+  OK: STATUS_OK,
+  ERROR: STATUS_ERROR,
+  PARTIAL: STATUS_PARTIAL,
+  INITIAL: STATUS_INITIAL
+};
+
+export const TARGET_OPTION = {
+  LIST_OF_TARGETS: 1,
+  TARGET_MOSAIC: 2,
+  NO_SPECIFIC_TARGET: 3
+};
 export const TARGETS = {
   'No Target': null,
   'Create Mosaic': null
 };
-
-export const Projects = [
-  {
-    id: 1,
-    title: 'Standard Proposal',
-    code: 'PI',
-    description: 'Standard Observing Proposal',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Key Science Project',
-    code: 'KSP',
-    description:
-      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Director's Discretionary Time Proposal",
-    code: 'DDT',
-    description:
-      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      }
-    ]
-  }
-];
-
-export const DATA_PRODUCT = {
-  observatoryDataProduct: [
-    { label: 'Continuum Image', value: 1 },
-    { label: 'Spectral Line Image', value: 2 }
-  ],
-  pipeline: [
-    { label: 'Visibility receive', value: 1 },
-    { label: '‘Real-time’ pointing calibration', value: 2 },
-    { label: 'Visibility pre-processing', value: 3 },
-    { label: 'Mid self-cal / ICal', value: 4 },
-    { label: 'Low self-cal / ICal', value: 5 },
-    { label: '‘Real-time’ gain calibration', value: 6 },
-    { label: 'Distributed Gridding/Imaging', value: 7 }
-  ]
+export const TEAM_STATUS_TYPE_OPTIONS = {
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
 };
-
+export const TEL = ['', 'Mid', 'Low'];
+export const TELESCOPE_LOW_NUM = 2;
+export const TELESCOPES = [
+  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+];
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
     MAX_LENGTH: 50,
@@ -746,7 +743,7 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+/**************************************************************8*/
 
 export const DEFAULT_PI = {
   id: 1,
