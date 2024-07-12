@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Tooltip, Typography } from '@mui/material';
+import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { OBSERVATION } from '../../utils/constants';
 import { validateSDPPage } from '../../utils/proposalValidation';
@@ -13,6 +13,7 @@ import Alert from '../..//components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import { PATH } from '../../utils/constants';
+import DataProduct from '../../utils/types/dataProduct';
 
 const PAGE = 7;
 const DATA_GRID_HEIGHT = 450;
@@ -32,7 +33,7 @@ export default function SdpDataPage() {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
+    for (let i = 0; i < getProposalState()?.length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
@@ -52,9 +53,9 @@ export default function SdpDataPage() {
 
   const getODPString = inArr => {
     let str = '';
-    for (let i = 0; i < inArr.length; i++) {
+    for (let i = 0; i < inArr?.length; i++) {
       if (inArr[i]) {
-        if (str.length > 0) {
+        if (str?.length > 0) {
           str += ', ';
         }
         const res = i + 1;
@@ -68,7 +69,7 @@ export default function SdpDataPage() {
   const extendedColumnsObservations = [
     ...[
       {
-        field: 'observations',
+        field: 'observationId',
         headerName: t('observations.dp.label'),
         flex: 0.5,
         disableClickEventBubbling: true
@@ -79,26 +80,30 @@ export default function SdpDataPage() {
         flex: 2,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { observatoryDataProduct: number } }) => (
-          <Tooltip
-            data-testid="odp-values"
-            title={getODPString(e.row.observatoryDataProduct)}
-            arrow
-          >
-            <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
-          </Tooltip>
+          <Box pt={2}>
+            <Tooltip
+              data-testid="odp-values"
+              title={getODPString(e.row.observatoryDataProduct)}
+              arrow
+            >
+              <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
+            </Tooltip>
+          </Box>
         )
       },
       {
         field: 'imageSize',
         headerName: t('imageSize.label'),
         flex: 0.5,
-        disableClickEventBubbling: true
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: DataProduct }) => e.row.imageSizeValue + ' ' + e.row.imageSizeUnits
       },
       {
         field: 'pixelSize',
         headerName: t('pixelSize.label'),
         flex: 0.5,
-        disableClickEventBubbling: true
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: DataProduct }) => e.row.pixelSizeValue + ' ' + e.row.pixelSizeUnits
       },
       {
         field: 'weighting',
@@ -149,7 +154,7 @@ export default function SdpDataPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observations}</Typography>
+          <Typography variant="body1">{rec.observationId}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
@@ -157,10 +162,14 @@ export default function SdpDataPage() {
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.imageSize}</Typography>
+          <Typography variant="body1">
+            {rec.imageSizeValue} {rec.imageSizeUnits}
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.pixelSize}</Typography>
+          <Typography variant="body1">
+            {rec.pixelSizeValue} {rec.pixelSizeUnits}
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.weighting}</Typography>
@@ -172,7 +181,6 @@ export default function SdpDataPage() {
   const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
   const getRows = () => getProposal().dataProducts;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
-  const errorMessage = () => t('page.' + PAGE + errorSuffix());
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);
@@ -182,8 +190,13 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
         <Grid item xs={10}>
-          <AddButton title="dataProduct.button" action={PATH[3]} disabled={!hasObservations()} />
-          {getRows().length > 0 && (
+          <AddButton
+            title="dataProduct.button"
+            action={PATH[3]}
+            disabled={!hasObservations()}
+            testId="addDataProductButton"
+          />
+          {getRows()?.length > 0 && (
             <DataGrid
               rows={getRows()}
               columns={extendedColumnsObservations}
@@ -192,8 +205,12 @@ export default function SdpDataPage() {
               testId="observationDetails"
             />
           )}
-          {getRows().length === 0 && (
-            <Alert color={AlertColorTypes.Error} text={errorMessage()} testId="helpPanelId" />
+          {(!getRows() || getRows().length === 0) && (
+            <Alert
+              color={AlertColorTypes.Error}
+              text={t('page.' + PAGE + errorSuffix())}
+              testId="noDataProductsNotification"
+            />
           )}
         </Grid>
       </Grid>

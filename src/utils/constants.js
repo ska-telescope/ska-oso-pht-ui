@@ -1,5 +1,5 @@
 import { env } from '../env';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -7,37 +7,7 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
-export const ENTRY_HEIGHT = 40;
-
-export const STATUS_OK = 0;
-export const STATUS_ERROR = 1;
-export const STATUS_PARTIAL = 3;
-export const STATUS_INITIAL = 5;
-
-export const TARGET_OPTION = {
-  LIST_OF_TARGETS: 1,
-  TARGET_MOSAIC: 2,
-  NO_SPECIFIC_TARGET: 3
-};
-
-export const STATUS = {
-  OK: STATUS_OK,
-  ERROR: STATUS_ERROR,
-  PARTIAL: STATUS_PARTIAL,
-  INITIAL: STATUS_INITIAL
-};
-
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
-export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
-
-export const RA_TYPE_EQUATORIAL = 0;
-export const RA_TYPE_GALACTIC = 1;
-
-export const LAST_PAGE = 9;
+/*****************************************/
 
 export const AXIOS_CONFIG = {
   headers: {
@@ -46,41 +16,33 @@ export const AXIOS_CONFIG = {
   }
 };
 
-export const NAV = [
-  '/proposal/title',
-  '/proposal/team',
-  '/proposal/general',
-  '/proposal/science',
-  '/proposal/target',
-  '/proposal/observation',
-  '/proposal/technical',
-  '/proposal/data',
-  '/proposal/src'
+export const BANDWIDTH_TELESCOPE = [
+  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0, isBand5: false },
+  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1, isBand5: false }, // Band 1
+  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2, isBand5: false }, // Band 2
+  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3, isBand5: true }, // Band 5a
+  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4, isBand5: true } // Band 5b
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
-
-export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Draft', value: 'draft' },
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Withdrawn', value: 'withdrawn' },
-  { label: 'Rejected', value: 'rejected' }
-];
-
-export const PROPOSAL_STATUS = {
-  DRAFT: 'draft',
-  SUBMITTED: 'submitted',
-  ACCEPTED: 'accepted',
-  WITHDRAWN: 'withdrawn',
-  REJECTED: 'rejected'
+export const DATA_PRODUCT = {
+  observatoryDataProduct: [
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
+  ],
+  pipeline: [
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
+  ]
 };
+export const DEFAULT_HELP = ['', ' ', ''];
 
-export const TEAM_STATUS_TYPE_OPTIONS = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  rejected: 'Rejected'
-};
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const ENTRY_HEIGHT = 40;
 
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
@@ -121,27 +83,140 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = ['', ' ', ''];
+export const IMAGE_SIZE_UNITS = {
+  ARCSECS: 'arcseconds',
+  ARCMINS: 'arcmins',
+  DEGREES: 'degrees'
+};
 
-export const TELESCOPES = [
-  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
-  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+export const LAB_IS_BOLD = true;
+export const LAB_POSITION = LABEL_POSITION.START;
+export const LAST_PAGE = 9;
+
+export const NAV = [
+  '/proposal/title',
+  '/proposal/team',
+  '/proposal/general',
+  '/proposal/science',
+  '/proposal/target',
+  '/proposal/observation',
+  '/proposal/technical',
+  '/proposal/data',
+  '/proposal/src'
 ];
 
-export const BANDWIDTH_TELESCOPE = [
-  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0, isBand5: false },
-  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1, isBand5: false }, // Band 1
-  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2, isBand5: false }, // Band 2
-  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3, isBand5: true }, // Band 5a
-  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4, isBand5: true } // Band 5b
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+export const Projects = [
+  {
+    id: 1,
+    title: 'Standard Proposal',
+    code: 'PI',
+    description: 'Standard Observing Proposal',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Key Science Project',
+    code: 'KSP',
+    description:
+      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Director's Discretionary Time Proposal",
+    code: 'DDT',
+    description:
+      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      }
+    ]
+  }
 ];
+export const PROPOSAL_STATUS = {
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  ACCEPTED: 'accepted',
+  WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected'
+};
 
-export const TELESCOPE_LOW_NUM = 2;
-
-export const TEL = ['', 'Mid', 'Low'];
-
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
 export const OBS_TYPES = ['spectral', 'continuum'];
-
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
+export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 export const OBSERVATION = {
   array: [
     {
@@ -562,125 +637,47 @@ export const OBSERVATION = {
   ]
 };
 
+export const RA_TYPE_EQUATORIAL = 0;
+export const RA_TYPE_GALACTIC = 1;
+
+export const SEARCH_TYPE_OPTIONS = [
+  { label: 'Draft', value: 'draft' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Accepted', value: 'accepted' },
+  { label: 'Withdrawn', value: 'withdrawn' },
+  { label: 'Rejected', value: 'rejected' }
+];
+export const STATUS_OK = 0;
+export const STATUS_ERROR = 1;
+export const STATUS_PARTIAL = 3;
+export const STATUS_INITIAL = 5;
+export const STATUS = {
+  OK: STATUS_OK,
+  ERROR: STATUS_ERROR,
+  PARTIAL: STATUS_PARTIAL,
+  INITIAL: STATUS_INITIAL
+};
+
+export const TARGET_OPTION = {
+  LIST_OF_TARGETS: 1,
+  TARGET_MOSAIC: 2,
+  NO_SPECIFIC_TARGET: 3
+};
 export const TARGETS = {
   'No Target': null,
   'Create Mosaic': null
 };
-
-export const Projects = [
-  {
-    id: 1,
-    title: 'Standard Proposal',
-    code: 'PI',
-    description: 'Standard Observing Proposal',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Key Science Project',
-    code: 'KSP',
-    description:
-      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Director's Discretionary Time Proposal",
-    code: 'DDT',
-    description:
-      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      }
-    ]
-  }
-];
-
-export const DATA_PRODUCT = {
-  observatoryDataProduct: [
-    { label: 'Continuum Image', value: 1 },
-    { label: 'Spectral Line Image', value: 2 }
-  ],
-  pipeline: [
-    { label: 'Visibility receive', value: 1 },
-    { label: '‘Real-time’ pointing calibration', value: 2 },
-    { label: 'Visibility pre-processing', value: 3 },
-    { label: 'Mid self-cal / ICal', value: 4 },
-    { label: 'Low self-cal / ICal', value: 5 },
-    { label: '‘Real-time’ gain calibration', value: 6 },
-    { label: 'Distributed Gridding/Imaging', value: 7 }
-  ]
+export const TEAM_STATUS_TYPE_OPTIONS = {
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
 };
-
+export const TEL = ['', 'Mid', 'Low'];
+export const TELESCOPE_LOW_NUM = 2;
+export const TELESCOPES = [
+  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+];
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
     MAX_LENGTH: 50,
@@ -706,7 +703,7 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+/**************************************************************8*/
 
 export const DEFAULT_PI = {
   id: 1,
