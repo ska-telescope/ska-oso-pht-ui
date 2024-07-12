@@ -7,6 +7,8 @@ Future
 
 ---
 
+* Observation page: 
+   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
 * STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
 * STAR-537 : Added the ability to Edit a target
 * STAR-547 : Migrate page validations into separate utility 
@@ -17,8 +19,10 @@ Future
    - Updated structure of the DataProduct to cater for value/unit pairs
    - Updated screens to reflect new structure
    - Updated display of the SensCalc for Observations
-* Observation page: 
-   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-608 : Observation page updated for LOW / CONTINUUM
+   - Continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Tapering field should not be available on Low.
+   - Weather field should not be available for Low, only Mid
 
 0.3.1
 
