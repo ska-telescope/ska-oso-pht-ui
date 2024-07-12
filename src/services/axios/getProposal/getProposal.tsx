@@ -211,14 +211,14 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: getPDF(inRec.info.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
-    scienceLoadStatus: this?.sciencePDF ? 1 : 0,
+    scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO
     targets: [], // TODO getTargets(inRec.info.targets),
     observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: 0, // TODO
+    technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
