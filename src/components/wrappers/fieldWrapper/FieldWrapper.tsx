@@ -5,6 +5,7 @@ interface FieldWrapperProps {
   label?: string;
   labelWidth?: number;
   big?: boolean;
+  testId?: string;
   children?: JSX.Element | JSX.Element[];
 }
 
@@ -12,6 +13,7 @@ export default function FieldWrapper({
   label,
   labelWidth = 3,
   big = false,
+  testId,
   children
 }: FieldWrapperProps) {
   const variant = big ? 'h6' : 'body2';
@@ -20,7 +22,7 @@ export default function FieldWrapper({
   return (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item xs={labelWidth}>
-        <Typography sx={{ fontWeight: 'bold' }} variant={variant}>
+        <Typography id={testId + 'Label'} sx={{ fontWeight: 'bold' }} variant={variant}>
           {label}
         </Typography>
       </Grid>

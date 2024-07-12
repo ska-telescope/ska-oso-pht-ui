@@ -11,13 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import {
-  EMPTY_STATUS,
-  NAV,
-  SEARCH_TYPE_OPTIONS,
-  PROPOSAL_STATUS,
-  PATH
-} from '../../utils/constants';
+import { NAV, SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS, PATH } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -26,6 +20,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
+import { validateProposal } from '../../utils/proposalValidation';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -85,9 +80,10 @@ export default function LandingPage() {
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(EMPTY_STATUS);
+      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
       updateAppContent3(response);
+      validateProposal(response);
       return true;
     }
   };

@@ -10,20 +10,21 @@ import {
   ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
-  TextEntry,
+  NumberEntry,
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { NAV, OBSERVATION } from '../../utils/constants';
+import { IMAGE_SIZE_UNITS, NAV } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
+import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
+import Observation from '../../utils/types/observation';
+import { SensCalcResult } from 'services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import DataProduct from '../../utils/types/dataProduct';
 
-// TODO : Improved validation
 // TODO : Add documentation page specifically for Adding a Data product
 // TODO : Replace individual tick-boxes with a mapping
-// TODO : Need to make ImageSize numeric, with a dropdown for units
-// TODO : Move ImageWeighting to a separate component as it is also on the Observation Page
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -35,58 +36,75 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [baseObservations, setBaseObservations] = React.useState(null);
-  const [observations, setObservations] = React.useState('0');
+  const [baseObservations, setBaseObservations] = React.useState([]);
+  const [observationId, setObservationId] = React.useState('');
   const [dp1, setDP1] = React.useState(false);
   const [dp2, setDP2] = React.useState(false);
   const [dp3, setDP3] = React.useState(false);
   const [dp4, setDP4] = React.useState(false);
   const [dp5, setDP5] = React.useState(false);
-  const [imageSize, setImageSize] = React.useState('');
-  const [pixelSize, setPixelSize] = React.useState('');
-  const [weighting, setWeighting] = React.useState('');
+  const [imageSizeValue, setImageSizeValue] = React.useState(0);
+  const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNITS.DEGREES);
+  const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
+  const [weighting, setWeighting] = React.useState(0);
 
   const { t } = useTranslation('pht');
   const FIELD_OBS = 'observatoryDataProduct.options';
   const LABEL_WIDTH = 5;
 
-  const getImageWeighting = (id: string) => {
-    const temp = getProposal()?.observations.find(e => e.id === id);
-    return temp ? temp.imageWeighting : 0;
-  };
-
-  const getPixelSize = rec => {
-    const DIVIDER = 3;
-    const arr =
-      rec.sensCalc?.section1?.length > 2 ? rec.sensCalc.section1[3].value.split(' x ') : [];
-    if (arr.length > 1) {
-      const newValue = Number(arr[1]);
-      return (newValue / DIVIDER).toFixed(t('pixelSize.precision'));
-    } else {
-      return t('pixelSize.notFound');
-    }
-  };
-
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
-    const theOptions = [
-      ...getProposal()?.targetObservation?.map(e => ({
-        label: e.observationId,
-        value: e.observationId,
-        weighting: getImageWeighting(e.observationId),
-        pixelSize: getPixelSize(e)
-      }))
-    ];
-    setBaseObservations(theOptions);
+    const results: Observation[] = getProposal()?.observations?.filter(
+      ob =>
+        typeof getProposal()?.targetObservation.find(e => e.observationId === ob.id) !== 'undefined'
+    );
+    setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
   }, []);
 
   React.useEffect(() => {
-    if (observations && baseObservations) {
-      const temp = baseObservations.find(e => e.value === observations);
-      setWeighting(temp ? temp.weighting : null);
-      setPixelSize(temp ? temp.pixelSize : null);
+    const getImageWeighting = (id: string) => {
+      const temp = getProposal()?.observations.find(e => e.id === id);
+      return temp ? temp.imageWeighting : 0;
+    };
+
+    const getPixelSize = (sensCalc: SensCalcResult): number => {
+      const DIVIDER = 3;
+      const precisionStr = t('pixelSize.precision');
+      const precision = Number(precisionStr);
+      const arr = sensCalc?.section1?.length > 2 ? sensCalc.section1[3].value.split(' x ') : [];
+      const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
+      if (pixelSizeUnits === '' && sensCalc?.section1?.length > 2) {
+        setPixelSizeUnits(sensCalc.section1[3].units);
+      }
+      return Number(result);
+    };
+
+    const calcPixelSize = (count: number, total: number): number => {
+      if (count === 0 || total === 0) {
+        return 0;
+      }
+      const precision = Number(t('pixelSize.precision'));
+      const result = Number((total / count).toFixed(precision));
+      return result;
+    };
+
+    if (observationId) {
+      setWeighting(getImageWeighting(observationId));
     }
-  }, [baseObservations, observations]);
+
+    if (observationId && baseObservations) {
+      let pixelTotal = 0;
+      let pixelCount = 0;
+      getProposal().targetObservation?.forEach(rec => {
+        if (rec.observationId === observationId) {
+          pixelCount++;
+          pixelTotal += rec?.sensCalc ? getPixelSize(rec.sensCalc) : 0;
+        }
+      });
+      setPixelSizeValue(calcPixelSize(pixelCount, pixelTotal));
+    }
+  }, [baseObservations, observationId]);
 
   const observationsField = () => {
     return (
@@ -95,8 +113,8 @@ export default function AddDataProduct() {
           <DropDown
             options={baseObservations}
             testId="observations"
-            value={observations}
-            setValue={setObservations}
+            value={observationId}
+            setValue={setObservationId}
             label={t('observations.single')}
             labelBold
             labelPosition={LABEL_POSITION.START}
@@ -140,56 +158,67 @@ export default function AddDataProduct() {
     );
   };
 
-  const imageSizeField = () => (
-    <TextEntry
-      label={t('imageSize.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH}
-      testId="imageSize"
-      value={imageSize}
-      setValue={setImageSize}
-      onFocus={() => helpComponent(t('imageSize.help'))}
-      required
-    />
-  );
+  const imageSizeUnitsField = () => {
+    const options = [
+      { label: IMAGE_SIZE_UNITS.ARCSECS, value: IMAGE_SIZE_UNITS.ARCSECS },
+      { label: IMAGE_SIZE_UNITS.ARCMINS, value: IMAGE_SIZE_UNITS.ARCMINS },
+      { label: IMAGE_SIZE_UNITS.DEGREES, value: IMAGE_SIZE_UNITS.DEGREES }
+    ];
 
-  const pixelSizeField = () => (
-    <TextEntry
-      label={t('pixelSize.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH}
-      testId="pixelSize"
-      value={pixelSize}
-      setValue={setPixelSize}
-      onFocus={() => helpComponent(t('pixelSize.help'))}
-      required
-      disabled
-    />
-  );
+    return (
+      <DropDown
+        options={options}
+        testId="frequencyUnits"
+        value={imageSizeUnits}
+        setValue={setImageSizeUnits}
+        label=""
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
+  };
 
-  const imageWeightingField = () => (
-    <DropDown
-      options={OBSERVATION.ImageWeighting}
-      testId="imageWeighting"
-      value={weighting}
-      label={t('imageWeighting.label')}
-      labelBold
-      labelPosition={LABEL_POSITION.START}
-      labelWidth={LABEL_WIDTH}
-      onFocus={() => helpComponent(t('imageWeighting.help'))}
-      required
-      disabled
-    />
-  );
+  const imageSizeField = () => {
+    const errorText = () => (imageSizeValue ? '' : t('imageSize.error'));
+    return (
+      <NumberEntry
+        label={t('imageSize.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="imageSize"
+        value={imageSizeValue}
+        setValue={setImageSizeValue}
+        onFocus={() => helpComponent(t('imageSize.help'))}
+        required
+        suffix={imageSizeUnitsField()}
+        errorText={errorText()}
+      />
+    );
+  };
+
+  const pixelSizeField = () => {
+    return (
+      <NumberEntry
+        label={t('pixelSize.label')}
+        labelBold
+        labelPosition={LABEL_POSITION.START}
+        labelWidth={LABEL_WIDTH}
+        testId="pixelSize"
+        value={pixelSizeValue}
+        setValue={setPixelSizeValue}
+        required
+        disabled
+        suffix={pixelSizeUnits}
+      />
+    );
+  };
 
   const pageFooter = () => {
     const getIcon = () => <AddIcon />;
 
     const enabled = () => {
       const dp = dp1 || dp2 || dp3 || dp4 || dp5;
-      return dp && pixelSize !== '' && imageSize?.length > 0;
+      return dp && pixelSizeValue > 0 && imageSizeValue > 0;
     };
 
     const addToProposal = () => {
@@ -198,12 +227,14 @@ export default function AddDataProduct() {
         0
       );
       const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
-      const newDataProduct = {
+      const newDataProduct: DataProduct = {
         id: highestId + 1,
         observatoryDataProduct,
-        observations,
-        imageSize,
-        pixelSize,
+        observationId,
+        imageSizeValue,
+        imageSizeUnits,
+        pixelSizeValue,
+        pixelSizeUnits,
         weighting
       };
 
@@ -250,7 +281,7 @@ export default function AddDataProduct() {
   };
 
   return (
-    <Grid container direction="column" alignItems="space-evenly" justifyContent="center">
+    <Grid p={1} container direction="column" alignItems="space-evenly" justifyContent="center">
       <Grid item>
         <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
       </Grid>
@@ -276,7 +307,14 @@ export default function AddDataProduct() {
             <Grid item>{dataProductsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
-            <Grid item>{imageWeightingField()}</Grid>
+            <Grid item>
+              <ImageWeightingField
+                disabled
+                labelWidth={LABEL_WIDTH}
+                onFocus={() => helpComponent(t('imageWeighting.help'))}
+                value={weighting}
+              />
+            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={3} ml={5}>

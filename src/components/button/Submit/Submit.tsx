@@ -21,7 +21,7 @@ export default function SubmitButton({ disabled, action }: SubmitButtonProps) {
       icon={<PublishIcon />}
       label={title}
       onClick={action}
-      testId={`${title}Button`}
+      testId={`${title}TestId`}
       variant={ButtonVariantTypes.Contained}
     />
   );
