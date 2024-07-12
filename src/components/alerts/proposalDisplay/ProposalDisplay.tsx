@@ -253,8 +253,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targets.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targets?.map((rec: Target) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {getProposal().targets?.map((rec: Target, index: number) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" key={index}>
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
               </Grid>

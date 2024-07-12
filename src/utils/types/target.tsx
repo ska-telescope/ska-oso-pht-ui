@@ -12,17 +12,17 @@ export type TargetBackend = {
 
 import { ValueUnitPair } from './valueUnitPair';
 
+export type PointingPatternParamsBackend = {
+  kind: string;
+  offset_x_arcsec: number;
+  offset_y_arcsec: number;
+}
+
 export type TargetBackend = {
   target_id: string;
-  pointing_pattern: {
+  pointing_pattern?: {
     active: string;
-    parameters: [
-      {
-        kind: string;
-        offset_x_arcsec: number;
-        offset_y_arcsec: number;
-      }
-    ];
+    parameters: PointingPatternParamsBackend[];
   };
   reference_coordinate: {
     kind: string;
@@ -58,20 +58,33 @@ export type TargetBackend = {
  *   '1' : "m/s"
  ***********************************************************************************/
 
+export type PointingPatternParams = {
+  kind: string;
+  offsetXArcsec: number;
+  offsetYArcsec: number;
+}
+
 type Target = {
   dec: string;
   decUnit: string;
   id: number;
   name: string;
-  latitude: string;
+  latitude: string; 
   longitude: string;
   ra: string;
   raUnit: string;
   redshift: string;
-  referenceFrame: number;
-  velType: number;
+  referenceFrame: string | number;
+  rcReferenceFrame?: string;
+  raReferenceFrame?: string;
+  raDefinition?: string;
+  velType: string | number;
   vel: string;
   velUnit: string;
+  pointingPattern?: {
+    active: string;
+    parameters: PointingPatternParams[];
+  };
 };
 
 // NOTE : This ensures that we can initialize to a known point.

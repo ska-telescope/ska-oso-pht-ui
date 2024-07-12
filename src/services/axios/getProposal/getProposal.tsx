@@ -16,8 +16,9 @@ import {
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { InvestigatorBackend } from 'utils/types/investigator';
-import { DocumentBackend, DocumentPDF } from 'utils/types/document';
+import { InvestigatorBackend } from '../../../utils/types/investigator';
+import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
+import Target, { TargetBackend } from '../../../utils/types/target';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -47,27 +48,6 @@ const getScienceSubCategory = () => {
   // TODO change this if/when user can choose a science subcategory
   return 1;
 };
-
-/*
-const getTargets = (inValue: TargetBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    const e = inValue[i];
-    results.push({
-      dec: e.reference_coordinate.dec?.toString(),
-      decUnits: e.reference_coordinate.unit,
-      id: e.target_id !== '' ? e.target_id : i + 1,
-      name: e.reference_coordinate.kind, // TODO: check this is correct
-      ra: e.reference_coordinate.ra?.toString(),
-      raUnits: e.reference_coordinate.unit,
-      referenceFrame: e.reference_coordinate.reference_frame,
-      vel: e.radial_velocity.quantity.value?.toString(),
-      velUnits: e.radial_velocity.quantity.unit
-    });
-  }
-  return results;
-};
-*/
 
 /*
 const getIntegrationTimeUnits = (inValue: String) => {
@@ -186,6 +166,55 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
   return pdf ? pdfDoc : null;
 }
 
+const getTargets = (inRec: TargetBackend[]): Target[] => {
+
+  let results = [];
+  for (let i = 0; i < inRec.length; i++) {
+    const e = inRec[i];
+    const referenceCoordinate = e.reference_coordinate.kind;
+      const target: Target = {
+      /*
+      // old mapping for reference
+      dec: e.reference_coordinate.dec?.toString(),
+      decUnits: e.reference_coordinate.unit,
+      id: e.target_id !== '' ? e.target_id : i + 1,
+      name: e.reference_coordinate.kind, // TODO: check this is correct
+      ra: e.reference_coordinate.ra?.toString(),
+      raUnits: e.reference_coordinate.unit,
+      referenceFrame: e.reference_coordinate.reference_frame,
+      vel: e.radial_velocity.quantity.value?.toString(),
+      velUnits: e.radial_velocity.quantity.unit,
+      */
+      dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
+      decUnit: e.reference_coordinate.unit[0],
+      id: i + 1,
+      name: e.target_id,
+      latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
+      longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
+      ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
+      raUnit: e.reference_coordinate.unit[0],
+      redshift: e.radial_velocity.redshift.toString(),
+      referenceFrame: e.reference_coordinate.kind,
+      rcReferenceFrame: e.reference_coordinate.reference_frame,
+      raReferenceFrame: e.radial_velocity.reference_frame,
+      raDefinition: e.radial_velocity.definition,
+      velType: e.radial_velocity.definition,
+      vel: e.radial_velocity.quantity.value?.toString(),
+      velUnit: e.radial_velocity.quantity.unit.split(' ').join(''), // removes white spaces in "m / s"
+      pointingPattern: {
+        active: e.pointing_pattern.active,
+        parameters: e.pointing_pattern.parameters.map(p => ({
+          kind: p.kind,
+          offsetXArcsec: p.offset_x_arcsec,
+          offsetYArcsec: p.offset_y_arcsec
+        }))
+      },
+    };
+    results.push(target);
+  }
+  return results;
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -213,7 +242,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     sciencePDF: getPDF(inRec.info.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
     scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO
-    targets: [], // TODO getTargets(inRec.info.targets),
+    targets: getTargets(inRec.info.targets),
     observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
