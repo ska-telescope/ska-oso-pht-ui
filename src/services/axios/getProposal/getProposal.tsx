@@ -17,6 +17,7 @@ import {
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from 'utils/types/investigator';
+import { DocumentBackend, DocumentPDF } from 'utils/types/document';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -176,6 +177,15 @@ const getPI = (investigators: InvestigatorBackend[]) => {
   return investigators.find(item => item.principal_investigator === true).investigator_id;
 };
 
+const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
+  const pdf = documents.find(doc => doc.type === docType);
+  const pdfDoc = {
+    documentId: pdf?.document_id,
+    link: pdf?.link
+  };
+  return pdf ? pdfDoc : null;
+}
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -200,14 +210,14 @@ function mapping(inRec: ProposalBackend): Proposal {
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
-    sciencePDF: null, // TODO: map to DocumentBackend?
-    scienceLoadStatus: 0, //TODO
+    sciencePDF: getPDF(inRec.info.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
+    scienceLoadStatus: this?.sciencePDF ? 1 : 0,
     targetOption: 1, // TODO
     targets: [], // TODO getTargets(inRec.info.targets),
     observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
-    technicalPDF: null, // TODO: map to DocumentBackend?
+    technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: 0, // TODO
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''

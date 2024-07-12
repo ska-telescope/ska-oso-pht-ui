@@ -1,4 +1,4 @@
-import { DocumentBackend } from './document';
+import { DocumentBackend, DocumentPDF } from './document';
 import DataProduct, { DataProductSDPsBackend, DataProductSRCNetBackend } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
@@ -54,14 +54,16 @@ export type Proposal = {
   team?: TeamMember[];
   pi?: string;
   abstract?: string;
-  sciencePDF?: File | null;
+  // sciencePDF?: File | null;
+  sciencePDF?: DocumentPDF;
   scienceLoadStatus?: number;
   targetOption?: number;
   targets?: Target[];
   observations?: Observation[];
   groupObservations?: GroupObservation[];
   targetObservation?: TargetObservation[];
-  technicalPDF?: File | null;
+  // technicalPDF?: File | null;
+  technicalPDF?: DocumentPDF;
   technicalLoadStatus?: number;
   dataProducts?: DataProduct[];
   pipeline?: string;
