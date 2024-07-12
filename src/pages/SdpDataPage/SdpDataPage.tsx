@@ -106,7 +106,7 @@ export default function SdpDataPage() {
         flex: 1,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { weighting: number } }) => {
-          return OBSERVATION.ImageWeighting[e.row.weighting].label;
+          return OBSERVATION.ImageWeighting[e.row.weighting]?.label;
         }
       },
       {
@@ -131,15 +131,15 @@ export default function SdpDataPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProducts.filter(e => e.id !== currentRow);
+    const obs1 = getProposal().DataProductSDP.filter(e => e.id !== currentRow);
 
-    setProposal({ ...getProposal(), dataProducts: obs1 });
+    setProposal({ ...getProposal(), DataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProducts.find(p => p.id === currentRow);
+    const rec = getProposal().DataProductSDP.find(p => p.id === currentRow);
     return (
       <Grid
         p={2}
@@ -149,7 +149,7 @@ export default function SdpDataPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observations}</Typography>
+          <Typography variant="body1">{rec.observationId}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
@@ -157,10 +157,10 @@ export default function SdpDataPage() {
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.imageSize}</Typography>
+          <Typography variant="body1">{rec.imageSizeValue}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.pixelSize}</Typography>
+          <Typography variant="body1">{rec.pixelSizeValue}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.weighting}</Typography>
@@ -170,7 +170,7 @@ export default function SdpDataPage() {
   };
 
   const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
-  const getRows = () => getProposal().dataProducts;
+  const getRows = () => getProposal().DataProductSDP;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
   const errorMessage = () => t('page.' + PAGE + errorSuffix());
 

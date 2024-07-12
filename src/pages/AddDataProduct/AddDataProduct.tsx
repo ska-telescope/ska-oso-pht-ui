@@ -193,23 +193,26 @@ export default function AddDataProduct() {
     };
 
     const addToProposal = () => {
-      const highestId = getProposal().dataProducts.reduce(
+      const highestId = getProposal().DataProductSDP.reduce(
         (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
         0
       );
       const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
       const newDataProduct = {
         id: highestId + 1,
+        dataProductsSDPId: `SDP-${highestId+1}`,
         observatoryDataProduct,
-        observations,
-        imageSize,
-        pixelSize,
+        observationId: [observations], // TODO check if this is correct, we need an array of observation ids
+        imageSizeValue: imageSize,
+        imageSizeUnits: '', // TODO add units
+        pixelSizeValue: pixelSize,
+        pixelSizeUnits: '', // TODO add units
         weighting
       };
 
       setProposal({
         ...getProposal(),
-        dataProducts: [...getProposal().dataProducts, newDataProduct]
+        DataProductSDP: [...getProposal().DataProductSDP, newDataProduct]
       });
     };
 

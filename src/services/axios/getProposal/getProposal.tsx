@@ -20,7 +20,7 @@ import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -213,6 +213,31 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
   ));
 };
 
+const getSDPOptions = (options: string[]): boolean[] => {
+    const optionResults = [];
+    for (let i = 0; i < 5; i++) {
+      const num = (i + 1).toString();
+      optionResults[i] = options.includes(num) ? true : false;
+    }
+  return optionResults;
+}
+
+const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
+  return inValue.map((dp, index) => (
+    { 
+      id: index + 1, // TODO check if index ok or if we should extract the number in data_products_sdp_id
+      dataProductsSDPId: dp.data_products_sdp_id,
+      observatoryDataProduct: getSDPOptions(dp.options),
+      observationId: dp.observation_set_refs,
+      imageSizeValue: dp.image_size, // TODO seprate units from value
+      imageSizeUnits: dp.image_size, // TODO seprate units from value
+      pixelSizeValue: dp.pixel_size, // TODO seprate units from value
+      pixelSizeUnits: dp.pixel_size, // TODO seprate units from value
+      weighting: dp.weighting
+    }
+  ));
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -239,16 +264,16 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: getPDF(inRec.info.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
     scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
-    targetOption: 1, // TODO
+    targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
     observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
-    DataProductSDP: [], // TODO
+    DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
-    pipeline: ''
+    pipeline: '' // TODO check if we can remove
   };
   console.log('convertedProposal getproposal', convertedProposal);
   return convertedProposal;

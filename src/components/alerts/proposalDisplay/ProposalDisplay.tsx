@@ -15,6 +15,7 @@ import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import { DataProductSDP } from 'utils/types/dataProduct';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -355,7 +356,9 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('observatoryDataProduct.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
+          {getProposal().DataProductSDP?.map(rec => (
+            <Typography variant={LABEL_STYLE}>{rec.dataProductsSDPId}</Typography>
+          ))}
         </Grid>
       </Grid>
     </Grid>
