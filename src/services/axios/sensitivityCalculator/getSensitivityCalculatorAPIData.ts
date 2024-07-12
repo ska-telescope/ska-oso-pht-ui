@@ -3,6 +3,7 @@ import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults'; 
 import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
@@ -12,17 +13,8 @@ import {
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 
-export type SensCalcResult = {
-  id?: string;
-  title?: string;
-  status: number;
-  error?: string;
-  section1?: { field: string; value: string; units: string }[];
-  section2?: { field: string; value: string; units: string }[];
-  section3?: { field: string; value: string; units: string }[];
-};
 
-const SENSCALC_ERROR: SensCalcResult = {
+const SENSCALC_ERROR: SensCalcResults = {
   title: '',
   status: STATUS_ERROR,
   error: '',
@@ -31,11 +23,11 @@ const SENSCALC_ERROR: SensCalcResult = {
   section3: []
 };
 
-export const SENSCALC_LOADING: SensCalcResult = {
+export const SENSCALC_LOADING: SensCalcResults = {
   status: STATUS_PARTIAL
 };
 
-async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
+async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
@@ -79,7 +71,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     return results;
   } catch (e) {
     const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
-    return results as SensCalcResult;
+    return results as SensCalcResults;
   }
 }
 

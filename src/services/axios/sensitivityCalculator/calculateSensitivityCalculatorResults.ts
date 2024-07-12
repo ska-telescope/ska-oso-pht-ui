@@ -1,6 +1,6 @@
 import sensCalHelpers from './sensCalHelpers';
 import Observation from '../../../utils/types/observation';
-import { SensCalcResult } from './getSensitivityCalculatorAPIData';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults'; 
 import {
   OBS_TYPES,
   STATUS_OK,
@@ -18,7 +18,7 @@ export default function calculateSensitivityCalculatorResults(
   response: any,
   observation: Observation,
   target: Target
-): SensCalcResult {
+): SensCalcResults {
   const isLOW = () => observation.telescope === TELESCOPE_LOW_NUM;
   const weightedSensitivity = isLOW()
     ? getWeightedSensitivityLOW(response, observation.type)
@@ -62,7 +62,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralConfusionNoiseDisplay =
     observation.type === TYPE_CONTINUUM
       ? sensCalHelpers.format.convertSensitivityToDisplayValue(spectralConfusionNoise)
-      : { value: '', units: '' };
+      : { value: '', unit: '' };
   const spectralWeightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralWeightedSensitivity
   );
@@ -82,17 +82,17 @@ export default function calculateSensitivityCalculatorResults(
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
         value: weightedSensitivityDisplay?.value,
-        units: weightedSensitivityDisplay?.units
+        units: weightedSensitivityDisplay?.unit
       },
       {
         field: `${observationTypeLabel}ConfusionNoise`,
         value: confusionNoiseDisplay?.value,
-        units: confusionNoiseDisplay?.units
+        units: confusionNoiseDisplay?.unit
       },
       {
         field: `${observationTypeLabel}TotalSensitivity`,
         value: totalSensitivityDisplay?.value,
-        units: totalSensitivityDisplay?.units
+        units: totalSensitivityDisplay?.unit
       },
       {
         field: `${observationTypeLabel}SynthBeamSize`,
@@ -111,17 +111,17 @@ export default function calculateSensitivityCalculatorResults(
         {
           field: 'spectralSensitivityWeighted',
           value: spectralWeightedSensitivityDisplay.value,
-          units: spectralWeightedSensitivityDisplay.units
+          units: spectralWeightedSensitivityDisplay.unit
         },
         {
           field: 'spectralConfusionNoise',
           value: spectralConfusionNoiseDisplay?.value,
-          units: spectralConfusionNoiseDisplay?.units
+          units: spectralConfusionNoiseDisplay?.unit
         },
         {
           field: 'spectralTotalSensitivity',
           value: spectralTotalSensitivityDisplay.value,
-          units: spectralTotalSensitivityDisplay.units
+          units: spectralTotalSensitivityDisplay.unit
         },
         {
           field: 'spectralSynthBeamSize',
@@ -143,7 +143,7 @@ export default function calculateSensitivityCalculatorResults(
       }
     ]
   };
-  return theResults as SensCalcResult;
+  return theResults as SensCalcResults;
 }
 
 /******************************************* MID ********************************************/

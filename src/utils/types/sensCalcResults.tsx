@@ -1,6 +1,16 @@
 import { ValueUnitPair } from './valueUnitPair';
 
-export type ResultBackend = {
+export type SensCalcResults = {
+  id?: string;
+  title?: string;
+  status: number;
+  error?: string;
+  section1?: { field: string; value: string; units: string }[];
+  section2?: { field: string; value: string; units: string }[];
+  section3?: { field: string; value: string; units: string }[];
+};
+
+export type SensCalcResultsBackend = {
   observation_set_ref?: string;
   target_ref?: string;
   result_details?: {
