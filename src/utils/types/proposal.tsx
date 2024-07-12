@@ -54,7 +54,6 @@ export type Proposal = {
   team?: TeamMember[];
   pi?: string;
   abstract?: string;
-  // sciencePDF?: File | null;
   sciencePDF?: DocumentPDF;
   scienceLoadStatus?: number;
   targetOption?: number;
@@ -62,7 +61,6 @@ export type Proposal = {
   observations?: Observation[];
   groupObservations?: GroupObservation[];
   targetObservation?: TargetObservation[];
-  // technicalPDF?: File | null;
   technicalPDF?: DocumentPDF;
   technicalLoadStatus?: number;
   dataProducts?: DataProduct[];

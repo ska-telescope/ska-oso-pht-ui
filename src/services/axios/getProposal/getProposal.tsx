@@ -19,6 +19,7 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
+import { ObservationSetBackend } from '../../../utils/types/observationSet';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -78,24 +79,6 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
       // integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units), // coming from sens calc results?
       centralFrequency: inValue[i].observation_type_details?.central_frequency
     });
-  }
-  return results;
-};
-*/
-
-/*
-const getGroupObservations = (inValue: ObservationSetBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    if (inValue[i].group_id) {
-      const observationSetId = inValue[i].observation_set_id;
-      const observationId =
-        observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
-      results.push({
-        observationId: observationId,
-        groupId: inValue[i].group_id
-      });
-    }
   }
   return results;
 };
@@ -215,6 +198,22 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
   return results;
 };
 
+const getGroupObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    if (inValue[i].group_id) {
+      const observationSetId = inValue[i].observation_set_id;
+      const observationId =
+        observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
+      results.push({
+        observationId: observationId,
+        groupId: inValue[i].group_id
+      });
+    }
+  }
+  return results;
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -244,7 +243,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targetOption: 1, // TODO
     targets: getTargets(inRec.info.targets),
     observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
-    groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
+    groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
