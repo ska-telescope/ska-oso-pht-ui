@@ -20,6 +20,7 @@ import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
+import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -37,13 +38,6 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   }
   return results;
 };
-
-/*
-const getCategory = (cat: String) => {
-  const rec = GENERAL.ScienceCategory.find(p => p.label === cat);
-  return rec ? rec.value : 0;
-};
-*/
 
 const getScienceSubCategory = () => {
   // TODO change this if/when user can choose a science subcategory
@@ -150,7 +144,6 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
 }
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
-
   let results = [];
   for (let i = 0; i < inRec.length; i++) {
     const e = inRec[i];
@@ -214,6 +207,12 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   return results;
 };
 
+const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[] => {
+  return inValue.map(dp => (
+    { id: dp.data_products_src_id }
+  ));
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -247,7 +246,8 @@ function mapping(inRec: ProposalBackend): Proposal {
     targetObservation: [], // TODO
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
-    dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
+    DataProductSDP: [], // TODO
+    DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: ''
   };
   console.log('convertedProposal getproposal', convertedProposal);

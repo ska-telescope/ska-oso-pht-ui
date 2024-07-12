@@ -1,5 +1,5 @@
 import { DocumentBackend, DocumentPDF } from './document';
-import DataProduct, { DataProductSDPsBackend, DataProductSRCNetBackend } from './dataProduct';
+import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { ResultBackend } from './result';
@@ -63,7 +63,9 @@ export type Proposal = {
   targetObservation?: TargetObservation[];
   technicalPDF?: DocumentPDF;
   technicalLoadStatus?: number;
-  dataProducts?: DataProduct[];
+  // dataProducts?: DataProduct[];
+  DataProductSDP?: DataProductSDP[];
+  DataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };
 
