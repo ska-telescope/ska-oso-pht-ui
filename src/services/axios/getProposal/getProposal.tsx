@@ -233,7 +233,7 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
       observingBand: inValue[i].observing_band,
       centralFrequency: inValue[i].observation_type_details?.central_frequency,
       // TODO add central frequency unit to proposal type and map it
-      elevation: inValue[i].elevation,
+      elevation: inValue[i].array_details?.elevation, // only mid // TODO sort out type error
       weather: inValue[i].array_details?.weather, // only mid // TODO sort out type error
       num15mAntennas: inValue[i].array_details?.number_15_antennas, // only mid // TODO sort out type error
       num13mAntennas: inValue[i].array_details?.number_13_antennas, // only mid // TODO sort out type error
