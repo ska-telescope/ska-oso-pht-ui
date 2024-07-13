@@ -12,7 +12,9 @@ import {
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA,
-  GENERAL
+  GENERAL,
+  OBSERVATION,
+  OBSERVATION_TYPE_BACKEND
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -48,33 +50,6 @@ const getScienceSubCategory = () => {
 const getIntegrationTimeUnits = (inValue: String) => {
   const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
   return unitsList.find(u => u.label === inValue)?.value;
-};
-*/
-
-/*
-const getObservations = (inValue: ObservationSetBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    const arr = inValue[i].array_details[i].array === 'MID' ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray.find(
-      p => p.label === inValue[i].array_details[i].subarray
-    );
-    results.push({
-      id: inValue[i].observation_set_id,
-      telescope: arr,
-      subarray: sub ? sub.value : 0,
-      type:
-        inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
-          ? 0
-          : 1,
-      imageWeighting: inValue[i].observation_type_details?.image_weighting,
-      observingBand: inValue[i].observing_band,
-      // integrationTime: inValue[i].integration_time, // coming from sens calc results?
-      // integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units), // coming from sens calc results?
-      centralFrequency: inValue[i].observation_type_details?.central_frequency
-    });
-  }
-  return results;
 };
 */
 
@@ -238,6 +213,44 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
   ));
 };
 
+const getObservations = (inValue: ObservationSetBackend[]) => {
+  let results = [];
+  for (let i = 0; i < inValue.length; i++) {
+    const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
+    console.log('arr', arr);
+    const sub = OBSERVATION.array[arr - 1].subarray.find(
+      p => p.label === inValue[i].array_details.subarray
+    );
+    results.push({
+      id: inValue[i].observation_set_id,
+      telescope: arr,
+      subarray: sub ? sub.value : 0,
+      type:
+        inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
+          ? 0
+          : 1,
+      imageWeighting: inValue[i].observation_type_details?.image_weighting,
+      observingBand: inValue[i].observing_band,
+      centralFrequency: inValue[i].observation_type_details?.central_frequency,
+      // TODO add central frequency unit to proposal type and map it
+      elevation: inValue[i].elevation,
+      weather: inValue[i].array_details?.weather, // only mid // TODO sort out type error
+      num15mAntennas: inValue[i].array_details?.number_15_antennas, // only mid // TODO sort out type error
+      num13mAntennas: inValue[i].array_details?.number_13_antennas, // only mid // TODO sort out type error
+      numSubBands: inValue[i].array_details?.number_sub_bands, // only mid // TODO sort out type error
+      tapering: inValue[i].array_details?.tapering,
+      bandwidth: inValue[i].observation_type_details.bandwidth.value,
+      // TODO add bandwidth unit to proposal type and map it
+      integrationTime: inValue[i].observation_type_details?.supplied?.value, // integration time
+      integrationTimeUnits: inValue[i].observation_type_details?.supplied?.unit, // integration time units
+      // TODO add supplied quantity value + quantity unit to proposal type and map it (supplied type too?)
+      spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
+      effectiveResolution: inValue[i].observation_type_details?.effective_resolution, // effective_resolution
+    });
+  }
+  return results;
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -266,14 +279,15 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
-    observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
+    // observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
+    observations: getObservations(inRec.info.observation_sets),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
-    pipeline: '' // TODO check if we can remove
+    pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
   console.log('convertedProposal getproposal', convertedProposal);
   return convertedProposal;

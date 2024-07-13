@@ -20,8 +20,8 @@ type Observation = {
   spectralResolution: string;
   effectiveResolution: string;
   numSubBands?: number; // only for MID
-  num15mAntennas?: number;
-  num13mAntennas?: number;
+  num15mAntennas?: number; // only for MID
+  num13mAntennas?: number; // only for MID
   numStations?: number;
   details: string;
   // TODO: get right ascension + declination from target => store in target and send it as pointing_centre: '00:00:00.0 00:00:00.0',
