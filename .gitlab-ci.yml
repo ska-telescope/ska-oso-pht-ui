@@ -5,6 +5,8 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   KUBE_HOST: 'https://k8s.stfc.skao.int'
   a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+  JS_NODE_VERSION: 21
+  TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
 stages:
   - dependencies
@@ -93,6 +95,7 @@ test_e2e:
   before_script:
     - yarn install --frozen-lockfile
   script:
+    - yarn build &
     - yarn test:e2e:headless
 
 # list the current top level dependencies for the project
@@ -185,6 +188,10 @@ pages:
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
     a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+    JS_NODE_VERSION: 21
+    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
+
+
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
 
