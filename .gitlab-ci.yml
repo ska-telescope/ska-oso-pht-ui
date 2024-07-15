@@ -97,6 +97,8 @@ test_e2e:
   script:
     - yarn start &
     - yarn test:e2e:headless
+    - yarn test:cypress:e2e:ci
+    - cp build/tests/e2e-tests.xml build/reports/e2e-coverage.xml
 
 # list the current top level dependencies for the project
 list_dependencies:
