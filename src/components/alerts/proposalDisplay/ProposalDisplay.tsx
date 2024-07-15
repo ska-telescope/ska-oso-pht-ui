@@ -285,8 +285,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('observations.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().observations?.map((rec: Observation) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {getProposal().observations?.map((rec: Observation, index: number) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" key={index}>
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
               </Grid>
@@ -356,9 +356,9 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('observatoryDataProduct.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().DataProductSDP?.map(rec => (
-            <Typography variant={LABEL_STYLE}>{rec.dataProductsSDPId}</Typography>
-          ))}
+        {getProposal().DataProductSDP?.map((rec: DataProductSDP, index: number) => (
+          <Typography variant={LABEL_STYLE} key={index}>{rec.dataProductsSDPId}</Typography>
+        ))}
         </Grid>
       </Grid>
     </Grid>

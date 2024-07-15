@@ -262,9 +262,8 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
       tapering: tapering,
       bandwidth: inValue[i].observation_type_details.bandwidth.value,
       // TODO add bandwidth unit to proposal type and map it
-      integrationTime: inValue[i].observation_type_details?.supplied?.value, // integration time
-      integrationTimeUnits: inValue[i].observation_type_details?.supplied?.unit, // integration time units
-      // TODO add supplied quantity value + quantity unit to proposal type and map it (supplied type too?)
+      integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time // TODO do we need to check the type is integration?
+      integrationTimeUnits: inValue[i].observation_type_details?.supplied?.quantity?.unit, // integration time units
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution, // effective_resolution
     });
