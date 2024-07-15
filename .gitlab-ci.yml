@@ -54,6 +54,33 @@ code_analysis:
     paths:
       - build/
 
+# run the cypress test coverage reports
+test_and_coverage:
+  image: cypress/browsers:node18.12.0-chrome106-ff106
+  stage: test
+  tags:
+    - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
+  script:
+    - yarn start &
+    - yarn test:component:headless
+    - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/reports/cobertura-coverage.xml
+    paths:
+      - build/
+      
 test_e2e:
   image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
