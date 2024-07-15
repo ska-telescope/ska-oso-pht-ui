@@ -126,7 +126,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     //TODO: update once page has content
     //validate proposal
-    cy.get('[data-testid="ValidationButton"]').click();
+    cy.get('[data-testid="ValidationTestId"]').click();
   });
 
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
