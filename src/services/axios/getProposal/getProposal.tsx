@@ -23,6 +23,7 @@ import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
 import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -213,14 +214,34 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
   ));
 };
 
+/*
+interface ModeSpecificParametersMid {
+  elevation: number;
+  weather: number;
+  number_15_antennas: number;
+  number_13_antennas: number;
+  number_sub_bands: number;
+  tapering: number;
+}
+  */
+
 const getObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
-    console.log('arr', arr);
     const sub = OBSERVATION.array[arr - 1].subarray.find(
       p => p.label === inValue[i].array_details.subarray
     );
+    let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
+    if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) { // TODO remove elevation from condition once ODA updated
+      const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
+      elevation = midDetails.elevation; // TODO change mapping to get it from ObservationSet root once ODA updated
+      weather = midDetails.weather;
+      num15mAntennas = midDetails.number_15_antennas;
+      num13mAntennas = midDetails.number_13_antennas;
+      numSubBands = midDetails.number_sub_bands;
+      tapering = midDetails.tapering;
+    }
     results.push({
       id: inValue[i].observation_set_id,
       telescope: arr,
@@ -233,12 +254,12 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
       observingBand: inValue[i].observing_band,
       centralFrequency: inValue[i].observation_type_details?.central_frequency,
       // TODO add central frequency unit to proposal type and map it
-      elevation: inValue[i].array_details?.elevation, // only mid // TODO sort out type error
-      weather: inValue[i].array_details?.weather, // only mid // TODO sort out type error
-      num15mAntennas: inValue[i].array_details?.number_15_antennas, // only mid // TODO sort out type error
-      num13mAntennas: inValue[i].array_details?.number_13_antennas, // only mid // TODO sort out type error
-      numSubBands: inValue[i].array_details?.number_sub_bands, // only mid // TODO sort out type error
-      tapering: inValue[i].array_details?.tapering,
+      elevation: elevation,
+      weather: weather,
+      num15mAntennas: num13mAntennas,
+      num13mAntennas: num15mAntennas,
+      numSubBands: numSubBands,
+      tapering: tapering,
       bandwidth: inValue[i].observation_type_details.bandwidth.value,
       // TODO add bandwidth unit to proposal type and map it
       integrationTime: inValue[i].observation_type_details?.supplied?.value, // integration time

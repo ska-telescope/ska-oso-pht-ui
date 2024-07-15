@@ -87,12 +87,14 @@ async function PostProposal(proposal: Proposal, status?: string) {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status); // TODO revert back to user proposal before merging
     const proposalBackendFormat = MockProposalBackend;
+    console.log('postProposal proposalBackendFormat', proposalBackendFormat);
 
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       proposalBackendFormat, // convertedProposal, // TODO revert back to user proposal before merging
       AXIOS_CONFIG
     );
+    console.log('postProposal result', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };
