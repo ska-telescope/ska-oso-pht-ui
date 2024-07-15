@@ -95,7 +95,7 @@ test_e2e:
   before_script:
     - yarn install --frozen-lockfile
   script:
-    - yarn build &
+    - yarn start &
     - yarn test:e2e:headless
 
 # list the current top level dependencies for the project
