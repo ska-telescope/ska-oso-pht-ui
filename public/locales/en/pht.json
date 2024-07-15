@@ -57,11 +57,11 @@
     "2": "LOW"
   },
   "bandWidth": {
-    "help": "Select or enter the desired bandwidth in MHz (LOW) or GHz (MID). You can also specify a custom bandwidth by selecting the custom option.",
+    "help": "The bandwidth in MHz (LOW) or GHz (MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
     "label": "Band Width"
   },
   "centralFrequency": {
-    "help": "Specify a central frequency which should be within the selected band and must be fully contained within the bandwidth.",
+    "help": "The central frequency of the observation. Must be within the selected band.",
     "label": "Central Frequency",
     "range": {
       "lowLower": 50,
@@ -157,7 +157,7 @@
     "label": "Effective Resolution"
   },
   "elevation": {
-    "help": "This is the lowest angle above the horizon at which you want the telescope to observe your targets. Minimum elevation for the LOW and MID telescopes is 15 deg.",
+    "help": "The user can use this field to specify the elevation at which the target will be observed. The default elevation is 45 deg. The minimum elevation is 15 deg for the LOW and MID telescopes and the maximum elevation is the target’s zenith elevation.",
     "label": "Minimum Elevation",
     "units": "deg",
     "default": 45,
@@ -283,7 +283,7 @@
     "id": "Id",
     "dp": {
       "label": "Observation",
-      "help": "OBSERVATION HELP"
+      "help": "Select the observation set for which you want to request a data product(s)."
     },
     "group": "Group"
   },
@@ -519,7 +519,7 @@
     "email": "Please enter a valid email address."
   },
   "spectralAveraging": {
-    "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
+    "help": "The factor by which the intrinsic spectral resolution (13.44 kHz) should be averaged. The averaging factor can be set to 1, 2, 3, 4, 6, 8, 12 or 24. The Effective resolution field displays the channel width after applying the spectral averaging.",
     "label": "Spectral Averaging",
     "range": {
       "lower": 1,
@@ -551,7 +551,7 @@
     "5": "Not indicated"
   },
   "subBands": {
-    "help": "Valid range is 0 - 32 inclusive",
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1-32. The default number of sub-bands is 1. If the number of sub-bands is greater than 1, the minimum and maximum weighted sensitivity per sub-band, confusion noise per sub-band, total sensitivity per sub-band, synthesised beam size per sub-band and surface-brightness sensitivity per sub-band, are reported.",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
@@ -577,7 +577,7 @@
     "20": "Custom"
   },
   "suppliedType": {
-    "help": "SUPPLIED TIME HELP"
+    "help": "The sensitivity for the observation in units of Jy/beam or K. This is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation. This is used to calculate the sensitivity that will be reached with this integration time. Units are selectable in the calculator."
   },
   "suppliedUnits": {
     "help": "SUPPLIED UNITS HELP"
@@ -591,7 +591,7 @@
     "default": 600
   },
   "tapering": {
-    "help": "TAPERING HELP",
+    "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering"
   },
   "targetObservation": {
@@ -662,7 +662,7 @@
   },
   "weighting": {
     "label": "Weighting",
-    "help": "WEIGHTING HELP"
+    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting)."
   },
   "page": {
     "0": {
