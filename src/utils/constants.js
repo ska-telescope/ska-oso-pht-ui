@@ -129,6 +129,7 @@ export const TELESCOPES = [
 ];
 
 export const BANDWIDTH_TELESCOPE = [
+  { label: 'Band not found', value: -1, isBand5: false },
   { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0, isBand5: false },
   { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1, isBand5: false }, // Band 1
   { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2, isBand5: false }, // Band 2
@@ -531,6 +532,7 @@ export const OBSERVATION = {
       label: 'Integration Time',
       value: 1,
       units: [
+        { label: 'not found', value: -1 },
         { label: 'd', value: 1 },
         { label: 'h', value: 2 },
         { label: 'min', value: 3 },

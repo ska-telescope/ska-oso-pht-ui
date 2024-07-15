@@ -236,7 +236,36 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       case 'mid_band_4':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b')).value;
       default:
-        return 6
+        return -1;
+    }
+  }
+
+  const getIntegrationTimeUnits = (InUnits: string) => {
+    const integrationTimeSupplied = OBSERVATION.Supplied.find(item => item.label === 'Integration Time');
+    switch(InUnits) {
+      case 'd':
+        const d = integrationTimeSupplied.units.find(item => item.label === 'd').value;
+        return d ? d : -1;
+      case 'h':
+        const h = integrationTimeSupplied.units.find(item => item.label === 'h').value;
+        return h ? h : -1;
+      case 'min':
+        const min = integrationTimeSupplied.units.find(item => item.label === 'min').value;
+        return min ? min : -1;
+      case 's':
+        const s = integrationTimeSupplied.units.find(item => item.label === 's').value;
+        return s ? s : -1;
+      case 'm / s':
+        const mS = integrationTimeSupplied.units.find(item => item.label === 'ms').value;
+        return mS ? mS : -1;
+      case 'u / s':
+        const uS = integrationTimeSupplied.units.find(item => item.label === 'us').value;
+        return uS ? uS : -1;
+      case 'n / s':
+        const nS = integrationTimeSupplied.units.find(item => item.label === 'ns').value;
+        return nS ? nS : -1;
+      default:
+        return -1;
     }
   }
 
@@ -276,8 +305,8 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       tapering: tapering,
       bandwidth: inValue[i].observation_type_details.bandwidth.value,
       // TODO add bandwidth unit to proposal type and map it
-      integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time // TODO do we need to check the type is integration?
-      integrationTimeUnits: 1, // TODO map to number // inValue[i].observation_type_details?.supplied?.quantity?.unit, // integration time units
+      integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
+      integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution, // effective_resolution
       linked: '',
