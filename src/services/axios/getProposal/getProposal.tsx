@@ -24,6 +24,7 @@ import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
 import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import Observation from 'utils/types/observation';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -225,7 +226,11 @@ interface ModeSpecificParametersMid {
 }
   */
 
-const getObservations = (inValue: ObservationSetBackend[]) => {
+const getWeighting = (inImageWeighting) => {
+  return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
+}
+
+const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
@@ -250,9 +255,9 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
         inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
           ? 0
           : 1,
-      imageWeighting: inValue[i].observation_type_details?.image_weighting,
-      observingBand: inValue[i].observing_band,
-      centralFrequency: inValue[i].observation_type_details?.central_frequency,
+      imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
+      observingBand: 1, // TODO map to number // inValue[i].observing_band,
+      centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
       // TODO add central frequency unit to proposal type and map it
       elevation: elevation,
       weather: weather,
@@ -263,10 +268,13 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
       bandwidth: inValue[i].observation_type_details.bandwidth.value,
       // TODO add bandwidth unit to proposal type and map it
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time // TODO do we need to check the type is integration?
-      integrationTimeUnits: inValue[i].observation_type_details?.supplied?.quantity?.unit, // integration time units
+      integrationTimeUnits: 1, // TODO map to number // inValue[i].observation_type_details?.supplied?.quantity?.unit, // integration time units
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution, // effective_resolution
-    });
+      linked: '',
+      continuumBandwidth: '',
+      details: ''
+    } as Observation);
   }
   return results;
 };
