@@ -14,7 +14,8 @@ import {
   USE_LOCAL_DATA,
   GENERAL,
   OBSERVATION,
-  OBSERVATION_TYPE_BACKEND
+  OBSERVATION_TYPE_BACKEND,
+  BANDWIDTH_TELESCOPE
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -215,22 +216,30 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
   ));
 };
 
-/*
-interface ModeSpecificParametersMid {
-  elevation: number;
-  weather: number;
-  number_15_antennas: number;
-  number_13_antennas: number;
-  number_sub_bands: number;
-  tapering: number;
-}
-  */
-
-const getWeighting = (inImageWeighting) => {
-  return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
-}
 
 const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
+
+  const getWeighting = (inImageWeighting) => {
+    return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
+  }
+
+  const getObservingBand = (inObsBand) => {
+    switch(inObsBand) {
+      case 'low_band':
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
+      case 'mid_band_1':
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1')).value;
+      case 'mid_band_2':
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2')).value;
+      case 'mid_band_3':
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a')).value;
+      case 'mid_band_4':
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b')).value;
+      default:
+        return 6
+    }
+  }
+
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
@@ -256,10 +265,10 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
           ? 0
           : 1,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
-      observingBand: 1, // TODO map to number // inValue[i].observing_band,
+      observingBand: getObservingBand(inValue[i].observing_band),
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
       // TODO add central frequency unit to proposal type and map it
-      elevation: elevation,
+      elevation: elevation, // TODO map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
