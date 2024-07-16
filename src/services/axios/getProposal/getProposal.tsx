@@ -15,7 +15,9 @@ import {
   GENERAL,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
-  BANDWIDTH_TELESCOPE
+  BANDWIDTH_TELESCOPE,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -281,17 +283,20 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     return -1;
   }
 
+  const getBandwidth = (InBandwidth, inObsType) => {
+    console.log('InBandwidth', InBandwidth);
+    console.log('inObsType', inObsType);
+    const type = inObsType.toLocaleLowerCase() === OBSERVATION_TYPE_BACKEND[0].toLowerCase() ? 0: 1;
+  }
+
   let results = [];
 
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
-    console.log('inValue[i].array_details.array', inValue[i].array_details.array);
-    console.log('inValue[i].array_details.subarray', inValue[i].array_details.subarray);
     const sub = OBSERVATION.array[arr - 1].subarray.find(
       p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
     ).value;
-    console.log('arr', arr);
-    console.log('sub', sub);
+    const type = inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() === OBSERVATION_TYPE_BACKEND[0].toLowerCase() ? 0: 1;
 
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
     if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) { // TODO remove elevation from condition once ODA updated
@@ -308,10 +313,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       id: inValue[i].observation_set_id,
       telescope: arr,
       subarray: sub ? sub : 0,
-      type:
-        inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
-          ? 0
-          : 1,
+      type: type,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: getObservingBand(inValue[i].observing_band),
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
@@ -323,15 +325,18 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       num13mAntennas: num15mAntennas,
       numSubBands: numSubBands,
       tapering: tapering,
-      bandwidth: inValue[i].observation_type_details.bandwidth.value,
-      bandwidthUnits: getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit), // TODO map units properly
+      bandwidth: type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
+      bandwidthUnits: type === TYPE_ZOOM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined, // TODO map units properly
       // TODO add bandwidth unit to proposal type and map it
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: '',
-      continuumBandwidth: '',
+      continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value.toString() : undefined,
+      // TODO add continuum bandwidth units to proposal type and map it
+      // TODO map units properly
+      continuumBandwidthUnits: type === TYPE_CONTINUUM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined,
       details: ''
     };
     results.push(obs);
