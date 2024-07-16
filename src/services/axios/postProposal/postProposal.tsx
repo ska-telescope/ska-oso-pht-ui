@@ -4,7 +4,7 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 import Proposal from '../../../utils/types/proposal';
 
 async function PostProposal(proposal: Proposal, status?: string) {
-  if (USE_LOCAL_DATA) {
+  if (window.Cypress || USE_LOCAL_DATA) {
     return 'PROPOSAL-ID-001';
   }
 
