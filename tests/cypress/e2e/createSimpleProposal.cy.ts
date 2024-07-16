@@ -17,32 +17,8 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       cy.get('[data-testid="addProposalButton"]').should('exist');
     };
 
-    const titlePageConfirmed = () => {
-      cy.get('#pageTitle').contains('TITLE');
-    };
-
-    const teamPageConfirmed = () => {
-      cy.get('#pageTitle').contains('TEAM');
-    };
-
-    const generalPageConfirmed = () => {
-      cy.get('#pageTitle').contains('GENERAL');
-    };
-
-    const sciencePageConfirmed = () => {
-      cy.get('#pageTitle').contains('SCIENCE');
-    };
-
-    const targetPageConfirmed = () => {
-      cy.get('#pageTitle').contains('TARGET');
-    };
-
-    const observationPageConfirmed = () => {
-      cy.get('#pageTitle').contains('OBSERVATIONS');
-    };
-
-    const technicalPageConfirmed = () => {
-      cy.get('#pageTitle').contains('TECHNICAL');
+    const pageConfirmed = (label) => {
+      cy.get('#pageTitle').contains(label);
     };
 
     /**** Button clicks ****/
@@ -56,13 +32,13 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
 
     const clickAddProposal = () => {
       cy.get('[data-testid="addProposalButton"]').click();
-      titlePageConfirmed();
+      pageConfirmed('TITLE');
     };
 
     const clickCreateProposal = () => {
       cy.get('[data-testid="CreateButton"]').click();
       cy.get('[data-testid="timeAlertFooter"]').should('exist');
-      teamPageConfirmed();
+      pageConfirmed('TEAM');
     };
 
     const clickPageForward = () => {
@@ -95,20 +71,41 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const generalPageEntry = () => {
-      cy.get('[data-testid="ArrowForwardIosIcon"]').click();
       cy.get('[data-testid="abstractId"]').type('Test Abstract');
       cy.get('[id="categoryId"]').click({ force: true });
       cy.get('[data-value="1"]').click({ force: true });
       cy.get('[id="categoryId"]').should('contain', 'Cosmology');
     };
 
-    const sciencePageEntry = () => {};
+    const sciencePageEntry = () => {
+            // TODO 
+    };
 
-    const targetPageEntry = () => {};
+    const targetPageEntry = () => {
+      cy.get('[id="name"]').type('M1');
+      cy.get('[id="skyDirectionValue1"]').type('0:0:0');
+      cy.get('[id="skyDirectionValue2"]').type('0:0:0');
+      cy.get('[data-testid="velocityValue"]').type('1');
+      cy.get('[data-testid="addTargetButton"]').click({ force: true });
 
-    const observationPageEntry = () => {};
+      // TODO : Validate that the target is in the DataGrid
+    };
 
-    const technicalPageEntry = () => {};
+    const observationPageEntry = () => {
+      // TODO : Validate that the target is in the DataGrid
+    };
+
+    const technicalPageEntry = () => {
+      // TODO 
+    };
+
+    const SDPPageEntry = () => {
+      // TODO
+    };
+
+    const SRCPageEntry = () => {
+      // TODO 
+    };
 
     /**** TESTS ****/
 
@@ -119,23 +116,28 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       clickCreateProposal();
       teamPageEntry();
       clickPageForward();
-      generalPageConfirmed();
+      pageConfirmed('GENERAL');
       generalPageEntry();
       clickPageForward();
-      sciencePageConfirmed();
+      pageConfirmed('SCIENCE');
       sciencePageEntry();
       clickPageForward();
-      targetPageConfirmed();
+      pageConfirmed('TARGET');
       targetPageEntry();
       clickPageForward();
-      observationPageConfirmed();
+      pageConfirmed('OBSERVATION');
       observationPageEntry();
       clickPageForward();
-      technicalPageConfirmed();
+      pageConfirmed('TECHNICAL');
       technicalPageEntry();
       clickPageForward();
+      pageConfirmed('SDP DATA');
+      SDPPageEntry();
+      clickPageForward();
+      pageConfirmed('SRC NET');
+      SRCPageEntry();
 
-      clickHomeButton();
+      // clickHomeButton();
     });
 
     /*

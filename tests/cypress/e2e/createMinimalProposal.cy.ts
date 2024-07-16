@@ -15,12 +15,8 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     cy.get('[data-testid="addProposalButton"]').should('exist');
   }
 
-  const titlePageConfirmed = () => {
-    cy.get('#pageTitle').contains('TITLE');
-  }
-
-  const teamPageConfirmed = () => {
-    cy.get('#pageTitle').contains('TEAM');
+  const pageConfirmed = (label) => {
+    cy.get('#pageTitle').contains(label);
   }
 
   /**** Button clicks ****/
@@ -32,13 +28,13 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
 
   const clickAddProposal = () => {
     cy.get('[data-testid="addProposalButton"]').click();
-    titlePageConfirmed();
+    pageConfirmed('TITLE');
   }
 
   const clickCreateProposal = () => {
     cy.get('[data-testid="CreateButton"]').click();
     cy.get('[data-testid="timeAlertFooter"]').should('exist');
-    teamPageConfirmed();
+    pageConfirmed('TEAM');
   }
 
   /**** Page entry ****/
