@@ -28,7 +28,6 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[aria-label="A target of opportunity observing proposal"]').click();
     cy.get('[data-testid="CreateButton"]').click();
     //Complete team page
-    cy.wait(5000) // wait for 5 seconds
     cy.get('[data-testid="firstName"]').type('User');
     cy.get('[data-testid="lastName"]').type('Name');
     cy.get('[data-testid="email"]').type('username@test.com');
