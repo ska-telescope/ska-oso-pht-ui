@@ -365,7 +365,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: [], // TODO
+    targetObservation: [], // TODO check where do we see linked targets/observation in backend format
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
