@@ -7,8 +7,29 @@ Future
 
 ---
 
+* Observation page: 
+* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-540 : Proposal mapping:
+   - Update getProposalList mapping to new backend proposal format
+   - Move front-end to backend mapping into putProposal and postProposal
+   - Update postProposal mapping
+   - Update proposal Backend types and Mocks
+* STAR-529: Implement validation from OSD with validate endpoint
+   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
 * STAR-537 : Added the ability to Edit a target
 * STAR-547 : Migrate page validations into separate utility 
+* STAR-587
+   - Migrated Image Weighting to a separate component with testing coverage of 100%
+   - Updated the Observation selection to remove duplicates and update fields correctly when selected
+   - Corrected SensCalc loading issue
+   - Updated structure of the DataProduct to cater for value/unit pairs
+   - Updated screens to reflect new structure
+   - Updated display of the SensCalc for Observations
+* STAR-608 : Observation page updated for LOW / CONTINUUM
+   - Continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Tapering field should not be available on Low.
+   - Weather field should not be available for Low, only Mid
 * STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
 * Observation page: 
    - STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes

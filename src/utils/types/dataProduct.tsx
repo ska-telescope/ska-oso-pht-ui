@@ -29,11 +29,11 @@ export type DataProductSDP = {
   dataProductsSDPId?: string;
   observatoryDataProduct: boolean[];
   observationId: string[];
-  imageSizeValue: string;
+  imageSizeValue: number;
   imageSizeUnits: string;
-  pixelSizeValue: string;
+  pixelSizeValue: number;
   pixelSizeUnits: string;
-  weighting: string;
+  weighting: number;
 };
 
 export type DataProductSRC = {

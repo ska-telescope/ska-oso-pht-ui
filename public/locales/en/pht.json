@@ -95,10 +95,6 @@
     "help": "Continuum BANDWIDTH HELP",
     "label": "Continuum BandWidth",
     "range": {
-      "midLower": 0,
-      "midUpper": 0.8,
-      "lowLower": 0,
-      "lowUpper": 75,
       "error": "Value is outside of allowed range"
     }
   },
@@ -211,7 +207,8 @@
   },
   "imageSize": {
     "label": "Image Size",
-    "help": "Image Size"
+    "help": "Image Size",
+    "error": "Value must be greater than zero"
   },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",
@@ -349,7 +346,8 @@
     "label": "Pixel Size",
     "help": "PIXEL SIZE HELP",
     "notFound": "No value found",
-    "precision": 3
+    "precision": 3,
+    "unableToDetermine": "Unable to determine"
   },
   "proposalId": {
     "label": "Proposal Id"
