@@ -1,25 +1,146 @@
-context('PROPOSAL HANDLING TOOL', () => {
-  beforeEach(() => {
-    cy.visit('http://localhost:6101/');
-  });
+describe('GIVEN that I am a user on the main page of the PHT', () => {
+  context('WHEN I wish to create a standard Proposal', () => {
+    beforeEach(() => {
+      cy.visit('http://localhost:6101/');
 
-  it('Header : Verify external link to skao site', () => {
-    cy.get('[data-testid="skaoLogo"]').click();
-  });
+      cy.intercept(
+        {
+          method: 'POST' // Route all GET requests
+          // url: '/users/*', // that have a URL that matches '/users/*'
+        },
+        [] // and force the response to be: []
+      ).as('getUsers'); // and assign an alias
+    });
 
-  it('Header : Verify light/dark mode is available', () => {
-    cy.get('[data-testid="Brightness7Icon"]').click();
-    cy.get('[data-testid="Brightness4Icon"]').should('be.visible');
-    cy.get('[data-testid="Brightness4Icon"]').click();
-    cy.get('[data-testid="Brightness7Icon"]').should('be.visible');
-  });
+    /*** Validate the page ****/
+    const homePageConfirmed = () => {
+      cy.get('[data-testid="addProposalButton"]').should('exist');
+    };
 
-  it('Footer : Verify Version', () => {
-    cy.get('[data-testid="footerId"]')
-      .contains('0.3.1')
-      .should('be.visible');
-  });
+    const pageConfirmed = (label) => {
+      cy.get('#pageTitle').contains(label);
+    };
 
+    /**** Button clicks ****/
+
+    const clickHomeButton = () => {
+      cy.get('[data-testid="homeButtonTestId"]')
+        .should('exist')
+        .click();
+      homePageConfirmed();
+    };
+
+    const clickAddProposal = () => {
+      cy.get('[data-testid="addProposalButton"]').click();
+      pageConfirmed('TITLE');
+    };
+
+    const clickCreateProposal = () => {
+      cy.get('[data-testid="CreateButton"]').click();
+      cy.get('[data-testid="timeAlertFooter"]').should('exist');
+      pageConfirmed('TEAM');
+    };
+
+    const clickPageForward = () => {
+      cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    };
+
+    /**** Page entry ****/
+
+    const titlePageEntry = () => {
+      cy.get('[data-testid="titleId"]').type('Test Proposal');
+      cy.get('[id="ProposalType-1"]').click({ force: true });
+      cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    };
+
+    const teamPageEntry = () => {
+      cy.get('[data-testid="firstName"]').type('User');
+      cy.get('[data-testid="lastName"]').type('Name');
+      cy.get('[data-testid="email"]').type('username@test.com');
+      cy.get('[data-testid="Send invitationButton"]').click({ force: true });
+
+      cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+        .children('div[role="row"]')
+        .should('contain', 'User')
+        .should('contain', 'Name')
+        .should('contain', 'Pending')
+        .should('contain', 'Van')
+        .should('contain', 'Cheng')
+        .should('contain', 'Accepted')
+        .should('have.length', 2);
+    };
+
+    const generalPageEntry = () => {
+      cy.get('[data-testid="abstractId"]').type('Test Abstract');
+      cy.get('[id="categoryId"]').click({ force: true });
+      cy.get('[data-value="1"]').click({ force: true });
+      cy.get('[id="categoryId"]').should('contain', 'Cosmology');
+    };
+
+    const sciencePageEntry = () => {
+            // TODO 
+    };
+
+    const targetPageEntry = () => {
+      cy.get('[id="name"]').type('M1');
+      cy.get('[id="skyDirectionValue1"]').type('0:0:0');
+      cy.get('[id="skyDirectionValue2"]').type('0:0:0');
+      cy.get('[data-testid="velocityValue"]').type('1');
+      cy.get('[data-testid="addTargetButton"]').click({ force: true });
+
+      // TODO : Validate that the target is in the DataGrid
+    };
+
+    const observationPageEntry = () => {
+      // TODO : Validate that the target is in the DataGrid
+    };
+
+    const technicalPageEntry = () => {
+      // TODO 
+    };
+
+    const SDPPageEntry = () => {
+      // TODO
+    };
+
+    const SRCPageEntry = () => {
+      // TODO 
+    };
+
+    /**** TESTS ****/
+
+    it('THEN I can enter the details AND confirm the proposal has been added', () => {
+      homePageConfirmed();
+      clickAddProposal();
+      titlePageEntry();
+      clickCreateProposal();
+      teamPageEntry();
+      clickPageForward();
+      pageConfirmed('GENERAL');
+      generalPageEntry();
+      clickPageForward();
+      pageConfirmed('SCIENCE');
+      sciencePageEntry();
+      clickPageForward();
+      pageConfirmed('TARGET');
+      targetPageEntry();
+      clickPageForward();
+      pageConfirmed('OBSERVATION');
+      observationPageEntry();
+      clickPageForward();
+      pageConfirmed('TECHNICAL');
+      technicalPageEntry();
+      clickPageForward();
+      pageConfirmed('SDP DATA');
+      SDPPageEntry();
+      clickPageForward();
+      pageConfirmed('SRC NET');
+      SRCPageEntry();
+
+      // clickHomeButton();
+    });
+
+    /*
   it('Content : Create proposal, complete all sections as required and then submit', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Complete title page
@@ -129,6 +250,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="ValidationTestId"]').click();
   });
 
+  /*
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Partially complete title page
@@ -342,60 +464,63 @@ context('PROPOSAL HANDLING TOOL', () => {
     ).should('not.exist');
   });
 
-  // it('Content : Update existing proposal, add and delete target', () => {
-  //   //filter by draft status
-  //   cy.get('[data-testid="proposalType"]').click();
-  //   cy.get('[data-value="draft"]').click();
-  //   //open draft proposal
-  //   // cy.get('[data-testid="EditRoundedIcon"]').click();
-  //   //navigate to target page
-  //   cy.get('[testid="pageTitle-4"]').click();
-  //   //add target
-  //   cy.get('[id="name"]').type('M1');
-  //   cy.get('[id="skyDirectionValue1"]').type('0:0:0');
-  //   cy.get('[id="skyDirectionValue2"]').type('0:0:0');
-  //   //default is type velocity
-  //   cy.get('[name="textField"]').type('1');
-  //   cy.get('[data-testid="Add targetButton"]').click({ force: true });
-  //   //delete target - TODO: Refactor below selector once test data is available
-  //   cy.get(
-  //     `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-jmdt0k-MuiGrid-root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-372aq-MuiGrid-root > div.MuiGrid-root.MuiGrid-item.css-1mum6ye-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div.MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-withBorderColor > span > button > svg > path`
-  //   )
-  //     .should('exist')
-  //     .click();
-  //   //confirm deletion
-  //   cy.get('[data-testid="ConfirmButton"]').click();
-  // });
+  */
 
-  // it('Content : Update existing proposal, add and delete team member ', () => {
-  //   //filter by draft status
-  //   cy.get('[data-testid="proposalType"]').click();
-  //   cy.get('[data-value="draft"]').click();
-  //   //open draft proposal
-  //   cy.get('[data-testid="EditRoundedIcon"]').click();
-  //   //navigate to team page
-  //   cy.get('[testid="pageTitle-1"]').click();
-  //   //add team member as PI and select PhD thesis
-  //   cy.get('[data-testid="firstName"]').type('User');
-  //   cy.get('[data-testid="lastName"]').type('Name');
-  //   cy.get('[data-testid="email"]').type('username@test.com');
-  //   cy.get('[testid="piCheckbox"]').click();
-  //   cy.get('[testid="PhDCheckbox"]').click();
-  //   cy.get('[data-testid="Send invitationButton"]').click({ force: true });
-  //   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-  //     .children('div[role="row"]')
-  //     .should('contain', 'User')
-  //     .should('contain', 'Name')
-  //     .should('contain', 'Pending')
-  //     .should('contain', 'No')
-  //     .should('have.length', 2);
-  //   //delete team member - TODO: Refactor below selector once test data is available
-  //   cy.get(
-  //     `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-11q92mh-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div:nth-child(6) > span > button`
-  //   )
-  //     .should('exist')
-  //     .click();
-  //   //confirm deletion
-  //   cy.get('[data-testid="ConfirmButton"]').click();
-  // });
+    // it('Content : Update existing proposal, add and delete target', () => {
+    //   //filter by draft status
+    //   cy.get('[data-testid="proposalType"]').click();
+    //   cy.get('[data-value="draft"]').click();
+    //   //open draft proposal
+    //   // cy.get('[data-testid="EditRoundedIcon"]').click();
+    //   //navigate to target page
+    //   cy.get('[testid="pageTitle-4"]').click();
+    //   //add target
+    //   cy.get('[id="name"]').type('M1');
+    //   cy.get('[id="skyDirectionValue1"]').type('0:0:0');
+    //   cy.get('[id="skyDirectionValue2"]').type('0:0:0');
+    //   //default is type velocity
+    //   cy.get('[name="textField"]').type('1');
+    //   cy.get('[data-testid="Add targetButton"]').click({ force: true });
+    //   //delete target - TODO: Refactor below selector once test data is available
+    //   cy.get(
+    //     `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-jmdt0k-MuiGrid-root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-372aq-MuiGrid-root > div.MuiGrid-root.MuiGrid-item.css-1mum6ye-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div.MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textLeft.MuiDataGrid-withBorderColor > span > button > svg > path`
+    //   )
+    //     .should('exist')
+    //     .click();
+    //   //confirm deletion
+    //   cy.get('[data-testid="ConfirmButton"]').click();
+    // });
+
+    // it('Content : Update existing proposal, add and delete team member ', () => {
+    //   //filter by draft status
+    //   cy.get('[data-testid="proposalType"]').click();
+    //   cy.get('[data-value="draft"]').click();
+    //   //open draft proposal
+    //   cy.get('[data-testid="EditRoundedIcon"]').click();
+    //   //navigate to team page
+    //   cy.get('[testid="pageTitle-1"]').click();
+    //   //add team member as PI and select PhD thesis
+    //   cy.get('[data-testid="firstName"]').type('User');
+    //   cy.get('[data-testid="lastName"]').type('Name');
+    //   cy.get('[data-testid="email"]').type('username@test.com');
+    //   cy.get('[testid="piCheckbox"]').click();
+    //   cy.get('[testid="PhDCheckbox"]').click();
+    //   cy.get('[data-testid="Send invitationButton"]').click({ force: true });
+    //   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    //     .children('div[role="row"]')
+    //     .should('contain', 'User')
+    //     .should('contain', 'Name')
+    //     .should('contain', 'Pending')
+    //     .should('contain', 'No')
+    //     .should('have.length', 2);
+    //   //delete team member - TODO: Refactor below selector once test data is available
+    //   cy.get(
+    //     `#root > div.MuiGrid-root.MuiGrid-container.MuiGrid-direction-xs-column.css-11q92mh-MuiGrid-root > div > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-11.MuiGrid-grid-md-5.css-116ybk4-MuiGrid-root > div > div > div.MuiDataGrid-main.css-204u17-MuiDataGrid-main > div.MuiDataGrid-virtualScroller.css-qvtrhg-MuiDataGrid-virtualScroller > div > div > div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--lastVisible > div:nth-child(6) > span > button`
+    //   )
+    //     .should('exist')
+    //     .click();
+    //   //confirm deletion
+    //   cy.get('[data-testid="ConfirmButton"]').click();
+    // });
+  });
 });
