@@ -236,7 +236,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       case 'mid_band_4':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b')).value;
       default:
-        return -1;
+        return -1; // not found // TODO handle not found in edit observation?
     }
   }
 
@@ -265,16 +265,34 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
         const nS = integrationTimeSupplied.units.find(item => item.label === 'ns').value;
         return nS ? nS : -1;
       default:
-        return -1;
+        return -1; // not found
     }
   }
 
+  const getCentralFrequencyUnits = (inUnits: string) => {
+    // TODO map once we know possible values
+    // we are currently getting "m / s", should it not be MHz or similar like in sens cal?
+    return -1;
+  }
+
+  const getBandwidthUnits = (inUnits: string) => {
+    // TODO map once we know possible values
+    // we are currently getting "m / s", should it not be MHz or similar like in sens cal?
+    return -1;
+  }
+
   let results = [];
+
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
+    console.log('inValue[i].array_details.array', inValue[i].array_details.array);
+    console.log('inValue[i].array_details.subarray', inValue[i].array_details.subarray);
     const sub = OBSERVATION.array[arr - 1].subarray.find(
-      p => p.label === inValue[i].array_details.subarray
-    );
+      p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
+    ).value;
+    console.log('arr', arr);
+    console.log('sub', sub);
+
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
     if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) { // TODO remove elevation from condition once ODA updated
       const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
@@ -285,10 +303,11 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       numSubBands = midDetails.number_sub_bands;
       tapering = midDetails.tapering;
     }
-    results.push({
+
+    const obs: Observation = {
       id: inValue[i].observation_set_id,
       telescope: arr,
-      subarray: sub ? sub.value : 0,
+      subarray: sub ? sub : 0,
       type:
         inValue[i].observation_type_details?.observation_type === OBSERVATION_TYPE_BACKEND[0]
           ? 0
@@ -297,6 +316,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       observingBand: getObservingBand(inValue[i].observing_band),
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
       // TODO add central frequency unit to proposal type and map it
+      centralFrequencyUnits: getCentralFrequencyUnits(inValue[i].observation_type_details?.central_frequency.unit), // TODO map units properly
       elevation: elevation, // TODO map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
@@ -304,15 +324,17 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       numSubBands: numSubBands,
       tapering: tapering,
       bandwidth: inValue[i].observation_type_details.bandwidth.value,
+      bandwidthUnits: getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit), // TODO map units properly
       // TODO add bandwidth unit to proposal type and map it
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
-      effectiveResolution: inValue[i].observation_type_details?.effective_resolution, // effective_resolution
+      effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: '',
       continuumBandwidth: '',
       details: ''
-    } as Observation);
+    };
+    results.push(obs);
   }
   return results;
 };

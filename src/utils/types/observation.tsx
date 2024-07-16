@@ -10,6 +10,7 @@ type Observation = {
   weather?: number; // only for MID
   elevation: number; // TODO should be only for Mid => what property for LOW?
   centralFrequency: string;
+  // centralFrequencyUnits: number; // TODO
   bandwidth: number; // only for zoom
   continuumBandwidth: string; // only for continuum
   spectralAveraging?: number; // only for LOW

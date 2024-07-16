@@ -397,9 +397,13 @@ export default function AddObservation() {
   };
   const subArrayField = () => {
     const getSubArrayOptions = () => {
+      console.log('observingBand', observingBand);
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
-      let subArrayOption = OBSERVATION.array[usedTelescope - 1].subarray;
+      console.log('usedTelescope', usedTelescope);
+      console.log('isBand5', isBand5);
+      let subArrayOption = OBSERVATION.array[usedTelescope - 1]?.subarray;
+      console.log('subArrayOption', subArrayOption);
       if (usedTelescope > 0) {
         if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
         return subArrayOption.map(e => {
