@@ -61,15 +61,6 @@ async function GetCalculate(observation: Observation, target: Target) {
     return bandWidthValue.split(' ');
   }
 
-  /*
-  function getContinuumBandwidthValueUnit() {
-    console.log("::: in getContinuumBandwidthValueUnit");
-    console.log("observation.continuumBandwidth", observation.continuumBandwidth);
-    console.log("observation.continuumBandwidth.split(' ')", observation.continuumBandwidth.split(' '));
-    return observation.continuumBandwidth.split(' ');
-  }
-  */
-
   /*********************************************************** MID *********************************************************/
 
   interface ModeSpecificParametersMid {

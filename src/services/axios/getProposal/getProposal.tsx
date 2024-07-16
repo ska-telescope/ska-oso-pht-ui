@@ -225,7 +225,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
   }
 
-  const getObservingBand = (inObsBand) => {
+  const getObservingBand = (inObsBand: string): number => {
     switch(inObsBand) {
       case 'low_band':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
@@ -242,7 +242,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     }
   }
 
-  const getIntegrationTimeUnits = (InUnits: string) => {
+  const getIntegrationTimeUnits = (InUnits: string): number => {
     const integrationTimeSupplied = OBSERVATION.Supplied.find(item => item.label === 'Integration Time');
     switch(InUnits) {
       case 'd':
@@ -271,18 +271,10 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     }
   }
 
-  const getCentralFrequencyUnits = (inUnits: string) => {
-    // TODO map once we know possible values
-    // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal?
-    // return -1;
-    return 'MHz';
-  }
-
-  const getBandwidthUnits = (inUnits: string) => {
-    // TODO map once we know possible values
-    // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal and ad observation page?
-    // return -1;
-    return 'MHz';
+  const getFrequencyAndBandwidthUnits = (inUnits: string, telescope: number, observingBand: number) => {
+    const array = OBSERVATION.array.find(item => item.value === telescope);
+    const units = array.CentralFrequencyAndBandWidthUnits.find(item => item.label.toLowerCase() === inUnits.toLowerCase())?.label;
+    return units ? units : BANDWIDTH_TELESCOPE[observingBand].units;
   }
 
   let results = [];
@@ -293,6 +285,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
     ).value;
     const type = inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() === OBSERVATION_TYPE_BACKEND[0].toLowerCase() ? 0: 1;
+    const observingBand = getObservingBand(inValue[i].observing_band);
 
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
     if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) { // TODO remove elevation from condition once ODA updated
@@ -311,10 +304,10 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       subarray: sub ? sub : 0,
       type: type,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
-      observingBand: getObservingBand(inValue[i].observing_band),
+      observingBand: observingBand,
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
       // TODO add central frequency unit to proposal type and map it
-      centralFrequencyUnits: getCentralFrequencyUnits(inValue[i].observation_type_details?.central_frequency.unit), // TODO map units properly
+      centralFrequencyUnits: getFrequencyAndBandwidthUnits(inValue[i].observation_type_details?.central_frequency.unit, arr, observingBand), // TODO map units properly
       elevation: elevation, // TODO map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
@@ -322,17 +315,15 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       numSubBands: numSubBands,
       tapering: tapering,
       bandwidth: type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
-      bandwidthUnits: type === TYPE_ZOOM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined, // TODO map units properly
+      bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined, // TODO map units properly
       // TODO add bandwidth unit to proposal type and map it
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      linked: '', // what to map to? currently hardcoded ato 0 on AddObservation page
+      linked: '', // what to map to? currently hardcoded at 0 on AddObservation page
       continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
-      // TODO add continuum bandwidth units to proposal type and map it
-      // TODO map units properly
-      continuumBandwidthUnits: type === TYPE_CONTINUUM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined,
+      continuumBandwidthUnits: type === TYPE_CONTINUUM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
       details: inValue[i].details
     };
     results.push(obs);

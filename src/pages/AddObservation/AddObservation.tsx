@@ -399,13 +399,9 @@ export default function AddObservation() {
   };
   const subArrayField = () => {
     const getSubArrayOptions = () => {
-      console.log('observingBand', observingBand);
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
-      console.log('usedTelescope', usedTelescope);
-      console.log('isBand5', isBand5);
       let subArrayOption = OBSERVATION.array[usedTelescope - 1]?.subarray;
-      console.log('subArrayOption', subArrayOption);
       if (usedTelescope > 0) {
         if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
         return subArrayOption.map(e => {
@@ -1188,7 +1184,6 @@ export default function AddObservation() {
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
         bandwidth: bandwidth,
-        // continuumBandwidth: `${continuumBandwidth} ${BANDWIDTH_TELESCOPE[observingBand].units}`,
         continuumBandwidth: continuumBandwidth,
         continuumBandwidthUnits: BANDWIDTH_TELESCOPE[observingBand].units,
         spectralAveraging: spectralAveraging,
@@ -1204,7 +1199,6 @@ export default function AddObservation() {
         numStations: numOfStations,
         details: details
       };
-      console.log('created proposal', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation],
