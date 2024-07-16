@@ -94,6 +94,7 @@ test_e2e:
     policy: pull
   before_script:
     - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
     - yarn start &
