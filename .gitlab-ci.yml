@@ -93,10 +93,10 @@ test_e2e:
       - node_modules/
     policy: pull
   before_script:
+    - mkdir -p build/reports
     - yarn install --frozen-lockfile
   script:
     - yarn start &
-    - yarn test:e2e:headless
     - yarn test:cypress:e2e:ci
     - cp build/tests/e2e-tests.xml build/reports/e2e-coverage.xml
 

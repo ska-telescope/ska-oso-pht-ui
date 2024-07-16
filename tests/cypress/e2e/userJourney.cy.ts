@@ -3,11 +3,50 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.visit('http://localhost:6101/');
   });
 
+  /*** Validate the page ****/
+  const homePageConfirmed = () => {
+    cy.get('[data-testid="addProposalButton"]').should('exist');
+  }
+
+  const titlePageConfirmed = () => {
+    cy.get('#pageTitle').contains('TITLE');
+  }
+
+  /**** Button clicks ****/
+
+  const clickHomeButton = () => {
+    cy.get('[data-testid="homeButtonTestId"]').should('exist').click();
+    homePageConfirmed();
+  }
+
+  const clickAddProposal = () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    titlePageConfirmed();
+  }
+
+  const clickCreateProposal = () => {
+    cy.get('[data-testid="CreateButton"]').click();
+    cy.get('[data-testid="timeAlertFooter"]').should('exist');
+    titlePageConfirmed();
+  }
+
+  /**** Page entry ****/
+
+  const titlePageEntry = () => {
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+  }
+
+  /**** TESTS ****/
+
   it('Header : Verify external link to skao site', () => {
+    homePageConfirmed();
     cy.get('[data-testid="skaoLogo"]').click();
   });
 
   it('Header : Verify light/dark mode is available', () => {
+    homePageConfirmed();
     cy.get('[data-testid="Brightness7Icon"]').click();
     cy.get('[data-testid="Brightness4Icon"]').should('be.visible');
     cy.get('[data-testid="Brightness4Icon"]').click();
@@ -15,18 +54,27 @@ context('PROPOSAL HANDLING TOOL', () => {
   });
 
   it('Footer : Verify Version', () => {
+    homePageConfirmed();
     cy.get('[data-testid="footerId"]')
       .contains('0.3.1')
       .should('be.visible');
   });
 
-  it('Add Proposal : Click button', () => {
-    cy.get('[data-testid="addProposalButton"]').click();
-    cy.get('[data-testid="titleId"]').type('Test Proposal');
-    cy.get('[id="ProposalType-1"]').click({ force: true });
-    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
-    cy.get('[data-testid="CreateButton"]').click();
-    // TODO : Need to check the notification pop's up.
+  it('Add Proposal : Title & type only', () => {
+    homePageConfirmed();
+    clickAddProposal();
+    titlePageEntry();
+    clickCreateProposal();
+    clickHomeButton();
+  });
+
+  it('Add Proposal : Simple progression', () => {
+    homePageConfirmed();
+    clickAddProposal();
+    titlePageEntry();
+    clickCreateProposal();
+
+    clickHomeButton();
   });
 
   /*
