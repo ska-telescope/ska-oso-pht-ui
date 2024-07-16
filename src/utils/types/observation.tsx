@@ -9,8 +9,8 @@ type Observation = {
   observingBand: number;
   weather?: number; // only for MID
   elevation: number; // TODO should be only for Mid => what property for LOW?
-  centralFrequency: string;
-  // centralFrequencyUnits: number; // TODO
+  centralFrequency: number;
+  centralFrequencyUnits: number;
   bandwidth: number; // only for zoom
   continuumBandwidth: number; // only for continuum
   continuumBandwidthUnits: number; // only for continuum
@@ -38,7 +38,8 @@ export const NEW_OBSERVATION: Observation = {
   observingBand: 0,
   weather: 0,
   elevation: 0,
-  centralFrequency: 'DUMMY',
+  centralFrequency: 0,
+  centralFrequencyUnits: 0,
   bandwidth: 0,
   continuumBandwidth: 0,
   continuumBandwidthUnits: 0,

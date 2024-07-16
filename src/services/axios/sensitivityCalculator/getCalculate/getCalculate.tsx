@@ -62,11 +62,13 @@ async function GetCalculate(observation: Observation, target: Target) {
     return bandWidthValue?.split(' ');
   }
 
-  const getFrequencyAndBandwidthUnits = () => {
+  /*
+  const getFrequencyAndBandwidthUnits = (unitsField) => {
     const array = OBSERVATION.array.find(item => item.value === observation.telescope);
-    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === observation.continuumBandwidthUnits)?.label;
+    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)?.label;
     return units;
   }
+    */
 
   /*********************************************************** MID *********************************************************/
 
@@ -85,9 +87,10 @@ async function GetCalculate(observation: Observation, target: Target) {
         Number(observation.spectralResolution.split(' ')[0]) * 1000
       ).toString(); // resolution should be sent in Hz
     } else {
-      const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
       mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
-        .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency, 
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(observation.centralFrequencyUnits, observation.telescope))
         .toString();
       // convert Khz to Hz as effective Resolution should be sent in Hz
       const effectiveResMultiplier = String(observation.effectiveResolution).includes('kHz')
@@ -108,7 +111,6 @@ async function GetCalculate(observation: Observation, target: Target) {
       Number(observation.integrationTime),
       iTimeUnits
     );
-    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
     const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit(); // only for zoom
     const params = {
       rx_band: `Band ${observation.observingBand}`,
@@ -118,11 +120,15 @@ async function GetCalculate(observation: Observation, target: Target) {
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       frequency: sensCalHelpers.format
-        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency, 
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(observation.centralFrequencyUnits, observation.telescope))
         .toString(),
       bandwidth: sensCalHelpers.format.convertBandwidthToHz(
         observation.type === TYPE_ZOOM ? bandwidthValueUnit[0] : observation.continuumBandwidth,
-        observation.type === TYPE_ZOOM ? bandwidthValueUnit[1] : getFrequencyAndBandwidthUnits(),
+        observation.type === TYPE_ZOOM ? bandwidthValueUnit[1] : sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+          observation.continuumBandwidthUnits, 
+          observation.telescope),
       ), // mid zoom and mid continuum bandwidth should be sent in Hz
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
@@ -161,7 +167,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
         observation.continuumBandwidth,
-        getFrequencyAndBandwidthUnits()
+        sensCalHelpers.map.getFrequencyAndBandwidthUnits(observation.continuumBandwidthUnits, observation.telescope)
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
@@ -187,7 +193,7 @@ async function GetCalculate(observation: Observation, target: Target) {
         .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
         ?.toString(),
       pointing_centre: pointingCentre(),
-      freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
+      freq_centre: observation.centralFrequency.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     };

@@ -244,6 +244,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
   }
 
   const getIntegrationTimeUnits = (InUnits: string): number => {
+    // TODO revisit with correct data as PDM should accept any string
     const integrationTimeSupplied = OBSERVATION.Supplied.find(item => item.label === 'Integration Time');
     switch(InUnits) {
       case 'd':
@@ -309,9 +310,8 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       type: type,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: observingBand,
-      centralFrequency: inValue[i].observation_type_details?.central_frequency.value.toString(),
-      // TODO add central frequency unit to proposal type and map it
-      centralFrequencyUnits: getFrequencyAndBandwidthUnits(inValue[i].observation_type_details?.central_frequency.unit, arr, observingBand), // TODO map units properly
+      centralFrequency: inValue[i].observation_type_details?.central_frequency.value,
+      centralFrequencyUnits: getFrequencyAndBandwidthUnits(inValue[i].observation_type_details?.central_frequency.unit, arr, observingBand),
       elevation: elevation, // TODO map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
@@ -363,7 +363,6 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
-    // observations: [], // TODO // getObservations(inRec.info.observation_sets), // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
     observations: getObservations(inRec.info.observation_sets),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO
