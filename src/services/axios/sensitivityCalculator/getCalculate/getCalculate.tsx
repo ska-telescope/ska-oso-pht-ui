@@ -62,6 +62,7 @@ async function GetCalculate(observation: Observation, target: Target) {
   }
 
   function getContinuumBandwidthValueUnit() {
+    console.log("observation.continuumBandwidth.split(' ')", observation.continuumBandwidth.split(' '));
     return observation.continuumBandwidth.split(' ');
   }
 

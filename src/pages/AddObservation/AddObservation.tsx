@@ -1241,6 +1241,7 @@ export default function AddObservation() {
             .find(array => array.value === usedTelescope)
             .CentralFrequencyAndBandWidthUnits.find(unit => unit.value === continuumUnits).label
         }`,
+        continuumBandwidthUnits: OBSERVATION.array.find(array => array.value === usedTelescope).CentralFrequencyAndBandWidthUnits.find(unit => unit.value === continuumUnits).value,
         spectralAveraging: spectralAveraging,
         tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
@@ -1254,6 +1255,7 @@ export default function AddObservation() {
         numStations: numOfStations,
         details: details
       };
+      console.log('created proposal', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation],

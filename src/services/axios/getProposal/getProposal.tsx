@@ -326,7 +326,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      linked: '',
+      linked: '', // what to map to? currently hardcoded ato 0 on AddObservation page
       continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value.toString() : undefined,
       // TODO add continuum bandwidth units to proposal type and map it
       // TODO map units properly
