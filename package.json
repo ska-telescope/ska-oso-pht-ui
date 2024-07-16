@@ -23,15 +23,14 @@
     "start": "npx react-inject-env set -d public/ && NODE_ENV=test webpack serve --mode development --open",
     "test:component:headless": "cypress run --component --headless --browser chrome --config video=false",
     "test:component:headless::chromium": "cypress run --component --headless --browser chromium --config video=false",
-    "test:cypress:e2e:ci": "cypress run --e2e --headless --browser chrome --reporter junit --config video=false --reporter-options mochaFile=build/tests/e2e-tests.xml",
     "test:coverage:report": "npx nyc report --report-dir=build/reports --reporter=html",
     "test:coverage:report:ci": "npx nyc report --report-dir=build/reports --reporter=cobertura",
     "test:coverage:summary": "npx nyc report --reporter=text-summary",
     "test:cypress:component:ci": "cypress run --component --headless --browser chrome --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:cypress:component:chromium": "cypress run --component --headless --browser chromium --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:headless": "yarn cypress:run",
-    "test:e2e:headless": "cypress run --e2e --headless --browser chrome --config video=false",
-    "test:e2e:headless:chromium": "cypress run --e2e --headless --browser chromium --config video=false"
+    "test:e2e:headless": "cypress run --e2e --headless --browser chrome --reporter junit --config video=false --reporter-options mochaFile=build/tests/e2e-tests.xml",
+    "test:e2e:headless:chromium": "cypress run --e2e --headless --browser chromium --reporter junit --config video=false --reporter-options mochaFile=build/tests/e2e-tests.xml"
   },
   "resolutions": {
     "@cypress/request": "3.x.x",
@@ -69,6 +68,7 @@
     "react-i18next": "^11.15.3",
     "react-latex-next": "^3.0.0",
     "react-pdf": "^5",
+    "react-router": "^6.25.0",
     "react-router-dom": "^6.23.0",
     "react-scroll": "^1.9.0",
     "react-test-renderer": "^18.2.0",

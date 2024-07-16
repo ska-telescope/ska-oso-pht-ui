@@ -34,6 +34,7 @@ yarn-error.log*
 /.nyc_output/*
 
 public/env.js
+*.cy.ts
 
 # built docs
 /docs/build
