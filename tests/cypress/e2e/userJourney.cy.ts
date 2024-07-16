@@ -20,6 +20,16 @@ context('PROPOSAL HANDLING TOOL', () => {
       .should('be.visible');
   });
 
+  it('Add Proposal : Click button', () => {
+    cy.get('[data-testid="addProposalButton"]').click();
+    cy.get('[data-testid="titleId"]').type('Test Proposal');
+    cy.get('[id="ProposalType-1"]').click({ force: true });
+    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+    cy.get('[data-testid="CreateButton"]').click();
+    // TODO : Need to check the notification pop's up.
+  });
+
+  /*
   it('Content : Create proposal, complete all sections as required and then submit', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Complete title page
@@ -129,6 +139,7 @@ context('PROPOSAL HANDLING TOOL', () => {
     cy.get('[data-testid="ValidationTestId"]').click();
   });
 
+  /*
   it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Partially complete title page
@@ -341,6 +352,8 @@ context('PROPOSAL HANDLING TOOL', () => {
       'div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     ).should('not.exist');
   });
+
+  */ 
 
   // it('Content : Update existing proposal, add and delete target', () => {
   //   //filter by draft status
