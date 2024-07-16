@@ -16,6 +16,7 @@ import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
+import { telescope } from '@ska-telescope/ska-gui-local-storage';
 
 const URL_CALCULATE = `calculate`;
 
@@ -56,9 +57,15 @@ async function GetCalculate(observation: Observation, target: Target) {
       item => item.value === observation.telescope
     ).bandWidth;
     const bandWidthValue = telescopeBandwidthValues.find(
-      item => item.value === observation.bandwidth
-    ).label;
-    return bandWidthValue.split(' ');
+      item => item.value === observation?.bandwidth
+    )?.label;
+    return bandWidthValue?.split(' ');
+  }
+
+  const getFrequencyAndBandwidthUnits = () => {
+    const array = OBSERVATION.array.find(item => item.value === observation.telescope);
+    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === observation.continuumBandwidthUnits)?.label;
+    return units;
   }
 
   /*********************************************************** MID *********************************************************/
@@ -102,6 +109,7 @@ async function GetCalculate(observation: Observation, target: Target) {
       iTimeUnits
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
+    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit(); // only for zoom
     const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: rightAscension(),
@@ -113,8 +121,8 @@ async function GetCalculate(observation: Observation, target: Target) {
         .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
       bandwidth: sensCalHelpers.format.convertBandwidthToHz(
-        observation.type === TYPE_ZOOM ? observation.bandwidth : observation.continuumBandwidth,
-        observation.type === TYPE_ZOOM ? observation.bandwidthUnits : observation.continuumBandwidthUnits,
+        observation.type === TYPE_ZOOM ? bandwidthValueUnit[0] : observation.continuumBandwidth,
+        observation.type === TYPE_ZOOM ? bandwidthValueUnit[1] : getFrequencyAndBandwidthUnits(),
       ), // mid zoom and mid continuum bandwidth should be sent in Hz
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
@@ -153,7 +161,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
         observation.continuumBandwidth,
-        observation.continuumBandwidthUnits
+        getFrequencyAndBandwidthUnits()
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();

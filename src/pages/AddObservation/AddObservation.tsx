@@ -1185,7 +1185,10 @@ export default function AddObservation() {
         }`,
         bandwidth: bandwidth,
         continuumBandwidth: continuumBandwidth,
-        continuumBandwidthUnits: BANDWIDTH_TELESCOPE[observingBand].units,
+        continuumBandwidthUnits: OBSERVATION.array.find(
+          item => item.value === usedTelescope).CentralFrequencyAndBandWidthUnits.find(
+            u => u.label === BANDWIDTH_TELESCOPE[observingBand].units
+          ).value,
         spectralAveraging: spectralAveraging,
         tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
@@ -1199,6 +1202,7 @@ export default function AddObservation() {
         numStations: numOfStations,
         details: details
       };
+      console.log('newObservation', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation],

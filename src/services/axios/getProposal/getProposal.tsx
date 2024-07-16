@@ -203,6 +203,7 @@ const getSDPOptions = (options: string[]): boolean[] => {
 }
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
+  // TODO fix type errors
   return inValue.map((dp, index) => (
     { 
       id: index + 1, // TODO check if index ok or if we should extract the number in data_products_sdp_id
@@ -271,10 +272,13 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     }
   }
 
-  const getFrequencyAndBandwidthUnits = (inUnits: string, telescope: number, observingBand: number) => {
+  const getFrequencyAndBandwidthUnits = (inUnits: string, telescope: number, observingBand: number): number => {
     const array = OBSERVATION.array.find(item => item.value === telescope);
-    const units = array.CentralFrequencyAndBandWidthUnits.find(item => item.label.toLowerCase() === inUnits.toLowerCase())?.label;
-    return units ? units : BANDWIDTH_TELESCOPE[observingBand].units;
+    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.label.toLowerCase() === inUnits.toLowerCase())?.value;
+    // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
+    return units ? units : array.CentralFrequencyAndBandWidthUnits.find(
+      item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+    )?.value
   }
 
   let results = [];
@@ -315,8 +319,8 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       numSubBands: numSubBands,
       tapering: tapering,
       bandwidth: type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
-      bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined, // TODO map units properly
-      // TODO add bandwidth unit to proposal type and map it
+      // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
+      // TODO ask about zoom bandwidthUnits not needed
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
