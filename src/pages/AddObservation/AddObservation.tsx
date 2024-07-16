@@ -27,6 +27,7 @@ import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
+import Observation from 'utils/types/observation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -1174,7 +1175,7 @@ export default function AddObservation() {
   const pageFooter = () => {
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      const newObservation = {
+      const newObservation: Observation = {
         id: myObsId,
         telescope: usedTelescope,
         subarray: subarrayConfig,
@@ -1187,7 +1188,9 @@ export default function AddObservation() {
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
         }`,
         bandwidth: bandwidth,
-        continuumBandwidth: `${continuumBandwidth} ${BANDWIDTH_TELESCOPE[observingBand].units}`,
+        // continuumBandwidth: `${continuumBandwidth} ${BANDWIDTH_TELESCOPE[observingBand].units}`,
+        continuumBandwidth: continuumBandwidth,
+        continuumBandwidthUnits: BANDWIDTH_TELESCOPE[observingBand].units,
         spectralAveraging: spectralAveraging,
         tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,

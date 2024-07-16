@@ -61,10 +61,14 @@ async function GetCalculate(observation: Observation, target: Target) {
     return bandWidthValue.split(' ');
   }
 
+  /*
   function getContinuumBandwidthValueUnit() {
+    console.log("::: in getContinuumBandwidthValueUnit");
+    console.log("observation.continuumBandwidth", observation.continuumBandwidth);
     console.log("observation.continuumBandwidth.split(' ')", observation.continuumBandwidth.split(' '));
     return observation.continuumBandwidth.split(' ');
   }
+  */
 
   /*********************************************************** MID *********************************************************/
 
@@ -107,11 +111,6 @@ async function GetCalculate(observation: Observation, target: Target) {
       iTimeUnits
     );
     const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
-    const bandwidthValueUnit: string[] =
-      observation.type === TYPE_ZOOM
-        ? getZoomBandwidthValueUnit()
-        : getContinuumBandwidthValueUnit();
-
     const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: rightAscension(),
@@ -123,8 +122,8 @@ async function GetCalculate(observation: Observation, target: Target) {
         .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
         .toString(),
       bandwidth: sensCalHelpers.format.convertBandwidthToHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
+        observation.type === TYPE_ZOOM ? observation.bandwidth : observation.continuumBandwidth,
+        observation.type === TYPE_ZOOM ? observation.bandwidthUnits : observation.continuumBandwidthUnits,
       ), // mid zoom and mid continuum bandwidth should be sent in Hz
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
@@ -161,11 +160,9 @@ async function GetCalculate(observation: Observation, target: Target) {
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
-      const bandwidthValueUnit: string[] = getContinuumBandwidthValueUnit();
-      // const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
       mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
+        observation.continuumBandwidth,
+        observation.continuumBandwidthUnits
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
@@ -226,8 +223,8 @@ async function GetCalculate(observation: Observation, target: Target) {
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {
-      title: e.response.data.title,
-      detail: e.response.data.detail
+      title: e.response?.data?.title,
+      detail: e.response?.data?.detail
     };
     return { error: errorObject };
   }

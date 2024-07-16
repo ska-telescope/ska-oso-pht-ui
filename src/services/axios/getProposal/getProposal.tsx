@@ -274,13 +274,15 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
   const getCentralFrequencyUnits = (inUnits: string) => {
     // TODO map once we know possible values
     // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal?
-    return -1;
+    // return -1;
+    return 'MHz';
   }
 
   const getBandwidthUnits = (inUnits: string) => {
     // TODO map once we know possible values
     // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal and ad observation page?
-    return -1;
+    // return -1;
+    return 'MHz';
   }
 
   let results = [];
@@ -327,7 +329,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: '', // what to map to? currently hardcoded ato 0 on AddObservation page
-      continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value.toString() : undefined,
+      continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
       // TODO add continuum bandwidth units to proposal type and map it
       // TODO map units properly
       continuumBandwidthUnits: type === TYPE_CONTINUUM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined,

@@ -12,7 +12,9 @@ type Observation = {
   centralFrequency: string;
   // centralFrequencyUnits: number; // TODO
   bandwidth: number; // only for zoom
-  continuumBandwidth: string; // only for continuum
+  bandwidthUnits: string; // only for zoom
+  continuumBandwidth: number; // only for continuum
+  continuumBandwidthUnits: string; // only for continuum
   spectralAveraging?: number; // only for LOW
   tapering?: string; // only for MID
   imageWeighting: number;
@@ -39,7 +41,9 @@ export const NEW_OBSERVATION: Observation = {
   elevation: 0,
   centralFrequency: 'DUMMY',
   bandwidth: 0,
-  continuumBandwidth: 'DUMMY',
+  bandwidthUnits: 'DUMMY',
+  continuumBandwidth: 0,
+  continuumBandwidthUnits: 'DUMMY',
   spectralAveraging: 0,
   tapering: 'DUMMY',
   imageWeighting: 0,

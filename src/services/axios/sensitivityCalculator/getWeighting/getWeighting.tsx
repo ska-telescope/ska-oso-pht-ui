@@ -134,8 +134,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {
-      title: e.response.data.title,
-      detail: e.response.data.detail
+      title: e?.response?.data?.title,
+      detail: e?.response?.data?.detail
     };
     return { error: errorObject };
   }
