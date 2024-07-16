@@ -273,20 +273,14 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
 
   const getCentralFrequencyUnits = (inUnits: string) => {
     // TODO map once we know possible values
-    // we are currently getting "m / s", should it not be MHz or similar like in sens cal?
+    // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal?
     return -1;
   }
 
   const getBandwidthUnits = (inUnits: string) => {
     // TODO map once we know possible values
-    // we are currently getting "m / s", should it not be MHz or similar like in sens cal?
+    // we are currently getting "m / s", should it not be MHz, KHz or similar like in sens cal and ad observation page?
     return -1;
-  }
-
-  const getBandwidth = (InBandwidth, inObsType) => {
-    console.log('InBandwidth', InBandwidth);
-    console.log('inObsType', inObsType);
-    const type = inObsType.toLocaleLowerCase() === OBSERVATION_TYPE_BACKEND[0].toLowerCase() ? 0: 1;
   }
 
   let results = [];
@@ -337,7 +331,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       // TODO add continuum bandwidth units to proposal type and map it
       // TODO map units properly
       continuumBandwidthUnits: type === TYPE_CONTINUUM ? getBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit) : undefined,
-      details: ''
+      details: inValue[i].details
     };
     results.push(obs);
   }
