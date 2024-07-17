@@ -3,7 +3,7 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 import { helpers } from '../../../utils/helpers';
 
 async function PutProposal(proposal, status?) {
-  if (USE_LOCAL_DATA) {
+  if (window.Cypress || USE_LOCAL_DATA) {
     return 'success';
   }
 

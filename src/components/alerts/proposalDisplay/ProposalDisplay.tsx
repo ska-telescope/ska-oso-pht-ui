@@ -127,7 +127,11 @@ export default function ProposalDisplay({
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
-          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
+          <ConfirmButton
+            action={handleConfirm}
+            testId="displayConfirmationButton"
+            title={onConfirmLabel}
+          />
         </Grid>
       )}
     </Grid>
