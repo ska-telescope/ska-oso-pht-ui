@@ -17,7 +17,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       cy.get('[data-testid="addProposalButton"]').should('exist');
     };
 
-    const pageConfirmed = (label) => {
+    const pageConfirmed = label => {
       cy.get('#pageTitle').contains(label);
     };
 
@@ -78,7 +78,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const sciencePageEntry = () => {
-            // TODO 
+      // TODO
     };
 
     const targetPageEntry = () => {
@@ -96,7 +96,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const technicalPageEntry = () => {
-      // TODO 
+      // TODO
     };
 
     const SDPPageEntry = () => {
@@ -104,7 +104,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const SRCPageEntry = () => {
-      // TODO 
+      // TODO
     };
 
     /**** TESTS ****/

@@ -3,7 +3,7 @@ import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
-import { SensCalcResults } from '../../../utils/types/sensCalcResults'; 
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
@@ -12,7 +12,6 @@ import {
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-
 
 const SENSCALC_ERROR: SensCalcResults = {
   title: '',
@@ -76,7 +75,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
       title: target.name,
       status: STATUS_ERROR
     });
-    return results as SensCalcResult;
+    return results as SensCalcResults;
   }
 }
 

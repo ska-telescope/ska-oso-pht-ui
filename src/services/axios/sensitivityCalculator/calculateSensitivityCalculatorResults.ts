@@ -1,6 +1,6 @@
 import sensCalHelpers from './sensCalHelpers';
 import Observation from '../../../utils/types/observation';
-import { SensCalcResults } from '../../../utils/types/sensCalcResults'; 
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   OBS_TYPES,
   STATUS_OK,
