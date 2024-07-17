@@ -227,12 +227,14 @@ const getObservations = (
         )?.value;
   };
 
-  const getObservingBand = (inObsBand: string): number => {
+  const getObservingBand = (inObsBand: string, inObsArray: string): number => {
+    const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1')).value;
+    const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
     switch (inObsBand) {
       case 'low_band':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
+        return lowObsBand;
       case 'mid_band_1':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1')).value;
+        return mid1ObsBand;
       case 'mid_band_2':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2')).value;
       case 'mid_band_3':
@@ -240,7 +242,8 @@ const getObservations = (
       case 'mid_band_4':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b')).value;
       default:
-        return -1; // not found // TODO handle not found in edit observation?
+        // fall back: send low band for low array and mid band 1 for mid array
+        return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
     }
   };
 
@@ -312,7 +315,7 @@ const getObservations = (
       OBSERVATION_TYPE_BACKEND[0].toLowerCase()
         ? 0
         : 1;
-    const observingBand = getObservingBand(inValue[i].observing_band);
+    const observingBand = getObservingBand(inValue[i].observing_band, inValue[i].array_details.array);
 
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
     if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) {
