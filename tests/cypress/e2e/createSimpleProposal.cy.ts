@@ -13,13 +13,16 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     });
 
     /*** Validate the page ****/
+
     const homePageConfirmed = () => {
       cy.get('[data-testid="addProposalButton"]').should('exist');
     };
 
-    const pageConfirmed = (label) => {
+    const pageConfirmed = label => {
       cy.get('#pageTitle').contains(label);
     };
+
+    const verifyProposalDisplayPage = () => {};
 
     /**** Button clicks ****/
 
@@ -28,6 +31,11 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
         .should('exist')
         .click();
       homePageConfirmed();
+    };
+
+    const clickAddObservation = () => {
+      cy.get('[data-testid="addObservationButton"]').click();
+      pageConfirmed('OBSERVATION');
     };
 
     const clickAddProposal = () => {
@@ -41,11 +49,57 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       pageConfirmed('TEAM');
     };
 
+    const clickObservationSetup = () => {
+      cy.get('[data-testid="addObservationButton"]').click();
+      pageConfirmed('OBSERVATION SETUP');
+    };
+
     const clickPageForward = () => {
       cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     };
 
+    const clickValidateButton = () => {
+      cy.get('[data-testid="ValidationTestId"]').click();
+    };
+
+    const submitButtonClick = () => {
+      cy.get('[data-testid="SubmitTestId"]').click();
+    };
+
+    const submitButtonDisabled = () => {
+      cy.get('[data-testid="SubmitTestId"]').should('be.disabled');
+    };
+
+    const clickSubmitConfirmationButton = () => {
+      cy.get('[data-testid="displayConfirmationButton"]').click();
+    };
+
     /**** Page entry ****/
+
+    const addObservationEntry = () => {
+      /*
+      cy.get('[id="arrayConfig"]').should('contain', 'MID');
+      cy.get('[id="subarrayConfig"]').should('contain', 'AA0.5');
+      cy.get('[id="observingBand"]').should('contain', 'Band 1 (0.35 - 1.05 GHz)');
+      cy.get('[data-testid="elevation"]').type('1');
+      cy.get('[data-testid="weather"]').type('Cold');
+      cy.get('[id="observationType"]').should('contain', 'Continuum');
+      cy.get('[data-testid="suppliedType"]').should('contain', 'Integration Time');
+      cy.get('[data-testid="suppliedValue"]').type('1');
+      cy.get('[data-testid="suppliedUnits"]').should('contain', 'd');
+      cy.get('[data-testid="centralFrequency"]').type('1');
+      cy.get('[data-testid="frequencyUnits"]').should('contain', 'GHz');
+      cy.get('[data-testid="continuumBandwidth"]').type('1');
+      cy.get('[data-testid="continuumUnits"]').should('contain', 'GHz');
+      cy.get('[id="bandwidth"]').should('contain', '3.125 MHz');
+      cy.get('[id="spectralResolution"]').should('contain', '0.21 KHz');
+      cy.get('[id="spectral"]').should('contain', '1');
+      cy.get('[data-testid="effective"]').type('1');
+      cy.get('[id="tapering"]').should('contain', 'No tapering');
+      cy.get('[aria-label="EntryField"]').should('contain', '0');
+      cy.get('[id="imageWeighting"]').should('contain', 'Uniform');
+      */
+    };
 
     const titlePageEntry = () => {
       cy.get('[data-testid="titleId"]').type('Test Proposal');
@@ -78,25 +132,64 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const sciencePageEntry = () => {
-            // TODO 
+      // TODO
     };
 
-    const targetPageEntry = () => {
+    const targetPageEntryManual = () => {
       cy.get('[id="name"]').type('M1');
       cy.get('[id="skyDirectionValue1"]').type('0:0:0');
       cy.get('[id="skyDirectionValue2"]').type('0:0:0');
       cy.get('[data-testid="velocityValue"]').type('1');
       cy.get('[data-testid="addTargetButton"]').click({ force: true });
 
-      // TODO : Validate that the target is in the DataGrid
+      cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+        .children('div[role="row"]')
+        .should('contain', 'M1')
+        .should('contain', '0:0:0')
+        .should('contain', '0:0:0')
+        .should('have.length', 1);
     };
 
-    const observationPageEntry = () => {
-      // TODO : Validate that the target is in the DataGrid
+    const targetPageEntryFile = () => {
+      cy.get('input[type="file"]').as('fileInput');
+
+      cy.fixture('target_equatorial_valid.csv').then(fileContent => {
+        cy.get('@fileInput').attachFile({
+          fileContent: fileContent.toString(),
+          fileName: 'target_equatorial_valid.csv',
+          mimeType: 'text/csv'
+        });
+      });
+      cy.get('[data-testid="csvUploadUploadButton"]').click();
+
+      cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+        .children('div[role="row"]')
+        .should('contain', 'equatorial1')
+        .should('contain', '05:34:30.900')
+        .should('contain', '+22:00:53.000')
+        .should('have.length', 8);
+    };
+
+    const observationPageTargets = () => {
+      cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+        .children('div[role="row"]')
+        .should('contain', 'AA4')
+        .should('contain', 'Continuum')
+        .should('contain', 'M1')
+        .should('have.length', 9);
+
+      /*
+      cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'equatorial1')
+      .should('contain', '05:34:30.900')
+      .should('contain', '+22:00:53.000')
+      .should('have.length', 8);
+      */
     };
 
     const technicalPageEntry = () => {
-      // TODO 
+      // TODO
     };
 
     const SDPPageEntry = () => {
@@ -104,7 +197,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
     };
 
     const SRCPageEntry = () => {
-      // TODO 
+      // Page is empty so nothing to do here.
     };
 
     /**** TESTS ****/
@@ -123,10 +216,15 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       sciencePageEntry();
       clickPageForward();
       pageConfirmed('TARGET');
-      targetPageEntry();
+      targetPageEntryManual();
+      cy.get('[id="simple-tab-1"]').click();
+      targetPageEntryFile();
       clickPageForward();
       pageConfirmed('OBSERVATION');
-      observationPageEntry();
+      clickObservationSetup();
+      addObservationEntry();
+      clickAddObservation();
+      observationPageTargets();
       clickPageForward();
       pageConfirmed('TECHNICAL');
       technicalPageEntry();
@@ -136,129 +234,15 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       clickPageForward();
       pageConfirmed('SRC NET');
       SRCPageEntry();
-
-      // clickHomeButton();
+      submitButtonDisabled();
+      clickValidateButton();
+      submitButtonClick();
+      verifyProposalDisplayPage();
+      clickSubmitConfirmationButton();
+      homePageConfirmed();
     });
 
     /*
-  it('Content : Create proposal, complete all sections as required and then submit', () => {
-    cy.get('[data-testid="addProposalButton"]').click();
-    //Complete title page
-    cy.get('[data-testid="titleId"]').type('Test Proposal');
-    cy.get('[id="ProposalType-1"]').click({ force: true });
-    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
-    cy.get('[data-testid="CreateButton"]').click();
-    //Complete team page
-    cy.get('[data-testid="firstName"]').type('User');
-    cy.get('[data-testid="lastName"]').type('Name');
-    cy.get('[data-testid="email"]').type('username@test.com');
-    cy.get('[data-testid="Send invitationButton"]').click({ force: true });
-    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-      .children('div[role="row"]')
-      .should('contain', 'User')
-      .should('contain', 'Name')
-      .should('contain', 'Pending')
-      .should('contain', 'Van')
-      .should('contain', 'Cheng')
-      .should('contain', 'Accepted')
-      .should('have.length', 2);
-    //Complete general page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[data-testid="abstractId"]').type('Test Abstract');
-    cy.get('[id="categoryId"]').click({ force: true });
-    cy.get('[data-value="1"]').click({ force: true });
-    cy.get('[id="categoryId"]').should('contain', 'Cosmology');
-    //Complete science page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    //IMPLEMENT FILE UPLOAD
-    //Complete target page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    //manual input of target co-ordinates
-    cy.get('[id="name"]').type('M1');
-    cy.get('[id="skyDirectionValue1"]').type('0:0:0');
-    cy.get('[id="skyDirectionValue2"]').type('0:0:0');
-    //default is type velocity
-    cy.get('[data-testid="velocityValue"]').type('1');
-    cy.get('[data-testid="addTargetButton"]').click({ force: true });
-
-    //import target from file
-    cy.get('[id="simple-tab-1"]').click();
-    cy.get('input[type="file"]').as('fileInput');
-
-    cy.fixture('target_equatorial_valid.csv').then(fileContent => {
-      cy.get('@fileInput').attachFile({
-        fileContent: fileContent.toString(),
-        fileName: 'target_equatorial_valid.csv',
-        mimeType: 'text/csv'
-      });
-    });
-    cy.get('[data-testid="csvUploadUploadButton"]').click();
-    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-      .children('div[role="row"]')
-      .should('contain', 'equatorial1')
-      .should('contain', '05:34:30.900')
-      .should('contain', '+22:00:53.000')
-      .should('have.length', 8);
-
-    //Complete observation page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    // cy.get('[data-testid="observation setupButton"]').click();
-    // commented for now as the observation page has changed causing the tests to fail
-    // TODO modify once the observation page modifications are complete
-    //verify telescope of type MID and observation type Continuum
-    // cy.get('[id="arrayConfig"]').should('contain', 'MID');
-    // cy.get('[id="subarrayConfig"]').should('contain', 'AA0.5');
-    // cy.get('[id="observingBand"]').should('contain', 'Band 1 (0.35 - 1.05 GHz)');
-    // cy.get('[data-testid="elevation"]').type('1');
-    // cy.get('[data-testid="weather"]').type('Cold');
-    // cy.get('[id="observationType"]').should('contain', 'Continuum');
-    // cy.get('[data-testid="suppliedType"]').should('contain', 'Integration Time');
-    // cy.get('[data-testid="suppliedValue"]').type('1');
-    // cy.get('[data-testid="suppliedUnits"]').should('contain', 'd');
-    // cy.get('[data-testid="centralFrequency"]').type('1');
-    // cy.get('[data-testid="frequencyUnits"]').should('contain', 'GHz');
-    // cy.get('[data-testid="continuumBandwidth"]').type('1');
-    // cy.get('[data-testid="continuumUnits"]').should('contain', 'GHz');
-    // cy.get('[id="bandwidth"]').should('contain', '3.125 MHz');
-    // cy.get('[id="spectralResolution"]').should('contain', '0.21 KHz');
-    // cy.get('[id="spectral"]').should('contain', '1');
-    // cy.get('[data-testid="effective"]').type('1');
-    // cy.get('[id="tapering"]').should('contain', 'No tapering');
-    // // cy.get('[aria-label="EntryField"]').should('contain', '0');
-    // cy.get('[id="imageWeighting"]').should('contain', 'Uniform');
-    // cy.get('[data-testid="addButton"]').click();
-    // cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    //   .children('div[role="row"]')
-    //   .should('contain', 'MID')
-    //   .should('contain', 'AA0.5')
-    //   .should('contain', 'Continuum')
-    //   .should('contain', 'M1')
-    //   .should('contain', '0:0:0')
-    //   .should('contain', '0:0:0');
-    //Complete technical page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    //IMPLEMENT FILE UPLOAD
-    //Complete data page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    cy.get('[aria-label="Add Data Product"]').should('not.be.selected');
-    //TODO: update once page has functionality
-    //Add verification of list
-    //Complete src net page
-    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
-    //TODO: update once page has content
-    //validate proposal
-    cy.get('[data-testid="ValidationTestId"]').click();
-  });
-
-  /*
-  it('Content : Begin to create proposal but leave the title page incomplete, create button should remain disabled', () => {
-    cy.get('[data-testid="addProposalButton"]').click();
-    //Partially complete title page
-    cy.get('[id="ProposalType-1"]').click({ force: true });
-    cy.get('[aria-label="A target of opportunity observing proposal"]').click();
-    cy.get('[data-testid="CreateButton"]').should('not.be.selected');
-  });
-
   it('Content : Begin to create proposal, then in Target page to add equatorial target with csv with valid csv', () => {
     cy.get('[data-testid="addProposalButton"]').click();
     //Complete title page
