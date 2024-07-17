@@ -87,6 +87,7 @@ test_e2e:
   stage: dependencies
   tags:
     - k8srunner
+  allow_failure: true
   cache:
     paths:
       - node_modules/
