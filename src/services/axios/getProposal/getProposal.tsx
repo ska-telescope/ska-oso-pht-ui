@@ -409,35 +409,35 @@ const getResultsSection2 = (inResult: ResultBackend): any[] => {
   return section2;
 };
 
-const getResultsSection3 = (inResult: ResultBackend): any[] => {
-  //TODO find matching observation and get integration time from there
+const getResultsSection3 = (inResultObservationRef: string, inObservationSets: ObservationSetBackend[]): any[] => {
+  const obs =  inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
+  // supplied can be of type sensitivity or integration
+  // TODO revisit mapping once integration time format from PDM merged
+  const field = obs.observation_type_details.supplied.type === 'sensitivity' ? 'sensitivity' : 'integrationTime';
   return [{ 
-    field: 'integrationTime', 
-    value: '19.3', 
-    units: 'hours' 
+    field: field, // or sensitivity
+    value: obs.observation_type_details.supplied.quantity.value, 
+    units: obs.observation_type_details.supplied.quantity.unit
   }];
 };
 
-const getTargetObservation = (inResults: ResultBackend[]): TargetObservation[] => {
+const getTargetObservation = (inResults: ResultBackend[], inObservationSets: ObservationSetBackend[]): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
-    console.log('result', result);
     const targetObs: TargetObservation = {
       targetId: Number(result.target_ref),
       observationId: result.observation_set_ref,
       sensCalc: {
         id: result.target_ref, // 1, 2, etc
-        title: 'string', // target_id M1, M2, etc => not in sens calc results and targets[] only uses id
-        // TODO: add target_id in list of targets so we can link the ref to the id in sens calc results
-        statusGUI: 0, // only for front-end
+        title: result.target_ref, // target_id M1, M2, etc => not in sens calc results and targets[] only uses id
+        statusGUI: 0, // only for front-end // TODO check if no error state is 0
         error: '', // only for front-end
         section1: getResultsSection1(result),
         section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
-        section3: getResultsSection3(result)
+        section3: getResultsSection3(result.observation_set_ref, inObservationSets)
       }
     }
     targetObsArray.push(targetObs);
-    console.log('targetObs', targetObs);
   }
   return targetObsArray;
 }
@@ -472,7 +472,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: getTargetObservation(inRec.info.results), // [], // TODO check where do we see linked targets/observation in backend format
+    targetObservation: getTargetObservation(inRec.info.results, inRec.info.observation_sets), // [], // TODO check where do we see linked targets/observation in backend format
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
