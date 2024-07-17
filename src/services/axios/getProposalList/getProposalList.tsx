@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA, Projects, GENERAL } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA,
+  Projects,
+  GENERAL
+} from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
@@ -64,7 +70,9 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
           convertTypeFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
       ).id,
       proposalSubType: getSubType(inRec[i].info.proposal_type),
-      scienceCategory: GENERAL.ScienceCategory.find(item => item.label.toLowerCase() === inRec[i].info.science_category.toLowerCase()).value, // inRec[i].info.science_category,
+      scienceCategory: GENERAL.ScienceCategory.find(
+        item => item.label.toLowerCase() === inRec[i].info.science_category.toLowerCase()
+      ).value, // inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),

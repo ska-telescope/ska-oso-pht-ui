@@ -16,7 +16,7 @@ export type PointingPatternParamsBackend = {
   kind: string;
   offset_x_arcsec: number;
   offset_y_arcsec: number;
-}
+};
 
 export type TargetBackend = {
   target_id: string;
@@ -62,14 +62,14 @@ export type PointingPatternParams = {
   kind: string;
   offsetXArcsec: number;
   offsetYArcsec: number;
-}
+};
 
 type Target = {
   dec: string;
   decUnit: string;
   id: number;
   name: string;
-  latitude: string; 
+  latitude: string;
   longitude: string;
   ra: string;
   raUnit: string;

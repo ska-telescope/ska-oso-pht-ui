@@ -229,7 +229,7 @@ export default function AddDataProduct() {
       const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
       const newDataProduct: DataProduct = {
         id: highestId + 1,
-        dataProductsSDPId: `SDP-${highestId+1}`,
+        dataProductsSDPId: `SDP-${highestId + 1}`,
         observatoryDataProduct,
         observationId,
         imageSizeValue,

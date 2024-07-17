@@ -86,6 +86,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
   try {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status); // TODO revert back to user proposal before merging
+    console.log('convertedProposal', convertedProposal);
     const proposalBackendFormat = MockProposalBackend;
     console.log('postProposal proposalBackendFormat', proposalBackendFormat);
 

@@ -1,5 +1,10 @@
 import { DocumentBackend, DocumentPDF } from './document';
-import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from './dataProduct';
+import {
+  DataProductSDP,
+  DataProductSDPsBackend,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { ResultBackend } from './result';

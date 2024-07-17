@@ -25,7 +25,12 @@ import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import {
+  DataProductSDP,
+  DataProductSDPsBackend,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
 import { ResultBackend } from '../../../utils/types/result';
@@ -116,14 +121,14 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
     link: pdf?.link
   };
   return pdf ? pdfDoc : null;
-}
+};
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
   for (let i = 0; i < inRec.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
-      const target: Target = {
+    const target: Target = {
       /*
       // old mapping for reference
       dec: e.reference_coordinate.dec?.toString(),
@@ -159,7 +164,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         }))
-      },
+      }
     };
     results.push(target);
   }
@@ -183,46 +188,47 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
 };
 
 const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[] => {
-  return inValue.map(dp => (
-    { id: dp.data_products_src_id }
-  ));
+  return inValue.map(dp => ({ id: dp.data_products_src_id }));
 };
 
 const getSDPOptions = (options: string[]): boolean[] => {
-    const optionResults = [];
-    for (let i = 0; i < 5; i++) {
-      const num = (i + 1).toString();
-      optionResults[i] = options.includes(num) ? true : false;
-    }
+  const optionResults = [];
+  for (let i = 0; i < 5; i++) {
+    const num = (i + 1).toString();
+    optionResults[i] = options.includes(num) ? true : false;
+  }
   return optionResults;
-}
+};
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   // TODO fix type errors
-  return inValue.map((dp, index) => (
-    { 
-      id: index + 1, // TODO check if index ok or if we should extract the number in data_products_sdp_id
-      dataProductsSDPId: dp.data_products_sdp_id,
-      observatoryDataProduct: getSDPOptions(dp.options),
-      observationId: dp.observation_set_refs,
-      imageSizeValue: dp.image_size, // TODO separate units from value
-      imageSizeUnits: dp.image_size, // TODO separate units from value
-      pixelSizeValue: dp.pixel_size, // TODO separate units from value
-      pixelSizeUnits: dp.pixel_size, // TODO separate units from value
-      weighting: dp.weighting
-    }
-  ));
+  return inValue.map((dp, index) => ({
+    id: index + 1, // TODO check if index ok or if we should extract the number in data_products_sdp_id
+    dataProductsSDPId: dp.data_products_sdp_id,
+    observatoryDataProduct: getSDPOptions(dp.options),
+    observationId: dp.observation_set_refs,
+    imageSizeValue: dp.image_size, // TODO separate units from value
+    imageSizeUnits: dp.image_size, // TODO separate units from value
+    pixelSizeValue: dp.pixel_size, // TODO separate units from value
+    pixelSizeUnits: dp.pixel_size, // TODO separate units from value
+    weighting: dp.weighting
+  }));
 };
 
-
-const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBackend[]): Observation[] => {
-
-  const getWeighting = (inImageWeighting) => {
-    return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
-  }
+const getObservations = (
+  inValue: ObservationSetBackend[],
+  inResults: ResultBackend[]
+): Observation[] => {
+  const getWeighting = inImageWeighting => {
+    return inImageWeighting === 'DUMMY'
+      ? 1
+      : OBSERVATION.ImageWeighting.find(
+          item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
+        )?.value;
+  };
 
   const getObservingBand = (inObsBand: string): number => {
-    switch(inObsBand) {
+    switch (inObsBand) {
       case 'low_band':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
       case 'mid_band_1':
@@ -236,12 +242,14 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
       default:
         return -1; // not found // TODO handle not found in edit observation?
     }
-  }
+  };
 
   const getIntegrationTimeUnits = (InUnits: string): number => {
     // TODO revisit with correct data as PDM should accept any string
-    const integrationTimeSupplied = OBSERVATION.Supplied.find(item => item.label === 'Integration Time');
-    switch(InUnits) {
+    const integrationTimeSupplied = OBSERVATION.Supplied.find(
+      item => item.label === 'Integration Time'
+    );
+    switch (InUnits) {
       case 'd':
         const d = integrationTimeSupplied.units.find(item => item.label === 'd').value;
         return d ? d : -1;
@@ -266,22 +274,31 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
       default:
         return -1; // not found
     }
-  }
+  };
 
-  const getFrequencyAndBandwidthUnits = (inUnits: string, telescope: number, observingBand: number): number => {
+  const getFrequencyAndBandwidthUnits = (
+    inUnits: string,
+    telescope: number,
+    observingBand: number
+  ): number => {
     const array = OBSERVATION.array.find(item => item.value === telescope);
-    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.label.toLowerCase() === inUnits.toLowerCase())?.value;
+    let units = array.CentralFrequencyAndBandWidthUnits.find(
+      item => item.label.toLowerCase() === inUnits.toLowerCase()
+    )?.value;
     // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
-    return units ? units : array.CentralFrequencyAndBandWidthUnits.find(
-      item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
-    )?.value
-  }
+    return units
+      ? units
+      : array.CentralFrequencyAndBandWidthUnits.find(
+          item =>
+            item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+        )?.value;
+  };
 
   const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
     const obsRef = inObservation.observation_set_id;
     const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
     return linkedTargetRef ? linkedTargetRef : '';
-  }
+  };
 
   let results = [];
 
@@ -290,11 +307,16 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
     const sub = OBSERVATION.array[arr - 1].subarray.find(
       p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
     ).value;
-    const type = inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() === OBSERVATION_TYPE_BACKEND[0].toLowerCase() ? 0: 1;
+    const type =
+      inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
+      OBSERVATION_TYPE_BACKEND[0].toLowerCase()
+        ? 0
+        : 1;
     const observingBand = getObservingBand(inValue[i].observing_band);
 
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
-    if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) { // TODO remove elevation from condition once ODA updated
+    if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) {
+      // TODO remove elevation from condition once ODA updated
       const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
       elevation = midDetails.elevation; // TODO change mapping to get it from ObservationSet root once ODA updated
       weather = midDetails.weather;
@@ -312,23 +334,38 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: observingBand,
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value,
-      centralFrequencyUnits: getFrequencyAndBandwidthUnits(inValue[i].observation_type_details?.central_frequency.unit, arr, observingBand),
+      centralFrequencyUnits: getFrequencyAndBandwidthUnits(
+        inValue[i].observation_type_details?.central_frequency.unit,
+        arr,
+        observingBand
+      ),
       elevation: elevation, // map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
       numSubBands: numSubBands,
       tapering: tapering,
-      bandwidth: type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
+      bandwidth:
+        type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
       // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
       // TODO ask about zoom bandwidthUnits not needed
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
-      integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
+      integrationTimeUnits: getIntegrationTimeUnits(
+        inValue[i].observation_type_details?.supplied?.quantity?.unit
+      ),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: getLinked(inValue[i], inResults),
-      continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
-      continuumBandwidthUnits: type === TYPE_CONTINUUM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
+      continuumBandwidth:
+        type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
+      continuumBandwidthUnits:
+        type === TYPE_CONTINUUM
+          ? getFrequencyAndBandwidthUnits(
+              inValue[i].observation_type_details.bandwidth.unit,
+              arr,
+              observingBand
+            )
+          : undefined,
       details: inValue[i].details
     };
     results.push(obs);
@@ -337,84 +374,95 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
 };
 
 const getResultsSection1 = (inResult: ResultBackend): any[] => {
- let section1 = [];
- // for continuum observation
- if (inResult.continuum_confusion_noise) {
-  section1.push({
-    field: 'continuumSensitivityWeighted', 
-    value: inResult.result_details.weighted_continuum_sensitivity.value, 
-    units: inResult.result_details.weighted_continuum_sensitivity.unit, 
-  });
-  section1.push({
-    field: 'continuumConfusionNoise', 
-    value: inResult.continuum_confusion_noise.value, 
-    units: inResult.continuum_confusion_noise.unit
-  });
-  section1.push({
-    field: 'continuumTotalSensitivity', 
-    value: inResult.result_details.total_continuum_sensitivity.value, 
-    units: inResult.result_details.total_continuum_sensitivity.unit, 
-  });
-  section1.push({
-    field: 'continuumSynthBeamSize', 
-    value: inResult.synthesized_beam_size.value, 
-    units: inResult.synthesized_beam_size.unit, 
-  });
-  section1.push({
-    field: 'continuumSurfaceBrightnessSensitivity', 
-    value: inResult.result_details.surface_brightness_sensitivity.continuum, 
-    units: inResult.result_details.surface_brightness_sensitivity.unit
-  });
-  // for zoom observation
- } else {
-  section1 = getResultsSection2(inResult);
- }
+  let section1 = [];
+  // for continuum observation
+  if (inResult.continuum_confusion_noise) {
+    section1.push({
+      field: 'continuumSensitivityWeighted',
+      value: inResult.result_details.weighted_continuum_sensitivity.value,
+      units: inResult.result_details.weighted_continuum_sensitivity.unit
+    });
+    section1.push({
+      field: 'continuumConfusionNoise',
+      value: inResult.continuum_confusion_noise.value,
+      units: inResult.continuum_confusion_noise.unit
+    });
+    section1.push({
+      field: 'continuumTotalSensitivity',
+      value: inResult.result_details.total_continuum_sensitivity.value,
+      units: inResult.result_details.total_continuum_sensitivity.unit
+    });
+    section1.push({
+      field: 'continuumSynthBeamSize',
+      value: inResult.synthesized_beam_size.value,
+      units: inResult.synthesized_beam_size.unit
+    });
+    section1.push({
+      field: 'continuumSurfaceBrightnessSensitivity',
+      value: inResult.result_details.surface_brightness_sensitivity.continuum,
+      units: inResult.result_details.surface_brightness_sensitivity.unit
+    });
+    // for zoom observation
+  } else {
+    section1 = getResultsSection2(inResult);
+  }
   return section1;
 };
 
 const getResultsSection2 = (inResult: ResultBackend): any[] => {
   let section2 = [];
   section2.push({
-    field: 'spectralSensitivityWeighted', 
+    field: 'spectralSensitivityWeighted',
     value: inResult.result_details.weighted_spectral_sensitivity.value,
-    units: inResult.result_details.weighted_spectral_sensitivity.unit,
+    units: inResult.result_details.weighted_spectral_sensitivity.unit
   });
   section2.push({
-    field: 'spectralConfusionNoise', 
+    field: 'spectralConfusionNoise',
     value: inResult.spectral_confusion_noise.value,
     units: inResult.spectral_confusion_noise.unit
   });
   section2.push({
-    field: 'spectralTotalSensitivity', 
+    field: 'spectralTotalSensitivity',
     value: inResult.result_details.total_spectral_sensitivity.value,
-    units: inResult.result_details.total_spectral_sensitivity.unit,
+    units: inResult.result_details.total_spectral_sensitivity.unit
   });
   section2.push({
-    field: 'spectralSynthBeamSize', 
-    value: inResult.synthesized_beam_size, 
-    units: inResult.synthesized_beam_size.unit, 
+    field: 'spectralSynthBeamSize',
+    value: inResult.synthesized_beam_size,
+    units: inResult.synthesized_beam_size.unit
   });
   section2.push({
-    field: 'spectralSurfaceBrightnessSensitivity', 
-    value: inResult.result_details.surface_brightness_sensitivity.spectral, 
+    field: 'spectralSurfaceBrightnessSensitivity',
+    value: inResult.result_details.surface_brightness_sensitivity.spectral,
     units: inResult.result_details.surface_brightness_sensitivity.unit
   });
   return section2;
 };
 
-const getResultsSection3 = (inResultObservationRef: string, inObservationSets: ObservationSetBackend[]): any[] => {
-  const obs =  inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
+const getResultsSection3 = (
+  inResultObservationRef: string,
+  inObservationSets: ObservationSetBackend[]
+): any[] => {
+  const obs = inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
   // supplied can be of type sensitivity or integration
   // TODO revisit mapping once integration time format from PDM merged
-  const field = obs.observation_type_details.supplied.type === 'sensitivity' ? 'sensitivity' : 'integrationTime';
-  return [{ 
-    field: field, // or sensitivity
-    value: obs.observation_type_details.supplied.quantity.value, 
-    units: obs.observation_type_details.supplied.quantity.unit
-  }];
+  const field =
+    obs.observation_type_details.supplied.type === 'sensitivity'
+      ? 'sensitivity'
+      : 'integrationTime';
+  return [
+    {
+      field: field, // or sensitivity
+      value: obs.observation_type_details.supplied.quantity.value,
+      units: obs.observation_type_details.supplied.quantity.unit
+    }
+  ];
 };
 
-const getTargetObservation = (inResults: ResultBackend[], inObservationSets: ObservationSetBackend[]): TargetObservation[] => {
+const getTargetObservation = (
+  inResults: ResultBackend[],
+  inObservationSets: ObservationSetBackend[]
+): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
     const targetObs: TargetObservation = {
@@ -429,11 +477,11 @@ const getTargetObservation = (inResults: ResultBackend[], inObservationSets: Obs
         section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
         section3: getResultsSection3(result.observation_set_ref, inObservationSets)
       }
-    }
+    };
     targetObsArray.push(targetObs);
   }
   return targetObsArray;
-}
+};
 
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed

@@ -64,10 +64,22 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
     const params = {
       frequency: sensCalHelpers.format
-        .convertFrequencyToHz(observation.centralFrequency, sensCalHelpers.map.getFrequencyAndBandwidthUnits(observation.centralFrequencyUnits, observation.telescope))
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString(),
       zoom_frequencies: sensCalHelpers.format
-        .convertFrequencyToHz(observation.centralFrequency, sensCalHelpers.map.getFrequencyAndBandwidthUnits(observation.centralFrequencyUnits, observation.telescope))
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString(),
       dec_str: declination(),
       weighting: weighting?.label.toLowerCase(),

@@ -1187,8 +1187,9 @@ export default function AddObservation() {
         centralFrequencyUnits: frequencyUnits,
         bandwidth: bandwidth,
         continuumBandwidth: continuumBandwidth,
-        continuumBandwidthUnits: OBSERVATION.array.find(
-          item => item.value === usedTelescope).CentralFrequencyAndBandWidthUnits.find(
+        continuumBandwidthUnits: OBSERVATION.array
+          .find(item => item.value === usedTelescope)
+          .CentralFrequencyAndBandWidthUnits.find(
             u => u.label === BANDWIDTH_TELESCOPE[observingBand].units
           ).value,
         spectralAveraging: spectralAveraging,

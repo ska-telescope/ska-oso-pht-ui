@@ -146,9 +146,12 @@ export default function LandingPage() {
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 200 },
-    { field: 'scienceCategory', headerName: t('scienceCategory.label'), width: 200,
+    {
+      field: 'scienceCategory',
+      headerName: t('scienceCategory.label'),
+      width: 200,
       renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
-     },
+    },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
