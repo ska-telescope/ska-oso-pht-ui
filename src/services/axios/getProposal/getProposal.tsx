@@ -27,7 +27,8 @@ import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
 import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
-import Observation from 'utils/types/observation';
+import Observation from '../../../utils/types/observation';
+import { ResultBackend } from '../../../utils/types/result';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -220,7 +221,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 };
 
 
-const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
+const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBackend[]): Observation[] => {
 
   const getWeighting = (inImageWeighting) => {
     return inImageWeighting === 'DUMMY' ? 1 : OBSERVATION.ImageWeighting.find(item => item.label.toLowerCase() === inImageWeighting.toLowerCase())?.value
@@ -282,6 +283,12 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
     )?.value
   }
 
+  const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
+    const obsRef = inObservation.observation_set_id;
+    const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
+    return linkedTargetRef ? linkedTargetRef : '';
+  }
+
   let results = [];
 
   for (let i = 0; i < inValue.length; i++) {
@@ -312,7 +319,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       observingBand: observingBand,
       centralFrequency: inValue[i].observation_type_details?.central_frequency.value,
       centralFrequencyUnits: getFrequencyAndBandwidthUnits(inValue[i].observation_type_details?.central_frequency.unit, arr, observingBand),
-      elevation: elevation, // TODO map it to root of observation even if undefined for now
+      elevation: elevation, // map it to root of observation even if undefined for now
       weather: weather,
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
@@ -325,7 +332,7 @@ const getObservations = (inValue: ObservationSetBackend[]): Observation[] => {
       integrationTimeUnits: getIntegrationTimeUnits(inValue[i].observation_type_details?.supplied?.quantity?.unit),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      linked: '', // what to map to? currently hardcoded at 0 on AddObservation page
+      linked: getLinked(inValue[i], inResults),
       continuumBandwidth: type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
       continuumBandwidthUnits: type === TYPE_CONTINUUM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
       details: inValue[i].details
@@ -363,7 +370,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
-    observations: getObservations(inRec.info.observation_sets),
+    observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation: [], // TODO check where do we see linked targets/observation in backend format
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
