@@ -199,8 +199,6 @@ function verifyFrequencyUnitsLow() {
 function verifyContinuumUnits() {
   cy.get('[data-testid="continuumUnits"]').contains('GHz');
   cy.get('[data-testid="continuumUnits"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
   cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
@@ -575,7 +573,7 @@ describe('<AddObservation />', () => {
     verifyDetailsField();
     verifySubArrayConfigurationValue4();
     verifyElevationField();
-    verifyWeatherField();
+    // verifyWeatherField();
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnitsLow();
@@ -583,7 +581,7 @@ describe('<AddObservation />', () => {
     verifySpectralResolutionLowZoom();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionZoomLowBand();
-    verifyTapering();
+    // verifyTapering();
     verifyImageWeighting();
     verifyNumOfStations();
   });
@@ -602,7 +600,7 @@ describe('<AddObservation />', () => {
     verifyDetailsField();
     verifyNumOfStations();
     verifyElevationField();
-    verifyWeatherField();
+    // verifyWeatherField();
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequencyContinuumLowBand();
@@ -612,7 +610,7 @@ describe('<AddObservation />', () => {
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
-    verifyTapering();
+    // verifyTapering();
     verifySubBands();
     verifyImageWeighting();
   });

@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import { BrowserRouter } from 'react-router-dom';
 import theme from '../../services/theme/theme';
 import ObservationPage from './ObservationPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
