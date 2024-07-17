@@ -35,6 +35,7 @@ import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
 import { ResultBackend } from '../../../utils/types/result';
 import TargetObservation from '../../../utils/types/targetObservation';
+import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -106,7 +107,7 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
 const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory.find(
     cat => cat.label.toLowerCase() === scienceCat.toLowerCase()
-  ).value;
+  )?.value;
   return cat ? cat : null;
 };
 
@@ -138,7 +139,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       ra: e.reference_coordinate.ra?.toString(),
       raUnits: e.reference_coordinate.unit,
       referenceFrame: e.reference_coordinate.reference_frame,
-      vel: e.radial_velocity.quantity.value?.toString(),
+      vel: e.radial_velocity.quantity?.value?.toString(),
       velUnits: e.radial_velocity.quantity.unit,
       */
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
@@ -155,7 +156,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition,
       velType: e.radial_velocity.definition,
-      vel: e.radial_velocity.quantity.value?.toString(),
+      vel: e.radial_velocity.quantity?.value?.toString(),
       velUnit: e.radial_velocity.quantity.unit.split(' ').join(''), // removes white spaces in "m / s"
       pointingPattern: {
         active: e.pointing_pattern.active,
@@ -228,55 +229,68 @@ const getObservations = (
   };
 
   const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-    const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1')).value;
-    const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band')).value;
+    const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1'))?.value;
+    const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band'))?.value;
     switch (inObsBand) {
       case 'low_band':
         return lowObsBand;
       case 'mid_band_1':
         return mid1ObsBand;
       case 'mid_band_2':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2')).value;
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2'))?.value;
       case 'mid_band_3':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a')).value;
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a'))?.value;
       case 'mid_band_4':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b')).value;
+        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
       default:
         // fall back: send low band for low array and mid band 1 for mid array
         return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
     }
   };
 
+  const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
+    console.log('::: in getSupplied', inSupplied);
+    const supplied = {
+      type: 0,
+      value: 0,
+      units: 0
+    };
+    return supplied;
+  }
+
   const getIntegrationTimeUnits = (InUnits: string): number => {
     // TODO revisit with correct data as PDM should accept any string
     const integrationTimeSupplied = OBSERVATION.Supplied.find(
       item => item.label === 'Integration Time'
     );
+    return integrationTimeSupplied.units.find(item => item.label === InUnits)?.value;
+    /*
     switch (InUnits) {
       case 'd':
-        const d = integrationTimeSupplied.units.find(item => item.label === 'd').value;
+        const d = integrationTimeSupplied.units.find(item => item.label === 'd')?.value;
         return d ? d : -1;
       case 'h':
-        const h = integrationTimeSupplied.units.find(item => item.label === 'h').value;
+        const h = integrationTimeSupplied.units.find(item => item.label === 'h')?.value;
         return h ? h : -1;
       case 'min':
-        const min = integrationTimeSupplied.units.find(item => item.label === 'min').value;
+        const min = integrationTimeSupplied.units.find(item => item.label === 'min')?.value;
         return min ? min : -1;
       case 's':
-        const s = integrationTimeSupplied.units.find(item => item.label === 's').value;
+        const s = integrationTimeSupplied.units.find(item => item.label === 's')?.value;
         return s ? s : -1;
       case 'm / s':
-        const mS = integrationTimeSupplied.units.find(item => item.label === 'ms').value;
+        const mS = integrationTimeSupplied.units.find(item => item.label === 'ms')?.value;
         return mS ? mS : -1;
       case 'u / s':
-        const uS = integrationTimeSupplied.units.find(item => item.label === 'us').value;
+        const uS = integrationTimeSupplied.units.find(item => item.label === 'us')?.value;
         return uS ? uS : -1;
       case 'n / s':
-        const nS = integrationTimeSupplied.units.find(item => item.label === 'ns').value;
+        const nS = integrationTimeSupplied.units.find(item => item.label === 'ns')?.value;
         return nS ? nS : -1;
       default:
         return -1; // not found
     }
+    */
   };
 
   const getFrequencyAndBandwidthUnits = (
@@ -284,7 +298,7 @@ const getObservations = (
     telescope: number,
     observingBand: number
   ): number => {
-    const array = OBSERVATION.array.find(item => item.value === telescope);
+    const array = OBSERVATION.array.find(item => item?.value === telescope);
     let units = array.CentralFrequencyAndBandWidthUnits.find(
       item => item.label.toLowerCase() === inUnits.toLowerCase()
     )?.value;
@@ -309,7 +323,7 @@ const getObservations = (
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(
       p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
-    ).value;
+    )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
       OBSERVATION_TYPE_BACKEND[0].toLowerCase()
@@ -336,7 +350,7 @@ const getObservations = (
       type: type,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: observingBand,
-      centralFrequency: inValue[i].observation_type_details?.central_frequency.value,
+      centralFrequency: inValue[i].observation_type_details?.central_frequency?.value,
       centralFrequencyUnits: getFrequencyAndBandwidthUnits(
         inValue[i].observation_type_details?.central_frequency.unit,
         arr,
@@ -349,18 +363,19 @@ const getObservations = (
       numSubBands: numSubBands,
       tapering: tapering,
       bandwidth:
-        type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth.value : undefined,
+        type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
       // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
       // TODO ask about zoom bandwidthUnits not needed
       integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
       integrationTimeUnits: getIntegrationTimeUnits(
         inValue[i].observation_type_details?.supplied?.quantity?.unit
       ),
+      supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
-        type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth.value : undefined,
+        type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
@@ -382,22 +397,22 @@ const getResultsSection1 = (inResult: ResultBackend): any[] => {
   if (inResult.continuum_confusion_noise) {
     section1.push({
       field: 'continuumSensitivityWeighted',
-      value: inResult.result_details.weighted_continuum_sensitivity.value,
+      value: inResult.result_details.weighted_continuum_sensitivity?.value,
       units: inResult.result_details.weighted_continuum_sensitivity.unit
     });
     section1.push({
       field: 'continuumConfusionNoise',
-      value: inResult.continuum_confusion_noise.value,
+      value: inResult.continuum_confusion_noise?.value,
       units: inResult.continuum_confusion_noise.unit
     });
     section1.push({
       field: 'continuumTotalSensitivity',
-      value: inResult.result_details.total_continuum_sensitivity.value,
+      value: inResult.result_details.total_continuum_sensitivity?.value,
       units: inResult.result_details.total_continuum_sensitivity.unit
     });
     section1.push({
       field: 'continuumSynthBeamSize',
-      value: inResult.synthesized_beam_size.value,
+      value: inResult.synthesized_beam_size?.value,
       units: inResult.synthesized_beam_size.unit
     });
     section1.push({
@@ -416,17 +431,17 @@ const getResultsSection2 = (inResult: ResultBackend): any[] => {
   let section2 = [];
   section2.push({
     field: 'spectralSensitivityWeighted',
-    value: inResult.result_details.weighted_spectral_sensitivity.value,
+    value: inResult.result_details.weighted_spectral_sensitivity?.value,
     units: inResult.result_details.weighted_spectral_sensitivity.unit
   });
   section2.push({
     field: 'spectralConfusionNoise',
-    value: inResult.spectral_confusion_noise.value,
+    value: inResult.spectral_confusion_noise?.value,
     units: inResult.spectral_confusion_noise.unit
   });
   section2.push({
     field: 'spectralTotalSensitivity',
-    value: inResult.result_details.total_spectral_sensitivity.value,
+    value: inResult.result_details.total_spectral_sensitivity?.value,
     units: inResult.result_details.total_spectral_sensitivity.unit
   });
   section2.push({
@@ -456,7 +471,7 @@ const getResultsSection3 = (
   return [
     {
       field: field, // or sensitivity
-      value: obs.observation_type_details.supplied.quantity.value,
+      value: obs.observation_type_details.supplied.quantity?.value,
       units: obs.observation_type_details.supplied.quantity.unit
     }
   ];
@@ -469,7 +484,7 @@ const getTargetObservation = (
   let targetObsArray = [];
   for (let result of inResults) {
     const targetObs: TargetObservation = {
-      targetId: Number(result.target_ref),
+      targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
         id: result.target_ref, // 1, 2, etc

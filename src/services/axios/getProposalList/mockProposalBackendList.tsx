@@ -143,10 +143,10 @@ const MockProposalBackendList: ProposalBackend[] = [
             supplied: {
               type: 'integration',
               value: 0.0,
-              unit: 'm / s',
+              unit: 'ms',
               quantity: {
                 value: -12.345,
-                unit: 'm / s'
+                unit: 'ms'
               }
             },
             spectral_resolution: 'DUMMY',
@@ -224,10 +224,10 @@ const MockProposalBackendList: ProposalBackend[] = [
             supplied: {
               type: 'integration',
               value: 0.0,
-              unit: 'm / s',
+              unit: 'ms',
               quantity: {
                 value: -12.345,
-                unit: 'm / s'
+                unit: 'ms'
               }
             },
             spectral_resolution: 'DUMMY',
@@ -472,10 +472,10 @@ const MockProposalBackendList: ProposalBackend[] = [
             supplied: {
               type: 'integration',
               value: 0.0,
-              unit: 'm/s',
+              unit: 'ms',
               quantity: {
                 value: -12.345,
-                unit: 'm/s'
+                unit: 'ms'
               }
             },
             spectral_resolution: 'DUMMY',
@@ -553,10 +553,10 @@ const MockProposalBackendList: ProposalBackend[] = [
             supplied: {
               type: 'integration',
               value: 0.0,
-              unit: 'm/s',
+              unit: 'ms',
               quantity: {
                 value: -12.345,
-                unit: 'm/s'
+                unit: 'ms'
               }
             },
             spectral_resolution: 'DUMMY',

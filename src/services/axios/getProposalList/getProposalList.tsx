@@ -72,7 +72,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalSubType: getSubType(inRec[i].info.proposal_type),
       scienceCategory: GENERAL.ScienceCategory.find(
         item => item.label.toLowerCase() === inRec[i].info.science_category.toLowerCase()
-      ).value, // inRec[i].info.science_category,
+      )?.value, // inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),

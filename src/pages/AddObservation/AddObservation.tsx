@@ -1197,6 +1197,11 @@ export default function AddObservation() {
         imageWeighting: imageWeighting,
         integrationTime: suppliedValue,
         integrationTimeUnits: suppliedUnits,
+        supplied: {
+          type: suppliedType,
+          value: suppliedValue,
+          units: suppliedUnits
+        },
         spectralResolution: spectralResolution,
         effectiveResolution: effective,
         numSubBands: subBands,

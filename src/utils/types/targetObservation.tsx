@@ -1,7 +1,7 @@
 import { SensCalcResult } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 
 type TargetObservation = {
-  targetId: number;
+  targetId: string;
   observationId: string;
   sensCalc: SensCalcResult;
 };

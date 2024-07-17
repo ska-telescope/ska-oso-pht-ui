@@ -147,10 +147,10 @@ const MockProposalBackend: ProposalBackend = {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
             type: 'integration',
             value: 0.0,
-            unit: 'm/s',
+            unit: 'ms',
             quantity: {
               value: -12.345,
-              unit: 'm/s'
+              unit: 'ms'
             }
           },
           spectral_resolution: 'DUMMY',
@@ -233,10 +233,10 @@ const MockProposalBackend: ProposalBackend = {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
             type: 'integration',
             value: 0.0,
-            unit: 'm/s',
+            unit: 'ms',
             quantity: {
               value: -12.345,
-              unit: 'm/s'
+              unit: 'ms'
             }
           },
           spectral_resolution: 'DUMMY',

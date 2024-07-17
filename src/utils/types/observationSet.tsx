@@ -1,5 +1,6 @@
 import { ValueUnitPair } from './valueUnitPair';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from './arrayDetails';
+import { SuppliedBackend } from './supplied';
 // import { ElevationBackend } from './Elevation';
 
 export type ObservationSetBackend = {
@@ -17,12 +18,7 @@ export type ObservationTypeDetailsBackend = {
   observation_type?: string;
   bandwidth?: ValueUnitPair;
   central_frequency?: ValueUnitPair;
-  supplied?: {
-    type: string;
-    value: number;
-    unit: string;
-    quantity: ValueUnitPair;
-  };
+  supplied?: SuppliedBackend;
   spectral_resolution?: string;
   effective_resolution?: string;
   image_weighting?: string;

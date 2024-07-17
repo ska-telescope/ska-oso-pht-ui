@@ -1,5 +1,7 @@
 // NOTE : use of underscore in field names is NOT to be used internally, that is a Python thing.
 
+import Supplied from './supplied';
+
 type Observation = {
   id: string;
   telescope: number;
@@ -19,6 +21,7 @@ type Observation = {
   imageWeighting: number;
   integrationTime: number;
   integrationTimeUnits: number;
+  supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;
   numSubBands?: number; // only for MID
@@ -48,6 +51,11 @@ export const NEW_OBSERVATION: Observation = {
   imageWeighting: 0,
   integrationTime: 0,
   integrationTimeUnits: 0,
+  supplied: {
+    type: 0,
+    value: 0,
+    units: 0,
+  },
   spectralResolution: 'DUMMY',
   effectiveResolution: 'DUMMY',
   numSubBands: 0,
