@@ -16,7 +16,6 @@ import {
   MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
 import Observation from '../../../../utils/types/observation';
-// import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
