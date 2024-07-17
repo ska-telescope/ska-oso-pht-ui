@@ -18,7 +18,7 @@ import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL } from '../../../utils/constants';
-import { NEW_TARGET } from '../../../utils/types/target';
+import Target, { NEW_TARGET } from '../../../utils/types/target';
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
@@ -112,7 +112,20 @@ export default function TargetListSection() {
     { field: 'name', headerName: t('name.label'), width: 200 },
     { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
     { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
-    { field: 'vel', headerName: t('velocity.1'), width: 100 },
+    {
+      field: 'vel',
+      headerName: t('velocity.0'),
+      width: 100,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: Target }) => {
+        if (e.row.vel === null) {
+          return null;
+        }
+        const units = e.row.velUnit === 1 ? 1 : 0;
+        return e.row.vel + ' ' + t('velocity.units.' + units);
+      }
+    },
+    { field: 'redshift', headerName: t('velocity.1'), width: 100 },
     {
       field: 'id',
       headerName: t('actions.label'),

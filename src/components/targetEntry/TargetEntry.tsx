@@ -100,9 +100,9 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
       longitude: null,
       ra: target.ra,
       raUnit: raType.toString(),
-      redshift: null,
+      redshift: target.velType === 0 ? null : target.vel,
       referenceFrame: target.referenceFrame,
-      vel: target.vel,
+      vel: target.velType === 0 ? target.vel : null,
       velType: target.velType,
       velUnit: target.velUnit
     };

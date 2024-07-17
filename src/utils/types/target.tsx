@@ -71,7 +71,7 @@ type Target = {
   referenceFrame: number;
   velType: number;
   vel: string;
-  velUnit: string;
+  velUnit: number;
 };
 
 // NOTE : This ensures that we can initialize to a known point.
