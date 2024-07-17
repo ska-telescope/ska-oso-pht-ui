@@ -53,13 +53,6 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-/*
-const getIntegrationTimeUnits = (inValue: String) => {
-  const unitsList = OBSERVATION.Supplied.find(s => s.label === 'Integration Time')?.units;
-  return unitsList.find(u => u.label === inValue)?.value;
-};
-*/
-
 /* // old mapping - keeping it here for a bit during the transition
 function mapping(inRec: ProposalBackend): Proposal {
   return {
@@ -212,10 +205,10 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
       dataProductsSDPId: dp.data_products_sdp_id,
       observatoryDataProduct: getSDPOptions(dp.options),
       observationId: dp.observation_set_refs,
-      imageSizeValue: dp.image_size, // TODO seprate units from value
-      imageSizeUnits: dp.image_size, // TODO seprate units from value
-      pixelSizeValue: dp.pixel_size, // TODO seprate units from value
-      pixelSizeUnits: dp.pixel_size, // TODO seprate units from value
+      imageSizeValue: dp.image_size, // TODO separate units from value
+      imageSizeUnits: dp.image_size, // TODO separate units from value
+      pixelSizeValue: dp.pixel_size, // TODO separate units from value
+      pixelSizeUnits: dp.pixel_size, // TODO separate units from value
       weighting: dp.weighting
     }
   ));
