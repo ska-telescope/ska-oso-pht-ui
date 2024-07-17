@@ -71,7 +71,6 @@ test_and_coverage:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
-    - yarn start &
     - yarn test:component:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
@@ -98,8 +97,9 @@ test_e2e:
     - yarn install --frozen-lockfile
   script:
     - yarn start &
-    - yarn test:cypress:e2e:ci
-    - cp build/tests/e2e-tests.xml build/reports/e2e-coverage.xml
+    - yarn test:e2e:headless
+    - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
 
 # list the current top level dependencies for the project
 list_dependencies:
