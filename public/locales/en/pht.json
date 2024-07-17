@@ -356,7 +356,7 @@
     "help1": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
     "help2": "Proposal sub-types are optional",
     "help3": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost",
-    "help4" : ""
+    "help4": ""
   },
   "members": {
     "label": "Team Members",

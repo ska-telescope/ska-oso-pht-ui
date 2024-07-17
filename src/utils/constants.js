@@ -707,10 +707,130 @@ export const TARGETS = {
   'No Target': null,
   'Create Mosaic': null
 };
+<<<<<<< HEAD
 export const TEAM_STATUS_TYPE_OPTIONS = {
   pending: 'Pending',
   accepted: 'Accepted',
   rejected: 'Rejected'
+=======
+
+export const Projects = [
+  {
+    id: 1,
+    title: 'Standard Principal Investigator Proposal',
+    code: 'PI',
+    description:
+      'A standard PI proposal is an observing proposal initiated following a Call for Proposals and is typically completed within a single time allocation  cycle.  Standard  proposals  are  typically  submitted  by  a  small team led by a Principal Investigator.',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Key Science Project',
+    code: 'KSP',
+    description:
+      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description:
+          'These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA.'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        description:
+          'These are for projects that require more than one time allocation cycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Director's Discretionary Time Proposal",
+    code: 'DDT',
+    description:
+      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        description:
+          'These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA.'
+      },
+      {
+        id: 2,
+        title: 'Joint SKA proposal',
+        code: 'JSP',
+        description: 'A proposal that requires both SKA-MID and SKA-LOW telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      }
+    ]
+  }
+];
+
+export const DATA_PRODUCT = {
+  observatoryDataProduct: [
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
+  ],
+  pipeline: [
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
+  ]
+>>>>>>> 13ae7a8f (STAR-586 : Updated the linting)
 };
 export const TEL = ['', 'Mid', 'Low'];
 export const TELESCOPE_LOW_NUM = 2;
