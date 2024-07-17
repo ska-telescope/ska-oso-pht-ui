@@ -47,7 +47,7 @@ const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: -12.345,
-            unit: 'm / s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
+            unit: 'm/s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
           },
           definition: 'OPTICAL',
           reference_frame: 'LSRK',
@@ -76,7 +76,7 @@ const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0.0,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -137,20 +137,20 @@ const MockProposalBackend: ProposalBackend = {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
             type: 'integration',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
           spectral_resolution: 'DUMMY',
@@ -188,19 +188,19 @@ const MockProposalBackend: ProposalBackend = {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
           spectral_resolution: 'DUMMY',
@@ -223,20 +223,20 @@ const MockProposalBackend: ProposalBackend = {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
             type: 'integration',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
           spectral_resolution: 'DUMMY',
@@ -259,19 +259,19 @@ const MockProposalBackend: ProposalBackend = {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
           spectral_resolution: 'DUMMY',
@@ -286,9 +286,9 @@ const MockProposalBackend: ProposalBackend = {
         data_products_sdp_id: 'SDP-1',
         options: ['1', '2', '5'],
         observation_set_refs: ['mid-001', 'low-001'],
-        image_size: 'IMAGE SIZE',
-        pixel_size: 'PIXEL SIZE',
-        weighting: 'WEIGHTING'
+        image_size: '50',
+        pixel_size: '50',
+        weighting: '50'
       }
     ],
     data_product_src_nets: [
@@ -299,42 +299,42 @@ const MockProposalBackend: ProposalBackend = {
     results: [
       {
         observation_set_ref: 'low-002',
-        target_ref: '1',
+        target_ref: 'M28',
         result_details: {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           weighted_spectral_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           total_continuum_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           total_spectral_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           surface_brightness_sensitivity: {
             continuum: 0.0,
             spectral: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           }
         },
         continuum_confusion_noise: {
           value: 0.0,
-          unit: 'm / s'
+          unit: 'm/s'
         },
         synthesized_beam_size: {
           value: 0.0,
-          unit: 'm / s'
+          unit: 'm/s'
         },
         spectral_confusion_noise: {
           value: 0.0,
-          unit: 'm / s'
+          unit: 'm/s'
         }
       }
     ]

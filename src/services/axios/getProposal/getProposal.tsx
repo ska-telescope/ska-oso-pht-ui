@@ -207,11 +207,11 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    imageSizeValue: dp.image_size, // TODO separate units from value
-    imageSizeUnits: dp.image_size, // TODO separate units from value
-    pixelSizeValue: dp.pixel_size, // TODO separate units from value
-    pixelSizeUnits: dp.pixel_size, // TODO separate units from value
-    weighting: dp.weighting
+    imageSizeValue: Number(dp.image_size),
+    imageSizeUnits: '', // TODO ask why units not in backend data model
+    pixelSizeValue: Number(dp.pixel_size),
+    pixelSizeUnits: '', // TODO ask why units not in backend data model
+    weighting: Number(dp.weighting)
   }));
 };
 
