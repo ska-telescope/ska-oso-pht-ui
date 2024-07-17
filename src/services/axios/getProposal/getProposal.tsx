@@ -29,6 +29,7 @@ import { DataProductSDP, DataProductSDPsBackend, DataProductSRC, DataProductSRCN
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
 import { ResultBackend } from '../../../utils/types/result';
+import TargetObservation from '../../../utils/types/targetObservation';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -342,6 +343,105 @@ const getObservations = (inValue: ObservationSetBackend[], inResults:ResultBacke
   return results;
 };
 
+const getResultsSection1 = (inResult: ResultBackend): any[] => {
+ let section1 = [];
+ // for continuum observation
+ if (inResult.continuum_confusion_noise) {
+  section1.push({
+    field: 'continuumSensitivityWeighted', 
+    value: inResult.result_details.weighted_continuum_sensitivity.value, 
+    units: inResult.result_details.weighted_continuum_sensitivity.unit, 
+  });
+  section1.push({
+    field: 'continuumConfusionNoise', 
+    value: inResult.continuum_confusion_noise.value, 
+    units: inResult.continuum_confusion_noise.unit
+  });
+  section1.push({
+    field: 'continuumTotalSensitivity', 
+    value: inResult.result_details.total_continuum_sensitivity.value, 
+    units: inResult.result_details.total_continuum_sensitivity.unit, 
+  });
+  section1.push({
+    field: 'continuumSynthBeamSize', 
+    value: inResult.synthesized_beam_size.value, 
+    units: inResult.synthesized_beam_size.unit, 
+  });
+  section1.push({
+    field: 'continuumSurfaceBrightnessSensitivity', 
+    value: inResult.result_details.surface_brightness_sensitivity.continuum, 
+    units: inResult.result_details.surface_brightness_sensitivity.unit
+  });
+  // for zoom observation
+ } else {
+  section1 = getResultsSection2(inResult);
+ }
+  return section1;
+};
+
+const getResultsSection2 = (inResult: ResultBackend): any[] => {
+  let section2 = [];
+  section2.push({
+    field: 'spectralSensitivityWeighted', 
+    value: inResult.result_details.weighted_spectral_sensitivity.value,
+    units: inResult.result_details.weighted_spectral_sensitivity.unit,
+  });
+  section2.push({
+    field: 'spectralConfusionNoise', 
+    value: inResult.spectral_confusion_noise.value,
+    units: inResult.spectral_confusion_noise.unit
+  });
+  section2.push({
+    field: 'spectralTotalSensitivity', 
+    value: inResult.result_details.total_spectral_sensitivity.value,
+    units: inResult.result_details.total_spectral_sensitivity.unit,
+  });
+  section2.push({
+    field: 'spectralSynthBeamSize', 
+    value: inResult.synthesized_beam_size, 
+    units: inResult.synthesized_beam_size.unit, 
+  });
+  section2.push({
+    field: 'spectralSurfaceBrightnessSensitivity', 
+    value: inResult.result_details.surface_brightness_sensitivity.spectral, 
+    units: inResult.result_details.surface_brightness_sensitivity.unit
+  });
+  return section2;
+};
+
+const getResultsSection3 = (inResult: ResultBackend): any[] => {
+  //TODO find matching observation and get integration time from there
+  return [{ 
+    field: 'integrationTime', 
+    value: '19.3', 
+    units: 'hours' 
+  }];
+};
+
+const getTargetObservation = (inResults: ResultBackend[]): TargetObservation[] => {
+  let targetObsArray = [];
+  for (let result of inResults) {
+    console.log('result', result);
+    const targetObs: TargetObservation = {
+      targetId: Number(result.target_ref),
+      observationId: result.observation_set_ref,
+      sensCalc: {
+        id: result.target_ref, // 1, 2, etc
+        title: 'string', // target_id M1, M2, etc => not in sens calc results and targets[] only uses id
+        // TODO: add target_id in list of targets so we can link the ref to the id in sens calc results
+        statusGUI: 0, // only for front-end
+        error: '', // only for front-end
+        section1: getResultsSection1(result),
+        section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
+        section3: getResultsSection3(result)
+      }
+    }
+    targetObsArray.push(targetObs);
+    console.log('targetObs', targetObs);
+  }
+  return targetObsArray;
+}
+
 function mapping(inRec: ProposalBackend): Proposal {
   // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
@@ -372,7 +472,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: [], // TODO check where do we see linked targets/observation in backend format
+    targetObservation: getTargetObservation(inRec.info.results), // [], // TODO check where do we see linked targets/observation in backend format
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
