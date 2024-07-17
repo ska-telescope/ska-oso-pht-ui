@@ -98,7 +98,7 @@ test_e2e:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
-    - yarn start
+    - yarn start &
     - yarn test:e2e:headless
     - cp build/tests/e2e-tests.xml build/reports/e2e-coverage.xml
 
