@@ -208,7 +208,7 @@ const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
     units: supppliedUnits ? supppliedUnits : 1 // fallback
   };
   return supplied;
-}
+};
 
 const getFrequencyAndBandwidthUnits = (
   inUnits: string,
@@ -223,8 +223,7 @@ const getFrequencyAndBandwidthUnits = (
   return units
     ? units
     : array.CentralFrequencyAndBandWidthUnits.find(
-        item =>
-          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
       )?.value;
 };
 
@@ -234,12 +233,10 @@ const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBacken
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
-
 const getObservations = (
   inValue: ObservationSetBackend[],
   inResults: ResultBackend[]
 ): Observation[] => {
-
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
@@ -251,7 +248,10 @@ const getObservations = (
       OBSERVATION_TYPE_BACKEND[0].toLowerCase()
         ? 0
         : 1;
-    const observingBand = getObservingBand(inValue[i].observing_band, inValue[i].array_details.array);
+    const observingBand = getObservingBand(
+      inValue[i].observing_band,
+      inValue[i].array_details.array
+    );
 
     let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
     if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) {
@@ -333,7 +333,7 @@ const getResultsSection1 = (inResult: ResultBackend): any[] => {
     section1.push({
       field: 'continuumSynthBeamSize',
       // value: inResult.synthesized_beam_size?.value,
-      // units: inResult.synthesized_beam_size.unit 
+      // units: inResult.synthesized_beam_size.unit
       // mock beam size for now as format enforced by backend not correct
       value: '190.0 x 171.3',
       units: 'arcsecs2'
@@ -369,7 +369,7 @@ const getResultsSection2 = (inResult: ResultBackend): any[] => {
   });
   section2.push({
     // value: inResult.synthesized_beam_size?.value,
-    // units: inResult.synthesized_beam_size.unit 
+    // units: inResult.synthesized_beam_size.unit
     // mock beam size for now as format enforced by backend not correct
     value: '190.0 x 171.3',
     units: 'arcsecs2'

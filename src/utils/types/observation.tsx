@@ -50,7 +50,7 @@ export const NEW_OBSERVATION: Observation = {
   supplied: {
     type: 0,
     value: 0,
-    units: 0,
+    units: 0
   },
   spectralResolution: 'DUMMY',
   effectiveResolution: 'DUMMY',
