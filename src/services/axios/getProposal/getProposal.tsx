@@ -12,7 +12,9 @@ import {
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   DEFAULT_PI,
-  VEL_TYPES
+  VEL_TYPES,
+  RA_TYPE_EQUATORIAL,
+  RA_TYPE_GALACTIC
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -114,7 +116,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
       raUnit: e.reference_coordinate.unit[0],
       redshift: e.radial_velocity.redshift.toString(),
-      referenceFrame: e.reference_coordinate.kind,
+      referenceFrame: e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
       rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition,

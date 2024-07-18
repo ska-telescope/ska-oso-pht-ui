@@ -4,6 +4,7 @@ import {
   DEFAULT_PI,
   GENERAL,
   Projects,
+  RA_TYPE_EQUATORIAL,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA,
   VEL_TYPES
@@ -66,12 +67,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
 
   const getTargets = (targets: Target[]): TargetBackend[] => {
-    console.log('targets', targets);
     const outTargets = [];
     for (let i = 0; i < targets.length; i++) {
       const tar = targets[i];
       const singlePointParam = tar.pointingPattern.parameters.find(param => param.kind === 'SinglePointParameters');
-      console.log('singlePointParam', singlePointParam);
       const outTarget: TargetBackend = {
         target_id: tar.name,
         pointing_pattern: {
@@ -85,7 +84,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           ]
         },
         reference_coordinate: {
-          kind: tar.rcReferenceFrame,
+          kind: tar.referenceFrame === RA_TYPE_EQUATORIAL ? 'equatorial' : 'galactic',
           ra: Number(tar.ra),
           dec: Number(tar.dec),
           unit: [tar.raUnit, tar.decUnit],
@@ -98,7 +97,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           },
           definition: VEL_TYPES.find(item => item.value === tar.velType).label,
           reference_frame: tar.raReferenceFrame,
-          redshift: tar.redshift
+          redshift: Number(tar.redshift)
         }
       }
       outTargets.push(outTarget);
@@ -131,7 +130,7 @@ const transformedProposal: ProposalBackend = {
     science_category: GENERAL.ScienceCategory?.find(
       category => category.value === proposal?.scienceCategory
     )?.label,
-    targets: getTargets(proposal.targets), //[], // TODO
+    targets: getTargets(proposal.targets),
     documents: [], // TODO
     investigators: proposal.team.map((teamMember) => {
       return {

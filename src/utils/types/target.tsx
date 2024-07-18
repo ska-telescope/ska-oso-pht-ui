@@ -74,11 +74,11 @@ type Target = {
   ra: string;
   raUnit: string;
   redshift: string;
-  referenceFrame: string | number;
+  referenceFrame: number;
   rcReferenceFrame?: string;
   raReferenceFrame?: string;
   raDefinition?: string;
-  velType: string | number;
+  velType: number;
   vel: string;
   velUnit: string;
   pointingPattern?: {
