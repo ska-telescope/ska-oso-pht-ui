@@ -13,7 +13,7 @@ import calculateSensitivityCalculatorResults from './calculateSensitivityCalcula
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 
 export type SensCalcResult = {
-  id?: string;
+  id?: number;
   title?: string;
   statusGUI: number;
   error?: string;

@@ -48,7 +48,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           radial_velocity: {
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             definition: 'OPTICAL',
             reference_frame: 'LSRK',
@@ -77,7 +77,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           radial_velocity: {
             quantity: {
               value: 0.0,
-              unit: 'km / s'
+              unit: 'km/s'
             },
             definition: 'RADIO',
             reference_frame: 'LSRK',
@@ -128,17 +128,17 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            tapering: 'DUMMY'
+            tapering: '50'
           },
           observation_type_details: {
             observation_type: 'continuum',
             bandwidth: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             central_frequency: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             supplied: {
               type: 'integration',
@@ -149,9 +149,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'ms'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'MID + Continuum'
         },
@@ -174,30 +174,30 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            tapering: 'DUMMY'
+            tapering: '50'
           },
           observation_type_details: {
             observation_type: 'zoom',
             bandwidth: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             central_frequency: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             supplied: {
               type: 'sensitivity',
               value: 0.0,
-              unit: 'm / s',
+              unit: 'm/s',
               quantity: {
                 value: -12.345,
-                unit: 'm / s'
+                unit: 'm/s'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'MID + Zoom'
         },
@@ -209,17 +209,17 @@ const MockProposalBackendList: ProposalBackend[] = [
             array: 'ska_low',
             subarray: 'aa0.5',
             number_of_stations: 1,
-            spectral_averaging: 'DUMMY'
+            spectral_averaging: '50'
           },
           observation_type_details: {
             observation_type: 'continuum',
             bandwidth: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             central_frequency: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             supplied: {
               type: 'integration',
@@ -230,9 +230,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'ms'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'LOW + Continuum'
         },
@@ -244,30 +244,30 @@ const MockProposalBackendList: ProposalBackend[] = [
             array: 'ska_low',
             subarray: 'aa0.5',
             number_of_stations: 1,
-            spectral_averaging: 'DUMMY'
+            spectral_averaging: '50'
           },
           observation_type_details: {
             observation_type: 'zoom',
             bandwidth: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             central_frequency: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             supplied: {
               type: 'sensitivity',
               value: 0.0,
-              unit: 'm / s',
+              unit: 'm/s',
               quantity: {
                 value: -12.345,
-                unit: 'm / s'
+                unit: 'm/s'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'LOW + Zoom'
         }
@@ -295,37 +295,37 @@ const MockProposalBackendList: ProposalBackend[] = [
             supplied_type: 'sensitivity',
             weighted_continuum_sensitivity: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             weighted_spectral_sensitivity: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             total_continuum_sensitivity: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             total_spectral_sensitivity: {
               value: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             surface_brightness_sensitivity: {
               continuum: 0.0,
               spectral: 0.0,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
           continuum_confusion_noise: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           synthesized_beam_size: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           spectral_confusion_noise: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           }
         }
       ]
@@ -377,7 +377,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           radial_velocity: {
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             },
             definition: 'OPTICAL',
             reference_frame: 'LSRK',
@@ -406,7 +406,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           radial_velocity: {
             quantity: {
               value: 0.0,
-              unit: 'km / s'
+              unit: 'km/s'
             },
             definition: 'RADIO',
             reference_frame: 'LSRK',
@@ -457,7 +457,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            tapering: 'DUMMY'
+            tapering: '50'
           },
           observation_type_details: {
             observation_type: 'continuum',
@@ -478,9 +478,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'ms'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'MID + Continuum'
         },
@@ -503,7 +503,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             number_15_antennas: 0,
             number_13_antennas: 0,
             number_sub_bands: 0,
-            tapering: 'DUMMY'
+            tapering: '50'
           },
           observation_type_details: {
             observation_type: 'zoom',
@@ -524,9 +524,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'm/s'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'MID + Zoom'
         },
@@ -538,7 +538,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             array: 'ska_low',
             subarray: 'aa0.5',
             number_of_stations: 1,
-            spectral_averaging: 'DUMMY'
+            spectral_averaging: '50'
           },
           observation_type_details: {
             observation_type: 'continuum',
@@ -559,9 +559,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'ms'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'LOW + Continuum'
         },
@@ -573,7 +573,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             array: 'ska_low',
             subarray: 'aa0.5',
             number_of_stations: 1,
-            spectral_averaging: 'DUMMY'
+            spectral_averaging: '50'
           },
           observation_type_details: {
             observation_type: 'zoom',
@@ -594,9 +594,9 @@ const MockProposalBackendList: ProposalBackend[] = [
                 unit: 'm/s'
               }
             },
-            spectral_resolution: 'DUMMY',
-            effective_resolution: 'DUMMY',
-            image_weighting: 'DUMMY'
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: '50'
           },
           details: 'LOW + Zoom'
         }

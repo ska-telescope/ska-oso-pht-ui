@@ -38,9 +38,9 @@ import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
-  let results = [];
+  let members = [];
   for (let i = 0; i < inValue.length; i++) {
-    results.push({
+    members.push({
       id: i + 1,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
@@ -51,39 +51,13 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
       pi: inValue[i].principal_investigator
     });
   }
-  return results;
+  return members;
 };
 
 const getScienceSubCategory = () => {
   // TODO change this if/when user can choose a science subcategory
   return 1;
 };
-
-/* // old mapping - keeping it here for a bit during the transition
-function mapping(inRec: ProposalBackend): Proposal {
-  return {
-    id: inRec.prsl_id,
-    title: inRec.proposal_info.title,
-    proposalType: getProposalType(inRec.proposal_info.proposal_type),
-    proposalSubType: [getProposalSubTypeType(inRec.proposal_info.proposal_type)],
-    team: getTeamMembers(inRec.proposal_info.investigators),
-    abstract: inRec.proposal_info.abstract,
-    category: getCategory(inRec.proposal_info.science_category),
-    subCategory: [getSubCategory()],
-    sciencePDF: null,
-    scienceLoadStatus: 0,
-    targetOption: 1,
-    targets: getTargets(inRec.proposal_info.targets),
-    observations: getObservations(inRec.proposal_info.science_programmes),
-    groupObservations: getGroupObservations(inRec.proposal_info.science_programmes),
-    targetObservation: [],
-    technicalPDF: null,
-    technicalLoadStatus: 0,
-    dataProducts: [],
-    pipeline: ''
-  };
-}
-*/
 
 const convertTypeFormat = (_inValue: string): string => {
   const words = _inValue.split('_');
@@ -130,18 +104,6 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
-      /*
-      // old mapping for reference
-      dec: e.reference_coordinate.dec?.toString(),
-      decUnits: e.reference_coordinate.unit,
-      id: e.target_id !== '' ? e.target_id : i + 1,
-      name: e.reference_coordinate.kind, // TODO: check this is correct
-      ra: e.reference_coordinate.ra?.toString(),
-      raUnits: e.reference_coordinate.unit,
-      referenceFrame: e.reference_coordinate.reference_frame,
-      vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnits: e.radial_velocity.quantity.unit,
-      */
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
       decUnit: e.reference_coordinate.unit[0],
       id: i + 1,
@@ -157,7 +119,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       raDefinition: e.radial_velocity.definition,
       velType: e.radial_velocity.definition,
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: e.radial_velocity.quantity.unit.split(' ').join(''), // removes white spaces in "m / s"
+      velUnit: e.radial_velocity.quantity.unit,
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters.map(p => ({
@@ -202,16 +164,15 @@ const getSDPOptions = (options: string[]): boolean[] => {
 };
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
-  // TODO fix type errors
   return inValue.map((dp, index) => ({
-    id: index + 1, // TODO check if index ok or if we should extract the number in data_products_sdp_id
+    id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
     imageSizeValue: Number(dp.image_size),
-    imageSizeUnits: '', // TODO ask why units not in backend data model
+    imageSizeUnits: '', // TODO check why units not in backend data model
     pixelSizeValue: Number(dp.pixel_size),
-    pixelSizeUnits: '', // TODO ask why units not in backend data model
+    pixelSizeUnits: '', // TODO check why units not in backend data model
     weighting: Number(dp.weighting)
   }));
 };
@@ -243,55 +204,22 @@ const getObservations = (
       case 'mid_band_4':
         return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
       default:
-        // fall back: send low band for low array and mid band 1 for mid array
+        // fallback: send low band for low array and mid band 1 for mid array
         return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
     }
   };
 
   const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-    console.log('::: in getSupplied', inSupplied);
+    const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+    const suppliedType = OBSERVATION.Supplied.find(s => s.label === typeLabel);
+    const supppliedUnits = suppliedType.units.find(u => u.label === inSupplied.quantity.unit)?.value;
     const supplied = {
-      type: 0,
-      value: 0,
-      units: 0
+      type: suppliedType?.value,
+      value: inSupplied.quantity.value,
+      units: supppliedUnits ? supppliedUnits : 1 // fallback
     };
     return supplied;
   }
-
-  const getIntegrationTimeUnits = (InUnits: string): number => {
-    // TODO revisit with correct data as PDM should accept any string
-    const integrationTimeSupplied = OBSERVATION.Supplied.find(
-      item => item.label === 'Integration Time'
-    );
-    return integrationTimeSupplied.units.find(item => item.label === InUnits)?.value;
-    /*
-    switch (InUnits) {
-      case 'd':
-        const d = integrationTimeSupplied.units.find(item => item.label === 'd')?.value;
-        return d ? d : -1;
-      case 'h':
-        const h = integrationTimeSupplied.units.find(item => item.label === 'h')?.value;
-        return h ? h : -1;
-      case 'min':
-        const min = integrationTimeSupplied.units.find(item => item.label === 'min')?.value;
-        return min ? min : -1;
-      case 's':
-        const s = integrationTimeSupplied.units.find(item => item.label === 's')?.value;
-        return s ? s : -1;
-      case 'm / s':
-        const mS = integrationTimeSupplied.units.find(item => item.label === 'ms')?.value;
-        return mS ? mS : -1;
-      case 'u / s':
-        const uS = integrationTimeSupplied.units.find(item => item.label === 'us')?.value;
-        return uS ? uS : -1;
-      case 'n / s':
-        const nS = integrationTimeSupplied.units.find(item => item.label === 'ns')?.value;
-        return nS ? nS : -1;
-      default:
-        return -1; // not found
-    }
-    */
-  };
 
   const getFrequencyAndBandwidthUnits = (
     inUnits: string,
@@ -317,8 +245,8 @@ const getObservations = (
     return linkedTargetRef ? linkedTargetRef : '';
   };
 
-  let results = [];
 
+  let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray.find(
@@ -365,11 +293,7 @@ const getObservations = (
       bandwidth:
         type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
       // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
-      // TODO ask about zoom bandwidthUnits not needed
-      integrationTime: inValue[i].observation_type_details?.supplied?.quantity?.value, // integration time: do we need to check the type is integration?
-      integrationTimeUnits: getIntegrationTimeUnits(
-        inValue[i].observation_type_details?.supplied?.quantity?.unit
-      ),
+      // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
@@ -462,7 +386,6 @@ const getResultsSection3 = (
   inObservationSets: ObservationSetBackend[]
 ): any[] => {
   const obs = inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
-  // supplied can be of type sensitivity or integration
   // TODO revisit mapping once integration time format from PDM merged
   const field =
     obs.observation_type_details.supplied.type === 'sensitivity'
@@ -470,7 +393,7 @@ const getResultsSection3 = (
       : 'integrationTime';
   return [
     {
-      field: field, // or sensitivity
+      field: field,
       value: obs.observation_type_details.supplied.quantity?.value,
       units: obs.observation_type_details.supplied.quantity.unit
     }
@@ -487,8 +410,8 @@ const getTargetObservation = (
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
-        id: result.target_ref, // 1, 2, etc
-        title: result.target_ref, // target_id M1, M2, etc => not in sens calc results and targets[] only uses id
+        id: inResults.indexOf(result) + 1, // only for front end
+        title: result.target_ref,
         statusGUI: 0, // only for front-end // TODO check if no error state is 0
         error: '', // only for front-end
         section1: getResultsSection1(result),
@@ -502,7 +425,6 @@ const getTargetObservation = (
 };
 
 function mapping(inRec: ProposalBackend): Proposal {
-  // TODO: finish mapping and add new fields if needed
   console.log('inRec getproposal', inRec);
   const convertedProposal: Proposal = {
     id: inRec.prsl_id,

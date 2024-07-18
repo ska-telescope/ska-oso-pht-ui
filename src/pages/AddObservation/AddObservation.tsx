@@ -1195,8 +1195,6 @@ export default function AddObservation() {
         spectralAveraging: spectralAveraging,
         tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
-        integrationTime: suppliedValue,
-        integrationTimeUnits: suppliedUnits,
         supplied: {
           type: suppliedType,
           value: suppliedValue,

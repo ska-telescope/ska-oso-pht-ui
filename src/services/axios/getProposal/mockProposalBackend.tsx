@@ -131,7 +131,7 @@ const MockProposalBackend: ProposalBackend = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          tapering: 'DUMMY'
+          tapering: '50'
         },
         observation_type_details: {
           observation_type: 'continuum',
@@ -153,9 +153,9 @@ const MockProposalBackend: ProposalBackend = {
               unit: 'ms'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: '50'
         },
         details: 'MID + Continuum'
       },
@@ -182,7 +182,7 @@ const MockProposalBackend: ProposalBackend = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          tapering: 'DUMMY'
+          tapering: '50'
         },
         observation_type_details: {
           observation_type: 'zoom',
@@ -203,9 +203,9 @@ const MockProposalBackend: ProposalBackend = {
               unit: 'm/s'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: '50'
         },
         details: 'MID + Zoom'
       },
@@ -217,7 +217,7 @@ const MockProposalBackend: ProposalBackend = {
           array: 'ska_low',
           subarray: 'aa0.5',
           number_of_stations: 1,
-          spectral_averaging: 'DUMMY'
+          spectral_averaging: '50'
         },
         observation_type_details: {
           observation_type: 'continuum',
@@ -239,9 +239,9 @@ const MockProposalBackend: ProposalBackend = {
               unit: 'ms'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: '50'
         },
         details: 'LOW + Continuum'
       },
@@ -253,7 +253,7 @@ const MockProposalBackend: ProposalBackend = {
           array: 'ska_low',
           subarray: 'aa0.5',
           number_of_stations: 1,
-          spectral_averaging: 'DUMMY'
+          spectral_averaging: '50'
         },
         observation_type_details: {
           observation_type: 'zoom',
@@ -274,9 +274,9 @@ const MockProposalBackend: ProposalBackend = {
               unit: 'm/s'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: '50'
         },
         details: 'LOW + Zoom'
       }
