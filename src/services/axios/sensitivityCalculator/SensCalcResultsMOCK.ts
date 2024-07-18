@@ -2,18 +2,18 @@ import { STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/consta
 import { SensCalcResult } from './getSensitivityCalculatorAPIData';
 
 export const SENSCALC_EMPTY_MOCKED: SensCalcResult = {
-  status: STATUS_INITIAL
+  statusGUI: STATUS_INITIAL
 };
 
 export const SENSCALC_PARTIAL_MOCKED: SensCalcResult = {
-  status: STATUS_PARTIAL,
+  statusGUI: STATUS_PARTIAL,
   error: ''
 };
 
 export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
-  id: 'TITLE FIELD',
+  id: 1,
   title: 'TITLE FIELD',
-  status: STATUS_OK,
+  statusGUI: STATUS_OK,
   error: '',
   section1: [
     { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam' },
@@ -33,9 +33,9 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
 };
 
 export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
-  id: 'TITLE FIELD',
+  id: 2,
   title: 'TITLE FIELD',
-  status: STATUS_OK,
+  statusGUI: STATUS_OK,
   error: '',
   section1: [
     { field: 'spectralSensitivityWeighted', value: '84.47', units: 'ujy/beam' },

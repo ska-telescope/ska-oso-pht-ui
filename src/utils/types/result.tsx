@@ -19,3 +19,13 @@ export type ResultBackend = {
   synthesized_beam_size?: ValueUnitPair;
   spectral_confusion_noise?: ValueUnitPair;
 };
+
+export type SensCalcResult = {
+  id?: number;
+  title?: string;
+  statusGUI: number;
+  error?: string;
+  section1?: { field: string; value: string; units: string }[];
+  section2?: { field: string; value: string; units: string }[];
+  section3?: { field: string; value: string; units: string }[];
+};

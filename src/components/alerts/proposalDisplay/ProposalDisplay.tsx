@@ -15,7 +15,7 @@ import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import { DataProductSDP } from 'utils/types/dataProduct';
+import DataProductSDP from 'utils/types/dataProduct';
 import TargetObservation from 'utils/types/targetObservation';
 
 interface ProposalDisplayProps {

@@ -19,9 +19,9 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
+import { SensCalcResult } from '../../utils/types/result';
+import DataProductSDP from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
-import { SensCalcResult } from 'services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import DataProduct from '../../utils/types/dataProduct';
 
 // TODO : Add documentation page specifically for Adding a Data product
 // TODO : Replace individual tick-boxes with a mapping
@@ -227,11 +227,11 @@ export default function AddDataProduct() {
         0
       );
       const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
-      const newDataProduct: DataProduct = {
+      const newDataProduct: DataProductSDP = {
         id: highestId + 1,
         dataProductsSDPId: `SDP-${highestId + 1}`,
         observatoryDataProduct,
-        observationId,
+        observationId: [observationId],
         imageSizeValue,
         imageSizeUnits,
         pixelSizeValue,

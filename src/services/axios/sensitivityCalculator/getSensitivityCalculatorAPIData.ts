@@ -11,16 +11,7 @@ import {
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-
-export type SensCalcResult = {
-  id?: number;
-  title?: string;
-  statusGUI: number;
-  error?: string;
-  section1?: { field: string; value: string; units: string }[];
-  section2?: { field: string; value: string; units: string }[];
-  section3?: { field: string; value: string; units: string }[];
-};
+import { SensCalcResult } from '../../../utils/types/result';
 
 const SENSCALC_ERROR: SensCalcResult = {
   title: '',

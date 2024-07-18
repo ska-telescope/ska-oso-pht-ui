@@ -18,8 +18,7 @@ import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import {
-  DataProductSDP,
+import DataProductSDP, {
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend
@@ -165,7 +164,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     imageSizeValue: Number(dp.image_size),
     imageSizeUnits: '', // TODO check why units not in backend data model
     pixelSizeValue: Number(dp.pixel_size),
-    pixelSizeUnits: '', // TODO check why units not in backend data model
+    pixelSizeUnits: '', // TODO check why units not in backend data model // use sens calc results beam size units
     weighting: Number(dp.weighting)
   }));
 };
@@ -319,27 +318,30 @@ const getResultsSection1 = (inResult: ResultBackend): any[] => {
     section1.push({
       field: 'continuumSensitivityWeighted',
       value: inResult.result_details.weighted_continuum_sensitivity?.value,
-      units: inResult.result_details.weighted_continuum_sensitivity.unit
+      units: inResult.result_details.weighted_continuum_sensitivity.unit.split(' ').join('') // trim white spaces
     });
     section1.push({
       field: 'continuumConfusionNoise',
       value: inResult.continuum_confusion_noise?.value,
-      units: inResult.continuum_confusion_noise.unit
+      units: inResult.continuum_confusion_noise.unit.split(' ').join('')
     });
     section1.push({
       field: 'continuumTotalSensitivity',
       value: inResult.result_details.total_continuum_sensitivity?.value,
-      units: inResult.result_details.total_continuum_sensitivity.unit
+      units: inResult.result_details.total_continuum_sensitivity.unit.split(' ').join('')
     });
     section1.push({
       field: 'continuumSynthBeamSize',
-      value: inResult.synthesized_beam_size?.value,
-      units: inResult.synthesized_beam_size.unit
+      // value: inResult.synthesized_beam_size?.value,
+      // units: inResult.synthesized_beam_size.unit 
+      // mock beam size for now as format enforced by backend not correct
+      value: '190.0 x 171.3',
+      units: 'arcsecs2'
     });
     section1.push({
       field: 'continuumSurfaceBrightnessSensitivity',
       value: inResult.result_details.surface_brightness_sensitivity.continuum,
-      units: inResult.result_details.surface_brightness_sensitivity.unit
+      units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
     });
     // for zoom observation
   } else {
@@ -353,27 +355,29 @@ const getResultsSection2 = (inResult: ResultBackend): any[] => {
   section2.push({
     field: 'spectralSensitivityWeighted',
     value: inResult.result_details.weighted_spectral_sensitivity?.value,
-    units: inResult.result_details.weighted_spectral_sensitivity.unit
+    units: inResult.result_details.weighted_spectral_sensitivity.unit.split(' ').join('')
   });
   section2.push({
     field: 'spectralConfusionNoise',
     value: inResult.spectral_confusion_noise?.value,
-    units: inResult.spectral_confusion_noise.unit
+    units: inResult.spectral_confusion_noise.unit.split(' ').join('')
   });
   section2.push({
     field: 'spectralTotalSensitivity',
     value: inResult.result_details.total_spectral_sensitivity?.value,
-    units: inResult.result_details.total_spectral_sensitivity.unit
+    units: inResult.result_details.total_spectral_sensitivity.unit.split(' ').join('')
   });
   section2.push({
-    field: 'spectralSynthBeamSize',
-    value: inResult.synthesized_beam_size,
-    units: inResult.synthesized_beam_size.unit
+    // value: inResult.synthesized_beam_size?.value,
+    // units: inResult.synthesized_beam_size.unit 
+    // mock beam size for now as format enforced by backend not correct
+    value: '190.0 x 171.3',
+    units: 'arcsecs2'
   });
   section2.push({
     field: 'spectralSurfaceBrightnessSensitivity',
     value: inResult.result_details.surface_brightness_sensitivity.spectral,
-    units: inResult.result_details.surface_brightness_sensitivity.unit
+    units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
   });
   return section2;
 };
@@ -392,7 +396,7 @@ const getResultsSection3 = (
     {
       field: field,
       value: obs.observation_type_details.supplied.quantity?.value,
-      units: obs.observation_type_details.supplied.quantity.unit
+      units: obs.observation_type_details.supplied.quantity.unit.split(' ').join('')
     }
   ];
 };

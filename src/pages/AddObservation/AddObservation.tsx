@@ -1208,7 +1208,6 @@ export default function AddObservation() {
         numStations: numOfStations,
         details: details
       };
-      console.log('newObservation', newObservation);
       setProposal({
         ...getProposal(),
         observations: [...getProposal().observations, newObservation],
