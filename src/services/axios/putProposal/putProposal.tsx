@@ -84,23 +84,23 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
         sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
       },
-      abstract: '',
+      abstract: proposal.abstract,
       science_category: GENERAL.ScienceCategory?.find(
         category => category.value === proposal?.scienceCategory
       )?.label,
       targets: [],
       documents: [],
-      investigators: [
-        {
-          investigator_id: DEFAULT_PI.id,
-          given_name: DEFAULT_PI.firstName,
-          family_name: DEFAULT_PI.lastName,
-          email: DEFAULT_PI.email,
-          organization: DEFAULT_PI.affiliation,
-          for_phd: DEFAULT_PI.phdThesis,
-          principal_investigator: DEFAULT_PI.pi
-        }
-      ],
+      investigators: proposal.team.map((teamMember) => {
+          return {
+          investigator_id: teamMember.id,
+          given_name: teamMember.firstName,
+          family_name: teamMember.lastName,
+          email: teamMember.email,
+          organization: teamMember.affiliation,
+          for_phd: teamMember.phdThesis,
+          principal_investigator: teamMember.pi
+          };
+        }),
       observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
       data_product_sdps: [],
       data_product_src_nets: [],
