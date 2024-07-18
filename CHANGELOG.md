@@ -13,6 +13,7 @@ Future
 * STAR-537 : Added the ability to Edit a target
 * STAR-547 : Migrate page validations into separate utility 
 * STAR-573 : Add e2e Testing into the CI/CD Pipeline
+* STAR-575 : Update target list on target page to show Redshift & Velocity
 * STAR-587
    - Migrated Image Weighting to a separate component with testing coverage of 100%
    - Updated the Observation selection to remove duplicates and update fields correctly when selected
