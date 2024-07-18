@@ -176,7 +176,6 @@ const getWeighting = inImageWeighting => {
   const weighting = OBSERVATION.ImageWeighting.find(
     item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
   )?.value;
-  console.log('weighting', weighting);
   return weighting ? weighting : 1; // fallback
 };
 

@@ -16,6 +16,7 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import { DataProductSDP } from 'utils/types/dataProduct';
+import TargetObservation from 'utils/types/targetObservation';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -327,8 +328,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targetSelection.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation?.map(rec => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {getProposal().targetObservation?.map((rec:TargetObservation, index: number) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" key={index}>
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
               </Grid>
