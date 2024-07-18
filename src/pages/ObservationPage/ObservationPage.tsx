@@ -238,6 +238,13 @@ export default function ObservationPage() {
   }
 
   const DeleteObservationTarget = (row: any) => {
+    const tmpTO = [];
+    elementsS.forEach(rec => {
+      if (rec.targetId !== row.id || rec.observationId !== currObs.id) {
+        tmpTO.push(rec);
+      }
+    });
+    setElementsS(tmpTO);
     setTargetObservationStorage(filterRecords(row.id));
   };
 
