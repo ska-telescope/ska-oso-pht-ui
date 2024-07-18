@@ -155,7 +155,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           spectral_resolution: '50',
           effective_resolution: '50',
-          image_weighting: '50'
+          image_weighting: 'Uniform'
         },
         details: 'MID + Continuum'
       },
@@ -205,7 +205,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           spectral_resolution: '50',
           effective_resolution: '50',
-          image_weighting: '50'
+          image_weighting: 'Uniform'
         },
         details: 'MID + Zoom'
       },
@@ -241,7 +241,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           spectral_resolution: '50',
           effective_resolution: '50',
-          image_weighting: '50'
+          image_weighting: 'Uniform'
         },
         details: 'LOW + Continuum'
       },
@@ -276,7 +276,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           spectral_resolution: '50',
           effective_resolution: '50',
-          image_weighting: '50'
+          image_weighting: 'Uniform'
         },
         details: 'LOW + Zoom'
       }

@@ -1,10 +1,3 @@
-/*
-TODO:
-- test getProposal mapping with data and map all new properties
-- check if there are new properties to include in the frontend types?
-- tidy up and remove all old mapping functions in this file
-*/
-
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
@@ -177,74 +170,77 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
   }));
 };
 
+/*********************************************************** observation parameters mapping *********************************************************/
+
+const getWeighting = inImageWeighting => {
+  const weighting = OBSERVATION.ImageWeighting.find(
+    item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
+  )?.value;
+  console.log('weighting', weighting);
+  return weighting ? weighting : 1; // fallback
+};
+
+const getObservingBand = (inObsBand: string, inObsArray: string): number => {
+  const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1'))?.value;
+  const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band'))?.value;
+  switch (inObsBand) {
+    case 'low_band':
+      return lowObsBand;
+    case 'mid_band_1':
+      return mid1ObsBand;
+    case 'mid_band_2':
+      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2'))?.value;
+    case 'mid_band_3':
+      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a'))?.value;
+    case 'mid_band_4':
+      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
+    default:
+      // fallback: send low band for low array and mid band 1 for mid array
+      return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
+  }
+};
+
+const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
+  const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+  const suppliedType = OBSERVATION.Supplied.find(s => s.label === typeLabel);
+  const supppliedUnits = suppliedType.units.find(u => u.label === inSupplied.quantity.unit)?.value;
+  const supplied = {
+    type: suppliedType?.value,
+    value: inSupplied.quantity.value,
+    units: supppliedUnits ? supppliedUnits : 1 // fallback
+  };
+  return supplied;
+}
+
+const getFrequencyAndBandwidthUnits = (
+  inUnits: string,
+  telescope: number,
+  observingBand: number
+): number => {
+  const array = OBSERVATION.array.find(item => item?.value === telescope);
+  let units = array.CentralFrequencyAndBandWidthUnits.find(
+    item => item.label.toLowerCase() === inUnits.toLowerCase()
+  )?.value;
+  // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
+  return units
+    ? units
+    : array.CentralFrequencyAndBandWidthUnits.find(
+        item =>
+          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+      )?.value;
+};
+
+const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
+  const obsRef = inObservation.observation_set_id;
+  const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
+  return linkedTargetRef ? linkedTargetRef : '';
+};
+
+
 const getObservations = (
   inValue: ObservationSetBackend[],
   inResults: ResultBackend[]
 ): Observation[] => {
-  const getWeighting = inImageWeighting => {
-    return inImageWeighting === 'DUMMY'
-      ? 1
-      : OBSERVATION.ImageWeighting.find(
-          item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
-        )?.value;
-  };
-
-  const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-    const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1'))?.value;
-    const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band'))?.value;
-    switch (inObsBand) {
-      case 'low_band':
-        return lowObsBand;
-      case 'mid_band_1':
-        return mid1ObsBand;
-      case 'mid_band_2':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2'))?.value;
-      case 'mid_band_3':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a'))?.value;
-      case 'mid_band_4':
-        return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
-      default:
-        // fallback: send low band for low array and mid band 1 for mid array
-        return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
-    }
-  };
-
-  const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-    const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-    const suppliedType = OBSERVATION.Supplied.find(s => s.label === typeLabel);
-    const supppliedUnits = suppliedType.units.find(u => u.label === inSupplied.quantity.unit)?.value;
-    const supplied = {
-      type: suppliedType?.value,
-      value: inSupplied.quantity.value,
-      units: supppliedUnits ? supppliedUnits : 1 // fallback
-    };
-    return supplied;
-  }
-
-  const getFrequencyAndBandwidthUnits = (
-    inUnits: string,
-    telescope: number,
-    observingBand: number
-  ): number => {
-    const array = OBSERVATION.array.find(item => item?.value === telescope);
-    let units = array.CentralFrequencyAndBandWidthUnits.find(
-      item => item.label.toLowerCase() === inUnits.toLowerCase()
-    )?.value;
-    // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
-    return units
-      ? units
-      : array.CentralFrequencyAndBandWidthUnits.find(
-          item =>
-            item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
-        )?.value;
-  };
-
-  const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
-    const obsRef = inObservation.observation_set_id;
-    const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
-    return linkedTargetRef ? linkedTargetRef : '';
-  };
-
 
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -314,6 +310,8 @@ const getObservations = (
   }
   return results;
 };
+
+/*********************************************************** sensitivity calculator results mapping *********************************************************/
 
 const getResultsSection1 = (inResult: ResultBackend): any[] => {
   let section1 = [];
@@ -423,6 +421,8 @@ const getTargetObservation = (
   }
   return targetObsArray;
 };
+
+/*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
   console.log('inRec getproposal', inRec);
