@@ -25,7 +25,7 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
     subTypesFormatted.push(convertTypeFormat(subtype));
   }
   const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+    project.subProjects.find(({ title }) => title?.toLowerCase() === subType?.toLowerCase())
   );
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
@@ -71,7 +71,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       ).id,
       proposalSubType: getSubType(inRec[i].info.proposal_type),
       scienceCategory: GENERAL.ScienceCategory.find(
-        item => item.label.toLowerCase() === inRec[i].info.science_category.toLowerCase()
+        item => item?.label?.toLowerCase() === inRec[i].info?.science_category?.toLowerCase()
       )?.value, // inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,

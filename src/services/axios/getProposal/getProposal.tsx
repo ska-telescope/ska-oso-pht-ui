@@ -10,7 +10,8 @@ import {
   OBSERVATION_TYPE_BACKEND,
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  DEFAULT_PI
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -28,14 +29,16 @@ import Observation from '../../../utils/types/observation';
 import { ResultBackend } from '../../../utils/types/result';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
+import TeamMember from 'utils/types/teamMember';
 
-const getTeamMembers = (inValue: InvestigatorBackend[]) => {
-  let members = [];
+const getTeamMembers = (inValue: InvestigatorBackend[]): TeamMember[] => {
+  let members: TeamMember[] = [];
   for (let i = 0; i < inValue.length; i++) {
     members.push({
-      id: i + 1,
+      id: inValue[i].investigator_id,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
+      country: DEFAULT_PI.country, // TODO should we remove country as not in backend?
       email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
@@ -59,30 +62,30 @@ const convertTypeFormat = (_inValue: string): string => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
+  const project = Projects?.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
   const subTypesFormatted = [];
   for (let subtype of proposalType.sub_type) {
     subTypesFormatted.push(convertTypeFormat(subtype));
   }
   const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+    project.subProjects?.find(({ title }) => title?.toLowerCase() === subType?.toLowerCase())
   );
   return subProjects.filter(({ id }) => id).map(({ id }) => id);
 };
 
 const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory.find(
-    cat => cat.label.toLowerCase() === scienceCat.toLowerCase()
+  const cat = GENERAL.ScienceCategory?.find(
+    cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
 };
 
 const getPI = (investigators: InvestigatorBackend[]) => {
-  return investigators.find(item => item.principal_investigator === true).investigator_id;
+  return investigators?.find(item => item.principal_investigator === true).investigator_id;
 };
 
 const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
-  const pdf = documents.find(doc => doc.type === docType);
+  const pdf = documents?.find(doc => doc.type === docType);
   const pdfDoc = {
     documentId: pdf?.document_id,
     link: pdf?.link
@@ -172,26 +175,26 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 /*********************************************************** observation parameters mapping *********************************************************/
 
 const getWeighting = inImageWeighting => {
-  const weighting = OBSERVATION.ImageWeighting.find(
-    item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
+  const weighting = OBSERVATION.ImageWeighting?.find(
+    item => item.label?.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
 const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-  const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1'))?.value;
-  const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band'))?.value;
+  const mid1ObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 1'))?.value;
+  const lowObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Low Band'))?.value;
   switch (inObsBand) {
     case 'low_band':
       return lowObsBand;
     case 'mid_band_1':
       return mid1ObsBand;
     case 'mid_band_2':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 2'))?.value;
     case 'mid_band_3':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5a'))?.value;
     case 'mid_band_4':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5b'))?.value;
     default:
       // fallback: send low band for low array and mid band 1 for mid array
       return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
@@ -200,8 +203,8 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
   const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-  const suppliedType = OBSERVATION.Supplied.find(s => s.label === typeLabel);
-  const supppliedUnits = suppliedType.units.find(u => u.label === inSupplied.quantity.unit)?.value;
+  const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
+  const supppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied.quantity.value,
@@ -215,15 +218,15 @@ const getFrequencyAndBandwidthUnits = (
   telescope: number,
   observingBand: number
 ): number => {
-  const array = OBSERVATION.array.find(item => item?.value === telescope);
-  let units = array.CentralFrequencyAndBandWidthUnits.find(
-    item => item.label.toLowerCase() === inUnits.toLowerCase()
+  const array = OBSERVATION.array?.find(item => item?.value === telescope);
+  let units = array.CentralFrequencyAndBandWidthUnits?.find(
+    item => item.label?.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
     ? units
-    : array.CentralFrequencyAndBandWidthUnits.find(
-        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+    : array.CentralFrequencyAndBandWidthUnits?.find(
+        item => item.label?.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
       )?.value;
 };
 
@@ -240,12 +243,12 @@ const getObservations = (
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray.find(
-      p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
+    const sub = OBSERVATION.array[arr - 1].subarray?.find(
+      p => p.label?.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
     )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
-      OBSERVATION_TYPE_BACKEND[0].toLowerCase()
+      OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
         ? 0
         : 1;
     const observingBand = getObservingBand(
@@ -386,7 +389,7 @@ const getResultsSection3 = (
   inResultObservationRef: string,
   inObservationSets: ObservationSetBackend[]
 ): any[] => {
-  const obs = inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
   const field =
     obs.observation_type_details.supplied.type === 'sensitivity'
@@ -432,10 +435,10 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal: Proposal = {
     id: inRec.prsl_id,
     title: inRec.info.title,
-    proposalType: Projects.find(
+    proposalType: Projects?.find(
       p =>
-        p.title.toLowerCase() ===
-        convertTypeFormat(inRec.info.proposal_type.main_type).toLowerCase()
+        p.title?.toLowerCase() ===
+        convertTypeFormat(inRec.info.proposal_type.main_type)?.toLowerCase()
     ).id,
     proposalSubType: getSubType(inRec.info.proposal_type),
     status: inRec.status,

@@ -8,6 +8,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { helpers } from '../../../utils/helpers';
 
 /*
 TODO:
@@ -44,7 +45,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
 
   const convertCategoryFormat = (_inValue: string): string => {
     const words = _inValue.split(' ');
-    const lowerCaseWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
+    const lowerCaseWords = words.map(word => word?.charAt(0)?.toLowerCase() + word.slice(1));
     const formattedString = lowerCaseWords.join('_');
     return formattedString;
   };
@@ -64,18 +65,13 @@ function mappingPutProposal(proposal: Proposal, status: string) {
 
   // TODO : complete mapping for all properties
   const transformedProposal: ProposalBackend = {
-    /*
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.category
-      )?.label,
-      */
-    prsl_id: proposal?.id?.toString(),
+    prsl_id: proposal?.id,
     status: status,
-    submitted_on: '', // TODO
-    submitted_by: '', // TODO
-    investigator_refs: [DEFAULT_PI.id],
+    submitted_on: '', // TODO // to fill for submit
+    submitted_by: '', // TODO // to fill for submit
+    investigator_refs: proposal.team?.map((investigator) => {return investigator.id;}),
     metadata: {
-      version: proposal.version++,
+      version: proposal.version + 1,
       created_by: proposal.createdBy,
       created_on: proposal.createdOn,
       last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
@@ -89,7 +85,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
       },
       abstract: '',
-      science_category: '',
+      science_category: GENERAL.ScienceCategory?.find(
+        category => category.value === proposal?.scienceCategory
+      )?.label,
       targets: [],
       documents: [],
       investigators: [
@@ -126,7 +124,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   // trim undefined properties
-  this.trimObject(transformedProposal);
+  helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }
 
@@ -139,12 +137,14 @@ async function PutProposal(proposal, status?) {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = mappingPutProposal(proposal, status);
-    const result = await axios.put(
+    console.log('PUT convertedProposal', convertedProposal);
+    /*const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
-    );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+    );*/
+    const result = 'temp';
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result // result?.data;
   } catch (e) {
     return { error: e.message };
   }
