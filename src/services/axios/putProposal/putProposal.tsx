@@ -5,10 +5,12 @@ import {
   GENERAL,
   Projects,
   SKA_PHT_API_URL,
-  USE_LOCAL_DATA
+  USE_LOCAL_DATA,
+  VEL_TYPES
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
+import Target, { TargetBackend } from 'utils/types/target';
 
 /*
 TODO:
@@ -63,69 +65,106 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return subTypes;
   };
 
-  // TODO : complete mapping for all properties
-  const transformedProposal: ProposalBackend = {
-    prsl_id: proposal?.id,
-    status: status,
-    submitted_on: '', // TODO // to fill for submit
-    submitted_by: '', // TODO // to fill for submit
-    investigator_refs: proposal.team?.map((investigator) => {return investigator.id;}),
-    metadata: {
-      version: proposal.version + 1,
-      created_by: proposal.createdBy,
-      created_on: proposal.createdOn,
-      last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      last_modified_on: new Date().toDateString()
-    },
-    cycle: GENERAL.Cycle,
-    info: {
-      title: proposal.title,
-      proposal_type: {
-        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
-        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
-      },
-      abstract: proposal.abstract,
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label,
-      targets: [],
-      documents: [],
-      investigators: proposal.team.map((teamMember) => {
-          return {
-          investigator_id: teamMember.id,
-          given_name: teamMember.firstName,
-          family_name: teamMember.lastName,
-          email: teamMember.email,
-          organization: teamMember.affiliation,
-          for_phd: teamMember.phdThesis,
-          principal_investigator: teamMember.pi
-          };
-        }),
-      observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
-      data_product_sdps: [],
-      data_product_src_nets: [],
-      results: []
-
-      /*
-      targets: proposal?.targets?.map(target => ({
-        name: target?.name,
-        right_ascension: target?.ra,
-        declination: target?.dec,
-        velocity: parseFloat(target?.vel),
-        velocity_unit: '', // TODO: confirm what units should be expected
-        right_ascension_unit: '', // TODO: confirm what units should be expected
-        declination_unit: '' // TODO: confirm what units should be expected
-      })),
-      */
-      /*
-      investigators: proposal.team?.map(teamMember => ({
-      science_programmes: scienceProgrammes
-      */
+  const getTargets = (targets: Target[]): TargetBackend[] => {
+    console.log('targets', targets);
+    const outTargets = [];
+    for (let i = 0; i < targets.length; i++) {
+      const tar = targets[i];
+      const singlePointParam = tar.pointingPattern.parameters.find(param => param.kind === 'SinglePointParameters');
+      console.log('singlePointParam', singlePointParam);
+      const outTarget: TargetBackend = {
+        target_id: tar.name,
+        pointing_pattern: {
+          active: tar?.pointingPattern?.active,
+          parameters: [
+            {
+              kind: singlePointParam.kind,
+              offset_x_arcsec: singlePointParam.offsetXArcsec,
+              offset_y_arcsec: singlePointParam.offsetYArcsec,
+            }
+          ]
+        },
+        reference_coordinate: {
+          kind: tar.rcReferenceFrame,
+          ra: Number(tar.ra),
+          dec: Number(tar.dec),
+          unit: [tar.raUnit, tar.decUnit],
+          reference_frame: tar.rcReferenceFrame
+        },
+        radial_velocity: {
+          quantity: {
+            value: Number(tar.vel),
+            unit: tar.velUnit
+          },
+          definition: VEL_TYPES.find(item => item.value === tar.velType).label,
+          reference_frame: tar.raReferenceFrame,
+          redshift: tar.redshift
+        }
+      }
+      outTargets.push(outTarget);
     }
-  };
-  // trim undefined properties
-  helpers.transform.trimObject(transformedProposal);
-  return transformedProposal;
+    return outTargets;
+  }
+
+// TODO : complete mapping for all properties
+const transformedProposal: ProposalBackend = {
+  prsl_id: proposal?.id,
+  status: status,
+  submitted_on: '', // TODO // to fill for submit
+  submitted_by: '', // TODO // to fill for submit
+  investigator_refs: proposal.team?.map((investigator) => { return investigator.id; }),
+  metadata: {
+    version: proposal.version + 1,
+    created_by: proposal.createdBy,
+    created_on: proposal.createdOn,
+    last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
+    last_modified_on: new Date().toDateString()
+  },
+  cycle: GENERAL.Cycle,
+  info: {
+    title: proposal.title,
+    proposal_type: {
+      main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
+      sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
+    },
+    abstract: proposal.abstract,
+    science_category: GENERAL.ScienceCategory?.find(
+      category => category.value === proposal?.scienceCategory
+    )?.label,
+    targets: getTargets(proposal.targets), //[], // TODO
+    documents: [], // TODO
+    investigators: proposal.team.map((teamMember) => {
+      return {
+        investigator_id: teamMember.id,
+        given_name: teamMember.firstName,
+        family_name: teamMember.lastName,
+        email: teamMember.email,
+        organization: teamMember.affiliation,
+        for_phd: teamMember.phdThesis,
+        principal_investigator: teamMember.pi
+      };
+    }),
+    observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
+    data_product_sdps: [],
+    data_product_src_nets: [],
+    results: []
+
+    /*
+    targets: proposal?.targets?.map(target => ({
+      name: target?.name,
+      right_ascension: target?.ra,
+      declination: target?.dec,
+      velocity: parseFloat(target?.vel),
+      velocity_unit: '', // TODO: confirm what units should be expected
+      right_ascension_unit: '', // TODO: confirm what units should be expected
+      declination_unit: '' // TODO: confirm what units should be expected
+    })),
+    */
+  }
+};
+// trim undefined properties
+helpers.transform.trimObject(transformedProposal);
+return transformedProposal;
 }
 
 async function PutProposal(proposal, status?) {

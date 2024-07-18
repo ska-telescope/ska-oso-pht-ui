@@ -680,6 +680,11 @@ export const OBSERVATION = {
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
 
+export const VEL_TYPES = [
+  { label: 'Velocity', value: 0 },
+  { label: 'Redshift', value: 1 }
+];
+
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },

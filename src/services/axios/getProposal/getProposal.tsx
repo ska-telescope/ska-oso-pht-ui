@@ -11,7 +11,8 @@ import {
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
-  DEFAULT_PI
+  DEFAULT_PI,
+  VEL_TYPES
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -93,6 +94,11 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
   return pdf ? pdfDoc : null;
 };
 
+const getVelType = (InDefinition: string) => {
+  const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())?.value
+  return velType ? velType : 1; // fallback
+};
+
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
   for (let i = 0; i < inRec.length; i++) {
@@ -100,7 +106,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
-      decUnit: e.reference_coordinate.unit[0],
+      decUnit: e.reference_coordinate.unit[1],
       id: i + 1,
       name: e.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
@@ -112,7 +118,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition,
-      velType: e.radial_velocity.definition,
+      velType: getVelType(e.radial_velocity.definition),
       vel: e.radial_velocity.quantity?.value?.toString(),
       velUnit: e.radial_velocity.quantity.unit,
       pointingPattern: {
