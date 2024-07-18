@@ -12,6 +12,7 @@ import {
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
+import { DocumentBackend, DocumentPDF } from 'utils/types/document';
 
 /*
 TODO:
@@ -105,6 +106,20 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return outTargets;
   }
 
+  const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => [
+    {
+      document_id: sciencePDF.documentId,
+      link: sciencePDF.link,
+      type: 'proposal_science'
+    },
+    {
+      document_id: technicalPDF.documentId,
+      link: technicalPDF.link,
+      type: 'proposal_technical'
+    }
+  ];
+
+
 // TODO : complete mapping for all properties
 const transformedProposal: ProposalBackend = {
   prsl_id: proposal?.id,
@@ -131,7 +146,7 @@ const transformedProposal: ProposalBackend = {
       category => category.value === proposal?.scienceCategory
     )?.label,
     targets: getTargets(proposal.targets),
-    documents: [], // TODO
+    documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
     investigators: proposal.team.map((teamMember) => {
       return {
         investigator_id: teamMember.id,
