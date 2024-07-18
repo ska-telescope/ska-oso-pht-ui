@@ -2,6 +2,7 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
   context('WHEN I wish to create a standard Proposal', () => {
     beforeEach(() => {
       cy.visit('http://localhost:6101/');
+      cy.get('[data-testid="skaoLogo"]', { timeout: 30000 });
 
       cy.intercept(
         {
