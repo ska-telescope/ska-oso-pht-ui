@@ -15,8 +15,6 @@ import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import DataProductSDP from 'utils/types/dataProduct';
-import TargetObservation from 'utils/types/targetObservation';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -77,26 +75,18 @@ export default function ProposalDisplay({
     return `${proposalName}`;
   };
 
-  const proposalSubType = () => {
-    const proposalType = getProposal().proposalType;
-    const subTypesTitles = [];
-    for (let subType of getProposal().proposalSubType) {
-      const proposalSubTypeTitle = Projects[proposalType - 1].subProjects.find(
-        item => item.id === subType
-      ).title;
-      subTypesTitles.push(proposalSubTypeTitle);
-    }
-    return subTypesTitles;
-  };
-
-  const scienceCategory = () => {
-    const scienceCategory = getProposal().scienceCategory
-      ? t(`scienceCategory.${getProposal().scienceCategory}`)
-      : t(`scienceCategory.notSpecified`);
-    const scienceSubCategory = getProposal().scienceSubCategory[0]
-      ? t(`scienceSubCategory.${getProposal().scienceSubCategory[0]}`)
-      : t(`scienceSubCategory.${1}`);
-    return `${scienceCategory} / ${scienceSubCategory}`;
+  const category = () => {
+    const proposalType = getProposal().category;
+    const proposalName =
+      !proposalType || proposalType < 1
+        ? t('displayProposal.noneSelected')
+        : t(`scienceCategory.${proposalType}`);
+    const subCategory = getProposal().subCategory;
+    const subCategoryName =
+      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
+        ? t('displayProposal.noneSelected')
+        : t(`scienceSubCategory.${subCategory}`);
+    return `${proposalName} / ${subCategoryName}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
@@ -137,7 +127,11 @@ export default function ProposalDisplay({
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
-          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
+          <ConfirmButton
+            action={handleConfirm}
+            testId="displayConfirmationButton"
+            title={onConfirmLabel}
+          />
         </Grid>
       )}
     </Grid>
@@ -158,18 +152,6 @@ export default function ProposalDisplay({
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{proposalType()}</Typography>
         </Grid>
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('subProposalType.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Grid container direction="row" justifyContent="flex-start" alignItems="left">
-            {proposalSubType().map((rec: string, index: number) => (
-              <Typography variant={CONTENT_STYLE} key={index} mr={2}>
-                {rec}
-              </Typography>
-            ))}
-          </Grid>
-        </Grid>
       </Grid>
     </Grid>
   );
@@ -181,14 +163,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('members.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().team?.map((rec: TeamMember, index: number) => (
-            <Grid
-              container
-              key={index}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+          {getProposal().team?.map((rec: TeamMember) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}
@@ -220,10 +196,10 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('scienceCategory.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('category.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{scienceCategory()}</Typography>
+          <Typography variant={CONTENT_STYLE}>{category()}</Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -255,14 +231,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targets.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targets?.map((rec: Target, index: number) => (
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              key={index}
-            >
+          {getProposal().targets?.map((rec: Target) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
               </Grid>
@@ -292,14 +262,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('observations.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().observations?.map((rec: Observation, index: number) => (
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              key={index}
-            >
+          {getProposal().observations?.map((rec: Observation) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
               </Grid>
@@ -328,14 +292,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('targetSelection.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation?.map((rec: TargetObservation, index: number) => (
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              key={index}
-            >
+          {getProposal().targetObservation?.map(rec => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center">
               <Grid item xs={2}>
                 <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
               </Grid>
@@ -375,11 +333,7 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('observatoryDataProduct.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().DataProductSDP?.map((rec: DataProductSDP, index: number) => (
-            <Typography variant={LABEL_STYLE} key={index}>
-              {rec.dataProductsSDPId}
-            </Typography>
-          ))}
+          <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
         </Grid>
       </Grid>
     </Grid>
