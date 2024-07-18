@@ -743,6 +743,11 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
+export const VELOCITY_TYPE = {
+  VELOCITY: 0,
+  REDSHIFT: 1
+};
+
 /**************************************************************8*/
 
 export const DEFAULT_PI = {
