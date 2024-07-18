@@ -7,7 +7,10 @@ Future
 
 ---
 
-* Observation page: 
+* STAR-606: Proposal mapping:
+   - GetProposal mapping
+   - Update proposal frontend types
+   - Update pages accordingly for breaking changes
 * STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
 * STAR-540 : Proposal mapping:
    - Update getProposalList mapping to new backend proposal format
