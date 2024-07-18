@@ -210,6 +210,7 @@ async function GetCalculate(observation: Observation, target: Target) {
 
     const params = {
       subarray_configuration: getSubArray(),
+      // LOW should always use integration time in supplied
       duration: sensCalHelpers.format
         .convertIntegrationTimeToSeconds(Number(observation.supplied.value), integrationTimeUnits)
         ?.toString(),
