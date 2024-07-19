@@ -18,19 +18,10 @@ stages:
   - publish
 
 js-lint:
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/reports
   script:
     - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
-    - yarn code-analysis
-    - mv linting.xml build/reports/linting.xml
+    - yarn lint
   artifacts:
     paths:
       - build/
@@ -80,8 +71,11 @@ js-e2e-test:
     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
 
 js-k8s-test:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
+  script:
+    - npm config set registry https://registry.npmjs.org/
+    - yarn install --immutable
+    - yarn lint
 
 ########################## PHT SPECIFIC STUFF BELOW HERE #################################
 
