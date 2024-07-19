@@ -4,8 +4,8 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { SensCalcResult } from '../../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { STATUS_INITIAL } from '../../../../utils/constants';
+import { SensCalcResult } from '../../../../utils/types/result';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -57,7 +57,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
               ariaDescription=""
               testId="statusId"
               icon
-              level={data.status}
+              level={data.statusGUI}
               size={SIZE}
               text=""
             />
@@ -72,7 +72,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         />
       </Card>
       <CardContent>
-        {data?.status !== STATUS_INITIAL ? (
+        {data?.statusGUI !== STATUS_INITIAL ? (
           <>
             {displayElement(
               t('sensitivityCalculatorResults.targetName'),
