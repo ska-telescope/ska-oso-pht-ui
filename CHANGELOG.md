@@ -32,6 +32,7 @@ Future
    - Move front-end to backend mapping into putProposal and postProposal
    - Update postProposal mapping
    - Update proposal Backend types and Mocks
+   - Upgrade to version 2.0.1 of SKA-PHT-SERVICES and 5.2.0 of SKA-DB-ODA
 * STAR-529: Implement validation from OSD with validate endpoint
 
 0.3.1
