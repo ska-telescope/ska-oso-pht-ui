@@ -236,18 +236,21 @@ export const Projects = [
         id: 1,
         title: 'Target of opportunity',
         code: 'ToO',
+        mapping: 'target_of_opportunity',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
         title: 'Joint proposal',
         code: 'JSP',
+        mapping: 'joint_proposal',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
       },
       {
         id: 3,
         title: 'Coordinated Proposal',
         code: 'CP',
+        mapping: 'coordinated_proposal',
         description:
           'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
       }
