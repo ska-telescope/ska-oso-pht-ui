@@ -25,6 +25,15 @@ Future
    - Continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
    - Tapering field should not be available on Low.
    - Weather field should not be available for Low, only Mid
+* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
+* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-540 : Proposal mapping:
+   - Update getProposalList mapping to new backend proposal format
+   - Move front-end to backend mapping into putProposal and postProposal
+   - Update postProposal mapping
+   - Update proposal Backend types and Mocks
+   - Upgrade to version 2.0.1 of SKA-PHT-SERVICES and 5.2.0 of SKA-DB-ODA
+* STAR-529: Implement validation from OSD with validate endpoint
 
 0.3.1
 

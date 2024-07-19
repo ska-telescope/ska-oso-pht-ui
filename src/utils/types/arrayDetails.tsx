@@ -12,6 +12,5 @@ export type ArrayDetailsMidBackend = {
   number_15_antennas?: number;
   number_13_antennas?: number;
   number_sub_bands?: number;
-  elevation?: number;
   tapering?: string;
 };

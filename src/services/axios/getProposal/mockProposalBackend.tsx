@@ -1,5 +1,8 @@
-const MockProposalBackendNew = {
-  proposal_id: '',
+import { ProposalBackend } from '../../../utils/types/proposal';
+
+// this matches the proposal format on the PDM
+const MockProposalBackend: ProposalBackend = {
+  prsl_id: 'prp-ska01-202204-01',
   status: 'submitted',
   submitted_on: '2022-09-23T15:43:53.971548Z',
   submitted_by: 'TestUser',
@@ -44,7 +47,7 @@ const MockProposalBackendNew = {
         radial_velocity: {
           quantity: {
             value: -12.345,
-            unit: 'm / s'
+            unit: 'm / s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
           },
           definition: 'OPTICAL',
           reference_frame: 'LSRK',
@@ -109,6 +112,14 @@ const MockProposalBackendNew = {
         observation_set_id: 'mid-001',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: {
+          default: 15,
+          description: 'Elevation from the horizon to be used',
+          maximum: 90,
+          minimum: 15,
+          title: 'Elevation',
+          type: 'integer'
+        },
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -116,23 +127,26 @@ const MockProposalBackendNew = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          elevation: 15,
           tapering: 'DUMMY'
         },
         observation_type_details: {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           central_frequency: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           supplied: {
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
-            unit: ''
+            unit: 'm / s',
+            quantity: {
+              value: -12.345,
+              unit: 'm / s'
+            }
           },
           spectral_resolution: 'DUMMY',
           effective_resolution: 'DUMMY',
@@ -144,6 +158,14 @@ const MockProposalBackendNew = {
         observation_set_id: 'mid-002',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: {
+          default: 15,
+          description: 'Elevation from the horizon to be used',
+          maximum: 90,
+          minimum: 15,
+          title: 'Elevation',
+          type: 'integer'
+        },
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -151,23 +173,26 @@ const MockProposalBackendNew = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          elevation: 15,
           tapering: 'DUMMY'
         },
         observation_type_details: {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           central_frequency: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: ''
+            unit: 'm / s',
+            quantity: {
+              value: -12.345,
+              unit: 'm / s'
+            }
           },
           spectral_resolution: 'DUMMY',
           effective_resolution: 'DUMMY',
@@ -189,16 +214,20 @@ const MockProposalBackendNew = {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           central_frequency: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           supplied: {
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
-            unit: ''
+            unit: 'm / s',
+            quantity: {
+              value: -12.345,
+              unit: 'm / s'
+            }
           },
           spectral_resolution: 'DUMMY',
           effective_resolution: 'DUMMY',
@@ -220,16 +249,20 @@ const MockProposalBackendNew = {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           central_frequency: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: ''
+            unit: 'm / s',
+            quantity: {
+              value: -12.345,
+              unit: 'm / s'
+            }
           },
           spectral_resolution: 'DUMMY',
           effective_resolution: 'DUMMY',
@@ -243,6 +276,7 @@ const MockProposalBackendNew = {
         data_products_sdp_id: 'SDP-1',
         options: ['1', '2', '5'],
         observation_set_refs: ['mid-001', 'low-001'],
+        image_size: 'IMAGE SIZE',
         pixel_size: 'PIXEL SIZE',
         weighting: 'WEIGHTING'
       }
@@ -260,40 +294,40 @@ const MockProposalBackendNew = {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           weighted_spectral_sensitivity: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           total_continuum_sensitivity: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           total_spectral_sensitivity: {
             value: 0.0,
-            unit: ''
+            unit: 'm / s'
           },
           surface_brightness_sensitivity: {
             continuum: 0.0,
             spectral: 0.0,
-            unit: ''
+            unit: 'm / s'
           }
         },
         continuum_confusion_noise: {
           value: 0.0,
-          unit: ''
+          unit: 'm / s'
         },
         synthesized_beam_size: {
           value: 0.0,
-          unit: ''
+          unit: 'm / s'
         },
         spectral_confusion_noise: {
           value: 0.0,
-          unit: ''
+          unit: 'm / s'
         }
       }
     ]
   }
 };
-export default MockProposalBackendNew;
+export default MockProposalBackend;

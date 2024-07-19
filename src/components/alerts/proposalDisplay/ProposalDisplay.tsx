@@ -76,12 +76,12 @@ export default function ProposalDisplay({
   };
 
   const category = () => {
-    const proposalType = getProposal().category;
+    const proposalType = getProposal().proposalType;
     const proposalName =
       !proposalType || proposalType < 1
         ? t('displayProposal.noneSelected')
         : t(`scienceCategory.${proposalType}`);
-    const subCategory = getProposal().subCategory;
+    const subCategory = getProposal().proposalSubType;
     const subCategoryName =
       !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
         ? t('displayProposal.noneSelected')
@@ -163,8 +163,14 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('members.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().team?.map((rec: TeamMember) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {getProposal().team?.map((rec: TeamMember, index: number) => (
+            <Grid
+              container
+              key={index}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}

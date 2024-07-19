@@ -1,71 +1,21 @@
 /*
 TODO:
 - test getProposal mapping with data and map all new properties
-- update mapping from frontend to backend
 - check if there are new properties to include in the frontend types?
-- rename MockProposalBackendNew as MockProposalBackend and remove "old" MockProposalBackend when ready
 - tidy up and remove all old mapping functions in this file
 */
 
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
-  GENERAL,
-  OBSERVATION,
-  OBSERVATION_TYPE_BACKEND,
   Projects,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import MockProposal from './mockProposal'; // TODO: use MockProposalBackendNew and remove old mock when ready
+import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { TargetBackend } from 'utils/types/target';
-import { ObservationSetBackend } from 'utils/types/observationSet';
 import { InvestigatorBackend } from 'utils/types/investigator';
-
-const getProposalType = (inValue: { main_type: string; sub_type: string[] }) => {
-  const rec = Projects.find(p => p.title === inValue.main_type);
-  return rec.id;
-};
-
-/*
-// old getProposalSubTypeType
-const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string }) => {
-  const rec = Projects.find(p => p.title === inValue.main_type);
-  const rec2 = rec.subProjects.find(p => p.title === inValue.sub_type);
-  return rec2 ? rec2.id : null;
-};
-*/
-
-const getProposalSubTypeType = (inValue: { main_type: string; sub_type: string[] }) => {
-  const project = Projects.find(({ title }) => title === inValue.main_type);
-  const subProjects = inValue.sub_type.map(subType =>
-    project.subProjects.find(({ title }) => title === subType)
-  );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
-};
-
-/*
-// old getTeamMembers
-const getTeamMembers = (inValue: TeamMemberBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    results.push({
-      id: i + 1,
-      firstName: inValue[i].first_name,
-      lastName: inValue[i].last_name,
-      email: inValue[i].email,
-      country: inValue[i].country,
-      affiliation: inValue[i].organization,
-      phdThesis: inValue[i].for_phd,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-      pi: inValue[i].principal_investigator
-    });
-  }
-  return results;
-};
-*/
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let results = [];
@@ -84,37 +34,20 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   return results;
 };
 
+/*
 const getCategory = (cat: String) => {
   const rec = GENERAL.ScienceCategory.find(p => p.label === cat);
   return rec ? rec.value : 0;
 };
+*/
 
+/*
 const getSubCategory = () => {
   return 1;
 };
-
-/*
-// old getTargets
-const getTargets = (inValue: TargetBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    const e = inValue[i];
-    results.push({
-      dec: e.declination?.toString(),
-      decUnits: e.declination_unit,
-      id: i + 1,
-      name: e.name,
-      ra: e.right_ascension?.toString(),
-      raUnits: e.right_ascension_unit,
-      referenceFrame: '',
-      vel: e.velocity?.toString(),
-      velUnits: e.velocity_unit
-    });
-  }
-  return results;
-};
 */
 
+/*
 const getTargets = (inValue: TargetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -133,6 +66,7 @@ const getTargets = (inValue: TargetBackend[]) => {
   }
   return results;
 };
+*/
 
 /*
 const getIntegrationTimeUnits = (inValue: String) => {
@@ -142,28 +76,6 @@ const getIntegrationTimeUnits = (inValue: String) => {
 */
 
 /*
-// old getObservations
-const getObservations = (inValue: ScienceProgrammeBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    const arr = inValue[i].array === 'MID' ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray.find(p => p.label === inValue[i].subarray);
-    results.push({
-      id: i + 1,
-      telescope: arr,
-      subarray: sub ? sub.value : 0,
-      type: inValue[i].observation_type === OBSERVATION_TYPE_BACKEND[0] ? 0 : 1,
-      imageWeighting: inValue[i].image_weighting,
-      observingBand: inValue[i].observing_band,
-      integrationTime: inValue[i].integration_time,
-      integrationTimeUnits: getIntegrationTimeUnits(inValue[i].integration_time_units),
-      centralFrequency: inValue[i].central_frequency
-    });
-  }
-  return results;
-};
-*/
-
 const getObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -188,23 +100,9 @@ const getObservations = (inValue: ObservationSetBackend[]) => {
   }
   return results;
 };
-
-/*
-// old getGroupObservations
-const getGroupObservations = (inValue: ScienceProgrammeBackend[]) => {
-  let results = [];
-  for (let i = 0; i < inValue.length; i++) {
-    if (inValue[i].groupId) {
-      results.push({
-        observationId: i + 1,
-        groupId: inValue[i].groupId
-      });
-    }
-  }
-  return results;
-};
 */
 
+/*
 const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -220,6 +118,7 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   }
   return results;
 };
+*/
 
 /* // old mapping - keeping it here for a bit during the transition
 function mapping(inRec: ProposalBackend): Proposal {
@@ -247,33 +146,50 @@ function mapping(inRec: ProposalBackend): Proposal {
 }
 */
 
+const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
+  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const subProjects = proposalType.sub_type?.map(subType =>
+    project.subProjects.find(({ mapping }) => mapping === subType)
+  );
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
+};
+
 function mapping(inRec: ProposalBackend): Proposal {
-  // TODO: check mapping and add new fields
-  return {
-    id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: getProposalType(inRec.info.proposal_type),
-    proposalSubType: getProposalSubTypeType(inRec.info.proposal_type),
+  // TODO: finish mapping and add new fields if needed
+  const convertedProposal = {
+    id: inRec.prsl_id, // TODO
+    title: inRec.info.title, // TODO
+    proposalType: Projects.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
+    status: inRec.status,
+    lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
+    lastUpdatedBy: inRec.metadata.last_modified_by,
+    createdOn: inRec.metadata.created_on,
+    createdBy: inRec.metadata.created_by,
+    version: inRec.metadata.version,
+    cycle: '', // TODO
     team: getTeamMembers(inRec.info.investigators),
-    abstract: inRec.info.abstract,
-    category: getCategory(inRec.info.science_category),
-    subCategory: [getSubCategory()],
+    pi: 'PI-Ref', // TODO
+    abstract: inRec.info.abstract, // TODO
+    category: inRec.info.science_category,
+    subCategory: [1], // TODO // [getSubCategory()],
     sciencePDF: null, // TODO: map to DocumentBackend?
-    scienceLoadStatus: 0,
-    targetOption: 1,
-    targets: getTargets(inRec.info.targets),
-    observations: getObservations(inRec.info.observation_sets),
-    groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: [],
+    scienceLoadStatus: 0, //TODO
+    targetOption: 1, // TODO
+    targets: [], // TODO getTargets(inRec.info.targets),
+    observations: [], // TODO // getObservations(inRec.info.observation_sets),
+    groupObservations: [], // TODO // getGroupObservations(inRec.info.observation_sets),
+    targetObservation: [], // TODO
     technicalPDF: null, // TODO: map to DocumentBackend?
-    technicalLoadStatus: 0,
+    technicalLoadStatus: 0, // TODO
     dataProducts: [], // TODO: map to data_product_sdps and data_product_src_nets?
     pipeline: ''
   };
+  return convertedProposal;
 }
 
 export function GetMockProposal(): Proposal {
-  return mapping(MockProposal);
+  return mapping(MockProposalBackend);
 }
 
 async function GetProposal(id: string): Promise<Proposal | string> {
