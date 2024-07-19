@@ -22,7 +22,7 @@ js-lint:
   before_script:
     - apt update && apt install -y make ## needed because base image does not have these packages
     - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
-    - 'make help | grep js-test'
+    - 'make help | grep js-lint'
     - make js-install-reinstall ## needed to re-install cypress
 
 js-test:
