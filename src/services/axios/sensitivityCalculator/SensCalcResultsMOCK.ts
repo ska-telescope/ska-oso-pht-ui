@@ -1,16 +1,16 @@
 import { STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import { SensCalcResult } from './getSensitivityCalculatorAPIData';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 
-export const SENSCALC_EMPTY_MOCKED: SensCalcResult = {
+export const SENSCALC_EMPTY_MOCKED: SensCalcResults = {
   statusGUI: STATUS_INITIAL
 };
 
-export const SENSCALC_PARTIAL_MOCKED: SensCalcResult = {
+export const SENSCALC_PARTIAL_MOCKED: SensCalcResults = {
   statusGUI: STATUS_PARTIAL,
   error: ''
 };
 
-export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
+export const SENSCALC_CONTINUUM_MOCKED: SensCalcResults = {
   id: 1,
   title: 'TITLE FIELD',
   statusGUI: STATUS_OK,
@@ -32,7 +32,7 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
   section3: [{ field: 'integrationTime', value: '19.3', units: 'hours' }]
 };
 
-export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
+export const SENSCALC_SPECTRAL_MOCKED: SensCalcResults = {
   id: 2,
   title: 'TITLE FIELD',
   statusGUI: STATUS_OK,

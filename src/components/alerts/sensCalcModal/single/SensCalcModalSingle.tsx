@@ -5,12 +5,12 @@ import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { STATUS_INITIAL } from '../../../../utils/constants';
-import { SensCalcResult } from '../../../../utils/types/result';
+import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
-  data: SensCalcResult;
+  data: SensCalcResults;
 }
 
 const SIZE = 30;

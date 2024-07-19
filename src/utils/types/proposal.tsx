@@ -1,13 +1,8 @@
 import { DocumentBackend, DocumentPDF } from './document';
-import {
-  DataProductSDP,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from './dataProduct';
+import DataProductSDP, { DataProductSDPsBackend, DataProductSRCNetBackend, DataProductSRC } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
-import { ResultBackend } from './result';
+import { SensCalcResultsBackend } from './sensCalcResults';
 // import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
@@ -38,7 +33,7 @@ export type ProposalBackend = {
     observation_sets: ObservationSetBackend[];
     data_product_sdps: DataProductSDPsBackend[];
     data_product_src_nets: DataProductSRCNetBackend[];
-    results: ResultBackend[];
+    results: SensCalcResultsBackend[];
   };
 };
 

@@ -19,7 +19,7 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
-import { SensCalcResult } from '../../utils/types/result';
+import { SensCalcResults } from '../../utils/types/sensCalcResults';
 import DataProductSDP from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 
@@ -68,7 +68,7 @@ export default function AddDataProduct() {
       return temp ? temp.imageWeighting : 0;
     };
 
-    const getPixelSize = (sensCalc: SensCalcResult): number => {
+    const getPixelSize = (sensCalc: SensCalcResults): number => {
       const DIVIDER = 3;
       const precisionStr = t('pixelSize.precision');
       const precision = Number(precisionStr);

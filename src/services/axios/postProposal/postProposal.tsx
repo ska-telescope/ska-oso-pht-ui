@@ -9,26 +9,19 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import MockProposalBackend from '../getProposal/mockProposalBackend';
 
-function mappingPostProposal(proposal, status) {
-  const convertCategoryFormat = (_inValue: string): string => {
-    const words = _inValue.split(' ');
-    const lowerCaseWords = words.map(word => word.charAt(0).toLowerCase() + word.slice(1));
-    const formattedString = lowerCaseWords.join('_');
-    return formattedString;
-  };
+function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
 
-  const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
+  const getSubType = (proposalType: number, proposalSubType: number[]): any => {
     const project = Projects.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
-      const sub = project.subProjects.find(item => item.id === subtype);
-      if (sub) {
-        const formattedSubType = convertCategoryFormat(sub.title);
-        subTypes.push(formattedSubType);
+      console.log('subType', subtype);
+      if (subtype) {
+        subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
       }
     }
+    console.log('subTypes', subTypes);
     return subTypes;
   };
 
@@ -49,8 +42,8 @@ function mappingPostProposal(proposal, status) {
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
-        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
+        main_type: Projects.find(item => item.id === proposal.proposalType)?.mapping,
+        sub_type: proposal.proposalSubType ? getSubType(proposal.proposalType, proposal.proposalSubType) : []
       },
       abstract: '',
       science_category: '',
@@ -75,27 +68,24 @@ function mappingPostProposal(proposal, status) {
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
+  console.log('transformedProposal', transformedProposal);
   return transformedProposal;
 }
 
 async function PostProposal(proposal: Proposal, status?: string) {
-  if (USE_LOCAL_DATA) {
+  if (window.Cypress || USE_LOCAL_DATA) {
     return 'PROPOSAL-ID-001';
   }
 
   try {
     const URL_PATH = `/proposals`;
-    const convertedProposal = mappingPostProposal(proposal, status); // TODO revert back to user proposal before merging
-    console.log('convertedProposal', convertedProposal);
-    const proposalBackendFormat = MockProposalBackend;
-    console.log('postProposal proposalBackendFormat', proposalBackendFormat);
+    const convertedProposal = mappingPostProposal(proposal, status);
 
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
-      proposalBackendFormat, // convertedProposal, // TODO revert back to user proposal before merging
+      convertedProposal,
       AXIOS_CONFIG
     );
-    console.log('postProposal result', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

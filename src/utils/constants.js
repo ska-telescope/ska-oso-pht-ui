@@ -123,6 +123,8 @@ export const GENERAL = {
   ]
 };
 
+export const NOTSPECIFIED = 'notSpecified';
+
 export const IMAGE_SIZE_UNITS = {
   ARCSECS: 'arcseconds',
   ARCMINS: 'arcmins',
@@ -732,6 +734,7 @@ export const TELESCOPES = [
   { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
 ];
+
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
     MAX_LENGTH: 50,
@@ -755,6 +758,11 @@ export const TEXT_ENTRY_PARAMS = {
     // eslint-disable-next-line no-useless-escape
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
+};
+
+export const VELOCITY_TYPE = {
+  VELOCITY: 0,
+  REDSHIFT: 1
 };
 
 /**************************************************************8*/

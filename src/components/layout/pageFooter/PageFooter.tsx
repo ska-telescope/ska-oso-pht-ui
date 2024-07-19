@@ -6,7 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
@@ -48,7 +48,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
     NotifyWarning(t('addProposal.warning'));
-    const response = await PostProposal(getProposal(), 'draft');
+    const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
       setProposal({ ...getProposal(), id: response });

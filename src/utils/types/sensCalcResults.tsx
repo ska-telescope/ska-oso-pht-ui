@@ -1,6 +1,6 @@
 import { ValueUnitPair } from './valueUnitPair';
 
-export type ResultBackend = {
+export type SensCalcResultsBackend = {
   observation_set_ref?: string;
   target_ref?: string;
   result_details?: {
@@ -20,7 +20,7 @@ export type ResultBackend = {
   spectral_confusion_noise?: ValueUnitPair;
 };
 
-export type SensCalcResult = {
+export type SensCalcResults = {
   id?: number;
   title?: string;
   statusGUI: number;

@@ -25,7 +25,7 @@ import DataProductSDP, {
 } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
-import { ResultBackend } from '../../../utils/types/result';
+import { SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 
@@ -51,23 +51,12 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const convertTypeFormat = (_inValue: string): string => {
-  const words = _inValue.split('_');
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-  const formattedString = capitalizedWords.join(' ');
-  return formattedString;
-};
-
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
-  const subTypesFormatted = [];
-  for (let subtype of proposalType.sub_type) {
-    subTypesFormatted.push(convertTypeFormat(subtype));
-  }
-  const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const subProjects = proposalType.sub_type?.map(subType =>
+    project.subProjects.find(({ mapping }) => mapping === subType)
   );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
 const getScienceCategory = (scienceCat: string) => {
@@ -227,7 +216,7 @@ const getFrequencyAndBandwidthUnits = (
       )?.value;
 };
 
-const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
+const getLinked = (inObservation: ObservationSetBackend, inResults: SensCalcResultsBackend[]) => {
   const obsRef = inObservation.observation_set_id;
   const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
   return linkedTargetRef ? linkedTargetRef : '';
@@ -235,7 +224,7 @@ const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBacken
 
 const getObservations = (
   inValue: ObservationSetBackend[],
-  inResults: ResultBackend[]
+  inResults: SensCalcResultsBackend[]
 ): Observation[] => {
   let results = [];
   for (let i = 0; i < inValue.length; i++) {
@@ -311,7 +300,7 @@ const getObservations = (
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
-const getResultsSection1 = (inResult: ResultBackend): any[] => {
+const getResultsSection1 = (inResult: SensCalcResultsBackend): any[] => {
   let section1 = [];
   // for continuum observation
   if (inResult.continuum_confusion_noise) {
@@ -350,7 +339,7 @@ const getResultsSection1 = (inResult: ResultBackend): any[] => {
   return section1;
 };
 
-const getResultsSection2 = (inResult: ResultBackend): any[] => {
+const getResultsSection2 = (inResult: SensCalcResultsBackend): any[] => {
   let section2 = [];
   section2.push({
     field: 'spectralSensitivityWeighted',
@@ -402,7 +391,7 @@ const getResultsSection3 = (
 };
 
 const getTargetObservation = (
-  inResults: ResultBackend[],
+  inResults: SensCalcResultsBackend[],
   inObservationSets: ObservationSetBackend[]
 ): TargetObservation[] => {
   let targetObsArray = [];
@@ -428,16 +417,11 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
-  console.log('inRec getproposal', inRec);
-  const convertedProposal: Proposal = {
-    id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: Projects.find(
-      p =>
-        p.title.toLowerCase() ===
-        convertTypeFormat(inRec.info.proposal_type.main_type).toLowerCase()
-    ).id,
-    proposalSubType: getSubType(inRec.info.proposal_type),
+  const convertedProposal = {
+    id: inRec.prsl_id, // TODO
+    title: inRec.info.title, // TODO
+    proposalType: Projects.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
     lastUpdatedBy: inRec.metadata.last_modified_by,
@@ -478,8 +462,9 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `/proposals/${id}`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+    // const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = MockProposalBackend;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result); // mapping(result.data);
   } catch (e) {
     return e.message;
   }

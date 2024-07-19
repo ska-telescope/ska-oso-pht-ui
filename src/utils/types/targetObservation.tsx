@@ -1,9 +1,9 @@
-import { SensCalcResult } from '../../utils/types/result';
+import { SensCalcResults } from '../../utils/types/sensCalcResults';
 
 type TargetObservation = {
   targetId: string;
   observationId: string;
-  sensCalc: SensCalcResult;
+  sensCalc: SensCalcResults;
 };
 
 export default TargetObservation;
