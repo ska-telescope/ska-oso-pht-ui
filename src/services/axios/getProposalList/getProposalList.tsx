@@ -47,8 +47,10 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: inRec[i].metadata.created_on,
       createdBy: inRec[i].metadata.created_by,
       version: inRec[i].metadata.version,
-      proposalType: Projects.find( p =>p.mapping === inRec[i].info.proposal_type.main_type )?.id,
-      proposalSubType: inRec[i].info.proposal_type.sub_type ? getSubType(inRec[i].info.proposal_type) : [],
+      proposalType: Projects.find(p => p.mapping === inRec[i].info.proposal_type.main_type)?.id,
+      proposalSubType: inRec[i].info.proposal_type.sub_type
+        ? getSubType(inRec[i].info.proposal_type)
+        : [],
       category: inRec[i].info.science_category,
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,

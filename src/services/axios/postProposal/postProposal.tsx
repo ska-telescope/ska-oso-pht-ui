@@ -11,7 +11,6 @@ import {
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 function mappingPostProposal(proposal, status) {
-
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
     const project = Projects.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];

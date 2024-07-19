@@ -146,13 +146,6 @@ function mapping(inRec: ProposalBackend): Proposal {
 }
 */
 
-const convertTypeFormat = (_inValue: string): string => {
-  const words = _inValue.split('_');
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-  const formattedString = capitalizedWords.join(' ');
-  return formattedString;
-};
-
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
   const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
@@ -166,7 +159,7 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
     id: inRec.prsl_id, // TODO
     title: inRec.info.title, // TODO
-    proposalType: Projects.find( p =>p.mapping === inRec.info.proposal_type.main_type )?.id,
+    proposalType: Projects.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
