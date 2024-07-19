@@ -154,15 +154,11 @@ const convertTypeFormat = (_inValue: string): string => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
-  const subTypesFormatted = [];
-  for (let subtype of proposalType.sub_type) {
-    subTypesFormatted.push(convertTypeFormat(subtype));
-  }
-  const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects.find(({ title }) => title.toLowerCase() === subType.toLowerCase())
+  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const subProjects = proposalType.sub_type?.map(subType =>
+    project.subProjects.find(({ mapping }) => mapping === subType)
   );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
 function mapping(inRec: ProposalBackend): Proposal {
@@ -170,12 +166,8 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
     id: inRec.prsl_id, // TODO
     title: inRec.info.title, // TODO
-    proposalType: Projects.find(
-      p =>
-        p.title.toLowerCase() ===
-        convertTypeFormat(inRec.info.proposal_type.main_type).toLowerCase()
-    ).id,
-    proposalSubType: getSubType(inRec.info.proposal_type),
+    proposalType: Projects.find( p =>p.mapping === inRec.info.proposal_type.main_type )?.id,
+    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
     lastUpdatedBy: inRec.metadata.last_modified_by,
