@@ -31,7 +31,7 @@ import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
-  for (let i = 0; i < inValue.length; i++) {
+  for (let i = 0; i < inValue?.length; i++) {
     members.push({
       id: i + 1,
       firstName: inValue[i].given_name,
@@ -52,26 +52,26 @@ const getScienceSubCategory = () => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const project = Projects?.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
-    project.subProjects.find(({ mapping }) => mapping === subType)
+    project.subProjects?.find(({ mapping }) => mapping === subType)
   );
-  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id)
 };
 
 const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory.find(
-    cat => cat.label.toLowerCase() === scienceCat.toLowerCase()
+  const cat = GENERAL.ScienceCategory?.find(
+    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
 };
 
 const getPI = (investigators: InvestigatorBackend[]) => {
-  return investigators.find(item => item.principal_investigator === true).investigator_id;
+  return investigators?.find(item => item.principal_investigator === true).investigator_id;
 };
 
 const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
-  const pdf = documents.find(doc => doc.type === docType);
+  const pdf = documents?.find(doc => doc.type === docType);
   const pdfDoc = {
     documentId: pdf?.document_id,
     link: pdf?.link
@@ -81,7 +81,7 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
-  for (let i = 0; i < inRec.length; i++) {
+  for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
@@ -103,7 +103,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       velUnit: e.radial_velocity.quantity.unit,
       pointingPattern: {
         active: e.pointing_pattern.active,
-        parameters: e.pointing_pattern.parameters.map(p => ({
+        parameters: e.pointing_pattern.parameters?.map(p => ({
           kind: p.kind,
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
@@ -117,7 +117,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
 
 const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
-  for (let i = 0; i < inValue.length; i++) {
+  for (let i = 0; i < inValue?.length; i++) {
     if (inValue[i].group_id) {
       const observationSetId = inValue[i].observation_set_id;
       const observationId =
@@ -132,7 +132,7 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
 };
 
 const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[] => {
-  return inValue.map(dp => ({ id: dp.data_products_src_id }));
+  return inValue?.map(dp => ({ id: dp?.data_products_src_id }));
 };
 
 const getSDPOptions = (options: string[]): boolean[] => {
@@ -145,7 +145,7 @@ const getSDPOptions = (options: string[]): boolean[] => {
 };
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
-  return inValue.map((dp, index) => ({
+  return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
@@ -161,26 +161,26 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 /*********************************************************** observation parameters mapping *********************************************************/
 
 const getWeighting = inImageWeighting => {
-  const weighting = OBSERVATION.ImageWeighting.find(
-    item => item.label.toLowerCase() === inImageWeighting.toLowerCase()
+  const weighting = OBSERVATION.ImageWeighting?.find(
+    item => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
 const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-  const mid1ObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 1'))?.value;
-  const lowObsBand = BANDWIDTH_TELESCOPE.find(item => item.label.includes('Low Band'))?.value;
+  const mid1ObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 1'))?.value;
+  const lowObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Low Band'))?.value;
   switch (inObsBand) {
     case 'low_band':
       return lowObsBand;
     case 'mid_band_1':
       return mid1ObsBand;
     case 'mid_band_2':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 2'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 2'))?.value;
     case 'mid_band_3':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5a'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5a'))?.value;
     case 'mid_band_4':
-      return BANDWIDTH_TELESCOPE.find(item => item.label.includes('Band 5b'))?.value;
+      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5b'))?.value;
     default:
       // fallback: send low band for low array and mid band 1 for mid array
       return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
@@ -189,8 +189,8 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
   const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-  const suppliedType = OBSERVATION.Supplied.find(s => s.label === typeLabel);
-  const supppliedUnits = suppliedType.units.find(u => u.label === inSupplied.quantity.unit)?.value;
+  const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
+  const supppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied.quantity.value,
@@ -204,15 +204,15 @@ const getFrequencyAndBandwidthUnits = (
   telescope: number,
   observingBand: number
 ): number => {
-  const array = OBSERVATION.array.find(item => item?.value === telescope);
-  let units = array.CentralFrequencyAndBandWidthUnits.find(
-    item => item.label.toLowerCase() === inUnits.toLowerCase()
+  const array = OBSERVATION.array?.find(item => item?.value === telescope);
+  let units = array.CentralFrequencyAndBandWidthUnits?.find(
+    item => item.label.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
     ? units
-    : array.CentralFrequencyAndBandWidthUnits.find(
-        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units.toLowerCase()
+    : array.CentralFrequencyAndBandWidthUnits?.find(
+        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
       )?.value;
 };
 
@@ -227,10 +227,10 @@ const getObservations = (
   inResults: SensCalcResultsBackend[]
 ): Observation[] => {
   let results = [];
-  for (let i = 0; i < inValue.length; i++) {
+  for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray.find(
-      p => p.label.toLowerCase() === inValue[i].array_details.subarray.toLocaleLowerCase()
+    const sub = OBSERVATION.array[arr - 1].subarray?.find(
+      p => p.label.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
     )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
@@ -375,7 +375,7 @@ const getResultsSection3 = (
   inResultObservationRef: string,
   inObservationSets: ObservationSetBackend[]
 ): any[] => {
-  const obs = inObservationSets.find(o => o.observation_set_id === inResultObservationRef);
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
   const field =
     obs.observation_type_details.supplied.type === 'sensitivity'
@@ -400,7 +400,7 @@ const getTargetObservation = (
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
-        id: inResults.indexOf(result) + 1, // only for front end
+        id: inResults?.indexOf(result) + 1, // only for front end
         title: result.target_ref,
         statusGUI: 0, // only for front-end // TODO check if no error state is 0
         error: '', // only for front-end
@@ -420,7 +420,7 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
     id: inRec.prsl_id, // TODO
     title: inRec.info.title, // TODO
-    proposalType: Projects.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
@@ -440,7 +440,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: getTargetObservation(inRec.info.results, inRec.info.observation_sets), // [], // TODO check where do we see linked targets/observation in backend format
+    targetObservation: inRec?.info?.results?.length > 1 ? getTargetObservation(inRec.info.results, inRec.info.observation_sets) : [],
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
@@ -462,9 +462,8 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `/proposals/${id}`;
-    // const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    const result = MockProposalBackend;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result); // mapping(result.data);
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;
   }

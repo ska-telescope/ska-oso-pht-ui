@@ -157,8 +157,8 @@ export default function ProposalDisplay({
           <Typography variant={LABEL_STYLE}>{t('members.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().team?.map((rec: TeamMember) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          {getProposal().team?.map((rec: TeamMember, index: number) => (
+            <Grid container direction="row" justifyContent="space-between" alignItems="center" key={index}>
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}

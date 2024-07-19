@@ -88,9 +88,8 @@ async function GetProposalList(): Promise<Proposal[] | string> {
 
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
-    // const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    const result = MockProposalBackendList;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result); // mappingList(result.data);
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return e.message;
   }
