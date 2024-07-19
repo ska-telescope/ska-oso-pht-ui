@@ -36,12 +36,67 @@ js-lint:
       - build/
 
 js-test:
-  image: ${TEST_IMAGE}
+  image: cypress/browsers:node18.12.0-chrome106-ff106
+  stage: test
+  tags:
+    - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
   before_script:
-    - apt update && apt install -y make ## needed because base image does not have these packages
-    - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
-    - 'make help | grep js-test'
-    - make js-install-reinstall ## needed to re-install cypress
+    - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
+  script:
+    - yarn test:component:headless
+    - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/reports/cobertura-coverage.xml
+    paths:
+      - build/
+
+js-e2e-test:
+  image: cypress/browsers:node18.12.0-chrome106-ff106
+  stage: test
+  tags:
+    - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
+  script:
+    - yarn start &
+    - yarn test:e2e:headless
+    - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+
+js-k8s-test:
+  image: cypress/browsers:node18.12.0-chrome106-ff106
+  stage: test
+  tags:
+    - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/tests
+    - yarn install --immutable
+  script:
+    - yarn test:cypress:component:ci
+    - yarn merge-reports
+  artifacts:
+    paths:
+      - build/
 
 ########################## PHT SPECIFIC STUFF BELOW HERE #################################
 
