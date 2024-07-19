@@ -17,6 +17,24 @@ stages:
   - accessibility
   - publish
 
+js-lint:
+  tags:
+    - k8srunner
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/reports
+  script:
+    - npm config set registry https://registry.npmjs.org/
+    - yarn install --immutable
+    - yarn code-analysis
+    - mv linting.xml build/reports/linting.xml
+  artifacts:
+    paths:
+      - build/
+
 js-test:
   image: ${TEST_IMAGE}
   before_script:
