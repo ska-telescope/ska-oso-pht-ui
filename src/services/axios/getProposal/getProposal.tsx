@@ -56,7 +56,7 @@ const getSubType = (proposalType: { main_type: string; sub_type: string[] }): an
   const subProjects = proposalType.sub_type?.map(subType =>
     project.subProjects?.find(({ mapping }) => mapping === subType)
   );
-  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id)
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
 const getScienceCategory = (scienceCat: string) => {
@@ -440,7 +440,10 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: inRec?.info?.results?.length > 1 ? getTargetObservation(inRec.info.results, inRec.info.observation_sets) : [],
+    targetObservation:
+      inRec?.info?.results?.length > 1
+        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
+        : [],
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),

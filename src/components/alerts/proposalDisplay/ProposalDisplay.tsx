@@ -77,9 +77,13 @@ export default function ProposalDisplay({
 
   const scienceCategory = () => {
     const scienceCat = getProposal().scienceCategory;
-    const scienceCatLabel = scienceCat ? t(`scienceCategory.${scienceCat}`) : t(`scienceCategory.${NOTSPECIFIED}`);
+    const scienceCatLabel = scienceCat
+      ? t(`scienceCategory.${scienceCat}`)
+      : t(`scienceCategory.${NOTSPECIFIED}`);
     const scienceSubCat = getProposal().scienceSubCategory;
-    const scienceSubCatLabel = getProposal().scienceSubCategory ? t(`scienceSubCategory.${scienceSubCat}`) : t(`scienceSubCat.${NOTSPECIFIED}`);
+    const scienceSubCatLabel = getProposal().scienceSubCategory
+      ? t(`scienceSubCategory.${scienceSubCat}`)
+      : t(`scienceSubCat.${NOTSPECIFIED}`);
     return `${scienceCatLabel} / ${scienceSubCatLabel}`;
   };
 
@@ -158,7 +162,13 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           {getProposal().team?.map((rec: TeamMember, index: number) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center" key={index}>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              key={index}
+            >
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
                   {`${rec.firstName} ${rec.lastName}`}
