@@ -16,12 +16,10 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     const project = Projects.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
-      console.log('subType', subtype);
       if (subtype) {
         subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
       }
     }
-    console.log('subTypes', subTypes);
     return subTypes;
   };
 
@@ -68,7 +66,6 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
-  console.log('transformedProposal', transformedProposal);
   return transformedProposal;
 }
 

@@ -126,7 +126,6 @@ const sensCalHelpers = {
       return frequencyValue * unitMap[frequencyUnits];
     },
     convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
-      console.log('::: in convertBandwidthToMHz', bandwidthValue, bandwidthUnits);
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,

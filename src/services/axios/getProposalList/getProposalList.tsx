@@ -38,7 +38,6 @@ const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
 };
 
 const getScienceCategory = (scienceCat: string) => {
-  console.log('::: in getScienceCategory', scienceCat);
   const cat = GENERAL.ScienceCategory.find(
     cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;

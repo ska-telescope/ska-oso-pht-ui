@@ -85,7 +85,6 @@ async function GetCalculate(observation: Observation, target: Target) {
     let mode_specific_parameters: ModeSpecificParametersMid = {};
     if (observation.type === TYPE_CONTINUUM) {
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      console.log(observation.spectralResolution);
       mode_specific_parameters.resolution = (
         Number(observation.spectralResolution.split(' ')[0]) * 1000
       ).toString(); // resolution should be sent in Hz
