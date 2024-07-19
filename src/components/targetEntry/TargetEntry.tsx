@@ -13,7 +13,7 @@ import VelocityField from '../fields/velocity/Velocity';
 import HelpPanel from '../info/helpPanel/helpPanel';
 import GetCoordinates from '../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../utils/types/target';
-import { RA_TYPE_EQUATORIAL } from '../../utils/constants';
+import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../utils/constants';
 
 interface TargetEntryProps {
   id?: number;
@@ -54,6 +54,12 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
   const setRA = (inValue: string) => {
     if (target && setTarget) {
       setTarget({ ...target, ra: inValue });
+    }
+  };
+
+  const setRedshift = (inValue: string) => {
+    if (target && setTarget) {
+      setTarget({ ...target, redshift: inValue });
     }
   };
 
@@ -100,9 +106,9 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
       longitude: null,
       ra: target.ra,
       raUnit: raType.toString(),
-      redshift: null,
+      redshift: target.velType === VELOCITY_TYPE.REDSHIFT ? target?.redshift : '',
       referenceFrame: target.referenceFrame,
-      vel: target.vel,
+      vel: target.velType === VELOCITY_TYPE.VELOCITY ? target?.vel : '',
       velType: target.velType,
       velUnit: target.velUnit
     };
@@ -110,7 +116,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
   };
 
   function clearForm() {
-    setTarget({ ...target, name: '', ra: '', dec: '', vel: '' });
+    setTarget({ ...target, name: '', ra: '', dec: '', redshift: '', vel: '' });
   }
 
   const addButtonAction = () => {
@@ -121,9 +127,9 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
   const processCoordinatesResults = response => {
     if (response && !response.error) {
       const values = response.split(' ');
-      const offset = values?.length > 3 && target?.velType === RA_TYPE_EQUATORIAL ? 3 : 2;
-      const vel = values[offset] !== 'null' ? values[offset] : '';
-      setTarget({ ...target, dec: values[0], ra: values[1], vel: vel });
+      const redshift = values?.length > 2 && values[2] !== 'null' ? values[2] : '';
+      const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
+      setTarget({ ...target, dec: values[0], ra: values[1], redshift: redshift, vel: vel });
       setNameFieldError('');
     } else {
       setNameFieldError(t(response.error));
@@ -186,15 +192,17 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
     <Grid item xs={12}>
       <VelocityField
         labelWidth={LAB_WIDTH}
-        setValue={setVel}
-        setValueType={setVelType}
-        setValueUnit={setVelUnit}
-        value={target?.vel}
-        valueType={target?.velType}
-        valueUnit={target?.velUnit}
-        valueFocus={() => helpComponent(t('velocity.help'))}
-        valueTypeFocus={() => helpComponent(t('velocity.help'))}
-        valueUnitFocus={() => helpComponent(t('velocity.help'))}
+        setRedshift={setRedshift}
+        setVel={setVel}
+        setVelType={setVelType}
+        setVelUnit={setVelUnit}
+        redshift={target?.redshift}
+        vel={target?.vel}
+        velType={target?.velType}
+        velUnit={target?.velUnit.toString()}
+        velFocus={() => helpComponent(t('velocity.help'))}
+        velTypeFocus={() => helpComponent(t('velocity.help'))}
+        velUnitFocus={() => helpComponent(t('velocity.help'))}
       />
     </Grid>
   );

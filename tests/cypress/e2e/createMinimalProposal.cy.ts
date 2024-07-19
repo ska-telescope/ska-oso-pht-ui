@@ -49,7 +49,15 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
 
     /**** TESTS ****/
 
-    it('THEN I can enter the details and confirm creation', () => {
+    it('THEN I can enter the details and abandon creation', () => {
+      homePageConfirmed();
+      clickAddProposal();
+      cy.get('[id="ProposalType-1"]').click({ force: true });
+      cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+      cy.get('[data-testid="CreateButton"]').should('be.disabled');
+    });
+
+    it('AND I can enter the details and confirm creation', () => {
       homePageConfirmed();
       clickAddProposal();
       titlePageEntry();

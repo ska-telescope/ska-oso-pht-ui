@@ -1230,6 +1230,7 @@ export default function AddObservation() {
               action={buttonClicked}
               disabled={addButtonDisabled()}
               primary
+              testId="addObservationButton"
               title={'button.add'}
             />
           </Grid>

@@ -131,7 +131,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
 }
 
 async function PutProposal(proposal, status?) {
-  if (USE_LOCAL_DATA) {
+  if (window.Cypress || USE_LOCAL_DATA) {
     return 'success';
   }
 

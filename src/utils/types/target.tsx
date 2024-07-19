@@ -71,7 +71,7 @@ type Target = {
   referenceFrame: number;
   velType: number;
   vel: string;
-  velUnit: string;
+  velUnit: number;
 };
 
 // NOTE : This ensures that we can initialize to a known point.
@@ -88,7 +88,7 @@ export const NEW_TARGET: Target = {
   referenceFrame: 0,
   vel: '',
   velType: 0,
-  velUnit: ''
+  velUnit: 0
 };
 
 export default Target;

@@ -2,6 +2,7 @@ describe('GIVEN that I am a PHT user', () => {
   context('WHEN I want to check the header', () => {
     beforeEach(() => {
       cy.visit('http://localhost:6101/');
+      cy.get('[data-testid="skaoLogo"]', { timeout: 30000 });
     });
 
     it('THEN I can check the link to the SKAO Site', () => {

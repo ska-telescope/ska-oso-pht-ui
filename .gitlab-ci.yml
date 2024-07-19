@@ -84,7 +84,7 @@ test_and_coverage:
 
 test_e2e:
   image: cypress/browsers:node18.12.0-chrome106-ff106
-  stage: dependencies
+  stage: test
   tags:
     - k8srunner
   allow_failure: true
