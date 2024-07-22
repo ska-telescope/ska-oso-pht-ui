@@ -1,5 +1,5 @@
 import { OBSERVATION } from '../../../utils/constants';
-import { Sensitivity } from '../../../utils/types/sensitivityCalculatorResultsTypes';
+import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
   format: {
@@ -27,36 +27,35 @@ const sensCalHelpers = {
      * @param precision the number of d.p. to display the result to
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
-    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): Sensitivity {
-      // TODO: create a proper type
+    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
       // TODO: add tests (cypress?)
       if (Number(sensitivity)) {
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
           return {
-            value: sensitivity.toFixed(precision),
-            units: 'uJy/beam'
+            value: Number(sensitivity.toFixed(precision)),
+            unit: 'uJy/beam'
           };
           // return `${sensitivity.toFixed(precision)} uJy/beam`;
         }
         if (sensitivity < 1e6) {
           // For 1000 - 999999 uJy/beam, display the value in mJy/beam
           return {
-            value: (sensitivity / 1e3).toFixed(precision),
-            units: 'mJy/beam'
+            value: Number((sensitivity / 1e3).toFixed(precision)),
+            unit: 'mJy/beam'
           };
           // return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
         }
         // For values above 999999 uJy/beam, display the value in Jy/beam
         return {
-          value: (sensitivity / 1e6).toFixed(precision),
-          units: 'Jy/beam'
+          value: Number((sensitivity / 1e6).toFixed(precision)),
+          unit: 'Jy/beam'
         };
         // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
         return {
-          value: sensitivity.toFixed(precision),
-          units: ''
+          value: Number(sensitivity.toFixed(precision)),
+          unit: ''
         };
       }
     },
@@ -127,7 +126,6 @@ const sensCalHelpers = {
       return frequencyValue * unitMap[frequencyUnits];
     },
     convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
-      console.log('::: in convertBandwidthToMHz', bandwidthValue, bandwidthUnits);
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,

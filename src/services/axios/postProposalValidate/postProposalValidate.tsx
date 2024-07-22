@@ -4,6 +4,7 @@ import {
   DEFAULT_PI,
   GENERAL,
   Projects,
+  PROPOSAL_STATUS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
@@ -139,7 +140,7 @@ async function PostProposalValidate(proposal) {
   try {
     const URL_PATH = `/proposals/validate`;
     // TODO: add testing for proposal conversion format
-    const convertedProposal = mappingPostValidateProposal(proposal, 'draft');
+    const convertedProposal = mappingPostValidateProposal(proposal, PROPOSAL_STATUS.DRAFT);
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,

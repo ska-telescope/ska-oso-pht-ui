@@ -29,14 +29,14 @@ import DataProductSDP, {
 } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
-import { ResultBackend } from '../../../utils/types/result';
+import { SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import TeamMember from 'utils/types/teamMember';
 
-const getTeamMembers = (inValue: InvestigatorBackend[]): TeamMember[] => {
-  let members: TeamMember[] = [];
-  for (let i = 0; i < inValue.length; i++) {
+const getTeamMembers = (inValue: InvestigatorBackend[]) => {
+  let members = [];
+  for (let i = 0; i < inValue?.length; i++) {
     members.push({
       id: inValue[i].investigator_id,
       firstName: inValue[i].given_name,
@@ -57,28 +57,17 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const convertTypeFormat = (_inValue: string): string => {
-  const words = _inValue.split('_');
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-  const formattedString = capitalizedWords.join(' ');
-  return formattedString;
-};
-
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects?.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
-  const subTypesFormatted = [];
-  for (let subtype of proposalType.sub_type) {
-    subTypesFormatted.push(convertTypeFormat(subtype));
-  }
-  const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects?.find(({ title }) => title?.toLowerCase() === subType?.toLowerCase())
+  const project = Projects?.find(({ mapping }) => mapping === proposalType.main_type);
+  const subProjects = proposalType.sub_type?.map(subType =>
+    project.subProjects?.find(({ mapping }) => mapping === subType)
   );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
 const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory?.find(
-    cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
+    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
 };
@@ -103,7 +92,7 @@ const getVelType = (InDefinition: string) => {
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
-  for (let i = 0; i < inRec.length; i++) {
+  for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
@@ -125,7 +114,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       velUnit: e.radial_velocity.quantity.unit,
       pointingPattern: {
         active: e.pointing_pattern.active,
-        parameters: e.pointing_pattern.parameters.map(p => ({
+        parameters: e.pointing_pattern.parameters?.map(p => ({
           kind: p.kind,
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
@@ -139,7 +128,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
 
 const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   let results = [];
-  for (let i = 0; i < inValue.length; i++) {
+  for (let i = 0; i < inValue?.length; i++) {
     if (inValue[i].group_id) {
       const observationSetId = inValue[i].observation_set_id;
       const observationId =
@@ -154,7 +143,7 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
 };
 
 const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[] => {
-  return inValue.map(dp => ({ id: dp.data_products_src_id }));
+  return inValue?.map(dp => ({ id: dp?.data_products_src_id }));
 };
 
 const getSDPOptions = (options: string[]): boolean[] => {
@@ -167,7 +156,7 @@ const getSDPOptions = (options: string[]): boolean[] => {
 };
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
-  return inValue.map((dp, index) => ({
+  return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
@@ -184,7 +173,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 
 const getWeighting = inImageWeighting => {
   const weighting = OBSERVATION.ImageWeighting?.find(
-    item => item.label?.toLowerCase() === inImageWeighting?.toLowerCase()
+    item => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
@@ -228,17 +217,17 @@ const getFrequencyAndBandwidthUnits = (
 ): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
   let units = array.CentralFrequencyAndBandWidthUnits?.find(
-    item => item.label?.toLowerCase() === inUnits?.toLowerCase()
+    item => item.label.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
     ? units
     : array.CentralFrequencyAndBandWidthUnits?.find(
-        item => item.label?.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
+        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
       )?.value;
 };
 
-const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBackend[]) => {
+const getLinked = (inObservation: ObservationSetBackend, inResults: SensCalcResultsBackend[]) => {
   const obsRef = inObservation.observation_set_id;
   const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
   return linkedTargetRef ? linkedTargetRef : '';
@@ -246,13 +235,13 @@ const getLinked = (inObservation: ObservationSetBackend, inResults: ResultBacken
 
 const getObservations = (
   inValue: ObservationSetBackend[],
-  inResults: ResultBackend[]
+  inResults: SensCalcResultsBackend[]
 ): Observation[] => {
   let results = [];
-  for (let i = 0; i < inValue.length; i++) {
+  for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray?.find(
-      p => p.label?.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
+      p => p.label.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
     )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
@@ -322,7 +311,7 @@ const getObservations = (
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
-const getResultsSection1 = (inResult: ResultBackend): any[] => {
+const getResultsSection1 = (inResult: SensCalcResultsBackend): any[] => {
   let section1 = [];
   // for continuum observation
   if (inResult.continuum_confusion_noise) {
@@ -361,7 +350,7 @@ const getResultsSection1 = (inResult: ResultBackend): any[] => {
   return section1;
 };
 
-const getResultsSection2 = (inResult: ResultBackend): any[] => {
+const getResultsSection2 = (inResult: SensCalcResultsBackend): any[] => {
   let section2 = [];
   section2.push({
     field: 'spectralSensitivityWeighted',
@@ -413,7 +402,7 @@ const getResultsSection3 = (
 };
 
 const getTargetObservation = (
-  inResults: ResultBackend[],
+  inResults: SensCalcResultsBackend[],
   inObservationSets: ObservationSetBackend[]
 ): TargetObservation[] => {
   let targetObsArray = [];
@@ -422,7 +411,7 @@ const getTargetObservation = (
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
-        id: inResults.indexOf(result) + 1, // only for front end
+        id: inResults?.indexOf(result) + 1, // only for front end
         title: result.target_ref,
         statusGUI: 0, // only for front-end // TODO check if no error state is 0
         error: '', // only for front-end
@@ -439,16 +428,11 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
-  console.log('inRec getproposal', inRec);
-  const convertedProposal: Proposal = {
-    id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: Projects?.find(
-      p =>
-        p.title?.toLowerCase() ===
-        convertTypeFormat(inRec.info.proposal_type.main_type)?.toLowerCase()
-    ).id,
-    proposalSubType: getSubType(inRec.info.proposal_type),
+  const convertedProposal = {
+    id: inRec.prsl_id, // TODO
+    title: inRec.info.title, // TODO
+    proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
     lastUpdatedBy: inRec.metadata.last_modified_by,
@@ -467,14 +451,16 @@ function mapping(inRec: ProposalBackend): Proposal {
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
-    targetObservation: getTargetObservation(inRec.info.results, inRec.info.observation_sets), // [], // TODO check where do we see linked targets/observation in backend format
+    targetObservation:
+      inRec?.info?.results?.length > 1
+        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
+        : [],
     technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('convertedProposal getproposal', convertedProposal);
   return convertedProposal;
 }
 

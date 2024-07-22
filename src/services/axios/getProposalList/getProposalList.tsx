@@ -11,23 +11,12 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import TeamMember from 'utils/types/teamMember';
 
-const convertTypeFormat = (_inValue: string): string => {
-  const words = _inValue.split('_');
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-  const formattedString = capitalizedWords.join(' ');
-  return formattedString;
-};
-
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ title }) => title === convertTypeFormat(proposalType.main_type));
-  const subTypesFormatted = [];
-  for (let subtype of proposalType.sub_type) {
-    subTypesFormatted.push(convertTypeFormat(subtype));
-  }
-  const subProjects = subTypesFormatted.map(subType =>
-    project.subProjects.find(({ title }) => title?.toLowerCase() === subType?.toLowerCase())
+  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const subProjects = proposalType.sub_type?.map(subType =>
+    project.subProjects.find(({ mapping }) => mapping === subType)
   );
-  return subProjects.filter(({ id }) => id).map(({ id }) => id);
+  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
 const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
@@ -48,6 +37,13 @@ const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
   return teamMembers;
 };
 
+const getScienceCategory = (scienceCat: string) => {
+  const cat = GENERAL.ScienceCategory.find(
+    cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
+  )?.value;
+  return cat ? cat : null;
+};
+
 const getPI = (investigators: InvestigatorBackend[]): string => {
   const principalInvestigator = investigators.find(p => p.principal_investigator === true);
   return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
@@ -64,15 +60,11 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: inRec[i].metadata.created_on,
       createdBy: inRec[i].metadata.created_by,
       version: inRec[i].metadata.version,
-      proposalType: Projects.find(
-        p =>
-          p.title.toLowerCase() ===
-          convertTypeFormat(inRec[i].info.proposal_type.main_type).toLowerCase()
-      ).id,
-      proposalSubType: getSubType(inRec[i].info.proposal_type),
-      scienceCategory: GENERAL.ScienceCategory.find(
-        item => item?.label?.toLowerCase() === inRec[i].info?.science_category?.toLowerCase()
-      )?.value, // inRec[i].info.science_category,
+      proposalType: Projects.find(p => p.mapping === inRec[i].info.proposal_type.main_type)?.id,
+      proposalSubType: inRec[i].info.proposal_type.sub_type
+        ? getSubType(inRec[i].info.proposal_type)
+        : [],
+      scienceCategory: getScienceCategory(inRec[i].info.science_category),
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),

@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
-module.exports = on => {
+export default on => {
   on('task', require('@cypress/code-coverage/task'));
 };

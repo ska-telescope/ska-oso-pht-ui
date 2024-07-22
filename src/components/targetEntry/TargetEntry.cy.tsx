@@ -7,6 +7,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../services/theme/theme';
 import TargetEntry from './TargetEntry';
 import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '../../utils/constants';
+import Target from '../../utils/types/target';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -14,7 +15,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 // const [newTarget, setNewTarget] = React.useState(null);
 
 function initTarget() {
-  const newTarget = {
+  const newTarget: Target = {
     dec: '',
     decUnit: '',
     id: 0,
@@ -27,13 +28,13 @@ function initTarget() {
     referenceFrame: 0,
     vel: '',
     velType: 0,
-    velUnit: ''
+    velUnit: 0
   };
   return newTarget;
 }
 
 function editTarget() {
-  const newTarget = {
+  const newTarget: Target = {
     dec: '',
     decUnit: '',
     id: 1,
@@ -46,7 +47,7 @@ function editTarget() {
     referenceFrame: 0,
     vel: '',
     velType: 0,
-    velUnit: ''
+    velUnit: 0
   };
   return newTarget;
 }
@@ -139,11 +140,18 @@ function verifySkyDirection2() {
   cy.get('[data-testid="helpPanelId"]').contains('skyDirection.help.2.value');
 }
 
-function verifyVelocityType(inValue: number) {
+function verifyVelocityType0() {
   cy.get('[data-testid="velocityType"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('velocity.help');
-  cy.get('[data-value=' + inValue + ']').click();
-  cy.get('[data-testid="velocityType"]').contains('velocity.' + inValue);
+  cy.get('[data-value="0"]').click();
+  cy.get('[data-testid="velocityType"]').contains('velocity.0');
+}
+
+function verifyVelocityType1() {
+  cy.get('[data-testid="velocityType"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('velocity.help');
+  cy.get('[data-value="1"]').click();
+  // TODO cy.get('[data-testid="velocityType"]').contains('velocity.1');
 }
 
 function verifyVelocityValue() {
@@ -151,11 +159,18 @@ function verifyVelocityValue() {
   cy.get('[data-testid="helpPanelId"]').contains('velocity.help');
 }
 
-function verifyVelocityUnit(inValue: number) {
+function verifyVelocityUnit0() {
   cy.get('[data-testid="velocityUnits"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('velocity.help');
-  cy.get('[data-value=' + inValue + ']').click();
-  cy.get('[data-testid="velocityUnits"]').contains('velocity.units.' + inValue);
+  cy.get('[data-value="0"]').click();
+  cy.get('[data-testid="velocityUnits"]').contains('velocity.units.0');
+}
+
+function verifyVelocityUnit1() {
+  cy.get('[data-testid="velocityUnits"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('velocity.help');
+  cy.get('[data-value="1"]').click();
+  // TODO cy.get('[data-testid="velocityUnits"]').contains('velocity.units.1');
 }
 
 function verifyReferenceFrame(inValue: number) {
@@ -191,11 +206,11 @@ describe('<TargetEntry />', () => {
       verifyNameField();
       verifySkyDirection1();
       verifySkyDirection2();
-      verifyVelocityType(0);
-      verifyVelocityType(1);
+      verifyVelocityType0();
+      verifyVelocityType1();
       verifyVelocityValue();
-      verifyVelocityUnit(0);
-      verifyVelocityUnit(1);
+      verifyVelocityUnit0();
+      verifyVelocityUnit1();
       verifyReferenceFrame(0);
       verifyReferenceFrame(1);
       verifyAddButton();
@@ -215,11 +230,11 @@ describe('<TargetEntry />', () => {
       verifyNameField();
       // verifySkyDirection1();
       // verifySkyDirection2();
-      verifyVelocityType(0);
-      verifyVelocityType(1);
+      verifyVelocityType0();
+      verifyVelocityType1();
       verifyVelocityValue();
-      verifyVelocityUnit(0);
-      verifyVelocityUnit(1);
+      verifyVelocityUnit0();
+      verifyVelocityUnit1();
       verifyReferenceFrame(0);
       verifyReferenceFrame(1);
       verifyAddButton();

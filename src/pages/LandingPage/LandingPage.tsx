@@ -11,7 +11,13 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { NAV, SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS, PATH } from '../../utils/constants';
+import {
+  NAV,
+  SEARCH_TYPE_OPTIONS,
+  PROPOSAL_STATUS,
+  PATH,
+  NOTSPECIFIED
+} from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -143,6 +149,9 @@ export default function LandingPage() {
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  const displayScienceCategory = scienceCategory => {
+    return scienceCategory ? scienceCategory : NOTSPECIFIED;
+  };
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 200 },
@@ -150,7 +159,8 @@ export default function LandingPage() {
       field: 'scienceCategory',
       headerName: t('scienceCategory.label'),
       width: 200,
-      renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
+      renderCell: (e: { row: any }) =>
+        t('scienceCategory.' + displayScienceCategory(e.row.scienceCategory))
     },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
