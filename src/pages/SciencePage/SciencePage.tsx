@@ -41,7 +41,12 @@ export default function SciencePage() {
 
   const setFile = (theFile: File) => {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
-    setProposal({ ...getProposal(), sciencePDF: theFile });
+    const file = {
+      documentId: `science-doc-${getProposal().id}`,
+      link: theFile as unknown as string,
+      file: theFile
+    }
+    setProposal({ ...getProposal(), sciencePDF: file });
     setCurrentFile(theFile);
   };
 
@@ -123,7 +128,7 @@ export default function SciencePage() {
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
             direction="row"
-            file={getProposal()?.sciencePDF}
+            file={getProposal()?.sciencePDF?.file}
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}

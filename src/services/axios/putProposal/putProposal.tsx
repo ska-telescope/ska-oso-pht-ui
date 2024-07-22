@@ -108,18 +108,31 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return outTargets;
   };
 
-  const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => [
-    {
-      document_id: sciencePDF.documentId,
-      link: sciencePDF.link,
-      type: 'proposal_science'
-    },
-    {
-      document_id: technicalPDF.documentId,
-      link: technicalPDF.link,
-      type: 'proposal_technical'
+  const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
+    const documents = [];
+    console.log('sciencePDF', sciencePDF);
+    console.log('technicalPDF', technicalPDF);
+    if (sciencePDF?.link) {
+      documents.push(
+        {
+          document_id: sciencePDF.documentId,
+          link: sciencePDF?.link,
+          type: 'proposal_science'
+        }
+      );
     }
-  ];
+    if (technicalPDF?.link) {
+      documents.push(
+        {
+          document_id: technicalPDF?.documentId,
+          link: technicalPDF?.link,
+          type: 'proposal_technical'
+        }
+      );
+    }
+    console.log('technicadocumentslDOc', documents);
+    return documents;
+  };
 
   // TODO : complete mapping for all properties
   const transformedProposal: ProposalBackend = {
@@ -149,7 +162,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         category => category.value === proposal?.scienceCategory
       )?.label,
       targets: getTargets(proposal.targets),
-      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
+      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
       investigators: proposal.team.map(teamMember => {
         return {
           investigator_id: teamMember.id,

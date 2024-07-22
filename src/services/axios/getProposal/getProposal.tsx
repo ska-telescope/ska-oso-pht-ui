@@ -76,13 +76,28 @@ const getPI = (investigators: InvestigatorBackend[]) => {
   return investigators?.find(item => item.principal_investigator === true).investigator_id;
 };
 
-const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
+const extractFileFromURL = (url): Promise<File> => {
+  console.log('url', url);
+  return fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
+      return file;
+    });
+}
+
+const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
-  const pdfDoc = {
+  if (!pdf || !pdf.link) {
+    return null;
+  }
+  const file = await extractFileFromURL(pdf.link) as File;
+  const pdfDoc: DocumentPDF = {
     documentId: pdf?.document_id,
-    link: pdf?.link
+    link: pdf?.link,
+    file: file ? file : null,
   };
-  return pdf ? pdfDoc : null;
+  return pdfDoc as DocumentPDF;
 };
 
 const getVelType = (InDefinition: string) => {
@@ -430,6 +445,18 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
+
+  let sciencePDF: DocumentPDF;
+  getPDF(inRec?.info?.documents, 'proposal_science')
+    .then(pdf => {
+      sciencePDF = pdf;
+    });
+  let technicalPDF: DocumentPDF;
+  getPDF(inRec?.info?.documents, 'proposal_technical')
+    .then(pdf => {
+      technicalPDF = pdf;
+    });
+
   const convertedProposal = {
     id: inRec.prsl_id,
     title: inRec.info.title,
@@ -447,8 +474,8 @@ function mapping(inRec: ProposalBackend): Proposal {
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
-    sciencePDF: getPDF(inRec.info.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
-    scienceLoadStatus: getPDF(inRec.info.documents, 'proposal_science') ? 1 : 0,
+    sciencePDF: sciencePDF, // getPDF(inRec?.info?.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
+    scienceLoadStatus: sciencePDF ? 1 : 0,  // getPDF(inRec?.info?.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
@@ -457,8 +484,8 @@ function mapping(inRec: ProposalBackend): Proposal {
       inRec?.info?.results?.length > 1
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
         : [],
-    technicalPDF: getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
+    technicalPDF: technicalPDF, // getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
+    technicalLoadStatus: technicalPDF ? 1 : 0, // getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
