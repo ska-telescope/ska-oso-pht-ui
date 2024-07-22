@@ -1,5 +1,9 @@
-import { DocumentBackend } from './document';
-import DataProduct, { DataProductSDPsBackend, DataProductSRCNetBackend } from './dataProduct';
+import { DocumentBackend, DocumentPDF } from './document';
+import DataProductSDP, {
+  DataProductSDPsBackend,
+  DataProductSRCNetBackend,
+  DataProductSRC
+} from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { SensCalcResultsBackend } from './sensCalcResults';
@@ -49,20 +53,23 @@ export type Proposal = {
   cycle: string;
   proposalType: number;
   proposalSubType?: number[];
-  category: string;
+  scienceCategory?: number;
+  scienceSubCategory?: number[];
   team?: TeamMember[];
   pi?: string;
   abstract?: string;
-  sciencePDF?: File | null;
+  sciencePDF?: DocumentPDF;
   scienceLoadStatus?: number;
   targetOption?: number;
   targets?: Target[];
   observations?: Observation[];
   groupObservations?: GroupObservation[];
   targetObservation?: TargetObservation[];
-  technicalPDF?: File | null;
+  technicalPDF?: DocumentPDF;
   technicalLoadStatus?: number;
-  dataProducts?: DataProduct[];
+  // dataProducts?: DataProduct[];
+  DataProductSDP?: DataProductSDP[];
+  DataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };
 

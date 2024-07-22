@@ -11,10 +11,11 @@ export type DataProductSRCNetBackend = {
   data_products_src_id: string;
 };
 
-type DataProduct = {
+type DataProductSDP = {
   id: number;
+  dataProductsSDPId?: string;
   observatoryDataProduct: boolean[];
-  observationId: string;
+  observationId: string[];
   imageSizeValue: number;
   imageSizeUnits: string;
   pixelSizeValue: number;
@@ -22,4 +23,8 @@ type DataProduct = {
   weighting: number;
 };
 
-export default DataProduct;
+export type DataProductSRC = {
+  id: string;
+};
+
+export default DataProductSDP;

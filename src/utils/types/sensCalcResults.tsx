@@ -1,15 +1,5 @@
 import { ValueUnitPair } from './valueUnitPair';
 
-export type SensCalcResults = {
-  id?: string;
-  title?: string;
-  status: number;
-  error?: string;
-  section1?: { field: string; value: string; units: string }[];
-  section2?: { field: string; value: string; units: string }[];
-  section3?: { field: string; value: string; units: string }[];
-};
-
 export type SensCalcResultsBackend = {
   observation_set_ref?: string;
   target_ref?: string;
@@ -28,4 +18,14 @@ export type SensCalcResultsBackend = {
   continuum_confusion_noise?: ValueUnitPair;
   synthesized_beam_size?: ValueUnitPair;
   spectral_confusion_noise?: ValueUnitPair;
+};
+
+export type SensCalcResults = {
+  id?: number;
+  title?: string;
+  statusGUI: number;
+  error?: string;
+  section1?: { field: string; value: string; units: string }[];
+  section2?: { field: string; value: string; units: string }[];
+  section3?: { field: string; value: string; units: string }[];
 };

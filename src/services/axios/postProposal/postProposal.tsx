@@ -10,7 +10,7 @@ import {
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
-function mappingPostProposal(proposal, status) {
+function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
     const project = Projects.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
@@ -39,8 +39,10 @@ function mappingPostProposal(proposal, status) {
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: Projects.find(item => item.id === proposal.proposalType).mapping,
-        sub_type: getSubType(proposal.proposalType, proposal.proposalSubType)
+        main_type: Projects.find(item => item.id === proposal.proposalType)?.mapping,
+        sub_type: proposal.proposalSubType
+          ? getSubType(proposal.proposalType, proposal.proposalSubType)
+          : []
       },
       abstract: '',
       science_category: '',

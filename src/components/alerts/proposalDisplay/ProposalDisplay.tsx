@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { GENERAL, Projects } from '../../../utils/constants';
+import { GENERAL, NOTSPECIFIED, Projects } from '../../../utils/constants';
 import TeamMember from '../../../utils/types/teamMember';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
@@ -75,18 +75,16 @@ export default function ProposalDisplay({
     return `${proposalName}`;
   };
 
-  const category = () => {
-    const proposalType = getProposal().proposalType;
-    const proposalName =
-      !proposalType || proposalType < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceCategory.${proposalType}`);
-    const subCategory = getProposal().proposalSubType;
-    const subCategoryName =
-      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceSubCategory.${subCategory}`);
-    return `${proposalName} / ${subCategoryName}`;
+  const scienceCategory = () => {
+    const scienceCat = getProposal().scienceCategory;
+    const scienceCatLabel = scienceCat
+      ? t(`scienceCategory.${scienceCat}`)
+      : t(`scienceCategory.${NOTSPECIFIED}`);
+    const scienceSubCat = getProposal().scienceSubCategory;
+    const scienceSubCatLabel = getProposal().scienceSubCategory
+      ? t(`scienceSubCategory.${scienceSubCat}`)
+      : t(`scienceSubCat.${NOTSPECIFIED}`);
+    return `${scienceCatLabel} / ${scienceSubCatLabel}`;
   };
 
   const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
@@ -166,10 +164,10 @@ export default function ProposalDisplay({
           {getProposal().team?.map((rec: TeamMember, index: number) => (
             <Grid
               container
-              key={index}
               direction="row"
               justifyContent="space-between"
               alignItems="center"
+              key={index}
             >
               <Grid item xs={4}>
                 <Typography variant={CONTENT_STYLE}>
@@ -202,10 +200,10 @@ export default function ProposalDisplay({
           <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
         </Grid>
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('category.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('scienceCategory.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{category()}</Typography>
+          <Typography variant={CONTENT_STYLE}>{scienceCategory()}</Typography>
         </Grid>
       </Grid>
     </Grid>

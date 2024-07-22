@@ -166,6 +166,14 @@ const sensCalHelpers = {
     sqrtOfSumSqs(value1: number, value2: number): number {
       return Math.sqrt(value1 ** 2 + value2 ** 2);
     }
+  },
+  map: {
+    getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
+      const array = OBSERVATION.array.find(item => item.value === telescope);
+      let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
+        ?.label;
+      return units;
+    }
   }
 };
 

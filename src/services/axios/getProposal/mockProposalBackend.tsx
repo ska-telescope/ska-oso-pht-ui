@@ -19,11 +19,11 @@ const MockProposalBackend: ProposalBackend = {
     title: 'The Milky Way View',
     proposal_type: {
       main_type: 'standard_proposal',
-      sub_type: ['coordinated_proposal']
+      sub_type: ['coordinated_proposal', 'joint_proposal']
     },
     abstract:
       'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
-    science_category: 'Science Category',
+    science_category: 'Extra Galactic continuum',
     targets: [
       {
         target_id: 'M28',
@@ -47,7 +47,7 @@ const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: -12.345,
-            unit: 'm / s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
+            unit: 'm/s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
           },
           definition: 'OPTICAL',
           reference_frame: 'LSRK',
@@ -76,7 +76,7 @@ const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0.0,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -112,6 +112,9 @@ const MockProposalBackend: ProposalBackend = {
         observation_set_id: 'mid-001',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: 15,
+        // TODO: use this once latest PDM changes merged
+        /*
         elevation: {
           default: 15,
           description: 'Elevation from the horizon to be used',
@@ -120,6 +123,7 @@ const MockProposalBackend: ProposalBackend = {
           title: 'Elevation',
           type: 'integer'
         },
+        */
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -127,30 +131,31 @@ const MockProposalBackend: ProposalBackend = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          tapering: 'DUMMY'
+          tapering: '50'
         },
         observation_type_details: {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
-            type: 'integration_time',
+            // type: 'integration_time', // TODO use this one latest PDM changes merged
+            type: 'integration',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'ms',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'ms'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: 'Uniform'
         },
         details: 'MID + Continuum'
       },
@@ -158,6 +163,9 @@ const MockProposalBackend: ProposalBackend = {
         observation_set_id: 'mid-002',
         group_id: '2',
         observing_band: 'mid_band_1',
+        elevation: 15,
+        // TODO: use this once latest PDM changes merged
+        /*
         elevation: {
           default: 15,
           description: 'Elevation from the horizon to be used',
@@ -166,6 +174,7 @@ const MockProposalBackend: ProposalBackend = {
           title: 'Elevation',
           type: 'integer'
         },
+        */
         array_details: {
           array: 'ska_mid',
           subarray: 'aa0.5',
@@ -173,30 +182,30 @@ const MockProposalBackend: ProposalBackend = {
           number_15_antennas: 0,
           number_13_antennas: 0,
           number_sub_bands: 0,
-          tapering: 'DUMMY'
+          tapering: '50'
         },
         observation_type_details: {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: 'Uniform'
         },
         details: 'MID + Zoom'
       },
@@ -208,30 +217,31 @@ const MockProposalBackend: ProposalBackend = {
           array: 'ska_low',
           subarray: 'aa0.5',
           number_of_stations: 1,
-          spectral_averaging: 'DUMMY'
+          spectral_averaging: '50'
         },
         observation_type_details: {
           observation_type: 'continuum',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
-            type: 'integration_time',
+            // type: 'integration_time', // TODO use this one latest PDM changes merged
+            type: 'integration',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'ms',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'ms'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: 'Uniform'
         },
         details: 'LOW + Continuum'
       },
@@ -243,30 +253,30 @@ const MockProposalBackend: ProposalBackend = {
           array: 'ska_low',
           subarray: 'aa0.5',
           number_of_stations: 1,
-          spectral_averaging: 'DUMMY'
+          spectral_averaging: '50'
         },
         observation_type_details: {
           observation_type: 'zoom',
           bandwidth: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           central_frequency: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           supplied: {
             type: 'sensitivity',
             value: 0.0,
-            unit: 'm / s',
+            unit: 'm/s',
             quantity: {
               value: -12.345,
-              unit: 'm / s'
+              unit: 'm/s'
             }
           },
-          spectral_resolution: 'DUMMY',
-          effective_resolution: 'DUMMY',
-          image_weighting: 'DUMMY'
+          spectral_resolution: '50',
+          effective_resolution: '50',
+          image_weighting: 'Uniform'
         },
         details: 'LOW + Zoom'
       }
@@ -276,9 +286,9 @@ const MockProposalBackend: ProposalBackend = {
         data_products_sdp_id: 'SDP-1',
         options: ['1', '2', '5'],
         observation_set_refs: ['mid-001', 'low-001'],
-        image_size: 'IMAGE SIZE',
-        pixel_size: 'PIXEL SIZE',
-        weighting: 'WEIGHTING'
+        image_size: '50',
+        pixel_size: '50',
+        weighting: '50'
       }
     ],
     data_product_src_nets: [
@@ -289,42 +299,42 @@ const MockProposalBackend: ProposalBackend = {
     results: [
       {
         observation_set_ref: 'low-002',
-        target_ref: '1',
+        target_ref: 'M28',
         result_details: {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           weighted_spectral_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           total_continuum_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           total_spectral_sensitivity: {
             value: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           },
           surface_brightness_sensitivity: {
             continuum: 0.0,
             spectral: 0.0,
-            unit: 'm / s'
+            unit: 'm/s'
           }
         },
         continuum_confusion_noise: {
           value: 0.0,
-          unit: 'm / s'
+          unit: 'm/s'
         },
         synthesized_beam_size: {
-          value: 0.0,
-          unit: 'm / s'
+          value: 190.17, // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+          unit: 'm/s' // this should be arcsecs2 -> currently rejected by backend / als m/s changes to m / s when coming back
         },
         spectral_confusion_noise: {
           value: 0.0,
-          unit: 'm / s'
+          unit: 'm/s'
         }
       }
     ]

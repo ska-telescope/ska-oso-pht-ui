@@ -62,14 +62,24 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       obj => obj.value === observation.imageWeighting
     );
 
-    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
-
     const params = {
       frequency: sensCalHelpers.format
-        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString(),
       zoom_frequencies: sensCalHelpers.format
-        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString(),
       dec_str: declination(),
       weighting: weighting?.label.toLowerCase(),
@@ -99,7 +109,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       )?.label.toLowerCase(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
-      freq_centre: observation.centralFrequency.split(' ')[0]?.toString()
+      freq_centre: observation.centralFrequency.toString()
     };
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
@@ -134,8 +144,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {
-      title: e.response.data.title,
-      detail: e.response.data.detail
+      title: e?.response?.data?.title,
+      detail: e?.response?.data?.detail
     };
     return { error: errorObject };
   }

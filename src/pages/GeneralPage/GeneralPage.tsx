@@ -56,7 +56,7 @@ export default function GeneralPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...getProposal(), category: id, subCategory: [1] });
+    setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
   };
 
   const cycleField = () => (
@@ -123,7 +123,7 @@ export default function GeneralPage() {
     <DropDown
       options={GENERAL.ScienceCategory}
       testId="categoryId"
-      value={getProposal().category}
+      value={getProposal().scienceCategory}
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold

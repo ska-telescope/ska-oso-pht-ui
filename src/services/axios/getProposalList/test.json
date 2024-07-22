@@ -1,0 +1,65 @@
+{
+  "prsl_id": "prp-ska01-202204-02",
+  "status": "draft",
+  "submitted_on": "2022-09-23T15: 43: 53.971548Z",
+  "submitted_by": "TestUser",
+  "investigator_refs": ["prp-ska01-202204-01"],
+  "metadata": {
+    "version": 1,
+    "created_by": "TestUser",
+    "created_on": "2022-09-23T15: 43: 53.971548Z",
+    "last_modified_by": "TestUser",
+    "last_modified_on": "2022-09-23T15: 43: 53.971548Z"
+  },
+  "cycle": "SKA_5000_2023",
+  "info": {
+    "title": "In a galaxy far, far away",
+    "proposal_type": {
+      "main_type": "standard_proposal",
+      "sub_type": ["coordinated_proposal"]
+    },
+    "abstract": "Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering",
+    "science_category": "Science Category",
+    "observation_sets": [
+      {
+        "observation_set_id": "mid-001",
+        "group_id": "2",
+        "elevation": 23,
+        "observing_band": "mid_band_1",
+        "array_details": {
+          "array": "ska_mid",
+          "subarray": "aa0.5",
+          "weather": 3,
+          "number_15_antennas": 0,
+          "number_13_antennas": 0,
+          "number_sub_bands": 0,
+          "tapering": "DUMMY"
+        },
+        "observation_type_details": {
+          "observation_type": "continuum",
+          "bandwidth": {
+            "value": 0.0,
+            "unit": ""
+          },
+          "central_frequency": {
+            "value": 0.0,
+            "unit": ""
+          },
+          "supplied": {
+            "type": "integration_time",
+            "value": 0.0,
+            "unit": "",
+            "quantity": {
+              "value": -12.345,
+              "unit": "m / s"
+            }
+          },
+          "spectral_resolution": "DUMMY",
+          "effective_resolution": "DUMMY",
+          "image_weighting": "DUMMY"
+        },
+        "details": "MID + Continuum"
+      }
+    ]
+  }
+}

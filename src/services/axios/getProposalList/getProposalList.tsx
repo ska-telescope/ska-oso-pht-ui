@@ -1,5 +1,11 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA, Projects } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA,
+  Projects,
+  GENERAL
+} from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
@@ -31,6 +37,13 @@ const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
   return teamMembers;
 };
 
+const getScienceCategory = (scienceCat: string) => {
+  const cat = GENERAL.ScienceCategory.find(
+    cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
+  )?.value;
+  return cat ? cat : null;
+};
+
 const getPI = (investigators: InvestigatorBackend[]): string => {
   const principalInvestigator = investigators.find(p => p.principal_investigator === true);
   return `${principalInvestigator.given_name} ${principalInvestigator.family_name}`;
@@ -51,7 +64,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalSubType: inRec[i].info.proposal_type.sub_type
         ? getSubType(inRec[i].info.proposal_type)
         : [],
-      category: inRec[i].info.science_category,
+      scienceCategory: getScienceCategory(inRec[i].info.science_category),
       title: inRec[i].info.title,
       cycle: inRec[i].cycle,
       team: getTeam(inRec[i].info.investigators),

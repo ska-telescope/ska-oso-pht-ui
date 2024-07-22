@@ -19,9 +19,9 @@ import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
+import { SensCalcResults } from '../../utils/types/sensCalcResults';
+import DataProductSDP from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
-import { SensCalcResult } from 'services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import DataProduct from '../../utils/types/dataProduct';
 
 // TODO : Add documentation page specifically for Adding a Data product
 // TODO : Replace individual tick-boxes with a mapping
@@ -68,7 +68,7 @@ export default function AddDataProduct() {
       return temp ? temp.imageWeighting : 0;
     };
 
-    const getPixelSize = (sensCalc: SensCalcResult): number => {
+    const getPixelSize = (sensCalc: SensCalcResults): number => {
       const DIVIDER = 3;
       const precisionStr = t('pixelSize.precision');
       const precision = Number(precisionStr);
@@ -222,15 +222,16 @@ export default function AddDataProduct() {
     };
 
     const addToProposal = () => {
-      const highestId = getProposal().dataProducts.reduce(
+      const highestId = getProposal().DataProductSDP.reduce(
         (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
         0
       );
       const observatoryDataProduct = [dp1, dp2, dp3, dp4, dp5];
-      const newDataProduct: DataProduct = {
+      const newDataProduct: DataProductSDP = {
         id: highestId + 1,
+        dataProductsSDPId: `SDP-${highestId + 1}`,
         observatoryDataProduct,
-        observationId,
+        observationId: [observationId],
         imageSizeValue,
         imageSizeUnits,
         pixelSizeValue,
@@ -240,7 +241,7 @@ export default function AddDataProduct() {
 
       setProposal({
         ...getProposal(),
-        dataProducts: [...getProposal().dataProducts, newDataProduct]
+        DataProductSDP: [...getProposal().DataProductSDP, newDataProduct]
       });
     };
 

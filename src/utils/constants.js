@@ -123,6 +123,8 @@ export const GENERAL = {
   ]
 };
 
+export const NOTSPECIFIED = 'notSpecified';
+
 export const IMAGE_SIZE_UNITS = {
   ARCSECS: 'arcseconds',
   ARCMINS: 'arcmins',

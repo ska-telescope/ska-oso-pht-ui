@@ -27,6 +27,7 @@ import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
+import Observation from 'utils/types/observation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -400,7 +401,7 @@ export default function AddObservation() {
     const getSubArrayOptions = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
       const isBand5 = BANDWIDTH_TELESCOPE[observingBand].isBand5;
-      let subArrayOption = OBSERVATION.array[usedTelescope - 1].subarray;
+      let subArrayOption = OBSERVATION.array[usedTelescope - 1]?.subarray;
       if (usedTelescope > 0) {
         if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
         return subArrayOption.map(e => {
@@ -1170,7 +1171,7 @@ export default function AddObservation() {
   const pageFooter = () => {
     const addObservationToProposal = () => {
       const usedTelescope = BANDWIDTH_TELESCOPE[observingBand].telescope;
-      const newObservation = {
+      const newObservation: Observation = {
         id: myObsId,
         telescope: usedTelescope,
         subarray: subarrayConfig,
@@ -1179,16 +1180,26 @@ export default function AddObservation() {
         observingBand: observingBand,
         weather: weather,
         elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capure info needed for ElevationBackend type and update sens calc mapping
-        centralFrequency: `${frequency} ${
+        /*centralFrequency: `${frequency} ${
           OBSERVATION.Units.find(unit => unit.value === frequencyUnits).label
-        }`,
+        }`,*/
+        centralFrequency: Number(frequency),
+        centralFrequencyUnits: frequencyUnits,
         bandwidth: bandwidth,
-        continuumBandwidth: `${continuumBandwidth} ${BANDWIDTH_TELESCOPE[observingBand].units}`,
+        continuumBandwidth: continuumBandwidth,
+        continuumBandwidthUnits: OBSERVATION.array
+          .find(item => item.value === usedTelescope)
+          .CentralFrequencyAndBandWidthUnits.find(
+            u => u.label === BANDWIDTH_TELESCOPE[observingBand].units
+          ).value,
         spectralAveraging: spectralAveraging,
         tapering: OBSERVATION.Tapering.find(item => item.value === tapering).label, // TODO understand how tapering is calculated in sens calc
         imageWeighting: imageWeighting,
-        integrationTime: suppliedValue,
-        integrationTimeUnits: suppliedUnits,
+        supplied: {
+          type: suppliedType,
+          value: suppliedValue,
+          units: suppliedUnits
+        },
         spectralResolution: spectralResolution,
         effectiveResolution: effective,
         numSubBands: subBands,

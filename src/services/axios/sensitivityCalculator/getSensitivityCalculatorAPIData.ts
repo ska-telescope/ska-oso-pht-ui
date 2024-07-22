@@ -15,7 +15,7 @@ import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/Sen
 
 const SENSCALC_ERROR: SensCalcResults = {
   title: '',
-  status: STATUS_ERROR,
+  statusGUI: STATUS_ERROR,
   error: '',
   section1: [],
   section2: [],
@@ -23,7 +23,7 @@ const SENSCALC_ERROR: SensCalcResults = {
 };
 
 export const SENSCALC_LOADING: SensCalcResults = {
-  status: STATUS_PARTIAL
+  statusGUI: STATUS_PARTIAL
 };
 
 async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {

@@ -1,7 +1,7 @@
 import { SensCalcResults } from '../../utils/types/sensCalcResults';
 
 type TargetObservation = {
-  targetId: number;
+  targetId: string;
   observationId: string;
   sensCalc: SensCalcResults;
 };
