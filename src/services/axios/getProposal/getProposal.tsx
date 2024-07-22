@@ -86,7 +86,8 @@ const getPDF = (documents: DocumentBackend[], docType: string): DocumentPDF => {
 };
 
 const getVelType = (InDefinition: string) => {
-  const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())?.value
+  const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())
+    ?.value;
   return velType ? velType : 1; // fallback
 };
 
@@ -105,7 +106,8 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
       raUnit: e.reference_coordinate.unit[0],
       redshift: e.radial_velocity.redshift.toString(),
-      referenceFrame: e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
+      referenceFrame:
+        e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
       rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition,
@@ -429,8 +431,8 @@ const getTargetObservation = (
 
 function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
-    id: inRec.prsl_id, // TODO
-    title: inRec.info.title, // TODO
+    id: inRec.prsl_id,
+    title: inRec.info.title,
     proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
