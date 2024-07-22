@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
@@ -35,6 +36,7 @@ const SIZE = 20;
 
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
+  const navigate = useNavigate();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -181,8 +183,7 @@ export default function ObservationPage() {
 
   const editIconClicked = (row: any) => {
     setCurrObs(row.rec);
-    // TODO : Need to complete this
-    // navigate(PATH[4], currObs);
+    navigate(PATH[2], { replace: true, state: row.rec });
   };
 
   const deleteIconClicked = (row: any) => {
@@ -369,11 +370,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: Observation }) => {
           return (
             <>
-              <EditIcon
-                onClick={() => editIconClicked(e.row)}
-                disabled={true}
-                toolTip={t('observations.edit')}
-              />
+              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
               <TrashIcon
                 onClick={() => deleteIconClicked(e.row)}
                 toolTip={t('observations.delete')}

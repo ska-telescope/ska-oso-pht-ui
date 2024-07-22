@@ -17,7 +17,8 @@
     "create": "Create",
     "home": "Home",
     "submit": "Submit",
-    "sendInvite": "Send invitation"
+    "sendInvite": "Send invitation",
+    "update": "Update"
   },
   "abstract": {
     "label": "Abstract",
@@ -739,6 +740,10 @@
     "13": {
       "title": "Data Product",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
+    },
+    "14": {
+      "title": "Observation Update",
+      "desc": "Amend an existing observation.  Note that this will effect any existing Sensitivity calculations to linked Targets"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

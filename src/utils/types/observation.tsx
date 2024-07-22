@@ -31,14 +31,14 @@ type Observation = {
 };
 
 export const NEW_OBSERVATION: Observation = {
-  id: 'DUMMY-ID',
+  id: null,
   telescope: 0,
   subarray: 0,
   linked: '',
   type: 0,
   observingBand: 0,
   weather: 0,
-  elevation: 0,
+  elevation: 15,
   centralFrequency: 0,
   centralFrequencyUnits: 0,
   bandwidth: 0,

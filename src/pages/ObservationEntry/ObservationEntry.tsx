@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -27,11 +27,10 @@ import { generateId } from '../../utils/helpers';
 import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
-import Observation from 'utils/types/observation';
+import Observation, { NEW_OBSERVATION } from '../../utils/types/observation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
-const PAGE = 10;
 const BACK_PAGE = 5;
 const LINE_OFFSET = 30;
 
@@ -42,9 +41,17 @@ const LABEL_WIDTH_OPT1 = 6;
 const FIELD_WIDTH_OPT1 = 10;
 const FIELD_WIDTH_BUTTON = 2;
 
-export default function AddObservation() {
+export default function ObservationEntry() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const locationProperties = useLocation();
+
+  const isEdit = () => locationProperties.state !== null;
+
+  const PAGE = isEdit() ? 14 : 10;
+
+  const [observation, setObservation] = React.useState(NEW_OBSERVATION);
+
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
@@ -86,8 +93,12 @@ export default function AddObservation() {
   const [selectedGroupObservation, setSelectedGroupObservation] = React.useState(null);
 
   React.useEffect(() => {
-    const newId = generateId(t('addObservation.idPrefix'), 6);
-    setMyObsId(newId);
+    if (isEdit()) {
+      setObservation(locationProperties.state);
+    } else {
+      const newId = generateId(t('addObservation.idPrefix'), 6);
+      setMyObsId(newId);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -1217,8 +1228,18 @@ export default function AddObservation() {
       });
     };
 
+    const updateObservationOnProposal = () => {
+      setProposal({
+        ...getProposal(),
+        observations: [...getProposal().observations, observation],
+        groupObservations: selectedGroupObservation
+          ? [...getProposal().groupObservations, selectedGroupObservation]
+          : getProposal().groupObservations
+      });
+    };
+
     const buttonClicked = () => {
-      addObservationToProposal();
+      isEdit() ? updateObservationOnProposal() : addObservationToProposal();
       navigate(NAV[5]);
     };
 
@@ -1241,8 +1262,8 @@ export default function AddObservation() {
               action={buttonClicked}
               disabled={addButtonDisabled()}
               primary
-              testId="addObservationButton"
-              title={'button.add'}
+              testId={isEdit() ? 'updateObservationButton' : 'addObservationButton'}
+              title={isEdit() ? 'button.update' : 'button.add'}
             />
           </Grid>
         </Grid>
