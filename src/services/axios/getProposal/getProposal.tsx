@@ -29,7 +29,7 @@ import DataProductSDP, {
 } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
-import { SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
+import { ResultsSection, SensCalcResults, SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 
@@ -327,25 +327,25 @@ const getObservations = (
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
-const getResultsSection1 = (inResult: SensCalcResultsBackend): any[] => {
+const getResultsSection1 = (inResult: SensCalcResultsBackend): SensCalcResults['section1'] => {
   let section1 = [];
   // for continuum observation
   if (inResult.continuum_confusion_noise) {
     section1.push({
       field: 'continuumSensitivityWeighted',
-      value: inResult.result_details.weighted_continuum_sensitivity?.value,
+      value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
       units: inResult.result_details.weighted_continuum_sensitivity.unit.split(' ').join('') // trim white spaces
-    });
+    } as ResultsSection);
     section1.push({
       field: 'continuumConfusionNoise',
-      value: inResult.continuum_confusion_noise?.value,
+      value: inResult.continuum_confusion_noise?.value.toString(),
       units: inResult.continuum_confusion_noise.unit.split(' ').join('')
-    });
+    } as ResultsSection);
     section1.push({
       field: 'continuumTotalSensitivity',
-      value: inResult.result_details.total_continuum_sensitivity?.value,
+      value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
       units: inResult.result_details.total_continuum_sensitivity.unit.split(' ').join('')
-    });
+    } as ResultsSection);
     section1.push({
       field: 'continuumSynthBeamSize',
       // value: inResult.synthesized_beam_size?.value,
@@ -353,12 +353,12 @@ const getResultsSection1 = (inResult: SensCalcResultsBackend): any[] => {
       // mock beam size for now as format enforced by backend not correct
       value: '190.0 x 171.3',
       units: 'arcsecs2'
-    });
+    } as ResultsSection);
     section1.push({
       field: 'continuumSurfaceBrightnessSensitivity',
-      value: inResult.result_details.surface_brightness_sensitivity.continuum,
+      value: inResult.result_details.surface_brightness_sensitivity.continuum.toString(),
       units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
-    });
+    } as ResultsSection);
     // for zoom observation
   } else {
     section1 = getResultsSection2(inResult);
@@ -366,21 +366,21 @@ const getResultsSection1 = (inResult: SensCalcResultsBackend): any[] => {
   return section1;
 };
 
-const getResultsSection2 = (inResult: SensCalcResultsBackend): any[] => {
+const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['section2'] => {
   let section2 = [];
   section2.push({
     field: 'spectralSensitivityWeighted',
-    value: inResult.result_details.weighted_spectral_sensitivity?.value,
+    value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
     units: inResult.result_details.weighted_spectral_sensitivity.unit.split(' ').join('')
   });
   section2.push({
     field: 'spectralConfusionNoise',
-    value: inResult.spectral_confusion_noise?.value,
+    value: inResult.spectral_confusion_noise?.value.toString(),
     units: inResult.spectral_confusion_noise.unit.split(' ').join('')
   });
   section2.push({
     field: 'spectralTotalSensitivity',
-    value: inResult.result_details.total_spectral_sensitivity?.value,
+    value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
     units: inResult.result_details.total_spectral_sensitivity.unit.split(' ').join('')
   });
   section2.push({
@@ -392,7 +392,7 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): any[] => {
   });
   section2.push({
     field: 'spectralSurfaceBrightnessSensitivity',
-    value: inResult.result_details.surface_brightness_sensitivity.spectral,
+    value: inResult.result_details.surface_brightness_sensitivity.spectral.toString(),
     units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
   });
   return section2;
@@ -401,7 +401,7 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): any[] => {
 const getResultsSection3 = (
   inResultObservationRef: string,
   inObservationSets: ObservationSetBackend[]
-): any[] => {
+): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
   const field =
@@ -411,7 +411,7 @@ const getResultsSection3 = (
   return [
     {
       field: field,
-      value: obs.observation_type_details.supplied.quantity?.value,
+      value: obs.observation_type_details.supplied.quantity?.value.toString(),
       units: obs.observation_type_details.supplied.quantity.unit.split(' ').join('')
     }
   ];

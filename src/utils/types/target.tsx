@@ -101,7 +101,7 @@ export const NEW_TARGET: Target = {
   referenceFrame: 0,
   vel: '',
   velType: 0,
-  velUnit: 0
+  velUnit: ''
 };
 
 export default Target;

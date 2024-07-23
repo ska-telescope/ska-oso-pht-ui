@@ -74,24 +74,24 @@ export default function calculateSensitivityCalculatorResults(
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
 
-  const theResults = {
-    id: target.name,
+  const theResults: SensCalcResults = {
+    id: target.id,
     title: target.name,
-    status: STATUS_OK,
+    statusGUI: STATUS_OK, // TODO: get target id or index number of target
     section1: [
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
-        value: weightedSensitivityDisplay?.value,
+        value: weightedSensitivityDisplay?.value.toString(),
         units: weightedSensitivityDisplay?.unit
       },
       {
         field: `${observationTypeLabel}ConfusionNoise`,
-        value: confusionNoiseDisplay?.value,
+        value: confusionNoiseDisplay?.value.toString(),
         units: confusionNoiseDisplay?.unit
       },
       {
         field: `${observationTypeLabel}TotalSensitivity`,
-        value: totalSensitivityDisplay?.value,
+        value: totalSensitivityDisplay?.value.toString(),
         units: totalSensitivityDisplay?.unit
       },
       {
@@ -101,7 +101,7 @@ export default function calculateSensitivityCalculatorResults(
       },
       {
         field: `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-        value: sbsDisplay?.value,
+        value: sbsDisplay?.value.toString(),
         units: sbsDisplay?.units
       }
     ],
@@ -110,17 +110,17 @@ export default function calculateSensitivityCalculatorResults(
       section2: [
         {
           field: 'spectralSensitivityWeighted',
-          value: spectralWeightedSensitivityDisplay.value,
+          value: spectralWeightedSensitivityDisplay.value.toString(),
           units: spectralWeightedSensitivityDisplay.unit
         },
         {
           field: 'spectralConfusionNoise',
-          value: spectralConfusionNoiseDisplay?.value,
+          value: spectralConfusionNoiseDisplay?.value.toString(),
           units: spectralConfusionNoiseDisplay?.unit
         },
         {
           field: 'spectralTotalSensitivity',
-          value: spectralTotalSensitivityDisplay.value,
+          value: spectralTotalSensitivityDisplay.value.toString(),
           units: spectralTotalSensitivityDisplay.unit
         },
         {
@@ -138,8 +138,10 @@ export default function calculateSensitivityCalculatorResults(
     section3: [
       {
         field: 'integrationTime',
-        value: observation.integrationTime.toString(),
-        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
+        // value: observation.integrationTime.toString(),
+        value: observation.supplied.value.toString(),
+        // units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
+        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.supplied.units)
       }
     ]
   };
