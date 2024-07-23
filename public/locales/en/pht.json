@@ -609,7 +609,8 @@
   },
   "tapering": {
     "help": "TAPERING HELP",
-    "label": "Tapering"
+    "label": "Tapering",
+    "0": "No tapering"
   },
   "targetObservation": {
     "label": "Target / Observation relationship"

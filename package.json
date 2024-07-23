@@ -27,7 +27,7 @@
     "test:coverage:summary": "npx nyc report --reporter=text-summary",
     "test:cypress:component:ci": "cypress run --component --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:headless": "yarn cypress:run",
-    "test:cypress:e2e:ci": "cypress run --e2e --headless --browser chromium --reporter junit --config video=false --reporter-options mochaFile=build/tests/e2e-tests.xml",
+    "test:cypress:e2e:ci": "cypress run --e2e --headless --reporter junit --config video=false --reporter-options mochaFile=build/tests/e2e-tests.xml",
     "test:e2e:headless": "cypress run --e2e --headless --config video=false"
   },
   "resolutions": {
