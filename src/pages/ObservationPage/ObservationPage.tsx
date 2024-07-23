@@ -219,9 +219,10 @@ export default function ObservationPage() {
 
   const addObservationTarget = (target: Target) => {
     const ss = {
-      id: target.name,
-      status: STATUS_PARTIAL,
-      title: target.name
+      id: target.id,
+      title: target.name,
+      statusGUI: STATUS_PARTIAL,
+      error: ''
     };
     const rec: TargetObservation = {
       observationId: currObs.id,

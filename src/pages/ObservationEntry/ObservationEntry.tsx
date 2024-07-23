@@ -434,22 +434,15 @@ export default function ObservationEntry() {
     );
   };
 
-  const frequencyInGHz = () => {
-    return getScaledValue(frequency, MULTIPLIER_HZ_GHZ[frequencyUnits], '*');
-  };
-
   const taperingField = () => {
-    const baseArray = [1, 2, 3, 4, 5, 6, 7, 8];
+    const frequencyInGHz = () => {
+      return getScaledValue(frequency, MULTIPLIER_HZ_GHZ[frequencyUnits], '*');
+    };
+
     const getOptions = () => {
+      // TODO : This calculation is wrong, but I don't understand why.
       const results = [{ label: t('tapering.0'), value: 0 }];
-      baseArray.forEach(inValue => {
-        console.log(
-          '"TREVOR',
-          inValue,
-          frequencyInGHz(),
-          frequencyUnits,
-          inValue * (1.4 / frequencyInGHz())
-        );
+      [1, 2, 3, 4, 5, 6, 7, 8].forEach(inValue => {
         const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
         results.push({ label: theLabel, value: inValue });
       });
@@ -875,10 +868,10 @@ export default function ObservationEntry() {
   React.useEffect(() => {
     // TODO : Replace KHz / Hz with appropriate constants
     // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
+    const unit = isLow() && observationType === 0 ? 'Hz' : 'kHz';
+    const spectralResolutionValue = String(spectralResolution).split(unit);
+    const resolution = Number(spectralResolutionValue[0]);
     if (isLow()) {
-      const unit = observationType === 0 ? 'Hz' : 'kHz';
-      const spectralResolutionValue = String(spectralResolution).split(unit);
-      const resolution = Number(spectralResolutionValue[0]);
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
       const decimal = observationType === 1 ? 2 : 1;
       const velocity =
@@ -887,10 +880,8 @@ export default function ObservationEntry() {
           : calculateVelocity(resolution * spectralAveraging, centralFrequency);
       setEffective(`${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`);
     } else {
-      const spectralResolutionValue = String(spectralResolution).split('kHz');
-      const resolution = Number(spectralResolutionValue[0]);
-      const effectiveResolutionValue = resolution * spectralAveraging;
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');
+      const effectiveResolutionValue = resolution * spectralAveraging;
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
       setEffective(`${effectiveResolutionValue} kHz (${velocity})`);
     }

@@ -577,12 +577,12 @@ export const OBSERVATION = {
   ],
   SpectralResolutionObLow: [{ value: '5.43 kHz (8.1 km/s)' }],
   SpectralResolutionOb1: [
-    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)' },
-    { lookup: '0.7975', value: '13.44 kHz (5.1 km/s)' }
+    { lookup: 0.7, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 0.7975, value: '13.44 kHz (5.1 km/s)' }
   ],
   SpectralResolutionOb2: [
-    { lookup: '1.355', value: '13.44 kHz (3.0 km/s)' },
-    { lookup: '1.31', value: '13.44 kHz (3.1 km/s)' }
+    { lookup: 1.355, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 1.31, value: '13.44 kHz (3.1 km/s)' }
   ],
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
