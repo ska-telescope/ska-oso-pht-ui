@@ -77,7 +77,7 @@ export default function calculateSensitivityCalculatorResults(
   const theResults: SensCalcResults = {
     id: target.id,
     title: target.name,
-    statusGUI: STATUS_OK, // TODO: get target id or index number of target
+    statusGUI: STATUS_OK,
     section1: [
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
