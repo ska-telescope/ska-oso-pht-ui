@@ -1118,18 +1118,8 @@ export default function ObservationEntry() {
     );
   };
 
-  // center '+' icon on addGroup button
-  // TODO: do this the MUI way
-  const styles = `
-    .buttonGroupContainer .css-1d6wzja-MuiButton-startIcon{
-      margin-left: 0!important;
-      margin-right: 0!important;
-    }
-  `;
-
   return (
     <>
-      <style>{styles}</style>
       <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
         <Grid item>
           <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
