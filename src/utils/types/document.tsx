@@ -7,5 +7,5 @@ export type DocumentBackend = {
 export type DocumentPDF = {
   documentId?: string;
   link?: string;
-  file?: File
+  file?: File;
 };

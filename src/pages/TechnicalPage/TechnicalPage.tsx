@@ -43,9 +43,9 @@ export default function TechnicalPage() {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     const file = {
       documentId: `technical-doc-${getProposal().id}`,
-      link: theFile as unknown as string,
+      link: (theFile as unknown) as string,
       file: theFile
-    }
+    };
     setProposal({ ...getProposal(), technicalPDF: file });
     setCurrentFile(theFile);
   };

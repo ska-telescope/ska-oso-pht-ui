@@ -32,7 +32,6 @@ import Observation from '../../../utils/types/observation';
 import { SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
-import TeamMember from 'utils/types/teamMember';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -84,18 +83,18 @@ const extractFileFromURL = (url): Promise<File> => {
       const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
       return file;
     });
-}
+};
 
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
     return null;
   }
-  const file = await extractFileFromURL(pdf.link) as File;
+  const file = (await extractFileFromURL(pdf.link)) as File;
   const pdfDoc: DocumentPDF = {
     documentId: pdf?.document_id,
     link: pdf?.link,
-    file: file ? file : null,
+    file: file ? file : null
   };
   return pdfDoc as DocumentPDF;
 };
@@ -445,17 +444,14 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
-
   let sciencePDF: DocumentPDF;
-  getPDF(inRec?.info?.documents, 'proposal_science')
-    .then(pdf => {
-      sciencePDF = pdf;
-    });
+  getPDF(inRec?.info?.documents, 'proposal_science').then(pdf => {
+    sciencePDF = pdf;
+  });
   let technicalPDF: DocumentPDF;
-  getPDF(inRec?.info?.documents, 'proposal_technical')
-    .then(pdf => {
-      technicalPDF = pdf;
-    });
+  getPDF(inRec?.info?.documents, 'proposal_technical').then(pdf => {
+    technicalPDF = pdf;
+  });
 
   const convertedProposal = {
     id: inRec.prsl_id,
@@ -475,7 +471,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF, // getPDF(inRec?.info?.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
-    scienceLoadStatus: sciencePDF ? 1 : 0,  // getPDF(inRec?.info?.documents, 'proposal_science') ? 1 : 0,
+    scienceLoadStatus: sciencePDF ? 1 : 0, // getPDF(inRec?.info?.documents, 'proposal_science') ? 1 : 0,
     targetOption: 1, // TODO // check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),

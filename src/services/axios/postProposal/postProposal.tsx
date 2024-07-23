@@ -9,7 +9,6 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import MockProposalBackend from '../getProposal/mockProposalBackend';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {

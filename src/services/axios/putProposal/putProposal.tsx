@@ -113,22 +113,18 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     console.log('sciencePDF', sciencePDF);
     console.log('technicalPDF', technicalPDF);
     if (sciencePDF?.link) {
-      documents.push(
-        {
-          document_id: sciencePDF.documentId,
-          link: sciencePDF?.link,
-          type: 'proposal_science'
-        }
-      );
+      documents.push({
+        document_id: sciencePDF.documentId,
+        link: sciencePDF?.link,
+        type: 'proposal_science'
+      });
     }
     if (technicalPDF?.link) {
-      documents.push(
-        {
-          document_id: technicalPDF?.documentId,
-          link: technicalPDF?.link,
-          type: 'proposal_technical'
-        }
-      );
+      documents.push({
+        document_id: technicalPDF?.documentId,
+        link: technicalPDF?.link,
+        type: 'proposal_technical'
+      });
     }
     console.log('technicadocumentslDOc', documents);
     return documents;
@@ -207,12 +203,11 @@ async function PutProposal(proposal, status?) {
     // TODO: add testing for proposal conversion format
     const convertedProposal = mappingPutProposal(proposal, status);
     console.log('PUT convertedProposal', convertedProposal);
-    /*const result = await axios.put(
+    const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
-    );*/
-    const result = 'temp';
+    );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result; // result?.data;
   } catch (e) {
     return { error: e.message };

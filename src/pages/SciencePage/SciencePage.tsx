@@ -43,9 +43,9 @@ export default function SciencePage() {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     const file = {
       documentId: `science-doc-${getProposal().id}`,
-      link: theFile as unknown as string,
+      link: (theFile as unknown) as string,
       file: theFile
-    }
+    };
     setProposal({ ...getProposal(), sciencePDF: file });
     setCurrentFile(theFile);
   };
