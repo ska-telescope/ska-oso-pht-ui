@@ -110,7 +110,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     const weighting = OBSERVATION.ImageWeighting.find(
       obj => obj.value === observation.imageWeighting
     );
-    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel( // TODO handle sensitivity?
       observation.supplied.units
     );
     const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
@@ -203,7 +203,7 @@ async function GetCalculate(observation: Observation, target: Target) {
         bandwidthValueUnit[1]
       ); // low zoom bandwidth should be sent in KHz
     }
-    const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+    const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel( // TODO handle sensitivity?
       observation.supplied.units
     );
 

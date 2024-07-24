@@ -660,6 +660,7 @@ export const OBSERVATION = {
   Supplied: [
     {
       label: 'Integration Time',
+      sensCalcResultsLabel: 'integrationTime',
       value: 1,
       units: [
         { label: 'd', value: 1 },
@@ -673,6 +674,7 @@ export const OBSERVATION = {
     },
     {
       label: 'Sensitivity',
+      sensCalcResultsLabel: 'sensitivity',
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },

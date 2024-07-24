@@ -3,6 +3,7 @@ import Observation from '../../../utils/types/observation';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   OBS_TYPES,
+  OBSERVATION,
   STATUS_OK,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
@@ -73,6 +74,9 @@ export default function calculateSensitivityCalculatorResults(
   const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
+  console.log('::: in acalculate snes calc results, ', observation.supplied);
+
+  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)?.sensCalcResultsLabel;
 
   const theResults: SensCalcResults = {
     id: target.id,
@@ -137,14 +141,13 @@ export default function calculateSensitivityCalculatorResults(
     }),
     section3: [
       {
-        field: 'integrationTime',
-        // value: observation.integrationTime.toString(),
+        field: suppliedType,
         value: observation.supplied.value.toString(),
-        // units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
-        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.supplied.units)
+        units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(u => u.value === observation.supplied.units)?.label
       }
     ]
   };
+  console.log('RESULTS', theResults);
   return theResults as SensCalcResults;
 }
 
