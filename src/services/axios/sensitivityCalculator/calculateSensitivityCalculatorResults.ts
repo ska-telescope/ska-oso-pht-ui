@@ -3,6 +3,7 @@ import Observation from '../../../utils/types/observation';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   OBS_TYPES,
+  OBSERVATION,
   STATUS_OK,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
@@ -74,24 +75,27 @@ export default function calculateSensitivityCalculatorResults(
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
 
-  const theResults = {
-    id: target.name,
+  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)
+    ?.sensCalcResultsLabel;
+
+  const theResults: SensCalcResults = {
+    id: target.id,
     title: target.name,
-    status: STATUS_OK,
+    statusGUI: STATUS_OK,
     section1: [
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
-        value: weightedSensitivityDisplay?.value,
+        value: weightedSensitivityDisplay?.value.toString(),
         units: weightedSensitivityDisplay?.unit
       },
       {
         field: `${observationTypeLabel}ConfusionNoise`,
-        value: confusionNoiseDisplay?.value,
+        value: confusionNoiseDisplay?.value.toString(),
         units: confusionNoiseDisplay?.unit
       },
       {
         field: `${observationTypeLabel}TotalSensitivity`,
-        value: totalSensitivityDisplay?.value,
+        value: totalSensitivityDisplay?.value.toString(),
         units: totalSensitivityDisplay?.unit
       },
       {
@@ -101,7 +105,7 @@ export default function calculateSensitivityCalculatorResults(
       },
       {
         field: `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-        value: sbsDisplay?.value,
+        value: sbsDisplay?.value.toString(),
         units: sbsDisplay?.units
       }
     ],
@@ -110,17 +114,17 @@ export default function calculateSensitivityCalculatorResults(
       section2: [
         {
           field: 'spectralSensitivityWeighted',
-          value: spectralWeightedSensitivityDisplay.value,
+          value: spectralWeightedSensitivityDisplay.value.toString(),
           units: spectralWeightedSensitivityDisplay.unit
         },
         {
           field: 'spectralConfusionNoise',
-          value: spectralConfusionNoiseDisplay?.value,
+          value: spectralConfusionNoiseDisplay?.value.toString(),
           units: spectralConfusionNoiseDisplay?.unit
         },
         {
           field: 'spectralTotalSensitivity',
-          value: spectralTotalSensitivityDisplay.value,
+          value: spectralTotalSensitivityDisplay.value.toString(),
           units: spectralTotalSensitivityDisplay.unit
         },
         {
@@ -137,9 +141,11 @@ export default function calculateSensitivityCalculatorResults(
     }),
     section3: [
       {
-        field: 'integrationTime',
-        value: observation.integrationTime.toString(),
-        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
+        field: suppliedType,
+        value: observation.supplied.value.toString(),
+        units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+          u => u.value === observation.supplied.units
+        )?.label
       }
     ]
   };
@@ -198,11 +204,12 @@ const getSpectralWeightedSensitivityLOW = (
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
   const beams =
     type === TYPE_ZOOM ? response.weighting.beam_size : response.weightingLine.beam_size;
-  sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+  const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     beams[0].beam_maj_scaled,
     beams[0].beam_min_scaled,
     1
   );
+  return formattedBeams;
 };
 
 const getSpectralSBSLOW = (
@@ -267,11 +274,12 @@ const getSpectralWeightedSensitivityMID = (
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, type: number) => {
   const beams =
     type === TYPE_ZOOM ? response.weighting.data.beam_size : response.weightingLine.data.beam_size;
-  return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+  const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     beams[0].beam_maj_scaled,
     beams[0].beam_min_scaled,
     1
   );
+  return formattedBeams;
 };
 
 const getSpectralSBSMID = (

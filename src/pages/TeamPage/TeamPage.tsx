@@ -37,7 +37,7 @@ export default function TeamPage() {
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [currentMember, setCurrentMember] = React.useState(0);
+  const [currentMember, setCurrentMember] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -76,14 +76,14 @@ export default function TeamPage() {
   };
 
   const ClickMemberRow = (e: { id: number }) => {
-    setCurrentMember(e.id);
+    setCurrentMember(e.id.toString());
   };
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().team.filter(e => e.id !== currentMember);
 
     setProposal({ ...getProposal(), team: obs1 });
-    setCurrentMember(0);
+    setCurrentMember('');
     closeDeleteDialog();
   };
 

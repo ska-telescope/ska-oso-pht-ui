@@ -41,7 +41,12 @@ export default function TechnicalPage() {
 
   const setFile = (theFile: File) => {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
-    setProposal({ ...getProposal(), technicalPDF: theFile });
+    const file = {
+      documentId: `technical-doc-${getProposal().id}`,
+      link: (theFile as unknown) as string,
+      file: theFile
+    };
+    setProposal({ ...getProposal(), technicalPDF: file });
     setCurrentFile(theFile);
   };
 
@@ -124,7 +129,7 @@ export default function TechnicalPage() {
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
             direction="row"
-            file={getProposal()?.technicalPDF}
+            file={getProposal()?.technicalPDF?.file}
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}

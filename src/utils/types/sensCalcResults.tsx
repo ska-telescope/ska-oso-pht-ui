@@ -25,7 +25,13 @@ export type SensCalcResults = {
   title?: string;
   statusGUI: number;
   error?: string;
-  section1?: { field: string; value: string; units: string }[];
-  section2?: { field: string; value: string; units: string }[];
-  section3?: { field: string; value: string; units: string }[];
+  section1?: ResultsSection[];
+  section2?: ResultsSection[];
+  section3?: ResultsSection[];
+};
+
+export type ResultsSection = {
+  field: string;
+  value: string;
+  units?: string;
 };

@@ -659,7 +659,8 @@ export const OBSERVATION = {
   ],
   Supplied: [
     {
-      label: 'Integration Time',
+      label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
+      sensCalcResultsLabel: 'integrationTime',
       value: 1,
       units: [
         { label: 'd', value: 1 },
@@ -673,6 +674,7 @@ export const OBSERVATION = {
     },
     {
       label: 'Sensitivity',
+      sensCalcResultsLabel: 'sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },
@@ -695,6 +697,11 @@ export const OBSERVATION = {
 
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
+
+export const VEL_TYPES = [
+  { label: 'Velocity', value: 0 },
+  { label: 'Redshift', value: 1 }
+];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
