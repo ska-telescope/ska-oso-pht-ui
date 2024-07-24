@@ -174,18 +174,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       data_product_sdps: [],
       data_product_src_nets: [],
       results: []
-
-      /*
-    targets: proposal?.targets?.map(target => ({
-      name: target?.name,
-      right_ascension: target?.ra,
-      declination: target?.dec,
-      velocity: parseFloat(target?.vel),
-      velocity_unit: '', // TODO: confirm what units should be expected
-      right_ascension_unit: '', // TODO: confirm what units should be expected
-      declination_unit: '' // TODO: confirm what units should be expected
-    })),
-    */
     }
   };
   // trim undefined properties
