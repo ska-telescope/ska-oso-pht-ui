@@ -78,11 +78,10 @@ async function PostProposal(proposal: Proposal, status?: string) {
   try {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status);
-    // const mockProposal = MockProposalBackend;
 
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
-      /* mockProposal, */ convertedProposal,
+      convertedProposal,
       AXIOS_CONFIG
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
