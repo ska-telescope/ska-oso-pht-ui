@@ -12,11 +12,11 @@ import {
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
-  EMPTY_STATUS,
   NAV,
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
-  PATH
+  PATH,
+  NOTSPECIFIED
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -26,6 +26,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
+import { validateProposal } from '../../utils/proposalValidation';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -85,9 +86,10 @@ export default function LandingPage() {
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(EMPTY_STATUS);
+      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
       updateAppContent3(response);
+      validateProposal(response);
       return true;
     }
   };
@@ -147,10 +149,19 @@ export default function LandingPage() {
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  const displayScienceCategory = scienceCategory => {
+    return scienceCategory ? scienceCategory : NOTSPECIFIED;
+  };
 
   const COLUMNS = [
     { field: 'id', headerName: t('id.label'), width: 200 },
-    { field: 'category', headerName: t('category.label'), width: 200 },
+    {
+      field: 'scienceCategory',
+      headerName: t('scienceCategory.label'),
+      width: 200,
+      renderCell: (e: { row: any }) =>
+        t('scienceCategory.' + displayScienceCategory(e.row.scienceCategory))
+    },
     { field: 'cycle', headerName: t('cycle.label'), width: 150 },
     { field: 'title', headerName: t('title.label'), width: 250 },
     { field: 'pi', headerName: t('pi.short'), width: 150 },
@@ -195,9 +206,9 @@ export default function LandingPage() {
     return proposals.filter(
       item =>
         ['title', 'cycle', 'pi'].some(field =>
-          item[field].toLowerCase().includes(searchTerm.toLowerCase())
+          item[field]?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.status.toLowerCase() === searchType.toLowerCase())
+        (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
     );
   }
 

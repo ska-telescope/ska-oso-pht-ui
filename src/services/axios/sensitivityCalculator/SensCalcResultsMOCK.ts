@@ -1,19 +1,19 @@
 import { STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/constants';
-import { SensCalcResult } from './getSensitivityCalculatorAPIData';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 
-export const SENSCALC_EMPTY_MOCKED: SensCalcResult = {
-  status: STATUS_INITIAL
+export const SENSCALC_EMPTY_MOCKED: SensCalcResults = {
+  statusGUI: STATUS_INITIAL
 };
 
-export const SENSCALC_PARTIAL_MOCKED: SensCalcResult = {
-  status: STATUS_PARTIAL,
+export const SENSCALC_PARTIAL_MOCKED: SensCalcResults = {
+  statusGUI: STATUS_PARTIAL,
   error: ''
 };
 
-export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
-  id: 'TITLE FIELD',
+export const SENSCALC_CONTINUUM_MOCKED: SensCalcResults = {
+  id: 1,
   title: 'TITLE FIELD',
-  status: STATUS_OK,
+  statusGUI: STATUS_OK,
   error: '',
   section1: [
     { field: 'continuumSensitivityWeighted', value: '84.47', units: 'ujy/beam' },
@@ -32,10 +32,10 @@ export const SENSCALC_CONTINUUM_MOCKED: SensCalcResult = {
   section3: [{ field: 'integrationTime', value: '19.3', units: 'hours' }]
 };
 
-export const SENSCALC_SPECTRAL_MOCKED: SensCalcResult = {
-  id: 'TITLE FIELD',
+export const SENSCALC_SPECTRAL_MOCKED: SensCalcResults = {
+  id: 2,
   title: 'TITLE FIELD',
-  status: STATUS_OK,
+  statusGUI: STATUS_OK,
   error: '',
   section1: [
     { field: 'spectralSensitivityWeighted', value: '84.47', units: 'ujy/beam' },

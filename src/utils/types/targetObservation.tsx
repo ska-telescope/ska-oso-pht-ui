@@ -1,9 +1,9 @@
-import { SensCalcResult } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import { SensCalcResults } from '../../utils/types/sensCalcResults';
 
 type TargetObservation = {
-  targetId: number;
+  targetId: string;
   observationId: string;
-  sensCalc: SensCalcResult;
+  sensCalc: SensCalcResults;
 };
 
 export default TargetObservation;

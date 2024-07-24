@@ -17,7 +17,8 @@
     "create": "Create",
     "home": "Home",
     "submit": "Submit",
-    "sendInvite": "Send invitation"
+    "sendInvite": "Send invitation",
+    "update": "Update"
   },
   "abstract": {
     "label": "Abstract",
@@ -95,10 +96,6 @@
     "help": "Continuum BANDWIDTH HELP",
     "label": "Continuum BandWidth",
     "range": {
-      "midLower": 0,
-      "midUpper": 0.8,
-      "lowLower": 0,
-      "lowUpper": 75,
       "error": "Value is outside of allowed range"
     }
   },
@@ -107,9 +104,6 @@
   },
   "cycle": {
     "label": "Cycle"
-  },
-  "category": {
-    "label": "Category"
   },
   "dataProduct": {
     "button": "Add Data Product"
@@ -214,7 +208,8 @@
   },
   "imageSize": {
     "label": "Image Size",
-    "help": "Image Size"
+    "help": "Image Size",
+    "error": "Value must be greater than zero"
   },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",
@@ -352,7 +347,8 @@
     "label": "Pixel Size",
     "help": "PIXEL SIZE HELP",
     "notFound": "No value found",
-    "precision": 3
+    "precision": 3,
+    "unableToDetermine": "Unable to determine"
   },
   "proposalId": {
     "label": "Proposal Id"
@@ -369,18 +365,21 @@
     "under review": "Under Review"
   },
   "proposalType": {
-    "label": "Proposal Types",
+    "label": "Proposal Type",
     "help1": "Below are the available Proposal Types.",
     "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
     "help3": "Proposal sub-types are optional",
     "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
+  },
+  "subProposalType": {
+    "label": "Proposal Subtype"
   },
   "members": {
     "label": "Team Members",
     "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
   },
   "noSpecificTarget": {
-    "label": "No specific Target",
+    "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {
@@ -431,7 +430,8 @@
     "13": "Transients",
     "14": "VLBI",
     "label": "Science Category",
-    "help": "Select a category that best describes the science of your proposal."
+    "help": "Select a category that best describes the science of your proposal.",
+    "notSpecified": "Not specified"
   },
   "scienceSubCategory": {
     "label": "Scientific sub-category",
@@ -740,6 +740,10 @@
     "13": {
       "title": "Data Product",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
+    },
+    "14": {
+      "title": "Observation Update",
+      "desc": "Amend an existing observation.  Note that this will effect any existing Sensitivity calculations to linked Targets"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

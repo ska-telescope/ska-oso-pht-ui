@@ -16,11 +16,14 @@ import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
+import { helpers } from '../../../../utils/helpers';
 
 const URL_CALCULATE = `calculate`;
 
 async function GetCalculate(observation: Observation, target: Target) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
+
+  const SUPPLIED_IS_SENSITIVITY = observation?.supplied?.type === 2 ? true : false;
 
   const getTelescope = () =>
     observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
@@ -56,14 +59,18 @@ async function GetCalculate(observation: Observation, target: Target) {
       item => item.value === observation.telescope
     ).bandWidth;
     const bandWidthValue = telescopeBandwidthValues.find(
-      item => item.value === observation.bandwidth
-    ).label;
-    return bandWidthValue.split(' ');
+      item => item.value === observation?.bandwidth
+    )?.label;
+    return bandWidthValue?.split(' ');
   }
 
-  function getContinuumBandwidthValueUnit() {
-    return observation.continuumBandwidth.split(' ');
+  /*
+  const getFrequencyAndBandwidthUnits = (unitsField) => {
+    const array = OBSERVATION.array.find(item => item.value === observation.telescope);
+    let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)?.label;
+    return units;
   }
+    */
 
   /*********************************************************** MID *********************************************************/
 
@@ -82,9 +89,14 @@ async function GetCalculate(observation: Observation, target: Target) {
         Number(observation.spectralResolution.split(' ')[0]) * 1000
       ).toString(); // resolution should be sent in Hz
     } else {
-      const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
       mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
-        .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString();
       // convert Khz to Hz as effective Resolution should be sent in Hz
       const effectiveResMultiplier = String(observation.effectiveResolution).includes('kHz')
@@ -99,18 +111,14 @@ async function GetCalculate(observation: Observation, target: Target) {
       obj => obj.value === observation.imageWeighting
     );
     const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      observation.integrationTimeUnits
+      observation.supplied.units
     );
     const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
-      Number(observation.integrationTime),
+      Number(observation.supplied.value),
       iTimeUnits
     );
-    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
-    const bandwidthValueUnit: string[] =
-      observation.type === TYPE_ZOOM
-        ? getZoomBandwidthValueUnit()
-        : getContinuumBandwidthValueUnit();
 
+    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit(); // only for zoom
     const params = {
       rx_band: `Band ${observation.observingBand}`,
       ra_str: rightAscension(),
@@ -119,11 +127,22 @@ async function GetCalculate(observation: Observation, target: Target) {
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       frequency: sensCalHelpers.format
-        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
+        .convertFrequencyToHz(
+          observation.centralFrequency,
+          sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+            observation.centralFrequencyUnits,
+            observation.telescope
+          )
+        )
         .toString(),
       bandwidth: sensCalHelpers.format.convertBandwidthToHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
+        observation.type === TYPE_ZOOM ? bandwidthValueUnit[0] : observation.continuumBandwidth,
+        observation.type === TYPE_ZOOM
+          ? bandwidthValueUnit[1]
+          : sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+              observation.continuumBandwidthUnits,
+              observation.telescope
+            )
       ), // mid zoom and mid continuum bandwidth should be sent in Hz
       resolution: '0',
       weighting: weighting?.label.toLowerCase(),
@@ -132,9 +151,12 @@ async function GetCalculate(observation: Observation, target: Target) {
         observation.tapering === 'No tapering'
           ? 0
           : observation.tapering.replace('"', '').replace(' ', ''),
-      integration_time: iTime?.toString(),
+      integration_time: SUPPLIED_IS_SENSITIVITY ? undefined : iTime?.toString(),
+      // TODO convert sensitivity to units expected by the sens calc (check logic in sens calc)
+      sensitivity: !SUPPLIED_IS_SENSITIVITY ? undefined : observation.supplied.value,
       ...mode_specific_parameters
     };
+    helpers.transform.trimObject(params);
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
@@ -160,11 +182,12 @@ async function GetCalculate(observation: Observation, target: Target) {
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
     if (observation.type === TYPE_CONTINUUM) {
-      const bandwidthValueUnit: string[] = getContinuumBandwidthValueUnit();
-      // const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
       mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
+        observation.continuumBandwidth,
+        sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+          observation.continuumBandwidthUnits,
+          observation.telescope
+        )
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
@@ -181,16 +204,17 @@ async function GetCalculate(observation: Observation, target: Target) {
       ); // low zoom bandwidth should be sent in KHz
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      observation.integrationTimeUnits
+      observation.supplied.units
     );
 
     const params = {
       subarray_configuration: getSubArray(),
+      // LOW should always use integration time in supplied
       duration: sensCalHelpers.format
-        .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
+        .convertIntegrationTimeToSeconds(Number(observation.supplied.value), integrationTimeUnits)
         ?.toString(),
       pointing_centre: pointingCentre(),
-      freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
+      freq_centre: observation.centralFrequency.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     };
@@ -225,8 +249,8 @@ async function GetCalculate(observation: Observation, target: Target) {
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {
-      title: e.response.data.title,
-      detail: e.response.data.detail
+      title: e.response?.data?.title,
+      detail: e.response?.data?.detail
     };
     return { error: errorObject };
   }

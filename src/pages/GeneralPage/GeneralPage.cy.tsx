@@ -40,7 +40,7 @@ describe('<GeneralPage />', () => {
     describe('abstract TextEntry', () => {
       it('latex preview button', () => {
         //TODO: Investigate why .type isn't working
-        cy.get('[id="abstractId"]').type('hello');
+        cy.get('[data-testid="abstractId"]').type('hello');
         cy.get('[data-testid="viewIcon"]').click();
         cy.get('[id="modal-modal-title"]').contains('abstract.latexPreviewTitle');
       });

@@ -1,13 +1,15 @@
+/*
 export type TeamMemberBackend = {
   investigator_id: number;
-  first_name: string;
-  last_name: string;
+  given_name: string;
+  family_name: string;
   email?: string;
   country?: string;
   organization: string;
   for_phd: boolean;
   principal_investigator: boolean;
 };
+*/
 
 type TeamMember = {
   id: number;

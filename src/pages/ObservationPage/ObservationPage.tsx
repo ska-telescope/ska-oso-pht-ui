@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
@@ -21,7 +22,6 @@ import {
   STATUS_OK,
   STATUS_PARTIAL
 } from '../../utils/constants';
-import { SENSCALC_LOADING } from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -36,6 +36,7 @@ const SIZE = 20;
 
 export default function ObservationPage() {
   const { t } = useTranslation('pht');
+  const navigate = useNavigate();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -159,28 +160,30 @@ export default function ObservationPage() {
     }
   };
 
-  const setSensCalcForTargetGrid = (target: Target, sensCalc: any) => {
-    const tmpTO = [{ targetId: target.id, observationId: currObs.id, sensCalc: sensCalc }];
+  const setSensCalcForTargetGrid = (observationId: string, target: Target, sensCalc: any) => {
+    const tmpTO = [{ targetId: target.id, observationId: observationId, sensCalc: sensCalc }];
     elementsS.forEach(rec => {
-      if (rec => rec.targetId !== target.id || rec.observationId !== currObs.id) {
+      if (
+        (rec: { targetId: number; observationId: string }) =>
+          rec.targetId !== target.id || rec.observationId !== observationId
+      ) {
         tmpTO.push(rec);
       }
     });
     setElementsS(tmpTO);
-    if (sensCalc === SENSCALC_LOADING) {
+    if (sensCalc?.status === STATUS_PARTIAL) {
       getSensCalcData(target);
     }
   };
 
   const setSensCalc = (results: any, target: Target, observationId: string) => {
-    setSensCalcForTargetGrid(target, results);
+    setSensCalcForTargetGrid(observationId, target, results);
     updateTargetObservationStorage(target, observationId, results);
   };
 
   const editIconClicked = (row: any) => {
     setCurrObs(row.rec);
-    // TODO : Need to complete this
-    // navigate(PATH[4], currObs);
+    navigate(PATH[2], { replace: true, state: row.rec });
   };
 
   const deleteIconClicked = (row: any) => {
@@ -226,7 +229,7 @@ export default function ObservationPage() {
       sensCalc: ss
     };
     addTargetObservationStorage(rec);
-    setSensCalcForTargetGrid(target, ss);
+    setSensCalcForTargetGrid(currObs.id, target, ss);
   };
 
   function filterRecords(id: number) {
@@ -236,6 +239,13 @@ export default function ObservationPage() {
   }
 
   const DeleteObservationTarget = (row: any) => {
+    const tmpTO = [];
+    elementsS.forEach(rec => {
+      if (rec.targetId !== row.id || rec.observationId !== currObs.id) {
+        tmpTO.push(rec);
+      }
+    });
+    setElementsS(tmpTO);
     setTargetObservationStorage(filterRecords(row.id));
   };
 
@@ -360,11 +370,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: Observation }) => {
           return (
             <>
-              <EditIcon
-                onClick={() => editIconClicked(e.row)}
-                disabled={true}
-                toolTip={t('observations.edit')}
-              />
+              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
               <TrashIcon
                 onClick={() => deleteIconClicked(e.row)}
                 toolTip={t('observations.delete')}

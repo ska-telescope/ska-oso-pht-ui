@@ -3,6 +3,7 @@ import GetWeighting from './getWeighting/getWeighting';
 import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   TYPE_ZOOM,
   STATUS_PARTIAL,
@@ -12,36 +13,27 @@ import {
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 
-export type SensCalcResult = {
-  id?: string;
-  title?: string;
-  status: number;
-  error?: string;
-  section1?: { field: string; value: string; units: string }[];
-  section2?: { field: string; value: string; units: string }[];
-  section3?: { field: string; value: string; units: string }[];
-};
-
-const SENSCALC_ERROR: SensCalcResult = {
+const SENSCALC_ERROR: SensCalcResults = {
   title: '',
-  status: STATUS_ERROR,
+  statusGUI: STATUS_ERROR,
   error: '',
   section1: [],
   section2: [],
   section3: []
 };
 
-export const SENSCALC_LOADING: SensCalcResult = {
-  status: STATUS_PARTIAL
+export const SENSCALC_LOADING: SensCalcResults = {
+  statusGUI: STATUS_PARTIAL
 };
 
-async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResult> {
+async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      return await getSensitivityCalculatorAPIData(observation, target);
+      const result = await getSensitivityCalculatorAPIData(observation, target);
+      return result;
     } catch (e) {
       return { error: e };
     }
@@ -78,8 +70,12 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const results = await calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
-    const results = Object.assign({}, SENSCALC_LOADING, { status: STATUS_ERROR });
-    return results as SensCalcResult;
+    const results = Object.assign({}, SENSCALC_LOADING, {
+      id: target.id,
+      title: target.name,
+      status: STATUS_ERROR
+    });
+    return results as SensCalcResults;
   }
 }
 

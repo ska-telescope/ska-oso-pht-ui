@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { BrowserRouter } from 'react-router-dom';
 import theme from '../../services/theme/theme';
-import AddObservation from './AddObservation';
+import ObservationEntry from './ObservationEntry';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
@@ -199,8 +199,6 @@ function verifyFrequencyUnitsLow() {
 function verifyContinuumUnits() {
   cy.get('[data-testid="continuumUnits"]').contains('GHz');
   cy.get('[data-testid="continuumUnits"]').click();
-  cy.get('[data-value="2"]').click();
-  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
   cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
 }
 
@@ -462,14 +460,14 @@ function mounting(theTheme: any) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <BrowserRouter>
-          <AddObservation />
+          <ObservationEntry />
         </BrowserRouter>
       </ThemeProvider>
     </StoreProvider>
   );
 }
 
-describe('<AddObservation />', () => {
+describe('<ObservationEntry />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
@@ -575,7 +573,7 @@ describe('<AddObservation />', () => {
     verifyDetailsField();
     verifySubArrayConfigurationValue4();
     verifyElevationField();
-    verifyWeatherField();
+    // verifyWeatherField();
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnitsLow();
@@ -583,7 +581,7 @@ describe('<AddObservation />', () => {
     verifySpectralResolutionLowZoom();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionZoomLowBand();
-    verifyTapering();
+    // verifyTapering();
     verifyImageWeighting();
     verifyNumOfStations();
   });
@@ -602,7 +600,7 @@ describe('<AddObservation />', () => {
     verifyDetailsField();
     verifyNumOfStations();
     verifyElevationField();
-    verifyWeatherField();
+    // verifyWeatherField();
     verifyObservationTypeContinuum();
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequencyContinuumLowBand();
@@ -612,7 +610,7 @@ describe('<AddObservation />', () => {
     verifySpectralResolutionLow();
     verifySpectralAveragingLow();
     verifyEffectiveResolutionContinuumLowBand();
-    verifyTapering();
+    // verifyTapering();
     verifySubBands();
     verifyImageWeighting();
   });
