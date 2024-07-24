@@ -137,9 +137,11 @@ export default function calculateSensitivityCalculatorResults(
     }),
     section3: [
       {
-        field: 'integrationTime',
-        value: observation.integrationTime.toString(),
-        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
+        field: 'integrationTime', // TODO handle integration time or sensitivity scenario
+        // value: observation.integrationTime.toString(),
+        value: observation.supplied.value.toString(),
+        // units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.integrationTimeUnits)
+        units: sensCalHelpers.format.getIntegrationTimeUnitsLabel(observation.supplied.units)
       }
     ]
   };
