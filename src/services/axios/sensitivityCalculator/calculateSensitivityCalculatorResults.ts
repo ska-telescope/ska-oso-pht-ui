@@ -76,7 +76,8 @@ export default function calculateSensitivityCalculatorResults(
   const observationTypeLabel: string = OBS_TYPES[observation.type];
   console.log('::: in acalculate snes calc results, ', observation.supplied);
 
-  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)?.sensCalcResultsLabel;
+  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)
+    ?.sensCalcResultsLabel;
 
   const theResults: SensCalcResults = {
     id: target.id,
@@ -143,7 +144,9 @@ export default function calculateSensitivityCalculatorResults(
       {
         field: suppliedType,
         value: observation.supplied.value.toString(),
-        units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(u => u.value === observation.supplied.units)?.label
+        units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+          u => u.value === observation.supplied.units
+        )?.label
       }
     ]
   };
@@ -203,7 +206,7 @@ const getSpectralWeightedSensitivityLOW = (
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
   const beams =
     type === TYPE_ZOOM ? response.weighting.beam_size : response.weightingLine.beam_size;
-  const formattedBeams =sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+  const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     beams[0].beam_maj_scaled,
     beams[0].beam_min_scaled,
     1

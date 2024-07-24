@@ -29,7 +29,11 @@ import DataProductSDP, {
 } from '../../../utils/types/dataProduct';
 import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
-import { ResultsSection, SensCalcResults, SensCalcResultsBackend } from '../../../utils/types/sensCalcResults';
+import {
+  ResultsSection,
+  SensCalcResults,
+  SensCalcResultsBackend
+} from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 

@@ -30,8 +30,8 @@ export type SensCalcResults = {
   section3?: ResultsSection[];
 };
 
-export type ResultsSection = { 
-  field: string; 
-  value: string; 
+export type ResultsSection = {
+  field: string;
+  value: string;
   units?: string;
 };
