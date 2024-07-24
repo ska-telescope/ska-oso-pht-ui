@@ -659,7 +659,7 @@ export const OBSERVATION = {
   ],
   Supplied: [
     {
-      label: 'Integration Time',
+      label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
       value: 1,
       units: [
@@ -674,7 +674,7 @@ export const OBSERVATION = {
     },
     {
       label: 'Sensitivity',
-      sensCalcResultsLabel: 'sensitivity',
+      sensCalcResultsLabel: 'sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },

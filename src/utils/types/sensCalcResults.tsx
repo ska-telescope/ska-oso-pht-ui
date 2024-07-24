@@ -33,5 +33,5 @@ export type SensCalcResults = {
 export type ResultsSection = { 
   field: string; 
   value: string; 
-  units?: string 
+  units?: string;
 };

@@ -203,11 +203,12 @@ const getSpectralWeightedSensitivityLOW = (
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, type: number) => {
   const beams =
     type === TYPE_ZOOM ? response.weighting.beam_size : response.weightingLine.beam_size;
-  sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+  const formattedBeams =sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     beams[0].beam_maj_scaled,
     beams[0].beam_min_scaled,
     1
   );
+  return formattedBeams;
 };
 
 const getSpectralSBSLOW = (
@@ -272,11 +273,12 @@ const getSpectralWeightedSensitivityMID = (
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, type: number) => {
   const beams =
     type === TYPE_ZOOM ? response.weighting.data.beam_size : response.weightingLine.data.beam_size;
-  return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+  const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     beams[0].beam_maj_scaled,
     beams[0].beam_min_scaled,
     1
   );
+  return formattedBeams;
 };
 
 const getSpectralSBSMID = (
