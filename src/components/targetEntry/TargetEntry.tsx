@@ -112,7 +112,6 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
       velType: target.velType,
       velUnit: target.velUnit
     };
-    console.log('new target', newTarget);
     setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
   };
 

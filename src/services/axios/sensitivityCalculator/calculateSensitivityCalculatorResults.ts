@@ -74,7 +74,6 @@ export default function calculateSensitivityCalculatorResults(
   const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
-  console.log('::: in acalculate snes calc results, ', observation.supplied);
 
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)
     ?.sensCalcResultsLabel;
@@ -150,7 +149,6 @@ export default function calculateSensitivityCalculatorResults(
       }
     ]
   };
-  console.log('RESULTS', theResults);
   return theResults as SensCalcResults;
 }
 

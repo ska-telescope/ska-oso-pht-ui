@@ -80,7 +80,6 @@ const getPI = (investigators: InvestigatorBackend[]) => {
 };
 
 const extractFileFromURL = (url): Promise<File> => {
-  console.log('url', url);
   return fetch(url)
     .then(response => response.blob())
     .then(blob => {

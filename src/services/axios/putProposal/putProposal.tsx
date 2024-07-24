@@ -110,8 +110,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
 
   const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
     const documents = [];
-    console.log('sciencePDF', sciencePDF);
-    console.log('technicalPDF', technicalPDF);
     if (sciencePDF?.link) {
       documents.push({
         document_id: sciencePDF.documentId,
@@ -126,7 +124,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         type: 'proposal_technical'
       });
     }
-    console.log('technicadocumentslDOc', documents);
     return documents;
   };
 
@@ -190,7 +187,6 @@ async function PutProposal(proposal, status?) {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = mappingPutProposal(proposal, status);
-    console.log('PUT convertedProposal', convertedProposal);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
