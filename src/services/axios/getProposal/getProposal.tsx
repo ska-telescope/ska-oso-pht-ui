@@ -14,7 +14,8 @@ import {
   DEFAULT_PI,
   VEL_TYPES,
   RA_TYPE_EQUATORIAL,
-  RA_TYPE_GALACTIC
+  RA_TYPE_GALACTIC,
+  VEL_UNITS
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -80,7 +81,7 @@ const getPI = (investigators: InvestigatorBackend[]) => {
 };
 
 const extractFileFromURL = (url): Promise<File> => {
-  return fetch(url)
+  return fetch(url, {mode: 'no-cors'})
     .then(response => response.blob())
     .then(blob => {
       const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
@@ -127,10 +128,10 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
       rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
-      raDefinition: e.radial_velocity.definition,
-      velType: getVelType(e.radial_velocity.definition),
+      raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
+      velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: e.radial_velocity.quantity.unit,
+      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))?.value, // HERE // e.radial_velocity.quantity.unit, .split(' ').join('') // trim white spaces
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters?.map(p => ({

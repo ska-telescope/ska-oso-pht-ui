@@ -5,15 +5,18 @@ import {
   GENERAL,
   Projects,
   RA_TYPE_EQUATORIAL,
+  REF_COORDINATES_UNITS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA,
-  VEL_TYPES
+  VEL_UNITS,
+  VELOCITY_TYPE,
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
-import DataProductSDP, { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import MockProposalBackend from '../getProposal/mockProposalBackend';
 
 /*
 TODO:
@@ -22,6 +25,7 @@ TODO:
 */
 
 function mappingPutProposal(proposal: Proposal, status: string) {
+
   // TODO: add groupObservations to send to backend
 
   /*
@@ -72,38 +76,57 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     const outTargets = [];
     for (let i = 0; i < targets.length; i++) {
       const tar = targets[i];
-      const singlePointParam = tar.pointingPattern.parameters.find(
-        param => param.kind === 'SinglePointParameters'
-      );
       const outTarget: TargetBackend = {
         target_id: tar.name,
-        pointing_pattern: {
-          active: tar?.pointingPattern?.active,
-          parameters: [
-            {
-              kind: singlePointParam.kind,
-              offset_x_arcsec: singlePointParam.offsetXArcsec,
-              offset_y_arcsec: singlePointParam.offsetYArcsec
-            }
-          ]
-        },
         reference_coordinate: {
-          kind: tar.referenceFrame === RA_TYPE_EQUATORIAL ? 'equatorial' : 'galactic',
-          ra: Number(tar.ra),
-          dec: Number(tar.dec),
-          unit: [tar.raUnit, tar.decUnit],
-          reference_frame: tar.rcReferenceFrame
+          kind: REF_COORDINATES_UNITS[0].label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+          ra: tar.ra,
+          dec: tar.dec,
+          unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
+          reference_frame: tar.rcReferenceFrame? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implmented in UI
         },
         radial_velocity: {
           quantity: {
-            value: Number(tar.vel),
-            unit: tar.velUnit
+            value: tar.velType === VELOCITY_TYPE.VELOCITY ? Number(tar.vel) : 0, // if reference frame is velocity use velocity value, otherwise set to 0
+            unit:  VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
           },
-          definition: VEL_TYPES.find(item => item.value === tar.velType).label,
-          reference_frame: tar.raReferenceFrame,
-          redshift: Number(tar.redshift)
+          definition: 'RADIO', // hardcoded for now as not implemented in UI
+          reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
+          // hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC 
+          // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame 
+          // -> using raReferenceFrame for now as data format is different
+          redshift: tar.velType === VELOCITY_TYPE.REDSHIFT ? Number(tar.redshift) : 0  // if reference frame is redshift use redshift, otherwise set to 0
         }
       };
+      /********************* pointing pattern *********************/
+      const mockPointingPattern = {
+        pointing_pattern: {
+          active: 'SinglePointParameters',
+          parameters: [
+            {
+              kind: 'SinglePointParameters',
+              offsetXArcsec: 0.5,
+              offsetYArcsec: 0.5
+            }
+          ]
+        }
+      }
+      // As pointingPattern is not currently used in the UI, mock it if it doesn't exist
+        const usedSingleParam = tar.pointingPattern ? tar.pointingPattern : mockPointingPattern.pointing_pattern;
+        const singlePointParam = usedSingleParam?.parameters?.find(
+          param => param.kind === 'SinglePointParameters'
+        );
+        outTarget['pointing_pattern'] = {
+          active: tar.pointingPattern ? tar.pointingPattern?.active : mockPointingPattern.pointing_pattern?.active,
+            parameters: [
+              {
+                kind: singlePointParam?.kind,
+                offset_x_arcsec: singlePointParam?.offsetXArcsec,
+                offset_y_arcsec: singlePointParam?.offsetYArcsec
+              }
+            ]
+        };
+      /***********************************************************/
       outTargets.push(outTarget);
     }
     return outTargets;

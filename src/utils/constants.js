@@ -703,6 +703,24 @@ export const VEL_TYPES = [
   { label: 'Redshift', value: 1 }
 ];
 
+export const VEL_UNITS = [
+   { label: 'km/s', value: 0},
+   { label: 'm/s', value: 1}
+]
+
+export const REF_COORDINATES_UNITS = [
+  { 
+    value: 1,
+    label: 'equatorial',
+    units: ['hourangle', 'deg']
+  },
+  { 
+    value: 2,
+    label: 'galactic',
+    units: ['deg', 'deg']
+  }
+]
+
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },

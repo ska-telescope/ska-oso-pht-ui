@@ -26,8 +26,8 @@ export type TargetBackend = {
   };
   reference_coordinate: {
     kind: string;
-    ra: number;
-    dec: number;
+    ra: number | string;
+    dec: number | string;
     unit: string[];
     reference_frame: string;
   };
@@ -80,7 +80,7 @@ type Target = {
   raDefinition?: string;
   velType: number;
   vel: string;
-  velUnit: string;
+  velUnit: number;
   pointingPattern?: {
     active: string;
     parameters: PointingPatternParams[];
@@ -101,7 +101,7 @@ export const NEW_TARGET: Target = {
   referenceFrame: 0,
   vel: '',
   velType: 0,
-  velUnit: ''
+  velUnit: 0
 };
 
 export default Target;
