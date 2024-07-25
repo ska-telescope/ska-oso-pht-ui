@@ -9,6 +9,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import MockProposalBackend from '../getProposal/mockProposalBackend';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
@@ -77,13 +78,16 @@ async function PostProposal(proposal: Proposal, status?: string) {
 
   try {
     const URL_PATH = `/proposals`;
-    const convertedProposal = mappingPostProposal(proposal, status);
+    // const convertedProposal = mappingPostProposal(proposal, status);
+    const convertedProposal = MockProposalBackend;
+    console.log('POST converted proposal', convertedProposal);
 
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );
+    console.log('POST incomming proposal', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

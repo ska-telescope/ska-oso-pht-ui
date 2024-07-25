@@ -12,7 +12,8 @@ import {
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
-import { DocumentBackend, DocumentPDF } from 'utils/types/document';
+import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
+import DataProductSDP, { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
 
 /*
 TODO:
@@ -127,6 +128,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return documents;
   };
 
+  const getDataProductSRC = (dataproducts: DataProductSRC[]):DataProductSRCNetBackend[] => {
+    return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+  }
+
   // TODO : complete mapping for all properties
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
@@ -134,7 +139,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     submitted_on: '', // TODO // to fill for submit
     submitted_by: '', // TODO // to fill for submit
     investigator_refs: proposal.team?.map(investigator => {
-      return investigator.id;
+      return investigator?.id?.toString();
     }),
     metadata: {
       version: proposal.version + 1,
@@ -158,7 +163,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
       investigators: proposal.team.map(teamMember => {
         return {
-          investigator_id: teamMember.id,
+          investigator_id: teamMember.id.toString(),
           given_name: teamMember.firstName,
           family_name: teamMember.lastName,
           email: teamMember.email,
@@ -169,7 +174,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       }),
       observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
       data_product_sdps: [],
-      data_product_src_nets: [],
+      data_product_src_nets: proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [], // getDataProductSRC(proposal.DataProductSRC), // [],
       results: []
     }
   };
@@ -186,7 +191,9 @@ async function PutProposal(proposal, status?) {
   try {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
+    console.log('PUT proposal incoming', proposal);
     const convertedProposal = mappingPutProposal(proposal, status);
+    console.log('PUT convertedProposal', convertedProposal);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,

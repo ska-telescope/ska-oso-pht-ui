@@ -462,7 +462,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
-    lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
+    lastUpdated: inRec.metadata.last_modified_on,
     lastUpdatedBy: inRec.metadata.last_modified_by,
     createdOn: inRec.metadata.created_on,
     createdBy: inRec.metadata.created_by,
@@ -489,6 +489,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+  console.log('GET proposal', convertedProposal);
   return convertedProposal;
 }
 
@@ -504,6 +505,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    console.log('GET proposal incomming', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;
