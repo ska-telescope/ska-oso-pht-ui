@@ -234,11 +234,11 @@ const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
 const getFrequencyAndBandwidthUnits = (
   inUnits: string,
   telescope: number,
-  observingBand: number
+  observingBand: number,
 ): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
   let units = array.CentralFrequencyAndBandWidthUnits?.find(
-    item => item.label.toLowerCase() === inUnits?.toLowerCase()
+    item => item.mapping.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
@@ -307,7 +307,7 @@ const getObservations = (
       tapering: tapering,
       bandwidth:
         type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
-      // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
+      // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand, 'bandwidth') : undefined,
       // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
@@ -325,6 +325,7 @@ const getObservations = (
           : undefined,
       details: inValue[i].details
     };
+    console.log('converted OBS in getProposal', obs);
     results.push(obs);
   }
   return results;

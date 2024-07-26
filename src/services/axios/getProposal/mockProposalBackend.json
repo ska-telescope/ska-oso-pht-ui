@@ -69,11 +69,11 @@
           "observation_type": "continuum",
           "bandwidth": {
             "value": 0.0,
-            "unit": ""
+            "unit": "mHz"
           },
           "central_frequency": {
             "value": 0.0,
-            "unit": ""
+            "unit": "mHz"
           },
           "supplied": {
             "type": "integration_time",

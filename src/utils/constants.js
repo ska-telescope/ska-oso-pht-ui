@@ -374,19 +374,19 @@ export const OBSERVATION = {
         { label: '2', value: 5 }
       ],
       bandWidth: [
-        { label: '3.125 MHz', value: 1 },
-        { label: '6.25 MHz', value: 2 },
-        { label: '12.5 MHz', value: 3 },
-        { label: '25 MHz', value: 4 },
-        { label: '50 MHz', value: 5 },
-        { label: '100 MHz', value: 6 },
-        { label: '200 MHz', value: 7 }
+        { label: '3.125 MHz', value: 1, mapping: 'MHz' },
+        { label: '6.25 MHz', value: 2, mapping: 'MHz' },
+        { label: '12.5 MHz', value: 3, mapping: 'MHz' },
+        { label: '25 MHz', value: 4, mapping: 'MHz' },
+        { label: '50 MHz', value: 5, mapping: 'MHz' },
+        { label: '100 MHz', value: 6, mapping: 'MHz' },
+        { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
       CentralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1 },
-        { label: 'MHz', value: 2 },
-        { label: 'KHz', value: 3 },
-        { label: 'Hz', value: 4 }
+        { label: 'GHz', value: 1, mapping: 'GHz' },
+        { label: 'MHz', value: 2, mapping: 'MHz'  },
+        { label: 'KHz', value: 3, mapping: 'KHz'  },
+        { label: 'Hz', value: 4, mapping: 'Hz'  }
       ]
     },
     {
@@ -477,16 +477,16 @@ export const OBSERVATION = {
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
-        { label: '24.4 KHz', value: 1 },
-        { label: '48.8 KHz', value: 2 },
-        { label: '97.7 KHz', value: 3 },
-        { label: '195.3 KHz', value: 4 },
-        { label: '390.6 KHz', value: 5 },
-        { label: '781.2 KHz', value: 6 },
-        { label: '1562.5 KHz', value: 7 },
-        { label: '3125.0 KHz', value: 8 }
+        { label: '24.4 KHz', value: 1, mapping: 'kHz' },
+        { label: '48.8 KHz', value: 2, mapping: 'kHz' },
+        { label: '97.7 KHz', value: 3, mapping: 'kHz' },
+        { label: '195.3 KHz', value: 4, mapping: 'kHz' },
+        { label: '390.6 KHz', value: 5, mapping: 'kHz' },
+        { label: '781.2 KHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
+        { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1 }]
+      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
   ],
   ImageWeighting: [

@@ -190,7 +190,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         array: TELESCOPE_LOW_BACKEND_MAPPING,
         subarray: getSubArray(incObs.subarray, incObs.telescope),
         number_of_stations: incObs.numStations,
-        spectral_averaging: incObs.spectralAveraging.toString()
+        spectral_averaging: incObs.spectralAveraging?.toString()
       }
       return lowArrayDetails;
     } else {
@@ -208,18 +208,24 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   }
 
   const getBandwidth = (incObs: Observation): ValueUnitPair => {
+    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
     if (incObs.type === TYPE_CONTINUUM) {
-      const obsTelescope = OBSERVATION.array.find(o => o.value === incObs.telescope);
-      console.log('obsTelescope', obsTelescope);
-      const continuumBandwidth = obsTelescope?.bandWidth?.find(b => b.value === incObs.continuumBandwidth);
-      console.log('continuumBandwidth', continuumBandwidth);
+      const value = incObs.continuumBandwidth;
+      const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
+            u => u.value === incObs.continuumBandwidthUnits).mapping;
+      return {
+        value: value,
+        unit: unit
+      }
     } else {
-      const bandwidth = incObs.bandwidth;
-      console.log('bandwidth', bandwidth);
-    }
-    return {
-      value: 0,
-      unit: '' // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
+      const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
+      const valueUnit = bandwidth.label.split(' ')
+      const value = Number(valueUnit[0]);
+      const unit = bandwidth.mapping;
+      return {
+        value: value,
+        unit: unit,
+      }
     }
   }
 
@@ -238,12 +244,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         observation_type_details: {
           observation_type: OBSERVATION_TYPE_BACKEND[obs.type].toLowerCase(),
           bandwidth: getBandwidth(obs),
-          /*
-          bandwidth: {
-            value: 0.0,
-            unit: ""
-          },
-          */
           central_frequency: {
             value: 0.0,
             unit: ""
@@ -301,7 +301,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
       investigators: proposal.team.map(teamMember => {
         return {
-          investigator_id: teamMember.id.toString(),
+          investigator_id: teamMember.id?.toString(),
           given_name: teamMember.firstName,
           family_name: teamMember.lastName,
           email: teamMember.email,
