@@ -248,6 +248,12 @@ const getFrequencyAndBandwidthUnits = (
       )?.value;
 };
 
+const getBandwidth = (incBandwidth: number, telescope: number): number => {
+  const array = OBSERVATION.array?.find(item => item?.value === telescope);
+  const bandwidth  = array.bandWidth?.find(bandwidth => bandwidth.label.includes(incBandwidth.toString()))?.value;
+  return bandwidth ? bandwidth : 1; // fallback
+};
+
 const getLinked = (inObservation: ObservationSetBackend, inResults: SensCalcResultsBackend[]) => {
   const obsRef = inObservation.observation_set_id;
   const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
@@ -305,10 +311,7 @@ const getObservations = (
       num13mAntennas: num15mAntennas,
       numSubBands: numSubBands,
       tapering: tapering,
-      bandwidth:
-        type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
-      // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand, 'bandwidth') : undefined,
-      // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
+      bandwidth: type === TYPE_ZOOM ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr) : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,

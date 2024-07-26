@@ -93,7 +93,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       const outTarget: TargetBackend = {
         target_id: tar.name,
         reference_coordinate: {
-          kind: REF_COORDINATES_UNITS[0].label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+          kind: REF_COORDINATES_UNITS[0]?.label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
           ra: tar.ra,
           dec: tar.dec,
           unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
@@ -207,25 +207,46 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     }
   }
 
+  const getFrequencyAndBandwidthUnits = (incTelescope: number, incUnitValue: number): string => {
+    console.log('------------------------------------');
+    console.log('::: in getFrequencyAndBandwidthUnits');
+    console.log('incUnitValue', incUnitValue);
+    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incTelescope);
+    const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
+      u => u.value === incUnitValue)?.mapping;
+    console.log('UNIT', unit);
+    console.log('------------------------------------');
+    return unit;
+  }
+
   const getBandwidth = (incObs: Observation): ValueUnitPair => {
-    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
     if (incObs.type === TYPE_CONTINUUM) {
-      const value = incObs.continuumBandwidth;
-      const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
-            u => u.value === incObs.continuumBandwidthUnits).mapping;
+      // continuum
       return {
-        value: value,
-        unit: unit
+        value: incObs.continuumBandwidth,
+        unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.continuumBandwidthUnits)
       }
     } else {
+      // zoom
+      const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
       const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
-      const valueUnit = bandwidth.label.split(' ')
+      const valueUnit = bandwidth?.label.split(' ')
       const value = Number(valueUnit[0]);
-      const unit = bandwidth.mapping;
       return {
         value: value,
-        unit: unit,
+        unit: bandwidth.mapping ? bandwidth.mapping : '' // fallback
       }
+    }
+  }
+
+  const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
+    console.log('in getCentralFrequency incObs.centralFrequencyUnits', incObs.centralFrequencyUnits);
+    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
+    const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
+      u => u.value === incObs.centralFrequencyUnits).mapping;
+    return {
+      value: incObs.centralFrequency,
+      unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.centralFrequencyUnits) // unit,
     }
   }
 
@@ -242,12 +263,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         observing_band: getObservingBand(obs.observingBand),
         array_details: getArrayDetails(obs),
         observation_type_details: {
-          observation_type: OBSERVATION_TYPE_BACKEND[obs.type].toLowerCase(),
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
           bandwidth: getBandwidth(obs),
-          central_frequency: {
-            value: 0.0,
-            unit: ""
-          },
+          central_frequency: getCentralFrequency(obs),
           supplied: {
             type: "integration_time",
             value: 0.0,
