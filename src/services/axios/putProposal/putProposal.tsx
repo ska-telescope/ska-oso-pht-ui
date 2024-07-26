@@ -5,6 +5,8 @@ import {
   DEFAULT_PI,
   GENERAL,
   OBSERVATION,
+  OBSERVATION_TYPE,
+  OBSERVATION_TYPE_BACKEND,
   Projects,
   RA_TYPE_EQUATORIAL,
   REF_COORDINATES_UNITS,
@@ -13,6 +15,7 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPES,
+  TYPE_CONTINUUM,
   USE_LOCAL_DATA,
   VEL_UNITS,
   VELOCITY_TYPE,
@@ -27,6 +30,7 @@ import { ObservationSetBackend } from 'utils/types/observationSet';
 import GroupObservation from 'utils/types/groupObservation';
 import MockProposalBackend from '../getProposal/mockProposalBackend';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
 /*
 TODO:
@@ -203,6 +207,22 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     }
   }
 
+  const getBandwidth = (incObs: Observation): ValueUnitPair => {
+    if (incObs.type === TYPE_CONTINUUM) {
+      const obsTelescope = OBSERVATION.array.find(o => o.value === incObs.telescope);
+      console.log('obsTelescope', obsTelescope);
+      const continuumBandwidth = obsTelescope?.bandWidth?.find(b => b.value === incObs.continuumBandwidth);
+      console.log('continuumBandwidth', continuumBandwidth);
+    } else {
+      const bandwidth = incObs.bandwidth;
+      console.log('bandwidth', bandwidth);
+    }
+    return {
+      value: 0,
+      unit: '' // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
+    }
+  }
+
   const getObservationsSets = (incObservationsSets: Observation[], incObservationGroups: GroupObservation[]): ObservationSetBackend[] => {
     console.log('incObservationsSets', incObservationsSets);
     const mockObs = MockProposalBackend.info.observation_sets[0];
@@ -210,56 +230,20 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     const outObservationsSets = [];
     for (let obs of incObservationsSets) {
       const observation: ObservationSetBackend = {
-        /*
-          observation_set_id: obs.id,
-          group_id: '2,', // getGroupObservation(obs.id, incObservationGroups),
-          observing_band: 'mid_band_1', // getObservingBand(obs.observingBand),
-          elevation: 15, // obs.elevation,
-          array_details: {
-            array: 'ska_mid',
-            subarray: 'aa0.5',
-            weather: 3,
-            number_15_antennas: 0,
-            number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
-          },
-          observation_type_details: {
-            observation_type: 'continuum',
-            bandwidth: {
-              value: 0.0,
-              unit: 'm/s'
-            },
-            central_frequency: {
-              value: 0.0,
-              unit: 'm/s'
-            },
-            supplied: {
-              type: 'integration',
-              value: 0.0,
-              unit: 'ms',
-              quantity: {
-                value: -12.345,
-                unit: 'ms'
-              }
-            },
-            spectral_resolution: '50',
-            effective_resolution: '50',
-            image_weighting: 'Uniform'
-          },
-          details: 'MID + Continuum'
-          */
-        observation_set_id: obs.id, //"mid-001",
+        observation_set_id: obs.id,
         group_id: getGroupObservation(obs.id, incObservationGroups),
         elevation: 23,
         observing_band: getObservingBand(obs.observingBand),
         array_details: getArrayDetails(obs),
         observation_type_details: {
-          observation_type: "continuum",
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type].toLowerCase(),
+          bandwidth: getBandwidth(obs),
+          /*
           bandwidth: {
             value: 0.0,
             unit: ""
           },
+          */
           central_frequency: {
             value: 0.0,
             unit: ""

@@ -276,7 +276,7 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 export const OBSERVATION = {
   array: [
