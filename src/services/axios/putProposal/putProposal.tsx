@@ -1,12 +1,18 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
+  BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
+  OBSERVATION,
   Projects,
   RA_TYPE_EQUATORIAL,
   REF_COORDINATES_UNITS,
   SKA_PHT_API_URL,
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_BACKEND_MAPPING,
+  TELESCOPES,
   USE_LOCAL_DATA,
   VEL_UNITS,
   VELOCITY_TYPE,
@@ -16,7 +22,11 @@ import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import Observation from 'utils/types/observation';
+import { ObservationSetBackend } from 'utils/types/observationSet';
+import GroupObservation from 'utils/types/groupObservation';
 import MockProposalBackend from '../getProposal/mockProposalBackend';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 
 /*
 TODO:
@@ -83,12 +93,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           ra: tar.ra,
           dec: tar.dec,
           unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
-          reference_frame: tar.rcReferenceFrame? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implmented in UI
+          reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implmented in UI
         },
         radial_velocity: {
           quantity: {
             value: tar.velType === VELOCITY_TYPE.VELOCITY ? Number(tar.vel) : 0, // if reference frame is velocity use velocity value, otherwise set to 0
-            unit:  VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
+            unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
           },
           definition: 'RADIO', // hardcoded for now as not implemented in UI
           reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
@@ -112,20 +122,20 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         }
       }
       // As pointingPattern is not currently used in the UI, mock it if it doesn't exist
-        const usedSingleParam = tar.pointingPattern ? tar.pointingPattern : mockPointingPattern.pointing_pattern;
-        const singlePointParam = usedSingleParam?.parameters?.find(
-          param => param.kind === 'SinglePointParameters'
-        );
-        outTarget['pointing_pattern'] = {
-          active: tar.pointingPattern ? tar.pointingPattern?.active : mockPointingPattern.pointing_pattern?.active,
-            parameters: [
-              {
-                kind: singlePointParam?.kind,
-                offset_x_arcsec: singlePointParam?.offsetXArcsec,
-                offset_y_arcsec: singlePointParam?.offsetYArcsec
-              }
-            ]
-        };
+      const usedSingleParam = tar.pointingPattern ? tar.pointingPattern : mockPointingPattern.pointing_pattern;
+      const singlePointParam = usedSingleParam?.parameters?.find(
+        param => param.kind === 'SinglePointParameters'
+      );
+      outTarget['pointing_pattern'] = {
+        active: tar.pointingPattern ? tar.pointingPattern?.active : mockPointingPattern.pointing_pattern?.active,
+        parameters: [
+          {
+            kind: singlePointParam?.kind,
+            offset_x_arcsec: singlePointParam?.offsetXArcsec,
+            offset_y_arcsec: singlePointParam?.offsetYArcsec
+          }
+        ]
+      };
       /***********************************************************/
       outTargets.push(outTarget);
     }
@@ -151,8 +161,129 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return documents;
   };
 
-  const getDataProductSRC = (dataproducts: DataProductSRC[]):DataProductSRCNetBackend[] => {
+  const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
     return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+  }
+
+  const getGroupObservation = (obsId: string, observationGroups: GroupObservation[]) => {
+    const groupId = observationGroups.find(group => group.observationId === obsId)?.observationId;
+    return groupId ? groupId : '';
+  }
+
+  const getObservingBand = (observingBand: number) => {
+    return BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  }
+
+  const getSubArray = (incSubArray: number, incTelescope: number): string => {
+    const array = OBSERVATION.array.find(a => a.value === incTelescope);
+    const subArray = array?.subarray?.find(sub => sub.value === incSubArray)?.label?.toLocaleLowerCase();
+    return subArray ? subArray : 'aa4'; // fallback
+  }
+
+  const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDetailsMidBackend => {
+    if (incObs.telescope === TELESCOPE_LOW_NUM) {
+      const lowArrayDetails: ArrayDetailsLowBackend = {
+        array: TELESCOPE_LOW_BACKEND_MAPPING,
+        subarray: getSubArray(incObs.subarray, incObs.telescope),
+        number_of_stations: incObs.numStations,
+        spectral_averaging: incObs.spectralAveraging.toString()
+      }
+      return lowArrayDetails;
+    } else {
+      const midArrayDetails: ArrayDetailsMidBackend = {
+        array: TELESCOPE_MID_BACKEND_MAPPING,
+        subarray: getSubArray(incObs.subarray, incObs.telescope),
+        weather: incObs.weather,
+        number_15_antennas: incObs.num15mAntennas,
+        number_13_antennas: incObs.num13mAntennas,
+        number_sub_bands: incObs.numSubBands,
+        tapering: incObs.tapering
+      }
+      return midArrayDetails;
+    }
+  }
+
+  const getObservationsSets = (incObservationsSets: Observation[], incObservationGroups: GroupObservation[]): ObservationSetBackend[] => {
+    console.log('incObservationsSets', incObservationsSets);
+    const mockObs = MockProposalBackend.info.observation_sets[0];
+    console.log('mock obs', mockObs);
+    const outObservationsSets = [];
+    for (let obs of incObservationsSets) {
+      const observation: ObservationSetBackend = {
+        /*
+          observation_set_id: obs.id,
+          group_id: '2,', // getGroupObservation(obs.id, incObservationGroups),
+          observing_band: 'mid_band_1', // getObservingBand(obs.observingBand),
+          elevation: 15, // obs.elevation,
+          array_details: {
+            array: 'ska_mid',
+            subarray: 'aa0.5',
+            weather: 3,
+            number_15_antennas: 0,
+            number_13_antennas: 0,
+            number_sub_bands: 0,
+            tapering: '50'
+          },
+          observation_type_details: {
+            observation_type: 'continuum',
+            bandwidth: {
+              value: 0.0,
+              unit: 'm/s'
+            },
+            central_frequency: {
+              value: 0.0,
+              unit: 'm/s'
+            },
+            supplied: {
+              type: 'integration',
+              value: 0.0,
+              unit: 'ms',
+              quantity: {
+                value: -12.345,
+                unit: 'ms'
+              }
+            },
+            spectral_resolution: '50',
+            effective_resolution: '50',
+            image_weighting: 'Uniform'
+          },
+          details: 'MID + Continuum'
+          */
+        observation_set_id: obs.id, //"mid-001",
+        group_id: getGroupObservation(obs.id, incObservationGroups),
+        elevation: 23,
+        observing_band: getObservingBand(obs.observingBand),
+        array_details: getArrayDetails(obs),
+        observation_type_details: {
+          observation_type: "continuum",
+          bandwidth: {
+            value: 0.0,
+            unit: ""
+          },
+          central_frequency: {
+            value: 0.0,
+            unit: ""
+          },
+          supplied: {
+            type: "integration_time",
+            value: 0.0,
+            unit: "",
+            quantity: {
+              value: -12.345,
+              unit: "m / s"
+            }
+          },
+          spectral_resolution: "DUMMY",
+          effective_resolution: "DUMMY",
+          image_weighting: "DUMMY"
+        },
+        details: "MID + Continuum"
+      }
+      console.log('observation', observation);
+      outObservationsSets.push(observation);
+    }
+    // outObservationsSets.push(mockObs);
+    return outObservationsSets;
   }
 
   // TODO : complete mapping for all properties
@@ -195,7 +326,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           principal_investigator: teamMember.pi
         };
       }),
-      observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
+      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations), // [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
       data_product_sdps: [],
       data_product_src_nets: proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [], // getDataProductSRC(proposal.DataProductSRC), // [],
       results: []

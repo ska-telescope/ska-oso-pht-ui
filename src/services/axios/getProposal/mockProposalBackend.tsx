@@ -145,7 +145,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
             unit: 'ms',
             quantity: {
@@ -231,7 +231,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
             unit: 'ms',
             quantity: {

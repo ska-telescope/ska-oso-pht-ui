@@ -15,7 +15,8 @@ import {
   VEL_TYPES,
   RA_TYPE_EQUATORIAL,
   RA_TYPE_GALACTIC,
-  VEL_UNITS
+  VEL_UNITS,
+  TELESCOPE_MID_BACKEND_MAPPING
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -259,7 +260,7 @@ const getObservations = (
 ): Observation[] => {
   let results = [];
   for (let i = 0; i < inValue?.length; i++) {
-    const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
+    const arr = inValue[i].array_details.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray?.find(
       p => p.label.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
     )?.value;

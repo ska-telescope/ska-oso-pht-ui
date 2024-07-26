@@ -24,7 +24,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 50,
     upper: 350,
-    units: 'MHz'
+    units: 'MHz',
+    mapping: 'low_band'
   },
   {
     label: 'Band 1 (0.35 - 1.05 GHz)',
@@ -33,8 +34,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 0.35,
     upper: 1.05,
-    units: 'GHz'
-  }, // Band 1
+    units: 'GHz',
+    mapping: 'mid_band_1'
+  },
   {
     label: 'Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
@@ -42,8 +44,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 0.95,
     upper: 1.76,
-    units: 'GHz'
-  }, // Band 2
+    units: 'GHz',
+    mapping: 'mid_band_2'
+  },
   {
     label: 'Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
@@ -51,7 +54,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     lower: 4.6,
     upper: 8.5,
-    units: 'GHz'
+    units: 'GHz',
+    mapping: 'mid_band_3'
   }, // Band 5a
   {
     label: 'Band 5b (8.3 - 15.4 GHz)',
@@ -60,7 +64,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     lower: 8.3,
     upper: 15.4,
-    units: 'GHz'
+    units: 'GHz',
+    mapping: 'mid_band_4'
   } // Band 5b
 ];
 
@@ -759,6 +764,9 @@ export const TELESCOPES = [
   { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
 ];
+
+export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
+export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
 
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
