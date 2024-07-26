@@ -440,9 +440,8 @@ export default function ObservationEntry() {
     };
 
     const getOptions = () => {
-      // TODO : This calculation is wrong, but I don't understand why.
       const results = [{ label: t('tapering.0'), value: 0 }];
-      [1, 2, 3, 4, 5, 6, 7, 8].forEach(inValue => {
+      [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
         const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
         results.push({ label: theLabel, value: inValue });
       });
