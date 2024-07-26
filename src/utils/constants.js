@@ -384,9 +384,9 @@ export const OBSERVATION = {
       ],
       CentralFrequencyAndBandWidthUnits: [
         { label: 'GHz', value: 1, mapping: 'GHz' },
-        { label: 'MHz', value: 2, mapping: 'MHz'  },
-        { label: 'KHz', value: 3, mapping: 'kHz'  },
-        { label: 'Hz', value: 4, mapping: 'Hz'  }
+        { label: 'MHz', value: 2, mapping: 'MHz' },
+        { label: 'KHz', value: 3, mapping: 'kHz' },
+        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -711,22 +711,22 @@ export const VEL_TYPES = [
 ];
 
 export const VEL_UNITS = [
-   { label: 'km/s', value: 0},
-   { label: 'm/s', value: 1}
-]
+  { label: 'km/s', value: 0 },
+  { label: 'm/s', value: 1 }
+];
 
 export const REF_COORDINATES_UNITS = [
-  { 
+  {
     value: 1,
     label: 'equatorial',
     units: ['hourangle', 'deg']
   },
-  { 
+  {
     value: 2,
     label: 'galactic',
     units: ['deg', 'deg']
   }
-]
+];
 
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },

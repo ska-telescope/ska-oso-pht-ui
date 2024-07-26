@@ -49,7 +49,8 @@
           "reference_frame": "LSRK",
           "redshift": 1.2
         }
-      }],
+      }
+    ],
     "observation_sets": [
       {
         "observation_set_id": "mid-001",

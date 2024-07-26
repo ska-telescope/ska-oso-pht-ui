@@ -9,7 +9,6 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import MockProposalBackend from '../getProposal/mockProposalBackend';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
@@ -78,8 +77,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
 
   try {
     const URL_PATH = `/proposals`;
-    // const convertedProposal = mappingPostProposal(proposal, status);
-    const convertedProposal = MockProposalBackend;
+    const convertedProposal = mappingPostProposal(proposal, status);
     console.log('POST converted proposal', convertedProposal);
 
     const result = await axios.post(

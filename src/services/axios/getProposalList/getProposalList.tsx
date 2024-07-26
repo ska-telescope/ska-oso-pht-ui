@@ -64,11 +64,13 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalSubType: inRec[i].info?.proposal_type.sub_type
         ? getSubType(inRec[i].info?.proposal_type)
         : [],
-      scienceCategory: inRec[i].info?.science_category ? getScienceCategory(inRec[i].info.science_category) : null,
+      scienceCategory: inRec[i].info?.science_category
+        ? getScienceCategory(inRec[i].info.science_category)
+        : null,
       title: inRec[i].info?.title,
       cycle: inRec[i]?.cycle,
       team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : [],
-      pi: inRec[i].info?.investigators ? getPI(inRec[i].info.investigators) : ""
+      pi: inRec[i].info?.investigators ? getPI(inRec[i].info.investigators) : ''
       // telescope: 'N/A' // TODO is this still needed? -> what to map to? telescopes in observations?
     };
     output.push(rec);

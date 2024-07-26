@@ -82,7 +82,7 @@ const getPI = (investigators: InvestigatorBackend[]) => {
 };
 
 const extractFileFromURL = (url): Promise<File> => {
-  return fetch(url, {mode: 'no-cors'})
+  return fetch(url, { mode: 'no-cors' })
     .then(response => response.blob())
     .then(blob => {
       const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
@@ -132,7 +132,8 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))?.value, // HERE // e.radial_velocity.quantity.unit, .split(' ').join('') // trim white spaces
+      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))
+        ?.value, // HERE // e.radial_velocity.quantity.unit, .split(' ').join('') // trim white spaces
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters?.map(p => ({
@@ -234,7 +235,7 @@ const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
 const getFrequencyAndBandwidthUnits = (
   inUnits: string,
   telescope: number,
-  observingBand: number,
+  observingBand: number
 ): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
   let units = array.CentralFrequencyAndBandWidthUnits?.find(
@@ -250,7 +251,9 @@ const getFrequencyAndBandwidthUnits = (
 
 const getBandwidth = (incBandwidth: number, telescope: number): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
-  const bandwidth  = array.bandWidth?.find(bandwidth => bandwidth.label.includes(incBandwidth.toString()))?.value;
+  const bandwidth = array.bandWidth?.find(bandwidth =>
+    bandwidth.label.includes(incBandwidth.toString())
+  )?.value;
   return bandwidth ? bandwidth : 1; // fallback
 };
 
@@ -311,7 +314,10 @@ const getObservations = (
       num13mAntennas: num15mAntennas,
       numSubBands: numSubBands,
       tapering: tapering,
-      bandwidth: type === TYPE_ZOOM ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr) : undefined,
+      bandwidth:
+        type === TYPE_ZOOM
+          ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
+          : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
