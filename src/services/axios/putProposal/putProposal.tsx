@@ -240,125 +240,125 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   }
 
   const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
-    console.log('in getCentralFrequency incObs.centralFrequencyUnits', incObs.centralFrequencyUnits);
-    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
-    const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
-      u => u.value === incObs.centralFrequencyUnits).mapping;
     return {
       value: incObs.centralFrequency,
-      unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.centralFrequencyUnits) // unit,
+      unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.centralFrequencyUnits)
     }
   }
 
-  const getObservationsSets = (incObservationsSets: Observation[], incObservationGroups: GroupObservation[]): ObservationSetBackend[] => {
-    console.log('incObservationsSets', incObservationsSets);
-    const mockObs = MockProposalBackend.info.observation_sets[0];
-    console.log('mock obs', mockObs);
-    const outObservationsSets = [];
-    for (let obs of incObservationsSets) {
-      const observation: ObservationSetBackend = {
-        observation_set_id: obs.id,
-        group_id: getGroupObservation(obs.id, incObservationGroups),
-        elevation: 23,
-        observing_band: getObservingBand(obs.observingBand),
-        array_details: getArrayDetails(obs),
-        observation_type_details: {
-          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
-          bandwidth: getBandwidth(obs),
-          central_frequency: getCentralFrequency(obs),
-          supplied: {
-            type: "integration_time",
-            value: 0.0,
-            unit: "",
-            quantity: {
-              value: -12.345,
-              unit: "m / s"
-            }
-          },
-          spectral_resolution: "DUMMY",
-          effective_resolution: "DUMMY",
-          image_weighting: "DUMMY"
-        },
-        details: "MID + Continuum"
+  const getSupplied = (inObs: Observation) => {
+    const supplied = OBSERVATION.Supplied.find(s => s.value === inObs?.supplied?.type);
+    return {
+      type: supplied?.mappingLabel,
+      quantity: {
+        value: inObs.supplied?.value,
+        unit: 'm/s' // supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
+        // TODO hardcoded for now as backend rejects supplied units such as 'jy/beam'
       }
-      console.log('observation', observation);
-      outObservationsSets.push(observation);
     }
-    // outObservationsSets.push(mockObs);
-    return outObservationsSets;
   }
 
-  // TODO : complete mapping for all properties
-  const transformedProposal: ProposalBackend = {
-    prsl_id: proposal?.id,
-    status: status,
-    submitted_on: '', // TODO // to fill for submit
-    submitted_by: '', // TODO // to fill for submit
-    investigator_refs: proposal.team?.map(investigator => {
-      return investigator?.id?.toString();
-    }),
-    metadata: {
-      version: proposal.version + 1,
-      created_by: proposal.createdBy,
-      created_on: proposal.createdOn,
-      last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      last_modified_on: new Date().toDateString()
-    },
-    cycle: GENERAL.Cycle,
-    info: {
-      title: proposal.title,
-      proposal_type: {
-        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
-        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
-      },
-      abstract: proposal.abstract,
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label,
-      targets: getTargets(proposal.targets),
-      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
-      investigators: proposal.team.map(teamMember => {
-        return {
-          investigator_id: teamMember.id?.toString(),
-          given_name: teamMember.firstName,
-          family_name: teamMember.lastName,
-          email: teamMember.email,
-          organization: teamMember.affiliation,
-          for_phd: teamMember.phdThesis,
-          principal_investigator: teamMember.pi
-        };
+    const getObservationsSets = (incObservationsSets: Observation[], incObservationGroups: GroupObservation[]): ObservationSetBackend[] => {
+      console.log('incObservationsSets', incObservationsSets);
+      const mockObs = MockProposalBackend.info.observation_sets[0];
+      console.log('mock obs', mockObs);
+      const outObservationsSets = [];
+      for (let obs of incObservationsSets) {
+        const observation: ObservationSetBackend = {
+          observation_set_id: obs.id,
+          group_id: getGroupObservation(obs.id, incObservationGroups),
+          elevation: 23,
+          observing_band: getObservingBand(obs.observingBand),
+          array_details: getArrayDetails(obs),
+          observation_type_details: {
+            observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
+            bandwidth: getBandwidth(obs),
+            central_frequency: getCentralFrequency(obs),
+            supplied: getSupplied(obs),
+            spectral_resolution: obs.spectralResolution,
+            effective_resolution: obs.effectiveResolution,
+            image_weighting: obs.imageWeighting.toString()
+          },
+          details: obs.details
+        }
+        console.log('observation', observation);
+        outObservationsSets.push(observation);
+      }
+      // outObservationsSets.push(mockObs);
+      return outObservationsSets;
+    }
+
+    // TODO : complete mapping for all properties
+    const transformedProposal: ProposalBackend = {
+      prsl_id: proposal?.id,
+      status: status,
+      submitted_on: '', // TODO // to fill for submit
+      submitted_by: '', // TODO // to fill for submit
+      investigator_refs: proposal.team?.map(investigator => {
+        return investigator?.id?.toString();
       }),
-      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations), // [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
-      data_product_sdps: [],
-      data_product_src_nets: proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [], // getDataProductSRC(proposal.DataProductSRC), // [],
-      results: []
+      metadata: {
+        version: proposal.version + 1,
+        created_by: proposal.createdBy,
+        created_on: proposal.createdOn,
+        last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
+        last_modified_on: new Date().toDateString()
+      },
+      cycle: GENERAL.Cycle,
+      info: {
+        title: proposal.title,
+        proposal_type: {
+          main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
+          sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
+        },
+        abstract: proposal.abstract,
+        science_category: GENERAL.ScienceCategory?.find(
+          category => category.value === proposal?.scienceCategory
+        )?.label,
+        targets: getTargets(proposal.targets),
+        documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
+        investigators: proposal.team.map(teamMember => {
+          return {
+            investigator_id: teamMember.id?.toString(),
+            given_name: teamMember.firstName,
+            family_name: teamMember.lastName,
+            email: teamMember.email,
+            organization: teamMember.affiliation,
+            for_phd: teamMember.phdThesis,
+            principal_investigator: teamMember.pi
+          };
+        }),
+        observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations), // [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
+        data_product_sdps: [],
+        data_product_src_nets: proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [], // getDataProductSRC(proposal.DataProductSRC), // [],
+        results: []
+      }
+    };
+    // trim undefined properties
+    helpers.transform.trimObject(transformedProposal);
+    return transformedProposal;
+  }
+
+  async function PutProposal(proposal, status?) {
+    if (window.Cypress || USE_LOCAL_DATA) {
+      return 'success';
     }
-  };
-  // trim undefined properties
-  helpers.transform.trimObject(transformedProposal);
-  return transformedProposal;
-}
 
-async function PutProposal(proposal, status?) {
-  if (window.Cypress || USE_LOCAL_DATA) {
-    return 'success';
+    try {
+      const URL_PATH = `/proposals/${proposal.id}`;
+      // TODO: add testing for proposal conversion format
+      console.log('PUT proposal incoming', proposal);
+      const convertedProposal = mappingPutProposal(proposal, status);
+      console.log('PUT convertedProposal', convertedProposal);
+      const result = await axios.put(
+        `${SKA_PHT_API_URL}${URL_PATH}`,
+        convertedProposal,
+        AXIOS_CONFIG
+      );
+      return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result; // result?.data;
+    } catch (e) {
+      return { error: e.message };
+    }
   }
 
-  try {
-    const URL_PATH = `/proposals/${proposal.id}`;
-    // TODO: add testing for proposal conversion format
-    console.log('PUT proposal incoming', proposal);
-    const convertedProposal = mappingPutProposal(proposal, status);
-    console.log('PUT convertedProposal', convertedProposal);
-    const result = await axios.put(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
-    );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result; // result?.data;
-  } catch (e) {
-    return { error: e.message };
-  }
-}
-
-export default PutProposal;
+  export default PutProposal;
