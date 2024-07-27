@@ -7,7 +7,7 @@ Future
 
 ---
 * STAR-615: Proposal mapping:
-   - PutProposal mapping (partial - observation_sets, data_product_sdps ,data_product_src_nets and results still to map)
+   - PutProposal mapping (partial - data_product_sdps and results still to map)
    - Update SensCalc display results to display sensitivity or integration time
    - Update pages accordingly for breaking changes
    - Update proposal frontend types
