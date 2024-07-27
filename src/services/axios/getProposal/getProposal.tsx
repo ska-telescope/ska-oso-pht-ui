@@ -133,7 +133,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))
-        ?.value, // HERE // e.radial_velocity.quantity.unit, .split(' ').join('') // trim white spaces
+        ?.value,
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters?.map(p => ({
@@ -334,7 +334,6 @@ const getObservations = (
           : undefined,
       details: inValue[i].details
     };
-    console.log('converted OBS in getProposal', obs);
     results.push(obs);
   }
   return results;
@@ -442,10 +441,10 @@ const getTargetObservation = (
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
-        id: inResults?.indexOf(result) + 1, // only for front end
+        id: inResults?.indexOf(result) + 1, // only for UI
         title: result.target_ref,
-        statusGUI: 0, // only for front-end // TODO check if no error state is 0
-        error: '', // only for front-end
+        statusGUI: 0, // only for UI
+        error: '', // only for UI
         section1: getResultsSection1(result),
         section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
         section3: getResultsSection3(result.observation_set_ref, inObservationSets)
@@ -485,9 +484,9 @@ function mapping(inRec: ProposalBackend): Proposal {
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
-    sciencePDF: sciencePDF, // getPDF(inRec?.info?.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
-    scienceLoadStatus: sciencePDF ? 1 : 0, // getPDF(inRec?.info?.documents, 'proposal_science') ? 1 : 0,
-    targetOption: 1, // TODO // check what to map to
+    sciencePDF: sciencePDF,
+    scienceLoadStatus: sciencePDF ? 1 : 0,
+    targetOption: 1, // TODO check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
@@ -495,13 +494,12 @@ function mapping(inRec: ProposalBackend): Proposal {
       inRec?.info?.results?.length > 1
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
         : [],
-    technicalPDF: technicalPDF, // getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: technicalPDF ? 1 : 0, // getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
+    technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
+    technicalLoadStatus: technicalPDF ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('GET proposal', convertedProposal);
   return convertedProposal;
 }
 
@@ -517,7 +515,6 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    console.log('GET proposal incomming', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

@@ -75,7 +75,6 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
     };
     output.push(rec);
   }
-  console.log('GET proposalLIST converted proposal', output);
   return output as Proposal[];
 }
 
@@ -91,7 +90,6 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    console.log('GET proposalLIST incomming', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
   } catch (e) {
     return e.message;

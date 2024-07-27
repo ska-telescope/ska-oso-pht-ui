@@ -31,36 +31,13 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
 /*
 TODO:
-- test putProposal mapping with data and map all new properties
-- tidy up and remove all old mapping functions in this file
+- map data_product_sdps & results
+- move putProposal mapping into a separate service that can be used by putProposal, validateProposal
+- handle submit proposal by passing appropriate status and update sumission fields
+- check upload pdf issue
 */
 
 function mappingPutProposal(proposal: Proposal, status: string) {
-  // TODO: add groupObservations to send to backend
-
-  /*
-  const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
-    if (!acc[to.observationId]) {
-      acc[to.observationId] = [];
-    }
-    acc[to.observationId].push(to.targetId.toString());
-    return acc;
-  }, {});
-
-  const scienceProgrammes = proposal.observations?.map(observation => {
-    const targetIds = targetObservationsByObservation[observation.id] || [];
-    const targets = proposal?.targets?.filter(target =>
-      targetIds.includes(target.id.toString())
-    );
-    const array = OBSERVATION.array.find(p => p.value === observation.telescope);
-    return {
-      array: array?.label,
-      subarray: array?.subarray?.find(sa => sa.value === observation.subarray)?.label,
-      linked_sources: targets?.map(target => target.name),
-      observation_type: OBSERVATION_TYPE_BACKEND[observation.type]
-    };
-  });
-  */
 
   const convertCategoryFormat = (_inValue: string): string => {
     const words = _inValue.split(' ');
@@ -212,15 +189,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
 
   const getFrequencyAndBandwidthUnits = (incTelescope: number, incUnitValue: number): string => {
-    console.log('------------------------------------');
-    console.log('::: in getFrequencyAndBandwidthUnits');
-    console.log('incUnitValue', incUnitValue);
     const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incTelescope);
     const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
       u => u.value === incUnitValue
     )?.mapping;
-    console.log('UNIT', unit);
-    console.log('------------------------------------');
     return unit;
   };
 
@@ -258,7 +230,8 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       quantity: {
         value: inObs.supplied?.value,
         unit: 'm/s' // supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
-        // TODO hardcoded for now as backend rejects supplied units such as 'jy/beam'
+        // hardcoded for now as backend rejects supplied units such as 'jy/beam'
+        // TODO put back commented mapping to units once PDM updated
       }
     };
   };
@@ -267,9 +240,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     incObservationsSets: Observation[],
     incObservationGroups: GroupObservation[]
   ): ObservationSetBackend[] => {
-    console.log('incObservationsSets', incObservationsSets);
-    const mockObs = MockProposalBackend.info.observation_sets[0];
-    console.log('mock obs', mockObs);
     const outObservationsSets = [];
     for (let obs of incObservationsSets) {
       const observation: ObservationSetBackend = {
@@ -289,14 +259,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         },
         details: obs.details
       };
-      console.log('observation', observation);
       outObservationsSets.push(observation);
     }
-    // outObservationsSets.push(mockObs);
     return outObservationsSets;
   };
 
-  // TODO : complete mapping for all properties
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -336,11 +303,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           principal_investigator: teamMember.pi
         };
       }),
-      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations), // [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
-      data_product_sdps: [],
+      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
+      data_product_sdps: [], // TODO
       data_product_src_nets:
-        proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [], // getDataProductSRC(proposal.DataProductSRC), // [],
-      results: []
+        proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [],
+      results: [] // TODO
     }
   };
   // trim undefined properties
@@ -356,15 +323,13 @@ async function PutProposal(proposal, status?) {
   try {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
-    console.log('PUT proposal incoming', proposal);
     const convertedProposal = mappingPutProposal(proposal, status);
-    console.log('PUT convertedProposal', convertedProposal);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result; // result?.data;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     return { error: e.message };
   }
