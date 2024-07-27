@@ -25,7 +25,6 @@ import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/d
 import Observation from 'utils/types/observation';
 import { ObservationSetBackend } from 'utils/types/observationSet';
 import GroupObservation from 'utils/types/groupObservation';
-import MockProposalBackend from '../getProposal/mockProposalBackend';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
@@ -38,7 +37,6 @@ TODO:
 */
 
 function mappingPutProposal(proposal: Proposal, status: string) {
-
   const convertCategoryFormat = (_inValue: string): string => {
     const words = _inValue.split(' ');
     const lowerCaseWords = words.map(word => word?.charAt(0)?.toLowerCase() + word.slice(1));
