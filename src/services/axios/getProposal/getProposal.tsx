@@ -14,7 +14,9 @@ import {
   DEFAULT_PI,
   VEL_TYPES,
   RA_TYPE_EQUATORIAL,
-  RA_TYPE_GALACTIC
+  RA_TYPE_GALACTIC,
+  VEL_UNITS,
+  TELESCOPE_MID_BACKEND_MAPPING
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -80,7 +82,7 @@ const getPI = (investigators: InvestigatorBackend[]) => {
 };
 
 const extractFileFromURL = (url): Promise<File> => {
-  return fetch(url)
+  return fetch(url, { mode: 'no-cors' })
     .then(response => response.blob())
     .then(blob => {
       const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
@@ -127,10 +129,11 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
       rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
-      raDefinition: e.radial_velocity.definition,
-      velType: getVelType(e.radial_velocity.definition),
+      raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
+      velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: e.radial_velocity.quantity.unit,
+      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))
+        ?.value,
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters?.map(p => ({
@@ -236,7 +239,7 @@ const getFrequencyAndBandwidthUnits = (
 ): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
   let units = array.CentralFrequencyAndBandWidthUnits?.find(
-    item => item.label.toLowerCase() === inUnits?.toLowerCase()
+    item => item.mapping.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
@@ -244,6 +247,14 @@ const getFrequencyAndBandwidthUnits = (
     : array.CentralFrequencyAndBandWidthUnits?.find(
         item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
       )?.value;
+};
+
+const getBandwidth = (incBandwidth: number, telescope: number): number => {
+  const array = OBSERVATION.array?.find(item => item?.value === telescope);
+  const bandwidth = array.bandWidth?.find(bandwidth =>
+    bandwidth.label.includes(incBandwidth.toString())
+  )?.value;
+  return bandwidth ? bandwidth : 1; // fallback
 };
 
 const getLinked = (inObservation: ObservationSetBackend, inResults: SensCalcResultsBackend[]) => {
@@ -258,7 +269,7 @@ const getObservations = (
 ): Observation[] => {
   let results = [];
   for (let i = 0; i < inValue?.length; i++) {
-    const arr = inValue[i].array_details.array === 'ska_mid' ? 1 : 2;
+    const arr = inValue[i].array_details.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray?.find(
       p => p.label.toLowerCase() === inValue[i].array_details.subarray?.toLocaleLowerCase()
     )?.value;
@@ -304,9 +315,9 @@ const getObservations = (
       numSubBands: numSubBands,
       tapering: tapering,
       bandwidth:
-        type === TYPE_ZOOM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
-      // bandwidthUnits: type === TYPE_ZOOM ? getFrequencyAndBandwidthUnits(inValue[i].observation_type_details.bandwidth.unit, arr, observingBand) : undefined,
-      // TODO ask about zoom bandwidthUnits not needed as we store it together in front end
+        type === TYPE_ZOOM
+          ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
+          : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
@@ -430,10 +441,10 @@ const getTargetObservation = (
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       sensCalc: {
-        id: inResults?.indexOf(result) + 1, // only for front end
+        id: inResults?.indexOf(result) + 1, // only for UI
         title: result.target_ref,
-        statusGUI: 0, // only for front-end // TODO check if no error state is 0
-        error: '', // only for front-end
+        statusGUI: 0, // only for UI
+        error: '', // only for UI
         section1: getResultsSection1(result),
         section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
         section3: getResultsSection3(result.observation_set_ref, inObservationSets)
@@ -462,7 +473,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
-    lastUpdated: new Date(inRec.metadata.last_modified_on).toDateString(),
+    lastUpdated: inRec.metadata.last_modified_on,
     lastUpdatedBy: inRec.metadata.last_modified_by,
     createdOn: inRec.metadata.created_on,
     createdBy: inRec.metadata.created_by,
@@ -473,9 +484,9 @@ function mapping(inRec: ProposalBackend): Proposal {
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
-    sciencePDF: sciencePDF, // getPDF(inRec?.info?.documents, 'proposal_science'), // TODO sort doc link on ProposalDisplay
-    scienceLoadStatus: sciencePDF ? 1 : 0, // getPDF(inRec?.info?.documents, 'proposal_science') ? 1 : 0,
-    targetOption: 1, // TODO // check what to map to
+    sciencePDF: sciencePDF,
+    scienceLoadStatus: sciencePDF ? 1 : 0,
+    targetOption: 1, // TODO check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
@@ -483,8 +494,8 @@ function mapping(inRec: ProposalBackend): Proposal {
       inRec?.info?.results?.length > 1
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
         : [],
-    technicalPDF: technicalPDF, // getPDF(inRec.info.documents, 'proposal_technical'), // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: technicalPDF ? 1 : 0, // getPDF(inRec.info.documents, 'proposal_technical') ? 1 : 0,
+    technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
+    technicalLoadStatus: technicalPDF ? 1 : 0,
     DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to

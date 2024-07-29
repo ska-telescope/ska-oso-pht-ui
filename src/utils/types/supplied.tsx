@@ -8,8 +8,8 @@ type Supplied = {
 
 export type SuppliedBackend = {
   type: string;
-  value: number;
-  unit: string;
+  // value: number;
+  // unit: string;
   quantity: ValueUnitPair;
 };
 

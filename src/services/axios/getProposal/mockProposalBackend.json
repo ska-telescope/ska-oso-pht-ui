@@ -20,6 +20,37 @@
     },
     "abstract": "Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering",
     "science_category": "Science Category",
+    "targets": [
+      {
+        "target_id": "M28",
+        "pointing_pattern": {
+          "active": "SinglePointParameters",
+          "parameters": [
+            {
+              "kind": "SinglePointParameters",
+              "offset_x_arcsec": 0.5,
+              "offset_y_arcsec": 0.5
+            }
+          ]
+        },
+        "reference_coordinate": {
+          "kind": "equatorial",
+          "ra": 250.0,
+          "dec": 30.0,
+          "unit": ["deg", "deg"],
+          "reference_frame": "icrs"
+        },
+        "radial_velocity": {
+          "quantity": {
+            "value": -12.345,
+            "unit": "m/s"
+          },
+          "definition": "OPTICAL",
+          "reference_frame": "LSRK",
+          "redshift": 1.2
+        }
+      }
+    ],
     "observation_sets": [
       {
         "observation_set_id": "mid-001",
@@ -39,11 +70,11 @@
           "observation_type": "continuum",
           "bandwidth": {
             "value": 0.0,
-            "unit": ""
+            "unit": "mHz"
           },
           "central_frequency": {
             "value": 0.0,
-            "unit": ""
+            "unit": "mHz"
           },
           "supplied": {
             "type": "integration_time",
