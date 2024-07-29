@@ -69,6 +69,9 @@ export const BANDWIDTH_TELESCOPE = [
   } // Band 5b
 ];
 
+export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
+export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
+
 export const DATA_PRODUCT = {
   observatoryDataProduct: [
     { label: 'Continuum Image', value: 1 },
@@ -88,6 +91,10 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
+export const ELEVATION_MIN = 15;
+export const ELEVATION_DEFAULT = 45;
+export const ELEVATION_MAX = 59.2;
+export const ELEVATION_UNITS = 'deg';
 
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
@@ -276,6 +283,12 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const OSCILLATION_UNITS = [
+  { label: 'Hz', toHz: 1 },
+  { label: 'KHz', toHz: 1000 },
+  { label: 'MHz', toHz: 10000000 },
+  { label: 'GHz', toHz: 10000000000 }
+];
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
@@ -384,7 +397,7 @@ export const OBSERVATION = {
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [
+      centralFrequencyAndBandWidthUnits: [
         { label: 'GHz', value: 1, mapping: 'GHz' },
         { label: 'MHz', value: 2, mapping: 'MHz' },
         { label: 'KHz', value: 3, mapping: 'kHz' },
@@ -488,7 +501,7 @@ export const OBSERVATION = {
         { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
         { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
+      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
   ],
   ImageWeighting: [
@@ -727,6 +740,9 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
 ];
+export const SPECTRAL_AVERAGING_MAX = 27624;
+export const SPECTRAL_AVERAGING_MIN = 1;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
@@ -737,6 +753,7 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
+export const SUPPLIED_VALUE_DEFAULT = 600;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
