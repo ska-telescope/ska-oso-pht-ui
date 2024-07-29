@@ -1,6 +1,8 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
-// this matches the proposal format on the PDM
+// this should match the format on the PDM but now fails with backend
+// format for json proposal succeeds
+// TODO replace this format with the format on the JSON file
 const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prp-ska01-202204-01',
   status: 'submitted',
@@ -145,7 +147,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
             unit: 'ms',
             quantity: {
@@ -231,7 +233,7 @@ const MockProposalBackend: ProposalBackend = {
           },
           supplied: {
             // type: 'integration_time', // TODO use this one latest PDM changes merged
-            type: 'integration',
+            type: 'integration_time',
             value: 0.0,
             unit: 'ms',
             quantity: {

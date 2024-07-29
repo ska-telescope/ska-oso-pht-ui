@@ -1,52 +1,42 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
+  BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
+  OBSERVATION,
+  OBSERVATION_TYPE_BACKEND,
   Projects,
-  RA_TYPE_EQUATORIAL,
+  REF_COORDINATES_UNITS,
   SKA_PHT_API_URL,
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_BACKEND_MAPPING,
+  TYPE_CONTINUUM,
   USE_LOCAL_DATA,
-  VEL_TYPES
+  VEL_UNITS,
+  VELOCITY_TYPE
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
-import { DocumentBackend, DocumentPDF } from 'utils/types/document';
+import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
+import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import Observation from 'utils/types/observation';
+import { ObservationSetBackend } from 'utils/types/observationSet';
+import GroupObservation from 'utils/types/groupObservation';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
 /*
 TODO:
-- test putProposal mapping with data and map all new properties
-- tidy up and remove all old mapping functions in this file
+- map data_product_sdps & results
+- move putProposal mapping into a separate service that can be used by putProposal, validateProposal
+- handle submit proposal by passing appropriate status and update sumission fields
+- check upload pdf issue
 */
 
 function mappingPutProposal(proposal: Proposal, status: string) {
-  // TODO: add groupObservations to send to backend
-
-  /*
-  const targetObservationsByObservation = proposal.targetObservation?.reduce((acc, to) => {
-    if (!acc[to.observationId]) {
-      acc[to.observationId] = [];
-    }
-    acc[to.observationId].push(to.targetId.toString());
-    return acc;
-  }, {});
-
-  const scienceProgrammes = proposal.observations?.map(observation => {
-    const targetIds = targetObservationsByObservation[observation.id] || [];
-    const targets = proposal?.targets?.filter(target =>
-      targetIds.includes(target.id.toString())
-    );
-    const array = OBSERVATION.array.find(p => p.value === observation.telescope);
-    return {
-      array: array?.label,
-      subarray: array?.subarray?.find(sa => sa.value === observation.subarray)?.label,
-      linked_sources: targets?.map(target => target.name),
-      observation_type: OBSERVATION_TYPE_BACKEND[observation.type]
-    };
-  });
-  */
-
   const convertCategoryFormat = (_inValue: string): string => {
     const words = _inValue.split(' ');
     const lowerCaseWords = words.map(word => word?.charAt(0)?.toLowerCase() + word.slice(1));
@@ -71,38 +61,61 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     const outTargets = [];
     for (let i = 0; i < targets.length; i++) {
       const tar = targets[i];
-      const singlePointParam = tar.pointingPattern.parameters.find(
-        param => param.kind === 'SinglePointParameters'
-      );
       const outTarget: TargetBackend = {
         target_id: tar.name,
-        pointing_pattern: {
-          active: tar?.pointingPattern?.active,
-          parameters: [
-            {
-              kind: singlePointParam.kind,
-              offset_x_arcsec: singlePointParam.offsetXArcsec,
-              offset_y_arcsec: singlePointParam.offsetYArcsec
-            }
-          ]
-        },
         reference_coordinate: {
-          kind: tar.referenceFrame === RA_TYPE_EQUATORIAL ? 'equatorial' : 'galactic',
-          ra: Number(tar.ra),
-          dec: Number(tar.dec),
-          unit: [tar.raUnit, tar.decUnit],
-          reference_frame: tar.rcReferenceFrame
+          kind: REF_COORDINATES_UNITS[0]?.label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+          ra: tar.ra,
+          dec: tar.dec,
+          unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
+          reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implmented in UI
         },
         radial_velocity: {
           quantity: {
-            value: Number(tar.vel),
-            unit: tar.velUnit
+            value: tar.velType === VELOCITY_TYPE.VELOCITY ? Number(tar.vel) : 0, // if reference frame is velocity use velocity value, otherwise set to 0
+            unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
           },
-          definition: VEL_TYPES.find(item => item.value === tar.velType).label,
-          reference_frame: tar.raReferenceFrame,
-          redshift: Number(tar.redshift)
+          definition: 'RADIO', // hardcoded for now as not implemented in UI
+          reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
+          // hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC
+          // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame
+          // -> using raReferenceFrame for now as data format is different
+          redshift: tar.velType === VELOCITY_TYPE.REDSHIFT ? Number(tar.redshift) : 0 // if reference frame is redshift use redshift, otherwise set to 0
         }
       };
+      /********************* pointing pattern *********************/
+      const mockPointingPattern = {
+        pointing_pattern: {
+          active: 'SinglePointParameters',
+          parameters: [
+            {
+              kind: 'SinglePointParameters',
+              offsetXArcsec: 0.5,
+              offsetYArcsec: 0.5
+            }
+          ]
+        }
+      };
+      // As pointingPattern is not currently used in the UI, mock it if it doesn't exist
+      const usedSingleParam = tar.pointingPattern
+        ? tar.pointingPattern
+        : mockPointingPattern.pointing_pattern;
+      const singlePointParam = usedSingleParam?.parameters?.find(
+        param => param.kind === 'SinglePointParameters'
+      );
+      outTarget['pointing_pattern'] = {
+        active: tar.pointingPattern
+          ? tar.pointingPattern?.active
+          : mockPointingPattern.pointing_pattern?.active,
+        parameters: [
+          {
+            kind: singlePointParam?.kind,
+            offset_x_arcsec: singlePointParam?.offsetXArcsec,
+            offset_y_arcsec: singlePointParam?.offsetYArcsec
+          }
+        ]
+      };
+      /***********************************************************/
       outTargets.push(outTarget);
     }
     return outTargets;
@@ -127,14 +140,135 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return documents;
   };
 
-  // TODO : complete mapping for all properties
+  const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+    return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+  };
+
+  const getGroupObservation = (obsId: string, observationGroups: GroupObservation[]) => {
+    const groupId = observationGroups.find(group => group.observationId === obsId)?.observationId;
+    return groupId ? groupId : '';
+  };
+
+  const getObservingBand = (observingBand: number) => {
+    return BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  };
+
+  const getSubArray = (incSubArray: number, incTelescope: number): string => {
+    const array = OBSERVATION.array.find(a => a.value === incTelescope);
+    const subArray = array?.subarray
+      ?.find(sub => sub.value === incSubArray)
+      ?.label?.toLocaleLowerCase();
+    return subArray ? subArray : 'aa4'; // fallback
+  };
+
+  const getArrayDetails = (
+    incObs: Observation
+  ): ArrayDetailsLowBackend | ArrayDetailsMidBackend => {
+    if (incObs.telescope === TELESCOPE_LOW_NUM) {
+      const lowArrayDetails: ArrayDetailsLowBackend = {
+        array: TELESCOPE_LOW_BACKEND_MAPPING,
+        subarray: getSubArray(incObs.subarray, incObs.telescope),
+        number_of_stations: incObs.numStations,
+        spectral_averaging: incObs.spectralAveraging?.toString()
+      };
+      return lowArrayDetails;
+    } else {
+      const midArrayDetails: ArrayDetailsMidBackend = {
+        array: TELESCOPE_MID_BACKEND_MAPPING,
+        subarray: getSubArray(incObs.subarray, incObs.telescope),
+        weather: incObs.weather,
+        number_15_antennas: incObs.num15mAntennas,
+        number_13_antennas: incObs.num13mAntennas,
+        number_sub_bands: incObs.numSubBands,
+        tapering: incObs.tapering
+      };
+      return midArrayDetails;
+    }
+  };
+
+  const getFrequencyAndBandwidthUnits = (incTelescope: number, incUnitValue: number): string => {
+    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incTelescope);
+    const unit = obsTelescopeArray.CentralFrequencyAndBandWidthUnits.find(
+      u => u.value === incUnitValue
+    )?.mapping;
+    return unit;
+  };
+
+  const getBandwidth = (incObs: Observation): ValueUnitPair => {
+    if (incObs.type === TYPE_CONTINUUM) {
+      // continuum
+      return {
+        value: incObs.continuumBandwidth,
+        unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.continuumBandwidthUnits)
+      };
+    } else {
+      // zoom
+      const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
+      const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
+      const valueUnit = bandwidth?.label.split(' ');
+      const value = Number(valueUnit[0]);
+      return {
+        value: value,
+        unit: bandwidth.mapping ? bandwidth.mapping : '' // fallback
+      };
+    }
+  };
+
+  const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
+    return {
+      value: incObs.centralFrequency,
+      unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.centralFrequencyUnits)
+    };
+  };
+
+  const getSupplied = (inObs: Observation) => {
+    const supplied = OBSERVATION.Supplied.find(s => s.value === inObs?.supplied?.type);
+    return {
+      type: supplied?.mappingLabel,
+      quantity: {
+        value: inObs.supplied?.value,
+        unit: 'm/s' // supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
+        // hardcoded for now as backend rejects supplied units such as 'jy/beam'
+        // TODO put back commented mapping to units once PDM updated
+      }
+    };
+  };
+
+  const getObservationsSets = (
+    incObservationsSets: Observation[],
+    incObservationGroups: GroupObservation[]
+  ): ObservationSetBackend[] => {
+    const outObservationsSets = [];
+    for (let obs of incObservationsSets) {
+      const observation: ObservationSetBackend = {
+        observation_set_id: obs.id,
+        group_id: getGroupObservation(obs.id, incObservationGroups),
+        elevation: 23,
+        observing_band: getObservingBand(obs.observingBand),
+        array_details: getArrayDetails(obs),
+        observation_type_details: {
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
+          bandwidth: getBandwidth(obs),
+          central_frequency: getCentralFrequency(obs),
+          supplied: getSupplied(obs),
+          spectral_resolution: obs.spectralResolution,
+          effective_resolution: obs.effectiveResolution,
+          image_weighting: obs.imageWeighting.toString()
+        },
+        details: obs.details
+      };
+      outObservationsSets.push(observation);
+    }
+    return outObservationsSets;
+  };
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: '', // TODO // to fill for submit
     submitted_by: '', // TODO // to fill for submit
     investigator_refs: proposal.team?.map(investigator => {
-      return investigator.id;
+      return investigator?.id?.toString();
     }),
     metadata: {
       version: proposal.version + 1,
@@ -158,7 +292,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
       investigators: proposal.team.map(teamMember => {
         return {
-          investigator_id: teamMember.id,
+          investigator_id: teamMember.id?.toString(),
           given_name: teamMember.firstName,
           family_name: teamMember.lastName,
           email: teamMember.email,
@@ -167,10 +301,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           principal_investigator: teamMember.pi
         };
       }),
-      observation_sets: [], // TODO add a conversion function to change units to 'm/s' when mapping so we don't have a 'm / s' format in front-end
-      data_product_sdps: [],
-      data_product_src_nets: [],
-      results: []
+      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
+      data_product_sdps: [], // TODO
+      data_product_src_nets:
+        proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [],
+      results: [] // TODO
     }
   };
   // trim undefined properties
@@ -192,7 +327,7 @@ async function PutProposal(proposal, status?) {
       convertedProposal,
       AXIOS_CONFIG
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result; // result?.data;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     return { error: e.message };
   }

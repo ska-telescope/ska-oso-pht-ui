@@ -14,6 +14,7 @@ type Observation = {
   centralFrequency: number;
   centralFrequencyUnits: number;
   bandwidth: number; // only for zoom
+  // bandwidthUnits: number; // only for zoom
   continuumBandwidth: number; // only for continuum
   continuumBandwidthUnits: number; // only for continuum
   spectralAveraging?: number; // only for LOW

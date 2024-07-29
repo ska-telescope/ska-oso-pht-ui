@@ -15,7 +15,7 @@ interface VelocityFieldProps {
   velFocus?: Function;
   velType: number;
   velTypeFocus?: Function;
-  velUnit: string;
+  velUnit: number;
   velUnitFocus?: Function;
 }
 

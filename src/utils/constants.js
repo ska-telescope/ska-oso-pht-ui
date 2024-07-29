@@ -24,7 +24,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 50,
     upper: 350,
-    units: 'MHz'
+    units: 'MHz',
+    mapping: 'low_band'
   },
   {
     label: 'Band 1 (0.35 - 1.05 GHz)',
@@ -33,8 +34,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 0.35,
     upper: 1.05,
-    units: 'GHz'
-  }, // Band 1
+    units: 'GHz',
+    mapping: 'mid_band_1'
+  },
   {
     label: 'Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
@@ -42,8 +44,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     lower: 0.95,
     upper: 1.76,
-    units: 'GHz'
-  }, // Band 2
+    units: 'GHz',
+    mapping: 'mid_band_2'
+  },
   {
     label: 'Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
@@ -51,7 +54,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     lower: 4.6,
     upper: 8.5,
-    units: 'GHz'
+    units: 'GHz',
+    mapping: 'mid_band_3'
   }, // Band 5a
   {
     label: 'Band 5b (8.3 - 15.4 GHz)',
@@ -60,7 +64,8 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     lower: 8.3,
     upper: 15.4,
-    units: 'GHz'
+    units: 'GHz',
+    mapping: 'mid_band_4'
   } // Band 5b
 ];
 
@@ -273,7 +278,7 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 export const OBSERVATION = {
   array: [
@@ -371,19 +376,19 @@ export const OBSERVATION = {
         { label: '2', value: 5 }
       ],
       bandWidth: [
-        { label: '3.125 MHz', value: 1 },
-        { label: '6.25 MHz', value: 2 },
-        { label: '12.5 MHz', value: 3 },
-        { label: '25 MHz', value: 4 },
-        { label: '50 MHz', value: 5 },
-        { label: '100 MHz', value: 6 },
-        { label: '200 MHz', value: 7 }
+        { label: '3.125 MHz', value: 1, mapping: 'MHz' },
+        { label: '6.25 MHz', value: 2, mapping: 'MHz' },
+        { label: '12.5 MHz', value: 3, mapping: 'MHz' },
+        { label: '25 MHz', value: 4, mapping: 'MHz' },
+        { label: '50 MHz', value: 5, mapping: 'MHz' },
+        { label: '100 MHz', value: 6, mapping: 'MHz' },
+        { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
       CentralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1 },
-        { label: 'MHz', value: 2 },
-        { label: 'KHz', value: 3 },
-        { label: 'Hz', value: 4 }
+        { label: 'GHz', value: 1, mapping: 'GHz' },
+        { label: 'MHz', value: 2, mapping: 'MHz' },
+        { label: 'KHz', value: 3, mapping: 'kHz' },
+        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -474,16 +479,16 @@ export const OBSERVATION = {
       ],
       robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
-        { label: '24.4 KHz', value: 1 },
-        { label: '48.8 KHz', value: 2 },
-        { label: '97.7 KHz', value: 3 },
-        { label: '195.3 KHz', value: 4 },
-        { label: '390.6 KHz', value: 5 },
-        { label: '781.2 KHz', value: 6 },
-        { label: '1562.5 KHz', value: 7 },
-        { label: '3125.0 KHz', value: 8 }
+        { label: '24.4 KHz', value: 1, mapping: 'kHz' },
+        { label: '48.8 KHz', value: 2, mapping: 'kHz' },
+        { label: '97.7 KHz', value: 3, mapping: 'kHz' },
+        { label: '195.3 KHz', value: 4, mapping: 'kHz' },
+        { label: '390.6 KHz', value: 5, mapping: 'kHz' },
+        { label: '781.2 KHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
+        { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1 }]
+      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
   ],
   ImageWeighting: [
@@ -653,6 +658,7 @@ export const OBSERVATION = {
     {
       label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
+      mappingLabel: 'integration_time',
       value: 1,
       units: [
         { label: 'd', value: 1 },
@@ -665,8 +671,9 @@ export const OBSERVATION = {
       ]
     },
     {
-      label: 'Sensitivity',
-      sensCalcResultsLabel: 'sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
+      label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
+      sensCalcResultsLabel: 'sensitivity',
+      mappingLabel: 'sensitivity',
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },
@@ -693,6 +700,24 @@ export const RA_TYPE_GALACTIC = 1;
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },
   { label: 'Redshift', value: 1 }
+];
+
+export const VEL_UNITS = [
+  { label: 'km/s', value: 0 },
+  { label: 'm/s', value: 1 }
+];
+
+export const REF_COORDINATES_UNITS = [
+  {
+    value: 1,
+    label: 'equatorial',
+    units: ['hourangle', 'deg']
+  },
+  {
+    value: 2,
+    label: 'galactic',
+    units: ['deg', 'deg']
+  }
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
@@ -733,6 +758,9 @@ export const TELESCOPES = [
   { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
 ];
+
+export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
+export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
 
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
