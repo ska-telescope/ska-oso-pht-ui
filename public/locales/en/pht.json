@@ -367,7 +367,7 @@
     "label": "Proposal Types",
     "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
     "help2": "Proposal sub-types are optional",
-    "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered.",
+    "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "help4": ""
   },
   "subProposalType": {
@@ -535,7 +535,7 @@
     "email": "Please enter a valid email address."
   },
   "spectralAveraging": {
-    "help": "The factor by which the intrinsic spectral resolution should be averaged. The averaging factor can be set to 1, 2, 3, 4, 6, 8, 12 or 24. The Effective resolution field displays the channel width after applying the spectral averaging.",
+    "help": "The factor by which the intrinsic spectral resolution should be averaged. The Effective resolution field displays the channel width after applying the spectral averaging.",
     "label": "Spectral Averaging",
     "range": {
       "lower": 1,
