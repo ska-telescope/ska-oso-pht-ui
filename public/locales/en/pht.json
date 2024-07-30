@@ -65,18 +65,7 @@
     "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
-      "lowLower": 50,
-      "lowUpper": 350,
-      "lowError": "Please enter a number between 50 and 350",
-      "midError": "Observing frequency out of range",
-      "bandLower1": 0.35,
-      "bandUpper1": 1.05,
-      "bandLower2": 0.95,
-      "bandUpper2": 1.76,
-      "bandLower3": 4.6,
-      "bandUpper3": 8.5,
-      "bandLower4": 8.3,
-      "bandUpper4": 15.4
+      "error": "Observing frequency out of range"
     }
   },
   "changeProposal": {
@@ -157,11 +146,7 @@
   "elevation": {
     "help": "ELEVATION HELP",
     "label": "Minimum Elevation",
-    "units": "deg",
-    "default": 45,
     "range": {
-      "lower": 15,
-      "upper": 59.2,
       "error": "Value is outside of allowed range"
     }
   },
@@ -297,7 +282,7 @@
     "label": "Observatory Data Product",
     "help": "OBSERVATORY DATA PRODUCT HELP",
     "options": {
-      "1": "Raw Visibility Data",
+      "1": "Visibilities",
       "2": "Calibrated Visibilities",
       "3": "Image Products 1 : Image Cubes",
       "4": "Image Products 2 : UV Grids",
@@ -539,8 +524,6 @@
     "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
     "label": "Spectral Averaging",
     "range": {
-      "lower": 1,
-      "upper": 27624,
       "error": "Value is outside of allowed range"
     }
   },
@@ -602,14 +585,13 @@
   "suppliedValue": {
     "help": "SUPPLIED VALUE HELP",
     "range": {
-      "lower": 0,
       "error": "Value is outside of allowed range"
-    },
-    "default": 600
+    }
   },
   "tapering": {
     "help": "TAPERING HELP",
-    "label": "Tapering"
+    "label": "Tapering",
+    "0": "No tapering"
   },
   "targetObservation": {
     "label": "Target / Observation relationship"

@@ -11,7 +11,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const PAGE_NO = 5;
 
 function viewPort() {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
 }
 
 function getProposal(isEmpty: boolean) {

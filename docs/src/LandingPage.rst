@@ -9,8 +9,8 @@ You need to start by creating an account. When you log into the proposal prepara
    :alt: Landing page icons
 
 
-**Landing Page**
-================
+Landing Page
+============
 On the landing is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
 investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` list your proposals with the following information:
 

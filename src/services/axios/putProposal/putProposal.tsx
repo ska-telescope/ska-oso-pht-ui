@@ -180,7 +180,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         number_15_antennas: incObs.num15mAntennas,
         number_13_antennas: incObs.num13mAntennas,
         number_sub_bands: incObs.numSubBands,
-        tapering: incObs.tapering
+        tapering: incObs.tapering.toString()
       };
       return midArrayDetails;
     }

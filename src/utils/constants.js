@@ -69,6 +69,9 @@ export const BANDWIDTH_TELESCOPE = [
   } // Band 5b
 ];
 
+export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
+export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
+
 export const DATA_PRODUCT = {
   observatoryDataProduct: [
     { label: 'Continuum Image', value: 1 },
@@ -88,6 +91,10 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
+export const ELEVATION_MIN = 15;
+export const ELEVATION_DEFAULT = 45;
+export const ELEVATION_MAX = 59.2;
+export const ELEVATION_UNITS = 'deg';
 
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
@@ -139,6 +146,8 @@ export const IMAGE_SIZE_UNITS = {
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
 export const LAST_PAGE = 9;
+
+export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
 export const NAV = [
   '/proposal/title',
@@ -274,6 +283,12 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const OSCILLATION_UNITS = [
+  { label: 'Hz', toHz: 1 },
+  { label: 'KHz', toHz: 1000 },
+  { label: 'MHz', toHz: 10000000 },
+  { label: 'GHz', toHz: 10000000000 }
+];
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
@@ -382,7 +397,7 @@ export const OBSERVATION = {
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [
+      centralFrequencyAndBandWidthUnits: [
         { label: 'GHz', value: 1, mapping: 'GHz' },
         { label: 'MHz', value: 2, mapping: 'MHz' },
         { label: 'KHz', value: 3, mapping: 'kHz' },
@@ -486,7 +501,7 @@ export const OBSERVATION = {
         { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
         { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
+      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
   ],
   ImageWeighting: [
@@ -504,88 +519,88 @@ export const OBSERVATION = {
     { label: '12', value: 12, lookup: 6 },
     { label: '24', value: 24, lookup: 7 }
   ],
-  CentralFrequencyOBLow: [{ lookup: 0, value: '200' }],
+  CentralFrequencyOBLow: [{ lookup: 0, value: 200 }],
   CentralFrequencyOB1: [
-    { lookup: 1, label: 'AA0.5', value: '0.7' },
-    { lookup: 2, label: 'AA1', value: '0.7' },
-    { lookup: 3, label: 'AA2', value: '0.7' },
-    { lookup: 5, label: 'AA*', value: '0.7975' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
-    { lookup: 8, label: 'AA4', value: '0.7975' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.7975' },
-    { lookup: 20, label: 'Custom', value: '0.7975' }
+    { lookup: 1, label: 'AA0.5', value: 0.7 },
+    { lookup: 2, label: 'AA1', value: 0.7 },
+    { lookup: 3, label: 'AA2', value: 0.7 },
+    { lookup: 5, label: 'AA*', value: 0.7975 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.7 },
+    { lookup: 8, label: 'AA4', value: 0.7975 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.7 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.7975 },
+    { lookup: 20, label: 'Custom', value: 0.7975 }
   ],
   CentralFrequencyOB2: [
-    { lookup: 1, label: 'AA0.5', value: '1.355' },
-    { lookup: 2, label: 'AA1', value: '1.355' },
-    { lookup: 3, label: 'AA2', value: '1.355' },
-    { lookup: 5, label: 'AA*', value: '1.31' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '1.355' },
-    { lookup: 8, label: 'AA4', value: '1.31' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '1.355' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '1.31' },
-    { lookup: 20, label: 'Custom', value: '1.31' }
+    { lookup: 1, label: 'AA0.5', value: 1.355 },
+    { lookup: 2, label: 'AA1', value: 1.355 },
+    { lookup: 3, label: 'AA2', value: 1.355 },
+    { lookup: 5, label: 'AA*', value: 1.31 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 1.355 },
+    { lookup: 8, label: 'AA4', value: 1.31 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 1.355 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 1.31 },
+    { lookup: 20, label: 'Custom', value: 1.31 }
   ],
-  CentralFrequencyOB5a: [{ value: '6.55' }],
-  CentralFrequencyOB5b: [{ value: '11.85' }],
+  CentralFrequencyOB5a: [{ value: 6.55 }],
+  CentralFrequencyOB5b: [{ value: 11.85 }],
   ContinuumBandwidthOBLow: [
-    { lookup: 1, label: 'AA0.5', value: '75' },
-    { lookup: 2, label: 'AA1', value: '75' },
-    { lookup: 3, label: 'AA2', value: '150' },
-    { lookup: 4, label: 'AA2 (core only)', value: '150' },
-    { lookup: 5, label: 'AA*', value: '300' },
-    { lookup: 7, label: 'AA* (core only)', value: '300' },
-    { lookup: 8, label: 'AA4', value: '300' },
-    { lookup: 11, label: 'AA4 (core only)', value: '300' },
-    { lookup: 20, label: 'Custom', value: '300' }
+    { lookup: 1, label: 'AA0.5', value: 75 },
+    { lookup: 2, label: 'AA1', value: 75 },
+    { lookup: 3, label: 'AA2', value: 150 },
+    { lookup: 4, label: 'AA2 (core only)', value: 150 },
+    { lookup: 5, label: 'AA*', value: 300 },
+    { lookup: 7, label: 'AA* (core only)', value: 300 },
+    { lookup: 8, label: 'AA4', value: 300 },
+    { lookup: 11, label: 'AA4 (core only)', value: 300 },
+    { lookup: 20, label: 'Custom', value: 300 }
   ],
   ContinuumBandwidthOB1: [
-    { lookup: 1, label: 'AA0.5', value: '0.7' },
-    { lookup: 2, label: 'AA1', value: '0.7' },
-    { lookup: 3, label: 'AA2', value: '0.7' },
-    { lookup: 5, label: 'AA*', value: '0.435' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
-    { lookup: 8, label: 'AA4', value: '0.435' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.435' },
-    { lookup: 20, label: 'Custom', value: '0.435' }
+    { lookup: 1, label: 'AA0.5', value: 0.7 },
+    { lookup: 2, label: 'AA1', value: 0.7 },
+    { lookup: 3, label: 'AA2', value: 0.7 },
+    { lookup: 5, label: 'AA*', value: 0.435 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.7 },
+    { lookup: 8, label: 'AA4', value: 0.435 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.7 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.435 },
+    { lookup: 20, label: 'Custom', value: 0.435 }
   ],
   ContinuumBandwidthOB2: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 5, label: 'AA*', value: '0.72' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.81' },
-    { lookup: 8, label: 'AA4', value: '0.72' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.81' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.72' },
-    { lookup: 20, label: 'Custom', value: '0.72' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 5, label: 'AA*', value: 0.72 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.81 },
+    { lookup: 8, label: 'AA4', value: 0.72 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.81 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.72 },
+    { lookup: 20, label: 'Custom', value: 0.72 }
   ],
   ContinuumBandwidthOB5a: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '3.9' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '3.9' },
-    { lookup: 20, label: 'Custom', value: '3.9' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 3.9 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 3.9 },
+    { lookup: 20, label: 'Custom', value: 3.9 }
   ],
   ContinuumBandwidthOB5b: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '5' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '5' },
-    { lookup: 20, label: 'Custom', value: '5' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 5 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 5 },
+    { lookup: 20, label: 'Custom', value: 5 }
   ],
   SpectralResolutionObLow: [{ value: '5.43 kHz (8.1 km/s)' }],
   SpectralResolutionOb1: [
-    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)' },
-    { lookup: '0.7975', value: '13.44 kHz (5.1 km/s)' }
+    { lookup: 0.7, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 0.7975, value: '13.44 kHz (5.1 km/s)' }
   ],
   SpectralResolutionOb2: [
-    { lookup: '1.355', value: '13.44 kHz (3.0 km/s)' },
-    { lookup: '1.31', value: '13.44 kHz (3.1 km/s)' }
+    { lookup: 1.355, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 1.31, value: '13.44 kHz (3.1 km/s)' }
   ],
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
@@ -651,16 +666,6 @@ export const OBSERVATION = {
     { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5 },
     { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6 },
     { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7 }
-  ],
-  Tapering: [
-    { label: 'No tapering', value: 1 },
-    { label: '0.250"', value: 2 },
-    { label: '1.000"', value: 3 },
-    { label: '4.000"', value: 4 },
-    { label: '16.000"', value: 5 },
-    { label: '64.000"', value: 6 },
-    { label: '256.000"', value: 7 },
-    { label: '1024.000"', value: 8 }
   ],
   Supplied: [
     {
@@ -735,6 +740,9 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
 ];
+export const SPECTRAL_AVERAGING_MAX = 27624;
+export const SPECTRAL_AVERAGING_MIN = 1;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
@@ -745,6 +753,7 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
+export const SUPPLIED_VALUE_DEFAULT = 600;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,

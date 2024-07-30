@@ -18,7 +18,7 @@ type Observation = {
   continuumBandwidth: number; // only for continuum
   continuumBandwidthUnits: number; // only for continuum
   spectralAveraging?: number; // only for LOW
-  tapering?: string; // only for MID
+  tapering?: number; // only for MID
   imageWeighting: number;
   supplied: Supplied;
   spectralResolution: string;
@@ -46,7 +46,7 @@ export const NEW_OBSERVATION: Observation = {
   continuumBandwidth: 0,
   continuumBandwidthUnits: 0,
   spectralAveraging: 0,
-  tapering: 'DUMMY',
+  tapering: 0,
   imageWeighting: 0,
   supplied: {
     type: 0,
@@ -56,7 +56,7 @@ export const NEW_OBSERVATION: Observation = {
   spectralResolution: 'DUMMY',
   effectiveResolution: 'DUMMY',
   numSubBands: 0,
-  num15mAntennas: 0,
+  num15mAntennas: 4,
   num13mAntennas: 0,
   numStations: 0,
   details: 'DUMMY'
