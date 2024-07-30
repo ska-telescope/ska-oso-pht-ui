@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 
 ---
+
+* STAR-536: Ability to Edit an Observation
+* STAR-609: Observation updates in regards to MID Telescope
 * STAR-615: Proposal mapping:
    - PutProposal mapping (partial - data_product_sdps and results still to map)
    - Update SensCalc display results to display sensitivity or integration time

@@ -337,7 +337,7 @@ function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
 }
 
 function mounting(theTheme: any) {
-  cy.viewport(2000, 2000);
+  cy.viewport(2000, 1000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>

@@ -12,7 +12,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 describe('<SensCalcModalMultiple />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
+      cy.viewport(2000, 1000);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -35,7 +35,7 @@ describe('<SensCalcModalMultiple />', () => {
 /*
 describe('Modal with no data', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -61,7 +61,7 @@ describe('Modal with no data', () => {
 
 describe('Modal with data - Continuum', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -133,7 +133,7 @@ describe('Modal with data - Continuum', () => {
 
 describe('Modal with data - Spectral', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>

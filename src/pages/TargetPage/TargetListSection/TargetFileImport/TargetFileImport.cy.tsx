@@ -25,7 +25,7 @@ describe('<TargetFileImport />', () => {
 
 describe('Content', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1000);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <ThemeProvider theme={theme(THEME_LIGHT)}>
