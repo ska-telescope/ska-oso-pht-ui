@@ -199,7 +199,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
         redshift={target?.redshift}
         vel={target?.vel}
         velType={target?.velType}
-        velUnit={target?.velUnit.toString()}
+        velUnit={target?.velUnit}
         velFocus={() => helpComponent(t('velocity.help'))}
         velTypeFocus={() => helpComponent(t('velocity.help'))}
         velUnitFocus={() => helpComponent(t('velocity.help'))}

@@ -65,18 +65,7 @@
     "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
-      "lowLower": 50,
-      "lowUpper": 350,
-      "lowError": "Please enter a number between 50 and 350",
-      "midError": "Observing frequency out of range",
-      "bandLower1": 0.35,
-      "bandUpper1": 1.05,
-      "bandLower2": 0.95,
-      "bandUpper2": 1.76,
-      "bandLower3": 4.6,
-      "bandUpper3": 8.5,
-      "bandLower4": 8.3,
-      "bandUpper4": 15.4
+      "error": "Observing frequency out of range"
     }
   },
   "changeProposal": {
@@ -157,11 +146,7 @@
   "elevation": {
     "help": "The minimum elevation is 15 deg for both SKA-LOW and SKA-MID and the maximum elevation is the target’s zenith elevation.",
     "label": "Minimum Elevation",
-    "units": "deg",
-    "default": 45,
     "range": {
-      "lower": 15,
-      "upper": 59.2,
       "error": "Value is outside of allowed range"
     }
   },
@@ -296,7 +281,7 @@
     "label": "Observatory Data Product",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
-      "1": "Raw Visibility Data",
+      "1": "Visibilities",
       "2": "Calibrated Visibilities",
       "3": "Image Products 1 : Image Cubes",
       "4": "Image Products 2 : UV Grids",
@@ -538,8 +523,6 @@
     "help": "The factor by which the intrinsic spectral resolution should be averaged. The Effective resolution field displays the channel width after applying the spectral averaging.",
     "label": "Spectral Averaging",
     "range": {
-      "lower": 1,
-      "upper": 27624,
       "error": "Value is outside of allowed range"
     }
   },
@@ -601,10 +584,8 @@
   "suppliedValue": {
     "help": "SUPPLIED VALUE HELP",
     "range": {
-      "lower": 0,
       "error": "Value is outside of allowed range"
-    },
-    "default": 600
+    }
   },
   "tapering": {
     "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",

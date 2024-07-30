@@ -9,7 +9,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 
 function mountingBasic(theTheme: any) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -24,7 +24,7 @@ function mountingBasic(theTheme: any) {
 }
 
 function mounting(theTheme: any, disabled: boolean) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />

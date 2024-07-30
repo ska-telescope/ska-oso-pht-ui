@@ -1,6 +1,7 @@
 describe('GIVEN that I am a user on the main page of the PHT', () => {
   context('WHEN I wish to create a minimal Proposal', () => {
     beforeEach(() => {
+      cy.viewport(2000, 1000);
       cy.visit('http://localhost:6101/');
       cy.intercept(
         {

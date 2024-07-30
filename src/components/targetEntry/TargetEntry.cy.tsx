@@ -53,7 +53,7 @@ function editTarget() {
 }
 
 function viewPort() {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
 }
 
 function stubResolveButton() {

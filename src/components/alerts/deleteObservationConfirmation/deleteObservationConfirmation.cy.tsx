@@ -11,7 +11,7 @@ import { NEW_OBSERVATION } from '../../../utils/types/observation';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 function mount(theTheme) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
