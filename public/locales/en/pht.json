@@ -57,7 +57,7 @@
     "1": "SKA-MID",
     "2": "SKA-LOW"
   },
-  "bandWidth": {
+  "bandwidth": {
     "help": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
     "label": "Band Width"
   },

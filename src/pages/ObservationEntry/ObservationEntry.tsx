@@ -162,34 +162,28 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
-    console.log('TREVOR F1');
     if (isEdit()) {
       observationIn(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
     }
-    console.log('TREVOR FZ');
   }, []);
 
   React.useEffect(() => {
-    console.log('TREVOR GZ');
     if (!groupObservationId) {
       setGroupObservationLabel(t('groupObservations.new'));
     } else {
       setGroupObservationLabel(groupObservationId);
       setAddGroupObsDisabled(true);
     }
-    console.log('TREVOR GZ');
   }, groupObservationId);
 
   React.useEffect(() => {
-    console.log('TREVOR A', observingBand, telescope());
     if (telescope() > 0) {
       const record = OBSERVATION.array[telescope() - 1].subarray.find(
         element => element.value === subarrayConfig
       );
       if (record) {
-        console.log('TREVOR B', record);
         setNumOf15mAntennas(record.numOf15mAntennas);
         setNumOf13mAntennas(record.numOf13mAntennas);
         setNumOfStations(record.numOfStations);
@@ -229,7 +223,6 @@ export default function ObservationEntry() {
   }, []);
 
   React.useEffect(() => {
-    console.log('TREVOR C', observingBand);
     let centralFrequency: { value: any; lookup?: number; label?: string };
     let continuumBandwidth: { value: any; lookup?: number; label?: string };
     if (observingBand === 0) {
@@ -274,7 +267,6 @@ export default function ObservationEntry() {
       }
     }
     if (observingBand === 2) {
-      console.log('TREVOR D');
       // Band 2
       centralFrequency = OBSERVATION.CentralFrequencyOB2.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
@@ -293,7 +285,6 @@ export default function ObservationEntry() {
         );
         setSpectralResolution(spectralResolution?.value);
       }
-      console.log('TREVOR Z');
     }
     if (observingBand === 3) {
       // Band 5a
@@ -325,7 +316,6 @@ export default function ObservationEntry() {
               .value
       );
     }
-    console.log('TREVOR C99');
   }, [observingBand, subarrayConfig, subarrayConfig, observationType, bandwidth]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
@@ -778,10 +768,8 @@ export default function ObservationEntry() {
   };
 
   const frequencyUnitsField = () => {
-    console.log('TAS 1', telescope());
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
       .centralFrequencyAndBandWidthUnits;
-    console.log('TAS 2', FrequencyUnitOptions);
     if (FrequencyUnitOptions?.length === 1) {
       return FrequencyUnitOptions[0].label;
     } else {
@@ -899,7 +887,6 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
-    console.log('TREVOR E1');
     // TODO : Replace KHz / Hz with appropriate constants
     // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
     const unit = isLow() && observationType === 0 ? 'Hz' : 'kHz';
@@ -919,7 +906,6 @@ export default function ObservationEntry() {
       const velocity = calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency);
       setEffective(`${effectiveResolutionValue} kHz (${velocity})`);
     }
-    console.log('TREVOR EZ');
   }, [spectralResolution, spectralAveraging, observationType, frequency]);
 
   const effectiveResolutionField = () => {

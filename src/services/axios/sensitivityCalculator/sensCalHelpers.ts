@@ -170,7 +170,7 @@ const sensCalHelpers = {
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
       const array = OBSERVATION.array.find(item => item.value === telescope);
-      let units = array.CentralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
+      let units = array.centralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
         ?.label;
       return units;
     }

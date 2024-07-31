@@ -75,7 +75,7 @@ export default function ObservationPage() {
     let result = STATUS_INITIAL;
     filteredByObservation(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined') {
-        switch (rec.status) {
+        switch (rec.statusGUI) {
           case STATUS_ERROR:
             result = STATUS_ERROR;
             return;
@@ -162,7 +162,7 @@ export default function ObservationPage() {
 
   const setSensCalcForTargetGrid = (observationId: string, target: Target, sensCalc: any) => {
     const tmpTO = [{ targetId: target.id, observationId: observationId, sensCalc: sensCalc }];
-    elementsS.forEach(rec => {
+    elementsS.forEach((rec: TargetObservation) => {
       if (
         (rec: { targetId: number; observationId: string }) =>
           rec.targetId !== target.id || rec.observationId !== observationId
@@ -171,7 +171,7 @@ export default function ObservationPage() {
       }
     });
     setElementsS(tmpTO);
-    if (sensCalc?.status === STATUS_PARTIAL) {
+    if (sensCalc?.statusGUI === STATUS_PARTIAL) {
       getSensCalcData(target);
     }
   };
@@ -218,19 +218,18 @@ export default function ObservationPage() {
   };
 
   const addObservationTarget = (target: Target) => {
-    const ss = {
-      id: target.id,
-      title: target.name,
-      statusGUI: STATUS_PARTIAL,
-      error: ''
-    };
     const rec: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
-      sensCalc: ss
+      sensCalc: {
+        id: target.id,
+        title: target.name,
+        statusGUI: STATUS_PARTIAL,
+        error: ''
+      }
     };
     addTargetObservationStorage(rec);
-    setSensCalcForTargetGrid(currObs.id, target, ss);
+    setSensCalcForTargetGrid(currObs.id, target, rec.sensCalc);
   };
 
   function filterRecords(id: number) {

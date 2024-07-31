@@ -5,7 +5,9 @@ import {
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   AXIOS_CONFIG,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC
+  OBSERVATION_TYPE_SENSCALC,
+  OBSERVATION_TYPE_BACKEND,
+  TYPE_ZOOM
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -26,13 +28,18 @@ const URL_WEIGHTING = `weighting`;
 async function GetWeighting(observation: Observation, target: Target, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
-  const getTelescope = () =>
-    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
+  const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
+  const isZoom = () => inMode === TYPE_ZOOM;
 
-  const getMode = () =>
-    observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_SENSCALC[observation.type].toLowerCase() + '/'
-      : '';
+  const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
+  const getMode = () => (isLow() ? OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/' : '');
+
+  const getWeightingMode = () =>
+    OBSERVATION.ImageWeighting.find(
+      obj => obj.value === observation.imageWeighting
+    )?.label.toLowerCase();
+
+  const getRobustness = () => 0; // TODO
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
@@ -85,10 +92,7 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       weighting: weighting?.label.toLowerCase(),
       array_configuration: getSubArray(),
       calculator_mode: OBSERVATION_TYPE_SENSCALC[inMode],
-      taper:
-        observation.tapering === 'No tapering'
-          ? 0
-          : observation.tapering.replace('"', '').replace(' ', '')
+      taper: observation.tapering
     };
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
@@ -103,14 +107,26 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   }
 
   function mapQueryLowWeighting(): URLSearchParams {
-    const params = {
-      weighting_mode: OBSERVATION.ImageWeighting.find(
-        obj => obj.value === observation.imageWeighting
-      )?.label.toLowerCase(),
-      subarray_configuration: getSubArray(),
-      pointing_centre: pointingCentre(),
-      freq_centre: observation.centralFrequency.toString()
-    };
+    let params = null;
+    if (isZoom()) {
+      params = {
+        weighting_mode: getWeightingMode(),
+        robustness: getRobustness(),
+        subarray_configuration: getSubArray(),
+        pointing_centre: pointingCentre(),
+        freq_centres_mhz: observation.centralFrequency
+      };
+    } else {
+      params = {
+        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+        weighting_mode: getWeightingMode(),
+        robustness: getRobustness(),
+        subarray_configuration: getSubArray(),
+        pointing_centre: pointingCentre(),
+        freq_centre_mhz: observation.centralFrequency
+        // TODO : subband_freq_centres_mhz:
+      };
+    }
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
@@ -137,10 +153,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   }
 
   try {
-    const result = await axios.get(
-      `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`,
-      AXIOS_CONFIG
-    );
+    const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`;
+    const result = await axios.get(path, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {

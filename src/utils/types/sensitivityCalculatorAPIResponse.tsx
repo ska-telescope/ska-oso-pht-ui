@@ -26,18 +26,16 @@ export type SensitivityCalculatorAPIResponseLow = {
     };
   };
   weighting: {
-    beam_size: [
-      {
-        beam_maj_scaled: number;
-        beam_min_scaled: number;
-        beam_pa: number;
-      }
-    ];
-    confusion_noise: {
-      value: number[];
-      limit_type: string[];
+    beam_size: {
+      beam_maj_scaled: number;
+      beam_min_scaled: number;
+      beam_pa: number;
     };
-    sbs_conv_factor: number[];
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number;
     weighting_factor: number;
   };
   weightingLine: {
@@ -49,8 +47,8 @@ export type SensitivityCalculatorAPIResponseLow = {
       }
     ];
     confusion_noise: {
-      value: number[];
-      limit_type: string[];
+      value: number;
+      limit_type: string;
     };
     sbs_conv_factor: number[];
     weighting_factor: number;
