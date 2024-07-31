@@ -27,7 +27,7 @@
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
-    "latexPreviewTitle": "Abstract LaTeX Preview"
+    "latexPreviewTitle": "Abstract Preview"
   },
   "actions": {
     "label": "Actions"
@@ -52,17 +52,17 @@
   "arrayConfiguration": {
     "label": "Array Configuration",
     "short": "Array",
-    "help": "Specify an array a configuration. Currently the SKA has two arrays which is the MID and LOW.",
+    "help": "Specify an array configuration. Currently the SKA has two arrays - SKA-MID (350MHz - 154GHz) and SKA-LOW (50MHz – 350 MHz).",
     "0": "Not specified",
-    "1": "MID",
-    "2": "LOW"
+    "1": "SKA-MID",
+    "2": "SKA-LOW"
   },
   "bandWidth": {
-    "help": "Select the desired bandwidth in MHz (LOW) or GHz (MID) for your proposal. You can also specify a custom bandwidth by selecting the custom option",
+    "help": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
     "label": "Band Width"
   },
   "centralFrequency": {
-    "help": "CENTRAL FREQUENCY:Specify a central frequency which should be within the selected band and fully contained within the bandwidth.",
+    "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
     "label": "Central Frequency",
     "range": {
       "error": "Observing frequency out of range"
@@ -89,7 +89,7 @@
     }
   },
   "continuumUnits": {
-    "help": "CONTINUUM UNITS HELP"
+    "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
   },
   "cycle": {
     "label": "Cycle"
@@ -144,7 +144,7 @@
     "label": "Effective Resolution"
   },
   "elevation": {
-    "help": "ELEVATION HELP",
+    "help": "The minimum elevation is 15 deg for both SKA-LOW and SKA-MID and the maximum elevation is the target’s zenith elevation.",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value is outside of allowed range"
@@ -169,20 +169,20 @@
     },
     "technical": {
       "label": "proposal_technical",
-      "toolTip": "This is the download button of the file on the Science Page"
+      "toolTip": "This is the download button of the file on the Technical Page"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "firstName": {
     "label": "First Name",
-    "help": "Requires the first name of the principal investigator or co-investigator."
+    "help": "Requires the first name of the investigator."
   },
   "frequencyUnits": {
     "help": "FREQUENCY UNITS HELP"
   },
   "groupObservations": {
     "label": "Group",
-    "help": "GROUP OBSERVATIONS HELP",
+    "help": "Add observations to a group using the add button.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
@@ -193,8 +193,7 @@
   },
   "imageSize": {
     "label": "Image Size",
-    "help": "Image Size",
-    "error": "Value must be greater than zero"
+    "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees."
   },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",
@@ -207,7 +206,7 @@
     "label": "Invite Team Member"
   },
   "latex": {
-    "toolTip": "Preview the content using LeTeX format",
+    "toolTip": "Preview the content using LaTeX format.",
     "previewTitle": "LaTeX Preview"
   },
   "lastName": {
@@ -216,7 +215,7 @@
   },
   "listOfTargets": {
     "label": "List of Targets",
-    "toolTip": "A list of target will be entered and/or imported from file"
+    "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
   },
   "name": {
     "label": "Name",
@@ -255,7 +254,7 @@
     }
   },
   "observingBand": {
-    "help": "Observing Band HELP",
+    "help": "Select the observing band. Note that the array will be automatically populated based on the selected band.",
     "label": "Observing Band"
   },
   "observations": {
@@ -267,20 +266,20 @@
     "id": "Id",
     "dp": {
       "label": "Observation",
-      "help": "OBSERVATION HELP"
+      "help": "Select the observation set for which you want to request a data product(s)."
     },
     "group": "Group"
   },
   "observationType": {
     "label": "Observation Type",
-    "help": "OBSERVATION TYPE HELP",
+    "help": "Specify if the observation type is continuum or zoom. Note that not all sub-arrays have zoom mode so this option is available based on the sub-array chosen.",
     "short": "Type",
     "0": "Zoom",
     "1": "Continuum"
   },
   "observatoryDataProduct": {
     "label": "Observatory Data Product",
-    "help": "OBSERVATORY DATA PRODUCT HELP",
+    "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Visibilities",
       "2": "Calibrated Visibilities",
@@ -290,7 +289,7 @@
     }
   },
   "observationDetails": {
-    "help": "OBSERVATION DETAILS HELP",
+    "help": "Provide any further details about specific targets or any other considerations about observation(s).",
     "label": "Details",
     "minDisplayRows": "5"
   },
@@ -303,7 +302,7 @@
   },
   "phdThesis": {
     "label": "for PhD Thesis",
-    "help": "PHD THESIS HELP"
+    "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
   },
   "pht": {
     "short": "PHT",
@@ -311,7 +310,7 @@
   },
   "pi": {
     "label": "Primary Investigator",
-    "help": "PI HELP",
+    "help": "Check to indicate that this individual is the Principle Investigator.",
     "short": "PI"
   },
   "pipeline": {
@@ -350,11 +349,11 @@
     "under review": "Under Review"
   },
   "proposalType": {
-    "label": "Proposal Type",
-    "help1": "Below are the available Proposal Types.",
-    "help2": "A description of the different types is provided on 'hover' as an aid as to the correct type of proposal to be selected",
-    "help3": "Proposal sub-types are optional",
-    "help4": "It is possible to change proposal type at a later date, however be aware that this may cause information already entered to be lost"
+    "label": "Proposal Types",
+    "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
+    "help2": "Proposal sub-types are optional",
+    "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
+    "help4": ""
   },
   "subProposalType": {
     "label": "Proposal Subtype"
@@ -521,7 +520,7 @@
     "email": "Please enter a valid email address."
   },
   "spectralAveraging": {
-    "help": "Spectral averaging involves taking multiple spectra and averaging them to enhance the signal-to-noise ratio (SNR). Consider this value as it reduces random noise and enhances the true signal, making it easier to detect and analyze spectral features.",
+    "help": "The factor by which the intrinsic spectral resolution should be averaged. The Effective resolution field displays the channel width after applying the spectral averaging.",
     "label": "Spectral Averaging",
     "range": {
       "error": "Value is outside of allowed range"
@@ -551,7 +550,7 @@
     "5": "Not indicated"
   },
   "subBands": {
-    "help": "Valid range is 0 - 32 inclusive",
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1. If the number of sub-bands is greater than 1, the minimum and maximum weighted sensitivity per sub-band, confusion noise per sub-band, total sensitivity per sub-band, synthesised beam size per sub-band and surface-brightness sensitivity per sub-band, are reported.",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
@@ -577,7 +576,7 @@
     "20": "Custom"
   },
   "suppliedType": {
-    "help": "SUPPLIED TIME HELP"
+    "help": "The sensitivity for the observation in units of Jy/beam or K. This is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation. This is used to calculate the sensitivity that will be reached with this integration time. Units are selectable in the calculator."
   },
   "suppliedUnits": {
     "help": "SUPPLIED UNITS HELP"
@@ -589,9 +588,8 @@
     }
   },
   "tapering": {
-    "help": "TAPERING HELP",
-    "label": "Tapering",
-    "0": "No tapering"
+    "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Tapering"
   },
   "targetObservation": {
     "label": "Target / Observation relationship"
@@ -608,22 +606,22 @@
     "empty": "THERE IS NO TARGET ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
-    "label": "Title",
+    "label": "Proposal Title.",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "Provide the title of your proposal. This field supports latex syntax.",
-    "helper": "Please enter your title information"
+    "help": "",
+    "helper": "Please enter your title information. This field supports latex syntax."
   },
   "updated": {
     "label": "Last Updated"
   },
   "uploadCsvBtn": {
     "label": "Upload CSV File",
-    "uploadSuccessMsg": "All targets in CSV are uploaded",
+    "uploadSuccessMsg": "All targets in file have been uploaded into the proposal.",
     "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
-    "uploadErrorEquatorialNotValidMsg": "CSV equatorial schema not valid",
-    "uploadErrorGalacticNotValidMsg": "CSV galactic schema not valid",
-    "uploadErrorUnknownParserMsg": "Unknown error in CSV parser - "
+    "uploadErrorEquatorialNotValidMsg": "Equatorial schema not valid",
+    "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
+    "uploadErrorUnknownParserMsg": "Unknown error in file parser - "
   },
   "uploadPDF": {
     "label": "Upload PDF"
@@ -634,7 +632,7 @@
   },
   "velocity": {
     "label": "Velocity",
-    "help": "VELOCITY HELP",
+    "help": "Optionally specify the radial velocity.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
     "units": {
       "0": "km/s",
       "1": "m/s"
@@ -661,12 +659,12 @@
   },
   "weighting": {
     "label": "Weighting",
-    "help": "WEIGHTING HELP"
+    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting)."
   },
   "page": {
     "0": {
       "title": "Title",
-      "desc": "TITLE. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "1": {
       "title": "Team",
@@ -674,7 +672,7 @@
     },
     "2": {
       "title": "General",
-      "desc": "GENERAL. In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "3": {
       "title": "Science",
@@ -686,21 +684,21 @@
     },
     "5": {
       "title": "Observation",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "6": {
       "title": "Technical",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "title": "SDP Data",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "8": {
       "title": "SRC Net",
-      "desc": "In this space should be some sort of description as to the purpose of this page, including guidance, how to progress, etc"
+      "desc": ""
     },
     "9": {
       "title": "Title",
