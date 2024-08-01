@@ -16,6 +16,7 @@ import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
 import { validateObservationPage } from '../../utils/proposalValidation';
 import {
+  BANDWIDTH_TELESCOPE,
   PATH,
   STATUS_ERROR,
   STATUS_INITIAL,
@@ -316,11 +317,11 @@ export default function ObservationPage() {
       },
       {
         field: 'telescope',
-        headerName: t('arrayConfiguration.short'),
-        flex: 0.5,
+        headerName: t('observingBand.label'),
+        flex: 1.5,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { telescope: number } }) =>
-          t(`arrayConfiguration.${e.row.telescope}`)
+        renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
+          BANDWIDTH_TELESCOPE[e.row.rec.observingBand]?.label
       },
       {
         field: 'subarray',

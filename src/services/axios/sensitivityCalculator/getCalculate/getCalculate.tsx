@@ -110,8 +110,6 @@ async function GetCalculate(observation: Observation, target: Target) {
     const convertFrequency = (value: number | string, units: number | string) =>
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    console.log('TREVOR OB:', observation);
-
     let params = null;
     if (isZoom()) {
       params = {
@@ -320,11 +318,9 @@ async function GetCalculate(observation: Observation, target: Target) {
   }
 
   try {
-    console.log('TREVOR CALCULATE PATH', getPath());
     const result = await axios.get(getPath(), AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
-    console.log('TREVOR e', e);
     const errorObject = {
       title: e.response?.data?.title,
       detail: e.response?.data?.detail

@@ -28,7 +28,8 @@ import {
   SPECTRAL_AVERAGING_MIN,
   SUPPLIED_VALUE_DEFAULT,
   TELESCOPES,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
@@ -220,12 +221,13 @@ export default function ObservationEntry() {
   }, []);
 
   React.useEffect(() => {
+    // TODO : Validate subArray Configuration
     let centralFrequency: { value: any; lookup?: number; label?: string };
     let continuumBandwidth: { value: any; lookup?: number; label?: string };
     if (observingBand === 0) {
       // Band Low
       setFrequency(OBSERVATION.CentralFrequencyOBLow[0].value);
-      if (observationType === 1) {
+      if (isContinuum()) {
         continuumBandwidth = OBSERVATION.ContinuumBandwidthOBLow.find(
           e => e.lookup === subarrayConfig
         );
@@ -233,7 +235,7 @@ export default function ObservationEntry() {
         setContinuumBandwidth(valueContinuumBandwidth);
       }
       setSpectralResolution(
-        observationType === 1
+        isContinuum()
           ? OBSERVATION.SpectralResolutionObLow[0].value
           : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
               .value
@@ -244,24 +246,15 @@ export default function ObservationEntry() {
       centralFrequency = OBSERVATION.CentralFrequencyOB1.find(e => e.lookup === subarrayConfig);
       const valueCentralFrequency = centralFrequency?.value;
       setFrequency(valueCentralFrequency);
-      if (observationType === 1) {
+      if (isContinuum()) {
         continuumBandwidth = OBSERVATION.ContinuumBandwidthOB1.find(
           e => e.lookup === subarrayConfig
         );
         const valueContinuumBandwidth = continuumBandwidth?.value;
         setContinuumBandwidth(valueContinuumBandwidth);
       }
-      if (observationType === 1) {
-        const spectralResolution = OBSERVATION['SpectralResolutionOb1'].find(
-          e => e.lookup === valueCentralFrequency
-        );
-        setSpectralResolution(spectralResolution?.value);
-      } else {
-        const spectralResolution = OBSERVATION['SpectralResolutionOb1Zoom'].find(
-          e => e.lookup === valueCentralFrequency && e.bandWidthValue === bandwidth
-        );
-        setSpectralResolution(spectralResolution?.value);
-      }
+      const theLabel = isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom';
+      setSpectralResolution(getSpectralResolution(theLabel, valueCentralFrequency)?.value);
     }
     if (observingBand === 2) {
       // Band 2
@@ -271,17 +264,8 @@ export default function ObservationEntry() {
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB2.find(e => e.lookup === subarrayConfig);
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
-      if (observationType === 1) {
-        const spectralResolution = OBSERVATION['SpectralResolutionOb2'].find(
-          e => e.lookup === valueCentralFrequency
-        );
-        setSpectralResolution(spectralResolution?.value);
-      } else {
-        const spectralResolution = OBSERVATION['SpectralResolutionOb2Zoom'].find(
-          e => e.lookup === valueCentralFrequency && e.bandWidthValue === bandwidth
-        );
-        setSpectralResolution(spectralResolution?.value);
-      }
+      const theLabel = isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom';
+      setSpectralResolution(getSpectralResolution(theLabel, valueCentralFrequency)?.value);
     }
     if (observingBand === 3) {
       // Band 5a
@@ -292,33 +276,42 @@ export default function ObservationEntry() {
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
-        observationType === 1
+        isContinuum()
           ? OBSERVATION.SpectralResolutionOb5a[0].value
-          : OBSERVATION.SpectralResolutionOb5aZoom.find(item => item.bandWidthValue === bandwidth)
-              .value
+          : OBSERVATION.SpectralResolutionOb5aZoom.find(
+              item => item.bandWidthValue.toString() === bandwidth.toString()
+            ).value
       );
     }
     if (observingBand === 4) {
       // Band 5b
-      setFrequency(OBSERVATION.CentralFrequencyOB5b[0].value);
+      const valueCentralFrequency = OBSERVATION.CentralFrequencyOB5b[0].value;
+      setFrequency(valueCentralFrequency);
       continuumBandwidth = OBSERVATION.ContinuumBandwidthOB5b.find(
         e => e.lookup === subarrayConfig
       );
       const valueContinuumBandwidth = continuumBandwidth?.value;
       setContinuumBandwidth(valueContinuumBandwidth);
       setSpectralResolution(
-        observationType === 1
+        isContinuum()
           ? OBSERVATION.SpectralResolutionOb5b[0].value
-          : OBSERVATION.SpectralResolutionOb5bZoom.find(item => item.bandWidthValue === bandwidth)
-              .value
+          : OBSERVATION.SpectralResolutionOb5bZoom.find(
+              item => item.bandWidthValue.toString() === bandwidth.toString()
+            ).value
       );
     }
   }, [observingBand, subarrayConfig, subarrayConfig, observationType, bandwidth]);
 
+  const isZoom = () => observationType === TYPE_ZOOM;
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === 0;
   const isBand5 = () => BANDWIDTH_TELESCOPE[observingBand].isBand5;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand].telescope;
+
+  const getSpectralResolution = (inLabel: String, inValue: { toString: () => any }) =>
+    OBSERVATION[inLabel].find(
+      (e: { lookup: { toString: () => any } }) => e.lookup.toString() === inValue.toString()
+    );
 
   const isContinuumOnly = () => {
     if (isLow()) {
@@ -539,7 +532,7 @@ export default function ObservationEntry() {
   const spectralResolutionField = () => {
     function setSpectralResolutionDisplayValue(spectralResolution) {
       // low zoom mode
-      if (observationType === 0 && observingBand === 0) {
+      if (isZoom() && observingBand === 0) {
         const spectralResolutionSplit = spectralResolution.split('Hz');
         const roundedRes = Number(spectralResolutionSplit[0]).toFixed(1);
         return `${roundedRes} Hz ${spectralResolutionSplit[1]}`;
@@ -886,16 +879,15 @@ export default function ObservationEntry() {
   React.useEffect(() => {
     // TODO : Replace KHz / Hz with appropriate constants
     // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-    const unit = isLow() && observationType === 0 ? 'Hz' : 'kHz';
+    const unit = isLow() && isZoom() ? 'Hz' : 'kHz';
     const spectralResolutionValue = String(spectralResolution).split(unit);
     const resolution = Number(spectralResolutionValue[0]);
     if (isLow()) {
       const centralFrequency = getScaledValue(frequency, 1000000, '*');
-      const decimal = observationType === 1 ? 2 : 1;
-      const velocity =
-        observationType === 1
-          ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
-          : calculateVelocity(resolution * spectralAveraging, centralFrequency);
+      const decimal = isContinuum() ? 2 : 1;
+      const velocity = isContinuum()
+        ? calculateVelocity(resolution * spectralAveraging * 1000, centralFrequency)
+        : calculateVelocity(resolution * spectralAveraging, centralFrequency);
       setEffective(`${(resolution * spectralAveraging).toFixed(decimal)} ${unit} (${velocity})`);
     } else {
       const centralFrequency = getScaledValue(frequency, 1000000000, '*');

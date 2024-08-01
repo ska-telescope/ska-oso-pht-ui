@@ -22,12 +22,19 @@ export default function calculateSensitivityCalculatorResults(
 ): SensCalcResults {
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
+  const recWeight = isZoom()
+    ? response.weighting[0]
+    : isLow()
+    ? response.weightingLine[0]
+    : response.weighting;
 
-  console.log('TREVOR OBSERVATION', response, observation);
+  const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
+    sense * rec.sbs_conv_factor;
 
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
-    : getWeightedSensitivityMID(response);
+    : getWeightedSensitivityMID(response, isZoom());
+
   const confusionNoise: number = isLow()
     ? getConfusionNoiseLOW(response, isZoom())
     : getConfusionNoiseMID(response, isZoom());
@@ -35,12 +42,11 @@ export default function calculateSensitivityCalculatorResults(
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
-  const sbs = isLow()
-    ? getSBSLOW(response, totalSensitivity, isZoom())
-    : getSBSMID(response, totalSensitivity, isZoom());
+
+  const sbs = getSurfaceBrightnessSensitivity(recWeight, totalSensitivity);
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
-    : getSpectralWeightedSensitivityMID(response, observation.type);
+    : getSpectralWeightedSensitivityMID(response, isZoom());
   const spectralConfusionNoise = isLow()
     ? getSpectralConfusionNoiseLOW(response, isZoom())
     : getSpectralConfusionNoiseMID(response, isZoom());
@@ -73,6 +79,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralWeightedSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralWeightedSensitivity
   );
+
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertSensitivityToDisplayValue(
     spectralTotalSensitivity
   );
@@ -193,15 +200,6 @@ const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): 
   );
 };
 
-const getSBSLOW = (
-  response: SensitivityCalculatorAPIResponseLow,
-  sense: number,
-  isZoom: boolean
-) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
-  return sense * rec.sbs_conv_factor;
-};
-
 /* -------------- */
 
 const getSpectralConfusionNoiseLOW = (
@@ -256,9 +254,17 @@ const getConfusionNoiseZoomMID = (response: SensitivityCalculatorAPIResponseMid)
     : 0;
 
 const getWeightedSensitivityMID = (
-  response: SensitivityCalculatorAPIResponseMid // TO DO
-) =>
-  (response.calculate?.data?.data?.result.sensitivity ?? 0) * response.weighting?.weighting_factor;
+  response: SensitivityCalculatorAPIResponseMid,
+  isZoom: boolean
+) => {
+  const sensitivity: number = isZoom
+    ? response?.calculate?.data[0]?.spectral_sensitivity.value
+    : response?.calculate?.data?.spectral_sensitivity.value;
+  const factor: number = isZoom
+    ? response.weighting[0].weighting_factor
+    : response.weighting.weighting_factor;
+  return sensitivity * factor;
+};
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): string => {
   const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
@@ -267,15 +273,6 @@ const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): 
     rec.beam_size.beam_min_scaled,
     1
   );
-};
-
-const getSBSMID = (
-  response: SensitivityCalculatorAPIResponseLow,
-  sense: number,
-  isZoom: boolean
-) => {
-  const rec = isZoom ? response.weighting[0] : response.weighting;
-  return sense * rec.sbs_conv_factor;
 };
 
 /* -------------- */
@@ -291,14 +288,12 @@ const getSpectralConfusionNoiseMID = (
 };
 
 const getSpectralWeightedSensitivityMID = (
-  response: SensitivityCalculatorAPIResponseMid,
-  type: number
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean
 ) => {
-  const weighting_factor =
-    type === TYPE_ZOOM
-      ? response.weighting?.weighting_factor
-      : response.weightingLine[0]?.weighting_factor;
-  return (response.calculate.data?.data?.result?.sensitivity ?? 0) * weighting_factor;
+  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
+  return calc.spectral_sensitivity?.value * rec.weighting_factor;
 };
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom: boolean) => {

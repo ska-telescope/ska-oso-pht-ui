@@ -37,7 +37,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output = await fetchSensCalc(observation, target);
-    console.log('TREVOR OUTPUT', output);
     if ('error' in output) {
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }

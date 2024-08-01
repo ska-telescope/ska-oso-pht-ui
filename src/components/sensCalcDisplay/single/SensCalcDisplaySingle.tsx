@@ -11,6 +11,7 @@ const TOTAL_SENSE = 'TotalSensitivity';
 const BEAM_SIZE = 'SynthBeamSize';
 const VALUE = 'value';
 const UNITS = 'units';
+const SHOW_ERROR_ON_LINE = false; // Leave this as I expect this will return
 
 interface SensCalcDisplaySingleProps {
   sensCalc: any;
@@ -72,7 +73,7 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
           )}
           {hasError() && (
             <Grid item xs={10}>
-              {sensCalc?.error}
+              {SHOW_ERROR_ON_LINE && sensCalc?.error}
             </Grid>
           )}
         </Grid>
