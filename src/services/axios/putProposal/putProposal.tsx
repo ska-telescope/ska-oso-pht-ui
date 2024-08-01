@@ -304,7 +304,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps: [], // TODO
       data_product_src_nets:
-        proposal.DataProductSRC?.length > 0 ? getDataProductSRC(proposal.DataProductSRC) : [],
+        proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
       results: [] // TODO
     }
   };

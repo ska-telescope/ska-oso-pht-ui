@@ -193,7 +193,8 @@
   },
   "imageSize": {
     "label": "Image Size",
-    "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees."
+    "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
+    "error": "A value greater than zero is required"
   },
   "imageWeighting": {
     "help": "IMAGE WEIGHTING HLP",

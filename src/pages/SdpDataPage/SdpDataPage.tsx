@@ -136,15 +136,15 @@ export default function SdpDataPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().DataProductSDP.filter(e => e.id !== currentRow);
+    const obs1 = getProposal().dataProductSDP.filter(e => e.id !== currentRow);
 
-    setProposal({ ...getProposal(), DataProductSDP: obs1 });
+    setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().DataProductSDP.find(p => p.id === currentRow);
+    const rec = getProposal().dataProductSDP.find(p => p.id === currentRow);
     return (
       <Grid
         p={2}
@@ -180,7 +180,7 @@ export default function SdpDataPage() {
   };
 
   const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
-  const getRows = () => getProposal().DataProductSDP;
+  const getRows = () => getProposal().dataProductSDP;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
   const clickRow = (e: { id: number }) => {

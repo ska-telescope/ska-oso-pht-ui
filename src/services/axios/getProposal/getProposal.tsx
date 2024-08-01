@@ -496,8 +496,8 @@ function mapping(inRec: ProposalBackend): Proposal {
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? 1 : 0,
-    DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
-    DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
   return convertedProposal;

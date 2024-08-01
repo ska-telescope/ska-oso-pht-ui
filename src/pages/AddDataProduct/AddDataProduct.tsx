@@ -222,10 +222,14 @@ export default function AddDataProduct() {
     };
 
     const addToProposal = () => {
-      const highestId = getProposal().DataProductSDP.reduce(
-        (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
-        0
-      );
+      const hasRecord = getProposal().dataProductSDP;
+      let highestId = 1;
+      if (hasRecord) {
+        highestId = getProposal().dataProductSDP.reduce(
+          (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
+          0
+        );
+      }
       const observatoryDataProduct = [dp1, dp2, dp3, dp3, dp4];
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
@@ -238,11 +242,17 @@ export default function AddDataProduct() {
         pixelSizeUnits,
         weighting
       };
-
-      setProposal({
-        ...getProposal(),
-        DataProductSDP: [...getProposal().DataProductSDP, newDataProduct]
-      });
+      if (hasRecord) {
+        setProposal({
+          ...getProposal(),
+          dataProductSDP: [...getProposal().dataProductSDP, newDataProduct]
+        });
+      } else {
+        setProposal({
+          ...getProposal(),
+          dataProductSDP: [newDataProduct]
+        });
+      }
     };
 
     const buttonClicked = () => {
