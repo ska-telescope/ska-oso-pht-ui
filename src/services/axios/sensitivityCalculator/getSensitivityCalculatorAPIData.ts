@@ -37,16 +37,16 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output = await fetchSensCalc(observation, target);
+    console.log('TREVOR OUTPUT', output);
     if ('error' in output) {
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
-    // TODO : Not sure we still need these.
-    //if (output['calculate']['error']['details']) {
-    //  return makeResponse(target, STATUS_ERROR, output['calculate']['error']['details'] );
-    //}
-    //if (output['weighting']['error']['details']) {
-    //  return makeResponse(target, STATUS_ERROR, output['weighting']['error']['details']);
-    //}
+    if (output['calculate']['error'] && output['calculate']['error']['detail']) {
+      return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
+    }
+    if (output['weighting']['error'] && output['weighting']['error']['detail']) {
+      return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
+    }
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {

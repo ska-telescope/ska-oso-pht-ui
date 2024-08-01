@@ -7,7 +7,6 @@ import {
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC,
   TYPE_ZOOM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
@@ -26,13 +25,12 @@ async function GetCalculate(observation: Observation, target: Target) {
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
-  const getMode = () =>
-    isLow() ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/' : '';
+  const getMode = () => OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/';
 
   const getBandwidthValues = () =>
     OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-  const getWeighting = () =>
-    OBSERVATION.ImageWeighting.find(item => item.value === observation.imageWeighting);
+  //const getWeighting = () =>
+  //  OBSERVATION.ImageWeighting.find(item => item.value === observation.imageWeighting);
 
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
   const SUPPLIED_IS_SENSITIVITY = observation?.supplied?.type === 2 ? true : false;
@@ -74,15 +72,15 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   /*********************************************************** MID *********************************************************/
 
-  interface ModeSpecificParametersMid {
-    n_subbands?: string;
-    resolution?: string;
-    zoom_frequencies?: string;
-    zoom_resolutions?: string;
-  }
+  //interface ModeSpecificParametersMid {
+  //  n_subbands?: string;
+  //  resolution?: string;
+  //  zoom_frequencies?: string;
+  //  zoom_resolutions?: string;
+  //}
 
   function mapQueryCalculateMid(): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParametersMid = {};
+    /*
     if (isContinuum()) {
       mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
       mode_specific_parameters.resolution = (
@@ -106,23 +104,100 @@ async function GetCalculate(observation: Observation, target: Target) {
         Number(observation.effectiveResolution.split(' ')[0]) * effectiveResMultiplier
       ).toString();
     }
+    */
 
-    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      // TODO handle sensitivity?
-      observation.supplied.units
-    );
-    const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
-      Number(observation.supplied.value),
-      iTimeUnits
-    );
+    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+    const convertFrequency = (value: number | string, units: number | string) =>
+      sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit(); // only for zoom
-    const params = {
-      rx_band: `Band ${observation.observingBand}`,
+    console.log('TREVOR OB:', observation);
+
+    let params = null;
+    if (isZoom()) {
+      params = {
+        rx_band: `Band ${observation.observingBand}`, // MANDATORY
+        subarray_configuration: getSubArray(),
+        // n_ska
+        // n_meer
+        freq_centres_hz: [
+          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
+        ], // MANDATORY
+        bandwidth_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]), // MANDATORY
+        // spectral_averaging_factor
+        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        pwv: observation.weather?.toString(),
+        el: observation.elevation?.toString(),
+        // spectral_averaging_factor
+        spectral_resolutions_hz: 13440, // TODO
+        total_bandwidths_hz: 200000000, // TODO
+        n_subbands: observation.numSubBands?.toString()
+        // subband_sensitivities_jy
+        // eta_system
+        // eta_pointing
+        // eta_coherence
+        // eta_digitisation
+        // eta-correlation
+        // eta_bandpass
+        // t_sys_ska
+        // t_rx_ska
+        // t_spl_ska
+        // t_sys_meer
+        // t_rx_meer
+        // t_spl_meer
+        // t_sky_ska
+        // t_gal_ska
+        // t_gal_meer
+        // alpha
+        // eta_meer
+        // eta_ska
+      };
+    } else {
+      params = {
+        rx_band: `Band ${observation.observingBand}`, // MANDATORY
+        subarray_configuration: getSubArray(),
+        // n_ska
+        // n_meer
+        freq_centre_hz: convertFrequency(
+          observation.centralFrequency,
+          observation.centralFrequencyUnits
+        ), // MANDATORY
+        bandwidth_hz: convertFrequency(
+          observation.continuumBandwidth,
+          observation.continuumBandwidthUnits
+        ), // MANDATORY
+        // spectral_averaging_factor
+        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        pwv: observation.weather?.toString(),
+        el: observation.elevation?.toString(),
+        n_subbands: observation.numSubBands?.toString()
+        // subband_sensitivities_jy
+        // eta_system
+        // eta_pointing
+        // eta_coherence
+        // eta_digitisation
+        // eta-correlation
+        // eta_bandpass
+        // t_sys_ska
+        // t_rx_ska
+        // t_spl_ska
+        // t_sys_meer
+        // t_rx_meer
+        // t_spl_meer
+        // t_sky_ska
+        // t_gal_ska
+        // t_gal_meer
+        // alpha
+        // eta_meer
+        // eta_ska
+      };
+    }
+    /*
+
+
       ra_str: rightAscension(),
       dec_str: declination(),
-      array_configuration: getSubArray(),
-      pwv: observation.weather?.toString(),
+
+
       el: observation.elevation?.toString(),
       frequency: sensCalHelpers.format
         .convertFrequencyToHz(
@@ -149,10 +224,24 @@ async function GetCalculate(observation: Observation, target: Target) {
       integration_time: SUPPLIED_IS_SENSITIVITY ? undefined : iTime?.toString(),
       // TODO convert sensitivity to units expected by the sens calc (check logic in sens calc)
       sensitivity: !SUPPLIED_IS_SENSITIVITY ? undefined : observation.supplied.value,
-      ...mode_specific_parameters
-    };
+      */
+
     helpers.transform.trimObject(params);
     const urlSearchParams = new URLSearchParams();
+
+    if (SUPPLIED_IS_SENSITIVITY) {
+      urlSearchParams.append('sensitivity_jy', observation.supplied.value.toString());
+    } else {
+      const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+        observation.supplied.units
+      );
+      const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
+        Number(observation.supplied.value),
+        iTimeUnits
+      );
+      urlSearchParams.append('integration_time_s', iTime?.toString());
+    }
+
     for (let key in params) urlSearchParams.append(key, params[key]);
     return urlSearchParams;
   }
@@ -218,6 +307,9 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getQueryParams = () => (isLow() ? mapQueryCalculateLow() : mapQueryCalculateMid());
 
+  const getPath = () =>
+    `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
+
   const getLowCalculate = () =>
     observation.type ? MockResponseLowCalculate : MockResponseLowCalculateZoom;
   const getMidCalculate = () =>
@@ -228,10 +320,11 @@ async function GetCalculate(observation: Observation, target: Target) {
   }
 
   try {
-    const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
-    const result = await axios.get(path, AXIOS_CONFIG);
+    console.log('TREVOR CALCULATE PATH', getPath());
+    const result = await axios.get(getPath(), AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
+    console.log('TREVOR e', e);
     const errorObject = {
       title: e.response?.data?.title,
       detail: e.response?.data?.detail
