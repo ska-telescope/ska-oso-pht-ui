@@ -43,7 +43,6 @@ export default function GeneralPage() {
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
 
   React.useEffect(() => {
-    console.log('TREVOR', getProposal());
     setValidateToggle(!validateToggle);
     helpComponent(t('abstract.help'));
   }, []);
