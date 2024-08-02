@@ -13,7 +13,10 @@ Future
    - Extended width of SensCalc Multiple display modal
    - Updated SDP Page to only accept observations with passing SensCalc results
    - Image Size forced to be +ve
-* STAR-536: Ability to Edit an Observation
+* STAR-536: 
+   - Ability to Edit an Observation
+   - Edit proposal forces all linked target/observations to 'partial'
+   - Updated the default proposal for use with Add Proposal
 * STAR-609: Observation updates in regards to MID Telescope
 * STAR-615: Proposal mapping:
    - PutProposal mapping (partial - data_product_sdps and results still to map)

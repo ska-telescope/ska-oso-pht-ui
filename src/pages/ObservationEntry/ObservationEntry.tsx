@@ -26,6 +26,7 @@ import {
   OBSERVATION_TYPE,
   SPECTRAL_AVERAGING_MAX,
   SPECTRAL_AVERAGING_MIN,
+  STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT,
   TELESCOPES,
   TYPE_CONTINUUM,
@@ -1077,9 +1078,30 @@ export default function ObservationEntry() {
         }
       }
 
+      const updateSensCalc = (ob: Observation) => {
+        const results = [];
+        getProposal().targetObservation.forEach(rec => {
+          if (rec.observationId === ob.id) {
+            const to = {
+              observationId: ob.id,
+              targetId: rec.targetId,
+              sensCalc: {
+                id: rec.targetId,
+                title: '',
+                statusGUI: STATUS_PARTIAL,
+                error: ''
+              }
+            };
+            results.push(to);
+          }
+        });
+        return results;
+      };
+
       setProposal({
         ...getProposal(),
         observations: newObservations,
+        targetObservation: updateSensCalc(newObservation),
         groupObservations: newGroupObservations
       });
     };
