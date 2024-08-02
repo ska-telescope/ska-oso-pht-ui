@@ -4,8 +4,8 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import PageFooter from '../../components/layout/pageFooter/PageFooter';
 import TitleContent from '../../components/titleContent/TitleContent';
-import { EMPTY_PROPOSAL, EMPTY_STATUS } from '../../utils/constants';
-import Proposal from '../../utils/types/proposal';
+import { EMPTY_STATUS } from '../../utils/constants';
+import Proposal, { NEW_PROPOSAL } from '../../utils/types/proposal';
 
 const PAGE = 9;
 
@@ -16,7 +16,7 @@ export default function AddProposal() {
 
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
-    updateAppContent2(EMPTY_PROPOSAL);
+    updateAppContent2(NEW_PROPOSAL);
   }, []);
 
   const contentValid = () => !(getProposal()?.title?.length > 0 && getProposal()?.proposalType > 0);

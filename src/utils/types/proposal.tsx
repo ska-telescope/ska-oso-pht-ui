@@ -14,6 +14,7 @@ import TeamMember from './teamMember';
 import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
+import { DEFAULT_PI } from '../constants';
 
 export type ProposalBackend = {
   prsl_id: string;
@@ -71,6 +72,37 @@ export type Proposal = {
   dataProductSDP?: DataProductSDP[];
   dataProductSRC?: DataProductSRC[];
   pipeline?: string;
+};
+
+export const NEW_PROPOSAL = {
+  id: null,
+  title: '',
+  status: '',
+  lastUpdated: '',
+  lastUpdatedBy: '',
+  createdOn: '',
+  createdBy: '',
+  version: 0,
+  cycle: '',
+  proposalType: 0,
+  proposalSubType: [0],
+  scienceCategory: 1,
+  scienceSubCategory: [1],
+  team: [DEFAULT_PI],
+  pi: '',
+  abstract: '',
+  sciencePDF: null,
+  scienceLoadStatus: 0,
+  targetOption: 1,
+  targets: [],
+  observations: [],
+  groupObservations: [],
+  targetObservation: [],
+  technicalPDF: null,
+  technicalLoadStatus: 0,
+  dataProductSDP: [],
+  dataProductSRC: [],
+  pipeline: ''
 };
 
 export default Proposal;

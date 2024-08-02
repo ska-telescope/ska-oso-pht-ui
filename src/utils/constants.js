@@ -822,26 +822,3 @@ export const DEFAULT_PI = {
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
 };
-
-export const EMPTY_PROPOSAL = {
-  id: null,
-  title: '',
-  proposalType: 0,
-  proposalSubType: [0],
-  cycle: '',
-  team: [DEFAULT_PI],
-  abstract: '',
-  category: 0,
-  subCategory: [0],
-  sciencePDF: null,
-  scienceLoadStatus: 0,
-  targetOption: 1,
-  targets: [],
-  observations: [],
-  groupObservations: [],
-  targetObservation: [],
-  technicalPDF: null,
-  technicalLoadStatus: 0,
-  dataProducts: [],
-  pipeline: ''
-};
