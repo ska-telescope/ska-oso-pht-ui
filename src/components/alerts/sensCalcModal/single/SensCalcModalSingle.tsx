@@ -23,20 +23,22 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
 
   const { t } = useTranslation('pht');
 
-  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => (
-    <Grid key={eId} container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid item xs={6}>
-        <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
-          {eLabel}
-        </Typography>
+  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
+    return (
+      <Grid key={eId} container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid item xs={6}>
+          <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
+            {eLabel}
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
+            {eValue} {eUnits}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={6}>
-        <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-          {eValue} {eUnits}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
+    );
+  };
 
   return (
     <Dialog

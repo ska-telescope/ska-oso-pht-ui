@@ -7,6 +7,12 @@ Future
 
 ---
 
+* STAR-624: 
+   - Updated SensCalc mapping & display ( Zoom & Continuum )
+   - Removed units from SensCalc multiple display modal
+   - Extended width of SensCalc Multiple display modal
+   - Updated SDP Page to only accept observations with passing SensCalc results
+   - Image Size forced to be +ve
 * STAR-536: Ability to Edit an Observation
 * STAR-609: Observation updates in regards to MID Telescope
 * STAR-615: Proposal mapping:

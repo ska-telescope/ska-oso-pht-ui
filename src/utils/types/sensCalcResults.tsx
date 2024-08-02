@@ -21,8 +21,8 @@ export type SensCalcResultsBackend = {
 };
 
 export type SensCalcResults = {
-  id?: number;
-  title?: string;
+  id: number;
+  title: string;
   statusGUI: number;
   error?: string;
   section1?: ResultsSection[];

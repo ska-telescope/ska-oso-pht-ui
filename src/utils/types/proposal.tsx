@@ -68,8 +68,8 @@ export type Proposal = {
   technicalPDF?: DocumentPDF;
   technicalLoadStatus?: number;
   // dataProducts?: DataProduct[];
-  DataProductSDP?: DataProductSDP[];
-  DataProductSRC?: DataProductSRC[];
+  dataProductSDP?: DataProductSDP[];
+  dataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };
 

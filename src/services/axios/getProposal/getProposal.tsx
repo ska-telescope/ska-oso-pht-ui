@@ -238,13 +238,13 @@ const getFrequencyAndBandwidthUnits = (
   observingBand: number
 ): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
-  let units = array.CentralFrequencyAndBandWidthUnits?.find(
+  let units = array.centralFrequencyAndBandWidthUnits?.find(
     item => item.mapping.toLowerCase() === inUnits?.toLowerCase()
   )?.value;
   // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
   return units
     ? units
-    : array.CentralFrequencyAndBandWidthUnits?.find(
+    : array.centralFrequencyAndBandWidthUnits?.find(
         item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
       )?.value;
 };
@@ -438,7 +438,7 @@ const getTargetObservation = (
   let targetObsArray = [];
   for (let result of inResults) {
     const targetObs: TargetObservation = {
-      targetId: result.target_ref,
+      targetId: Number(result.target_ref),
       observationId: result.observation_set_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
@@ -496,8 +496,8 @@ function mapping(inRec: ProposalBackend): Proposal {
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? 1 : 0,
-    DataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
-    DataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
   return convertedProposal;

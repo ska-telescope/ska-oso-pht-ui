@@ -63,7 +63,7 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.dataProducts?.length > 0 ? 1 : 0;
+  const count = proposal.dataProductSDP?.length > 0 ? 1 : 0;
   return result[count];
 };
 
