@@ -48,7 +48,10 @@ export default function SdpDataPage() {
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
-    setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
+    const values = results?.map(e => ({ label: e.id, value: e.id }));
+    if (values) {
+      setBaseObservations([...values]);
+    }
     setValidateToggle(!validateToggle);
   }, []);
 
