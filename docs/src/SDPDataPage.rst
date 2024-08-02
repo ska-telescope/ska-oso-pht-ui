@@ -2,7 +2,7 @@ SDP Data Page
 ~~~~~~~~~~~~~
 
 The SDP (Science Data Processor) page is linked with the observation page so observation sets can be specified for which a data product is requested. Here, you can request a single or multiple SDP data products for an observation set or all observation sets added to your proposal.
-The "add observation" will not be active until and observation set exist and has been linked to a target. :numref:`Figure %s <datapage>` shows the layout of the SDP data page in light mode when no data product has been added to observation set(s) but observation sets and targets have linked on the observation page.
+The "add observation" will not be active until an observation set exists, has been linked to a target and has a valid sensitivity Calculation Result. :numref:`Figure %s <datapage>` shows the layout of the SDP data page in light mode when no data product has been added to observation set(s) but observation sets and targets have linked on the observation page.
 
 
 .. |icosdp| image:: /images/addsdp.png
@@ -33,7 +33,7 @@ display a table as shown in :numref:`Figure %s <datapage1>`. This table displays
   - *Observation set(s)*: Observation set selected for which the sdp data product(s) is added.
   - *Observatory Data Product*:  A list of selected data products(s).
   - *Image Size*: Image size requested.
-  - *Pixel Size*: Pixel size  caluclated based on the beam size returned from the sensitivity calculator =  :math:`\frac{\theta_{minor}}{3}`.
+  - *Pixel Size*: Pixel size  calculated based on the beam size returned from the sensitivity calculator =  :math:`\frac{\theta_{minor}}{3}`.
   - *Weighting*: The weighting of the selected observation set.
   - *"Actions"* : "Delete" is the only option available at the moment.
 

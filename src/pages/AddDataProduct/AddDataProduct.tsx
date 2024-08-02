@@ -14,7 +14,7 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { IMAGE_SIZE_UNITS, NAV } from '../../utils/constants';
+import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
@@ -57,7 +57,9 @@ export default function AddDataProduct() {
     helpComponent(t('observations.dp.help'));
     const results: Observation[] = getProposal()?.observations?.filter(
       ob =>
-        typeof getProposal()?.targetObservation.find(e => e.observationId === ob.id) !== 'undefined'
+        typeof getProposal()?.targetObservation.find(
+          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
+        ) !== 'undefined'
     );
     setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
   }, []);
@@ -187,7 +189,7 @@ export default function AddDataProduct() {
         labelWidth={LABEL_WIDTH}
         testId="imageSize"
         value={imageSizeValue}
-        setValue={setImageSizeValue}
+        setValue={(e: number) => setImageSizeValue(Math.abs(e))}
         onFocus={() => helpComponent(t('imageSize.help'))}
         required
         suffix={imageSizeUnitsField()}

@@ -31,7 +31,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    SciencePage
    TargetPage
    ObservationPage
-   DataPage
+   SDPDataPage
    SrcNetPage
    SubmitConfirmation
    UserQuestions

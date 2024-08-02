@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { OBSERVATION } from '../../utils/constants';
+import { OBSERVATION, STATUS_OK } from '../../utils/constants';
 import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -14,6 +14,7 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import { PATH } from '../../utils/constants';
 import DataProduct from '../../utils/types/dataProduct';
+import Observation from '../../utils/types/observation';
 
 const PAGE = 7;
 const DATA_GRID_HEIGHT = 450;
@@ -26,6 +27,7 @@ export default function SdpDataPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [baseObservations, setBaseObservations] = React.useState([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -40,6 +42,13 @@ export default function SdpDataPage() {
   };
 
   React.useEffect(() => {
+    const results: Observation[] = getProposal()?.observations?.filter(
+      ob =>
+        typeof getProposal()?.targetObservation.find(
+          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
+        ) !== 'undefined'
+    );
+    setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
     setValidateToggle(!validateToggle);
   }, []);
 
@@ -179,7 +188,7 @@ export default function SdpDataPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
+  const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const getRows = () => getProposal().dataProductSDP;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
