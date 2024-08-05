@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION, OBSERVATION } from '../../../utils/constants';
+import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 interface ImageWeightingFieldProps {
   disabled?: boolean;
@@ -23,20 +22,18 @@ export default function ImageWeightingField({
   const FIELD = 'imageWeighting';
 
   return (
-    <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
-      <DropDown
-        disabled={disabled}
-        value={value}
-        label={t('imageWeighting.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
-        onFocus={onFocus}
-        options={OBSERVATION.ImageWeighting}
-        required
-        setValue={setValue}
-        testId={FIELD}
-      />
-    </Box>
+    <DropDown
+      disabled={disabled}
+      value={value}
+      label={t('imageWeighting.label')}
+      labelBold={LAB_IS_BOLD}
+      labelPosition={LAB_POSITION}
+      labelWidth={labelWidth}
+      onFocus={onFocus}
+      options={IMAGE_WEIGHTING}
+      required
+      setValue={setValue}
+      testId={FIELD}
+    />
   );
 }

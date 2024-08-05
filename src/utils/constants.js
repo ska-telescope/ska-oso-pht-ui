@@ -16,11 +16,17 @@ export const AXIOS_CONFIG = {
   }
 };
 
+export const BAND_LOW = 0;
+export const BAND_1 = 1;
+export const BAND_2 = 2;
+export const BAND_5A = 3;
+export const BAND_5B = 4;
+
 export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Low Band (50 - 350 MHz)',
     telescope: 2,
-    value: 0,
+    value: BAND_LOW,
     isBand5: false,
     lower: 50,
     upper: 350,
@@ -30,7 +36,7 @@ export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Band 1 (0.35 - 1.05 GHz)',
     telescope: 1,
-    value: 1,
+    value: BAND_1,
     isBand5: false,
     lower: 0.35,
     upper: 1.05,
@@ -40,7 +46,7 @@ export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
-    value: 2,
+    value: BAND_2,
     isBand5: false,
     lower: 0.95,
     upper: 1.76,
@@ -50,7 +56,7 @@ export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
-    value: 3,
+    value: BAND_5A,
     isBand5: true,
     lower: 4.6,
     upper: 8.5,
@@ -60,7 +66,7 @@ export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
-    value: 4,
+    value: BAND_5B,
     isBand5: true,
     lower: 8.3,
     upper: 15.4,
@@ -134,6 +140,15 @@ export const GENERAL = {
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ]
 };
+
+export const IW_BRIGGS = 2;
+export const IW_NATURAL = 0;
+export const IW_UNIFORM = 1;
+export const IMAGE_WEIGHTING = [
+  { label: 'Natural', lookup: 'natural', value: 0 },
+  { label: 'Uniform', lookup: 'uniform', value: 1 },
+  { label: 'Briggs', lookup: 'robust', value: 2 }
+];
 
 export const NOTSPECIFIED = 'notSpecified';
 
@@ -283,12 +298,27 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
   { label: 'KHz', toHz: 1000 },
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
+
+export const OB_SUBARRAY_AA05 = 1;
+export const OB_SUBARRAY_AA1 = 2;
+export const OB_SUBARRAY_AA2 = 3;
+export const OB_SUBARRAY_AA2_CORE = 4;
+export const OB_SUBARRAY_AA_STAR = 5;
+export const OB_SUBARRAY_AA_STAR_15 = 6;
+export const OB_SUBARRAY_AA_STAR_CORE = 7;
+export const OB_SUBARRAY_AA4 = 8;
+export const OB_SUBARRAY_AA4_15 = 9;
+export const OB_SUBARRAY_AA4_13 = 10;
+export const OB_SUBARRAY_AA4_CORE = 11;
+export const OB_SUBARRAY_CUSTOM = 20;
+
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
@@ -300,7 +330,7 @@ export const OBSERVATION = {
       subarray: [
         // MID
         {
-          value: 1,
+          value: OB_SUBARRAY_AA05,
           map: 'AA0.5',
           label: 'AA0.5',
           numOf15mAntennas: 4,
@@ -309,7 +339,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 2,
+          value: OB_SUBARRAY_AA1,
           map: 'AA1',
           label: 'AA1',
           numOf15mAntennas: 8,
@@ -318,7 +348,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 3,
+          value: OB_SUBARRAY_AA2,
           map: 'AA2',
           label: 'AA2',
           numOf15mAntennas: 64,
@@ -327,7 +357,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 5,
+          value: OB_SUBARRAY_AA_STAR,
           map: 'AA*',
           label: 'AA*',
           numOf15mAntennas: 80,
@@ -336,7 +366,7 @@ export const OBSERVATION = {
           disableForBand5: true
         },
         {
-          value: 6,
+          value: OB_SUBARRAY_AA_STAR_15,
           map: 'AA* (15-m antennas only)',
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
@@ -345,7 +375,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 8,
+          value: OB_SUBARRAY_AA4,
           map: 'AA4',
           label: 'AA4',
           numOf15mAntennas: 133,
@@ -354,7 +384,7 @@ export const OBSERVATION = {
           disableForBand5: true
         },
         {
-          value: 9,
+          value: OB_SUBARRAY_AA4_15,
           map: 'AA4 (15-m antennas only)',
           label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
@@ -363,7 +393,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 10,
+          value: OB_SUBARRAY_AA4_13,
           map: 'AA*/AA4 (13.5-m antennas only)',
           label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
@@ -372,7 +402,7 @@ export const OBSERVATION = {
           disableForBand5: true
         },
         {
-          value: 20,
+          value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 0,
@@ -380,13 +410,6 @@ export const OBSERVATION = {
           numOfStations: 0,
           disableForBand5: false
         }
-      ],
-      robust: [
-        { label: '-2', value: 1 },
-        { label: '-1', value: 2 },
-        { label: '0', value: 3 },
-        { label: '1', value: 4 },
-        { label: '2', value: 5 }
       ],
       bandWidth: [
         { label: '3.125 MHz', value: 1, mapping: 'MHz' },
@@ -409,7 +432,7 @@ export const OBSERVATION = {
       subarray: [
         // LOW
         {
-          value: 1,
+          value: OB_SUBARRAY_AA05,
           map: 'LOW_AA05_all',
           label: 'AA0.5',
           numOf15mAntennas: 0,
@@ -418,7 +441,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 2,
+          value: OB_SUBARRAY_AA1,
           map: 'LOW_AA1_all',
           label: 'AA1',
           numOf15mAntennas: 0,
@@ -427,7 +450,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 3,
+          value: OB_SUBARRAY_AA2,
           map: 'LOW_AA2_all',
           label: 'AA2',
           numOf15mAntennas: 0,
@@ -436,7 +459,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 4,
+          value: OB_SUBARRAY_AA2_CORE,
           map: 'LOW_AA2_core_all',
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
@@ -445,7 +468,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 5,
+          value: OB_SUBARRAY_AA_STAR,
           map: 'LOW_AAstar_all',
           label: 'AA*',
           numOf15mAntennas: 0,
@@ -454,7 +477,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 7,
+          value: OB_SUBARRAY_AA_STAR_CORE,
           map: 'LOW_AAstar_core_all',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
@@ -463,7 +486,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 8,
+          value: OB_SUBARRAY_AA4,
           map: 'LOW_AA4_all',
           label: 'AA4',
           numOf15mAntennas: 0,
@@ -472,7 +495,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 11,
+          value: OB_SUBARRAY_AA4_CORE,
           map: 'LOW_AA4_core_all',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
@@ -481,7 +504,7 @@ export const OBSERVATION = {
           disableForBand5: false
         },
         {
-          value: 20,
+          value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 0,
@@ -490,7 +513,6 @@ export const OBSERVATION = {
           disableForBand5: false
         }
       ],
-      robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
         { label: '24.4 KHz', value: 1, mapping: 'kHz' },
         { label: '48.8 KHz', value: 2, mapping: 'kHz' },
@@ -503,11 +525,6 @@ export const OBSERVATION = {
       ],
       centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
-  ],
-  ImageWeighting: [
-    { label: 'Natural', value: 0 },
-    { label: 'Uniform', value: 1 },
-    { label: 'Briggs', value: 2 }
   ],
   SpectralAveraging: [
     { label: '1', value: 1, lookup: 0 },
@@ -709,6 +726,13 @@ export const OBSERVATION = {
 
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
+export const ROBUST = [
+  { label: '-2', value: 1 },
+  { label: '-1', value: 2 },
+  { label: '0', value: 3 },
+  { label: '1', value: 4 },
+  { label: '2', value: 5 }
+];
 
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },

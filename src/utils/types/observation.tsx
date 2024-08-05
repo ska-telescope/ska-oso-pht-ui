@@ -20,6 +20,7 @@ type Observation = {
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID
   imageWeighting: number;
+  robust: number;
   supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;
@@ -48,6 +49,7 @@ export const NEW_OBSERVATION: Observation = {
   spectralAveraging: 0,
   tapering: 0,
   imageWeighting: 0,
+  robust: 3,
   supplied: {
     type: 0,
     value: 0,

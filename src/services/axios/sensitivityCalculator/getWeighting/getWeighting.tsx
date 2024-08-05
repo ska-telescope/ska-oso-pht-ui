@@ -7,7 +7,9 @@ import {
   TELESCOPE_LOW_NUM,
   OBSERVATION_TYPE_SENSCALC,
   OBSERVATION_TYPE_BACKEND,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  IMAGE_WEIGHTING,
+  ROBUST
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -33,12 +35,11 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
   const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
 
-  const getWeightingMode = () =>
-    OBSERVATION.ImageWeighting.find(
-      obj => obj.value === observation.imageWeighting
-    )?.label.toLowerCase();
+  const getWeightingMode = () => {
+    return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
+  };
 
-  const getRobustness = () => 0; // TODO
+  const getRobustness = () => (observation?.robust ? ROBUST[observation.robust].label : 0);
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);

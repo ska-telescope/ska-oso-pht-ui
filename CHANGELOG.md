@@ -17,7 +17,11 @@ Future
    - Ability to Edit an Observation
    - Edit proposal forces all linked target/observations to 'partial'
    - Updated the default proposal for use with Add Proposal
-* STAR-609: Observation updates in regards to MID Telescope
+* STAR-609: 
+   - Observation updates in regards to MID Telescope
+   - Correction of most of the console.log warnings
+   - Addition of robust to the mappings
+   - Some code refactoring and tidy up
 * STAR-615: Proposal mapping:
    - PutProposal mapping (partial - data_product_sdps and results still to map)
    - Update SensCalc display results to display sensitivity or integration time
