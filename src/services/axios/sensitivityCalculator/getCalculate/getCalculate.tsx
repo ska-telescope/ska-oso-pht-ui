@@ -60,9 +60,18 @@ async function GetCalculate(observation: Observation, target: Target) {
     return bandWidthValue?.split(' ');
   }
 
+  const getBandNumber = (inValue: number) => {
+    if (inValue === 3) {
+      return '5a';
+    } else if (inValue === 4) {
+      return '5b';
+    } else {
+      return inValue;
+    }
+  };
+
   /*********************************************************** MID *********************************************************/
 
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
   const convertFrequency = (value: number | string, units: number | string) =>
     sensCalHelpers.format.convertBandwidthToHz(value, units);
   const getSpectralResolution = () => {
@@ -73,8 +82,9 @@ async function GetCalculate(observation: Observation, target: Target) {
   };
 
   const getParamZoom = () => {
+    const bandwidthValueUnit = getZoomBandwidthValueUnit();
     return {
-      rx_band: `Band ${observation.observingBand}`, // MANDATORY
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
       subarray_configuration: getSubArray(),
       // n_ska
       // n_meer
@@ -113,7 +123,7 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getParamContinuum = () => {
     return {
-      rx_band: `Band ${observation.observingBand}`, // MANDATORY
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
       subarray_configuration: getSubArray(),
       // n_ska
       // n_meer
@@ -158,7 +168,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     const urlSearchParams = new URLSearchParams();
 
     if (SUPPLIED_IS_SENSITIVITY) {
-      urlSearchParams.append('sensitivity_jy', observation.supplied.value.toString());
+      urlSearchParams.append('sensitivities_jy', observation.supplied.value.toString());
     } else {
       const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
         observation.supplied.units

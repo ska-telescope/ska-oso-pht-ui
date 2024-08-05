@@ -29,7 +29,7 @@ const sensCalHelpers = {
      * **/
     convertSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
       // TODO: add tests (cypress?)
-      if (Number(sensitivity)) {
+      if (typeof sensitivity === 'number') {
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
           return {
@@ -54,7 +54,7 @@ const sensCalHelpers = {
         // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
         return {
-          value: Number(sensitivity.toFixed(precision)),
+          value: 0,
           unit: ''
         };
       }
