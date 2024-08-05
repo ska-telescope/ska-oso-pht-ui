@@ -24,7 +24,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter your abstract information.",
+    "helper": "Please enter your abstract information. This field allows latex syntax.",
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
@@ -41,7 +41,7 @@
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
-    "warning": "Please wait whilst we create a new proposal"
+    "warning": "Please wait whilst we create a new proposal."
   },
   "addTarget": {
     "label": "Add Target",
@@ -357,7 +357,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
-    "help2": "Proposal sub-types are optional",
+    "help2": "",
     "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "help4": ""
   },
@@ -702,7 +702,7 @@
     },
     "9": {
       "title": "Title",
-      "desc": "Provide a title of your proposal"
+      "desc": "Provide a title of your proposal. Proposal sub-types below are optionaly."
     },
     "10": {
       "title": "Observation Setup",
