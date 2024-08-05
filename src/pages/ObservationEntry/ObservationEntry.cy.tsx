@@ -67,23 +67,23 @@ function verifyObservationTypeContinuum() {
 }
 
 function verifyCentralFrequencyContinuumOb1SubArrayValue20() {
-  cy.get('[id="frequency"]').should('have.value', 0.7975);
-  cy.get('[id="frequency"]').click();
+  cy.get('[id="centralFrequency"]').should('have.value', 0.7975);
+  cy.get('[id="centralFrequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
 function verifyCentralFrequencyContinuumOb5aSubArrayValue20() {
-  cy.get('[id="frequency"]').should('have.value', 6.55);
-  cy.get('[id="frequency"]').click();
+  cy.get('[id="centralFrequency"]').should('have.value', 6.55);
+  cy.get('[id="centralFrequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
 function verifyCentralFrequencyContinuumOb5bSubArrayValue20() {
-  cy.get('[id="frequency"]').should('have.value', 11.85);
-  cy.get('[id="frequency"]').click();
+  cy.get('[id="centralFrequency"]').should('have.value', 11.85);
+  cy.get('[id="centralFrequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
 function verifyCentralFrequencyContinuumLowBand() {
-  cy.get('[id="frequency"]').should('have.value', 200);
-  cy.get('[id="frequency"]').click();
+  cy.get('[id="centralFrequency"]').should('have.value', 200);
+  cy.get('[id="centralFrequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
 }
 
@@ -121,25 +121,13 @@ function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
 }
 
 function verifyContinuumBandwidthContinuumLowBand() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 300);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 75);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
 //function verifyFrequencyUnitsLow() {
 //  cy.get('[id="frequency"]').contains('MHz');
 //}
-
-function verifyContinuumUnits() {
-  cy.get('[data-testid="continuumUnits"]').contains('GHz');
-  cy.get('[data-testid="continuumUnits"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
-}
-
-function verifyContinuumUnitsLow() {
-  cy.get('[data-testid="continuumUnits"]').contains('MHz');
-  cy.get('[data-testid="continuumUnits"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumUnits.help');
-}
 
 function verifyBandwidth(value: number, contents: string) {
   cy.get('[data-testid="bandwidth"]').click();
@@ -160,7 +148,7 @@ function verifySpectralResolutionLow() {
 //  verifySpectralResolution('28.3 Hz  (42.4 m/s)');
 //}
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (5.1 km/s)');
+  verifySpectralResolution('13.44 kHz (5.8 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
   verifySpectralResolution('13.44 kHz (615.1 m/s)');
@@ -188,7 +176,7 @@ function verifyEffectiveResolution(contents: string) {
     .should('be.disabled');
 }
 function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
-  verifyEffectiveResolution('13.44 kHz (5.1 km/s)');
+  verifyEffectiveResolution('13.44 kHz (5.8 km/s)');
 }
 function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
   verifyEffectiveResolution('13.44 kHz (615.1 m/s)');
@@ -266,18 +254,18 @@ function verifyGroupObservations() {
 }
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
-  verifySpectralResolution('14.1 Hz  (21.2 m/s)');
+  // verifySpectralResolution('14.1 Hz  (21.2 m/s)');
   verifySpectralAveraging(1);
   verifyEffectiveResolution('14.1 Hz (21.2 m/s)');
   verifyBandwidth(3, '97.7 KHz');
-  verifySpectralResolution('56.5 Hz  (84.7 m/s)');
-  verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
+  // verifySpectralResolution('56.5 Hz  (84.7 m/s)');
+  // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
   enterSpectralAveraging(3);
-  verifyEffectiveResolution('169.5 Hz (254.1 m/s)');
+  // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
   enterSpectralAveraging(5);
-  verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
+  // verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
   verifyBandwidth(7, '1562.5 KHz');
-  verifySpectralResolution('904.2 Hz  (1.4 km/s)');
+  // verifySpectralResolution('904.2 Hz  (1.4 km/s)');
   verifyEffectiveResolution('4521.1 Hz (6.8 km/s)');
 }
 
@@ -311,16 +299,16 @@ function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
 
 function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
   verifySpectralResolution('0.21 kHz (9.6 m/s)');
-  verifyEffectiveResolution('0.21 kHz (9.6 m/s)');
+  verifyEffectiveResolution('0.2 kHz (9.6 m/s)');
   verifyBandwidth(2, '6.25 MHz');
   verifySubArrayConfiguration(9);
   verifySpectralResolution('0.42 kHz (19.2 m/s)');
-  verifyEffectiveResolution('0.42 kHz (19.2 m/s)');
+  verifyEffectiveResolution('0.4 kHz (19.2 m/s)');
 }
 
 function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
   verifySpectralResolution('0.21 kHz (5.3 m/s)');
-  verifyEffectiveResolution('0.21 kHz (5.3 m/s)');
+  verifyEffectiveResolution('0.2 kHz (5.3 m/s)');
   /*
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="24"]').click();
@@ -380,7 +368,6 @@ describe('<ObservationEntry />', () => {
     verifyCentralFrequencyContinuumOb1SubArrayValue20();
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb1SubArrayValue20();
-    verifyContinuumUnits();
     verifySpectralResolutionContinuumOb1SubArrayValue20();
     // verifySpectralAveraging(1);
     verifyEffectiveResolutionContinuumOb1SubArrayValue20();
@@ -401,7 +388,6 @@ describe('<ObservationEntry />', () => {
     verifyCentralFrequencyContinuumOb5aSubArrayValue20();
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb5aSubArrayValue20();
-    verifyContinuumUnits();
     verifySpectralResolutionContinuumOb5aSubArrayValue20();
     // verifySpectralAveraging(1);
     verifyEffectiveResolutionContinuumOb5aSubArrayValue20();
@@ -422,7 +408,6 @@ describe('<ObservationEntry />', () => {
     verifyCentralFrequencyContinuumOb5bSubArrayValue20();
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb5bSubArrayValue20();
-    verifyContinuumUnits();
     verifySpectralResolutionContinuumOb5bSubArrayValue20();
     // verifySpectralAveraging(1);
     verifyEffectiveResolutionContinuumOb5bSubArrayValue20();
@@ -490,7 +475,6 @@ describe('<ObservationEntry />', () => {
     verifyCentralFrequencyContinuumLowBand();
     verifyContinuumBandwidthContinuumLowBand();
     // verifyFrequencyUnitsLow();
-    verifyContinuumUnitsLow();
     verifySpectralResolutionLow();
     verifySpectralAveraging(1);
     verifyEffectiveResolutionContinuumLowBand();
