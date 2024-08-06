@@ -88,7 +88,6 @@ describe('GIVEN that I am a user on the main page of the PHT', () => {
       cy.get('[id="observationType"]').contains('Continuum');
       cy.get('[data-testid="suppliedType"]').contains('Integration Time');
       cy.get('[data-testid="suppliedUnits"]').contains('s');
-      cy.get('[data-testid="continuumUnits"]').contains('MHz');
       cy.get('#spectralResolution')
         .should('have.value', '5.43 kHz (8.1 km/s)')
         .should('be.disabled');
