@@ -153,17 +153,16 @@ export default function ObservationPage() {
     };
   };
 
-  const getSensCalcData = async (target: Target) => {
-    const observationId = currObs.id;
-    const response = await getSensCalc(currObs, target);
+  const getSensCalcData = async (observation: Observation, target: Target) => {
+    const response = await getSensCalc(observation, target);
     if (response) {
-      setSensCalc(response, target, observationId);
+      setSensCalc(response, target, observation.id);
     }
   };
 
   const setSensCalcForTargetGrid = (observationId: string, target: Target, sensCalc: any) => {
     const tmpTO = [{ targetId: target.id, observationId: observationId, sensCalc: sensCalc }];
-    elementsS.forEach((rec: TargetObservation) => {
+    elementsS?.forEach((rec: TargetObservation) => {
       if (
         (rec: { targetId: number; observationId: string }) =>
           rec.targetId !== target.id || rec.observationId !== observationId
@@ -173,7 +172,7 @@ export default function ObservationPage() {
     });
     setElementsS(tmpTO);
     if (sensCalc?.statusGUI === STATUS_PARTIAL) {
-      getSensCalcData(target);
+      getSensCalcData(currObs, target);
     }
   };
 
@@ -268,6 +267,14 @@ export default function ObservationPage() {
     setElementsO(getProposal().observations?.map(rec => popElementO(rec)));
     setElementsS(getProposal().targetObservation);
     setElementsT(getProposal().targets?.map(rec => popElementT(rec)));
+
+    getProposal()?.targetObservation.forEach(rec => {
+      if (rec.sensCalc.statusGUI === STATUS_PARTIAL) {
+        const target = getProposal().targets.find(e => e.id === rec.targetId);
+        const observation = getProposal().observations.find(e => e.id === rec.observationId);
+        getSensCalcData(observation, target);
+      }
+    });
   }, []);
 
   React.useEffect(() => {
