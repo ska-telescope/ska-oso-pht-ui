@@ -4,6 +4,7 @@ import {
   BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
+  OBS_TYPES,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
   Projects,
@@ -27,6 +28,8 @@ import { ObservationSetBackend } from 'utils/types/observationSet';
 import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
+import TargetObservation from 'utils/types/targetObservation';
+import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
 /*
 TODO:
@@ -34,6 +37,7 @@ TODO:
 - move putProposal mapping into a separate service that can be used by putProposal, validateProposal
 - handle submit proposal by passing appropriate status and update sumission fields
 - check upload pdf issue
+- check science category issue on general page when coming back to a proposal
 */
 
 function mappingPutProposal(proposal: Proposal, status: string) {
@@ -262,6 +266,74 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return outObservationsSets;
   };
 
+  const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number => {
+    let obs = incObs.find(item => item.id === incTarObs.observationId);
+    console.log('obs', obs);
+    return obs.type;
+  };
+
+  const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
+    console.log('::: in getResults - incTargetObservations:', incTargetObservations);
+    const resultsArr = [];
+    for (let tarObs of incTargetObservations) {
+      console.log('TarObs', tarObs);
+      // if sens calc error, we don't save the results
+      if (tarObs.sensCalc?.error) {
+        break;
+      }
+      const obsType = getObsType(tarObs, incObs); // spectral & continuum
+      /*
+        - for continuum observations, section1 contains continuum results & section2 spectral results
+        - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
+      */
+      const spectralSection = OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1';
+      console.log('tarObs.sensCalc[spectralSection]', tarObs.sensCalc[spectralSection]);
+      let result: SensCalcResultsBackend = {
+        observation_set_ref: tarObs.observationId,
+        target_ref: tarObs.targetId.toString(),
+        result_details: {
+          supplied_type: tarObs.sensCalc.section3[0].field === 'sensitivity' ? 'sensitivity' : 'integration_time',
+          weighted_continuum_sensitivity: {
+            value: Number(tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').value),
+            unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').units
+          },
+          weighted_spectral_sensitivity: {
+            value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted').value),
+            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted').units
+          },
+          total_continuum_sensitivity: {
+            value: 0.0,
+            unit: 'm/s'
+          },
+          total_spectral_sensitivity: {
+            value: 0.0,
+            unit: 'm/s'
+          },
+          surface_brightness_sensitivity: {
+            continuum: 0.0,
+            spectral: 0.0,
+            unit: 'm/s'
+          }
+        },
+        continuum_confusion_noise: {
+          value: 0.0,
+          unit: 'm/s'
+        },
+        synthesized_beam_size: {
+          value: 190.17, // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+          unit: 'm/s' // this should be arcsecs2 -> currently rejected by backend / als m/s changes to m / s when coming back
+        },
+        spectral_confusion_noise: {
+          value: 0.0,
+          unit: 'm/s'
+        }
+      }
+      resultsArr.push(result);
+    }
+    console.log('resultsArr', resultsArr);
+    return resultsArr
+  };
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -305,7 +377,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       data_product_sdps: [], // TODO
       data_product_src_nets:
         proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-      results: [] // TODO
+      results: getResults(proposal.targetObservation, proposal.observations), // [] // TODO
     }
   };
   // trim undefined properties
