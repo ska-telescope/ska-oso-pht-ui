@@ -111,7 +111,7 @@ export default function ObservationPage() {
         sensCalc: results
       }
     ];
-    getProposal().targetObservation.forEach(rec => {
+    getProposal().targetObservation?.forEach(rec => {
       if (
         (rec: TargetObservation) =>
           rec.targetId !== target.id || rec.observationId !== observationId
@@ -207,7 +207,7 @@ export default function ObservationPage() {
     });
 
     const temp = [];
-    elementsO.forEach(rec => {
+    elementsO?.forEach(rec => {
       if (rec.id !== currObs.id) {
         temp.push(rec);
       }
@@ -240,7 +240,7 @@ export default function ObservationPage() {
 
   const DeleteObservationTarget = (row: any) => {
     const tmpTO = [];
-    elementsS.forEach(rec => {
+    elementsS?.forEach(rec => {
       if (rec.targetId !== row.id || rec.observationId !== currObs.id) {
         tmpTO.push(rec);
       }
@@ -268,7 +268,7 @@ export default function ObservationPage() {
     setElementsS(getProposal().targetObservation);
     setElementsT(getProposal().targets?.map(rec => popElementT(rec)));
 
-    getProposal()?.targetObservation.forEach(rec => {
+    getProposal()?.targetObservation?.forEach(rec => {
       if (rec.sensCalc.statusGUI === STATUS_PARTIAL) {
         const target = getProposal().targets.find(e => e.id === rec.targetId);
         const observation = getProposal().observations.find(e => e.id === rec.observationId);
@@ -457,7 +457,7 @@ export default function ObservationPage() {
 
   const filteredByObservation = (obId: string) => {
     const results = [];
-    elementsS.forEach(rec => {
+    elementsS?.forEach(rec => {
       if (rec.observationId === obId) {
         results.push(rec.sensCalc);
       }
