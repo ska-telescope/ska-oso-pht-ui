@@ -51,7 +51,7 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusLoading.' + sensCalc?.statusGUI),
+                  status: sensCalc?.statusGUI ? t('statusLoading.' + sensCalc?.statusGUI) : '',
                   error: sensCalc?.error
                 })}
                 testId="statusId"
