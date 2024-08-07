@@ -292,7 +292,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         observation_set_ref: tarObs.observationId,
         target_ref: tarObs.targetId?.toString(),
         result_details: {
-          supplied_type: tarObs.sensCalc.section3[0].field === 'sensitivity' ? 'sensitivity' : 'integration_time',
+          supplied_type:
+            tarObs.sensCalc.section3[0].field === 'sensitivity'
+              ? 'sensitivity'
+              : 'integration_time',
           // TODO supplied_type can be sensitivity or integration_time => check why integration time doesn't work
           // TODO check if other fields can be added for supplied?
           // What's the correct format?
@@ -308,29 +311,56 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             },
           */
           weighted_continuum_sensitivity: {
-            value: Number(tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').value),
-            unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').units
+            value: Number(
+              tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').value
+            ),
+            unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')
+              .units
           },
           weighted_spectral_sensitivity: {
-            value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted').value),
-            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted').units
+            value: Number(
+              tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
+                .value
+            ),
+            unit: tarObs.sensCalc[spectralSection]?.find(
+              o => o.field === 'spectralSensitivityWeighted'
+            ).units
           },
           total_continuum_sensitivity: {
-            value: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').value),
+            value: Number(
+              tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').value
+            ),
             unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').units
           },
           total_spectral_sensitivity: {
-            value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity').value),
-            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity').units
+            value: Number(
+              tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')
+                .value
+            ),
+            unit: tarObs.sensCalc[spectralSection]?.find(
+              o => o.field === 'spectralTotalSensitivity'
+            ).units
           },
           surface_brightness_sensitivity: {
-            continuum: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity').value),
-            spectral: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity').value),
-            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity').units
+            continuum: Number(
+              tarObs.sensCalc.section1?.find(
+                o => o.field === 'continuumSurfaceBrightnessSensitivity'
+              ).value
+            ),
+            spectral: Number(
+              tarObs.sensCalc[spectralSection]?.find(
+                o => o.field === 'spectralSurfaceBrightnessSensitivity'
+              ).value
+            ),
+            unit: tarObs.sensCalc[spectralSection]?.find(
+              o => o.field === 'spectralSurfaceBrightnessSensitivity'
+            ).units
           }
         },
         continuum_confusion_noise: {
-          value: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').value),
+          value: Number(
+            tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').value
+          ),
           unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').units
         },
         synthesized_beam_size: {
@@ -340,14 +370,17 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
         },
         spectral_confusion_noise: {
-          value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').value),
-          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').units
+          value: Number(
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').value
+          ),
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
+            .units
         }
-      }
+      };
       resultsArr.push(result);
     }
     console.log('resultsArr', resultsArr);
-    return resultsArr
+    return resultsArr;
   };
 
   const transformedProposal: ProposalBackend = {
@@ -393,7 +426,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       data_product_sdps: [], // TODO
       data_product_src_nets:
         proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-      results: getResults(proposal.targetObservation, proposal.observations), // [] // TODO
+      results: getResults(proposal.targetObservation, proposal.observations) // [] // TODO
     }
   };
   // trim undefined properties
