@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { OBSERVATION, STATUS_OK } from '../../utils/constants';
+import { IMAGE_WEIGHTING, STATUS_OK } from '../../utils/constants';
 import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -123,7 +123,7 @@ export default function SdpDataPage() {
         flex: 1,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { weighting: number } }) => {
-          return OBSERVATION.ImageWeighting[e.row.weighting]?.label;
+          return IMAGE_WEIGHTING[e.row.weighting]?.label;
         }
       },
       {

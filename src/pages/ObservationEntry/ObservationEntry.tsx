@@ -49,6 +49,7 @@ import AddButton from '../../components/button/Add/Add';
 import GroupObservation from '../../utils/types/groupObservation';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
 import Observation from '../../utils/types/observation';
+import TargetObservation from '../../utils/types/targetObservation';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -1077,32 +1078,37 @@ export default function ObservationEntry() {
         }
       }
 
-      const updateSensCalc = (ob: Observation) => {
-        const results = [];
-        getProposal().targetObservation.forEach(rec => {
-          if (rec.observationId === ob.id) {
-            const to = {
-              observationId: ob.id,
-              targetId: rec.targetId,
-              sensCalc: {
-                id: rec.targetId,
-                title: '',
-                statusGUI: STATUS_PARTIAL,
-                error: ''
-              }
-            };
-            results.push(to);
-          }
+      const getAffected = (observationId: string) =>
+        getProposal().targetObservation.filter(rec => rec.observationId === observationId);
+
+      const updateSensCalcPartial = (ob: Observation) =>
+        getAffected(ob.id).map(rec => {
+          const to: TargetObservation = {
+            observationId: ob.id,
+            targetId: rec.targetId,
+            sensCalc: {
+              id: rec.targetId,
+              title: '',
+              statusGUI: STATUS_PARTIAL,
+              error: ''
+            }
+          };
+          return to;
         });
-        return results;
-      };
 
       setProposal({
         ...getProposal(),
         observations: newObservations,
-        targetObservation: updateSensCalc(newObservation),
+        targetObservation: updateSensCalcPartial(newObservation),
         groupObservations: newGroupObservations
       });
+
+      /*
+      getAffected(newObservation.id).map(rec => {
+        const target = getProposal().targets.find(t => t.id === rec.targetId);
+        getSensCalcData(newObservation, target);
+      });
+      */
     };
 
     const buttonClicked = () => {

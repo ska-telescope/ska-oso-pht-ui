@@ -17,6 +17,7 @@ Future
    - Ability to Edit an Observation
    - Edit proposal forces all linked target/observations to 'partial'
    - Updated the default proposal for use with Add Proposal
+   - Added units to data in Observation SensCalc results modal
 * STAR-609: 
    - Observation updates in regards to MID Telescope
    - Correction of most of the console.log warnings
