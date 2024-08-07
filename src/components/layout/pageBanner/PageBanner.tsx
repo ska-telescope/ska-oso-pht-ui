@@ -23,7 +23,7 @@ interface PageBannerProps {
 }
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
@@ -113,7 +113,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                   {backPage > 0 && (
                     <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />
                   )}
-                  {!backPage && <HomeButton />}
+                  {!backPage && <HomeButton testId="homeButtonTestId" />}
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (

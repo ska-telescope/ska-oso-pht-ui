@@ -15,7 +15,7 @@ interface TargetFileImportProps {
 }
 
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
 
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);

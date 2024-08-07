@@ -11,7 +11,7 @@ import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 
 export default function MemberInvite() {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const LABEL_WIDTH = 5;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -207,7 +207,7 @@ export default function MemberInvite() {
           testId="email"
           value={email}
           setValue={setEmail}
-          errorText={t(errorTextEmail)}
+          errorText={errorTextEmail ? t(errorTextEmail) : ''}
           onFocus={() => helpComponent(t('email.help'))}
           required
         />

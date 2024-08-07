@@ -4,7 +4,9 @@ default:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   KUBE_HOST: 'https://k8s.stfc.skao.int'
-  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/darkMode
+  JS_NODE_VERSION: 21
+  TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
 stages:
   - dependencies
@@ -69,7 +71,6 @@ test_and_coverage:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
-    - yarn start &
     - yarn test:component:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
@@ -80,6 +81,26 @@ test_and_coverage:
         path: build/reports/cobertura-coverage.xml
     paths:
       - build/
+
+test_e2e:
+  image: cypress/browsers:node18.12.0-chrome106-ff106
+  stage: test
+  tags:
+    - k8srunner
+  allow_failure: true
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
+  script:
+    - yarn start &
+    - yarn test:e2e:headless
+    - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
 
 # list the current top level dependencies for the project
 list_dependencies:
@@ -144,6 +165,7 @@ pages:
   dependencies:
     - test-counts
     - test_and_coverage
+    - test_e2e
     - list_dependencies
     - code_quality
   script:
@@ -164,12 +186,15 @@ pages:
     echo "Addresses to connect to the deployment of the PHT: "
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
     echo "Backend API:"
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v1/ui/"
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
-    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
+    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/darkMode
+    JS_NODE_VERSION: 21
+    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
+
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
 

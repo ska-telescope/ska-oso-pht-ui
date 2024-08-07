@@ -1,14 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { STATUS_OK } from '../../utils/constants';
+import { validateSRCPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 
 const PAGE = 8;
 
 export default function SrcDataPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
 
   const { application, helpComponent, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -34,7 +34,7 @@ export default function SrcDataPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(STATUS_OK);
+    setTheProposalState(validateSRCPage());
   }, [validateToggle]);
 
   return (

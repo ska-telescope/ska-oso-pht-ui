@@ -11,43 +11,34 @@ const TOTAL_SENSE = 'TotalSensitivity';
 const BEAM_SIZE = 'SynthBeamSize';
 const VALUE = 'value';
 const UNITS = 'units';
+const SHOW_ERROR_ON_LINE = false; // Leave this as I expect this will return
 
 interface SensCalcDisplaySingleProps {
-  row: any;
+  sensCalc: any;
   show: boolean;
 }
 
-export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySingleProps) {
+export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const IconClicked = () => {
     setOpenDialog(true);
   };
 
-  const hasError = () => row?.sensCalc?.error?.length > 0;
+  const hasError = () => sensCalc?.error?.length > 0;
 
   const FieldFetch: any = (type: string, suffix: string) => {
-    const observationTypeLabel: string = row?.sensCalc?.hasOwnProperty('section2')
+    const observationTypeLabel: string = sensCalc?.hasOwnProperty('section2')
       ? OBS_TYPES[1]
       : OBS_TYPES[0];
-    if (row?.sensCalc?.section1) {
-      const result = row?.sensCalc?.section1.find(
+    if (sensCalc?.section1) {
+      const result = sensCalc?.section1.find(
         item => item.field === `${observationTypeLabel}${suffix}`
       );
       return result ? result[type] : '';
     }
     return '';
   };
-
-  /* RETAINED FOR A WHILE, UNTIL WE ARE SURE IT IS NOT NEEDED
-  const IntegrationTime: any = type => {
-    if (row?.sensCalc?.section3) {
-      const result = row?.sensCalc?.section3.find(item => item.field === 'integrationTime');
-      return result ? result[type] : '';
-    }
-    return '';
-  };
-  */
 
   return (
     <>
@@ -56,16 +47,16 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
           <Grid item xs={2}>
             <IconButton
               style={{ cursor: 'hand' }}
-              onClick={row?.sensCalc?.status === STATUS_OK ? IconClicked : null}
+              onClick={sensCalc?.statusGUI === STATUS_OK ? IconClicked : null}
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: t('statusLoading.' + row?.sensCalc?.status),
-                  error: row?.sensCalc?.error
+                  status: t('statusLoading.' + sensCalc?.statusGUI),
+                  error: sensCalc?.error
                 })}
                 testId="statusId"
                 icon
-                level={row?.sensCalc?.status}
+                level={sensCalc?.statusGUI}
                 size={SIZE}
               />
             </IconButton>
@@ -82,7 +73,7 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
           )}
           {hasError() && (
             <Grid item xs={10}>
-              {row?.sensCalc?.error}
+              {SHOW_ERROR_ON_LINE && sensCalc?.error}
             </Grid>
           )}
         </Grid>
@@ -91,7 +82,7 @@ export default function SensCalcDisplaySingle({ row, show }: SensCalcDisplaySing
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          data={row?.sensCalc}
+          data={sensCalc}
         />
       )}
     </>

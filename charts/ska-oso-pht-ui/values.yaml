@@ -3,7 +3,7 @@
 ingress:
   enabled: true
   prependByNamespace: true
-  path: pht
+  path: darkMode
 
 runtimeEnv:
   skipPreflightCheck: "true"
@@ -13,12 +13,12 @@ runtimeEnv:
   domain: ""
   skaLoginAppUrl: ""
 
-component: pht-ui
+component: darkMode-ui
 function: ui
 domain: operations
 enabled: true
 image:
   registry: artefact.skao.int
-  image: ska-oso-pht-ui
+  image: ska-oso-darkMode-ui
   tag: 0.3.1
   pullPolicy: IfNotPresent

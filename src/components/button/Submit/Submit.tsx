@@ -9,7 +9,7 @@ interface SubmitButtonProps {
 }
 
 export default function SubmitButton({ disabled, action }: SubmitButtonProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
 
   const title = t('button.submit');
 
@@ -21,7 +21,7 @@ export default function SubmitButton({ disabled, action }: SubmitButtonProps) {
       icon={<PublishIcon />}
       label={title}
       onClick={action}
-      testId={`${title}Button`}
+      testId={`${title}TestId`}
       variant={ButtonVariantTypes.Contained}
     />
   );

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ $.Chart.Name }}-service
   labels:
-{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
+{{ include "ska-oso-darkMode-ui.labels" . | indent 4 }}
 spec:
   ports:
     - port: 80
@@ -11,4 +11,4 @@ spec:
       name: http
   clusterIP: None
   selector:
-{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
+{{ include "ska-oso-darkMode-ui.labels" . | indent 4 }}
