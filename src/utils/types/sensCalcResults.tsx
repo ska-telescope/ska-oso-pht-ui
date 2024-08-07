@@ -6,10 +6,10 @@ export type SensCalcResultsBackend = {
   result_details?: {
     supplied_type: string;
     weighted_continuum_sensitivity?: ValueUnitPair;
-    weighted_spectral_sensitivity: ValueUnitPair;
+    weighted_spectral_sensitivity?: ValueUnitPair;
     total_continuum_sensitivity?: ValueUnitPair;
-    total_spectral_sensitivity: ValueUnitPair;
-    surface_brightness_sensitivity: {
+    total_spectral_sensitivity?: ValueUnitPair;
+    surface_brightness_sensitivity?: {
       continuum?: number;
       spectral: number;
       unit: string;
