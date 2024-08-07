@@ -43,8 +43,7 @@
     "postcss": "^8.4.31"
   },
   "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true,
-    "step_definitions": "cypress/integration/stepDefinitions/"
+    "nonGlobalStepDefinitions": true
   },
   "dependencies": {
     "@babel/preset-env": "^7.21.4",
