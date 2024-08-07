@@ -23,14 +23,15 @@ export default defineConfig({
       require('@cypress/code-coverage/task')(on, config);
       on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
       return config;
-    }
+    },
+    excludeSpecPattern: 'tests/cypress/e2e/**'
   },
 
   e2e: {
     supportFile: 'tests/cypress/support/e2e.js',
     setupNodeEvents(on, config) {
       // implement node event listeners here
-      on('file:preprocessor', cucumber())
+      on('file:preprocessor', cucumber());
     },
     specPattern: 'cypress/integration/**'
   }
