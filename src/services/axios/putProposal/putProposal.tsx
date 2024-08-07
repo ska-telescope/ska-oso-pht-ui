@@ -278,51 +278,80 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   interface SuppliedRelatedFields {
     supplied_type: string;
     // sensitivity fields
-    weighted_continuum_sensitivity?: ValueUnitPair,
-    weighted_spectral_sensitivity?: ValueUnitPair,
-    total_continuum_sensitivity?: ValueUnitPair,
-    total_spectral_sensitivity?: ValueUnitPair,
-    surface_brightness_sensitivity?: { continuum: number, spectral: number, unit: string }
+    weighted_continuum_sensitivity?: ValueUnitPair;
+    weighted_spectral_sensitivity?: ValueUnitPair;
+    total_continuum_sensitivity?: ValueUnitPair;
+    total_spectral_sensitivity?: ValueUnitPair;
+    surface_brightness_sensitivity?: { continuum: number; spectral: number; unit: string };
     // integration_time fields
-    continuum?: ValueUnitPair,
-    spectral?: ValueUnitPair
+    continuum?: ValueUnitPair;
+    spectral?: ValueUnitPair;
   }
 
-  const getSuppliedFieldsSensitivity = (suppliedType: string, obsType: number, tarObs: TargetObservation) => {
+  const getSuppliedFieldsSensitivity = (
+    suppliedType: string,
+    obsType: number,
+    tarObs: TargetObservation
+  ) => {
     const spectralSection = OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1'; // TODO move this somewhere where we don't need to repeat it
     const params: SuppliedRelatedFields = {
       supplied_type: suppliedType
     };
     if (OBS_TYPES[obsType] === 'continuum') {
       params.weighted_continuum_sensitivity = {
-        value: Number(tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value),
+        value: Number(
+          tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
+        ),
         unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.units
       };
       params.total_continuum_sensitivity = {
-        value: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value),
+        value: Number(
+          tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
+        ),
         unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
       };
     }
     params.weighted_spectral_sensitivity = {
-      value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')?.value),
-      unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')?.units
+      value: Number(
+        tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
+          ?.value
+      ),
+      unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
+        ?.units
     };
     params.total_spectral_sensitivity = {
-      value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.value),
-      unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.units
+      value: Number(
+        tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.value
+      ),
+      unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')
+        ?.units
     };
     params.surface_brightness_sensitivity = {
-      continuum: OBS_TYPES[obsType] === 'continuum' ? Number(tarObs.sensCalc.section1?.find(
-        o => o.field === 'continuumSurfaceBrightnessSensitivity'
-      )?.value) : null,
-      spectral: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity')?.value),
-      unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity')?.units
-    }
+      continuum:
+        OBS_TYPES[obsType] === 'continuum'
+          ? Number(
+              tarObs.sensCalc.section1?.find(
+                o => o.field === 'continuumSurfaceBrightnessSensitivity'
+              )?.value
+            )
+          : null,
+      spectral: Number(
+        tarObs.sensCalc[spectralSection]?.find(
+          o => o.field === 'spectralSurfaceBrightnessSensitivity'
+        )?.value
+      ),
+      unit: tarObs.sensCalc[spectralSection]?.find(
+        o => o.field === 'spectralSurfaceBrightnessSensitivity'
+      )?.units
+    };
     return params;
   };
 
-  const getSuppliedFieldsIntegrationTime = (suppliedType: string, obsType: number, tarObs: TargetObservation) => {
-    const spectralSection = OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1'; // TODO move this somewhere where we don't need to repeat it
+  const getSuppliedFieldsIntegrationTime = (
+    suppliedType: string,
+    obsType: number,
+    tarObs: TargetObservation
+  ) => {
     const params: SuppliedRelatedFields = {
       supplied_type: suppliedType
     };
@@ -330,12 +359,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       params.continuum = {
         value: Number(tarObs.sensCalc.section3[0]?.value),
         unit: tarObs.sensCalc.section3[0]?.units
-      }
+      };
     }
     params.spectral = {
       value: Number(tarObs.sensCalc.section3[0]?.value),
       unit: tarObs.sensCalc.section3[0]?.units
-    }
+    };
     // TODO check if it's ok to send the same value for continuum and zoom? Is this not implmented in the UI?
     return params;
   };
@@ -360,10 +389,13 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         - for continuum observations, section1 contains continuum results & section2 spectral results
         - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
       */
-      const suppliedType = tarObs.sensCalc.section3[0]?.field === 'sensitivity'
-        ? 'sensitivity' : 'integration_time';
+      const suppliedType =
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      const suppliedRelatedFields = suppliedType === 'sensitivity' ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs) : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
+      const suppliedRelatedFields =
+        suppliedType === 'sensitivity'
+          ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs)
+          : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
       console.log('suppliedRelatedFields', suppliedRelatedFields);
 
       const spectralSection = OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1'; // TODO move this somewhere where we don't need to repeat it
@@ -378,12 +410,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         continuum_confusion_noise:
           OBS_TYPES[obsType] === 'continuum'
             ? {
-              value: Number(
-                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-              ),
-              unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
-                ?.units
-            }
+                value: Number(
+                  tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+                ),
+                unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
+                  ?.units
+              }
             : null,
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
