@@ -184,7 +184,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         number_15_antennas: incObs.num15mAntennas,
         number_13_antennas: incObs.num13mAntennas,
         number_sub_bands: incObs.numSubBands,
-        tapering: incObs.tapering.toString()
+        tapering: incObs.tapering?.toString()
       };
       return midArrayDetails;
     }
@@ -257,7 +257,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           supplied: getSupplied(obs),
           spectral_resolution: obs.spectralResolution,
           effective_resolution: obs.effectiveResolution,
-          image_weighting: obs.imageWeighting.toString()
+          image_weighting: obs.imageWeighting?.toString()
         },
         details: obs.details
       };
@@ -271,6 +271,15 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     console.log('obs', obs);
     return obs.type;
   };
+
+  /*
+    - low continuum with supplied sensitivity: ok
+    - integration_time -> fails tupple index out of range -> example of data expected?
+    - low zoom with supplied sensitivity -> fails out of range -> example of data expected?
+    - mid continuum with integration time: same issue
+    - mid continuum with sensitivity: sens calc results error so can't check: 
+    detail": "Either 'sensitivity_jy' or 'integration_time_s' must be specified, but not both at once."
+  */
 
   const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
     console.log('::: in getResults - incTargetObservations:', incTargetObservations);
@@ -293,7 +302,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         target_ref: tarObs.targetId?.toString(),
         result_details: {
           supplied_type:
-            tarObs.sensCalc.section3[0].field === 'sensitivity'
+            tarObs.sensCalc.section3[0]?.field === 'sensitivity'
               ? 'sensitivity'
               : 'integration_time',
           // TODO supplied_type can be sensitivity or integration_time => check why integration time doesn't work
@@ -310,59 +319,59 @@ function mappingPutProposal(proposal: Proposal, status: string) {
               }
             },
           */
-          weighted_continuum_sensitivity: {
+          weighted_continuum_sensitivity: OBS_TYPES[obsType] === 'continuum' ? {
             value: Number(
-              tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').value
+              tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
             ),
             unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')
-              .units
-          },
+              ?.units
+          } : null,
           weighted_spectral_sensitivity: {
             value: Number(
               tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
-                .value
+                ?.value
             ),
             unit: tarObs.sensCalc[spectralSection]?.find(
               o => o.field === 'spectralSensitivityWeighted'
-            ).units
+            )?.units
           },
-          total_continuum_sensitivity: {
+          total_continuum_sensitivity: OBS_TYPES[obsType] === 'continuum' ? {
             value: Number(
-              tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').value
+              tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
             ),
-            unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').units
-          },
+            unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
+          } : null,
           total_spectral_sensitivity: {
             value: Number(
               tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')
-                .value
+                ?.value
             ),
             unit: tarObs.sensCalc[spectralSection]?.find(
               o => o.field === 'spectralTotalSensitivity'
-            ).units
+            )?.units
           },
           surface_brightness_sensitivity: {
-            continuum: Number(
+            continuum: OBS_TYPES[obsType] === 'continuum' ? Number(
               tarObs.sensCalc.section1?.find(
                 o => o.field === 'continuumSurfaceBrightnessSensitivity'
-              ).value
-            ),
+              )?.value
+            ) : null,
             spectral: Number(
               tarObs.sensCalc[spectralSection]?.find(
                 o => o.field === 'spectralSurfaceBrightnessSensitivity'
-              ).value
+              )?.value
             ),
             unit: tarObs.sensCalc[spectralSection]?.find(
               o => o.field === 'spectralSurfaceBrightnessSensitivity'
-            ).units
+            )?.units
           }
         },
-        continuum_confusion_noise: {
+        continuum_confusion_noise: OBS_TYPES[obsType] === 'continuum' ? {
           value: Number(
-            tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').value
+            tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
           ),
-          unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').units
-        },
+          unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
+        } : null,
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
           unit: 'm/s' // tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').units // this should be arcsecs2 -> currently rejected by backend
@@ -371,10 +380,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         },
         spectral_confusion_noise: {
           value: Number(
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').value
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
           ),
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
-            .units
+            ?.units
         }
       };
       resultsArr.push(result);
