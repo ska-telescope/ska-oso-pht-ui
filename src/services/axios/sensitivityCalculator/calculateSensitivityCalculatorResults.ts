@@ -25,27 +25,20 @@ export default function calculateSensitivityCalculatorResults(
   const recWeight = isZoom()
     ? response?.weighting[0]
     : isLow()
-      ? response?.weightingLine[0]
-      : response?.weighting;
+    ? response?.weightingLine[0]
+    : response?.weighting;
 
   const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
     rec ? sense * rec.sbs_conv_factor : 0;
 
-  const SUPPLIED_IS_SENSITIVITY = observation?.supplied?.type === 2 ? true : false;
-
-  const weightedSensitivityIntegration = isLow()
+  const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
-    : getWeightedSensitivityMID(response, isZoom());
-
-  const weightedSensitivitySensitivity = observation.supplied.value;
-
-  const weightedSensitivity = SUPPLIED_IS_SENSITIVITY
-    ? weightedSensitivityIntegration
-    : weightedSensitivitySensitivity;
+    : getWeightedSensitivityMID(observation, response, isZoom());
 
   const confusionNoise: number = isLow()
     ? getConfusionNoiseLOW(response, isZoom())
     : getConfusionNoiseMID(response, isZoom());
+
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
@@ -268,16 +261,20 @@ const getConfusionNoiseZoomMID = (response: SensitivityCalculatorAPIResponseMid)
     : 0;
 
 const getWeightedSensitivityMID = (
+  observation: Observation,
   response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean
 ) => {
-  const sensitivity: number = isZoom
-    ? response?.calculate?.data[0]?.spectral_sensitivity.value
-    : response?.calculate?.data?.spectral_sensitivity.value;
-  const factor: number = isZoom
-    ? response.weighting[0].weighting_factor
-    : response.weighting.weighting_factor;
-  return sensitivity * factor;
+  const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
+  if (recCalc?.spectral_sensitivity?.value) {
+    const sensitivity: number = recCalc?.spectral_sensitivity.value;
+    const factor: number = isZoom
+      ? response.weighting[0].weighting_factor
+      : response.weighting.weighting_factor;
+    return sensitivity * factor;
+  } else {
+    return observation?.supplied.value;
+  }
 };
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): string => {

@@ -319,13 +319,18 @@ function mappingPutProposal(proposal: Proposal, status: string) {
               }
             },
           */
-          weighted_continuum_sensitivity: OBS_TYPES[obsType] === 'continuum' ? {
-            value: Number(
-              tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
-            ),
-            unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')
-              ?.units
-          } : null,
+          weighted_continuum_sensitivity:
+            OBS_TYPES[obsType] === 'continuum'
+              ? {
+                  value: Number(
+                    tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')
+                      ?.value
+                  ),
+                  unit: tarObs.sensCalc.section1.find(
+                    o => o.field === 'continuumSensitivityWeighted'
+                  )?.units
+                }
+              : null,
           weighted_spectral_sensitivity: {
             value: Number(
               tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
@@ -335,12 +340,17 @@ function mappingPutProposal(proposal: Proposal, status: string) {
               o => o.field === 'spectralSensitivityWeighted'
             )?.units
           },
-          total_continuum_sensitivity: OBS_TYPES[obsType] === 'continuum' ? {
-            value: Number(
-              tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
-            ),
-            unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
-          } : null,
+          total_continuum_sensitivity:
+            OBS_TYPES[obsType] === 'continuum'
+              ? {
+                  value: Number(
+                    tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')
+                      ?.value
+                  ),
+                  unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')
+                    ?.units
+                }
+              : null,
           total_spectral_sensitivity: {
             value: Number(
               tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')
@@ -351,11 +361,14 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             )?.units
           },
           surface_brightness_sensitivity: {
-            continuum: OBS_TYPES[obsType] === 'continuum' ? Number(
-              tarObs.sensCalc.section1?.find(
-                o => o.field === 'continuumSurfaceBrightnessSensitivity'
-              )?.value
-            ) : null,
+            continuum:
+              OBS_TYPES[obsType] === 'continuum'
+                ? Number(
+                    tarObs.sensCalc.section1?.find(
+                      o => o.field === 'continuumSurfaceBrightnessSensitivity'
+                    )?.value
+                  )
+                : null,
             spectral: Number(
               tarObs.sensCalc[spectralSection]?.find(
                 o => o.field === 'spectralSurfaceBrightnessSensitivity'
@@ -366,12 +379,16 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             )?.units
           }
         },
-        continuum_confusion_noise: OBS_TYPES[obsType] === 'continuum' ? {
-          value: Number(
-            tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-          ),
-          unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
-        } : null,
+        continuum_confusion_noise:
+          OBS_TYPES[obsType] === 'continuum'
+            ? {
+                value: Number(
+                  tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+                ),
+                unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
+                  ?.units
+              }
+            : null,
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
           unit: 'm/s' // tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').units // this should be arcsecs2 -> currently rejected by backend
