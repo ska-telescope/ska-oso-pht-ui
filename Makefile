@@ -20,6 +20,7 @@ K8S_CHART_PARAMS += \
 -include .make/k8s.mk
 -include .make/release.mk
 -include PrivateRules.mak
+-include .make/xray.mk
 
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
