@@ -7,6 +7,10 @@ Future
 
 ---
 
+* STAR-296:
+   - Created GridMember component for use in Team Page and Proposal Display
+   - Updated Proposal Display to reflect latest requirements
+   - Minor resource file updates
 * STAR-624: 
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Removed units from SensCalc multiple display modal

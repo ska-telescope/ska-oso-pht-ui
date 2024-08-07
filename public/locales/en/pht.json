@@ -7,6 +7,7 @@
   "localData": "LOCAL DATA",
   "yes": "Yes",
   "no": "No",
+  "none": "None",
   "button": {
     "add": "Add",
     "cancel": "Cancel",
@@ -165,11 +166,11 @@
     "error": "Not able to Get PDF Download URL",
     "science": {
       "label": "proposal_science",
-      "toolTip": "This is the download button of the file on the Science Page"
+      "toolTip": "Click download the Science Justification PDF"
     },
     "technical": {
       "label": "proposal_technical",
-      "toolTip": "This is the download button of the file on the Technical Page"
+      "toolTip": "Click download the Technical Justification PDF"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },

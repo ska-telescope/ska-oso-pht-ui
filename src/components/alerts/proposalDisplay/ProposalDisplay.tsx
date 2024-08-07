@@ -7,14 +7,19 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { GENERAL, NOT_SPECIFIED, Projects } from '../../../utils/constants';
-import TeamMember from '../../../utils/types/teamMember';
+import {
+  BANDWIDTH_TELESCOPE,
+  NOT_SPECIFIED,
+  OBSERVATION,
+  Projects
+} from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import GridMembers from '../../grid/members/GridMembers';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -82,7 +87,7 @@ export default function ProposalDisplay({
 
   const subProposalTypes = () => {
     const proposalType = getProposal().proposalType;
-    const subType = getProposal().proposalSubType;
+    // const subType = getProposal().proposalSubType;
     const proposalName =
       !proposalType || proposalType < 1
         ? t('displayProposal.noneSelected')
@@ -101,9 +106,9 @@ export default function ProposalDisplay({
     // return `${scienceCatLabel} / ${scienceSubCatLabel}`;
   };
 
-  const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
-  const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
-  const observationType = (type: number) => t(`observationType.${type}`);
+  // const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
+  // const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
+  // const observationType = (type: number) => t(`observationType.${type}`);
 
   const title = (inValue: string) => (
     <Typography variant={TITLE_STYLE} style={{ fontWeight: 600 }}>
@@ -145,25 +150,39 @@ export default function ProposalDisplay({
     );
   };
 
-  const link = (inLabel: string, toolTip: string, onClick: Function) => {
+  const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
           {label(inLabel)}
         </Grid>
         <Grid item xs={12 - LABEL_WIDTH}>
-        <DownloadIcon
-            toolTip={toolTip}
-            onClick={onClick}
-          />
+          {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
+          {!contents && content(t('none'))}
         </Grid>
       </Grid>
     );
   };
 
-  const integrationTime = (rec: Observation) => {
-    return rec.supplied.type + ' ' + rec.supplied.value + ' ' + rec.supplied.units;
-  }
+  const getObservationTargets = (rec: Observation) => {
+    const array = getProposal().targetObservation.filter(e => e.observationId === rec.id);
+    console.log('TREVOR ARRAY', array);
+    if (array || array.length === 0) {
+      return t('none');
+    }
+    return 'HELLO';
+  };
+
+  const sensitivityIntegrationTime = (rec: Observation) => {
+    return (
+      OBSERVATION?.Supplied[rec.supplied.type]?.label +
+      ' ' +
+      rec.supplied.value +
+      ' ' +
+      OBSERVATION?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))
+        ?.label
+    );
+  };
 
   const sectionTitle = () => (
     <Grid item>
@@ -204,8 +223,12 @@ export default function ProposalDisplay({
   const headerContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={2}>LOGO</Grid>
-        <Grid item xs={6}>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
+        <Grid item xs={2}>
+          LOGO
+        </Grid>
+        <Grid item xs={6}>
+          {title(t('page.9.title') + ' : ' + getProposal().title)}
+        </Grid>
         <Grid item xs={4}>
           <Grid container direction="column" justifyContent="space-between" alignItems="center">
             <Grid item>{cycle(t('page.12.title'), getProposal().cycle)}</Grid>
@@ -241,55 +264,13 @@ export default function ProposalDisplay({
     </Grid>
   );
 
-  const teamContent = () => (
+  const teamContentGrid = () => (
     <>
       <Grid item>
         <Grid item>{label(t('members.label'))}</Grid>
       </Grid>
       <Grid item>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Grid item xs={4}>
-            {label(t('name.label'))}
-          </Grid>
-          <Grid item xs={4}>
-            {label(t('email.label'))}
-          </Grid>
-          <Grid item xs={2}>
-            {label(t('pi.initials'))}
-          </Grid>
-          <Grid item xs={2}>
-            {label(t('phdThesis.title'))}
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item>
-        {getProposal().team?.map((rec: TeamMember, index: number) => (
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            key={index}
-          >
-            <Grid item xs={4}>
-              {content(`${rec.firstName} ${rec.lastName}`)}
-            </Grid>
-            <Grid item xs={4}>
-              {content(rec.email)}
-            </Grid>
-            <Grid item xs={2}>
-              {content(t(rec.pi ? 'yes' : 'no'))}
-            </Grid>
-            <Grid item xs={2}>
-              {content(t(rec.phdThesis ? 'yes' : 'no'))}
-            </Grid>
-          </Grid>
-        ))}
+        <GridMembers rows={getProposal().team} />
       </Grid>
     </>
   );
@@ -298,10 +279,20 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={6}>
-          {link(t('page.3.label'), t('pdfDownload.science.toolTip'), () => downloadPdf('science'))}
+          {link(
+            t('page.3.label'),
+            t('pdfDownload.science.toolTip'),
+            () => downloadPdf('science'),
+            getProposal().sciencePDF
+          )}
         </Grid>
         <Grid item xs={6}>
-          {link(t('page.3.label'), t('pdfDownload.technical.toolTip'), () => downloadPdf('technical'))}
+          {link(
+            t('page.3.label'),
+            t('pdfDownload.technical.toolTip'),
+            () => downloadPdf('technical'),
+            getProposal().technicalPDF
+          )}
         </Grid>
       </Grid>
     </Grid>
@@ -343,29 +334,20 @@ export default function ProposalDisplay({
       <Grid item>
         <Grid item>{label(t('page.10.label'))}</Grid>
       </Grid>
-      
+
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid item>{label(t('name.label'))}</Grid>
+        <Grid item>{label(t('page.4.label'))}</Grid>
+        <Grid item>{label(t('observationType.label'))}</Grid>
+        <Grid item>{label(t('observingBand.label'))}</Grid>
         <Grid item>
-          {label(t('name.label'))}
+          {label(
+            t('sensitivityCalculatorResults.sensitivity') +
+              '/' +
+              t('sensitivityCalculatorResults.integrationTime')
+          )}
         </Grid>
-        <Grid item>
-          {label(t('page.4.label'))}
-        </Grid>
-        <Grid item>
-          {label(t('observationType.label'))}
-        </Grid>
-        <Grid item>
-          {label(t('observingBand.label'))}
-        </Grid>
-        <Grid item>
-          {label(t('sensitivityCalculatorResults.sensitivity'))}
-        </Grid>
-        <Grid item>
-          {label(t('sensitivityCalculatorResults.integrationTime'))}
-        </Grid>
-        <Grid item>
-          {label(t('page.13.label'))}
-        </Grid>
+        <Grid item>{label(t('page.13.label'))}</Grid>
       </Grid>
 
       <Grid item>
@@ -377,27 +359,12 @@ export default function ProposalDisplay({
             alignItems="center"
             key={index}
           >
-            <Grid item>
-              {content(rec.id)}
-            </Grid>
-            <Grid item>
-              {content(t('page.4.label'))}
-            </Grid>
-            <Grid item>
-              {content(t('observationType.label'))}
-            </Grid>
-            <Grid item>
-              {content(rec.observingBand)}
-            </Grid>
-            <Grid item>
-              {content(t('sensitivityCalculatorResults.sensitivity'))}
-            </Grid>
-            <Grid item>
-              {content(integrationTime(rec))}
-            </Grid>
-            <Grid item>
-              {content(t('page.13.label'))}
-            </Grid>
+            <Grid item>{content(rec.id)}</Grid>
+            <Grid item>{content(getObservationTargets(rec))}</Grid>
+            <Grid item>{content(t('observationType.' + rec.type))}</Grid>
+            <Grid item>{content(BANDWIDTH_TELESCOPE[rec.observingBand].label)}</Grid>
+            <Grid item>{content(sensitivityIntegrationTime(rec))}</Grid>
+            <Grid item>{content(t('page.13.label'))}</Grid>
           </Grid>
         ))}
       </Grid>
@@ -477,7 +444,7 @@ export default function ProposalDisplay({
             {sectionTitle()}
             {observationsContent()}
             {sectionTitle()}
-            {teamContent()}
+            {teamContentGrid()}
             {false && sectionTitle()}
             {false && targetContent()}
             {false && sectionTitle()}
