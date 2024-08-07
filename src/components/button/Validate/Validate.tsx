@@ -15,7 +15,7 @@ export default function ValidateButton({ action }) {
       icon={<FactCheckIcon />}
       label={title}
       onClick={action}
-      testId={`${title}Button`}
+      testId={`${title}TestId`}
       variant={ButtonVariantTypes.Contained}
     />
   );

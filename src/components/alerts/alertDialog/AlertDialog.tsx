@@ -1,10 +1,19 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
+import {
+  Breakpoint,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Typography
+} from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 
 interface AlertDialogProps {
+  maxWidth?: Breakpoint;
   open: boolean;
   onClose: Function;
   onDialogResponse: Function;
@@ -13,6 +22,7 @@ interface AlertDialogProps {
 }
 
 export default function AlertDialog({
+  maxWidth = 'sm',
   open,
   onClose,
   onDialogResponse,
@@ -40,7 +50,7 @@ export default function AlertDialog({
   return (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth={maxWidth}
       open={open}
       onClose={handleCancel}
       aria-labelledby="alert-dialog-title"
@@ -52,10 +62,10 @@ export default function AlertDialog({
       <DialogActions>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
-            <CancelButton action={handleCancel} />
+            <CancelButton action={handleCancel} testId="cancelButtonTestId" />
           </Grid>
           <Grid item>
-            <ConfirmButton action={handleContinue} />
+            <ConfirmButton action={handleContinue} testId="confirmButtonTestId" />
           </Grid>
         </Grid>
       </DialogActions>

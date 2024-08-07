@@ -10,7 +10,7 @@ import { Router } from 'react-router-dom';
 const THEME = [THEME_DARK, THEME_LIGHT];
 
 function mounting(theTheme: any) {
-  cy.viewport(1500, 1000);
+  cy.viewport(2000, 1000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>

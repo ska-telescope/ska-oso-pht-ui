@@ -7,7 +7,6 @@ import {
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
-  OBSERVATION_TYPE_SENSCALC,
   TYPE_ZOOM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
@@ -16,19 +15,23 @@ import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
+import { helpers } from '../../../../utils/helpers';
 
 const URL_CALCULATE = `calculate`;
 
 async function GetCalculate(observation: Observation, target: Target) {
+  const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
+  const isZoom = () => observation.type === TYPE_ZOOM;
+  const isContinuum = () => observation.type === TYPE_CONTINUUM;
+
+  const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
+  const getMode = () => OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/';
+
+  const getBandwidthValues = () =>
+    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
+
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
-
-  const getTelescope = () =>
-    observation.telescope === TELESCOPE_LOW_NUM ? TELESCOPE_LOW.code : TELESCOPE_MID.code;
-
-  const getMode = () =>
-    observation.telescope === TELESCOPE_LOW_NUM
-      ? OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/'
-      : '';
+  const SUPPLIED_IS_SENSITIVITY = observation?.supplied?.type === 2 ? true : false;
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
@@ -52,83 +55,132 @@ async function GetCalculate(observation: Observation, target: Target) {
   }
 
   function getZoomBandwidthValueUnit() {
-    const telescopeBandwidthValues = OBSERVATION.array.find(
-      item => item.value === observation.telescope
-    ).bandWidth;
-    const bandWidthValue = telescopeBandwidthValues.find(
-      item => item.value === observation.bandwidth
-    ).label;
-    return bandWidthValue.split(' ');
+    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
+      ?.label;
+    return bandWidthValue?.split(' ');
   }
 
-  function getContinuumBandwidthValueUnit() {
-    return observation.continuumBandwidth.split(' ');
-  }
+  const getBandNumber = (inValue: number) => {
+    if (inValue === 3) {
+      return '5a';
+    } else if (inValue === 4) {
+      return '5b';
+    } else {
+      return inValue;
+    }
+  };
 
   /*********************************************************** MID *********************************************************/
 
-  interface ModeSpecificParametersMid {
-    n_subbands?: string;
-    resolution?: string;
-    zoom_frequencies?: string;
-    zoom_resolutions?: string;
-  }
+  const convertFrequency = (value: number | string, units: number | string) =>
+    sensCalHelpers.format.convertBandwidthToHz(value, units);
+  const getSpectralResolution = () => {
+    const spectralResValue = observation.spectralResolution.includes('kHz')
+      ? Number(observation.spectralResolution.split(' ')[0]) * 1000
+      : Number(observation.spectralResolution.split(' ')[0]);
+    return spectralResValue?.toString();
+  };
 
-  function mapQueryCalculateMid(): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParametersMid = {};
-    if (observation.type === TYPE_CONTINUUM) {
-      mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-      mode_specific_parameters.resolution = (
-        Number(observation.spectralResolution.split(' ')[0]) * 1000
-      ).toString(); // resolution should be sent in Hz
-    } else {
-      const splitZoomFrequencies: string[] = observation.centralFrequency.split(' ');
-      mode_specific_parameters.zoom_frequencies = sensCalHelpers.format
-        .convertFrequencyToHz(splitZoomFrequencies[0], splitZoomFrequencies[1])
-        .toString();
-      mode_specific_parameters.zoom_resolutions = observation.effectiveResolution?.toString();
-    }
-
-    const weighting = OBSERVATION.ImageWeighting.find(
-      obj => obj.value === observation.imageWeighting
-    );
-    const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      observation.integrationTimeUnits
-    );
-    const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
-      Number(observation.integrationTime),
-      iTimeUnits
-    );
-    const splitCentralFrequency: string[] = observation.centralFrequency.split(' ');
-    const bandwidthValueUnit: string[] =
-      observation.type === TYPE_ZOOM
-        ? getZoomBandwidthValueUnit()
-        : getContinuumBandwidthValueUnit();
-
-    const params = {
-      rx_band: `Band ${observation.observingBand}`,
-      ra_str: rightAscension(),
-      dec_str: declination(),
-      array_configuration: getSubArray(),
+  const getParamZoom = () => {
+    const bandwidthValueUnit = getZoomBandwidthValueUnit();
+    return {
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
+      subarray_configuration: getSubArray(),
+      // n_ska
+      // n_meer
+      freq_centres_hz: [
+        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
+      ], // MANDATORY
+      bandwidth_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]), // MANDATORY
+      // spectral_averaging_factor
+      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
-      frequency: sensCalHelpers.format
-        .convertFrequencyToHz(splitCentralFrequency[0], splitCentralFrequency[1])
-        .toString(),
-      bandwidth: sensCalHelpers.format.convertBandwidthToHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
-      ), // mid zoom and mid continuum bandwidth should be sent in Hz
-      resolution: '0',
-      weighting: weighting?.label.toLowerCase(),
-      calculator_mode: OBSERVATION_TYPE_SENSCALC[observation.type],
-      taper: observation.tapering?.toString(),
-      integration_time: iTime?.toString(),
-      ...mode_specific_parameters
+      spectral_resolutions_hz: getSpectralResolution(), // MANDATORY,
+      total_bandwidths_hz: sensCalHelpers.format.convertBandwidthToHz(bandwidthValueUnit[0], 2),
+      n_subbands: observation.numSubBands?.toString()
+      // subband_sensitivities_jy
+      // eta_system
+      // eta_pointing
+      // eta_coherence
+      // eta_digitisation
+      // eta-correlation
+      // eta_bandpass
+      // t_sys_ska
+      // t_rx_ska
+      // t_spl_ska
+      // t_sys_meer
+      // t_rx_meer
+      // t_spl_meer
+      // t_sky_ska
+      // t_gal_ska
+      // t_gal_meer
+      // alpha
+      // eta_meer
+      // eta_ska
     };
-    const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+  };
 
+  const getParamContinuum = () => {
+    return {
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
+      subarray_configuration: getSubArray(),
+      // n_ska
+      // n_meer
+      freq_centre_hz: convertFrequency(
+        observation.centralFrequency,
+        observation.centralFrequencyUnits
+      ), // MANDATORY
+      bandwidth_hz: convertFrequency(
+        observation.continuumBandwidth,
+        observation.continuumBandwidthUnits
+      ), // MANDATORY
+      // spectral_averaging_factor
+      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+      pwv: observation.weather?.toString(),
+      el: observation.elevation?.toString(),
+      n_subbands: observation.numSubBands?.toString()
+      // subband_sensitivities_jy
+      // eta_system
+      // eta_pointing
+      // eta_coherence
+      // eta_digitisation
+      // eta-correlation
+      // eta_bandpass
+      // t_sys_ska
+      // t_rx_ska
+      // t_spl_ska
+      // t_sys_meer
+      // t_rx_meer
+      // t_spl_meer
+      // t_sky_ska
+      // t_gal_ska
+      // t_gal_meer
+      // alpha
+      // eta_meer
+      // eta_ska
+    };
+  };
+
+  function mapQueryCalculateMid(): URLSearchParams {
+    const params = isZoom() ? getParamZoom() : getParamContinuum();
+    helpers.transform.trimObject(params);
+    const urlSearchParams = new URLSearchParams();
+
+    if (SUPPLIED_IS_SENSITIVITY) {
+      urlSearchParams.append('sensitivities_jy', observation.supplied.value.toString());
+    } else {
+      const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
+        observation.supplied.units
+      );
+      const iTime = sensCalHelpers.format.convertIntegrationTimeToSeconds(
+        Number(observation.supplied.value),
+        iTimeUnits
+      );
+      urlSearchParams.append('integration_time_s', iTime?.toString());
+    }
+
+    for (let key in params) urlSearchParams.append(key, params[key]);
     return urlSearchParams;
   }
 
@@ -139,28 +191,25 @@ async function GetCalculate(observation: Observation, target: Target) {
     spectral_averaging_factor?: string;
     spectral_resolution_hz?: string;
     total_bandwidth_khz?: number;
+    n_subbands?: string;
   }
 
   // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
 
-  function pointingCentre() {
-    return rightAscension() + ' ' + declination();
-  }
-
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};
-    if (observation.type === TYPE_CONTINUUM) {
-      const bandwidthValueUnit: string[] = getContinuumBandwidthValueUnit();
-      // const splitContinuumBandwidth: string[] = observation.continuumBandwidth.split(' ');
+    if (isContinuum()) {
       mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
+        observation.continuumBandwidth,
+        sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+          observation.continuumBandwidthUnits,
+          observation.telescope
+        )
       ); // low continuum bandwidth should be sent in MH
       mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
+      mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
     } else {
-      // mode_specific_parameters.spectral_resolution_hz = observation.spectral_resolution?.toString();
-      const value = 16;
-      mode_specific_parameters.spectral_resolution_hz = value?.toString(); // temp fix // TODO: use spectral_resolution_hz and convert units if necessary
+      mode_specific_parameters.spectral_resolution_hz = getSpectralResolution();
 
       const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
       mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(
@@ -169,16 +218,17 @@ async function GetCalculate(observation: Observation, target: Target) {
       ); // low zoom bandwidth should be sent in KHz
     }
     const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      observation.integrationTimeUnits
+      // TODO handle sensitivity?
+      observation.supplied.units
     );
-
     const params = {
       subarray_configuration: getSubArray(),
+      // LOW should always use integration time in supplied
       duration: sensCalHelpers.format
-        .convertIntegrationTimeToSeconds(Number(observation.integrationTime), integrationTimeUnits)
+        .convertIntegrationTimeToSeconds(Number(observation.supplied.value), integrationTimeUnits)
         ?.toString(),
-      pointing_centre: pointingCentre(),
-      freq_centre: observation.centralFrequency.split(' ')[0]?.toString(),
+      pointing_centre: rightAscension() + ' ' + declination(),
+      freq_centre: observation.centralFrequency.toString(),
       elevation_limit: observation.elevation?.toString(),
       ...mode_specific_parameters
     };
@@ -190,31 +240,27 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   /*************************************************************************************************************************/
 
-  const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryCalculateLow()
-      : mapQueryCalculateMid();
-  };
+  const getQueryParams = () => (isLow() ? mapQueryCalculateLow() : mapQueryCalculateMid());
 
-  const getMockData = () => {
-    if (observation.telescope === TELESCOPE_LOW_NUM) {
-      return observation.type ? MockResponseLowCalculate : MockResponseLowCalculateZoom;
-    }
-    return observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
-  };
+  const getPath = () =>
+    `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
+
+  const getLowCalculate = () =>
+    observation.type ? MockResponseLowCalculate : MockResponseLowCalculateZoom;
+  const getMidCalculate = () =>
+    observation.type ? MockResponseMidCalculate : MockResponseMidCalculateZoom;
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
-    return getMockData();
+    return isLow() ? getLowCalculate() : getMidCalculate();
   }
 
   try {
-    const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_CALCULATE}?${getQueryParams()}`;
-    const result = await axios.get(path, AXIOS_CONFIG);
+    const result = await axios.get(getPath(), AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {
-      title: e.response.data.title,
-      detail: e.response.data.detail
+      title: e.response?.data?.title,
+      detail: e.response?.data?.detail
     };
     return { error: errorObject };
   }

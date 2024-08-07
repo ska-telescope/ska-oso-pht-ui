@@ -9,31 +9,30 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<TargetPage />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <Router location="/" navigator={undefined}>
-              <TargetPage />
-            </Router>
-          </ThemeProvider>
-        </StoreProvider>
-      );
-    });
-  }
-  it(`Verify target elements`, () => {
-    cy.mount(
-      <StoreProvider>
+function mount(theTheme) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
         <Router location="/" navigator={undefined}>
           <TargetPage />
         </Router>
-      </StoreProvider>
-    );
-    cy.get('[data-testid="noSpecificTarget"]').contains('noSpecificTarget');
-    cy.get('[data-testid="listOfTargets"]').contains('listOfTargets');
-    cy.get('[data-testid="targetMosaic"]').contains('targetMosaic');
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+describe('<TargetPage />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mount(theTheme);
+    });
+  }
+  it(`Verify target elements`, () => {
+    mount(THEME_LIGHT);
+    cy.get('#noSpecificTarget');
+    cy.get('#listOfTargets').contains('listOfTargets.label');
+    cy.get('#targetMosaic').contains('targetMosaic.label');
   });
 });

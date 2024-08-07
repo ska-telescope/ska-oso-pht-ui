@@ -36,7 +36,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.skaPhtApiUrl -}}
 {{ .Values.runtimeEnv.skaPhtApiUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/pht/api/v1
+/{{ .Release.Namespace }}/pht/api/v2
 {{- end }}
 {{- end }}
 
@@ -44,7 +44,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.skaSensitivityCalcUrl -}}
 {{ .Values.runtimeEnv.skaSensitivityCalcUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/senscalc/api/v9/
+/{{ .Release.Namespace }}/senscalc/api/v10/
 {{- end }}
 {{- end }}
 

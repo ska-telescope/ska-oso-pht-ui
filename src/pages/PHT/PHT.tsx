@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { NAV, PATH } from '../../utils/constants';
-import AddObservation from '../AddObservation/AddObservation';
 import AddDataProduct from '../AddDataProduct/AddDataProduct';
 import AddProposal from '../AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
 import SrcDataPage from '../SrcDataPage/SrcDataPage';
 import GeneralPage from '../GeneralPage/GeneralPage';
+import ObservationEntry from '../ObservationEntry/ObservationEntry';
 import ObservationPage from '../ObservationPage/ObservationPage';
 import SciencePage from '../SciencePage/SciencePage';
 import TargetPage from '../TargetPage/TargetPage';
@@ -28,7 +28,7 @@ const ROUTES = [
   { path: NAV[7], element: <SdpDataPage /> },
   { path: NAV[8], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
-  { path: PATH[2], element: <AddObservation /> },
+  { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> }
 ];
 

@@ -67,7 +67,7 @@ function verifyAddButton() {
 describe('<AddDataProduct />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
+      cy.viewport(2000, 1000);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>

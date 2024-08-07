@@ -26,18 +26,16 @@ export type SensitivityCalculatorAPIResponseLow = {
     };
   };
   weighting: {
-    beam_size: [
-      {
-        beam_maj_scaled: number;
-        beam_min_scaled: number;
-        beam_pa: number;
-      }
-    ];
-    confusion_noise: {
-      value: number[];
-      limit_type: string[];
+    beam_size: {
+      beam_maj_scaled: number;
+      beam_min_scaled: number;
+      beam_pa: number;
     };
-    sbs_conv_factor: number[];
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number;
     weighting_factor: number;
   };
   weightingLine: {
@@ -49,8 +47,8 @@ export type SensitivityCalculatorAPIResponseLow = {
       }
     ];
     confusion_noise: {
-      value: number[];
-      limit_type: string[];
+      value: number;
+      limit_type: string;
     };
     sbs_conv_factor: number[];
     weighting_factor: number;
@@ -59,55 +57,35 @@ export type SensitivityCalculatorAPIResponseLow = {
 
 export type SensitivityCalculatorAPIResponseMid = {
   calculate: {
-    status: string;
     data: {
-      data: {
-        result: {
-          state: {
-            pwv: number;
-            eta_system: number;
-            eta_pointing: number;
-            eta_coherence: number;
-            eta_digitisation: number;
-            eta_correlation: number;
-            eta_bandpass: number;
-            n_ska: number;
-            eta_ska: number;
-            n_meer: number;
-            eta_meer: number;
-            alpha: number;
-            frequency: number;
-            bandwidth: number;
-            t_sys_ska: number;
-            t_spl_ska: number;
-            t_rx_ska: number;
-            t_sys_meer: number;
-            t_spl_meer: number;
-            t_rx_meer: number;
-            t_sky_ska: number;
-            t_sky_meer: number;
-            t_gal_ska: number;
-            t_gal_meer: number;
-            el: number;
-            rx_band: string;
-            array_configuration: string;
-            target: string;
-          };
-          sensitivity: number;
-          line_sensitivity: number;
-        };
+      continuum_sensitivity: {
+        value: number;
+        unit: string;
+      };
+      spectral_sensitivity: {
+        value: number;
+        unit: string;
       };
     };
+    status: number;
   };
   weighting: {
-    status: string;
-    data: {
-      weighting_factor: number;
-      sbs_conv_factor: number[];
-      confusion_noise: {
-        value: number[];
-        limit_type: string[];
-      };
+    beam_size: [
+      {
+        beam_maj_scaled: number;
+        beam_min_scaled: number;
+        beam_pa: number;
+      }
+    ];
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number;
+    weighting_factor: number;
+  };
+  weightingLine: [
+    {
       beam_size: [
         {
           beam_maj_scaled: number;
@@ -115,26 +93,16 @@ export type SensitivityCalculatorAPIResponseMid = {
           beam_pa: number;
         }
       ];
-      subbands: any[];
-    };
-  };
-  weightingLine: {
-    status: string;
-    data: {
-      weighting_factor: number;
-      sbs_conv_factor: number[];
       confusion_noise: {
         value: number[];
         limit_type: string[];
       };
-      beam_size: [
-        {
-          beam_maj_scaled: number;
-          beam_min_scaled: number;
-          beam_pa: number;
-        }
-      ];
-      subbands: any[];
-    };
-  };
+      freq_centre: {
+        value: number;
+        unit: string;
+      };
+      sbs_conv_factor: number;
+      weighting_factor: number;
+    }
+  ];
 };

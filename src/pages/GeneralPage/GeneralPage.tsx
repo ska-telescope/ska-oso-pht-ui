@@ -5,9 +5,10 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
-import { GENERAL, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { GENERAL } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
+import { validateGeneralPage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 
@@ -51,36 +52,12 @@ export default function GeneralPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = 0;
-
-    if (getProposal()?.abstract?.length > 0) {
-      count++;
-    }
-    if (getProposal()?.category > 0) {
-      count++;
-    }
-    /* TODO : Retained for future use
-    if (getProposal()?.subCategory > 0) {
-      count++;
-    }
-    */
-
-    setTheProposalState(result[count]);
+    setTheProposalState(validateGeneralPage(getProposal()));
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    setProposal({ ...getProposal(), category: id, subCategory: [1] });
+    setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
   };
-
-  /* TODO : Retained for future use
-  const getSubCategoryOptions = () => {
-    if (getProposal().category) {
-      return GENERAL.ScienceCategory[getProposal().category - 1].subCategory;
-    }
-    return [{ label: '', value: 0 }];
-  };
-  */
 
   const cycleField = () => (
     <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
@@ -146,7 +123,7 @@ export default function GeneralPage() {
     <DropDown
       options={GENERAL.ScienceCategory}
       testId="categoryId"
-      value={getProposal().category}
+      value={getProposal().scienceCategory}
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold

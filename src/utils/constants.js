@@ -1,5 +1,5 @@
 import { env } from '../env';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -7,30 +7,7 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
-export const ENTRY_HEIGHT = 40;
-
-export const STATUS_OK = 0;
-export const STATUS_ERROR = 1;
-export const STATUS_PARTIAL = 3;
-export const STATUS_INITIAL = 5;
-
-export const STATUS = {
-  OK: STATUS_OK,
-  ERROR: STATUS_ERROR,
-  PARTIAL: STATUS_PARTIAL,
-  INITIAL: STATUS_INITIAL
-};
-
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum'];
-export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
-
-export const RA_TYPE_EQUATORIAL = 0;
-export const RA_TYPE_GALACTIC = 1;
-
-export const LAST_PAGE = 9;
+/*****************************************/
 
 export const AXIOS_CONFIG = {
   headers: {
@@ -39,41 +16,91 @@ export const AXIOS_CONFIG = {
   }
 };
 
-export const NAV = [
-  '/proposal/title',
-  '/proposal/team',
-  '/proposal/general',
-  '/proposal/science',
-  '/proposal/target',
-  '/proposal/observation',
-  '/proposal/technical',
-  '/proposal/data',
-  '/proposal/src'
+export const BAND_LOW = 0;
+export const BAND_1 = 1;
+export const BAND_2 = 2;
+export const BAND_5A = 3;
+export const BAND_5B = 4;
+
+export const BANDWIDTH_TELESCOPE = [
+  {
+    label: 'Low Band (50 - 350 MHz)',
+    telescope: 2,
+    value: BAND_LOW,
+    isBand5: false,
+    lower: 50,
+    upper: 350,
+    units: 'MHz',
+    mapping: 'low_band'
+  },
+  {
+    label: 'Band 1 (0.35 - 1.05 GHz)',
+    telescope: 1,
+    value: BAND_1,
+    isBand5: false,
+    lower: 0.35,
+    upper: 1.05,
+    units: 'GHz',
+    mapping: 'mid_band_1'
+  },
+  {
+    label: 'Band 2 (0.95 - 1.76 GHz)',
+    telescope: 1,
+    value: BAND_2,
+    isBand5: false,
+    lower: 0.95,
+    upper: 1.76,
+    units: 'GHz',
+    mapping: 'mid_band_2'
+  },
+  {
+    label: 'Band 5a (4.6 - 8.5 GHz)',
+    telescope: 1,
+    value: BAND_5A,
+    isBand5: true,
+    lower: 4.6,
+    upper: 8.5,
+    units: 'GHz',
+    mapping: 'mid_band_3'
+  }, // Band 5a
+  {
+    label: 'Band 5b (8.3 - 15.4 GHz)',
+    telescope: 1,
+    value: BAND_5B,
+    isBand5: true,
+    lower: 8.3,
+    upper: 15.4,
+    units: 'GHz',
+    mapping: 'mid_band_4'
+  } // Band 5b
 ];
 
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
+export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
-export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Draft', value: 'draft' },
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Withdrawn', value: 'withdrawn' },
-  { label: 'Rejected', value: 'rejected' }
-];
-
-export const PROPOSAL_STATUS = {
-  DRAFT: 'draft',
-  SUBMITTED: 'submitted',
-  ACCEPTED: 'accepted',
-  WITHDRAWN: 'withdrawn',
-  REJECTED: 'rejected'
+export const DATA_PRODUCT = {
+  observatoryDataProduct: [
+    { label: 'Continuum Image', value: 1 },
+    { label: 'Spectral Line Image', value: 2 }
+  ],
+  pipeline: [
+    { label: 'Visibility receive', value: 1 },
+    { label: '‘Real-time’ pointing calibration', value: 2 },
+    { label: 'Visibility pre-processing', value: 3 },
+    { label: 'Mid self-cal / ICal', value: 4 },
+    { label: 'Low self-cal / ICal', value: 5 },
+    { label: '‘Real-time’ gain calibration', value: 6 },
+    { label: 'Distributed Gridding/Imaging', value: 7 }
+  ]
 };
+export const DEFAULT_HELP = ['', ' ', ''];
 
-export const TEAM_STATUS_TYPE_OPTIONS = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  rejected: 'Rejected'
-};
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const ENTRY_HEIGHT = 40;
+export const ELEVATION_MIN = 15;
+export const ELEVATION_DEFAULT = 45;
+export const ELEVATION_MAX = 59.2;
+export const ELEVATION_UNITS = 'deg';
 
 export const GENERAL = {
   Cycle: 'SKA_5000_2023',
@@ -114,27 +141,188 @@ export const GENERAL = {
   ]
 };
 
-export const DEFAULT_HELP = ['', ' ', ''];
-
-export const TELESCOPES = [
-  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
-  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+export const IW_BRIGGS = 2;
+export const IW_NATURAL = 0;
+export const IW_UNIFORM = 1;
+export const IMAGE_WEIGHTING = [
+  { label: 'Natural', lookup: 'natural', value: 0 },
+  { label: 'Uniform', lookup: 'uniform', value: 1 },
+  { label: 'Briggs', lookup: 'robust', value: 2 }
 ];
 
-export const BANDWIDTH_TELESCOPE = [
-  { label: 'Low Band (50 - 350 MHz)', telescope: 2, value: 0 },
-  { label: 'Band 1 (0.35 - 1.05 GHz)', telescope: 1, value: 1 }, // Band 1
-  { label: 'Band 2 (0.95 - 1.76 GHz)', telescope: 1, value: 2 }, // Band 2
-  { label: 'Band 5a (4.6 - 8.5 GHz)', telescope: 1, value: 3 }, // Band 5a
-  { label: 'Band 5b (8.3 - 15.4 GHz)', telescope: 1, value: 4 } // Band 5b
+export const NOTSPECIFIED = 'notSpecified';
+
+export const IMAGE_SIZE_UNITS = {
+  ARCSECS: 'arcseconds',
+  ARCMINS: 'arcmins',
+  DEGREES: 'degrees'
+};
+
+export const LAB_IS_BOLD = true;
+export const LAB_POSITION = LABEL_POSITION.START;
+export const LAST_PAGE = 9;
+
+export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
+
+export const NAV = [
+  '/proposal/title',
+  '/proposal/team',
+  '/proposal/general',
+  '/proposal/science',
+  '/proposal/target',
+  '/proposal/observation',
+  '/proposal/technical',
+  '/proposal/data',
+  '/proposal/src'
 ];
 
-export const TELESCOPE_LOW_NUM = 2;
+export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+export const Projects = [
+  {
+    id: 1,
+    title: 'Standard Proposal',
+    code: 'PI',
+    mapping: 'standard_proposal',
+    description: 'Standard Observing Proposal',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        mapping: 'target_of_opportunity',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint proposal',
+        code: 'JSP',
+        mapping: 'joint_proposal',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        mapping: 'coordinated_proposal',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        mapping: 'long_term_proposal',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Key Science Project',
+    code: 'KSP',
+    mapping: 'key_science_proposal',
+    description:
+      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        mapping: 'target_of_opportunity',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint proposal',
+        code: 'JSP',
+        mapping: 'joint_proposal',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        mapping: 'coordinated_proposal',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      },
+      {
+        id: 4,
+        title: 'Long term proposal',
+        code: 'LTP',
+        mapping: 'long_term_proposal',
+        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Director's Discretionary Time Proposal",
+    code: 'DDT',
+    mapping: 'director_time_proposal',
+    description:
+      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
+    subProjects: [
+      {
+        id: 1,
+        title: 'Target of opportunity',
+        code: 'ToO',
+        mapping: 'target_of_opportunity',
+        description: 'A target of opportunity observing proposal'
+      },
+      {
+        id: 2,
+        title: 'Joint proposal',
+        code: 'JSP',
+        mapping: 'joint_proposal',
+        description: 'A proposal that requires both SKA-MID and Low telescopes'
+      },
+      {
+        id: 3,
+        title: 'Coordinated Proposal',
+        code: 'CP',
+        mapping: 'coordinated_proposal',
+        description:
+          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+      }
+    ]
+  }
+];
+export const PROPOSAL_STATUS = {
+  DRAFT: 'draft',
+  SUBMITTED: 'submitted',
+  ACCEPTED: 'accepted',
+  WITHDRAWN: 'withdrawn',
+  REJECTED: 'rejected'
+};
 
-export const TEL = ['', 'Mid', 'Low'];
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+
+export const OSCILLATION_UNITS = [
+  { label: 'Hz', toHz: 1 },
+  { label: 'KHz', toHz: 1000 },
+  { label: 'MHz', toHz: 10000000 },
+  { label: 'GHz', toHz: 10000000000 }
+];
+
+export const OB_SUBARRAY_AA05 = 1;
+export const OB_SUBARRAY_AA1 = 2;
+export const OB_SUBARRAY_AA2 = 3;
+export const OB_SUBARRAY_AA2_CORE = 4;
+export const OB_SUBARRAY_AA_STAR = 5;
+export const OB_SUBARRAY_AA_STAR_15 = 6;
+export const OB_SUBARRAY_AA_STAR_CORE = 7;
+export const OB_SUBARRAY_AA4 = 8;
+export const OB_SUBARRAY_AA4_15 = 9;
+export const OB_SUBARRAY_AA4_13 = 10;
+export const OB_SUBARRAY_AA4_CORE = 11;
+export const OB_SUBARRAY_CUSTOM = 20;
 
 export const OBS_TYPES = ['spectral', 'continuum'];
-
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
+export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
 export const OBSERVATION = {
   array: [
     {
@@ -142,99 +330,101 @@ export const OBSERVATION = {
       subarray: [
         // MID
         {
-          value: 1,
+          value: OB_SUBARRAY_AA05,
           map: 'AA0.5',
           label: 'AA0.5',
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
-          value: 2,
+          value: OB_SUBARRAY_AA1,
           map: 'AA1',
           label: 'AA1',
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
-          value: 3,
+          value: OB_SUBARRAY_AA2,
           map: 'AA2',
           label: 'AA2',
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
-          value: 5,
+          value: OB_SUBARRAY_AA_STAR,
           map: 'AA*',
           label: 'AA*',
           numOf15mAntennas: 80,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
-          value: 6,
+          value: OB_SUBARRAY_AA_STAR_15,
           map: 'AA* (15-m antennas only)',
           label: 'AA* (15-m antennas only)',
           numOf15mAntennas: 80,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
-          value: 8,
+          value: OB_SUBARRAY_AA4,
           map: 'AA4',
           label: 'AA4',
           numOf15mAntennas: 133,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
-          value: 9,
+          value: OB_SUBARRAY_AA4_15,
           map: 'AA4 (15-m antennas only)',
           label: 'AA4 (15-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         },
         {
-          value: 10,
+          value: OB_SUBARRAY_AA4_13,
           map: 'AA*/AA4 (13.5-m antennas only)',
           label: 'AA*/AA4 (13.5-m antennas only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 64,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: true
         },
         {
-          value: 20,
+          value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         }
       ],
-      robust: [
-        { label: '-2', value: 1 },
-        { label: '-1', value: 2 },
-        { label: '0', value: 3 },
-        { label: '1', value: 4 },
-        { label: '2', value: 5 }
-      ],
       bandWidth: [
-        { label: '3.125 MHz', value: 1 },
-        { label: '6.25 MHz', value: 2 },
-        { label: '12.5 MHz', value: 3 },
-        { label: '25 MHz', value: 4 },
-        { label: '50 MHz', value: 5 },
-        { label: '100 MHz', value: 6 },
-        { label: '200 MHz', value: 7 }
+        { label: '3.125 MHz', value: 1, mapping: 'MHz' },
+        { label: '6.25 MHz', value: 2, mapping: 'MHz' },
+        { label: '12.5 MHz', value: 3, mapping: 'MHz' },
+        { label: '25 MHz', value: 4, mapping: 'MHz' },
+        { label: '50 MHz', value: 5, mapping: 'MHz' },
+        { label: '100 MHz', value: 6, mapping: 'MHz' },
+        { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1 },
-        { label: 'MHz', value: 2 },
-        { label: 'KHz', value: 3 },
-        { label: 'Hz', value: 4 }
+      centralFrequencyAndBandWidthUnits: [
+        { label: 'GHz', value: 1, mapping: 'GHz' },
+        { label: 'MHz', value: 2, mapping: 'MHz' },
+        { label: 'KHz', value: 3, mapping: 'kHz' },
+        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -242,96 +432,99 @@ export const OBSERVATION = {
       subarray: [
         // LOW
         {
-          value: 1,
+          value: OB_SUBARRAY_AA05,
           map: 'LOW_AA05_all',
           label: 'AA0.5',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 6
+          numOfStations: 6,
+          disableForBand5: false
         },
         {
-          value: 2,
+          value: OB_SUBARRAY_AA1,
           map: 'LOW_AA1_all',
           label: 'AA1',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 18
+          numOfStations: 18,
+          disableForBand5: false
         },
         {
-          value: 3,
+          value: OB_SUBARRAY_AA2,
           map: 'LOW_AA2_all',
           label: 'AA2',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 64
+          numOfStations: 64,
+          disableForBand5: false
         },
         {
-          value: 4,
+          value: OB_SUBARRAY_AA2_CORE,
           map: 'LOW_AA2_core_all',
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 40
+          numOfStations: 40,
+          disableForBand5: false
         },
         {
-          value: 5,
+          value: OB_SUBARRAY_AA_STAR,
           map: 'LOW_AAstar_all',
           label: 'AA*',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 307
+          numOfStations: 307,
+          disableForBand5: false
         },
         {
-          value: 7,
+          value: OB_SUBARRAY_AA_STAR_CORE,
           map: 'LOW_AAstar_core_all',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 199
+          numOfStations: 199,
+          disableForBand5: false
         },
         {
-          value: 8,
+          value: OB_SUBARRAY_AA4,
           map: 'LOW_AA4_all',
           label: 'AA4',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 512
+          numOfStations: 512,
+          disableForBand5: false
         },
         {
-          value: 11,
+          value: OB_SUBARRAY_AA4_CORE,
           map: 'LOW_AA4_core_all',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 224
+          numOfStations: 224,
+          disableForBand5: false
         },
         {
-          value: 20,
+          value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0
+          numOfStations: 0,
+          disableForBand5: false
         }
       ],
-      robust: [{ label: '', value: 1 }], // TODO: should be like above: -2 to 2
       bandWidth: [
-        { label: '24.4 KHz', value: 1 },
-        { label: '48.8 KHz', value: 2 },
-        { label: '97.7 KHz', value: 3 },
-        { label: '195.3 KHz', value: 4 },
-        { label: '390.6 KHz', value: 5 },
-        { label: '781.2 KHz', value: 6 },
-        { label: '1562.5 KHz', value: 7 },
-        { label: '3125.0 KHz', value: 8 }
+        { label: '24.4 KHz', value: 1, mapping: 'kHz' },
+        { label: '48.8 KHz', value: 2, mapping: 'kHz' },
+        { label: '97.7 KHz', value: 3, mapping: 'kHz' },
+        { label: '195.3 KHz', value: 4, mapping: 'kHz' },
+        { label: '390.6 KHz', value: 5, mapping: 'kHz' },
+        { label: '781.2 KHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
+        { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
       ],
-      CentralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1 }]
+      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
-  ],
-  ImageWeighting: [
-    { label: 'Natural', value: 0 },
-    { label: 'Uniform', value: 1 },
-    { label: 'Briggs', value: 2 }
   ],
   SpectralAveraging: [
     { label: '1', value: 1, lookup: 0 },
@@ -343,105 +536,159 @@ export const OBSERVATION = {
     { label: '12', value: 12, lookup: 6 },
     { label: '24', value: 24, lookup: 7 }
   ],
-  CentralFrequencyOBLow: [{ lookup: 0, value: '200' }],
+  CentralFrequencyOBLow: [{ lookup: 0, value: 200 }],
   CentralFrequencyOB1: [
-    { lookup: 1, label: 'AA0.5', value: '0.7' },
-    { lookup: 2, label: 'AA1', value: '0.7' },
-    { lookup: 3, label: 'AA2', value: '0.7' },
-    { lookup: 5, label: 'AA*', value: '0.7975' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
-    { lookup: 8, label: 'AA4', value: '0.7975' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.7975' },
-    { lookup: 20, label: 'Custom', value: '0.7975' }
+    { lookup: 1, label: 'AA0.5', value: 0.7 },
+    { lookup: 2, label: 'AA1', value: 0.7 },
+    { lookup: 3, label: 'AA2', value: 0.7 },
+    { lookup: 5, label: 'AA*', value: 0.7975 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.7 },
+    { lookup: 8, label: 'AA4', value: 0.7975 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.7 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.7975 },
+    { lookup: 20, label: 'Custom', value: 0.7975 }
   ],
   CentralFrequencyOB2: [
-    { lookup: 1, label: 'AA0.5', value: '1.355' },
-    { lookup: 2, label: 'AA1', value: '1.355' },
-    { lookup: 3, label: 'AA2', value: '1.355' },
-    { lookup: 5, label: 'AA*', value: '1.31' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '1.355' },
-    { lookup: 8, label: 'AA4', value: '1.31' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '1.355' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '1.31' },
-    { lookup: 20, label: 'Custom', value: '1.31' }
+    { lookup: 1, label: 'AA0.5', value: 1.355 },
+    { lookup: 2, label: 'AA1', value: 1.355 },
+    { lookup: 3, label: 'AA2', value: 1.355 },
+    { lookup: 5, label: 'AA*', value: 1.31 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 1.355 },
+    { lookup: 8, label: 'AA4', value: 1.31 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 1.355 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 1.31 },
+    { lookup: 20, label: 'Custom', value: 1.31 }
   ],
-  CentralFrequencyOB5a: [{ value: '6.55' }],
-  CentralFrequencyOB5b: [{ value: '11.85' }],
+  CentralFrequencyOB5a: [{ value: 6.55 }],
+  CentralFrequencyOB5b: [{ value: 11.85 }],
   ContinuumBandwidthOBLow: [
-    { lookup: 1, label: 'AA0.5', value: '75' },
-    { lookup: 2, label: 'AA1', value: '75' },
-    { lookup: 3, label: 'AA2', value: '150' },
-    { lookup: 4, label: 'AA2 (core only)', value: '150' },
-    { lookup: 5, label: 'AA*', value: '300' },
-    { lookup: 7, label: 'AA* (core only)', value: '300' },
-    { lookup: 8, label: 'AA4', value: '300' },
-    { lookup: 11, label: 'AA4 (core only)', value: '300' },
-    { lookup: 20, label: 'Custom', value: '300' }
+    { lookup: 1, label: 'AA0.5', value: 75 },
+    { lookup: 2, label: 'AA1', value: 75 },
+    { lookup: 3, label: 'AA2', value: 150 },
+    { lookup: 4, label: 'AA2 (core only)', value: 150 },
+    { lookup: 5, label: 'AA*', value: 300 },
+    { lookup: 7, label: 'AA* (core only)', value: 300 },
+    { lookup: 8, label: 'AA4', value: 300 },
+    { lookup: 11, label: 'AA4 (core only)', value: 300 },
+    { lookup: 20, label: 'Custom', value: 300 }
   ],
   ContinuumBandwidthOB1: [
-    { lookup: 1, label: 'AA0.5', value: '0.7' },
-    { lookup: 2, label: 'AA1', value: '0.7' },
-    { lookup: 3, label: 'AA2', value: '0.7' },
-    { lookup: 5, label: 'AA*', value: '0.435' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.7' },
-    { lookup: 8, label: 'AA4', value: '0.435' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.7' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.435' },
-    { lookup: 20, label: 'Custom', value: '0.435' }
+    { lookup: 1, label: 'AA0.5', value: 0.7 },
+    { lookup: 2, label: 'AA1', value: 0.7 },
+    { lookup: 3, label: 'AA2', value: 0.7 },
+    { lookup: 5, label: 'AA*', value: 0.435 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.7 },
+    { lookup: 8, label: 'AA4', value: 0.435 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.7 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.435 },
+    { lookup: 20, label: 'Custom', value: 0.435 }
   ],
   ContinuumBandwidthOB2: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 5, label: 'AA*', value: '0.72' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '0.81' },
-    { lookup: 8, label: 'AA4', value: '0.72' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '0.81' },
-    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: '0.72' },
-    { lookup: 20, label: 'Custom', value: '0.72' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 5, label: 'AA*', value: 0.72 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 0.81 },
+    { lookup: 8, label: 'AA4', value: 0.72 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 0.81 },
+    { lookup: 10, label: 'AA*/AA4 (13.5-m antennas only)', value: 0.72 },
+    { lookup: 20, label: 'Custom', value: 0.72 }
   ],
   ContinuumBandwidthOB5a: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '3.9' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '3.9' },
-    { lookup: 20, label: 'Custom', value: '3.9' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 3.9 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 3.9 },
+    { lookup: 20, label: 'Custom', value: 3.9 }
   ],
   ContinuumBandwidthOB5b: [
-    { lookup: 1, label: 'AA0.5', value: '0.8' },
-    { lookup: 2, label: 'AA1', value: '0.8' },
-    { lookup: 3, label: 'AA2', value: '0.8' },
-    { lookup: 6, label: 'AA* (15-m antennas only)', value: '5' },
-    { lookup: 9, label: 'AA4 (15-m antennas only)', value: '5' },
-    { lookup: 20, label: 'Custom', value: '5' }
+    { lookup: 1, label: 'AA0.5', value: 0.8 },
+    { lookup: 2, label: 'AA1', value: 0.8 },
+    { lookup: 3, label: 'AA2', value: 0.8 },
+    { lookup: 6, label: 'AA* (15-m antennas only)', value: 5 },
+    { lookup: 9, label: 'AA4 (15-m antennas only)', value: 5 },
+    { lookup: 20, label: 'Custom', value: 5 }
   ],
   SpectralResolutionObLow: [{ value: '5.43 kHz (8.1 km/s)' }],
   SpectralResolutionOb1: [
-    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)' },
-    { lookup: '0.7975', value: '13.44 kHz (5.1 km/s)' }
+    { lookup: 0.7, value: '13.44 kHz (5.8 km/s)' },
+    { lookup: 0.7975, value: '13.44 kHz (5.1 km/s)' }
   ],
   SpectralResolutionOb2: [
-    { lookup: '1.355', value: '13.44 kHz (3.0 km/s)' },
-    { lookup: '1.31', value: '13.44 kHz (3.1 km/s)' }
+    { lookup: 1.355, value: '13.44 kHz (3.0 km/s)' },
+    { lookup: 1.31, value: '13.44 kHz (3.1 km/s)' }
   ],
-
   SpectralResolutionOb5a: [{ value: '13.44 kHz (615.1 m/s)' }],
   SpectralResolutionOb5b: [{ value: '13.44 kHz (340.0 m/s)' }],
-  Tapering: [
-    { label: 'No tapering', value: 1 },
-    { label: '0.250"', value: 2 },
-    { label: '1.000"', value: 3 },
-    { label: '4.000"', value: 4 },
-    { label: '16.000"', value: 5 },
-    { label: '64.000"', value: 6 },
-    { label: '256.000"', value: 7 },
-    { label: '1024.000"', value: 8 }
+  // the spectral resolution matches a bandwidth value
+  SpectralResolutionObLowZoom: [
+    { value: '14.128508391203704 Hz (21.2 m/s)', bandWidthValue: 1 },
+    { value: '28.25701678240741 Hz (42.4 m/s)', bandWidthValue: 2 },
+    { value: '56.51403356481482 Hz (84.7 m/s)', bandWidthValue: 3 },
+    { value: '113.02806712962963 Hz (169.4 m/s)', bandWidthValue: 4 },
+    { value: '226.05613425925927 Hz (338.8 m/s)', bandWidthValue: 5 },
+    { value: '452.11226851851853 Hz (677.7 m/s)', bandWidthValue: 6 },
+    { value: '904.2245370370371 Hz (1.4 km/s)', bandWidthValue: 7 },
+    { value: '1808.4490740740741 Hz (2.7 km/s)', bandWidthValue: 8 }
+  ],
+  // the spectral resolution matches a lookup and bandwidth value
+  SpectralResolutionOb1Zoom: [
+    { lookup: '0.7975', value: '0.21 kHz (78.9 m/s)', bandWidthValue: 1 },
+    { lookup: '0.7975', value: '0.42 kHz (157.9 m/s)', bandWidthValue: 2 },
+    { lookup: '0.7975', value: '0.84 kHz (315.8 m/s)', bandWidthValue: 3 },
+    { lookup: '0.7975', value: '1.68 kHz (631.5 m/s)', bandWidthValue: 4 },
+    { lookup: '0.7975', value: '3.36 kHz (1.3 m/s)', bandWidthValue: 5 },
+    { lookup: '0.7975', value: '6.72 kHz (2.5 m/s)', bandWidthValue: 6 },
+    { lookup: '0.7975', value: '13.44 kHz (5.1 m/s)', bandWidthValue: 7 },
+    { lookup: '0.7', value: '0.21 kHz (89.9 m/s)', bandWidthValue: 1 },
+    { lookup: '0.7', value: '0.42 kHz (179.9 m/s)', bandWidthValue: 2 },
+    { lookup: '0.7', value: '0.84 kHz (359.8 m/s)', bandWidthValue: 3 },
+    { lookup: '0.7', value: '1.68 kHz (719.5 m/s)', bandWidthValue: 4 },
+    { lookup: '0.7', value: '3.36 kHz (1.4 km/s)', bandWidthValue: 5 },
+    { lookup: '0.7', value: '6.72 kHz (2.9 km/s)', bandWidthValue: 6 },
+    { lookup: '0.7', value: '13.44 kHz (5.8 km/s)', bandWidthValue: 7 }
+  ],
+  SpectralResolutionOb2Zoom: [
+    { lookup: '1.31', value: '0.21 kHz (48.1 m/s)', bandWidthValue: 1 },
+    { lookup: '1.31', value: '0.42 kHz (96.1 m/s)', bandWidthValue: 2 },
+    { lookup: '1.31', value: '0.84 kHz (192.2 m/s)', bandWidthValue: 3 },
+    { lookup: '1.31', value: '1.68 kHz (384.5 m/s)', bandWidthValue: 4 },
+    { lookup: '1.31', value: '3.36 kHz (768.9 m/s)', bandWidthValue: 5 },
+    { lookup: '1.31', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
+    { lookup: '1.31', value: '13.44 kHz (3.1 km/s)', bandWidthValue: 7 },
+    { lookup: '1.355', value: '0.21 kHz (46.5 m/s)', bandWidthValue: 1 },
+    { lookup: '1.355', value: '0.42 kHz (92.9 m/s)', bandWidthValue: 2 },
+    { lookup: '1.355', value: '0.84 kHz (185.8 m/s)', bandWidthValue: 3 },
+    { lookup: '1.355', value: '1.68 kHz (371.7 m/s)', bandWidthValue: 4 },
+    { lookup: '1.355', value: '3.36 kHz (743.4 m/s)', bandWidthValue: 5 },
+    { lookup: '1.355', value: '6.72 kHz (1.5 km/s)', bandWidthValue: 6 },
+    { lookup: '1.355', value: '13.44 kHz (3.0 km/s)', bandWidthValue: 7 }
+  ],
+  // the spectral resolution matches a bandwidth value
+  SpectralResolutionOb5aZoom: [
+    { value: '0.21 kHz (9.6 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (19.2 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (38.4 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (76.9 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (153.8 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (307.6 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (615.1 m/s)', bandWidthValue: 7 }
+  ],
+  SpectralResolutionOb5bZoom: [
+    { value: '0.21 kHz (5.3 m/s)', bandWidthValue: 1 },
+    { value: '0.42 kHz (10.6 m/s)', bandWidthValue: 2 },
+    { value: '0.84 kHz (21.3 m/s)', bandWidthValue: 3 },
+    { value: '1.68 kHz (42.5 m/s)', bandWidthValue: 4 },
+    { value: '3.36 kHz (85.0 m/s)', bandWidthValue: 5 },
+    { value: '6.72 kHz (170.0 m/s)', bandWidthValue: 6 },
+    { value: '13.44 kHz (340.0 m/s))', bandWidthValue: 7 }
   ],
   Supplied: [
     {
-      label: 'Integration Time',
+      label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
+      sensCalcResultsLabel: 'integrationTime',
+      mappingLabel: 'integration_time',
       value: 1,
       units: [
         { label: 'd', value: 1 },
@@ -454,7 +701,9 @@ export const OBSERVATION = {
       ]
     },
     {
-      label: 'Sensitivity',
+      label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
+      sensCalcResultsLabel: 'sensitivity',
+      mappingLabel: 'sensitivity',
       value: 2,
       units: [
         { label: 'jy/beam', value: 1 },
@@ -475,124 +724,84 @@ export const OBSERVATION = {
   ]
 };
 
+export const RA_TYPE_EQUATORIAL = 0;
+export const RA_TYPE_GALACTIC = 1;
+export const ROBUST = [
+  { label: '-2', value: 1 },
+  { label: '-1', value: 2 },
+  { label: '0', value: 3 },
+  { label: '1', value: 4 },
+  { label: '2', value: 5 }
+];
+
+export const VEL_TYPES = [
+  { label: 'Velocity', value: 0 },
+  { label: 'Redshift', value: 1 }
+];
+
+export const VEL_UNITS = [
+  { label: 'km/s', value: 0 },
+  { label: 'm/s', value: 1 }
+];
+
+export const REF_COORDINATES_UNITS = [
+  {
+    value: 1,
+    label: 'equatorial',
+    units: ['hourangle', 'deg']
+  },
+  {
+    value: 2,
+    label: 'galactic',
+    units: ['deg', 'deg']
+  }
+];
+
+export const SEARCH_TYPE_OPTIONS = [
+  { label: 'Draft', value: 'draft' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Accepted', value: 'accepted' },
+  { label: 'Withdrawn', value: 'withdrawn' },
+  { label: 'Rejected', value: 'rejected' }
+];
+export const SPECTRAL_AVERAGING_MAX = 27624;
+export const SPECTRAL_AVERAGING_MIN = 1;
+
+export const STATUS_OK = 0;
+export const STATUS_ERROR = 1;
+export const STATUS_PARTIAL = 3;
+export const STATUS_INITIAL = 5;
+export const STATUS = {
+  OK: STATUS_OK,
+  ERROR: STATUS_ERROR,
+  PARTIAL: STATUS_PARTIAL,
+  INITIAL: STATUS_INITIAL
+};
+export const SUPPLIED_VALUE_DEFAULT = 600;
+
+export const TARGET_OPTION = {
+  LIST_OF_TARGETS: 1,
+  TARGET_MOSAIC: 2,
+  NO_SPECIFIC_TARGET: 3
+};
 export const TARGETS = {
   'No Target': null,
   'Create Mosaic': null
 };
-
-export const Projects = [
-  {
-    id: 1,
-    title: 'Standard Proposal',
-    code: 'PI',
-    description: 'Standard Observing Proposal',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Key Science Project',
-    code: 'KSP',
-    description:
-      'A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle',
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      },
-      {
-        id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: "Director's Discretionary Time Proposal",
-    code: 'DDT',
-    description:
-      "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG.",
-    subProjects: [
-      {
-        id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        description: 'A target of opportunity observing proposal'
-      },
-      {
-        id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
-      },
-      {
-        id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
-      }
-    ]
-  }
+export const TEAM_STATUS_TYPE_OPTIONS = {
+  pending: 'Pending',
+  accepted: 'Accepted',
+  rejected: 'Rejected'
+};
+export const TEL = ['', 'Mid', 'Low'];
+export const TELESCOPE_LOW_NUM = 2;
+export const TELESCOPES = [
+  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
 ];
 
-export const DATA_PRODUCT = {
-  observatoryDataProduct: [
-    { label: 'Continuum Image', value: 1 },
-    { label: 'Spectral Line Image', value: 2 }
-  ],
-  pipeline: [
-    { label: 'Visibility receive', value: 1 },
-    { label: '‘Real-time’ pointing calibration', value: 2 },
-    { label: 'Visibility pre-processing', value: 3 },
-    { label: 'Mid self-cal / ICal', value: 4 },
-    { label: 'Low self-cal / ICal', value: 5 },
-    { label: '‘Real-time’ gain calibration', value: 6 },
-    { label: 'Distributed Gridding/Imaging', value: 7 }
-  ]
-};
+export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
+export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
 
 export const TEXT_ENTRY_PARAMS = {
   DEFAULT: {
@@ -619,10 +828,15 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const VELOCITY_TYPE = {
+  VELOCITY: 0,
+  REDSHIFT: 1
+};
+
+/**************************************************************8*/
 
 export const DEFAULT_PI = {
-  id: 1,
+  id: 'prp-ska01-202204-01',
   firstName: 'Van Loo',
   lastName: 'Cheng',
   email: 'ask.lop@map.com',
@@ -631,27 +845,4 @@ export const DEFAULT_PI = {
   phdThesis: false,
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
-};
-
-export const EMPTY_PROPOSAL = {
-  id: null,
-  title: '',
-  proposalType: 0,
-  proposalSubType: [0],
-  cycle: '',
-  team: [DEFAULT_PI],
-  abstract: '',
-  category: 0,
-  subCategory: [0],
-  sciencePDF: null,
-  scienceLoadStatus: 0,
-  targetOption: 1,
-  targets: [],
-  observations: [],
-  groupObservations: [],
-  targetObservation: [],
-  technicalPDF: null,
-  technicalLoadStatus: 0,
-  dataProducts: [],
-  pipeline: ''
 };

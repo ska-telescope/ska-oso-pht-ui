@@ -9,7 +9,7 @@ import { Proposal } from '../../utils/types/proposal';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../../utils/constants';
+import { validateSciencePage } from '../../utils/proposalValidation';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
@@ -41,7 +41,12 @@ export default function SciencePage() {
 
   const setFile = (theFile: File) => {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
-    setProposal({ ...getProposal(), sciencePDF: theFile });
+    const file = {
+      documentId: `science-doc-${getProposal().id}`,
+      link: (theFile as unknown) as string,
+      file: theFile
+    };
+    setProposal({ ...getProposal(), sciencePDF: file });
     setCurrentFile(theFile);
   };
 
@@ -111,10 +116,7 @@ export default function SciencePage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = getProposal()?.sciencePDF ? 1 : 0;
-    count += getProposal()?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
   return (
@@ -126,7 +128,7 @@ export default function SciencePage() {
             clearLabel={t('clearBtn.label')}
             clearToolTip={t('clearBtn.toolTip')}
             direction="row"
-            file={getProposal()?.sciencePDF}
+            file={getProposal()?.sciencePDF?.file}
             maxFileWidth={25}
             setFile={setFile}
             setStatus={setUploadStatus}

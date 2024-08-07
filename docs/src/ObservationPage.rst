@@ -43,8 +43,8 @@ The Observation Page consists of two distinct sections see :numref:`Figure %s <o
    - **array** : Array of the observation set i.e if MID or LOW.
    - **sub-array** : This displays the sub-array of the observation set.
    - **type of observation** : If continuum or zoom.
-   - **Sensitivity Calculation status** : clicking on this status will open a modal with the results. See :numref:`Figure %s <senscal>`. 
-   - **actions** : only delete action is available at the moment.
+   - **Sensitivity Calculation status** : Indicates the overall status for the observation. Click to open a modal with individual results. See :numref:`Figure %s <senscal>`. 
+   - **actions** : Icons providing the ability to edit or delete ( after confirmation ) the selected observation.
 
 2. Target List: 
    
@@ -76,6 +76,24 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :n
 
    The add observation page.
 
+Edit an observation
++++++++++++++++++++
+
+Available via the appropriate icon in the list of observations.  Once clicked, the selected observation is displayed in a
+form identical the the Add Observation page, with the titling of the form and buttons changed to reflect the different functionality
+upon completion.   
+
+Upon completion of this action, any affected Sensitivity Calculation results will be replaced, so it is encouraged to check that the
+results are still appropriate.   Also affected may be any Data Products, so these should also be checked to ensure suitability
+
+This also includes the ability to cancel the operation should the editing needs to be aborted.
+
+Remove an observation
++++++++++++++++++++++
+
+Available via the appropriate icon in the list of observations.  Once clicked, a summary of the selected observation is displayed in a
+modal and a confirmation of the action is required. Upon confirmation, the selected observation, together to all the links to targets
+and data products is also removed.   If this action is cancelled, then the modal simply closes.
 
 .. note:: 
 

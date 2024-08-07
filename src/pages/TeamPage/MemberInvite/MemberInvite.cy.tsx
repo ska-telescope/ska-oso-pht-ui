@@ -12,7 +12,7 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 describe('<MemberInvite />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
+      cy.viewport(2000, 1000);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -27,7 +27,7 @@ describe('<MemberInvite />', () => {
 
 describe('Content', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <ThemeProvider theme={theme(THEME_LIGHT)}>
@@ -210,7 +210,7 @@ describe('Content', () => {
       cy.get('[data-testid="helpPanelId"]').contains('email.help');
     });
     it('Contextual help displayed when Phd checkbox on focus', () => {
-      cy.get('[testid="PhDCheckbox"] input').focus();
+      cy.get('[data-testid="PhDCheckbox"] input').focus();
       cy.get('[data-testid="helpPanelId"]').contains('phdThesis.help');
     });
   });
