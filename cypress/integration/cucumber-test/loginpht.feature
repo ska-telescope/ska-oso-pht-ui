@@ -1,4 +1,4 @@
-Feature: PHT Dark Mode
+Feature: Navigate to the PHT
 
   @XTP-59737
   Scenario: Login to PHT
