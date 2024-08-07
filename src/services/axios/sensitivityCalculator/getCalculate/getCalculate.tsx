@@ -168,7 +168,7 @@ async function GetCalculate(observation: Observation, target: Target) {
     const urlSearchParams = new URLSearchParams();
 
     if (SUPPLIED_IS_SENSITIVITY) {
-      urlSearchParams.append('sensitivities_jy', observation.supplied.value.toString());
+      urlSearchParams.append('sensitivity_jy', observation.supplied.value.toString());
     } else {
       const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
         observation.supplied.units

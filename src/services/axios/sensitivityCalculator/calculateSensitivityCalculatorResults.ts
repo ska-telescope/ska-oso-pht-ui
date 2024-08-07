@@ -25,15 +25,23 @@ export default function calculateSensitivityCalculatorResults(
   const recWeight = isZoom()
     ? response?.weighting[0]
     : isLow()
-    ? response?.weightingLine[0]
-    : response?.weighting;
+      ? response?.weightingLine[0]
+      : response?.weighting;
 
   const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
     rec ? sense * rec.sbs_conv_factor : 0;
 
-  const weightedSensitivity = isLow()
+  const SUPPLIED_IS_SENSITIVITY = observation?.supplied?.type === 2 ? true : false;
+
+  const weightedSensitivityIntegration = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
     : getWeightedSensitivityMID(response, isZoom());
+
+  const weightedSensitivitySensitivity = observation.supplied.value;
+
+  const weightedSensitivity = SUPPLIED_IS_SENSITIVITY
+    ? weightedSensitivityIntegration
+    : weightedSensitivitySensitivity;
 
   const confusionNoise: number = isLow()
     ? getConfusionNoiseLOW(response, isZoom())
