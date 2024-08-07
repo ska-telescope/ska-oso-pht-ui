@@ -188,6 +188,16 @@ pages:
     echo "Backend API:"
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
+xray-publish:
+  variables:
+    XRAY_TEST_RESULT_FILE: build/cucumber.json
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: always
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: manual
+
+
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
@@ -240,6 +250,9 @@ include:
     # helm chart
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+    # Upload BDD test results to JIRA X-ray
+  - project: "ska-telescope/templates-repository"
+    file: "gitlab-ci/includes/xray-publish.gitlab-ci.yml"
     # deploy steps
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
