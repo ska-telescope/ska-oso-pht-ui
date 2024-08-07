@@ -150,7 +150,7 @@ export const IMAGE_WEIGHTING = [
   { label: 'Briggs', lookup: 'robust', value: 2 }
 ];
 
-export const NOTSPECIFIED = 'notSpecified';
+export const NOT_SPECIFIED = 'notSpecified';
 
 export const IMAGE_SIZE_UNITS = {
   ARCSECS: 'arcseconds',

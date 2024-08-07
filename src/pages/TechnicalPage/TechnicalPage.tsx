@@ -142,13 +142,13 @@ export default function TechnicalPage() {
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton toolTip={t('pdfPreview.technical')} action={previewSignedUrl} />
+            <PDFPreviewButton toolTip={'pdfPreview.technical'} action={previewSignedUrl} />
           )}
         </Grid>
         <Grid item>
           {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
             <DownloadButton
-              toolTip={t('pdfDownload.technical.toolTip')}
+              toolTip={'pdfDownload.technical.toolTip'}
               action={downloadPDFToSignedUrl}
             />
           )}
