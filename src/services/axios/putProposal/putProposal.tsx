@@ -290,9 +290,23 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       console.log('tarObs.sensCalc[spectralSection]', tarObs.sensCalc[spectralSection]);
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
-        target_ref: tarObs.targetId.toString(),
+        target_ref: tarObs.targetId?.toString(),
         result_details: {
           supplied_type: tarObs.sensCalc.section3[0].field === 'sensitivity' ? 'sensitivity' : 'integration_time',
+          // TODO supplied_type can be sensitivity or integration_time => check why integration time doesn't work
+          // TODO check if other fields can be added for supplied?
+          // What's the correct format?
+          /*
+            supplied: {
+              type: 'sensitivity',
+              value: 0.0,
+              unit: 'm/s',
+              quantity: {
+                value: -12.345,
+                unit: 'm/s'
+              }
+            },
+          */
           weighted_continuum_sensitivity: {
             value: Number(tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').value),
             unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted').units
@@ -302,30 +316,32 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted').units
           },
           total_continuum_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
+            value: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').value),
+            unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity').units
           },
           total_spectral_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
+            value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity').value),
+            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity').units
           },
           surface_brightness_sensitivity: {
-            continuum: 0.0,
-            spectral: 0.0,
-            unit: 'm/s'
+            continuum: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity').value),
+            spectral: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity').value),
+            unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSurfaceBrightnessSensitivity').units
           }
         },
         continuum_confusion_noise: {
-          value: 0.0,
-          unit: 'm/s'
+          value: Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').value),
+          unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise').units
         },
         synthesized_beam_size: {
-          value: 190.17, // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
-          unit: 'm/s' // this should be arcsecs2 -> currently rejected by backend / als m/s changes to m / s when coming back
+          value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+          unit: 'm/s' // tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').units // this should be arcsecs2 -> currently rejected by backend
+          // TODO use commented synthBeamSize value & units once backends accepts the format
+          // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
         },
         spectral_confusion_noise: {
-          value: 0.0,
-          unit: 'm/s'
+          value: Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').value),
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise').units
         }
       }
       resultsArr.push(result);
@@ -382,6 +398,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
+  console.log('transformed proposal', transformedProposal);
   return transformedProposal;
 }
 
