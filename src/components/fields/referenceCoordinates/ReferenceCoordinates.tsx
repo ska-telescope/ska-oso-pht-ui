@@ -16,7 +16,7 @@ export default function ReferenceCoordinatesField({
   value,
   valueFocus
 }: ReferenceCoordinatesFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {

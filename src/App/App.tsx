@@ -18,7 +18,7 @@ const HEADER_HEIGHT = 70;
 const FOOTER_HEIGHT = 20;
 
 function App() {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const {
     help,
     helpToggle,
@@ -55,7 +55,7 @@ function App() {
         <Header
           docs={docs}
           testId="headerId"
-          title={t('pht.title')}
+          title={t('darkMode.title')}
           toolTip={toolTip}
           selectTelescope={false}
           storage={theStorage}

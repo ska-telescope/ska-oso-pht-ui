@@ -7,7 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
@@ -32,12 +32,12 @@ export function PHDThesis({ value }) {
 }
 
 export default function TeamPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [currentMember, setCurrentMember] = React.useState(0);
+  const [currentMember, setCurrentMember] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -60,9 +60,7 @@ export default function TeamPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().team?.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateTeamPage(getProposal()));
   }, [validateToggle]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -78,14 +76,14 @@ export default function TeamPage() {
   };
 
   const ClickMemberRow = (e: { id: number }) => {
-    setCurrentMember(e.id);
+    setCurrentMember(e.id.toString());
   };
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().team.filter(e => e.id !== currentMember);
 
     setProposal({ ...getProposal(), team: obs1 });
-    setCurrentMember(0);
+    setCurrentMember('');
     closeDeleteDialog();
   };
 

@@ -7,12 +7,12 @@ import CloneIcon from './cloneIcon';
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 
-function mounting(theTheme: any) {
-  cy.viewport(1500, 1500);
+function mounting(theTheme: any, toolTip: string) {
+  cy.viewport(2000, 1000);
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <CloneIcon onClick={cy.stub().as('setValue')} toolTip={TOOLTIP} />
+      <CloneIcon onClick={cy.stub().as('setValue')} toolTip={toolTip} />
     </ThemeProvider>
   );
 }
@@ -29,7 +29,11 @@ function validateToolTip() {
 describe('<CloneIcon />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
+      mounting(theTheme, '');
+    });
+
+    it('Checking the ToolTip', () => {
+      mounting(theTheme, TOOLTIP);
       validateClick();
       validateToolTip();
     });

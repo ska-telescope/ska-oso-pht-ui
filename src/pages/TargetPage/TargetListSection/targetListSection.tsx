@@ -10,45 +10,73 @@ import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
-import AddTarget from './AddTarget/AddTarget';
+import TargetEntry from '../../../components/targetEntry/TargetEntry';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
-import { RA_TYPE_EQUATORIAL } from '../../../utils/constants';
+import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
+import Target, { NEW_TARGET } from '../../../utils/types/target';
 
 export default function TargetListSection() {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const { application, updateAppContent2 } = storageObject.useStore();
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [currentTarget, setCurrentTarget] = React.useState(0);
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [newTarget, setNewTarget] = React.useState(NEW_TARGET);
+  const [rowTarget, setRowTarget] = React.useState(null);
   const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
 
-  const editIconClicked = async () => {
-    alert(t('error.iconClicked'));
+  React.useEffect(() => {
+    initTarget();
+  }, []);
+
+  const initTarget = () => {
+    setNewTarget(NEW_TARGET);
   };
 
-  const deleteIconClicked = () => {
-    setOpenDialog(true);
+  const deleteIconClicked = (e: Target) => {
+    setRowTarget(e);
+    setOpenDeleteDialog(true);
   };
 
-  const closeDeleteDialog = () => {
-    setOpenDialog(false);
+  const closeDialog = () => {
+    setOpenDeleteDialog(false);
+    setOpenEditDialog(false);
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().targets.filter(e => e.id !== currentTarget);
-    const obs2 = getProposal().targetObservation.filter(e => e.targetId !== currentTarget);
+    const obs1 = getProposal().targets.filter(e => e.id !== rowTarget.id);
+    const obs2 = getProposal().targetObservation.filter(e => e.targetId !== rowTarget.id);
     setProposal({ ...getProposal(), targets: obs1, targetObservation: obs2 });
-    setCurrentTarget(0);
-    closeDeleteDialog();
+    setRowTarget(null);
+    closeDialog();
   };
 
-  const alertContent = () => {
+  const editIconClicked = (e: Target) => {
+    setRowTarget(e);
+    setOpenEditDialog(true);
+  };
+
+  const editConfirmed = () => {
+    if (rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
+      rowTarget.redshift = '';
+    } else {
+      rowTarget.vel = '';
+    }
+    const obs1 = getProposal().targets.map(rec => {
+      return rec.id === rowTarget.id ? rowTarget : rec;
+    });
+    setProposal({ ...getProposal(), targets: obs1 });
+    setRowTarget(null);
+    closeDialog();
+  };
+
+  const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal().targets.find(p => p.id === currentTarget);
+    const rec = getProposal().targets.find(p => p.id === rowTarget.id);
     return (
       <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
@@ -60,8 +88,11 @@ export default function TargetListSection() {
         <FieldWrapper label={t('skyDirection.label.2.' + raType)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.dec}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('velocity.label')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.vel}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('velocity.1')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec.redshift}</Typography>
         </FieldWrapper>
 
         <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
@@ -73,37 +104,55 @@ export default function TargetListSection() {
     );
   };
 
+  const alertEditContent = () => {
+    return (
+      <TargetEntry id={rowTarget.id} raType={raType} setTarget={setRowTarget} target={rowTarget} />
+    );
+  };
+
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const columns = [
-    { field: 'name', headerName: t('name.label'), width: 200 },
-    { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
-    { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
-    { field: 'vel', headerName: t('velocity.1'), width: 100 },
-    {
-      field: 'id',
-      headerName: t('actions.label'),
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: () => (
-        <>
-          <EditIcon
-            onClick={() => editIconClicked()}
-            disabled={true}
-            toolTip="Currently disabled"
-          />
-          <TrashIcon onClick={deleteIconClicked} toolTip="Delete target" />
-        </>
-      )
-    }
+  const extendedColumns = [
+    ...[
+      { field: 'name', headerName: t('name.label'), width: 200 },
+      { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
+      { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
+      {
+        field: 'vel',
+        headerName: t('velocity.0'),
+        width: 100,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: Target }) => {
+          if (e.row.vel === null || e.row.vel === '') {
+            return null;
+          }
+          const units = e.row.velUnit === 1 ? 1 : 0;
+          return e.row.vel + ' ' + t('velocity.units.' + units);
+        }
+      },
+      { field: 'redshift', headerName: t('velocity.1'), width: 100 },
+      {
+        field: 'id',
+        headerName: t('actions.label'),
+        sortable: false,
+        flex: 1,
+        disableClickEventBubbling: true,
+        renderCell: (e: any) => {
+          const rec: Target = e.row;
+          return (
+            <>
+              <EditIcon onClick={() => editIconClicked(rec)} toolTip={t('editTarget.toolTip')} />
+              <TrashIcon
+                onClick={() => deleteIconClicked(rec)}
+                toolTip={t('deleteTarget.toolTip')}
+              />
+            </>
+          );
+        }
+      }
+    ]
   ];
-  const extendedColumns = [...columns];
-
-  const ClickTargetRow = (e: { id: number }) => {
-    setCurrentTarget(e.id);
-  };
 
   function a11yProps(index: number) {
     return {
@@ -142,7 +191,6 @@ export default function TargetListSection() {
             rows={getProposal().targets}
             columns={extendedColumns}
             height={400}
-            onRowClick={ClickTargetRow}
             testId="targetListColumns"
           />
         )}
@@ -178,19 +226,32 @@ export default function TargetListSection() {
               />
             </Tabs>
           </Box>
-          {value === 0 && <AddTarget raType={raType} />}
+          {value === 0 && (
+            <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />
+          )}
           {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
-      {openDialog && (
+      {openDeleteDialog && (
         <AlertDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          open={openDeleteDialog}
+          onClose={closeDialog}
           onDialogResponse={deleteConfirmed}
           title="deleteTarget.label"
         >
-          {alertContent()}
+          {alertDeleteContent()}
+        </AlertDialog>
+      )}
+      {openEditDialog && (
+        <AlertDialog
+          maxWidth="lg"
+          open={openEditDialog}
+          onClose={closeDialog}
+          onDialogResponse={editConfirmed}
+          title="editTarget.label"
+        >
+          {alertEditContent()}
         </AlertDialog>
       )}
     </Grid>

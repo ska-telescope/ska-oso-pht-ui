@@ -9,9 +9,13 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<DataPage />', () => {
+describe('<SrcDataPage />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      cy.stub()
+        .as('getProposalState')
+        .returns([9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
+      cy.stub().as('updateAppContent1');
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>

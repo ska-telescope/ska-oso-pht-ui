@@ -73,7 +73,7 @@ module.exports = () => {
 
     plugins: [
       new ModuleFederationPlugin({
-        name: 'pht',
+        name: 'darkMode',
         filename: 'remoteEntry.js',
         remotes: {},
         exposes: {
@@ -90,6 +90,11 @@ module.exports = () => {
             eager: true,
             singleton: true,
             requiredVersion: deps['react-dom']
+          },
+          'react-router': {
+            eager: true,
+            singleton: true,
+            requiredVersion: deps['react-router']
           },
           'react-router-dom': {
             eager: true,

@@ -4,13 +4,13 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { SensCalcResult } from '../../../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import { STATUS_INITIAL } from '../../../../utils/constants';
+import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
-  data: SensCalcResult;
+  data: SensCalcResults;
 }
 
 const SIZE = 30;
@@ -21,22 +21,24 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
     onClose();
   };
 
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
 
-  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => (
-    <Grid key={eId} container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid item xs={6}>
-        <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
-          {eLabel}
-        </Typography>
+  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
+    return (
+      <Grid key={eId} container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid item xs={6}>
+          <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
+            {eLabel}
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
+            {eValue} {eUnits}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={6}>
-        <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-          {eValue} {eUnits}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
+    );
+  };
 
   return (
     <Dialog
@@ -57,7 +59,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
               ariaDescription=""
               testId="statusId"
               icon
-              level={data.status}
+              level={data.statusGUI}
               size={SIZE}
               text=""
             />
@@ -72,7 +74,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         />
       </Card>
       <CardContent>
-        {data?.status !== STATUS_INITIAL ? (
+        {data?.statusGUI !== STATUS_INITIAL ? (
           <>
             {displayElement(
               t('sensitivityCalculatorResults.targetName'),

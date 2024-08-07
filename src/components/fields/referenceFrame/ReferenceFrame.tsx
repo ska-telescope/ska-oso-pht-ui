@@ -20,7 +20,7 @@ export default function ReferenceFrameField({
   setValue,
   value
 }: ReferenceFrameFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const FIELD = 'referenceFrame';
 
   const OPTIONS = [0, 1];

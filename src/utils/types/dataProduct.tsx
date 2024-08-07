@@ -2,6 +2,7 @@ export type DataProductSDPsBackend = {
   data_products_sdp_id: string;
   options: string[];
   observation_set_refs: string[];
+  image_size: string;
   pixel_size?: string;
   weighting?: string;
 };
@@ -10,13 +11,20 @@ export type DataProductSRCNetBackend = {
   data_products_src_id: string;
 };
 
-type DataProduct = {
+type DataProductSDP = {
   id: number;
+  dataProductsSDPId?: string;
   observatoryDataProduct: boolean[];
-  observations: string;
-  imageSize: string;
-  pixelSize: string;
-  weighting: string;
+  observationId: string[];
+  imageSizeValue: number;
+  imageSizeUnits: string;
+  pixelSizeValue: number;
+  pixelSizeUnits: string;
+  weighting: number;
 };
 
-export default DataProduct;
+export type DataProductSRC = {
+  id: string;
+};
+
+export default DataProductSDP;

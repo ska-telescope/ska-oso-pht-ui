@@ -3,3 +3,9 @@ export type DocumentBackend = {
   link?: string;
   type?: string;
 };
+
+export type DocumentPDF = {
+  documentId?: string;
+  link?: string;
+  file?: File;
+};

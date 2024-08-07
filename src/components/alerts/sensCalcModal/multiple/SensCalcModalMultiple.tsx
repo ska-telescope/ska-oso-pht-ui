@@ -30,7 +30,7 @@ export default function SensCalcModalMultiple({
     onClose();
   };
 
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
   const label1 = `${observationTypeLabel}SensitivityWeighted`;
@@ -41,24 +41,17 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
-  function HeaderLine(str: string, bold: boolean) {
-    return (
-      <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>
-        {str}
-      </Typography>
-    );
+  function HeaderLine(str: string) {
+    return <Typography key={i++}>{str}</Typography>;
   }
 
-  const headerDisplay = (inStr: string, inUnits: string) => {
-    const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
-    const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
+  const headerDisplay = (inStr: string) => {
+    const sent = t(`sensitivityCalculatorResults.${inStr}`);
     const arr = sent.split(' ');
-    i = 0;
-    let count = 0;
     return (
       <Stack>
         {arr.map(rec => {
-          return HeaderLine(rec, unit.length > 0 && arr.length === ++count);
+          return HeaderLine(rec);
         })}
       </Stack>
     );
@@ -70,78 +63,100 @@ export default function SensCalcModalMultiple({
         field: 'title',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('targetName', '')
+        renderHeader: () => headerDisplay('targetName')
       },
       {
         field: 'field1',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label1, 'units1')
+        renderHeader: () => headerDisplay(label1),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[0].value : ''
       },
       {
         field: 'field2',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label2, 'units2')
+        renderHeader: () => headerDisplay(label2),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[1].value : ''
       },
       {
         field: 'field3',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label3, 'units3')
+        renderHeader: () => headerDisplay(label3),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[2].value : ''
       },
       {
         field: 'field4',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label4, 'units4')
+        renderHeader: () => headerDisplay(label4),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[3].value : ''
       },
       {
         field: 'field5',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label5, 'units5')
+        renderHeader: () => headerDisplay(label5),
+        renderCell: (e: { row: { section1: { value: any }[] } }) =>
+          e.row.section1 ? e.row.section1[4].value : ''
       },
       {
         field: 'field6',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSensitivityWeighted', 'units6'),
+        renderHeader: () => headerDisplay('spectralSensitivityWeighted'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[0].value : '',
         optional: params => params.value !== null
       },
       {
         field: 'field7',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralConfusionNoise', 'units7'),
+        renderHeader: () => headerDisplay('spectralConfusionNoise'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[1].value : '',
         optional: params => params.value !== null
       },
       {
         field: 'field8',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralTotalSensitivity', 'units8'),
+        renderHeader: () => headerDisplay('spectralTotalSensitivity'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[2].value : '',
         optional: params => params.value !== null
       },
       {
         field: 'field9',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSynthBeamSize', 'units9'),
+        renderHeader: () => headerDisplay('spectralSynthBeamSize'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[3].value : '',
         optional: params => params.value !== null
       },
       {
         field: 'field10',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity', 'units10'),
+        renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity'),
+        renderCell: (e: { row: { section2: { value: any }[] } }) =>
+          e.row.section2 ? e.row.section2[4].value : '',
         optional: params => params.value !== null
       },
       {
         field: 'field11',
         flex: 3,
         AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('integrationTime', 'units11'),
+        renderHeader: () => headerDisplay('integrationTime'),
+        renderCell: (e: { row: { section3: { value: any }[] } }) =>
+          e.row.section3 ? e.row.section3[0].value : '',
         optional: params => params.value !== null
       },
       {
@@ -177,8 +192,12 @@ export default function SensCalcModalMultiple({
 
   return (
     <Dialog
-      fullWidth
-      maxWidth="xl"
+      PaperProps={{
+        style: {
+          minWidth: '95%',
+          maxWidth: '95%'
+        }
+      }}
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"

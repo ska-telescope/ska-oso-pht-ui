@@ -19,7 +19,7 @@ export default function SkyDirection2Field({
   value,
   valueFocus
 }: SkyDirection2FieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const FIELD = 'skyDirection';
 
   const SkyDirectionValueText = () => (

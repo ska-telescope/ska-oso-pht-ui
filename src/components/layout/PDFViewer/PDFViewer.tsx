@@ -14,7 +14,7 @@ interface PDFViewerProps {
 }
 
 export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const [numPages, setNumPages] = React.useState(null);
   const [pageNumber, setPageNumber] = React.useState(1);
 

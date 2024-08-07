@@ -22,7 +22,7 @@ export default function BaseButton({
   testId,
   toolTip
 }: BaseButtonProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useTranslation('darkMode');
   const navigate = useNavigate();
 
   const ClickFunction = () => {
