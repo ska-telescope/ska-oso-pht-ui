@@ -84,7 +84,7 @@ export default function calculateSensitivityCalculatorResults(
   const totalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     totalSensitivity
   );
-  const beamSizeDisplay = { value: beamSize, units: 'arcsecs2' };
+  const beamSizeDisplay = { value: beamSize, units: 'arcsec2' };
   const sbsDisplay = { value: sbs, units: 'k' };
 
   const spectralConfusionNoiseDisplay =
@@ -99,7 +99,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     spectralTotalSensitivity
   );
-  const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsecs2' };
+  const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsec2' };
   const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];

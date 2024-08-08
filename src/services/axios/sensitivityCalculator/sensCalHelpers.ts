@@ -97,7 +97,7 @@ const sensCalHelpers = {
     },
     /**
      * Converts a minor and major beam in degrees (as returned by the backend)
-     * into a formatted string in arcsecs eg '4.6" x 7.9"'
+     * into a formatted string in arcsec eg '4.6" x 7.9"'
      *
      * @param beam_min_scaled in degrees
      * @param beam_maj_scaled in degrees

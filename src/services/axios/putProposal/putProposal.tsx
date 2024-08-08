@@ -419,8 +419,8 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             : null,
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
-          unit: 'm/s' // tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').units // this should be arcsecs2 -> currently rejected by backend
-          // TODO use commented synthBeamSize value & units once backends accepts the format
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').units
+          // TODO use commented synthBeamSize value once backends accepts the format
           // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
         },
         spectral_confusion_noise: {

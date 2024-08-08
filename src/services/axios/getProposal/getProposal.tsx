@@ -366,7 +366,7 @@ const getResultsSection1 = (inResult: SensCalcResultsBackend): SensCalcResults['
       // units: inResult.synthesized_beam_size.unit
       // mock beam size for now as format enforced by backend not correct
       value: '190.0 x 171.3',
-      units: 'arcsecs2'
+      units: 'arcsec2'
     } as ResultsSection);
     section1.push({
       field: 'continuumSurfaceBrightnessSensitivity',
@@ -402,7 +402,7 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
     // units: inResult.synthesized_beam_size.unit
     // mock beam size for now as format enforced by backend not correct
     value: '190.0 x 171.3',
-    units: 'arcsecs2'
+    units: 'arcsec2'
   });
   section2.push({
     field: 'spectralSurfaceBrightnessSensitivity',
