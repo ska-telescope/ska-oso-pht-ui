@@ -298,6 +298,7 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
+export const TYPE_SUPPLIED_SENSITIVITY = 2;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },

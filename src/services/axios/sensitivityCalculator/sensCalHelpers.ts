@@ -27,12 +27,7 @@ const sensCalHelpers = {
      * @param precision the number of d.p. to display the result to
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
-    // TODO handle cases when we use supplied sensitivity whcih can be in different units!
-    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
-      console.log('/////////////////////////////////////////////////////');
-      console.log('::: in convertSensitivityToDisplayValue');
-      console.log('sensitivity', sensitivity, ' precision', precision);
-      console.log('/////////////////////////////////////////////////////');
+    convertReturnedSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
       // TODO: add tests (cypress?)
       if (typeof sensitivity === 'number') {
         if (sensitivity < 1e3) {
