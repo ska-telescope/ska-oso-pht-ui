@@ -190,7 +190,7 @@ pages:
 
 xray-publish:
   variables:
-    XRAY_TEST_RESULT_FILE: build/cucumber.json
+    XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
   rules:
     - if: '$CI_COMMIT_REF_NAME == "main"'
       when: always

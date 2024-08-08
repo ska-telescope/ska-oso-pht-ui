@@ -103,6 +103,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "css-loader": "^6.7.1",
     "cypress": "^13.7.1",
+    "cypress-ctrf-json-reporter": "^0.0.10",
     "cypress-cucumber-preprocessor": "^4.3.1",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.46.0",

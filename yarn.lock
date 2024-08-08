@@ -6157,6 +6157,11 @@ cucumber@^4.2.1:
     util-arity "^1.0.2"
     verror "^1.9.0"
 
+cypress-ctrf-json-reporter@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/cypress-ctrf-json-reporter/-/cypress-ctrf-json-reporter-0.0.10.tgz#d7ca6b8fd63dbfd8092d2a712244c9ca99bb067d"
+  integrity sha512-S9kIyn83TSbOsZcWVNsrE+SwN06oD50sSA/0SbAPPnk1BP5p203K496UgzlFifOYc1GA6o4FllaxcaEOJp0t9Q==
+
 cypress-cucumber-preprocessor@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-4.3.1.tgz#c1702bfcdcb55bf9fe9d1436e944710b3d636bfb"
