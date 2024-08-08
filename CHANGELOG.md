@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-627:
+   - Fix download pdf filename for science and technical page
 * STAR-296:
    - Created GridMember component for use in Team Page and Proposal Display
    - Updated Proposal Display to reflect latest requirements
