@@ -330,10 +330,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       continuum:
         OBS_TYPES[obsType] === 'continuum'
           ? Number(
-              tarObs.sensCalc.section1?.find(
-                o => o.field === 'continuumSurfaceBrightnessSensitivity'
-              )?.value
-            )
+            tarObs.sensCalc.section1?.find(
+              o => o.field === 'continuumSurfaceBrightnessSensitivity'
+            )?.value
+          )
           : null,
       spectral: Number(
         tarObs.sensCalc[spectralSection]?.find(
@@ -410,12 +410,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         continuum_confusion_noise:
           OBS_TYPES[obsType] === 'continuum'
             ? {
-                value: Number(
-                  tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-                ),
-                unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
-                  ?.units
-              }
+              value: Number(
+                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+              ),
+              unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
+                ?.units
+            }
             : null,
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend

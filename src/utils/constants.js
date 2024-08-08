@@ -707,10 +707,10 @@ export const OBSERVATION = {
       mappingLabel: 'sensitivity',
       value: 2,
       units: [
-        { label: 'jy/beam', value: 1 },
-        { label: 'mjy/beam', value: 2 },
-        { label: 'ujy/beam', value: 3 },
-        { label: 'njy/beam', value: 4 },
+        { label: 'Jy/beam', value: 1 },
+        { label: 'mJy/beam', value: 2 },
+        { label: 'uJy/beam', value: 3 },
+        { label: 'nJy/beam', value: 4 },
         { label: 'K', value: 5 },
         { label: 'mK', value: 6 },
         { label: 'uK', value: 7 }
