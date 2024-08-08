@@ -29,7 +29,6 @@ export default function calculateSensitivityCalculatorResults(
     ? response?.weightingLine[0]
     : response?.weighting;
   const isSensitivitySupplied = () => observation.supplied.type === TYPE_SUPPLIED_SENSITIVITY;
- 
 
   const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
     rec ? sense * rec.sbs_conv_factor : 0;
@@ -66,20 +65,22 @@ export default function calculateSensitivityCalculatorResults(
     : getSpectralSurfaceBrightnessMID(response, spectralTotalSensitivity, isZoom());
 
   const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
-    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(item => item.value === TYPE_SUPPLIED_SENSITIVITY).units;
+    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
+      item => item.value === TYPE_SUPPLIED_SENSITIVITY
+    ).units;
     const displayValue = {
       value: suppliedSensitivity,
       unit: suppliedSensitivityUnits.find(u => u.value === observation.supplied.units)?.label
-    }
+    };
     return displayValue;
   };
 
   const confusionNoiseDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     confusionNoise
   );
-  const weightedSensitivityDisplay = isSensitivitySupplied ? convertSuppliedSensitivityToDisplayValue(weightedSensitivity) : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
-    weightedSensitivity
-  );
+  const weightedSensitivityDisplay = isSensitivitySupplied
+    ? convertSuppliedSensitivityToDisplayValue(weightedSensitivity)
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(weightedSensitivity);
   const totalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     totalSensitivity
   );
@@ -91,9 +92,9 @@ export default function calculateSensitivityCalculatorResults(
       ? sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralConfusionNoise)
       : { value: '', unit: '' };
 
-  const spectralWeightedSensitivityDisplay = isSensitivitySupplied ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity) : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
-    spectralWeightedSensitivity
-  );
+  const spectralWeightedSensitivityDisplay = isSensitivitySupplied
+    ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity)
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralWeightedSensitivity);
 
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     spectralTotalSensitivity
@@ -326,8 +327,8 @@ const getSpectralWeightedSensitivityMID = (
     return 0;
   }
   const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
-  if (calc.spectral_sensitivity) {  
-    calc.spectral_sensitivity?.value * rec.weighting_factor;
+  if (calc?.spectral_sensitivity?.value) {
+    return calc.spectral_sensitivity?.value * rec.weighting_factor;
   } else {
     return observation?.supplied.value;
   }
