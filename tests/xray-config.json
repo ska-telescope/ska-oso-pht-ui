@@ -17,11 +17,11 @@
   "chart_info": {
     "env": "DEPLOYMENT_CONFIGURATION",
     "maps_to": {
-      "default": "charts/ska-oso-pht-ui-umbrella/Chart.yaml"
+      "default": "charts/ska-oso-pht-ui/Chart.yaml"
     }
   },
   "test_report": "ctrf/ctrf-report.json",
-  "jira_url": "",
+  "jira_url": "https://jira.skatelescope.org",
   "project": {
     "id": "XTP",
     "issuetype_id": 12345,
