@@ -312,13 +312,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       };
     }
     params.weighted_spectral_sensitivity = {
-      /*
       value: Number(
         tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
           ?.value
       ),
-      */
-      value: 150, // comes back as NaN
+      // value: 150, // comes back as NaN
       unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
         ?.units
     };
