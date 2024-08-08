@@ -9,6 +9,8 @@ import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import TeamMember from '../../../utils/types/teamMember';
+import { mailto } from '../../../services/mailto/mailto';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
@@ -128,11 +130,11 @@ export default function MemberInvite() {
   function AddTeamMember() {
     const currentTeam = getProposal().team;
     const highestId = currentTeam.reduce(
-      (acc, teamMember) => (teamMember.id > acc ? teamMember.id : acc),
+      (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
       0
     );
-    const newTeamMember = {
-      id: highestId + 1,
+    const newTeamMember: TeamMember = {
+      id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
@@ -154,6 +156,11 @@ export default function MemberInvite() {
   }
 
   const clickFunction = () => {
+    mailto(
+      email,
+      t('email.invitation.subject'),
+      t('email.invitation.body', { id: getProposal().id })
+    );
     AddTeamMember();
     clearForm();
   };
@@ -271,7 +278,7 @@ export default function MemberInvite() {
       </Grid>
 
       <Box p={1}>
-        <TeamInviteButton disabled={formInvalid} onClick={clickFunction} />
+        <TeamInviteButton action={clickFunction} disabled={formInvalid} primary />
       </Box>
     </>
   );
