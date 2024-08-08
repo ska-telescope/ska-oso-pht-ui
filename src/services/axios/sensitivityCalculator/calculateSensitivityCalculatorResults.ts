@@ -71,7 +71,6 @@ export default function calculateSensitivityCalculatorResults(
       value: suppliedSensitivity,
       unit: suppliedSensitivityUnits.find(u => u.value === observation.supplied.units)?.label
     }
-    console.log('::: in convertSuppliedSensitivityToDisplayValue', displayValue);
     return displayValue;
   };
 

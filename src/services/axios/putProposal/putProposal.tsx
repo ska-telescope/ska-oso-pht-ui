@@ -316,17 +316,13 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
           ?.value
       ),
-      // value: 150, // comes back as NaN
       unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
         ?.units
     };
     params.total_spectral_sensitivity = {
-      /*
       value: Number(
         tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.value
       ),
-      */
-      value: 150, // comes back as NaN
       unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')
         ?.units
     };
@@ -339,14 +335,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
             )?.value
           )
           : null,
-      /*
       spectral: Number(
         tarObs.sensCalc[spectralSection]?.find(
           o => o.field === 'spectralSurfaceBrightnessSensitivity'
         )?.value
       ),
-      */
-      spectral: 150, // comes back as NaN
       unit: tarObs.sensCalc[spectralSection]?.find(
         o => o.field === 'spectralSurfaceBrightnessSensitivity'
       )?.units
