@@ -46,10 +46,6 @@ export default function ProposalDisplay({
 
   const getProposal = () => application.content2 as Proposal;
 
-  React.useEffect(() => {
-    console.log('TREVOR', getProposal());
-  }, []);
-
   const handleConfirm = () => {
     onConfirm();
   };
@@ -166,7 +162,6 @@ export default function ProposalDisplay({
 
   const getObservationTargets = (rec: Observation) => {
     const array = getProposal().targetObservation.filter(e => e.observationId === rec.id);
-    console.log('TREVOR ARRAY', array);
     if (array || array.length === 0) {
       return t('none');
     }
