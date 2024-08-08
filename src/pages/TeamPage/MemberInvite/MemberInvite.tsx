@@ -278,7 +278,12 @@ export default function MemberInvite() {
       </Grid>
 
       <Box p={1}>
-        <TeamInviteButton action={clickFunction} disabled={formInvalid} primary />
+        <TeamInviteButton
+          action={clickFunction}
+          disabled={formInvalid}
+          primary
+          testId="sendInviteButton"
+        />
       </Box>
     </>
   );

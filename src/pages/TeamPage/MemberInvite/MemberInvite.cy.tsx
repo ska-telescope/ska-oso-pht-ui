@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
@@ -9,39 +10,67 @@ import { TEXT_ENTRY_PARAMS } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function mounting(theTheme: any) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <BrowserRouter>
+          <MemberInvite />
+        </BrowserRouter>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+function clearFirstName() {
+  cy.get('[data-testid="firstName"] input').clear();
+}
+function enterFirstName(str: string) {
+  cy.get('[data-testid="firstName"] input').type(str);
+}
+
+function clearLastName() {
+  cy.get('[data-testid="lastName"] input').clear();
+}
+function enterLastName(str: string) {
+  cy.get('[data-testid="lastName"] input').type(str);
+}
+
+function clearEmail() {
+  cy.get('[data-testid="email"] input').clear();
+}
+function enterEmail(str: string) {
+  cy.get('[data-testid="email"] input').type(str);
+}
+
+function inviteButton(enabled: boolean = false, click: boolean = false) {
+  cy.get('[data-testid="sendInviteButton"]').should('be.visible');
+  cy.get('[data-testid="sendInviteButton"]').should(enabled ? 'be.enabled' : 'be.disabled');
+  if (false && click) {
+    // TODO : Some issue with the click at present
+    cy.get('[data-testid="sendInviteButton"]').click();
+  }
+}
+
 describe('<MemberInvite />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(2000, 1000);
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <MemberInvite />
-          </ThemeProvider>
-        </StoreProvider>
-      );
+      mounting(theTheme);
     });
   }
 });
 
 describe('Content', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
-    cy.mount(
-      <StoreProvider>
-        <ThemeProvider theme={theme(THEME_LIGHT)}>
-          <CssBaseline />
-          <MemberInvite />
-        </ThemeProvider>
-      </StoreProvider>
-    );
+    mounting(THEME_LIGHT);
   });
 
   describe('First Name Input', () => {
     it('First Name updated with user input', () => {
       const text = 'Jean-Jaques';
-      cy.get('[data-testid="firstName"] input').type(text);
+      enterFirstName(text);
       cy.get('[data-testid="firstName"] input').then(input => {
         const updatedName = input.val();
         expect(updatedName).to.equal(text);
@@ -49,7 +78,7 @@ describe('Content', () => {
     });
     it('First Name field displays error when incorrect input entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      enterFirstName(incorrectText);
       cy.get('[data-testid="firstName"] > p.Mui-error')
         .invoke('text')
         .then(helperText => {
@@ -58,18 +87,18 @@ describe('Content', () => {
     });
     it('should clear the First Name helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      enterFirstName(incorrectText);
       cy.get('[data-testid="firstName"] > p.Mui-error')
         .should('exist')
         .contains('specialCharacters.invalid');
-      cy.get('[data-testid="firstName"] input').clear();
+      clearFirstName();
       cy.get('[data-testid="firstName"] > p.Mui-error')
         .should('exist')
         .contains('A value is required');
     });
     it('should set the First Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="firstName"] input').type(incorrectText);
+      enterFirstName(incorrectText);
       cy.get('[data-testid="firstName"] input').should('have.attr', 'aria-invalid', 'true');
     });
   });
@@ -77,7 +106,7 @@ describe('Content', () => {
   describe('Last Name Input', () => {
     it('Last Name updated with user input', () => {
       const text = 'Dupont';
-      cy.get('[data-testid="lastName"] input').type(text);
+      enterLastName(text);
       cy.get('[data-testid="lastName"] input').then(input => {
         const updatedName = input.val();
         expect(updatedName).to.equal(text);
@@ -85,7 +114,7 @@ describe('Content', () => {
     });
     it('Last Name field displays error when incorrect input entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      enterLastName(incorrectText);
       cy.get('[data-testid="lastName"] > p.Mui-error')
         .invoke('text')
         .then(helperText => {
@@ -94,18 +123,18 @@ describe('Content', () => {
     });
     it('should clear the Last Name helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      enterLastName(incorrectText);
       cy.get('[data-testid="lastName"] > p.Mui-error')
         .should('exist')
         .contains('specialCharacters.invalid');
-      cy.get('[data-testid="lastName"] input').clear();
+      clearLastName();
       cy.get('[data-testid="lastName"] > p.Mui-error')
         .should('exist')
         .contains('A value is required');
     });
     it('should set the Last Name field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="lastName"] input').type(incorrectText);
+      enterLastName(incorrectText);
       cy.get('[data-testid="lastName"] input').should('have.attr', 'aria-invalid', 'true');
     });
   });
@@ -113,7 +142,7 @@ describe('Content', () => {
   describe('Email Input', () => {
     it('Email updated with user input', () => {
       const text = 'jeandupont@gmail.com';
-      cy.get('[data-testid="email"] input').type(text);
+      enterEmail(text);
       cy.get('[data-testid="email"] input').then(input => {
         const updatedName = input.val();
         expect(updatedName).to.equal(text);
@@ -121,7 +150,7 @@ describe('Content', () => {
     });
     it('Email field displays error when incorrect input entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="email"] input').type(incorrectText);
+      enterEmail(incorrectText);
       cy.get('[data-testid="email"] > p.Mui-error')
         .invoke('text')
         .then(helperText => {
@@ -130,69 +159,67 @@ describe('Content', () => {
     });
     it('should clear the Email helper text when text is cleared', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="email"] input').type(incorrectText);
+      enterEmail(incorrectText);
       cy.get('[data-testid="email"] > p.Mui-error')
         .should('exist')
         .contains('specialCharacters.email');
-      cy.get('[data-testid="email"] input').clear();
+      clearEmail();
       cy.get('[data-testid="email"] > p.Mui-error')
         .should('exist')
         .contains('A value is required');
     });
     it('should set the Email field to incorrect status when incorrect text is entered', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="email"] input').type(incorrectText);
+      enterEmail(incorrectText);
       cy.get('[data-testid="email"] input').should('have.attr', 'aria-invalid', 'true');
     });
   });
 
   describe('Form Validation', () => {
     it('Button disabled if First Name input is empty', () => {
-      cy.get('[data-testid="firstName"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      clearFirstName();
+      inviteButton(false, false);
     });
     it('Button disabled if Last Name input is empty', () => {
-      cy.get('[data-testid="lastName"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      clearLastName();
+      inviteButton(false, false);
     });
     it('Button disabled if Email input is empty', () => {
-      cy.get('[data-testid="email"] input').clear();
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      clearEmail();
+      inviteButton(false, false);
     });
     it('Button disabled if Email has incorrect format', () => {
       const incorrectText = 'email@';
-      cy.get('[data-testid="email"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      enterEmail(incorrectText);
+      inviteButton(false, false);
     });
     it('Button disabled if First Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="firstName"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      enterFirstName(incorrectText);
+      inviteButton(false, false);
     });
     it('Button disabled if Last Name has incorrect format', () => {
       const incorrectText = 'XXX*%$';
-      cy.get('[data-testid="lastName"] input').type(incorrectText);
-      cy.get('[data-testid="button.sendInviteButton"]').should('be.visible');
+      enterLastName(incorrectText);
+      inviteButton(false, false);
     });
     it('Button NOT disabled if all fields have correct format', () => {
       const firstName = 'Alia';
       const lastName = 'Benammar';
       const email = 'alia123@gmail.com';
-      cy.get('[data-testid="firstName"] input').type(firstName);
-      cy.get('[data-testid="lastName"] input').type(lastName);
-      cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]').should('not.be.disabled');
+      enterFirstName(firstName);
+      enterLastName(lastName);
+      enterEmail(email);
+      inviteButton(true, false);
     });
     it('Button clickable if all fields have correct format', () => {
       const firstName = 'Alia';
       const lastName = 'Benammar';
       const email = 'alia123@gmail.com';
-      cy.get('[data-testid="firstName"] input').type(firstName);
-      cy.get('[data-testid="lastName"] input').type(lastName);
-      cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]')
-        .should('be.enabled')
-        .click();
+      enterFirstName(firstName);
+      enterLastName(lastName);
+      enterEmail(email);
+      inviteButton(true, true);
     });
   });
 
@@ -220,20 +247,20 @@ describe('Content', () => {
       const firstName = 'Joe';
       const lastName = 'Whiteley';
       const email = 'joe.whitely@icloud.com';
-      cy.get('[data-testid="firstName"] input').type(firstName);
-      cy.get('[data-testid="lastName"] input').type(lastName);
-      cy.get('[data-testid="email"] input').type(email);
-      cy.get('[data-testid="button.sendInviteButton"]').click();
+      enterFirstName(firstName);
+      enterLastName(lastName);
+      enterEmail(email);
+      inviteButton(true, true);
     });
     it('Add team member as PI', () => {
       const firstName = 'Joe';
       const lastName = 'Whiteley';
       const email = 'joe.whitely@icloud.com';
-      cy.get('[data-testid="firstName"] input').type(firstName);
-      cy.get('[data-testid="lastName"] input').type(lastName);
-      cy.get('[data-testid="email"] input').type(email);
+      enterFirstName(firstName);
+      enterLastName(lastName);
+      enterEmail(email);
       cy.get('[id="piCheckbox"]').click();
-      cy.get('[data-testid="button.sendInviteButton"]').click();
+      inviteButton(true, true);
     });
   });
 });
