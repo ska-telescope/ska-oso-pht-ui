@@ -4,23 +4,34 @@
       "name": "cypress"
     },
     "summary": {
-      "tests": 1,
+      "tests": 2,
       "failed": 0,
-      "passed": 1,
+      "passed": 2,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723120456590,
-      "stop": 1723120463515
+      "start": 1723132888623,
+      "stop": 1723132902304
     },
     "tests": [
       {
-        "name": "Navigate to the PHT Login to PHT",
+        "name": "PHT user journeys Verify dark mode",
         "status": "passed",
-        "duration": 3494,
+        "duration": 3994,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/darkMode.feature",
+        "retries": 0,
+        "flaky": false,
+        "browser": "electron 118.0.5993.159"
+      },
+      {
+        "name": "PHT user journeys Verify dark mode",
+        "status": "passed",
+        "duration": 3345,
+        "rawStatus": "passed",
+        "type": "e2e",
+        "filePath": "cypress/integration/example.feature",
         "retries": 0,
         "flaky": false,
         "browser": "electron 118.0.5993.159"
