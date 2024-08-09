@@ -362,6 +362,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       };
     } else {
       // TODO remove once PDM is updated to have continuum as optional
+      // this continuum is shown as optional in PDM, however, it rejects it if not added
       params.continuum = {
          value: 0,
          unit: "uJy/beam"
@@ -391,10 +392,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         break;
       }
       const obsType = getObsType(tarObs, incObs); // spectral & continuum
-      /*
-        - for continuum observations, section1 contains continuum results & section2 spectral results
-        - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
-      */
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
@@ -404,6 +401,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
       console.log('suppliedRelatedFields', suppliedRelatedFields);
 
+      /*
+        - for continuum observations, section1 contains continuum results & section2 spectral results
+        - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
+      */
       const spectralSection = OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1'; // TODO move this somewhere where we don't need to repeat it
 
       let result: SensCalcResultsBackend = {
