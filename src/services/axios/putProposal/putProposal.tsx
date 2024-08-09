@@ -361,10 +361,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         unit: tarObs.sensCalc.section3[0]?.units
       };
     } else {
-      // TEMP TEST
+      // TODO remove once PDM is updated to have continuum as optional
       params.continuum = {
-         value: 600,
-         unit: "s"
+         value: 0,
+         unit: "uJy/beam"
       };
     }
     params.spectral = {
@@ -423,7 +423,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
                   ?.units
               }
             : // null,
-             // TEMP TEST
+             // // TODO remove once PDM is updated to have continuum as optional
             {
               value: 0,
               unit: "uJy/beam"
