@@ -360,6 +360,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         value: Number(tarObs.sensCalc.section3[0]?.value),
         unit: tarObs.sensCalc.section3[0]?.units
       };
+    } else {
+      // TEMP TEST
+      params.continuum = {
+         value: 600,
+         unit: "s"
+      };
     }
     params.spectral = {
       value: Number(tarObs.sensCalc.section3[0]?.value),
@@ -416,7 +422,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
                 unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
                   ?.units
               }
-            : null,
+            : // null,
+             // TEMP TEST
+            {
+              value: 0,
+              unit: "uJy/beam"
+            },
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
