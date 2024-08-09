@@ -169,11 +169,11 @@
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
     "science": {
-      "label": "proposal_science",
+      "label": "science",
       "toolTip": "Click download the Science Justification PDF"
     },
     "technical": {
-      "label": "proposal_technical",
+      "label": "technical",
       "toolTip": "Click download the Technical Justification PDF"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
