@@ -10,14 +10,14 @@
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723214985598,
-      "stop": 1723214992824
+      "start": 1723215150978,
+      "stop": 1723215158126
     },
     "tests": [
       {
         "name": "PHT user journeys Verify dark mode",
         "status": "passed",
-        "duration": 3636,
+        "duration": 3573,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/darkMode.feature",
