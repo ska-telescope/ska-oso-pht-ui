@@ -267,16 +267,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
 
   /*********************************************************** sensitivity calculator results mapping *********************************************************/
-
-  /*
-    - low continuum with supplied sensitivity: ok
-    - integration_time -> fails tupple index out of range -> example of data expected?
-    - low zoom with supplied sensitivity -> fails out of range -> example of data expected?
-    - mid continuum with integration time: same issue
-    - mid continuum with sensitivity: sens calc results error so can't check: 
-    detail": "Either 'sensitivity_jy' or 'integration_time_s' must be specified, but not both at once."
-  */
-
   /**************************** supplied fields *****************************/
 
   interface SuppliedRelatedFields {
@@ -316,7 +306,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       };
     } else {
       // TODO remove once PDM is updated to have continuum as optional
-      // continuum is shown as optional in PDM, however, it rejects it if not added
+      // (continuum params are shown as optional in PDM, however results are rejected if not added)
       params.weighted_continuum_sensitivity = {
         value: 0,
         unit: 'uJy/beam'
@@ -377,10 +367,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       };
     } else {
       // TODO remove once PDM is updated to have continuum as optional
-      // continuum is shown as optional in PDM, however, it rejects it if not added
+      // (continuum param is shown as optional in PDM, however results are rejected if not added)
       params.continuum = {
-         value: 0,
-         unit: "uJy/beam"
+        value: 0,
+        unit: 'uJy/beam'
       };
     }
     params.spectral = {
@@ -390,29 +380,28 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     // TODO check if it's ok to send the same value for continuum and zoom? Is this not implmented in the UI?
     return params;
   };
-
   /***********************************************************/
 
   const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number => {
     let obs = incObs.find(item => item.id === incTarObs.observationId);
-    console.log('obs', obs);
     return obs.type;
   };
 
-  const getSpectralSection = (obsType) => {
+  const getSpectralSection = obsType => {
+    // - for continuum observations, section1 contains continuum results & section2 spectral results
+    // - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
     return OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1';
-  } 
+  };
 
   const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
-    console.log('::: in getResults - incTargetObservations:', incTargetObservations);
     const resultsArr = [];
     for (let tarObs of incTargetObservations) {
       console.log('TarObs', tarObs);
-      // if sens calc error, we don't save the results
+      // if there is a sens calc error, we don't save the results
       if (tarObs.sensCalc?.error) {
         break;
       }
-      const obsType = getObsType(tarObs, incObs); // spectral & continuum
+      const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
@@ -420,11 +409,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         suppliedType === 'sensitivity'
           ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection)
           : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
-      console.log('suppliedRelatedFields', suppliedRelatedFields);
-      /*
-        - for continuum observations, section1 contains continuum results & section2 spectral results
-        - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
-      */
+
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         target_ref: tarObs.targetId?.toString(),
@@ -442,11 +427,11 @@ function mappingPutProposal(proposal: Proposal, status: string) {
                   ?.units
               }
             : // null,
-             // // TODO remove once PDM is updated to have continuum as optional
-            {
-              value: 0,
-              unit: "uJy/beam"
-            },
+              // // TODO remove once PDM is updated to have continuum as optional
+              {
+                value: 0,
+                unit: 'uJy/beam'
+              },
         synthesized_beam_size: {
           value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
@@ -467,7 +452,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     console.log('resultsArr', resultsArr);
     return resultsArr;
   };
-
   /*************************************************************************************************************************/
 
   const transformedProposal: ProposalBackend = {
