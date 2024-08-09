@@ -7,6 +7,7 @@
   "localData": "LOCAL DATA",
   "yes": "Yes",
   "no": "No",
+  "none": "None",
   "button": {
     "add": "Add",
     "cancel": "Cancel",
@@ -164,12 +165,12 @@
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
     "science": {
-      "label": "proposal_science",
-      "toolTip": "This is the download button of the file on the Science Page"
+      "label": "science",
+      "toolTip": "Click download the Science Justification PDF"
     },
     "technical": {
-      "label": "proposal_technical",
-      "toolTip": "This is the download button of the file on the Technical Page"
+      "label": "technical",
+      "toolTip": "Click download the Technical Justification PDF"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
@@ -299,9 +300,11 @@
   },
   "pdfPreview": {
     "label": "PDF Preview",
-    "science": "This is the PDF preview button on the Science page"
+    "science": "This is the PDF preview button on the Science page",
+    "technical": "This is the PDF preview button on the Technical page"
   },
   "phdThesis": {
+    "title": "PhD Thesis",
     "label": "for PhD Thesis",
     "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
   },
@@ -310,6 +313,7 @@
     "title": "Proposal Handling Tool"
   },
   "pi": {
+    "initials": "PI",
     "label": "Primary Investigator",
     "help": "Check to indicate that this individual is the Principle Investigator.",
     "short": "PI"
@@ -350,18 +354,19 @@
     "under review": "Under Review"
   },
   "proposalType": {
-    "label": "Proposal Types",
+    "label": "Proposal Type",
+    "plural": "Proposal Types",
     "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
     "help2": "Proposal sub-types are optional",
     "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "help4": ""
   },
   "subProposalType": {
-    "label": "Proposal Subtype"
+    "label": "Proposal Subtype(s)"
   },
   "members": {
-    "label": "Team Members",
-    "empty": "THERE ARE NO TEAM MEMBERS ASSOCIATED WITH THIS PROPOSAL"
+    "label": "Investigator(s)",
+    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS PROPOSAL"
   },
   "noSpecificTarget": {
     "label": "No Specific Target",
@@ -490,6 +495,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",
     "spectralTotalSensitivity": "Total spectral sensitivity",
@@ -597,7 +603,7 @@
     "empty": "THERE IS NO TARGET ASSOCIATED WITH THIS PROPOSAL"
   },
   "title": {
-    "label": "Proposal Title.",
+    "label": "Proposal Title",
     "maxChar": "939",
     "maxWord": "50",
     "help": "",
@@ -667,10 +673,12 @@
     },
     "3": {
       "title": "Science",
+      "label": "Science justification",
       "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "4": {
       "title": "Target",
+      "label": "Target(s)",
       "desc": "Select a category to associate target(s) with this proposal. For a list of targets you can only specify a maximum of 30."
     },
     "5": {
@@ -679,7 +687,8 @@
     },
     "6": {
       "title": "Technical",
-      "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
+      "label": "Technical justification",
+      "desc": "Upload a Technical justification for this proposal in a portable document format (pdf)."
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
@@ -693,10 +702,11 @@
     },
     "9": {
       "title": "Title",
-      "desc": "Provide a title of your proposal."
+      "desc": "Provide a title of your proposal"
     },
     "10": {
       "title": "Observation Setup",
+      "label": "Observation Setup(s)",
       "desc": "Add one or more observation setup(s)"
     },
     "11": {
@@ -710,6 +720,7 @@
     },
     "13": {
       "title": "Data Product",
+      "label": "Data Product(s)",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     },
     "14": {

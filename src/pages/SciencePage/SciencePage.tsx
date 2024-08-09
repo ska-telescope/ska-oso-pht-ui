@@ -141,13 +141,13 @@ export default function SciencePage() {
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton toolTip={t('pdfPreview.science')} action={previewSignedUrl} />
+            <PDFPreviewButton toolTip={'pdfPreview.science'} action={previewSignedUrl} />
           )}
         </Grid>
         <Grid item>
           {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
             <DownloadButton
-              toolTip={t('pdfDownload.science.toolTip')}
+              toolTip={'pdfDownload.science.toolTip'}
               action={downloadPDFToSignedUrl}
             />
           )}
