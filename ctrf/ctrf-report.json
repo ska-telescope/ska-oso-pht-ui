@@ -1,0 +1,30 @@
+{
+  "results": {
+    "tool": {
+      "name": "cypress"
+    },
+    "summary": {
+      "tests": 1,
+      "failed": 0,
+      "passed": 1,
+      "skipped": 0,
+      "pending": 0,
+      "other": 0,
+      "start": 1723219060883,
+      "stop": 1723219069937
+    },
+    "tests": [
+      {
+        "name": "PHT user journeys Verify dark mode",
+        "status": "passed",
+        "duration": 5520,
+        "rawStatus": "passed",
+        "type": "e2e",
+        "filePath": "cypress/integration/darkMode.feature",
+        "retries": 0,
+        "flaky": false,
+        "browser": "electron 118.0.5993.159"
+      }
+    ]
+  }
+}
