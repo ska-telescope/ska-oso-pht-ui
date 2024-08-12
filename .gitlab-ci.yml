@@ -6,6 +6,7 @@ variables:
   KUBE_HOST: 'https://k8s.stfc.skao.int'
   a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
   JS_NODE_VERSION: 21
+  BASE_IMAGE: node:20.2.0-alpine3.18
   TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
 stages:
@@ -58,7 +59,7 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -83,7 +84,7 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -125,7 +126,7 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -145,7 +146,7 @@ test-counts:
 
 # Build the application
 build:
-  image: node:20.2.0-alpine3.18
+  image: ${BASE_IMAGE}
   stage: build
   tags:
     - k8srunner
@@ -157,6 +158,9 @@ build:
     - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn build
+
+oci-build:
+  image: ${BASE_IMAGE}
 
 # export the report
 pages:
@@ -203,7 +207,7 @@ xray-publish:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
     a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
     JS_NODE_VERSION: 21
-    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
+    TEST_IMAGE: ${TEST_IMAGE}
 
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
