@@ -188,6 +188,15 @@ pages:
     echo "Backend API:"
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
+xray-publish:
+  variables:
+    XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: always
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: manual
+
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
@@ -243,6 +252,9 @@ include:
     # deploy steps
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+    # Upload BDD test results to JIRA X-ray
+  - project: "ska-telescope/templates-repository"
+    file: "gitlab-ci/includes/xray-publish.gitlab-ci.yml"
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
