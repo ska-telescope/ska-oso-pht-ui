@@ -145,6 +145,7 @@ test-counts:
 
 # Build the application
 build:
+  image: node:20.2.0-alpine3.18
   stage: build
   tags:
     - k8srunner
