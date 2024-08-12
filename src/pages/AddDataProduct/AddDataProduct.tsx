@@ -5,6 +5,7 @@ import { Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  AlertColorTypes,
   Button,
   ButtonColorTypes,
   ButtonVariantTypes,
@@ -15,6 +16,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../utils/constants';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
@@ -332,6 +334,11 @@ export default function AddDataProduct() {
         </Grid>
         <Grid item xs={3} ml={5}>
           <HelpPanel />
+          <Alert
+            color={AlertColorTypes.Info}
+            text="the associated input options of these observatory data products are under development."
+            testId="developmentPanelId"
+          />
         </Grid>
       </Grid>
       {pageFooter()}
