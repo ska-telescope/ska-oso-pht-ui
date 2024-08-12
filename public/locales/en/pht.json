@@ -576,13 +576,13 @@
     "20": "Custom"
   },
   "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K. This is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation. This is used to calculate the sensitivity that will be reached with this integration time. Units are selectable in the calculator."
+    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
   },
   "suppliedUnits": {
-    "help": "SUPPLIED UNITS HELP"
+    "help": ""
   },
   "suppliedValue": {
-    "help": "SUPPLIED VALUE HELP",
+    "help": "",
     "range": {
       "error": "Value is outside of allowed range"
     }
@@ -683,11 +683,11 @@
     "4": {
       "title": "Target",
       "label": "Target(s)",
-      "desc": "Select a category to associate target(s) with this proposal. For a list of targets you can only specify a maximum of 30."
+      "desc": "Select a category to associate target(s) with this proposal."
     },
     "5": {
       "title": "Observation",
-      "desc": ""
+      "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results."
     },
     "6": {
       "title": "Technical",
@@ -710,8 +710,8 @@
     },
     "10": {
       "title": "Observation Setup",
-      "label": "Observation Setup(s)",
-      "desc": "Add one or more observation setup(s)"
+      "label": "Observation Setup(s).",
+      "desc": "Define the parameters of the observation setup."
     },
     "11": {
       "title": "Landing page",
@@ -729,7 +729,7 @@
     },
     "14": {
       "title": "Observation Update",
-      "desc": "Amend an existing observation.  Note that this will effect any existing Sensitivity calculations to linked Targets"
+      "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",
@@ -751,10 +751,10 @@
   },
   "error": {
     "axios": {
-      "format": "Unexpected data format returned from API"
+      "format": "Unexpected data format returned from API."
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
-    "pdf": "Syntax error or PDF not available ",
+    "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
   }
