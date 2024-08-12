@@ -25,6 +25,7 @@ install_dependencies:
     - k8srunner
   before_script:
     - rm -rf node_modules
+    - npm install -g yarn
   script:
     - yarn install --immutable
   cache:
