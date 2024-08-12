@@ -1,5 +1,5 @@
 default:
-  image: ${SKA_K8S_TOOLS_BUILD_DEPLOY}
+  image: node:20.2.0-alpine3.18
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -58,7 +58,7 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  image: ${TEST_IMAGE}
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
@@ -83,7 +83,7 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: ${TEST_IMAGE}
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
@@ -125,7 +125,7 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: ${TEST_IMAGE}
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
@@ -202,7 +202,7 @@ xray-publish:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
     a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
     JS_NODE_VERSION: 21
-    TEST_IMAGE: ${TEST_IMAGE}
+    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
@@ -243,7 +243,7 @@ include:
     # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalizers eg: badges
+    # .post step finalisers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
     # helm chart
