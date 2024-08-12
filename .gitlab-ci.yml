@@ -1,6 +1,3 @@
-default:
-  image: node:20.2.0-alpine3.18
-
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   KUBE_HOST: 'https://k8s.stfc.skao.int'
@@ -58,7 +55,7 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -83,7 +80,7 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -125,7 +122,7 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: ${TEST_IMAGE}
   stage: test
   tags:
     - k8srunner
@@ -200,9 +197,6 @@ xray-publish:
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
-    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
-    JS_NODE_VERSION: 21
-    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
