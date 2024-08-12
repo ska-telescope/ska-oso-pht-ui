@@ -153,7 +153,11 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct."
+    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct.",
+    "invitation": {
+      "subject": "Proposal invitation",
+      "body": "You have been invited to contribute to proposal {{id}}"
+    }
   },
   "fileName": {
     "label": "File name"

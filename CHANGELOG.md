@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-588:
+   - Added mailto to the Team Member invitation button
 * STAR-627:
    - Fix download pdf filename for science and technical page
 * STAR-296:
@@ -21,7 +23,7 @@ Future
    - Image Size forced to be +ve
 * STAR-536: 
    - Ability to Edit an Observation
-   - Edit proposal forces all linked target/observations to 'partial'
+   - Edit proposal forces all linked target/observations to be re-calculated
    - Updated the default proposal for use with Add Proposal
    - Added units to data in Observation SensCalc results modal
 * STAR-609: 
