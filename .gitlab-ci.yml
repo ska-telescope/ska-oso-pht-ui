@@ -26,7 +26,6 @@ install_dependencies:
   before_script:
     - rm -rf node_modules
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
   cache:
     paths:
@@ -45,7 +44,6 @@ code_analysis:
   before_script:
     - mkdir -p build/reports
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn code-analysis
     - mv linting.xml build/reports/linting.xml
@@ -110,7 +108,6 @@ list_dependencies:
       - node_modules/
     policy: pull
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn list --depth=0 --json >> npm_deps.json
     - yarn list --depth=0  >> npm_deps.txt
@@ -150,7 +147,6 @@ build:
       - node_modules/
     policy: pull
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn build
 
@@ -237,7 +233,7 @@ include:
     # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalisers eg: badges
+    # .post step finalizers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
     # helm chart
