@@ -29,7 +29,7 @@ import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
-import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { ResultsSection, SensCalcResults, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
 /*
 TODO:
@@ -289,7 +289,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     spectralSection: string
   ) => {
     const params: SuppliedRelatedFields = {
-      supplied_type: suppliedType
+      // supplied_type: suppliedType
+      supplied_type: 'integration_time' // TODO put back correct supplied type once PDM corrected
+      // we want supplied integration time for sensitivity supplied fields, which is currently the other way in the PDM
     };
     if (OBS_TYPES[obsType] === 'continuum') {
       params.weighted_continuum_sensitivity = {
@@ -358,7 +360,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     tarObs: TargetObservation
   ) => {
     const params: SuppliedRelatedFields = {
-      supplied_type: suppliedType
+      // supplied_type: suppliedType
+      supplied_type: 'sensitivity' // TODO put back correct supplied type once PDM corrected
+      // we want supplied sensitivity for integration time supplied fields, which is currently the other way in the PDM
     };
     if (OBS_TYPES[obsType] === 'continuum') {
       params.continuum = {
@@ -393,6 +397,14 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1';
   };
 
+  const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
+    const beamSize = incSensCalcResultsSpectralSection?.find(o => o.field === 'spectralSynthBeamSize')?.value;
+    const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
+    return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // fallback
+    // As PDM only accepts a number, we only save the 1st part of the beam size for now
+    // TODO send the whole beam size as a string once PDM updated to accept a string
+  };
+
   const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
     const resultsArr = [];
     for (let tarObs of incTargetObservations) {
@@ -409,7 +421,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         suppliedType === 'sensitivity'
           ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection)
           : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
-
+          /*
+          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+          */
+         // TODO do we need to swap supplied specific results for integration time and sensitivity once PDM corrected
+         // => so getSuppliedFieldsIntegrationTime for sensitivity & getSuppliedFieldsSensitivity for integration time
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         target_ref: tarObs.targetId?.toString(),
@@ -433,9 +450,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
                 unit: 'uJy/beam'
               },
         synthesized_beam_size: {
-          value: 190.17, // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+          value: getBeamSizeFirstSection(tarObs.sensCalc[spectralSection]), // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-            .units
+            ?.units
           // TODO use commented synthBeamSize value once backends accepts the format
           // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
         },
@@ -449,7 +466,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       };
       resultsArr.push(result);
     }
-    console.log('resultsArr', resultsArr);
     return resultsArr;
   };
   /*************************************************************************************************************************/
@@ -502,7 +518,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
-  console.log('transformed proposal', transformedProposal);
   return transformedProposal;
 }
 
@@ -515,6 +530,8 @@ async function PutProposal(proposal, status?) {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = mappingPutProposal(proposal, status);
+    console.log('PUT proposal UI proposal', proposal);
+    console.log('PUT proposal converted proposal', convertedProposal);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,

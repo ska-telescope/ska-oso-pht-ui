@@ -5,6 +5,9 @@ export type SensCalcResultsBackend = {
   target_ref?: string;
   result_details?: {
     supplied_type: string;
+    // only for Supplied Sensitivity
+    // TODO check if it's the other way around
+    // ********************************** //
     weighted_continuum_sensitivity?: ValueUnitPair;
     weighted_spectral_sensitivity?: ValueUnitPair;
     total_continuum_sensitivity?: ValueUnitPair;
@@ -14,6 +17,12 @@ export type SensCalcResultsBackend = {
       spectral: number;
       unit: string;
     };
+    // ********************************** //
+    // only for Supplied Integration Time
+    // ********************************** //
+    continuum?: ValueUnitPair;
+    spectral?: ValueUnitPair;
+    // ********************************** //
   };
   continuum_confusion_noise?: ValueUnitPair;
   synthesized_beam_size?: ValueUnitPair;

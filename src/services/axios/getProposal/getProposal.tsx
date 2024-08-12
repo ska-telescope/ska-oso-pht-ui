@@ -117,13 +117,13 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
-      decUnit: e.reference_coordinate.unit[1],
+      decUnit: e.reference_coordinate?.unit[1],
       id: i + 1,
       name: e.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
       ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
-      raUnit: e.reference_coordinate.unit[0],
+      raUnit: e.reference_coordinate?.unit[0],
       redshift: e.radial_velocity.redshift.toString(),
       referenceFrame:
         e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
@@ -132,7 +132,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity.quantity.unit.split(' ').join(''))
+      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join(''))
         ?.value,
       pointingPattern: {
         active: e.pointing_pattern.active,
@@ -245,7 +245,7 @@ const getFrequencyAndBandwidthUnits = (
   return units
     ? units
     : array.centralFrequencyAndBandWidthUnits?.find(
-        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand].units?.toLowerCase()
+        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
       )?.value;
 };
 
@@ -304,7 +304,7 @@ const getObservations = (
       observingBand: observingBand,
       centralFrequency: inValue[i].observation_type_details?.central_frequency?.value,
       centralFrequencyUnits: getFrequencyAndBandwidthUnits(
-        inValue[i].observation_type_details?.central_frequency.unit,
+        inValue[i]?.observation_type_details?.central_frequency?.unit,
         arr,
         observingBand
       ),
@@ -327,7 +327,7 @@ const getObservations = (
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
-              inValue[i].observation_type_details.bandwidth.unit,
+              inValue[i]?.observation_type_details?.bandwidth?.unit,
               arr,
               observingBand
             )
@@ -346,32 +346,36 @@ const getResultsSection1 = (inResult: SensCalcResultsBackend): SensCalcResults['
   // for continuum observation
   if (inResult.continuum_confusion_noise) {
     section1.push({
+      // This is only saved for supplied sensitivity obs in backend
+      // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
+      // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
+      // => see sensitivity calculator
+      // TODO once sens calcs results updated, mapping of results will need updating to refelect different fields for different results
       field: 'continuumSensitivityWeighted',
       value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
-      units: inResult.result_details.weighted_continuum_sensitivity.unit.split(' ').join('') // trim white spaces
+      units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
     } as ResultsSection);
     section1.push({
       field: 'continuumConfusionNoise',
       value: inResult.continuum_confusion_noise?.value.toString(),
-      units: inResult.continuum_confusion_noise.unit.split(' ').join('')
+      units: inResult?.continuum_confusion_noise?.unit?.split(' ')?.join('')
     } as ResultsSection);
     section1.push({
       field: 'continuumTotalSensitivity',
       value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
-      units: inResult.result_details.total_continuum_sensitivity.unit.split(' ').join('')
+      units: inResult?.result_details?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
     section1.push({
       field: 'continuumSynthBeamSize',
       // value: inResult.synthesized_beam_size?.value,
-      // units: inResult.synthesized_beam_size.unit
-      // mock beam size for now as format enforced by backend not correct
-      value: '190.0 x 171.3',
-      units: 'arcsec2'
+      // mock beam size value for now as format enforced by backend not correct
+      value: `${inResult.synthesized_beam_size?.value} ' x 171.3'`,
+      units: inResult?.synthesized_beam_size?.unit
     } as ResultsSection);
     section1.push({
       field: 'continuumSurfaceBrightnessSensitivity',
-      value: inResult.result_details.surface_brightness_sensitivity.continuum.toString(),
-      units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
+      value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
+      units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
     // for zoom observation
   } else {
@@ -385,29 +389,29 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
   section2.push({
     field: 'spectralSensitivityWeighted',
     value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
-    units: inResult.result_details.weighted_spectral_sensitivity.unit.split(' ').join('')
+    units: inResult?.result_details?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
   });
   section2.push({
     field: 'spectralConfusionNoise',
     value: inResult.spectral_confusion_noise?.value.toString(),
-    units: inResult.spectral_confusion_noise.unit.split(' ').join('')
+    units: inResult?.spectral_confusion_noise?.unit?.split(' ')?.join('')
   });
   section2.push({
     field: 'spectralTotalSensitivity',
     value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
-    units: inResult.result_details.total_spectral_sensitivity.unit.split(' ').join('')
+    units: inResult?.result_details?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
   });
   section2.push({
+    field: 'spectralSynthBeamSize',
     // value: inResult.synthesized_beam_size?.value,
-    // units: inResult.synthesized_beam_size.unit
-    // mock beam size for now as format enforced by backend not correct
+    // mock beam size value for now as format enforced by backend not correct
     value: '190.0 x 171.3',
-    units: 'arcsec2'
+    units: inResult?.synthesized_beam_size?.unit
   });
   section2.push({
     field: 'spectralSurfaceBrightnessSensitivity',
-    value: inResult.result_details.surface_brightness_sensitivity.spectral.toString(),
-    units: inResult.result_details.surface_brightness_sensitivity.unit.split(' ').join('')
+    value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
+    units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
   });
   return section2;
 };
@@ -426,7 +430,7 @@ const getResultsSection3 = (
     {
       field: field,
       value: obs.observation_type_details.supplied.quantity?.value.toString(),
-      units: obs.observation_type_details.supplied.quantity.unit.split(' ').join('')
+      units: obs.observation_type_details?.supplied?.quantity?.unit?.split(' ')?.join('')
     }
   ];
 };
@@ -491,7 +495,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
-      inRec?.info?.results?.length > 1
+      inRec?.info?.results?.length > 0
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
@@ -500,6 +504,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+  console.log('GET proposal converted proposal', convertedProposal);
   return convertedProposal;
 }
 
@@ -515,6 +520,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    console.log('GET proposal incomming proposal', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;
