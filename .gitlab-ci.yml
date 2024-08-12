@@ -253,8 +253,8 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
     # Upload BDD test results to JIRA X-ray
-  - project: "ska-telescope/templates-repository"
-    file: "gitlab-ci/includes/xray-publish.gitlab-ci.yml"
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
