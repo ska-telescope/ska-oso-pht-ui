@@ -132,8 +132,9 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
       vel: e.radial_velocity.quantity?.value?.toString(),
-      velUnit: VEL_UNITS.find(u => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join(''))
-        ?.value,
+      velUnit: VEL_UNITS.find(
+        u => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
+      )?.value,
       pointingPattern: {
         active: e.pointing_pattern.active,
         parameters: e.pointing_pattern.parameters?.map(p => ({
@@ -248,7 +249,8 @@ const getFrequencyAndBandwidthUnits = (
   return units
     ? units
     : array.centralFrequencyAndBandWidthUnits?.find(
-        item => item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+        item =>
+          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
       )?.value;
 };
 

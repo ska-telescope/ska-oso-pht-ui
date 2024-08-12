@@ -29,7 +29,7 @@ import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
-import { ResultsSection, SensCalcResults, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
 /*
 TODO:
@@ -398,7 +398,9 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
 
   const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
-    const beamSize = incSensCalcResultsSpectralSection?.find(o => o.field === 'spectralSynthBeamSize')?.value;
+    const beamSize = incSensCalcResultsSpectralSection?.find(
+      o => o.field === 'spectralSynthBeamSize'
+    )?.value;
     const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
     return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // fallback
     // As PDM only accepts a number, we only save the 1st part of the beam size for now
@@ -417,10 +419,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
-        // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-        // TODO unswap sensitivity and integration time as above once PDM updated
-        // => we want supplied integration time fields for supplied sensitivity
-        // and supplied sensitivity fields for supplied integration time
+      // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+      // TODO unswap sensitivity and integration time as above once PDM updated
+      // => we want supplied integration time fields for supplied sensitivity
+      // and supplied sensitivity fields for supplied integration time
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
           ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection)
