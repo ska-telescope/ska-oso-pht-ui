@@ -221,7 +221,10 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-  const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+  // const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+  const typeLabel = inSupplied.type === 'sensitivity' ? 'Integration Time' : 'Sensitivity';
+  // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
+  // and sensitivity for supplied integration time
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
   const supppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {

@@ -289,8 +289,8 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     spectralSection: string
   ) => {
     const params: SuppliedRelatedFields = {
-      // supplied_type: suppliedType
-      supplied_type: 'integration_time' // TODO put back correct supplied type once PDM corrected
+      supplied_type: suppliedType
+      // supplied_type: 'integration_time' // TODO put back correct supplied type once PDM corrected
       // we want supplied integration time for sensitivity supplied fields, which is currently the other way in the PDM
     };
     if (OBS_TYPES[obsType] === 'continuum') {
@@ -360,8 +360,8 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     tarObs: TargetObservation
   ) => {
     const params: SuppliedRelatedFields = {
-      // supplied_type: suppliedType
-      supplied_type: 'sensitivity' // TODO put back correct supplied type once PDM corrected
+      supplied_type: suppliedType
+      // supplied_type: 'sensitivity' // TODO put back correct supplied type once PDM corrected
       // we want supplied sensitivity for integration time supplied fields, which is currently the other way in the PDM
     };
     if (OBS_TYPES[obsType] === 'continuum') {
@@ -416,17 +416,15 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
+        // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        // TODO unswap sensitivity and integration time as above once PDM updated
+        // => we want supplied integration time fields for supplied sensitivity
+        // and supplied sensitivity fields for supplied integration time
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
           ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection)
           : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
-          /*
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
-          */
-         // TODO do we need to swap supplied specific results for integration time and sensitivity once PDM corrected
-         // => so getSuppliedFieldsIntegrationTime for sensitivity & getSuppliedFieldsSensitivity for integration time
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         target_ref: tarObs.targetId?.toString(),
