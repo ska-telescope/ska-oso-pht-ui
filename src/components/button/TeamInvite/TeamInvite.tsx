@@ -1,28 +1,32 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import EmailIcon from '@mui/icons-material/Email';
-
+import BaseButton from '../Base/Button';
 interface TeamInviteButtonProps {
-  disabled: boolean;
-  onClick: Function;
+  title?: string;
+  action: string | Function;
+  disabled?: boolean;
+  primary?: boolean;
+  testId?: string;
+  toolTip?: string;
 }
 
-export default function TeamInviteButton({ disabled, onClick }: TeamInviteButtonProps) {
-  const { t } = useTranslation('pht');
-
-  const title = t('button.sendInvite');
-
+export default function TeamInviteButton({
+  disabled = false,
+  action,
+  primary = false,
+  title = 'button.sendInvite',
+  testId,
+  toolTip
+}: TeamInviteButtonProps) {
   return (
-    <Button
-      ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
-      label={title}
-      onClick={onClick}
-      icon={<EmailIcon />}
-      testId={`${title}Button`}
-      variant={ButtonVariantTypes.Contained}
+    <BaseButton
+      action={action}
       disabled={disabled}
+      icon={<EmailIcon />}
+      primary={primary}
+      testId={testId}
+      title={title}
+      toolTip={toolTip}
     />
   );
 }
