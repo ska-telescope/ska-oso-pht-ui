@@ -1,8 +1,4 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
-
-Given('I navigate to the website', () => {
-  cy.visit('http://localhost:6101/');
-});
+import {When, Then } from 'cypress-cucumber-preprocessor/steps';
 
 When('User clicks on the dark mode button', () => {
   cy.get('[data-testid="Brightness7Icon"]').click();
