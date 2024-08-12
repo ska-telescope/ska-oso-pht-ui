@@ -25,9 +25,6 @@ import { SensCalcResults } from '../../utils/types/sensCalcResults';
 import DataProductSDP from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 
-// TODO : Add documentation page specifically for Adding a Data product
-// TODO : Replace individual tick-boxes with a mapping
-
 const BACK_PAGE = 7;
 const PAGE = 13;
 
@@ -44,7 +41,6 @@ export default function AddDataProduct() {
   const [dp2, setDP2] = React.useState(false);
   const [dp3, setDP3] = React.useState(false);
   const [dp4, setDP4] = React.useState(false);
-  const [dp5, setDP5] = React.useState(false);
   const [imageSizeValue, setImageSizeValue] = React.useState(0);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNITS.DEGREES);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
@@ -157,7 +153,6 @@ export default function AddDataProduct() {
         {tickElement(2, dp2, setDP2)}
         {tickElement(3, dp3, setDP3)}
         {tickElement(4, dp4, setDP4)}
-        {tickElement(5, dp5, setDP5)}
       </>
     );
   };
@@ -221,7 +216,7 @@ export default function AddDataProduct() {
     const getIcon = () => <AddIcon />;
 
     const enabled = () => {
-      const dp = dp1 || dp2 || dp3 || dp4 || dp5;
+      const dp = dp1 || dp2 || dp3 || dp4;
       return dp && pixelSizeValue > 0 && imageSizeValue > 0;
     };
 
@@ -234,7 +229,7 @@ export default function AddDataProduct() {
           0
         );
       }
-      const observatoryDataProduct = [dp1, dp2, dp3, dp3, dp4];
+      const observatoryDataProduct = [dp1, dp2, dp3, dp4];
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
         dataProductsSDPId: `SDP-${highestId + 1}`,
