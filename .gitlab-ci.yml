@@ -58,11 +58,8 @@ test_and_coverage:
   stage: test
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
@@ -84,11 +81,8 @@ test_e2e:
   tags:
     - k8srunner
   allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
@@ -125,11 +119,8 @@ test-counts:
   stage: test
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/tests
     - yarn install --immutable
   script:
