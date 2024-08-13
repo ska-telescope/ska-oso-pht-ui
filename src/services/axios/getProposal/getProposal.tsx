@@ -320,6 +320,7 @@ const getObservations = (
       robust: 0, // TODO
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
+      spectralAveraging: Number(inValue[i].array_details?.spectral_averaging),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
