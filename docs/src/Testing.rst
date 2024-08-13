@@ -42,6 +42,52 @@ The coverage results are displayed in the console. They are also written to the 
 
 **All the tests should pass before merging the code**
 
+End-End
+=======
+Examples can be found in the PT UI repo, however below should be a guide in how to follow the standard for enw tests.
+Note: This is for BDD Cucumber style cypress testing.
+
+In the cypress/integration directory
+    - Create a feature file for example {createProposal.feature}
+    - Create a new directory within cypress/integration named the EXACT same as the feature file created.
+    - Within the new directory for example {createProposal} create a new step definition file for example
+    {createProposal.js}
+
+The feature file should follow the format as below
+
+Feature: Creating proposals
+
+  Scenario: Create a basic proposal
+  Given I am a PHT user who wants to create a proposal
+  When I provide a title and select the proposal category
+  Then a proposal with unique ID is created and I can see that on the landing page
+
+The step definition file should follow the format as below.
+It is important to note that the text within the Given/When/Then steps MUST match the statements from the feature file.
+This example showcases imported methods from a common class, which is recommended to prevent duplication.
+
+import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import {
+  clickAddProposal,
+  clickCreateProposal, clickHome, clickSaveProposal,
+  clickStandardProposalSubTypeTargetOfOpportunity, verifyProposalOnLandingPage
+} from '../common/common';
+
+Given('I am a PHT user who wants to create a proposal', () => {
+  clickAddProposal()
+});
+
+When('I provide a title and select the proposal category', () => {
+  clickStandardProposalSubTypeTargetOfOpportunity()
+  clickCreateProposal()
+});
+
+Then('a proposal with unique ID is created and I can see that on the landing page', () => {
+  clickSaveProposal()
+  clickHome()
+  verifyProposalOnLandingPage()
+});
+
 Code Analysis
 =============
 

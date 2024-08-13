@@ -4,8 +4,7 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  landingPageConfirmed,
-  pageConfirmed
+  landingPageConfirmed
 } from '../common/common';
 
 Given('I have access to the PHT Application', () => {

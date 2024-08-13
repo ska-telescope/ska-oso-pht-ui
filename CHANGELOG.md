@@ -6,7 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 
 ---
-
+* STAR-620:
+  - Added BDD style cucumber testing using cypress 
 * STAR-588:
    - Added mailto to the Team Member invitation button
 * STAR-627:
