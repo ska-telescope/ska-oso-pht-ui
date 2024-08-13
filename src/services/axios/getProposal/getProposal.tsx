@@ -24,7 +24,8 @@ import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import DataProductSDP, {
+import {
+  DataProductSDP,
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend
@@ -169,14 +170,9 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
   return inValue?.map(dp => ({ id: dp?.data_products_src_id }));
 };
 
-const getSDPOptions = (options: string[]): boolean[] => {
-  const optionResults = [];
-  for (let i = 0; i < 5; i++) {
-    const num = (i + 1).toString();
-    optionResults[i] = options.includes(num) ? true : false;
-  }
-  return optionResults;
-};
+const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
+
+const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   return inValue?.map((dp, index) => ({
@@ -184,10 +180,10 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    imageSizeValue: Number(dp.image_size),
-    imageSizeUnits: '', // TODO check why units not in backend data model
-    pixelSizeValue: Number(dp.pixel_size),
-    pixelSizeUnits: '', // TODO check why units not in backend data model // use sens calc results beam size units
+    imageSizeValue: Number(getFromArray(dp.image_size, 0)),
+    imageSizeUnits: getFromArray(dp.image_size, 1),
+    pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
+    pixelSizeUnits: getFromArray(dp.pixel_size, 1),
     weighting: Number(dp.weighting)
   }));
 };
@@ -224,11 +220,11 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
   const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
-  const supppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
+  const suppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied.quantity.value,
-    units: supppliedUnits ? supppliedUnits : 1 // fallback
+    units: suppliedUnits ? suppliedUnits : 1 // fallback
   };
   return supplied;
 };
@@ -321,6 +317,7 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
           : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
+      robust: 0, // TODO
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
       linked: getLinked(inValue[i], inResults),

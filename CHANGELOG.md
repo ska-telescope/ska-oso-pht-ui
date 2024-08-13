@@ -7,6 +7,18 @@ Future
 
 ---
 
+* STAR-625:
+   - Mapping to/from API for the SDP Data Products
+* STAR-636:
+   - Added 'under development notes to the Add Data Product & SRC Net pages"
+* STAR-588:
+   - Added mailto to the Team Member invitation button
+* STAR-627:
+   - Fix download pdf filename for science and technical page
+* STAR-296:
+   - Created GridMember component for use in Team Page and Proposal Display
+   - Updated Proposal Display to reflect latest requirements
+   - Minor resource file updates
 * STAR-624: 
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Removed units from SensCalc multiple display modal
@@ -15,7 +27,7 @@ Future
    - Image Size forced to be +ve
 * STAR-536: 
    - Ability to Edit an Observation
-   - Edit proposal forces all linked target/observations to 'partial'
+   - Edit proposal forces all linked target/observations to be re-calculated
    - Updated the default proposal for use with Add Proposal
    - Added units to data in Observation SensCalc results modal
 * STAR-609: 

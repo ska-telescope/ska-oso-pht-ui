@@ -16,7 +16,7 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOTSPECIFIED
+  NOT_SPECIFIED
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -150,7 +150,7 @@ export default function LandingPage() {
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
   const displayScienceCategory = scienceCategory => {
-    return scienceCategory ? scienceCategory : NOTSPECIFIED;
+    return scienceCategory ? scienceCategory : NOT_SPECIFIED;
   };
 
   const COLUMNS = [

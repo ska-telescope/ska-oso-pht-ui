@@ -47,7 +47,6 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState(null);
-  const [elementsS, setElementsS] = React.useState(null);
   const [elementsT, setElementsT] = React.useState(null);
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
@@ -62,14 +61,6 @@ export default function ObservationPage() {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
-  };
-
-  const setTargetObservationStorage = (targetObservations: TargetObservation[]) => {
-    setProposal({ ...getProposal(), targetObservation: targetObservations });
-  };
-
-  const addTargetObservationStorage = (rec: TargetObservation) => {
-    setTargetObservationStorage([...getProposal().targetObservation, rec]);
   };
 
   const getLevel = (obs: Observation) => {
@@ -103,23 +94,34 @@ export default function ObservationPage() {
     return result;
   };
 
+  const setTargetObservationStorage = (targetObservations: TargetObservation[]) => {
+    setProposal({ ...getProposal(), targetObservation: targetObservations });
+  };
+
+  const addTargetObservationStorage = (rec: TargetObservation) => {
+    setTargetObservationStorage([...getProposal().targetObservation, rec]);
+  };
+
   const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
-    const temp = [
-      {
-        targetId: target.id,
-        observationId: observationId,
-        sensCalc: results
-      }
-    ];
-    getProposal().targetObservation?.forEach(rec => {
-      if (
-        (rec: TargetObservation) =>
-          rec.targetId !== target.id || rec.observationId !== observationId
-      ) {
-        temp.push(rec);
-      }
-    });
-    setTargetObservationStorage(temp);
+    const temp = {
+      observationId: observationId,
+      targetId: target.id,
+      sensCalc: results
+    };
+    const base = getProposal().targetObservation?.filter(
+      e => !(e.targetId === target.id && e.observationId === observationId)
+    );
+    base.push(temp);
+    setTargetObservationStorage(base);
+  };
+
+  const deleteObservationTarget = (row: any) => {
+    function filterRecords(id: number) {
+      return getProposal().targetObservation.filter(
+        item => !(item.observationId === currObs.id && item.targetId === id)
+      );
+    }
+    setTargetObservationStorage(filterRecords(row.id));
   };
 
   const popElementO = (rec: Observation) => {
@@ -160,24 +162,7 @@ export default function ObservationPage() {
     }
   };
 
-  const setSensCalcForTargetGrid = (observationId: string, target: Target, sensCalc: any) => {
-    const tmpTO = [{ targetId: target.id, observationId: observationId, sensCalc: sensCalc }];
-    elementsS?.forEach((rec: TargetObservation) => {
-      if (
-        (rec: { targetId: number; observationId: string }) =>
-          rec.targetId !== target.id || rec.observationId !== observationId
-      ) {
-        tmpTO.push(rec);
-      }
-    });
-    setElementsS(tmpTO);
-    if (sensCalc?.statusGUI === STATUS_PARTIAL) {
-      getSensCalcData(currObs, target);
-    }
-  };
-
   const setSensCalc = (results: any, target: Target, observationId: string) => {
-    setSensCalcForTargetGrid(observationId, target, results);
     updateTargetObservationStorage(target, observationId, results);
   };
 
@@ -229,24 +214,6 @@ export default function ObservationPage() {
       }
     };
     addTargetObservationStorage(rec);
-    setSensCalcForTargetGrid(currObs.id, target, rec.sensCalc);
-  };
-
-  function filterRecords(id: number) {
-    return getProposal().targetObservation.filter(
-      item => !(item.observationId === currObs.id && item.targetId === id)
-    );
-  }
-
-  const DeleteObservationTarget = (row: any) => {
-    const tmpTO = [];
-    elementsS?.forEach(rec => {
-      if (rec.targetId !== row.id || rec.observationId !== currObs.id) {
-        tmpTO.push(rec);
-      }
-    });
-    setElementsS(tmpTO);
-    setTargetObservationStorage(filterRecords(row.id));
   };
 
   const isTargetSelected = (targetId: number) =>
@@ -256,29 +223,32 @@ export default function ObservationPage() {
 
   const targetSelectedToggle = (el: ElementT) => {
     if (isTargetSelected(el.id)) {
-      DeleteObservationTarget(el.target);
+      deleteObservationTarget(el.target);
     } else {
       addObservationTarget(el.target);
+    }
+  };
+
+  const checkPartials = () => {
+    const results = getProposal()?.targetObservation?.find(
+      p => p.sensCalc.statusGUI === STATUS_PARTIAL
+    );
+    if (results) {
+      const target = getProposal().targets.find(e => e.id === results.targetId);
+      const observation = getProposal().observations.find(e => e.id === results.observationId);
+      getSensCalcData(observation, target);
     }
   };
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     setElementsO(getProposal().observations?.map(rec => popElementO(rec)));
-    setElementsS(getProposal().targetObservation);
     setElementsT(getProposal().targets?.map(rec => popElementT(rec)));
-
-    getProposal()?.targetObservation?.forEach(rec => {
-      if (rec.sensCalc.statusGUI === STATUS_PARTIAL) {
-        const target = getProposal().targets.find(e => e.id === rec.targetId);
-        const observation = getProposal().observations.find(e => e.id === rec.observationId);
-        getSensCalcData(observation, target);
-      }
-    });
   }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    checkPartials();
   }, [getProposal()]);
 
   React.useEffect(() => {
@@ -303,7 +273,9 @@ export default function ObservationPage() {
   const hasObservations = () => elementsO?.length > 0;
 
   const getSensCalcForTargetGrid = (targetId: number) =>
-    elementsS.find(p => p.observationId === currObs?.id && p.targetId === targetId)?.sensCalc;
+    getProposal()?.targetObservation?.find(
+      p => p.observationId === currObs?.id && p.targetId === targetId
+    )?.sensCalc;
 
   const extendedColumnsObservations = [
     ...[
@@ -457,7 +429,7 @@ export default function ObservationPage() {
 
   const filteredByObservation = (obId: string) => {
     const results = [];
-    elementsS?.forEach(rec => {
+    getProposal()?.targetObservation?.forEach(rec => {
       if (rec.observationId === obId) {
         results.push(rec.sensCalc);
       }

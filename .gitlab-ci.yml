@@ -1,12 +1,8 @@
-default:
-  image: node:20.2.0-alpine3.18
-
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   KUBE_HOST: 'https://k8s.stfc.skao.int'
   a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
   JS_NODE_VERSION: 21
-  TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
 stages:
   - dependencies
@@ -23,13 +19,13 @@ stages:
 
 #Install basic dependencies using yarn
 install_dependencies:
+  image: node:20.2.0-alpine3.18
   stage: dependencies
   tags:
     - k8srunner
   before_script:
     - rm -rf node_modules
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
   cache:
     paths:
@@ -38,6 +34,7 @@ install_dependencies:
 
 #Run the static code analysis
 code_analysis:
+  image: node:20.2.0-alpine3.18
   stage: lint
   tags:
     - k8srunner
@@ -48,7 +45,6 @@ code_analysis:
   before_script:
     - mkdir -p build/reports
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn code-analysis
     - mv linting.xml build/reports/linting.xml
@@ -58,15 +54,12 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
   stage: test
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
@@ -83,16 +76,13 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
   stage: test
   tags:
     - k8srunner
   allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
@@ -104,6 +94,7 @@ test_e2e:
 
 # list the current top level dependencies for the project
 list_dependencies:
+  image: node:20.2.0-alpine3.18
   stage: test
   tags:
     - k8srunner
@@ -113,7 +104,6 @@ list_dependencies:
       - node_modules/
     policy: pull
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn list --depth=0 --json >> npm_deps.json
     - yarn list --depth=0  >> npm_deps.txt
@@ -125,15 +115,12 @@ list_dependencies:
       - .public
 
 test-counts:
-  image: cypress/browsers:node18.12.0-chrome106-ff106
+  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
   stage: test
   tags:
     - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
+    - rm -rf node_modules
     - mkdir -p build/tests
     - yarn install --immutable
   script:
@@ -145,6 +132,7 @@ test-counts:
 
 # Build the application
 build:
+  image: node:20.2.0-alpine3.18
   stage: build
   tags:
     - k8srunner
@@ -153,7 +141,6 @@ build:
       - node_modules/
     policy: pull
   script:
-    - npm config set registry https://registry.npmjs.org/
     - yarn install --immutable
     - yarn build
 
@@ -188,12 +175,18 @@ pages:
     echo "Backend API:"
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
+xray-publish:
+  variables:
+    XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: always
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: manual
+
 .dev_env: &dev_env
   variables:
     KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
-    a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
-    JS_NODE_VERSION: 21
-    TEST_IMAGE: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
 
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
@@ -234,7 +227,7 @@ include:
     # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalisers eg: badges
+    # .post step finalizers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
     # helm chart
@@ -243,6 +236,9 @@ include:
     # deploy steps
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+    # Upload BDD test results to JIRA X-ray
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
