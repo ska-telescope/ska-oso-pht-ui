@@ -21,7 +21,12 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import Target, { TargetBackend } from 'utils/types/target';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
-import { DataProductSRC, DataProductSRCNetBackend } from '../../../utils/types/dataProduct';
+import {
+  DataProductSDP,
+  DataProductSDPsBackend,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from '../../../utils/types/dataProduct';
 import Observation from 'utils/types/observation';
 import { ObservationSetBackend } from 'utils/types/observationSet';
 import GroupObservation from 'utils/types/groupObservation';
@@ -32,7 +37,7 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 TODO:
 - map data_product_sdps & results
 - move putProposal mapping into a separate service that can be used by putProposal, validateProposal
-- handle submit proposal by passing appropriate status and update sumission fields
+- handle submit proposal by passing appropriate status and update submission fields
 - check upload pdf issue
 */
 
@@ -68,7 +73,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           ra: tar.ra,
           dec: tar.dec,
           unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
-          reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implmented in UI
+          reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implemented in UI
         },
         radial_velocity: {
           quantity: {
@@ -138,6 +143,21 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       });
     }
     return documents;
+  };
+
+  const SDPOptions = (inArray: Boolean[]) => {
+    return inArray.map(element => (element ? 'Y' : 'N'));
+  };
+
+  const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+    return dataproducts?.map(dp => ({
+      data_products_sdp_id: dp.dataProductsSDPId,
+      options: SDPOptions(dp.observatoryDataProduct),
+      observation_set_refs: dp.observationId,
+      image_size: dp.imageSizeValue + ' ' + dp.imageSizeUnits,
+      pixel_size: dp.pixelSizeValue + ' ' + dp.pixelSizeUnits,
+      weighting: dp.weighting?.toString()
+    }));
   };
 
   const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
@@ -302,7 +322,8 @@ function mappingPutProposal(proposal: Proposal, status: string) {
         };
       }),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
-      data_product_sdps: [], // TODO
+      data_product_sdps:
+        proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
       data_product_src_nets:
         proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
       results: [] // TODO

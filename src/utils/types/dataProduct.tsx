@@ -11,7 +11,7 @@ export type DataProductSRCNetBackend = {
   data_products_src_id: string;
 };
 
-type DataProductSDP = {
+export type DataProductSDP = {
   id: number;
   dataProductsSDPId?: string;
   observatoryDataProduct: boolean[];
@@ -26,5 +26,3 @@ type DataProductSDP = {
 export type DataProductSRC = {
   id: string;
 };
-
-export default DataProductSDP;
