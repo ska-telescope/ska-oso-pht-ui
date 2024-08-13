@@ -24,7 +24,7 @@ Future
    - Addition of robust to the mappings
    - Some code refactoring and tidy up
 * STAR-615: Proposal mapping:
-   - PutProposal mapping (partial - data_product_sdps and results still to map)
+   - PutProposal mapping
    - Update SensCalc display results to display sensitivity or integration time
    - Update pages accordingly for breaking changes
    - Update proposal frontend types
