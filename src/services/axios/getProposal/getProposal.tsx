@@ -19,7 +19,7 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
-import Proposal from '../../../utils/types/proposal';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import Target, { TargetBackend } from '../../../utils/types/target';
@@ -454,7 +454,7 @@ const getTargetObservation = (
 
 /*************************************************************************************************************************/
 
-function mapping(inRec: any): Proposal {
+function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   getPDF(inRec?.info?.documents, 'proposal_science').then(pdf => {
     sciencePDF = pdf;
