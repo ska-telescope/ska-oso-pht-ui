@@ -204,7 +204,7 @@ export default function ProposalDisplay({
         <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
-        <DownloadButton disabled action={handleDownload} />
+        <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
