@@ -332,7 +332,7 @@ const MockProposalBackend: ProposalBackend = {
         },
         synthesized_beam_size: {
           value: 190.17, // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
-          unit: 'm/s' // this should be arcsecs2 -> currently rejected by backend / als m/s changes to m / s when coming back
+          unit: 'arcsec2'
         },
         spectral_confusion_noise: {
           value: 0.0,
