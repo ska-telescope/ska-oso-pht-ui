@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-636:
+   - Added 'under development notes to the Add Data Product & SRC Net pages"
 * STAR-588:
    - Added mailto to the Team Member invitation button
 * STAR-627:

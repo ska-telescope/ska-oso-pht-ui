@@ -288,10 +288,9 @@
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Visibilities",
-      "2": "Calibrated Visibilities",
-      "3": "Image Products 1 : Image Cubes",
-      "4": "Image Products 2 : UV Grids",
-      "5": "LSM Catalogue"
+      "2": "Image Products 1 : Image Cubes",
+      "3": "Image Products 2 : UV Grids",
+      "4": "LSM Catalogue"
     }
   },
   "observationDetails": {
