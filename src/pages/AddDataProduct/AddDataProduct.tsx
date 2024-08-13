@@ -22,7 +22,7 @@ import Proposal from '../../utils/types/proposal';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
 import { SensCalcResults } from '../../utils/types/sensCalcResults';
-import DataProductSDP from '../../utils/types/dataProduct';
+import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 
 const BACK_PAGE = 7;

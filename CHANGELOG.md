@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-625:
+   - Mapping to/from API for the SDP Data Products
 * STAR-636:
    - Added 'under development notes to the Add Data Product & SRC Net pages"
 * STAR-588:

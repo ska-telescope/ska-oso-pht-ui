@@ -1,5 +1,6 @@
 import { DocumentBackend, DocumentPDF } from './document';
-import DataProductSDP, {
+import {
+  DataProductSDP,
   DataProductSDPsBackend,
   DataProductSRCNetBackend,
   DataProductSRC
