@@ -222,10 +222,7 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-  // const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-  const typeLabel = inSupplied.type === 'sensitivity' ? 'Integration Time' : 'Sensitivity';
-  // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
-  // and sensitivity for supplied integration time
+  const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
   const supppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {
@@ -424,14 +421,21 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
 
 const getResultsSection3 = (
   inResultObservationRef: string,
-  inObservationSets: ObservationSetBackend[]
+  inObservationSets: ObservationSetBackend[],
+  inResult: SensCalcResultsBackend
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
-  const field =
-    obs.observation_type_details.supplied.type === 'sensitivity'
+  const suppliedType = inResult.result_details.supplied_type;
+  const field = suppliedType === 'sensitivity'
+    /*
       ? 'sensitivity'
       : 'integrationTime';
+    */
+      ? 'integrationTime'
+      : 'sensitivity';
+    // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
+    // and sensitivity for supplied integration time for RESULTS
   return [
     {
       field: field,
@@ -465,7 +469,7 @@ const getTargetObservation = (
         error: '', // only for UI
         section1: getResultsSection1(result, isContinuum),
         section2: isContinuum ? getResultsSection2(result) : [], // only used for continuum observation
-        section3: getResultsSection3(result.observation_set_ref, inObservationSets)
+        section3: getResultsSection3(result.observation_set_ref, inObservationSets, result)
       }
     };
     targetObsArray.push(targetObs);
