@@ -6,6 +6,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
+import { displayUnits } from '../../../../utils/helpers';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -33,7 +34,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         </Grid>
         <Grid item xs={6}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-            {eValue} {eUnits}
+            {eValue} {displayUnits(eUnits)}
           </Typography>
         </Grid>
       </Grid>

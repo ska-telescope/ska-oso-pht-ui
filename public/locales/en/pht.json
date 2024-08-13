@@ -365,7 +365,11 @@
     "help4": ""
   },
   "subProposalType": {
-    "label": "Proposal Subtype(s)"
+    "label": "Proposal Subtype(s)",
+    "1": "Target of Opportunity",
+    "2": "Joint Proposal",
+    "3": "Coordinated Proposal",
+    "4": "Long term proposal"
   },
   "members": {
     "label": "Investigator(s)",
@@ -718,6 +722,7 @@
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
+      "short": "Cycle",
       "title": "SKAO Cycle",
       "desc": ""
     },

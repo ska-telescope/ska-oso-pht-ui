@@ -4,6 +4,7 @@ import { Grid, IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
+import { displayUnits } from '../../../utils/helpers';
 
 const SIZE = 20;
 
@@ -63,12 +64,12 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
           </Grid>
           {!hasError() && (
             <Grid item xs={5}>
-              {`${FieldFetch(VALUE, TOTAL_SENSE)} ${FieldFetch(UNITS, TOTAL_SENSE)}`}
+              {`${FieldFetch(VALUE, TOTAL_SENSE)} ${displayUnits(FieldFetch(UNITS, TOTAL_SENSE))}`}
             </Grid>
           )}
           {!hasError() && (
             <Grid item xs={5}>
-              {`${FieldFetch(VALUE, BEAM_SIZE)} ${FieldFetch(UNITS, BEAM_SIZE)}`}
+              {`${FieldFetch(VALUE, BEAM_SIZE)} ${displayUnits(FieldFetch(UNITS, BEAM_SIZE))}`}
             </Grid>
           )}
           {hasError() && (
