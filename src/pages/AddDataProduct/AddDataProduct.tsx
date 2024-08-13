@@ -331,7 +331,7 @@ export default function AddDataProduct() {
           <HelpPanel />
           <Alert
             color={AlertColorTypes.Info}
-            text="the associated input options of these observatory data products are under development."
+            text="The associated input options of these observatory data products are under development and subject to change."
             testId="developmentPanelId"
           />
         </Grid>
