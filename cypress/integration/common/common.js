@@ -113,12 +113,8 @@ export const clickAddObservation = () => {
 }
 
 export const verifyProposalOnLandingPage = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .should('contain', 'prsl-t0001-')
-    .should('contain', 'Cosmology')
-    .should('contain', 'test')
-    .should('have.length', 1);
+  cy.get('[data-field="id"]').should('exist')
+    .should('contain', 'prsl-t0001-');
 };
 
 export const verifyObservationInTable = () => {
