@@ -346,10 +346,11 @@ const getObservations = (
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
-const getResultsSection1 = (inResult: SensCalcResultsBackend): SensCalcResults['section1'] => {
+const getResultsSection1 = (inResult: SensCalcResultsBackend, isContinuum: boolean): SensCalcResults['section1'] => {
   let section1 = [];
   // for continuum observation
-  if (inResult.continuum_confusion_noise) {
+  // if (inResult.continuum_confusion_noise) {
+  if (isContinuum) {
     section1.push({
       // This is only saved for supplied sensitivity obs in backend
       // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
@@ -440,12 +441,20 @@ const getResultsSection3 = (
   ];
 };
 
+const getResultObsType = (result: SensCalcResultsBackend, inObservationSets: ObservationSetBackend[]) => {
+  const obsSetRef = result.observation_set_ref;
+  const obs = inObservationSets.find(item => item.observation_set_id === obsSetRef);
+  return obs?.observation_type_details?.observation_type;
+};
+
 const getTargetObservation = (
   inResults: SensCalcResultsBackend[],
   inObservationSets: ObservationSetBackend[]
 ): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
+    const resultObsType = getResultObsType(result, inObservationSets);
+    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
     const targetObs: TargetObservation = {
       targetId: Number(result.target_ref),
       observationId: result.observation_set_ref,
@@ -454,8 +463,8 @@ const getTargetObservation = (
         title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
-        section1: getResultsSection1(result),
-        section2: result?.continuum_confusion_noise ? getResultsSection2(result) : [], // only used for continuum observation
+        section1: getResultsSection1(result, isContinuum),
+        section2: isContinuum ? getResultsSection2(result) : [], // only used for continuum observation
         section3: getResultsSection3(result.observation_set_ref, inObservationSets)
       }
     };

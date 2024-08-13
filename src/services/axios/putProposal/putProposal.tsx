@@ -398,9 +398,12 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   };
 
   const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
+    console.log('::: in getBeamSizeFirstSection');
+    console.log('::: incSensCalcResultsSpectralSection', incSensCalcResultsSpectralSection)
     const beamSize = incSensCalcResultsSpectralSection?.find(
       o => o.field === 'spectralSynthBeamSize'
     )?.value;
+    console.log('beamSize', beamSize);
     const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
     return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // fallback
     // As PDM only accepts a number, we only save the 1st part of the beam size for now
