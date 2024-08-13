@@ -4,20 +4,20 @@
       "name": "cypress"
     },
     "summary": {
-      "tests": 2,
+      "tests": 3,
       "failed": 0,
-      "passed": 2,
+      "passed": 3,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723546952963,
-      "stop": 1723546992915
+      "start": 1723552102850,
+      "stop": 1723552147253
     },
     "tests": [
       {
         "name": "Creating proposals Create a basic proposal",
         "status": "passed",
-        "duration": 12330,
+        "duration": 9458,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/createProposal.feature",
@@ -28,10 +28,21 @@
       {
         "name": "Editing proposals Edit a basic proposal",
         "status": "passed",
-        "duration": 17868,
+        "duration": 14564,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/editProposal.feature",
+        "retries": 0,
+        "flaky": false,
+        "browser": "electron 118.0.5993.159"
+      },
+      {
+        "name": "Creating observations Create a standard observation",
+        "status": "passed",
+        "duration": 10106,
+        "rawStatus": "passed",
+        "type": "e2e",
+        "filePath": "cypress/integration/observations.feature",
         "retries": 0,
         "flaky": false,
         "browser": "electron 118.0.5993.159"

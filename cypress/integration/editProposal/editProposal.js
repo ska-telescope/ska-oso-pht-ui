@@ -3,14 +3,11 @@ import {
   addAbstract,
   addTargetUsingResolve,
   clickAddObservation,
-  clickAddProposal,
-  clickCreateProposal,
   clickEditProposal,
   clickHome,
   clickObservationFromTable,
   clickObservationSetup,
   clickSaveProposal,
-  clickStandardProposalSubTypeTargetOfOpportunity,
   clickToAddTarget,
   clickToGeneralPage,
   clickToLinkTargetAndObservation,
@@ -19,17 +16,13 @@ import {
   clickToSDPDataPage,
   clickToTargetPage,
   clickToTeamPage,
-  clickToTechnicalPage, clickToValidateProposal,
-  pageConfirmed,
+  clickToTechnicalPage, clickToValidateProposal, createStandardProposal,
   verifyObservationInTable,
   verifyProposalOnLandingPage
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
-  clickAddProposal()
-  clickStandardProposalSubTypeTargetOfOpportunity()
-  clickCreateProposal()
-  pageConfirmed('TEAM');
+  createStandardProposal()
   clickSaveProposal()
 });
 
