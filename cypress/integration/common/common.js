@@ -1,7 +1,14 @@
 export const clickAddProposal = () => {
-  cy.get('[data-testid="addProposalButton"]').should('exist');
+  verifyAddProposalButtonExists()
+  clickAddProposalButton()
+};
+
+export const clickAddProposalButton = () => {
   cy.get('[data-testid="addProposalButton"]').click();
-  cy.get('[id="titleId"]').should('be.visible');
+};
+
+export const verifyAddProposalButtonExists = () => {
+  cy.get('[data-testid="addProposalButton"]').should('exist');
 };
 
 export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
@@ -23,6 +30,18 @@ export const clickEditProposal = () => {
 
 export const pageConfirmed = label => {
   cy.get('#pageTitle').contains(label);
+};
+
+export const landingPageConfirmed = ()  => {
+  verifyAddProposalButtonExists()
+};
+
+export const createStandardProposal = ()  => {
+  clickAddProposalButton()
+  pageConfirmed('TITLE');
+  clickStandardProposalSubTypeTargetOfOpportunity()
+  clickCreateProposal()
+  pageConfirmed('TEAM');
 };
 
 export const clickSaveProposal = () => {
