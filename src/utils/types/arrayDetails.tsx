@@ -14,4 +14,5 @@ export type ArrayDetailsMidBackend = {
   number_13_antennas?: number;
   number_sub_bands?: number;
   tapering?: string;
+  spectral_averaging?: string;
 };
