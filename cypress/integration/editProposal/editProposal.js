@@ -62,7 +62,9 @@ And('I validate my proposal', () => {
 });
 
 And('I submit my proposal', () => {
+  //TODO: Implement step when functionality is available
 });
 
 And('the proposal status should change to submitted', () => {
+  //TODO: Implement step when functionality is available
 });
