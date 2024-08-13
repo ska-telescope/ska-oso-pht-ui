@@ -343,7 +343,10 @@ const getObservations = (
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
-const getResultsSection1 = (inResult: SensCalcResultsBackend, isContinuum: boolean): SensCalcResults['section1'] => {
+const getResultsSection1 = (
+  inResult: SensCalcResultsBackend,
+  isContinuum: boolean
+): SensCalcResults['section1'] => {
   let section1 = [];
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
@@ -427,15 +430,16 @@ const getResultsSection3 = (
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
   const suppliedType = inResult.result_details.supplied_type;
-  const field = suppliedType === 'sensitivity'
-    /*
+  const field =
+    suppliedType === 'sensitivity'
+      ? /*
       ? 'sensitivity'
       : 'integrationTime';
     */
-      ? 'integrationTime'
+        'integrationTime'
       : 'sensitivity';
-    // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
-    // and sensitivity for supplied integration time for RESULTS
+  // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
+  // and sensitivity for supplied integration time for RESULTS
   return [
     {
       field: field,
@@ -445,7 +449,10 @@ const getResultsSection3 = (
   ];
 };
 
-const getResultObsType = (result: SensCalcResultsBackend, inObservationSets: ObservationSetBackend[]) => {
+const getResultObsType = (
+  result: SensCalcResultsBackend,
+  inObservationSets: ObservationSetBackend[]
+) => {
   const obsSetRef = result.observation_set_ref;
   const obs = inObservationSets.find(item => item.observation_set_id === obsSetRef);
   return obs?.observation_type_details?.observation_type;
