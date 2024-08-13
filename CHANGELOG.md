@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-620:
+  - Added BDD style cucumber testing using cypress
 * STAR-625:
    - Mapping to/from API for the SDP Data Products
 * STAR-636:
