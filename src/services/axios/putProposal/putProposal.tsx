@@ -430,7 +430,6 @@ function mappingPutProposal(proposal: Proposal, status: string) {
   const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
     const resultsArr = [];
     for (let tarObs of incTargetObservations) {
-      console.log('TarObs', tarObs);
       // if there is a sens calc error, we don't save the results
       if (tarObs.sensCalc?.error) {
         break;
@@ -551,8 +550,6 @@ async function PutProposal(proposal, status?) {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = mappingPutProposal(proposal, status);
-    console.log('PUT proposal UI proposal', proposal);
-    console.log('PUT proposal converted proposal', convertedProposal);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,
       convertedProposal,

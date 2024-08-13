@@ -527,7 +527,6 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('GET proposal converted proposal', convertedProposal);
   return convertedProposal;
 }
 
@@ -543,7 +542,6 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `/proposals/${id}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    console.log('GET proposal incomming proposal', result.data);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;
