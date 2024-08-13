@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-570:
+   - Added Delete PDF button in Science and Technical Page
 * STAR-625:
    - Mapping to/from API for the SDP Data Products
 * STAR-636:

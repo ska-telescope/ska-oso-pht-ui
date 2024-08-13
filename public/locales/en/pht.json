@@ -101,6 +101,9 @@
   "declination": {
     "label": "Declination"
   },
+  "deleteBtn": {
+    "label": "Delete"
+  },
   "deleteDataProduct": {
     "label": "Delete data product",
     "confirmTitle": "Delete this data product ? "
@@ -165,6 +168,20 @@
 
   "fileType": {
     "pdf": ".pdf"
+  },
+  "pdfDelete": {
+    "science": {
+      "label": "science",
+      "toolTip": "Click delete the Science Justification PDF",
+      "error": "Not able to delete Science Justification PDF",
+      "success" : "Science Justification PDF successfully deleted"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click delete the Technical Justification PDF",
+      "error": "Not able to delete Technical Justification PDF",
+      "success" : "Technical Justification PDF successfully deleted"
+    }
   },
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
