@@ -20,17 +20,6 @@ export const countWords = (text: string) => {
         .filter(Boolean).length;
 };
 
-export const presentUnits = (inUnits: string) => {
-  switch (inUnits) {
-    case 'arcsec2':
-      return 'arcsec\xb2';
-    case 'arcsecs2':
-      return 'arcsecs\xb2';
-    default:
-      return inUnits;
-  }
-};
-
 export const helpers = {
   validate: {
     validateTextEntry(

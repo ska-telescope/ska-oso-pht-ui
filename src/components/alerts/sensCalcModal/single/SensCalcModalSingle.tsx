@@ -6,7 +6,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
-import { presentUnits } from '../../../../utils/helpers';
+import { presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -34,7 +34,8 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         </Grid>
         <Grid item xs={6}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-            {eValue} {presentUnits(eUnits)}
+            {eId === 'targetName' ? eValue : presentValue(eValue)}{' '}
+            {eId === 'targetName' ? eUnits : presentUnits(eUnits)}
           </Typography>
         </Grid>
       </Grid>
@@ -56,7 +57,10 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
           action={<CancelButton action={handleClose} title="button.close" />}
           avatar={
             <StatusIcon
-              ariaTitle=""
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusLoading.' + data.statusGUI),
+                error: ''
+              })}
               ariaDescription=""
               testId="statusId"
               icon

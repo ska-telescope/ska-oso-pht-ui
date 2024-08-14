@@ -4,7 +4,6 @@ import {
   BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
-  OBS_TYPES,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
   Projects,
@@ -313,7 +312,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       // supplied_type: 'integration_time' // TODO put back correct supplied type once PDM corrected
       // we want supplied integration time for sensitivity supplied fields, which is currently the other way in the PDM
     };
-    if (OBS_TYPES[obsType] === 'continuum') {
+    if (obsType === TYPE_CONTINUUM) {
       params.weighted_continuum_sensitivity = {
         value: Number(
           tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
@@ -355,7 +354,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     };
     params.surface_brightness_sensitivity = {
       continuum:
-        OBS_TYPES[obsType] === 'continuum'
+        obsType === TYPE_CONTINUUM
           ? Number(
               tarObs.sensCalc.section1?.find(
                 o => o.field === 'continuumSurfaceBrightnessSensitivity'
@@ -384,7 +383,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       // supplied_type: 'sensitivity' // TODO put back correct supplied type once PDM corrected
       // we want supplied sensitivity for integration time supplied fields, which is currently the other way in the PDM
     };
-    if (OBS_TYPES[obsType] === 'continuum') {
+    if (obsType === TYPE_CONTINUUM) {
       params.continuum = {
         value: Number(tarObs.sensCalc.section3[0]?.value),
         unit: tarObs.sensCalc.section3[0]?.units
@@ -411,10 +410,10 @@ function mappingPutProposal(proposal: Proposal, status: string) {
     return obs.type;
   };
 
-  const getSpectralSection = obsType => {
+  const getSpectralSection = (obsType: number) => {
     // - for continuum observations, section1 contains continuum results & section2 spectral results
     // - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
-    return OBS_TYPES[obsType] === 'continuum' ? 'section2' : 'section1';
+    return obsType === TYPE_CONTINUUM ? 'section2' : 'section1';
   };
 
   const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
@@ -439,7 +438,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
       // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-      // TODO unswap sensitivity and integration time as above once PDM updated
+      // TODO un-swap sensitivity and integration time as above once PDM updated
       // => we want supplied integration time fields for supplied sensitivity
       // and supplied sensitivity fields for supplied integration time for RESULTS
       const suppliedRelatedFields =
@@ -454,7 +453,7 @@ function mappingPutProposal(proposal: Proposal, status: string) {
           ...suppliedRelatedFields
         },
         continuum_confusion_noise:
-          OBS_TYPES[obsType] === 'continuum'
+          obsType === TYPE_CONTINUUM
             ? {
                 value: Number(
                   tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
