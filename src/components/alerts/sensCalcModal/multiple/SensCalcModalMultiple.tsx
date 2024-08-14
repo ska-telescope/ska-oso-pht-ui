@@ -6,7 +6,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
 import { OBS_TYPES } from '../../../../utils/constants';
-import { presentUnits } from '../../../../utils/helpers';
+import { presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
   open: boolean;
@@ -58,7 +58,7 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = rec => (rec ? rec.value + ' ' + presentUnits(rec.units) : '');
+  const presentation = rec => (rec ? presentValue(rec.value) + ' ' + presentUnits(rec.units) : '');
 
   const section1Columns = [
     {

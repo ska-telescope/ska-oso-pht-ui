@@ -373,7 +373,7 @@ const getResultsSection1 = (
       field: 'continuumSynthBeamSize',
       // value: inResult.synthesized_beam_size?.value,
       // mock beam size value for now as format enforced by backend not correct
-      value: `${inResult.synthesized_beam_size?.value} ' x 171.3'`,
+      value: `${inResult.synthesized_beam_size?.value} x 171.3`,
       units: inResult?.synthesized_beam_size?.unit
     } as ResultsSection);
     section1.push({
@@ -458,7 +458,8 @@ const getResultObsType = (
 
 const getTargetObservation = (
   inResults: SensCalcResultsBackend[],
-  inObservationSets: ObservationSetBackend[]
+  inObservationSets: ObservationSetBackend[],
+  inTargets: TargetBackend[]
 ): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
@@ -469,7 +470,7 @@ const getTargetObservation = (
       observationId: result.observation_set_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
-        title: result.target_ref,
+        title: inTargets[Number(result.target_ref) - 1].target_id,
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(result, isContinuum),
@@ -519,7 +520,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
       inRec?.info?.results?.length > 0
-        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets)
+        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets, inRec.info.targets)
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? 1 : 0,

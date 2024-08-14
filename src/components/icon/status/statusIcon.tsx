@@ -20,7 +20,7 @@ export default function StatusIconDisplay({
     <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={() => onClick()}>
       <StatusIcon
         ariaTitle={t('sensitivityCalculatorResults.status', {
-          status: level ? t('statusLoading.' + level) : '',
+          status: t('statusLoading.' + level),
           error: error
         })}
         testId="statusId"

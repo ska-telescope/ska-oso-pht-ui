@@ -4,7 +4,7 @@ import { Grid, IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
-import { presentUnits } from '../../../utils/helpers';
+import { presentUnits, presentValue } from '../../../utils/present';
 
 const SIZE = 20;
 
@@ -52,7 +52,7 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
             >
               <StatusIcon
                 ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: sensCalc?.statusGUI ? t('statusLoading.' + sensCalc?.statusGUI) : '',
+                  status: t('statusLoading.' + sensCalc?.statusGUI),
                   error: sensCalc?.error
                 })}
                 testId="statusId"
@@ -64,12 +64,16 @@ export default function SensCalcDisplaySingle({ sensCalc, show }: SensCalcDispla
           </Grid>
           {!hasError() && (
             <Grid item xs={5}>
-              {`${FieldFetch(VALUE, TOTAL_SENSE)} ${presentUnits(FieldFetch(UNITS, TOTAL_SENSE))}`}
+              {`${presentValue(FieldFetch(VALUE, TOTAL_SENSE))} ${presentUnits(
+                FieldFetch(UNITS, TOTAL_SENSE)
+              )}`}
             </Grid>
           )}
           {!hasError() && (
             <Grid item xs={5}>
-              {`${FieldFetch(VALUE, BEAM_SIZE)} ${presentUnits(FieldFetch(UNITS, BEAM_SIZE))}`}
+              {`${presentValue(FieldFetch(VALUE, BEAM_SIZE))} ${presentUnits(
+                FieldFetch(UNITS, BEAM_SIZE)
+              )}`}
             </Grid>
           )}
           {hasError() && (
