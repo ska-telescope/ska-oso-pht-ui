@@ -53,7 +53,7 @@ describe('Modal with no data', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('be.visible');
   });
   it('Empty icon should be displayed when no data', () => {
-    cy.get('[aria-label="Status Indicator 5"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
 });
 
@@ -76,7 +76,7 @@ describe('Modal with data - Continuum', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('not.exist');
   });
   it('Ok icon should be displayed when data', () => {
-    cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
   it('Alert should display appropriate results (continuum)', () => {
     cy.get('[id="continuumSensitivityWeighted"]').should(
@@ -145,7 +145,7 @@ describe('Modal with data - Spectral', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('not.exist');
   });
   it('Ok icon should be displayed when data', () => {
-    cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
   it('Alert should display appropriate results (spectral)', () => {
     cy.get('[id="spectralSensitivityWeighted"]').should(
