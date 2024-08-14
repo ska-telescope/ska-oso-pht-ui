@@ -13,7 +13,7 @@ import {
   clickToLinkTargetAndObservation,
   clickToObservationPage,
   clickToSciencePage,
-  clickToSDPDataPage,
+  clickToObservatoryDataProductPage,
   clickToTargetPage,
   clickToTeamPage,
   clickToTechnicalPage, clickToValidateProposal, createStandardProposal,
@@ -47,7 +47,7 @@ Then('I am able to continue my proposal from where I stopped, fill in all the ne
   clickObservationFromTable()
   clickToLinkTargetAndObservation()
   clickToTechnicalPage()
-  clickToSDPDataPage()
+  clickToObservatoryDataProductPage()
 });
 
 And('I validate my proposal', () => {

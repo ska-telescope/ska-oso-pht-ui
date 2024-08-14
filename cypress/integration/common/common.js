@@ -84,9 +84,9 @@ export const clickToTechnicalPage = () => {
   cy.get('[data-testid="TechnicalButton"]').click();
 };
 
-export const clickToSDPDataPage = () => {
-  cy.get('[data-testid="SDP DataButton"]').should('exist');
-  cy.get('[data-testid="SDP DataButton"]').click();
+export const clickToObservatoryDataProductPage = () => {
+  cy.get('[data-testid="Observatory Data ProductButton"]').should('exist');
+  cy.get('[data-testid="Observatory Data ProductButton"]').click();
 };
 
 export const addAbstract = () => {
