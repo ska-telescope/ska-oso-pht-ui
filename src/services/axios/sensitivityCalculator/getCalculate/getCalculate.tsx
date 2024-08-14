@@ -72,8 +72,9 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   /*********************************************************** MID *********************************************************/
 
-  const convertFrequency = (value: number | string, units: number | string) =>
-    sensCalHelpers.format.convertBandwidthToHz(value, units);
+  const convertFrequency = (value: number | string, units: number | string) => {
+    return sensCalHelpers.format.convertBandwidthToHz(value, units);
+  };
   const getSpectralResolution = () => {
     const spectralResValue = observation.spectralResolution.includes('kHz')
       ? Number(observation.spectralResolution.split(' ')[0]) * 1000
@@ -162,13 +163,18 @@ async function GetCalculate(observation: Observation, target: Target) {
     };
   };
 
+  const getSensitivityJYSpelling = () => {
+    return isZoom() ? 'sensitivities_jy' : 'sensitivity_jy';
+  };
+
   function mapQueryCalculateMid(): URLSearchParams {
     const params = isZoom() ? getParamZoom() : getParamContinuum();
     helpers.transform.trimObject(params);
     const urlSearchParams = new URLSearchParams();
 
     if (SUPPLIED_IS_SENSITIVITY) {
-      urlSearchParams.append('sensitivity_jy', observation.supplied.value.toString());
+      const sensitivityJYParamName = getSensitivityJYSpelling();
+      urlSearchParams.append(sensitivityJYParamName, observation.supplied.value.toString());
     } else {
       const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
         observation.supplied.units

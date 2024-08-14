@@ -27,7 +27,7 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedValue"]').type('3');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedValue.help');
 
-  cy.get('[data-testid="suppliedUnits"]').contains('jy/beam');
+  cy.get('[data-testid="suppliedUnits"]').contains('Jy/beam');
   cy.get('[data-testid="suppliedUnits"]').click();
   cy.get('[data-value="5"]').click();
   cy.get('[data-testid="suppliedUnits"]').contains('K');

@@ -24,7 +24,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter your abstract information.",
+    "helper": "Please enter your abstract information. This field allows latex syntax.",
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
@@ -41,11 +41,11 @@
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
-    "warning": "Please wait whilst we create a new proposal"
+    "warning": "Please wait whilst we create a new proposal."
   },
   "addTarget": {
     "label": "Add Target",
-    "toolTip": "Will add the target to the list associated with the proposal"
+    "toolTip": "Will add the target to the list associated with this proposal."
   },
   "apiVersion": {
     "label": "API Version"
@@ -80,10 +80,10 @@
   },
   "cloneProposal": {
     "toolTip": "Clone proposal",
-    "confirm": "Clone this proposal"
+    "confirm": "Clone this proposal."
   },
   "continuumBandWidth": {
-    "help": "Continuum BANDWIDTH HELP",
+    "help": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations.",
     "label": "Continuum BandWidth",
     "range": {
       "error": "Value is outside of allowed range"
@@ -100,6 +100,9 @@
   },
   "declination": {
     "label": "Declination"
+  },
+  "deleteBtn": {
+    "label": "Delete"
   },
   "deleteDataProduct": {
     "label": "Delete data product",
@@ -119,12 +122,12 @@
   },
   "deleteProposal": {
     "toolTip": "Delete proposal",
-    "confirm": "Confirm Proposal Deletion",
+    "confirm": "Confirm Proposal Deletion.",
     "disabled": "This function is not available"
   },
   "displayProposal": {
     "noneSelected": "None selected",
-    "warning": "Please wait whilst we load the selected proposal"
+    "warning": "Please wait whilst we load the selected proposal."
   },
   "downloadBtn": {
     "label": "Download"
@@ -141,21 +144,21 @@
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
-    "help": "EFFECTIVE RESOLUTION HELP",
+    "help": "This field displays the channel width after applying the spectral averaging.",
     "label": "Effective Resolution"
   },
   "elevation": {
-    "help": "The minimum elevation is 15 deg for both SKA-LOW and SKA-MID and the maximum elevation is the target’s zenith elevation.",
+    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 15 degrees) and the target's zenith elevation. An error message is displayed if this is not the case. For long integrations, increasing the minimum elevation will improve the sensitivity at the expense of uv-coverage.",
     "label": "Minimum Elevation",
     "range": {
-      "error": "Value is outside of allowed range"
+      "error": "Value is outside of allowed range."
     }
   },
   "email": {
     "label": "Email",
     "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct.",
     "invitation": {
-      "subject": "Proposal invitation",
+      "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
     }
   },
@@ -166,15 +169,29 @@
   "fileType": {
     "pdf": ".pdf"
   },
+  "pdfDelete": {
+    "science": {
+      "label": "science",
+      "toolTip": "Click delete the Science Justification PDF",
+      "error": "Not able to delete Science Justification PDF",
+      "success" : "Science Justification PDF successfully deleted"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click delete the Technical Justification PDF",
+      "error": "Not able to delete Technical Justification PDF",
+      "success" : "Technical Justification PDF successfully deleted"
+    }
+  },
   "pdfDownload": {
     "error": "Not able to Get PDF Download URL",
     "science": {
       "label": "science",
-      "toolTip": "Click download the Science Justification PDF"
+      "toolTip": "Click to download the Science Justification PDF"
     },
     "technical": {
       "label": "technical",
-      "toolTip": "Click download the Technical Justification PDF"
+      "toolTip": "Click to download the Technical Justification PDF"
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
@@ -183,7 +200,7 @@
     "help": "Requires the first name of the investigator."
   },
   "frequencyUnits": {
-    "help": "FREQUENCY UNITS HELP"
+    "help": ""
   },
   "groupObservations": {
     "label": "Group",
@@ -191,7 +208,7 @@
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
-    "toolTip": "Add a group so that the observation can be executed concurrently"
+    "toolTip": "Add a group if the observation needs to be executed concurrently"
   },
   "id": {
     "label": "Id"
@@ -202,17 +219,17 @@
     "error": "A value greater than zero is required"
   },
   "imageWeighting": {
-    "help": "IMAGE WEIGHTING HLP",
+    "help": "Select natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Image Weighting"
   },
   "importFromFile": {
-    "label": "Import from file"
+    "label": "Import from file."
   },
   "inviteTeamMember": {
-    "label": "Invite Team Member"
+    "label": "Invite Team Member."
   },
   "latex": {
-    "toolTip": "Preview the content using LaTeX format.",
+    "toolTip": "LaTex Preview.",
     "previewTitle": "LaTeX Preview"
   },
   "lastName": {
@@ -260,7 +277,7 @@
     }
   },
   "observingBand": {
-    "help": "Select the observing band. Note that the array will be automatically populated based on the selected band.",
+    "help": "Select the observing band to use for observation. Note that the array will be automatically populated based on the selected band. The available bands are 50 MHz - 350 MHz for SKA-LOW and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for SKA-MID.",
     "label": "Observing Band"
   },
   "observations": {
@@ -278,7 +295,7 @@
   },
   "observationType": {
     "label": "Observation Type",
-    "help": "Specify if the observation type is continuum or zoom. Note that not all sub-arrays have zoom mode so this option is available based on the sub-array chosen.",
+    "help": "Specify if the observation type is continuum or zoom. Note that not all sub-arrays have zoom mode so this option is available based on the sub-array selected.",
     "short": "Type",
     "0": "Zoom",
     "1": "Continuum"
@@ -318,22 +335,8 @@
   "pi": {
     "initials": "PI",
     "label": "Primary Investigator",
-    "help": "Check to indicate that this individual is the Principle Investigator.",
+    "help": "Check to indicate that this individual is the Principle Investigator of this proposal.",
     "short": "PI"
-  },
-  "pipeline": {
-    "label": "Pipeline",
-    "help": "PIPELINE HELP",
-    "helper": "Please enter your pipeline information",
-    "options": {
-      "1": "Visibility receive",
-      "2": "‘Real-time’ pointing calibration'",
-      "3": "Visibility pre-processing",
-      "4": "Mid self-cal / ICal",
-      "5": "Low self-cal / ICal",
-      "6": "‘Real-time’ gain calibration",
-      "7": "Distributed Gridding/Imaging"
-    }
   },
   "pixelSize": {
     "label": "Pixel Size",
@@ -360,12 +363,12 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
-    "help2": "Proposal sub-types are optional",
+    "help2": "",
     "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "help4": ""
   },
   "subProposalType": {
-    "label": "Proposal Subtype(s)"
+    "label": "Proposal Sub-type(s)"
   },
   "members": {
     "label": "Investigator(s)",
@@ -376,7 +379,7 @@
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {
-    "help": "REFERENCE COORDINATE HELP",
+    "help": "Only Galactic and Equatorial reference coordinates are available.",
     "label": "Reference Coordinate",
     "0": "Equatorial",
     "1": "Galactic"
@@ -391,16 +394,16 @@
     "label": "Resolve",
     "toolTip": "Query SIMBAD and NED",
     "error": {
-      "mapping": "Unable to map results from API",
+      "mapping": "Unable to map results from API.",
       "name": "Unable to resolve provided name"
     }
   },
   "rightAscension": {
-    "help": "Right ascension HELP: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit.",
+    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit.",
     "label": "Right ascension"
   },
   "robust": {
-    "help": "ROBUST HELP",
+    "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
   },
   "saveBtn": {
@@ -432,12 +435,12 @@
     "1": "Not specified"
   },
   "searchForMember": {
-    "label": "Search for member"
+    "label": "Search for member."
   },
   "skyDirection": {
     "help": {
       "1": {
-        "value": "Right Ascension: RA can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  RA can also be in degrees in which case you have to select the appropriate unit."
+        "value": "Right Ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit."
       },
       "2": {
         "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degrees. Declinations below 5 degrees cannot be observed for MID observations and below 10 degrees for LOW observations."
@@ -478,7 +481,7 @@
     "label": "Spatial Imaging"
   },
   "sdp": {
-    "label": "SDP Data"
+    "label": "Observatory Data Product"
   },
   "search": {
     "label": "Search"
@@ -575,13 +578,13 @@
     "20": "Custom"
   },
   "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K. This is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation. This is used to calculate the sensitivity that will be reached with this integration time. Units are selectable in the calculator."
+    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
   },
   "suppliedUnits": {
-    "help": "SUPPLIED UNITS HELP"
+    "help": ""
   },
   "suppliedValue": {
-    "help": "SUPPLIED VALUE HELP",
+    "help": "",
     "range": {
       "error": "Value is outside of allowed range"
     }
@@ -628,7 +631,7 @@
   },
   "validationBtn": {
     "label": "Validation",
-    "success": "Proposal is Valid"
+    "success": "Proposal is Valid."
   },
   "velocity": {
     "label": "Velocity",
@@ -682,11 +685,11 @@
     "4": {
       "title": "Target",
       "label": "Target(s)",
-      "desc": "Select a category to associate target(s) with this proposal. For a list of targets you can only specify a maximum of 30."
+      "desc": "Select a category to associate target(s) with this proposal."
     },
     "5": {
       "title": "Observation",
-      "desc": ""
+      "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results."
     },
     "6": {
       "title": "Technical",
@@ -696,21 +699,21 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
-      "title": "SDP Data",
-      "desc": ""
+      "title": "Observatory Data Product",
+      "desc": "This page allows you to request and define observatory data products for observation set(s)."
     },
     "8": {
       "title": "SRC Net",
-      "desc": ""
+      "desc": "This page allows you to request and define SRC Net data products."
     },
     "9": {
       "title": "Title",
-      "desc": "Provide a title of your proposal"
+      "desc": "Provide a title of your proposal. Proposal sub-types below are optional."
     },
     "10": {
       "title": "Observation Setup",
-      "label": "Observation Setup(s)",
-      "desc": "Add one or more observation setup(s)"
+      "label": "Observation Setup(s).",
+      "desc": "Define the parameters of the observation setup."
     },
     "11": {
       "title": "Landing page",
@@ -728,7 +731,7 @@
     },
     "14": {
       "title": "Observation Update",
-      "desc": "Amend an existing observation.  Note that this will effect any existing Sensitivity calculations to linked Targets"
+      "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",
@@ -750,10 +753,10 @@
   },
   "error": {
     "axios": {
-      "format": "Unexpected data format returned from API"
+      "format": "Unexpected data format returned from API."
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
-    "pdf": "Syntax error or PDF not available ",
+    "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
   }
