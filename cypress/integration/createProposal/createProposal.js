@@ -2,7 +2,7 @@ import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import {
   clickAddProposal,
   clickCreateProposal, clickHome, clickSaveProposal,
-  clickStandardProposalSubTypeTargetOfOpportunity, verifyOnLandingPage, verifyProposalOnLandingPage
+  clickStandardProposalSubTypeTargetOfOpportunity, enterProposalTitle, verifyOnLandingPage, verifyProposalOnLandingPage
 } from '../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
@@ -10,6 +10,7 @@ Given('I am a PHT user who wants to create a proposal', () => {
 });
 
 When('I provide a title and select the proposal category', () => {
+  enterProposalTitle()
   clickStandardProposalSubTypeTargetOfOpportunity()
   clickCreateProposal()
 });

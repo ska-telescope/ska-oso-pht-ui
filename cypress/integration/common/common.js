@@ -11,8 +11,10 @@ export const verifyAddProposalButtonExists = () => {
   cy.get('[data-testid="addProposalButton"]').should('exist');
 };
 
-export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
+export const enterProposalTitle = () => {
   cy.get('[id="titleId"]').type("Proposal Title");
+};
+export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
   cy.get('[id="ProposalType-1"]').click({ force: true });
   cy.get('[aria-label="A target of opportunity observing proposal"]').click();
 };
@@ -39,6 +41,7 @@ export const landingPageConfirmed = ()  => {
 export const createStandardProposal = ()  => {
   clickAddProposalButton()
   pageConfirmed('TITLE');
+  enterProposalTitle()
   clickStandardProposalSubTypeTargetOfOpportunity()
   clickCreateProposal()
   pageConfirmed('TEAM');
@@ -117,7 +120,7 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyProposalOnLandingPage = () => {
-  // cy.get('[data-testid="dataGridId"]').should('exist')
+  cy.get('[data-field="scienceCategory"]').should('exist')
 };
 
 export const verifyObservationInTable = () => {

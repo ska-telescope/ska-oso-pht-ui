@@ -18,7 +18,7 @@ import {
   clickToTeamPage,
   clickToTechnicalPage, clickToValidateProposal, createStandardProposal,
   verifyObservationInTable,
-  verifyProposalOnLandingPage
+  verifyProposalOnLandingPage, verifyOnLandingPage
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
@@ -28,6 +28,7 @@ Given('I am a PHT user who wants to continue editing my previously created propo
 
 When('I get on the landing page and click on the edit button', () => {
   clickHome()
+  verifyOnLandingPage()
   verifyProposalOnLandingPage()
   clickEditProposal()
 });
