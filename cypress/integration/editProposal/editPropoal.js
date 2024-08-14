@@ -7,7 +7,6 @@ import {
   clickHome,
   clickObservationFromTable,
   clickObservationSetup,
-  clickSaveProposal,
   clickToAddTarget,
   clickToGeneralPage,
   clickToLinkTargetAndObservation,
@@ -23,7 +22,6 @@ import {
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
   createStandardProposal()
-  clickSaveProposal()
 });
 
 When('I get on the landing page and click on the edit button', () => {

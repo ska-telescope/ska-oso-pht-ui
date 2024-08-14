@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import {
   clickAddProposal,
-  clickCreateProposal, clickHome, clickSaveProposal,
+  clickCreateProposal, clickHome,
   clickStandardProposalSubTypeTargetOfOpportunity, enterProposalTitle, verifyOnLandingPage, verifyProposalOnLandingPage
 } from '../common/common';
 
@@ -16,7 +16,6 @@ When('I provide a title and select the proposal category', () => {
 });
 
 Then('a proposal with unique ID is created and I can see that on the landing page', () => {
-  clickSaveProposal()
   clickHome()
   verifyOnLandingPage()
   verifyProposalOnLandingPage()

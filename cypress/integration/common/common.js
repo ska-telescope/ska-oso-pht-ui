@@ -47,11 +47,6 @@ export const createStandardProposal = ()  => {
   pageConfirmed('TEAM');
 };
 
-export const clickSaveProposal = () => {
-  cy.get('[data-testid="saveButtonTestId"]').should('exist');
-  cy.get('[data-testid="saveButtonTestId"]').click();
-};
-
 export const clickHome = () => {
   cy.get('[data-testid="homeButtonTestId"]').should('exist');
   cy.get('[data-testid="homeButtonTestId"]').click();
