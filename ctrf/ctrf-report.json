@@ -10,14 +10,14 @@
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723626713394,
-      "stop": 1723626758249
+      "start": 1723627662830,
+      "stop": 1723627714633
     },
     "tests": [
       {
         "name": "Creating proposals Create a basic proposal",
         "status": "passed",
-        "duration": 10051,
+        "duration": 11692,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/createProposal.feature",
@@ -28,7 +28,7 @@
       {
         "name": "Editing proposals Edit a basic proposal",
         "status": "passed",
-        "duration": 14376,
+        "duration": 15982,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/editProposal.feature",
@@ -39,7 +39,7 @@
       {
         "name": "Creating observations Create a standard observation",
         "status": "passed",
-        "duration": 9966,
+        "duration": 11471,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/observations.feature",

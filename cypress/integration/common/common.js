@@ -114,7 +114,7 @@ export const clickAddObservation = () => {
 
 export const verifyProposalOnLandingPage = () => {
   cy.get('[data-field="scienceCategory"]').should('exist')
-    .should('contain', 'Cosmology');
+  cy.get('[data-field="scienceCategory"]').should('contain', 'Cosmology');
 };
 
 export const verifyObservationInTable = () => {
