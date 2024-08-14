@@ -2,12 +2,16 @@ import { STATUS_INITIAL, STATUS_OK, STATUS_PARTIAL } from '../../../utils/consta
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 
 export const SENSCALC_EMPTY_MOCKED: SensCalcResults = {
-  statusGUI: STATUS_INITIAL
+  statusGUI: STATUS_INITIAL,
+  id: 0,
+  title: ''
 };
 
 export const SENSCALC_PARTIAL_MOCKED: SensCalcResults = {
   statusGUI: STATUS_PARTIAL,
-  error: ''
+  error: '',
+  id: 0,
+  title: ''
 };
 
 export const SENSCALC_CONTINUUM_MOCKED: SensCalcResults = {

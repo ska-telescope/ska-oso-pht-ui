@@ -21,7 +21,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
 
   const getLevel = () => (level > 5 ? 0 : level);
   const pageName = () => {
-    return t(`page.${page}.title`);
+    return t(`page.${page}.status`);
   };
 
   return (
