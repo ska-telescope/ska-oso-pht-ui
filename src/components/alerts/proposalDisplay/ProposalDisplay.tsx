@@ -20,6 +20,7 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GridMembers from '../../grid/members/GridMembers';
+import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -82,13 +83,15 @@ export default function ProposalDisplay({
   };
 
   const subProposalTypes = () => {
-    const proposalType = getProposal().proposalType;
-    // const subType = getProposal().proposalSubType;
-    const proposalName =
-      !proposalType || proposalType < 1
-        ? t('displayProposal.noneSelected')
-        : Projects[proposalType - 1].title;
-    return `${proposalName}`;
+    let output = '';
+    const subTypes: number[] = getProposal().proposalSubType;
+    if (subTypes.length && subTypes[0] > 0) {
+      subTypes.forEach(
+        element =>
+          (output = (output.length ? output + ' | ' : '') + t('subProposalType.' + element))
+      );
+    }
+    return output;
   };
 
   const scienceCategory = () => {
@@ -201,7 +204,7 @@ export default function ProposalDisplay({
         <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
-        <DownloadButton disabled action={handleDownload} />
+        <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
@@ -218,15 +221,11 @@ export default function ProposalDisplay({
   const headerContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={2}>
-          LOGO
-        </Grid>
-        <Grid item xs={6}>
-          {title(t('page.9.title') + ' : ' + getProposal().title)}
-        </Grid>
-        <Grid item xs={4}>
-          <Grid container direction="column" justifyContent="space-between" alignItems="center">
-            <Grid item>{cycle(t('page.12.title'), getProposal().cycle)}</Grid>
+        <Grid item>{skaoIcon({})}</Grid>
+        <Grid item>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
+        <Grid item>
+          <Grid container direction="column" justifyContent="space-between" alignItems="right">
+            <Grid item>{cycle(t('page.12.short'), getProposal().cycle)}</Grid>
             <Grid item>{content(getProposal().id)}</Grid>
           </Grid>
         </Grid>

@@ -174,13 +174,13 @@
       "label": "science",
       "toolTip": "Click delete the Science Justification PDF",
       "error": "Not able to delete Science Justification PDF",
-      "success" : "Science Justification PDF successfully deleted"
+      "success": "Science Justification PDF successfully deleted"
     },
     "technical": {
       "label": "technical",
       "toolTip": "Click delete the Technical Justification PDF",
       "error": "Not able to delete Technical Justification PDF",
-      "success" : "Technical Justification PDF successfully deleted"
+      "success": "Technical Justification PDF successfully deleted"
     }
   },
   "pdfDownload": {
@@ -368,7 +368,11 @@
     "help4": ""
   },
   "subProposalType": {
-    "label": "Proposal Sub-type(s)"
+    "label": "Proposal Sub-type(s)",
+    "1": "Target of Opportunity",
+    "2": "Joint Proposal",
+    "3": "Coordinated Proposal",
+    "4": "Long term proposal"
   },
   "members": {
     "label": "Investigator(s)",
@@ -666,32 +670,39 @@
   },
   "page": {
     "0": {
+      "status": "Title",
       "title": "Title",
       "desc": ""
     },
     "1": {
+      "status": "Team",
       "title": "Team",
       "desc": "Principal investigators should ensure Co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation."
     },
     "2": {
+      "status": "General",
       "title": "General",
       "desc": ""
     },
     "3": {
+      "status": "Science",
       "title": "Science",
       "label": "Science justification",
       "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "4": {
+      "status": "Target",
       "title": "Target",
       "label": "Target(s)",
       "desc": "Select a category to associate target(s) with this proposal."
     },
     "5": {
+      "status": "Observation",
       "title": "Observation",
       "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results."
     },
     "6": {
+      "status": "Technical",
       "title": "Technical",
       "label": "Technical justification",
       "desc": "Upload a Technical justification for this proposal in a portable document format (pdf)."
@@ -699,10 +710,12 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
+      "status": "Data Product",
       "title": "Observatory Data Product",
       "desc": "This page allows you to request and define observatory data products for observation set(s)."
     },
     "8": {
+      "status": "SRC Net",
       "title": "SRC Net",
       "desc": "This page allows you to request and define SRC Net data products."
     },
@@ -721,6 +734,7 @@
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
+      "short": "Cycle",
       "title": "SKAO Cycle",
       "desc": ""
     },
