@@ -117,6 +117,7 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyProposalOnLandingPage = () => {
+  cy.reload()
   cy.get('[data-testid="VisibilityRoundedIcon"]').should('exist')
 };
 
