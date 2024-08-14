@@ -29,6 +29,7 @@ The Science & Technical Pages have clear and consistent options:
 - 'Upload' button: Visible once a file has been chosen, when clicked the file is uploaded to the proposal and stored 
 - 'Download' button: A file that has been uploaded is able to also be downloaded if this is clicked 
 - 'Preview' button: A file that has been uploaded is able to be previewed in a pop-up window when this is clicked.
+- 'Delete' button: A file that has been uploaded is able to also be deleted if this is clicked 
 
 
 Key Information and Actions
