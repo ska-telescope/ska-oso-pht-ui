@@ -120,7 +120,8 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyProposalOnLandingPage = () => {
-  cy.get('[data-field="scienceCategory"]').should('exist')
+  cy.get('[role="grid"]').should('exist')
+  cy.get('[role="grid"]').contains('Cosmology')
 };
 
 export const verifyObservationInTable = () => {
