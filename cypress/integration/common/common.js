@@ -112,6 +112,10 @@ export const clickAddObservation = () => {
   cy.get('[data-testid="addObservationButton"]').click();
 }
 
+export const verifyOnLandingPage = () => {
+  cy.get('[data-testid="addProposalButton"]').should('exist')
+};
+
 export const verifyProposalOnLandingPage = () => {
   cy.get('[data-testid="VisibilityRoundedIcon"]').should('exist')
 };
