@@ -7,6 +7,9 @@ Future
 
 ---
 
+* STAR-570:
+   - Added Delete PDF button in Science and Technical Page
+   - Upgrade to version 2.1.0 of ska-oso-pht-services
 * STAR-625:
    - Mapping to/from API for the SDP Data Products
 * STAR-636:
@@ -36,7 +39,7 @@ Future
    - Addition of robust to the mappings
    - Some code refactoring and tidy up
 * STAR-615: Proposal mapping:
-   - PutProposal mapping (partial - data_product_sdps and results still to map)
+   - PutProposal mapping
    - Update SensCalc display results to display sensitivity or integration time
    - Update pages accordingly for breaking changes
    - Update proposal frontend types

@@ -2,24 +2,35 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
+import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
+import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
+import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateTechnicalPage } from '../../utils/proposalValidation';
-import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
+import DeleteButton from '../../components/button/Delete/Delete';
+
+import Notification from '../../utils/types/notification';
 
 const PAGE = 6;
+const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function TechnicalPage() {
   const { t } = useTranslation('pht');
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const {
+    application,
+    updateAppContent1,
+    updateAppContent2,
+    updateAppContent5
+  } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
@@ -90,6 +101,26 @@ export default function TechnicalPage() {
     }
   };
 
+  const deletePdfUsingSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const signedUrl = await GetPresignedDeleteUrl(`${proposal.id}-technical.pdf`);
+
+      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
+
+      const deleteResult = await DeleteDeletePDF(signedUrl);
+
+      if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
+        throw new Error('Not able to delete Technical PDF');
+      }
+      setFile(null);
+      NotifyOK(t('pdfDelete.technical.success'));
+    } catch (e) {
+      new Error(t('pdfDelete.technical.error'));
+      NotifyError(t('pdfDelete.technical.error'));
+    }
+  };
+
   const previewSignedUrl = async () => {
     try {
       const proposal = getProposal();
@@ -104,6 +135,19 @@ export default function TechnicalPage() {
       new Error(t('pdfDownload.error'));
     }
   };
+
+  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      delay: NOTIFICATION_DELAY_IN_SECONDS,
+      message: t(str),
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -150,6 +194,14 @@ export default function TechnicalPage() {
             <DownloadButton
               toolTip={'pdfDownload.technical.toolTip'}
               action={downloadPDFToSignedUrl}
+            />
+          )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
+            <DeleteButton
+              toolTip={'pdfDelete.technical.toolTip'}
+              action={deletePdfUsingSignedUrl}
             />
           )}
         </Grid>

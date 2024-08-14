@@ -5,15 +5,24 @@ export type SensCalcResultsBackend = {
   target_ref?: string;
   result_details?: {
     supplied_type: string;
+    // only for Supplied Sensitivity
+    // TODO check if it's the other way around
+    // ********************************** //
     weighted_continuum_sensitivity?: ValueUnitPair;
-    weighted_spectral_sensitivity: ValueUnitPair;
+    weighted_spectral_sensitivity?: ValueUnitPair;
     total_continuum_sensitivity?: ValueUnitPair;
-    total_spectral_sensitivity: ValueUnitPair;
-    surface_brightness_sensitivity: {
+    total_spectral_sensitivity?: ValueUnitPair;
+    surface_brightness_sensitivity?: {
       continuum?: number;
       spectral: number;
       unit: string;
     };
+    // ********************************** //
+    // only for Supplied Integration Time
+    // ********************************** //
+    continuum?: ValueUnitPair;
+    spectral?: ValueUnitPair;
+    // ********************************** //
   };
   continuum_confusion_noise?: ValueUnitPair;
   synthesized_beam_size?: ValueUnitPair;
