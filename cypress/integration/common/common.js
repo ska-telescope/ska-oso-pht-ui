@@ -120,8 +120,8 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyProposalOnLandingPage = () => {
-  cy.get('[role="grid"]', { timeout: 30000 }).should('exist')
-  cy.get('[role="grid"]', { timeout: 30000 }).contains('Cosmology')
+  cy.get('[role="grid"]').should('exist',{ timeout: 30000 })
+  cy.get('[role="grid"]').contains('Cosmology')
 };
 
 export const verifyObservationInTable = () => {
