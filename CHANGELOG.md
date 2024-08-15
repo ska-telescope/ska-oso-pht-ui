@@ -40,6 +40,7 @@ Future
    - Some code refactoring and tidy up
 * STAR-615: Proposal mapping:
    - PutProposal mapping
+   - Move putProposal mapping into a separate service to be used for save and validation
    - Update SensCalc display results to display sensitivity or integration time
    - Update pages accordingly for breaking changes
    - Update proposal frontend types
