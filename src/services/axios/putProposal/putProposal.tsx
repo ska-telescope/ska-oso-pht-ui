@@ -14,7 +14,6 @@ async function PutProposal(proposal, status?) {
   try {
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
-    // const convertedProposal = mappingPutProposal(proposal, status);
     const convertedProposal = MappingPutProposal(proposal, status);
     const result = await axios.put(
       `${SKA_PHT_API_URL}${URL_PATH}`,

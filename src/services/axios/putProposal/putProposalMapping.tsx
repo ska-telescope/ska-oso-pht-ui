@@ -5,6 +5,7 @@ import {
     OBSERVATION,
     OBSERVATION_TYPE_BACKEND,
     Projects,
+    PROPOSAL_STATUS,
     REF_COORDINATES_UNITS,
     TELESCOPE_LOW_BACKEND_MAPPING,
     TELESCOPE_LOW_NUM,
@@ -472,20 +473,13 @@ import {
     };
     /*************************************************************************************************************************/
 
-    /*
-    TODO:
-    - move putProposal mapping into a separate service that can be used by putProposal, validateProposal
-    - handle submit proposal by passing appropriate status and update submission fields
-    - check science category issue on general page when coming back to a proposal
-    */
-
     export default function MappingPutProposal(proposal: Proposal, status: string) {
   
     const transformedProposal: ProposalBackend = {
       prsl_id: proposal?.id,
       status: status,
-      submitted_on: '', // TODO // to fill for submit
-      submitted_by: '', // TODO // to fill for submit
+      submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : '',
+      submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
       investigator_refs: proposal.team?.map(investigator => {
         return investigator?.id?.toString();
       }),
@@ -508,7 +502,7 @@ import {
           category => category.value === proposal?.scienceCategory
         )?.label,
         targets: getTargets(proposal.targets),
-        documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF), // TODO check file upload issue
+        documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
         investigators: proposal.team.map(teamMember => {
           return {
             investigator_id: teamMember.id?.toString(),
@@ -525,7 +519,7 @@ import {
           proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
         data_product_src_nets:
           proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-        results: getResults(proposal.targetObservation, proposal.observations) // [] // TODO
+        results: getResults(proposal.targetObservation, proposal.observations)
       }
     };
     // trim undefined properties

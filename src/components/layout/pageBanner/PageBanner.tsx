@@ -8,7 +8,7 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-import { LAST_PAGE, NAV, PATH } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
@@ -69,7 +69,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const updateProposal = async () => {
-    const response = await PutProposal(getProposal(), 'Draft');
+    // const response = await PutProposal(getProposal(), 'Draft');
+    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -78,7 +79,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const submitConfirmed = async () => {
-    const response = await PutProposal(getProposal(), 'Submitted');
+    // const response = await PutProposal(getProposal(), 'Submitted');
+    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response);
       setOpenDialog(false);
