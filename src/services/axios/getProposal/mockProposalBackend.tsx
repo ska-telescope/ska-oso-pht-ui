@@ -1,342 +1,163 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
-// this should match the format on the PDM but now fails with backend
-// format for json proposal succeeds
-// TODO replace this format with the format on the JSON file
 const MockProposalBackend: ProposalBackend = {
-  prsl_id: 'prp-ska01-202204-01',
-  status: 'submitted',
-  submitted_on: '2022-09-23T15:43:53.971548Z',
-  submitted_by: 'TestUser',
-  investigator_refs: ['prp-ska01-202204-01'],
+  prsl_id: 'prsl-t0001-20240815-00006',
+  status: 'draft',
+  submitted_on: '',
+  submitted_by: '',
+  investigator_refs: ['prp-ska01-202204-01', '1'],
   metadata: {
     version: 1,
-    created_by: 'TestUser',
-    created_on: '2022-09-23T15:43:53.971548Z',
-    last_modified_by: 'TestUser',
-    last_modified_on: '2022-09-23T15:43:53.971548Z'
+    last_modified_by: 'Van Loo Cheng',
+    last_modified_on: 'Thu Aug 15 2024',
+    created_by: 'Van Loo Cheng',
+    created_on: 'Thu Aug 14 2024'
   },
   cycle: 'SKA_5000_2023',
   info: {
-    title: 'The Milky Way View',
+    title: 'My Proposal',
     proposal_type: {
       main_type: 'standard_proposal',
-      sub_type: ['coordinated_proposal', 'joint_proposal']
+      sub_type: ['joint_proposal']
     },
-    abstract:
-      'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
-    science_category: 'Extra Galactic continuum',
+    abstract: 'This is an abstract',
+    science_category: 'Pulsars',
     targets: [
       {
-        target_id: 'M28',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.0,
-              offset_y_arcsec: 0.0
-            }
-          ]
-        },
+        target_id: 'm2',
         reference_coordinate: {
           kind: 'equatorial',
-          ra: 250.0,
-          dec: 30.0,
-          unit: ['deg', 'deg'],
+          ra: '21:33:27.020',
+          dec: '-00:49:23.700',
+          unit: ['hourangle', 'deg'],
           reference_frame: 'icrs'
         },
         radial_velocity: {
           quantity: {
-            value: -12.345,
-            unit: 'm/s' // TODO add a conversion function to change to 'm/s' when mapping so we don't have this format in front-end
-          },
-          definition: 'OPTICAL',
-          reference_frame: 'LSRK',
-          redshift: 1.2
-        }
-      },
-      {
-        target_id: 'M1',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.0,
-              offset_y_arcsec: 0.0
-            }
-          ]
-        },
-        reference_coordinate: {
-          kind: 'equatorial',
-          ra: 250.0,
-          dec: -30.0,
-          unit: ['deg', 'deg'],
-          reference_frame: 'icrs'
-        },
-        radial_velocity: {
-          quantity: {
-            value: 0.0,
+            value: -3.6,
             unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
-          redshift: 0.0
+          redshift: 0
+        },
+        pointing_pattern: {
+          active: 'SinglePointParameters',
+          parameters: [
+            {
+              kind: 'SinglePointParameters',
+              offset_x_arcsec: 0.5,
+              offset_y_arcsec: 0.5
+            }
+          ]
         }
       }
     ],
-    documents: [
-      {
-        document_id: 'doc_ref_01',
-        link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-        type: 'proposal_science'
-      },
-      {
-        document_id: 'doc_ref_02',
-        link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-        type: 'proposal_technical'
-      }
-    ],
+    documents: [],
     investigators: [
       {
         investigator_id: 'prp-ska01-202204-01',
-        given_name: 'Tony',
-        family_name: 'Bennet',
-        email: 'somewhere.vague@example.com',
-        organization: '',
+        given_name: 'Van Loo',
+        family_name: 'Cheng',
+        email: 'ask.lop@map.com',
+        organization: 'University of Free Town',
         for_phd: false,
         principal_investigator: true
+      },
+      {
+        investigator_id: '1',
+        given_name: 'Jack',
+        family_name: 'Green',
+        email: 'jgreen@gmail.com',
+        for_phd: true,
+        principal_investigator: false
       }
     ],
     observation_sets: [
       {
-        observation_set_id: 'mid-001',
-        group_id: '2',
-        observing_band: 'mid_band_1',
-        elevation: 15,
-        // TODO: use this once latest PDM changes merged
-        /*
-        elevation: {
-          default: 15,
-          description: 'Elevation from the horizon to be used',
-          maximum: 90,
-          minimum: 15,
-          title: 'Elevation',
-          type: 'integer'
-        },
-        */
+        observation_set_id: 'obs-jtvA2l',
+        elevation: 23,
+        observing_band: 'low_band',
         array_details: {
-          array: 'ska_mid',
-          subarray: 'aa0.5',
-          weather: 3,
-          number_15_antennas: 0,
-          number_13_antennas: 0,
-          number_sub_bands: 0,
-          tapering: '50'
+          array: 'ska_low',
+          subarray: 'aa4',
+          number_of_stations: 512,
+          spectral_averaging: '1'
         },
         observation_type_details: {
           observation_type: 'continuum',
           bandwidth: {
-            value: 0.0,
-            unit: 'm/s'
+            value: 75,
+            unit: 'MHz'
           },
           central_frequency: {
-            value: 0.0,
-            unit: 'm/s'
+            value: 200,
+            unit: 'MHz'
           },
           supplied: {
-            // type: 'integration_time', // TODO use this one latest PDM changes merged
             type: 'integration_time',
-            value: 0.0,
-            unit: 'ms',
             quantity: {
-              value: -12.345,
-              unit: 'ms'
-            }
-          },
-          spectral_resolution: '50',
-          effective_resolution: '50',
-          image_weighting: 'Uniform'
-        },
-        details: 'MID + Continuum'
-      },
-      {
-        observation_set_id: 'mid-002',
-        group_id: '2',
-        observing_band: 'mid_band_1',
-        elevation: 15,
-        // TODO: use this once latest PDM changes merged
-        /*
-        elevation: {
-          default: 15,
-          description: 'Elevation from the horizon to be used',
-          maximum: 90,
-          minimum: 15,
-          title: 'Elevation',
-          type: 'integer'
-        },
-        */
-        array_details: {
-          array: 'ska_mid',
-          subarray: 'aa0.5',
-          weather: 3,
-          number_15_antennas: 0,
-          number_13_antennas: 0,
-          number_sub_bands: 0,
-          tapering: '50'
-        },
-        observation_type_details: {
-          observation_type: 'zoom',
-          bandwidth: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          central_frequency: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          supplied: {
-            type: 'sensitivity',
-            value: 0.0,
-            unit: 'm/s',
-            quantity: {
-              value: -12.345,
+              value: 600,
               unit: 'm/s'
             }
           },
-          spectral_resolution: '50',
-          effective_resolution: '50',
-          image_weighting: 'Uniform'
+          spectral_resolution: '5.43 kHz (8.1 km/s)',
+          effective_resolution: '5.43 kHz (8.1 km/s)',
+          image_weighting: '1'
         },
-        details: 'MID + Zoom'
-      },
-      {
-        observation_set_id: 'low-001',
-        group_id: '2',
-        observing_band: 'low_band',
-        array_details: {
-          array: 'ska_low',
-          subarray: 'aa0.5',
-          number_of_stations: 1,
-          spectral_averaging: '50'
-        },
-        observation_type_details: {
-          observation_type: 'continuum',
-          bandwidth: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          central_frequency: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          supplied: {
-            // type: 'integration_time', // TODO use this one latest PDM changes merged
-            type: 'integration_time',
-            value: 0.0,
-            unit: 'ms',
-            quantity: {
-              value: -12.345,
-              unit: 'ms'
-            }
-          },
-          spectral_resolution: '50',
-          effective_resolution: '50',
-          image_weighting: 'Uniform'
-        },
-        details: 'LOW + Continuum'
-      },
-      {
-        observation_set_id: 'low-002',
-        group_id: '2',
-        observing_band: 'low_band',
-        array_details: {
-          array: 'ska_low',
-          subarray: 'aa0.5',
-          number_of_stations: 1,
-          spectral_averaging: '50'
-        },
-        observation_type_details: {
-          observation_type: 'zoom',
-          bandwidth: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          central_frequency: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          supplied: {
-            type: 'sensitivity',
-            value: 0.0,
-            unit: 'm/s',
-            quantity: {
-              value: -12.345,
-              unit: 'm/s'
-            }
-          },
-          spectral_resolution: '50',
-          effective_resolution: '50',
-          image_weighting: 'Uniform'
-        },
-        details: 'LOW + Zoom'
+        details: ''
       }
     ],
     data_product_sdps: [
       {
         data_products_sdp_id: 'SDP-1',
-        options: ['1', '2', '5'],
-        observation_set_refs: ['mid-001', 'low-001'],
-        image_size: '50',
-        pixel_size: '50',
-        weighting: '50'
+        options: ['Y', 'N', 'Y', 'N'],
+        observation_set_refs: ['obs-jtvA2l'],
+        image_size: '10 degrees',
+        pixel_size: '1.667 arcsec2',
+        weighting: '1'
       }
     ],
-    data_product_src_nets: [
-      {
-        data_products_src_id: '2'
-      }
-    ],
+    data_product_src_nets: [],
     results: [
       {
-        observation_set_ref: 'low-002',
-        target_ref: 'M28',
+        observation_set_ref: 'obs-jtvA2l',
+        target_ref: '1',
         result_details: {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
-          },
-          weighted_spectral_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
+            value: 194.8435007170185,
+            unit: 'nJy/beam'
           },
           total_continuum_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
+            value: 194.85,
+            unit: 'uJy/beam'
+          },
+          weighted_spectral_sensitivity: {
+            value: 20811.9719009646,
+            unit: 'nJy/beam'
           },
           total_spectral_sensitivity: {
-            value: 0.0,
-            unit: 'm/s'
+            value: 20.81,
+            unit: 'mJy/beam'
           },
           surface_brightness_sensitivity: {
-            continuum: 0.0,
-            spectral: 0.0,
-            unit: 'm/s'
+            continuum: 200635049.3145923,
+            spectral: 21430276454.186775,
+            unit: 'k'
           }
         },
         continuum_confusion_noise: {
-          value: 0.0,
-          unit: 'm/s'
+          value: 0,
+          unit: 'uJy/beam'
         },
         synthesized_beam_size: {
-          value: 190.17, // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+          value: 590,
           unit: 'arcsec2'
         },
         spectral_confusion_noise: {
-          value: 0.0,
-          unit: 'm/s'
+          value: 0,
+          unit: 'uJy/beam'
         }
       }
     ]

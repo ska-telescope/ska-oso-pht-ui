@@ -1,6 +1,5 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
-// these matche the proposal format on the PDM
 const MockProposalBackendList: ProposalBackend[] = [
   {
     prsl_id: 'prp-ska01-202204-02',
@@ -146,8 +145,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'integration',
-              value: 0.0,
-              unit: 'ms',
               quantity: {
                 value: -12.345,
                 unit: 'ms'
@@ -196,8 +193,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'sensitivity',
-              value: 0.0,
-              unit: 'm/s',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'
@@ -231,8 +226,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'integration',
-              value: 0.0,
-              unit: 'ms',
               quantity: {
                 value: -12.345,
                 unit: 'ms'
@@ -266,8 +259,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'sensitivity',
-              value: 0.0,
-              unit: 'm/s',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'
@@ -483,8 +474,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'integration',
-              value: 0.0,
-              unit: 'ms',
               quantity: {
                 value: -12.345,
                 unit: 'ms'
@@ -533,8 +522,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'sensitivity',
-              value: 0.0,
-              unit: 'm/s',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'
@@ -568,8 +555,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'integration',
-              value: 0.0,
-              unit: 'ms',
               quantity: {
                 value: -12.345,
                 unit: 'ms'
@@ -603,8 +588,6 @@ const MockProposalBackendList: ProposalBackend[] = [
             },
             supplied: {
               type: 'sensitivity',
-              value: 0.0,
-              unit: 'm/s',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'
