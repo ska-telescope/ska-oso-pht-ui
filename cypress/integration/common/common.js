@@ -116,8 +116,12 @@ export const verifyOnLandingPage = () => {
 
 export const verifyProposalOnLandingPage = () => {
   cy.wait(3000)
-  cy.get('[role="grid"]').should('exist',{ timeout: 30000 })
-  cy.get('[role="grid"]').contains('Cosmology')
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]', { timeout: 30000 })
+    .children('div[role="row"]')
+    .should('contain', 'prsl-t0001-')
+    .should('contain', 'Cosmology')
+    .should('contain', 'test')
+    .should('have.length', 1);
 };
 
 export const verifyObservationInTable = () => {
