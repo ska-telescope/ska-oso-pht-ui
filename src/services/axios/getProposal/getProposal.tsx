@@ -120,7 +120,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
       decUnit: e.reference_coordinate?.unit[1],
       id: i + 1,
-      name: e.target_id,
+      name: e?.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
       ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
@@ -470,7 +470,7 @@ const getTargetObservation = (
       observationId: result.observation_set_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
-        title: inTargets[Number(result.target_ref) - 1].target_id,
+        title: inTargets[Number(result.target_ref) - 1]?.target_id,
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(result, isContinuum),
