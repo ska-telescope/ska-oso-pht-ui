@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateSRCPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
@@ -11,9 +10,7 @@ import { Grid } from '@mui/material';
 const PAGE = 8;
 
 export default function SrcDataPage() {
-  const { t } = useTranslation('pht');
-
-  const { application, helpComponent, updateAppContent1 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -29,7 +26,6 @@ export default function SrcDataPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('pipeline.help'));
   }, []);
 
   React.useEffect(() => {
