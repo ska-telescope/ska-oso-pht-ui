@@ -40,7 +40,6 @@ import {
 } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
-import { AirlineSeatReclineNormalRounded } from '@mui/icons-material';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -308,6 +307,7 @@ const getObservations = (
       type: type,
       imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: observingBand,
+      weather: weather,
       centralFrequency: inValue[i].observation_type_details?.central_frequency?.value,
       centralFrequencyUnits: getFrequencyAndBandwidthUnits(
         inValue[i]?.observation_type_details?.central_frequency?.unit,

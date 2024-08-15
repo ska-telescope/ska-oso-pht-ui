@@ -3,7 +3,7 @@ export type ArrayDetailsLowBackend = {
   subarray?: string;
   number_of_stations?: number;
   spectral_averaging?: string;
-  numSubBands ?: number;
+  numSubBands?: number;
 };
 
 export type ArrayDetailsMidBackend = {
