@@ -69,7 +69,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const updateProposal = async () => {
-    // const response = await PutProposal(getProposal(), 'Draft');
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
@@ -79,7 +78,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const submitConfirmed = async () => {
-    // const response = await PutProposal(getProposal(), 'Submitted');
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response);
