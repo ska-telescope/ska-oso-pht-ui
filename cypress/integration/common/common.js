@@ -115,6 +115,7 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyProposalOnLandingPage = () => {
+  cy.wait(3000)
   cy.get('[role="grid"]').should('exist',{ timeout: 30000 })
   cy.get('[role="grid"]').contains('Cosmology')
 };
