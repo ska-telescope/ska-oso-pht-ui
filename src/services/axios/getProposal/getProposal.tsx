@@ -16,7 +16,8 @@ import {
   RA_TYPE_EQUATORIAL,
   RA_TYPE_GALACTIC,
   VEL_UNITS,
-  TELESCOPE_MID_BACKEND_MAPPING
+  TELESCOPE_MID_BACKEND_MAPPING,
+  TELESCOPE_LOW_BACKEND_MAPPING
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -30,7 +31,7 @@ import {
   DataProductSRC,
   DataProductSRCNetBackend
 } from '../../../utils/types/dataProduct';
-import { ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
 import {
   ResultsSection,
@@ -39,6 +40,7 @@ import {
 } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
+import { AirlineSeatReclineNormalRounded } from '@mui/icons-material';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -281,16 +283,22 @@ const getObservations = (
       inValue[i].array_details.array
     );
 
-    let elevation, weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
-    if ('elevation' in inValue[i].array_details && 'weather' in inValue[i].array_details) {
-      // TODO remove elevation from condition once ODA updated
+    // MID array details
+    let weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
+    if (inValue[i].array_details.array === TELESCOPE_MID_BACKEND_MAPPING) {
       const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
-      elevation = midDetails.elevation; // TODO change mapping to get it from ObservationSet root once ODA updated
       weather = midDetails.weather;
       num15mAntennas = midDetails.number_15_antennas;
       num13mAntennas = midDetails.number_13_antennas;
       numSubBands = midDetails.number_sub_bands;
       tapering = midDetails.tapering;
+    }
+
+    // LOW array details
+    let numStations;
+    if (inValue[i].array_details.array === TELESCOPE_LOW_BACKEND_MAPPING) {
+      const lowDetails = inValue[i].array_details as ArrayDetailsLowBackend;
+      numStations = lowDetails.number_of_stations;
     }
 
     const obs: Observation = {
@@ -306,11 +314,11 @@ const getObservations = (
         arr,
         observingBand
       ),
-      elevation: elevation, // map it to root of observation even if undefined for now
-      weather: weather,
+      elevation: inValue[i].elevation,
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
-      numSubBands: numSubBands,
+      numSubBands: numSubBands ? numSubBands : 1, // TODO PDM needs to be updated to allow subbands for LOW
+      // so that we don't need to hardcode it
       tapering: tapering,
       bandwidth:
         type === TYPE_ZOOM
@@ -332,6 +340,7 @@ const getObservations = (
               observingBand
             )
           : undefined,
+      numStations: numStations,
       details: inValue[i].details
     };
     results.push(obs);
