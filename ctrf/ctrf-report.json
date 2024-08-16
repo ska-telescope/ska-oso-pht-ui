@@ -1,4 +1,4 @@
-{
+[{
 "tests": [
       {
         "name": "Creating proposals Create a basic proposal",
@@ -37,3 +37,4 @@
       }
     ]
   }
+]
