@@ -1,19 +1,5 @@
-[{
-  "results": {
-    "tool": {
-      "name": "cypress"
-    },
-    "summary": {
-      "tests": 3,
-      "failed": 1,
-      "passed": 2,
-      "skipped": 0,
-      "pending": 0,
-      "other": 0,
-      "start": 1723710896865,
-      "stop": 1723710934153
-    },
-    "tests": [
+{
+"tests": [
       {
         "name": "Creating proposals Create a basic proposal",
         "status": "passed",
@@ -51,5 +37,3 @@
       }
     ]
   }
-}
-]
