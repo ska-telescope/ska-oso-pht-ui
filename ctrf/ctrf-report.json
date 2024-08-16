@@ -1,23 +1,23 @@
-{
+[{
   "results": {
     "tool": {
       "name": "cypress"
     },
     "summary": {
       "tests": 3,
-      "failed": 0,
-      "passed": 3,
+      "failed": 1,
+      "passed": 2,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723648734095,
-      "stop": 1723648769978
+      "start": 1723710896865,
+      "stop": 1723710934153
     },
     "tests": [
       {
         "name": "Creating proposals Create a basic proposal",
         "status": "passed",
-        "duration": 7188,
+        "duration": 10097,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/createProposal.feature",
@@ -27,9 +27,11 @@
       },
       {
         "name": "Editing proposals Edit a basic proposal",
-        "status": "passed",
-        "duration": 11556,
-        "rawStatus": "passed",
+        "status": "failed",
+        "duration": 10231,
+        "message": "CypressError: `cy.click()` can only be called on a single element. Your subject contained 2 elements. Pass `{ multiple: true }` if you want to serially click each element.\n\nhttps://on.cypress.io/click\n    at mouseAction (http://localhost:6101/__cypress/runner/cypress_runner.js:112447:68)\n    at Context.click (http://localhost:6101/__cypress/runner/cypress_runner.js:112614:14)\n    at wrapped (http://localhost:6101/__cypress/runner/cypress_runner.js:138403:19)\nFrom Your Spec Code:\n    at clickEditProposal (cypress/integration/common/common.js:29:44)\n    at Context.eval (cypress/integration/editProposal/editPropoal.js:31:20)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "trace": "CypressError: `cy.click()` can only be called on a single element. Your subject contained 2 elements. Pass `{ multiple: true }` if you want to serially click each element.\n\nhttps://on.cypress.io/click\n    at mouseAction (http://localhost:6101/__cypress/runner/cypress_runner.js:112447:68)\n    at Context.click (http://localhost:6101/__cypress/runner/cypress_runner.js:112614:14)\n    at wrapped (http://localhost:6101/__cypress/runner/cypress_runner.js:138403:19)\nFrom Your Spec Code:\n    at clickEditProposal (cypress/integration/common/common.js:29:44)\n    at Context.eval (cypress/integration/editProposal/editPropoal.js:31:20)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "rawStatus": "failed",
         "type": "e2e",
         "filePath": "cypress/integration/editProposal.feature",
         "retries": 0,
@@ -39,7 +41,7 @@
       {
         "name": "Creating observations Create a standard observation",
         "status": "passed",
-        "duration": 7237,
+        "duration": 7441,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/observations.feature",
@@ -50,3 +52,4 @@
     ]
   }
 }
+]
