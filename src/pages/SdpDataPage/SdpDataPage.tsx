@@ -2,19 +2,22 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { OBSERVATION, STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { IMAGE_WEIGHTING, STATUS_OK } from '../../utils/constants';
+import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { DataGrid } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import AddButton from '../../components/button/Add/Add';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import Alert from '../..//components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import ErrorPanel from '../../components/info/errorPanel/errorPanel';
 import { PATH } from '../../utils/constants';
+import DataProduct from '../../utils/types/dataProduct';
+import Observation from '../../utils/types/observation';
 
 const PAGE = 7;
-const DATAGRID_HEIGHT = 450;
+const DATA_GRID_HEIGHT = 450;
 const LABEL_WIDTH = 6;
 
 export default function SdpDataPage() {
@@ -24,6 +27,7 @@ export default function SdpDataPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [baseObservations, setBaseObservations] = React.useState([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -31,13 +35,23 @@ export default function SdpDataPage() {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
+    for (let i = 0; i < getProposalState()?.length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
   };
 
   React.useEffect(() => {
+    const results: Observation[] = getProposal()?.observations?.filter(
+      ob =>
+        typeof getProposal()?.targetObservation.find(
+          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
+        ) !== 'undefined'
+    );
+    const values = results?.map(e => ({ label: e.id, value: e.id }));
+    if (values) {
+      setBaseObservations([...values]);
+    }
     setValidateToggle(!validateToggle);
   }, []);
 
@@ -46,16 +60,14 @@ export default function SdpDataPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().dataProducts?.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateSDPPage(getProposal()));
   }, [validateToggle]);
 
   const getODPString = inArr => {
     let str = '';
-    for (let i = 0; i < inArr.length; i++) {
+    for (let i = 0; i < inArr?.length; i++) {
       if (inArr[i]) {
-        if (str.length > 0) {
+        if (str?.length > 0) {
           str += ', ';
         }
         const res = i + 1;
@@ -69,7 +81,7 @@ export default function SdpDataPage() {
   const extendedColumnsObservations = [
     ...[
       {
-        field: 'observations',
+        field: 'observationId',
         headerName: t('observations.dp.label'),
         flex: 0.5,
         disableClickEventBubbling: true
@@ -80,26 +92,30 @@ export default function SdpDataPage() {
         flex: 2,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { observatoryDataProduct: number } }) => (
-          <Tooltip
-            data-testid="odp-values"
-            title={getODPString(e.row.observatoryDataProduct)}
-            arrow
-          >
-            <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
-          </Tooltip>
+          <Box pt={2}>
+            <Tooltip
+              data-testid="odp-values"
+              title={getODPString(e.row.observatoryDataProduct)}
+              arrow
+            >
+              <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
+            </Tooltip>
+          </Box>
         )
       },
       {
         field: 'imageSize',
         headerName: t('imageSize.label'),
         flex: 0.5,
-        disableClickEventBubbling: true
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: DataProduct }) => e.row.imageSizeValue + ' ' + e.row.imageSizeUnits
       },
       {
         field: 'pixelSize',
         headerName: t('pixelSize.label'),
         flex: 0.5,
-        disableClickEventBubbling: true
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: DataProduct }) => e.row.pixelSizeValue + ' ' + e.row.pixelSizeUnits
       },
       {
         field: 'weighting',
@@ -107,7 +123,7 @@ export default function SdpDataPage() {
         flex: 1,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { weighting: number } }) => {
-          return OBSERVATION.ImageWeighting[e.row.weighting].label;
+          return IMAGE_WEIGHTING[e.row.weighting]?.label;
         }
       },
       {
@@ -132,15 +148,15 @@ export default function SdpDataPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProducts.filter(e => e.id !== currentRow);
+    const obs1 = getProposal().dataProductSDP.filter(e => e.id !== currentRow);
 
-    setProposal({ ...getProposal(), dataProducts: obs1 });
+    setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProducts.find(p => p.id === currentRow);
+    const rec = getProposal().dataProductSDP.find(p => p.id === currentRow);
     return (
       <Grid
         p={2}
@@ -150,7 +166,8 @@ export default function SdpDataPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observations}</Typography>
+          <Typography variant="body1">{rec.observationId}</Typography>
+          <Typography variant="body1">{rec.observationId}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
@@ -158,10 +175,14 @@ export default function SdpDataPage() {
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.imageSize}</Typography>
+          <Typography variant="body1">
+            {rec.imageSizeValue} {rec.imageSizeUnits}
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.pixelSize}</Typography>
+          <Typography variant="body1">
+            {rec.pixelSizeValue} {rec.pixelSizeUnits}
+          </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.weighting}</Typography>
@@ -170,10 +191,9 @@ export default function SdpDataPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.targetObservation?.length > 0 ? true : false);
-  const getRows = () => getProposal().dataProducts;
+  const hasObservations = () => (baseObservations?.length > 0 ? true : false);
+  const getRows = () => getProposal().dataProductSDP;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
-  const errorMessage = () => 'page.' + PAGE + errorSuffix();
 
   const clickRow = (e: { id: number }) => {
     setCurrentRow(e.id);
@@ -183,20 +203,27 @@ export default function SdpDataPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
         <Grid item xs={10}>
-          <AddButton title="dataProduct.button" action={PATH[3]} disabled={!hasObservations()} />
-          {getRows().length > 0 && (
+          <AddButton
+            title="dataProduct.button"
+            action={PATH[3]}
+            disabled={!hasObservations()}
+            testId="addDataProductButton"
+          />
+          {getRows()?.length > 0 && (
             <DataGrid
               rows={getRows()}
               columns={extendedColumnsObservations}
-              height={DATAGRID_HEIGHT}
+              height={DATA_GRID_HEIGHT}
               onRowClick={clickRow}
               testId="observationDetails"
             />
           )}
-          {getRows().length === 0 && (
-            <Box pt={2}>
-              <ErrorPanel msg={errorMessage()} />
-            </Box>
+          {(!getRows() || getRows().length === 0) && (
+            <Alert
+              color={AlertColorTypes.Error}
+              text={t('page.' + PAGE + errorSuffix())}
+              testId="noDataProductsNotification"
+            />
           )}
         </Grid>
       </Grid>

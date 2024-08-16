@@ -5,9 +5,7 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import { StarRateRounded } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DataGrid, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import { STATUS_ERROR, STATUS_OK } from '../../utils/constants';
+import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberInvite from './MemberInvite/MemberInvite';
@@ -15,6 +13,7 @@ import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
+import GridMembers from '../../components/grid/members/GridMembers';
 
 const PAGE = 1;
 
@@ -36,7 +35,7 @@ export default function TeamPage() {
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [currentMember, setCurrentMember] = React.useState(0);
+  const [currentMember, setCurrentMember] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -59,9 +58,7 @@ export default function TeamPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_OK];
-    const count = getProposal().team?.length > 0 ? 1 : 0;
-    setTheProposalState(result[count]);
+    setTheProposalState(validateTeamPage(getProposal()));
   }, [validateToggle]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -77,14 +74,14 @@ export default function TeamPage() {
   };
 
   const ClickMemberRow = (e: { id: number }) => {
-    setCurrentMember(e.id);
+    setCurrentMember(e.id.toString());
   };
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().team.filter(e => e.id !== currentMember);
 
     setProposal({ ...getProposal(), team: obs1 });
-    setCurrentMember(0);
+    setCurrentMember('');
     closeDeleteDialog();
   };
 
@@ -118,38 +115,6 @@ export default function TeamPage() {
     );
   };
 
-  const columns = [
-    { field: 'lastName', headerName: t('lastName.label'), flex: 1 },
-    { field: 'firstName', headerName: t('firstName.label'), flex: 1 },
-    { field: 'status', headerName: t('status.label'), flex: 1 },
-    {
-      field: 'phdThesis',
-      headerName: t('phdThesis.label'),
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (params: { row: { phdThesis: string; status: string } }) => (
-        <PHDThesis value={params.row.phdThesis} />
-      )
-    },
-    {
-      field: 'pi',
-      headerName: t('pi.short'),
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
-    },
-    {
-      field: 'id',
-      headerName: t('actions.label'),
-      sortable: false,
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={deleteIconClicked} toolTip="Delete team member" />
-    }
-  ];
-  const extendedColumns = [...columns];
-
   const getRows = () => getProposal().team;
 
   function a11yProps(index: number) {
@@ -170,23 +135,13 @@ export default function TeamPage() {
           justifyContent="space-around"
         >
           <Grid item md={5} xs={11}>
-            {getRows()?.length > 0 && (
-              <DataGrid
-                rows={getRows()}
-                columns={extendedColumns}
-                onRowClick={ClickMemberRow}
-                height={400}
-                testId="teamTableId"
-              />
-            )}
-            {getRows()?.length === 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Error}
-                fontSize={20}
-                message={t('members.empty')}
-                testId="helpPanelId"
-              />
-            )}
+            <GridMembers
+              action
+              actionClicked={deleteIconClicked}
+              height={400}
+              rowClick={ClickMemberRow}
+              rows={getRows()}
+            />
           </Grid>
           <Grid item md={6} xs={11}>
             <Box sx={{ width: '100%', border: '1px solid grey' }}>

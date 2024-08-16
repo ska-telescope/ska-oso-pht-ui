@@ -8,7 +8,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
 
 .. toctree::
    :maxdepth: 2
-   :caption: Developer Guide :
+   :caption: Developer Guide
 
    Overview
    Requirements
@@ -21,7 +21,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
 
 .. toctree::
    :maxdepth: 2
-   :caption: User Guide :
+   :caption: User Guide
 
    UserIntroduction
    LandingPage
@@ -31,7 +31,7 @@ It also includes modular federation, exposing the ReactSkeleton component, which
    SciencePage
    TargetPage
    ObservationPage
-   DataPage
+   SDPDataPage
    SrcNetPage
    SubmitConfirmation
    UserQuestions
@@ -41,6 +41,6 @@ It also includes modular federation, exposing the ReactSkeleton component, which
 
 .. toctree::
    :maxdepth: 1
-   :caption: Changelog
+   :caption: Releases
 
    CHANGELOG.rst

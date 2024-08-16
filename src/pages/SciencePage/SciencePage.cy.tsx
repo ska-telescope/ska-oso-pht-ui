@@ -9,40 +9,26 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<ScienceContent />', () => {
+function mounting(theTheme: any) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <SciencePage />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+describe('<SciencePage />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <Router location="/" navigator={undefined}>
-              <SciencePage />
-            </Router>
-          </ThemeProvider>
-        </StoreProvider>
-      );
+    it(`Theme ${theTheme}: Renders & has choose button`, () => {
+      mounting(theTheme);
+      cy.get('[data-testid="SearchIcon"]').click();
+      cy.get('[data-testid="fileUploadChooseButton"]').contains('Choose file');
     });
   }
-  it(`Verify upload file elements`, () => {
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <SciencePage />
-        </Router>
-      </StoreProvider>
-    );
-    cy.get('[data-testid="SearchIcon"]').click();
-  });
-
-  it(`Verify pdf preview elements`, () => {
-    cy.mount(
-      <StoreProvider>
-        <Router location="/" navigator={undefined}>
-          <SciencePage />
-        </Router>
-      </StoreProvider>
-    );
-    cy.get('[data-testid="pdfPreviewLabel"]').contains('pdfPreview');
-  });
 });

@@ -7,14 +7,20 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { GENERAL, Projects } from '../../../utils/constants';
-import TeamMember from '../../../utils/types/teamMember';
+import {
+  BANDWIDTH_TELESCOPE,
+  NOT_SPECIFIED,
+  OBSERVATION,
+  Projects
+} from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import GridMembers from '../../grid/members/GridMembers';
+import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -23,7 +29,8 @@ interface ProposalDisplayProps {
   onConfirmLabel?: string;
 }
 
-const LABEL_WIDTH = 3;
+const TITLE_STYLE = 'h5';
+const LABEL_WIDTH = 4;
 const LABEL_STYLE = 'subtitle1';
 const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
@@ -75,31 +82,105 @@ export default function ProposalDisplay({
     return `${proposalName}`;
   };
 
-  const category = () => {
-    const proposalType = getProposal().category;
-    const proposalName =
-      !proposalType || proposalType < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceCategory.${proposalType}`);
-    const subCategory = getProposal().subCategory;
-    const subCategoryName =
-      !proposalType || proposalType < 1 || !subCategory || subCategory.length < 1
-        ? t('displayProposal.noneSelected')
-        : t(`scienceSubCategory.${subCategory}`);
-    return `${proposalName} / ${subCategoryName}`;
+  const subProposalTypes = () => {
+    let output = '';
+    const subTypes: number[] = getProposal().proposalSubType;
+    if (subTypes.length && subTypes[0] > 0) {
+      subTypes.forEach(
+        element =>
+          (output = (output.length ? output + ' | ' : '') + t('subProposalType.' + element))
+      );
+    }
+    return output;
   };
 
-  const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
-  const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
-  const observationType = (type: number) => t(`observationType.${type}`);
+  const scienceCategory = () => {
+    const scienceCat = getProposal().scienceCategory;
+    return scienceCat ? t(`scienceCategory.${scienceCat}`) : t(`scienceCategory.${NOT_SPECIFIED}`);
+    // NOT REQUIRED, BUT MAY BE IN THE FUTURE SO KEEP
+    //const scienceSubCat = getProposal().scienceSubCategory;
+    //const scienceSubCatLabel = getProposal().scienceSubCategory
+    //  ? t(`scienceSubCategory.${scienceSubCat}`)
+    //  : t(`scienceSubCat.${NOT_SPECIFIED}`);
+    // return `${scienceCatLabel} / ${scienceSubCatLabel}`;
+  };
 
-  const pageTitle = (title: string) => (
-    <Grid container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid item>
-        <Typography variant="h4">{`${title} ${GENERAL.Cycle}`}</Typography>
-      </Grid>
-    </Grid>
+  // const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
+  // const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
+  // const observationType = (type: number) => t(`observationType.${type}`);
+
+  const title = (inValue: string) => (
+    <Typography variant={TITLE_STYLE} style={{ fontWeight: 600 }}>
+      {inValue}
+    </Typography>
   );
+  const label = (inValue: string) => (
+    <Typography variant={LABEL_STYLE} style={{ fontWeight: 600 }}>
+      {inValue}
+    </Typography>
+  );
+  const content = (inValue: string | number) => (
+    <Typography variant={CONTENT_STYLE}>{inValue}</Typography>
+  );
+
+  const cycle = (inLabel: string, inValue: string | number) => {
+    return (
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid item xs={LABEL_WIDTH + 1}>
+          {label(inLabel)}
+        </Grid>
+        <Grid item xs={11 - LABEL_WIDTH}>
+          {content(inValue)}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const entry = (inLabel: string, inValue: string | number) => {
+    return (
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid item xs={LABEL_WIDTH}>
+          {label(inLabel)}
+        </Grid>
+        <Grid item xs={12 - LABEL_WIDTH}>
+          {content(inValue)}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
+    return (
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid item xs={LABEL_WIDTH}>
+          {label(inLabel)}
+        </Grid>
+        <Grid item xs={12 - LABEL_WIDTH}>
+          {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
+          {!contents && content(t('none'))}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const getObservationTargets = (rec: Observation) => {
+    const array = getProposal().targetObservation.filter(e => e.observationId === rec.id);
+    if (array || array.length === 0) {
+      return t('none');
+    }
+    return 'TMP : Found';
+  };
+
+  const sensitivityIntegrationTime = (rec: Observation) => {
+    return (
+      OBSERVATION?.Supplied[rec.supplied.type]?.label +
+      ' ' +
+      rec.supplied.value +
+      ' ' +
+      OBSERVATION?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))
+        ?.label
+    );
+  };
 
   const sectionTitle = () => (
     <Grid item>
@@ -123,98 +204,89 @@ export default function ProposalDisplay({
         <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
       </Grid>
       <Grid item>
-        <DownloadButton disabled action={handleDownload} />
+        <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid>
       {onConfirmLabel.length > 0 && (
         <Grid item>
-          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
+          <ConfirmButton
+            action={handleConfirm}
+            testId="displayConfirmationButton"
+            title={onConfirmLabel}
+          />
         </Grid>
       )}
+    </Grid>
+  );
+
+  const headerContent = () => (
+    <Grid item>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid item>{skaoIcon({})}</Grid>
+        <Grid item>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
+        <Grid item>
+          <Grid container direction="column" justifyContent="space-between" alignItems="right">
+            <Grid item>{cycle(t('page.12.short'), getProposal().cycle)}</Grid>
+            <Grid item>{content(getProposal().id)}</Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+
+  const abstractContent = () => (
+    <Grid item>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item>{label(t('abstract.label'))}</Grid>
+        <Grid item>{content(getProposal().abstract)}</Grid>
+      </Grid>
     </Grid>
   );
 
   const titleContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('title.label')}</Typography>
+        <Grid item xs={6}>
+          {entry(t('proposalType.label'), proposalType())}
         </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().title}</Typography>
+        <Grid item xs={6}>
+          {entry(t('scienceCategory.label'), scienceCategory())}
         </Grid>
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('proposalType.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{proposalType()}</Typography>
+        <Grid item xs={6}>
+          {entry(t('subProposalType.label'), subProposalTypes())}
         </Grid>
       </Grid>
     </Grid>
   );
 
-  const teamContent = () => (
+  const teamContentGrid = () => (
+    <>
+      <Grid item>
+        <Grid item>{label(t('members.label'))}</Grid>
+      </Grid>
+      <Grid item>
+        <GridMembers rows={getProposal().team} />
+      </Grid>
+    </>
+  );
+
+  const justificationContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('members.empty')}</Typography>
+        <Grid item xs={6}>
+          {link(
+            t('page.3.label'),
+            t('pdfDownload.science.toolTip'),
+            () => downloadPdf('science'),
+            getProposal().sciencePDF
+          )}
         </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().team?.map((rec: TeamMember) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>
-                  {`${rec.firstName} ${rec.lastName}`}
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>{rec.email}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.pi ? 'PI' : ''}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.phdThesis ? 'PhD Thesis' : ''}</Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
-  const generalContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('abstract.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().abstract}</Typography>
-        </Grid>
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('category.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{category()}</Typography>
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
-  const scienceContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>
-            {getProposal().id}-science{t('fileType.pdf')}
-          </Typography>
-          <DownloadIcon
-            toolTip={t('pdfDownload.science.toolTip')}
-            onClick={() => downloadPdf('science')}
-          />
+        <Grid item xs={6}>
+          {link(
+            t('page.3.label'),
+            t('pdfDownload.technical.toolTip'),
+            () => downloadPdf('technical'),
+            getProposal().technicalPDF
+          )}
         </Grid>
       </Grid>
     </Grid>
@@ -252,33 +324,45 @@ export default function ProposalDisplay({
   );
 
   const observationsContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('observations.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().observations?.map((rec: Observation) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>{telescope(rec.telescope)}</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>
-                  {subarray(rec.telescope, rec.subarray)}
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{observationType(rec.type)}</Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
+    <>
+      <Grid item>
+        <Grid item>{label(t('page.10.label'))}</Grid>
       </Grid>
-    </Grid>
+
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid item>{label(t('name.label'))}</Grid>
+        <Grid item>{label(t('page.4.label'))}</Grid>
+        <Grid item>{label(t('observationType.label'))}</Grid>
+        <Grid item>{label(t('observingBand.label'))}</Grid>
+        <Grid item>
+          {label(
+            t('sensitivityCalculatorResults.sensitivity') +
+              '/' +
+              t('sensitivityCalculatorResults.integrationTime')
+          )}
+        </Grid>
+        <Grid item>{label(t('page.13.label'))}</Grid>
+      </Grid>
+
+      <Grid item>
+        {getProposal().observations?.map((rec: Observation, index: number) => (
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            key={index}
+          >
+            <Grid item>{content(rec.id)}</Grid>
+            <Grid item>{content(getObservationTargets(rec))}</Grid>
+            <Grid item>{content(t('observationType.' + rec.type))}</Grid>
+            <Grid item>{content(BANDWIDTH_TELESCOPE[rec.observingBand].label)}</Grid>
+            <Grid item>{content(sensitivityIntegrationTime(rec))}</Grid>
+            <Grid item>{content(t('page.13.label'))}</Grid>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   );
 
   const targetObservationContent = () => (
@@ -303,30 +387,11 @@ export default function ProposalDisplay({
     </Grid>
   );
 
-  const technicalContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('fileName.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>
-            {getProposal().id}-technical{t('fileType.pdf')}
-          </Typography>
-          <DownloadIcon
-            toolTip={t('pdfDownload.technical.toolTip')}
-            onClick={() => downloadPdf('technical')}
-          />
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
   const dataContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('pipeline.label')}</Typography>
+          <Typography variant={LABEL_STYLE}>{t('observatoryDataProduct.label')}</Typography>
         </Grid>
         <Grid item xs={CONTENT_WIDTH}>
           <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
@@ -337,15 +402,18 @@ export default function ProposalDisplay({
 
   return (
     <Dialog
-      fullWidth
-      maxWidth="md"
       open={open}
       onClose={handleCancel}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
+      PaperProps={{
+        style: {
+          minWidth: '95%',
+          maxWidth: '95%'
+        }
+      }}
     >
-      {pageTitle(t('page.12.title'))}
       {getProposal() === null && (
         <Alert testId="timedAlertId" color={AlertColorTypes.Warning}>
           <Typography>{t('displayProposal.warning')}</Typography>
@@ -360,24 +428,23 @@ export default function ProposalDisplay({
             alignItems="space-evenly"
             justifyContent="space-around"
           >
+            {headerContent()}
+            {sectionTitle()}
+            {abstractContent()}
             {sectionTitle()}
             {titleContent()}
             {sectionTitle()}
-            {teamContent()}
-            {sectionTitle()}
-            {generalContent()}
-            {sectionTitle()}
-            {scienceContent()}
-            {sectionTitle()}
-            {targetContent()}
+            {justificationContent()}
             {sectionTitle()}
             {observationsContent()}
             {sectionTitle()}
-            {targetObservationContent()}
-            {sectionTitle()}
-            {technicalContent()}
-            {sectionTitle()}
-            {dataContent()}
+            {teamContentGrid()}
+            {false && sectionTitle()}
+            {false && targetContent()}
+            {false && sectionTitle()}
+            {false && targetObservationContent()}
+            {false && sectionTitle()}
+            {false && dataContent()}
           </Grid>
         </DialogContent>
       )}

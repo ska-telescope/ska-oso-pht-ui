@@ -1,11 +1,7 @@
-Science and Technical Justification Page
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Science and Technical Justification Pages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload a ascience justification in a portable document format (pdf).
-
-
-
-
+The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload a science justification in a portable document format (pdf).
 
 .. _sciencepage:
 
@@ -15,26 +11,35 @@ The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload 
 
    Science Justification page
 
+.. note:: 
+
+   - Technical Page looks almost identical to the Science Justification page and has identical functionality.
+
+
+
+.. _addobs:
+
 Layout and Navigation
 =====================
 
-The Science Page has a clear and consistent layout:
+The Science & Technical Pages have clear and consistent options:
 
-- Upload area: A designated section with an "Upload PDF" button that allows you to select a pdf file form your local device.
-- Download area: Once the file is uploaded, you can download it if you choose.  
-- A preview area: Functionality not available yet.
-
-
+- 'Choose' button: Allows for the selection of a PDF file from the local device.
+- 'Clear' button: Visible once a file has been chosen, when clicked clears the selection
+- 'Upload' button: Visible once a file has been chosen, when clicked the file is uploaded to the proposal and stored 
+- 'Download' button: A file that has been uploaded is able to also be downloaded if this is clicked 
+- 'Preview' button: A file that has been uploaded is able to be previewed in a pop-up window when this is clicked.
+- 'Delete' button: A file that has been uploaded is able to also be deleted if this is clicked 
 
 
 Key Information and Actions
 ===========================
 
-- Upload your scientific justification document in PDF format.
-- Remember, only one PDF upload is allowed.
+- Upload your Technical and scientific justification document in PDF format.
+- Remember, only one PDF upload is allowed for each.
 
 Next Steps
 ==========
 
-After successfully uploading and previewing your scientific justification, click "Target" or any other page to proceed to the next page.
+After successfully uploading and previewing your technical or scientific justification, click "Target" or any other page to proceed to the next page.
 

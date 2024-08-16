@@ -1,6 +1,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { Download } from '@mui/icons-material';
+import DownloadIcon from '@mui/icons-material/DownloadRounded';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import Icon from './Icon';
@@ -9,13 +9,13 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 
 function mounting(theTheme: any, disabled: boolean) {
-  cy.viewport(1500, 1500);
+  cy.viewport(2000, 1000);
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
       <Icon
         disabled={disabled}
-        icon={<Download />}
+        icon={<DownloadIcon />}
         onClick={cy.stub().as('setValue')}
         testId="iconIcon"
         toolTip={TOOLTIP}

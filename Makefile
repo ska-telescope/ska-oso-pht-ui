@@ -6,7 +6,7 @@ KUBE_HOST ?= http://`minikube ip`
 RELEASE_NAME ?= test
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v1
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 
 K8S_CHART_PARAMS += \
@@ -20,7 +20,10 @@ K8S_CHART_PARAMS += \
 -include .make/k8s.mk
 -include .make/release.mk
 -include PrivateRules.mak
+-include .make/xray.mk
 
+XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
+XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')

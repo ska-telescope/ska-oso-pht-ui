@@ -6,15 +6,16 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
-import SubmitButton from '../../button/Submit/SubmitButton';
-import ValidateButton from '../../button/Validate/ValidateButton';
-import { LAST_PAGE, NAV, PATH } from '../../../utils/constants';
+import SubmitButton from '../../button/Submit/Submit';
+import ValidateButton from '../../button/Validate/Validate';
+import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
-import PreviousPageButton from '../../../components/button/PreviousPage/PreviousPageButton';
+import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 
 interface PageBannerProps {
   pageNo: number;
@@ -41,14 +42,18 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
-  const handleValidateClick = response => {
-    if (response && !response.error) {
-      NotifyOK('validationBtn.success');
-      setCanSubmit(true);
-    } else {
-      NotifyError(response.error);
-      setCanSubmit(false);
-    }
+  const validateClicked = () => {
+    const ValidateTheProposal = async () => {
+      const response = await PostProposalValidate(getProposal());
+      if (response && !response.error) {
+        NotifyOK('validationBtn.success');
+        setCanSubmit(true);
+      } else {
+        NotifyError(response.error);
+        setCanSubmit(false);
+      }
+    };
+    ValidateTheProposal();
   };
 
   const prevPageNav = () => {
@@ -64,7 +69,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const updateProposal = async () => {
-    const response = await PutProposal(getProposal(), 'Draft');
+    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -73,7 +78,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const submitConfirmed = async () => {
-    const response = await PutProposal(getProposal(), 'Submitted');
+    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response);
       setOpenDialog(false);
@@ -87,8 +92,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   return (
     <>
       <Grid
-        p={1}
-        pt={1}
+        pl={2}
+        pr={2}
         container
         direction="row"
         alignItems="center"
@@ -106,17 +111,13 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
               >
                 <Grid item>
                   {backPage > 0 && (
-                    <PreviousPageButton
-                      label={t('button.cancel')}
-                      page={pageNo}
-                      func={prevPageNav}
-                    />
+                    <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />
                   )}
-                  {!backPage && <HomeButton />}
+                  {!backPage && <HomeButton testId="homeButtonTestId" />}
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (
-                    <SaveButton action={() => updateProposal()} testId="saveButtonTestId" />
+                    <SaveButton action={() => updateProposal()} primary testId="saveButtonTestId" />
                   )}
                 </Grid>
               </Grid>
@@ -133,11 +134,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
                 justifyContent="space-between"
               >
                 <Grid item>
-                  {pageNo < LAST_PAGE && <ValidateButton onClick={handleValidateClick} />}
+                  {pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}
                 </Grid>
                 <Grid item>
                   {pageNo < LAST_PAGE && (
-                    <SubmitButton disabled={!canSubmit} onClick={submitClicked} />
+                    <SubmitButton disabled={!canSubmit} action={submitClicked} />
                   )}
                 </Grid>
               </Grid>

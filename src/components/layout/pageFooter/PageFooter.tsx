@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import NextPageButton from '../../button/NextPage/NextPageButton';
-import PreviousPageButton from '../../button/PreviousPage/PreviousPageButton';
-import { LAST_PAGE, NAV } from '../../../utils/constants';
+import NextPageButton from '../../button/NextPage/NextPage';
+import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
+import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
@@ -34,7 +34,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
-      message: t(str),
+      message: str,
       okRequired: false
     };
     updateAppContent5(rec);
@@ -47,8 +47,8 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    NotifyWarning('addProposal.warning');
-    const response = await PostProposal(getProposal(), 'draft');
+    NotifyWarning(t('addProposal.warning'));
+    const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
       setProposal({ ...getProposal(), id: response });
@@ -89,16 +89,16 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
       sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
       elevation={0}
     >
-      <Grid p={1} container direction="row" alignItems="flex-end" justifyContent="space-between">
+      <Grid p={2} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
-          {usedPageNo > 0 && (
-            <PreviousPageButton label={prevLabel()} page={usedPageNo} func={prevPageNav} />
-          )}
+          {usedPageNo > 0 && <PreviousPageButton label={prevLabel()} action={prevPageNav} />}
         </Grid>
         <Grid item>
           {(application.content5 as Notification)?.message?.length > 0 && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
+              delay={(application.content5 as Notification)?.delay}
+              testId="timeAlertFooter"
               text={(application.content5 as Notification)?.message}
             />
           )}
@@ -109,7 +109,8 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
               disabled={buttonDisabled}
               label={nextLabel()}
               page={usedPageNo}
-              func={nextPageClicked}
+              primary
+              action={nextPageClicked}
             />
           )}
         </Grid>

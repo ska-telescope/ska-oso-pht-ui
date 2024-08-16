@@ -7,8 +7,9 @@ import TargetListSection from './TargetListSection/targetListSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import Shell from '../../components/layout/Shell/Shell';
-import { STATUS_ERROR, STATUS_PARTIAL, STATUS_OK } from '../../utils/constants';
+import { validateTargetPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
+import { TARGET_OPTION } from '../../utils/constants';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
@@ -26,7 +27,7 @@ export default function TargetPage() {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
+    for (let i = 0; i < getProposalState()?.length; i++) {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
@@ -41,27 +42,7 @@ export default function TargetPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-    let count = 0;
-    switch (getProposal().targetOption) {
-      case 1: {
-        count += getProposal().targets.length ? 2 : 0;
-        setTheProposalState(result[count]);
-        return;
-      }
-      case 2: {
-        count = 2;
-        setTheProposalState(result[count]);
-        return;
-      }
-      case 3: {
-        count = 2;
-        setTheProposalState(result[count]);
-        return;
-      }
-      default:
-        setTheProposalState(result[count]);
-    }
+    setTheProposalState(validateTargetPage(getProposal()));
   }, [validateToggle]);
 
   const handleClick = (index: number) => {
@@ -85,7 +66,7 @@ export default function TargetPage() {
           <CardActionArea onClick={() => handleClick(occ)}>
             <CardContent>
               <Tooltip title={t(`${TITLE[occ]}.toolTip`)} arrow>
-                <Typography variant="h6" component="div" data-testid={TITLE[occ]}>
+                <Typography variant="h6" component="div" id={TITLE[occ]}>
                   {t(`${TITLE[occ]}.label`)}
                 </Typography>
               </Tooltip>
@@ -107,9 +88,9 @@ export default function TargetPage() {
           alignItems="baseline"
           spacing={2}
         >
-          {targetCard(1)}
-          {targetCard(2)}
-          {targetCard(3)}
+          {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
+          {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
+          {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
         </Grid>
 
         <Grid

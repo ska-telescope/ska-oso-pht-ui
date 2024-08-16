@@ -6,6 +6,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
 import { OBS_TYPES } from '../../../../utils/constants';
+import { presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
   open: boolean;
@@ -41,144 +42,174 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
 
-  function HeaderLine(str: string, bold: boolean) {
-    return (
-      <Typography sx={{ fontWeight: bold ? 'bold' : 'normal' }} key={i++}>
-        {str}
-      </Typography>
-    );
+  function HeaderLine(str: string) {
+    return <Typography key={i++}>{str}</Typography>;
   }
 
-  const headerDisplay = (inStr: string, inUnits: string) => {
-    const unit = inUnits.length > 0 ? ' ' + t(`sensitivityCalculatorResults.${inUnits}`) : '';
-    const sent = t(`sensitivityCalculatorResults.${inStr}`) + unit;
+  const headerDisplay = (inStr: string) => {
+    const sent = t(`sensitivityCalculatorResults.${inStr}`);
     const arr = sent.split(' ');
-    i = 0;
-    let count = 0;
     return (
       <Stack>
         {arr.map(rec => {
-          return HeaderLine(rec, unit.length > 0 && arr.length === ++count);
+          return HeaderLine(rec);
         })}
       </Stack>
     );
   };
 
-  const extendedColumns = [
-    ...[
-      {
-        field: 'title',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('targetName', '')
-      },
-      {
-        field: 'field1',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label1, 'units1')
-      },
-      {
-        field: 'field2',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label2, 'units2')
-      },
-      {
-        field: 'field3',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label3, 'units3')
-      },
-      {
-        field: 'field4',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label4, 'units4')
-      },
-      {
-        field: 'field5',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay(label5, 'units5')
-      },
-      {
-        field: 'field6',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSensitivityWeighted', 'units6'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'field7',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralConfusionNoise', 'units7'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'field8',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralTotalSensitivity', 'units8'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'field9',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSynthBeamSize', 'units9'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'field10',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity', 'units10'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'field11',
-        flex: 3,
-        AutoResizeColumnHeadersHeight: true,
-        renderHeader: () => headerDisplay('integrationTime', 'units11'),
-        optional: params => params.value !== null
-      },
-      {
-        field: 'status',
-        headerName: '',
-        sortable: false,
-        width: 50,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { status: number; error: string } }) => {
-          return (
-            <Box pt={1}>
-              <StatusIcon
-                ariaTitle={t('sensitivityCalculatorResults.status', {
-                  status: e.row.status ? t('statusValue.' + e.row.status) : '',
-                  error: e.row.error
-                })}
-                testId="statusId"
-                icon
-                level={e.row.status}
-                size={SIZE}
-              />
-            </Box>
-          );
-        }
-      }
-    ]
+  const presentation = rec => (rec ? presentValue(rec.value) + ' ' + presentUnits(rec.units) : '');
+
+  const section1Columns = [
+    {
+      field: 'title',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('targetName')
+    },
+    {
+      field: 'field1',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label1),
+      renderCell: (e: { row: { section1: { value: any }[] } }) =>
+        presentation(e.row.section1 ? e.row.section1[0] : null)
+    },
+    {
+      field: 'field2',
+      flex: 2.5,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label2),
+      renderCell: (e: { row: { section1: { value: any }[] } }) =>
+        presentation(e.row.section1 ? e.row.section1[1] : null)
+    },
+    {
+      field: 'field3',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label3),
+      renderCell: (e: { row: { section1: { value: any }[] } }) =>
+        presentation(e.row.section1 ? e.row.section1[2] : null)
+    },
+    {
+      field: 'field4',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label4),
+      renderCell: (e: { row: { section1: { value: any }[] } }) =>
+        presentation(e.row.section1 ? e.row.section1[3] : null)
+    },
+    {
+      field: 'field5',
+      flex: 4,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(label5),
+      renderCell: (e: { row: { section1: { value: any }[] } }) =>
+        presentation(e.row.section1 ? e.row.section1[4] : null)
+    }
   ];
 
-  // Filter out optional columns that don't have data
-  const filteredColumns = extendedColumns.filter(col =>
-    col.optional ? data.some(data => col.optional({ value: data[col.field] })) : true
-  );
+  const section2Columns = [
+    {
+      field: 'field6',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSensitivityWeighted'),
+      renderCell: (e: { row: { section2: { value: any }[] } }) =>
+        presentation(e.row.section2 ? e.row.section2[0] : null)
+    },
+    {
+      field: 'field7',
+      flex: 2.5,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralConfusionNoise'),
+      renderCell: (e: { row: { section2: { value: any }[] } }) =>
+        presentation(e.row.section2 ? e.row.section2[1] : null),
+      optional: params => params.value !== null
+    },
+    {
+      field: 'field8',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralTotalSensitivity'),
+      renderCell: (e: { row: { section2: { value: any }[] } }) =>
+        presentation(e.row.section2 ? e.row.section2[2] : null),
+      optional: params => params.value !== null
+    },
+    {
+      field: 'field9',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSynthBeamSize'),
+      renderCell: (e: { row: { section2: { value: any }[] } }) =>
+        presentation(e.row.section2 ? e.row.section2[3] : null),
+      optional: params => params.value !== null
+    },
+    {
+      field: 'field10',
+      flex: 4,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('spectralSurfaceBrightnessSensitivity'),
+      renderCell: (e: { row: { section2: { value: any }[] } }) =>
+        presentation(e.row.section2 ? e.row.section2[4] : null),
+      optional: params => params.value !== null
+    }
+  ];
+
+  const section3Columns = [
+    {
+      field: 'field11',
+      flex: 3,
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay('integrationTime'),
+      renderCell: (e: { row: { section3: { value: any }[] } }) =>
+        presentation(e.row.section3 ? e.row.section3[0] : null),
+      optional: params => params.value !== null
+    }
+  ];
+
+  const statusColumn = [
+    {
+      field: 'statusGUI',
+      headerName: '',
+      sortable: false,
+      width: 50,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: { statusGUI: number; error: string } }) => {
+        return (
+          <Box pt={1}>
+            <StatusIcon
+              ariaTitle={t('sensitivityCalculatorResults.status', {
+                status: t('statusValue.' + e.row.statusGUI),
+                error: e.row.error
+              })}
+              testId="statusId"
+              icon
+              level={e.row.statusGUI}
+              size={SIZE}
+            />
+          </Box>
+        );
+      }
+    }
+  ];
+
+  const getColumns = data => {
+    const results1 = data[0]?.section2
+      ? [...section1Columns, ...section2Columns]
+      : [...section1Columns];
+    const results2 = [...results1, ...section3Columns, ...statusColumn];
+    return [...results2];
+  };
 
   return (
     <Dialog
-      fullWidth
-      maxWidth="xl"
+      PaperProps={{
+        style: {
+          minWidth: '95%',
+          maxWidth: '95%'
+        }
+      }}
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
@@ -191,7 +222,7 @@ export default function SensCalcModalMultiple({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: level ? t('statusValue.' + level) : '',
+                status: t('statusValue.' + level),
                 error: levelError
               })}
               testId="statusId"
@@ -213,7 +244,7 @@ export default function SensCalcModalMultiple({
           {data ? (
             <DataGrid
               rows={data}
-              columns={filteredColumns}
+              columns={getColumns(data)}
               columnHeaderHeight={100}
               height={500}
               testId="sensCalcDetailsList"

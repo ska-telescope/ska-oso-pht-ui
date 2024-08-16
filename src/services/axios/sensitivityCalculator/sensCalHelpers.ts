@@ -1,5 +1,5 @@
 import { OBSERVATION } from '../../../utils/constants';
-import { Sensitivity } from '../../../utils/types/sensitivityCalculatorResultsTypes';
+import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
   format: {
@@ -27,36 +27,35 @@ const sensCalHelpers = {
      * @param precision the number of d.p. to display the result to
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
-    convertSensitivityToDisplayValue(sensitivity: number, precision = 2): Sensitivity {
-      // TODO: create a proper type
+    convertReturnedSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
       // TODO: add tests (cypress?)
-      if (Number(sensitivity)) {
+      if (typeof sensitivity === 'number') {
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
           return {
-            value: sensitivity.toFixed(precision),
-            units: 'uJy/beam'
+            value: Number(sensitivity.toFixed(precision)),
+            unit: 'uJy/beam'
           };
           // return `${sensitivity.toFixed(precision)} uJy/beam`;
         }
         if (sensitivity < 1e6) {
           // For 1000 - 999999 uJy/beam, display the value in mJy/beam
           return {
-            value: (sensitivity / 1e3).toFixed(precision),
-            units: 'mJy/beam'
+            value: Number((sensitivity / 1e3).toFixed(precision)),
+            unit: 'mJy/beam'
           };
           // return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
         }
         // For values above 999999 uJy/beam, display the value in Jy/beam
         return {
-          value: (sensitivity / 1e6).toFixed(precision),
-          units: 'Jy/beam'
+          value: Number((sensitivity / 1e6).toFixed(precision)),
+          unit: 'Jy/beam'
         };
         // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
         return {
-          value: sensitivity.toFixed(precision),
-          units: ''
+          value: 0,
+          unit: ''
         };
       }
     },
@@ -98,7 +97,7 @@ const sensCalHelpers = {
     },
     /**
      * Converts a minor and major beam in degrees (as returned by the backend)
-     * into a formatted string in arcsecs eg '4.6" x 7.9"'
+     * into a formatted string in arcsec eg '4.6" x 7.9"'
      *
      * @param beam_min_scaled in degrees
      * @param beam_maj_scaled in degrees
@@ -118,18 +117,65 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,
-        kHz: 1000,
+        KHz: 1000,
         Hz: 1
       };
       if (!unitMap[frequencyUnits]) {
         throw new Error('Invalid frequency unit');
       }
       return frequencyValue * unitMap[frequencyUnits];
+    },
+    convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
+      const unitMap: { [key: string]: number } = {
+        GHz: 1000,
+        MHz: 1,
+        KHz: 0.001,
+        Hz: 0.000001
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
+    },
+    convertBandwidthToKHz(bandwidthValue, bandwidthUnits): number {
+      const unitMap: { [key: string]: number } = {
+        GHz: 1000000,
+        MHz: 1000,
+        KHz: 1,
+        Hz: 0.001
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
+    },
+    convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
+      if (typeof bandwidthUnits === 'number') {
+        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+      }
+      const unitMap: { [key: string]: number } = {
+        GHz: 1000000000,
+        MHz: 1000000,
+        KHz: 1000,
+        Hz: 1
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
     }
   },
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
       return Math.sqrt(value1 ** 2 + value2 ** 2);
+    }
+  },
+  map: {
+    getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
+      const array = OBSERVATION.array.find(item => item.value === telescope);
+      let units = array.centralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
+        ?.label;
+      return units;
     }
   }
 };

@@ -21,7 +21,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
 
   const getLevel = () => (level > 5 ? 0 : level);
   const pageName = () => {
-    return t(`page.${page}.title`);
+    return t(`page.${page}.status`);
   };
 
   return (
@@ -30,13 +30,13 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         <StatusIcon
           ariaTitle={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: getLevel() ? t('statusValue.' + getLevel()) : ''
+            status: t('statusValue.' + getLevel())
           })}
           ariaDescription={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
-            status: getLevel() ? t('statusValue.' + getLevel()) : ''
+            status: t('statusValue.' + getLevel())
           })}
-          testId="statusId"
+          testId={'statusId' + page}
           icon
           level={getLevel()}
           size={SIZE}

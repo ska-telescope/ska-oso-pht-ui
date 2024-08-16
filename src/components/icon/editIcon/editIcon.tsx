@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditRounded } from '@mui/icons-material';
+import Edit from '@mui/icons-material/EditRounded';
 import Icon from '../icon/Icon';
 
 interface EditIconProps {
@@ -13,7 +13,7 @@ export default function EditIcon({ disabled = false, onClick, toolTip = '' }: Ed
     <Icon
       disabled={disabled}
       onClick={onClick}
-      icon={<EditRounded />}
+      icon={<Edit />}
       testId="editIcon"
       toolTip={toolTip}
     />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download } from '@mui/icons-material';
+import Download from '@mui/icons-material/DownloadRounded';
 import Icon from '../icon/Icon';
 
 interface DownloadIconProps {

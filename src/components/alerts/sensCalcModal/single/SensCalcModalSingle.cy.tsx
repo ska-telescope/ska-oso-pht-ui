@@ -14,10 +14,10 @@ import {
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<ObservationTargetResultsDisplay />', () => {
+describe('<SensCalcModalSingle />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(1500, 1500);
+      cy.viewport(2000, 1000);
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -36,7 +36,7 @@ describe('<ObservationTargetResultsDisplay />', () => {
 
 describe('Modal with no data', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -53,13 +53,13 @@ describe('Modal with no data', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('be.visible');
   });
   it('Empty icon should be displayed when no data', () => {
-    cy.get('[aria-label="Status Indicator 5"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
 });
 
 describe('Modal with data - Continuum', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -76,7 +76,7 @@ describe('Modal with data - Continuum', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('not.exist');
   });
   it('Ok icon should be displayed when data', () => {
-    cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
   it('Alert should display appropriate results (continuum)', () => {
     cy.get('[id="continuumSensitivityWeighted"]').should(
@@ -128,7 +128,7 @@ describe('Modal with data - Continuum', () => {
 
 describe('Modal with data - Spectral', () => {
   beforeEach(() => {
-    cy.viewport(1500, 1500);
+    cy.viewport(2000, 1000);
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -145,7 +145,7 @@ describe('Modal with data - Spectral', () => {
     cy.get('[data-testid="alertSensCalResultsId"]').should('not.exist');
   });
   it('Ok icon should be displayed when data', () => {
-    cy.get('[aria-label="Status Indicator 0"]').should('be.visible');
+    cy.get('[aria-label="sensitivityCalculatorResults.status"]').should('be.visible');
   });
   it('Alert should display appropriate results (spectral)', () => {
     cy.get('[id="spectralSensitivityWeighted"]').should(
