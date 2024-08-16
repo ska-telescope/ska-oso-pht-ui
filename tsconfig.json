@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["cypress"],
+    "types": ["cypress", "node"],
     "baseUrl": "src/",
     "target": "es6",
     "lib": ["dom", "ES6", "dom.iterable", "ScriptHost", "ES2016.Array.Include"],
@@ -12,18 +12,13 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
     "incremental": true,
-    "outDir": "dist",
-    "paths": {
-      "@badeball/cypress-cucumber-preprocessor/*": [
-        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
-      ]
-    }
+    "outDir": "dist"
   },
   "include": [
     "src",
@@ -32,10 +27,5 @@
     "./cypress/support/index.d.ts",
     "public/locales/en/userJourney.cy.ts"
   ],
-  "exclude": ["node_modules"],
-  "paths": {
-    "@components/*": ["components/*"],
-    "@pages/*": ["pages/*"],
-    "@hooks/*": ["hooks/*"]
-  }
+  "exclude": ["node_modules"]
 }

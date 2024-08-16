@@ -1,8 +1,9 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
-import { GenerateCtrfReport } from 'cypress-ctrf-json-reporter';
-const cucumber = require('cypress-cucumber-preprocessor').default;
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+import createEsbuildPlugin from "@badeball/cypress-cucumber-preprocessor/esbuild";
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
+import { configureXrayPlugin, syncFeatureFile } from "cypress-xray-plugin";
+import fix from "cypress-on-fix";
 
 export default defineConfig({
   fixturesFolder: 'tests/cypress/fixtures',
@@ -25,11 +26,39 @@ export default defineConfig({
     excludeSpecPattern: 'tests/cypress/e2e/**'
   },
   e2e: {
-    setupNodeEvents(on, config) {
-      on('file:preprocessor', cucumber());
-      new GenerateCtrfReport({
-        on
+    async setupNodeEvents(on, config) {
+      const fixedOn = fix(on);
+      await addCucumberPreprocessorPlugin(fixedOn, config);
+      await configureXrayPlugin(
+        fixedOn,
+        config,
+        {
+          jira: {
+            projectKey: "XTP",         // placeholder value
+            url: "https://jira.skatelescope.org" // placeholder value
+          },
+          xray: {
+            status: {
+              step: {
+                skipped: "SKIPPED"
+              }
+            },
+            uploadResults: true
+          },
+          cucumber: {
+            featureFileExtension: ".feature",
+            stepDefinition: ""
+          }
+        }
+      );
+      fixedOn("file:preprocessor", async (file) => {
+        syncFeatureFile(file);
+        const cucumberPlugin = createBundler({
+          plugins: [createEsbuildPlugin(config)],
+        });
+        return cucumberPlugin(file);
       });
+      return config;
     },
     specPattern: 'cypress/integration/**/*.feature'
   }
