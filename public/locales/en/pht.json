@@ -338,7 +338,7 @@
   },
   "pi": {
     "initials": "PI",
-    "label": "Primary Investigator",
+    "label": "principal Investigator",
     "help": "Check to indicate that this individual is the Principle Investigator of this proposal.",
     "short": "PI"
   },
@@ -466,7 +466,7 @@
     "1": "Not specified"
   },
   "searchForMember": {
-    "label": "Search for member."
+    "label": "Search for a member."
   },
   "skyDirection": {
     "help": {
