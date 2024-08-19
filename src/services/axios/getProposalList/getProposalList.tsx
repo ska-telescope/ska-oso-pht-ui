@@ -11,6 +11,41 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import TeamMember from 'utils/types/teamMember';
 
+/*********************************************************** filter *********************************************************/
+
+const sortByLastUpdated = (array: ProposalBackend[]) => {
+  array.sort(function(a, b) {
+    return (
+      new Date(b.metadata.last_modified_on).valueOf() -
+      new Date(a.metadata.last_modified_on).valueOf()
+    );
+  });
+};
+
+const groupByProposalId = (data: ProposalBackend[]) => {
+  return data.reduce((grouped, obj) => {
+    if (!grouped[obj.prsl_id]) {
+      grouped[obj.prsl_id] = [obj];
+    } else {
+      grouped[obj.prsl_id].push(obj);
+    }
+    return grouped;
+  }, {});
+};
+
+const getMostRecentProposals = (data: ProposalBackend[]) => {
+  let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
+  let sorted = (Object as any).values(grouped).map(arr => {
+    sortByLastUpdated(arr);
+    return arr;
+  });
+  const result = sorted.map(arr => arr[0]);
+  return result;
+};
+
+/*****************************************************************************************************************************/
+/*********************************************************** mapping *********************************************************/
+
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
   const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
@@ -78,6 +113,8 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
   return output as Proposal[];
 }
 
+/*****************************************************************************************************************************/
+
 export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
 }
@@ -90,7 +127,9 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(result.data);
+    const uniqueResults =
+      result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
   } catch (e) {
     return e.message;
   }

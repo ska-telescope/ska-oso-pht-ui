@@ -9,6 +9,9 @@ Future
 
 * STAR-620:
   - Added BDD style cucumber testing using cypress
+* STAR-640:
+   - Display only most recent proposal for duplicates in ProposalList
+   - remove metadata section for PUT and POST mapping as handled by ODA
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
    - Upgrade to version 2.1.0 of ska-oso-pht-services

@@ -475,13 +475,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
-    metadata: {
-      version: proposal.version + 1,
-      created_by: proposal.createdBy,
-      created_on: proposal.createdOn,
-      last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      last_modified_on: new Date().toDateString()
-    },
     cycle: GENERAL.Cycle,
     info: {
       title: proposal.title,

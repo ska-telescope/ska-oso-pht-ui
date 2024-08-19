@@ -28,13 +28,6 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     submitted_on: '',
     submitted_by: '',
     investigator_refs: [DEFAULT_PI.id],
-    metadata: {
-      version: 1,
-      created_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      created_on: new Date().toDateString(),
-      last_modified_by: '',
-      last_modified_on: ''
-    },
     cycle: GENERAL.Cycle,
     info: {
       title: proposal.title,
