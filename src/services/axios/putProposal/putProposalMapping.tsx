@@ -32,21 +32,12 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
 import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
-const convertCategoryFormat = (_inValue: string): string => {
-  const words = _inValue.split(' ');
-  const lowerCaseWords = words.map(word => word?.charAt(0)?.toLowerCase() + word.slice(1));
-  const formattedString = lowerCaseWords.join('_');
-  return formattedString;
-};
-
-const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
+const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = Projects.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
-    const sub = project.subProjects.find(item => item.id === subtype);
-    if (sub) {
-      const formattedSubType = convertCategoryFormat(sub.title);
-      subTypes.push(formattedSubType);
+    if (subtype) {
+      subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
     }
   }
   return subTypes;
@@ -479,8 +470,10 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
-        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
+        main_type: Projects.find(item => item.id === proposal.proposalType)?.mapping,
+        sub_type: proposal.proposalSubType
+          ? getSubType(proposal.proposalType, proposal.proposalSubType)
+          : []
       },
       abstract: proposal.abstract,
       science_category: GENERAL.ScienceCategory?.find(
