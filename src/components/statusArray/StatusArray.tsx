@@ -1,14 +1,18 @@
 import React from 'react';
 import { Grid, Divider } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 import { NAV } from '../../utils/constants';
 
-export default function StatusArray() {
+export default function StatusArrayOriginal() {
   const { application } = storageObject.useStore();
 
+  const SIZE_OK = () => useMediaQuery(useTheme().breakpoints.up('md'));
+
   const generateDivider = (index: number) => {
-    if (index < NAV.length - 1) {
+    if (SIZE_OK() && index < NAV.length - 1) {
       return (
         <Grid item mt={-2} sx={{ width: '3%' }}>
           <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />

@@ -25,6 +25,11 @@ Future
    - Created GridMember component for use in Team Page and Proposal Display
    - Updated Proposal Display to reflect latest requirements
    - Minor resource file updates
+   - Added the active proposal ID into the bottom-right of the footer for reference 
+   - Addition of 'emptyCell' component
+   - Addition of some presentation function for various data types
+   - Started to check screen resizing ( landing page and page banner so far ).
+   - Standard height of the InfoCard
 * STAR-624: 
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Removed units from SensCalc multiple display modal

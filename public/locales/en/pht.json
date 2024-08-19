@@ -2,6 +2,7 @@
   "language": "English",
   "date_format_one": "{{-date, YYYY/MM/DD}}",
   "date_format_two": "{{date, DD-MM-YYYY}}",
+  "time_format": "{{date, hh:mm:ss}}",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
   "localData": "LOCAL DATA",
@@ -239,6 +240,9 @@
   "listOfTargets": {
     "label": "List of Targets",
     "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
+  },
+  "mediaSize": {
+    "notSupported": "The application is not supported on a screen with these dimensions"
   },
   "name": {
     "label": "Name",
@@ -711,6 +715,7 @@
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "status": "Data Product",
+      "plural": "Data Products",
       "title": "Observatory Data Product",
       "desc": "This page allows you to request and define observatory data products for observation set(s)."
     },
