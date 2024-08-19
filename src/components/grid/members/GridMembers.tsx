@@ -6,7 +6,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import TeamMember from 'utils/types/teamMember';
+import TeamMember from '../../../utils/types/teamMember';
 
 interface GridMembersProps {
   action?: boolean;
@@ -16,7 +16,7 @@ interface GridMembersProps {
   rows?: TeamMember[];
 }
 
-export default function AddButton({
+export default function GridMembers({
   action = false,
   actionClicked = null,
   height = 171,

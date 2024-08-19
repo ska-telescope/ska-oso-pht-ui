@@ -1,36 +1,18 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
-import { Logo } from '@ska-telescope/ska-javascript-components';
+import useTheme from '@mui/material/styles/useTheme';
+import { Logo, Symbol } from '@ska-telescope/ska-javascript-components';
+import { THEME_DARK } from '@ska-telescope/ska-gui-components';
 
 interface IconProps {
-  disabled?: boolean;
   logoHeight?: number;
-  isDarkTheme?: boolean;
-  onClick?: Function;
-  testId?: string;
-  toolTip?: string;
+  useSymbol?: Boolean;
 }
 
-export default function skaoIcon({
-  disabled = false,
-  logoHeight = 60,
-  isDarkTheme = false,
-  onClick = null,
-  testId = '',
-  toolTip = ''
-}: IconProps) {
-  return (
-    <Tooltip data-testid={testId} title={toolTip} arrow>
-      <span>
-        <IconButton
-          aria-label={toolTip}
-          disabled={disabled}
-          onClick={() => onClick()}
-          style={{ cursor: 'pointer' }}
-        >
-          <Logo dark={isDarkTheme} height={logoHeight} />
-        </IconButton>
-      </span>
-    </Tooltip>
-  );
+export default function skaoIcon({ logoHeight = 60, useSymbol = false }: IconProps) {
+  const DarkTheme = () => useTheme().palette.mode === THEME_DARK;
+  if (useSymbol) {
+    return <Symbol dark={DarkTheme()} height={logoHeight} />;
+  } else {
+    return <Logo dark={DarkTheme()} height={logoHeight} />;
+  }
 }

@@ -89,71 +89,101 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     }
   };
 
+  const pageTitle = () => (
+    <Typography id="pageTitle" variant="h6" m={2}>
+      {t(`page.${pageNo}.title`).toUpperCase()}
+    </Typography>
+  );
+
+  const pageDesc = () => (
+    <Typography id="pageDesc" variant="body1" m={2}>
+      {t(`page.${pageNo}.desc`)}
+    </Typography>
+  );
+
+  const buttonsLeft = () => (
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-start"
+      pl={2}
+    >
+      <Grid item>
+        {backPage > 0 && <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />}
+        {!backPage && <HomeButton testId="homeButtonTestId" />}
+      </Grid>
+      <Grid item>
+        {pageNo < LAST_PAGE && (
+          <SaveButton action={() => updateProposal()} primary testId="saveButtonTestId" />
+        )}
+      </Grid>
+    </Grid>
+  );
+
+  const buttonsRight = () => (
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-end"
+      pr={2}
+    >
+      <Grid item>{pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}</Grid>
+      <Grid item>
+        {pageNo < LAST_PAGE && <SubmitButton disabled={!canSubmit} action={submitClicked} />}
+      </Grid>
+    </Grid>
+  );
+
+  const row1 = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item>{buttonsLeft()}</Grid>
+
+      <Grid item xs={7} display={{ xs: 'none', lg: 'block' }}>
+        {pageNo < LAST_PAGE && <StatusArray />}
+      </Grid>
+
+      <Grid item display={{ xs: 'block', lg: 'none' }}>
+        {pageTitle()}
+      </Grid>
+
+      <Grid item>{buttonsRight()}</Grid>
+    </Grid>
+  );
+
+  const row2 = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={12} display={{ xs: 'block', lg: 'none' }}>
+        {pageNo < LAST_PAGE && <StatusArray />}
+      </Grid>
+    </Grid>
+  );
+
+  const row3 = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid item xs={2} display={{ xs: 'none', lg: 'block' }}>
+        {pageTitle()}
+      </Grid>
+      <Grid item xs={8} display={{ xs: 'none', lg: 'block' }}>
+        {pageDesc()}
+      </Grid>
+    </Grid>
+  );
+
   return (
     <>
-      <Grid
-        pl={2}
-        pr={2}
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" alignItems="center" justifyContent="space-space-be">
         <Grid item xs={12}>
-          <Grid container direction="row" alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <Grid
-                container
-                spacing={1}
-                direction="row"
-                alignItems="flex-end"
-                justifyContent="space-between"
-              >
-                <Grid item>
-                  {backPage > 0 && (
-                    <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />
-                  )}
-                  {!backPage && <HomeButton testId="homeButtonTestId" />}
-                </Grid>
-                <Grid item>
-                  {pageNo < LAST_PAGE && (
-                    <SaveButton action={() => updateProposal()} primary testId="saveButtonTestId" />
-                  )}
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              {pageNo < LAST_PAGE && <StatusArray />}
-            </Grid>
-            <Grid item>
-              <Grid
-                container
-                spacing={1}
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Grid item>
-                  {pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}
-                </Grid>
-                <Grid item>
-                  {pageNo < LAST_PAGE && (
-                    <SubmitButton disabled={!canSubmit} action={submitClicked} />
-                  )}
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+          {row1()}
         </Grid>
-        <Grid item xs={2}>
-          <Typography id="pageTitle" variant="h6" m={2}>
-            {t(`page.${pageNo}.title`).toUpperCase()}
-          </Typography>
+        <Grid item xs={12}>
+          {row2()}
         </Grid>
-        <Grid item xs={8}>
-          <Typography id="pageDesc" variant="body1" m={2}>
-            {t(`page.${pageNo}.desc`)}
-          </Typography>
+        <Grid item xs={12}>
+          {row3()}
         </Grid>
       </Grid>
       {openDialog && (
