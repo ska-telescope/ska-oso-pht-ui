@@ -24,7 +24,7 @@ export const BAND_5B = 4;
 
 export const BANDWIDTH_TELESCOPE = [
   {
-    label: 'Low Band (50 - 350 MHz)',
+    label: 'Low (50 - 350 MHz)',
     telescope: 2,
     value: BAND_LOW,
     isBand5: false,
@@ -34,7 +34,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'low_band'
   },
   {
-    label: 'Band 1 (0.35 - 1.05 GHz)',
+    label: 'Mid Band 1 (0.35 - 1.05 GHz)',
     telescope: 1,
     value: BAND_1,
     isBand5: false,
@@ -44,7 +44,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_1'
   },
   {
-    label: 'Band 2 (0.95 - 1.76 GHz)',
+    label: 'Mid Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
     value: BAND_2,
     isBand5: false,
@@ -54,7 +54,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_2'
   },
   {
-    label: 'Band 5a (4.6 - 8.5 GHz)',
+    label: 'Mid Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
     value: BAND_5A,
     isBand5: true,
@@ -64,7 +64,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_3'
   }, // Band 5a
   {
-    label: 'Band 5b (8.3 - 15.4 GHz)',
+    label: 'Mid Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
@@ -183,7 +183,7 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 export const Projects = [
   {
     id: 1,
-    title: 'Principal Investigator',
+    title: 'Principal Investigator (PI) projects',
     code: 'PI',
     mapping: 'standard_proposal',
     subProjects: [
@@ -256,7 +256,7 @@ export const Projects = [
   },
   {
     id: 3,
-    title: "Director's Discretionary Time",
+    title: "Director-General's Discretionary Time",
     code: 'DDT',
     mapping: 'director_time_proposal',
     subProjects: [
