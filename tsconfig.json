@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["cypress"],
+    "types": ["cypress", "node"],
     "baseUrl": "src/",
     "target": "es6",
     "lib": ["dom", "ES6", "dom.iterable", "ScriptHost", "ES2016.Array.Include"],
