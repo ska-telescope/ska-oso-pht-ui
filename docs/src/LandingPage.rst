@@ -29,7 +29,7 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
 .. figure:: /images/landingPage.png
    :width: 100%
    :align: center
-   :alt: screen in light & dark mode of the landing page
+   :alt: screen in light mode of the landing page
    :class: with-border
 
    The Landing page in light mode.

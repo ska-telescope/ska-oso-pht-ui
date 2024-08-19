@@ -12,7 +12,7 @@ The "Target Page" allows you to add target(s) to your proposal (see
 
 .. figure:: /images/targetPage.png
    :width: 90%
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    Target page in light mode
 

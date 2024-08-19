@@ -16,7 +16,7 @@ and after filling out the form and clicking "Add", the page will look like :numr
 .. figure:: /images/observationPage2.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    Observation page in light mode.
 
@@ -25,9 +25,9 @@ and after filling out the form and clicking "Add", the page will look like :numr
 .. figure:: /images/observationPage.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
-   Observation page with when observation set(s) added in light and dark mode.
+   Observation page with when observation set(s) added in light mode.
 
 
 Layout and Navigation
@@ -72,7 +72,7 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :n
 .. figure:: /images/observationSetup.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    The add observation page.
 
@@ -111,7 +111,7 @@ and data products is also removed.   If this action is cancelled, then the modal
 .. figure:: /images/obssenscal.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    Sensitivity calculator result modal display.
 

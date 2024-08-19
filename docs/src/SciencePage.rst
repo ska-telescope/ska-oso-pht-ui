@@ -7,7 +7,7 @@ The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload 
 
 .. figure:: /images/sciencePage.png
    :width: 90%
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    Science Justification page
 
