@@ -201,7 +201,7 @@
     "help": "Requires the first name of the investigator."
   },
   "frequencyUnits": {
-    "help": ""
+    "help": "Select the appropriate unit."
   },
   "groupObservations": {
     "label": "Group",
@@ -344,7 +344,7 @@
   },
   "pixelSize": {
     "label": "Pixel Size",
-    "help": "PIXEL SIZE HELP",
+    "help": "Pixel size of the image requested.",
     "notFound": "No value found",
     "precision": 3,
     "unableToDetermine": "Unable to determine"
@@ -606,7 +606,7 @@
     "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
   },
   "suppliedUnits": {
-    "help": ""
+    "help": "Select the unit that is appropriate."
   },
   "suppliedValue": {
     "help": "",
