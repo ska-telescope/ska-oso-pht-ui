@@ -183,22 +183,23 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 export const Projects = [
   {
     id: 1,
+    title: 'Principal Investigator',
     code: 'PI',
     mapping: 'standard_proposal',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        description: 'A proposal that requires both SKA-MID and SKA-Low telescopes'
       },
       {
         id: 3,
@@ -210,7 +211,7 @@ export const Projects = [
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long Term Proposal',
         code: 'LTP',
         mapping: 'long_term_proposal',
         description: 'A proposal that spans multiple PROPOSAL CYCLES'
@@ -224,14 +225,14 @@ export const Projects = [
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
         description: 'A proposal that requires both SKA-MID and Low telescopes'
@@ -246,7 +247,7 @@ export const Projects = [
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long Term Proposal',
         code: 'LTP',
         mapping: 'long_term_proposal',
         description: 'A proposal that spans multiple PROPOSAL CYCLES'
@@ -255,19 +256,20 @@ export const Projects = [
   },
   {
     id: 3,
+    title: "Director's Discretionary Time",
     code: 'DDT',
     mapping: 'director_time_proposal',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
         description: 'A target of opportunity observing proposal'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
         description: 'A proposal that requires both SKA-MID and Low telescopes'

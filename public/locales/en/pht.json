@@ -389,11 +389,17 @@
     "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.  It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
-    "title": {
-      "1": "Principle Investigation",
-      "2": "Key Science Project",
-      "3": "Director's Discretionary Time"
-    }
+    "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
+    "help2": "",
+    "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
+    "help4": ""
+  },
+  "subProposalType": {
+    "label": "Proposal Attributes",
+    "1": "Target of Opportunity",
+    "2": "Joint SKA Proposal",
+    "3": "Coordinated Proposal",
+    "4": "Long Term Proposal"
   },
   "members": {
     "label": "Investigator(s)",
