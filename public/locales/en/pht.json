@@ -743,8 +743,8 @@
       "desc": "This page allows you to request and define observatory data products for observation set(s)."
     },
     "8": {
-      "status": "SRC Net",
-      "title": "SRC Net",
+      "status": "SrcNet",
+      "title": "SrcNet Resources",
       "desc": "This page allows you to request and define SRC Net data products."
     },
     "9": {
