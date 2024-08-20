@@ -172,6 +172,8 @@ const sensCalHelpers = {
   },
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
+      console.log('::: in sqrtOfSumSqs val1 val2', value1, value2);
+      console.log('Math.sqrt(value1 ** 2 + value2 ** 2)', Math.sqrt(value1 ** 2 + value2 ** 2));
       return Math.sqrt(value1 ** 2 + value2 ** 2);
     }
   },

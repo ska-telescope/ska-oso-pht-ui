@@ -33,9 +33,18 @@ export default function calculateSensitivityCalculatorResults(
   const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
     rec ? sense * rec.sbs_conv_factor : 0;
 
+  /*
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
     : getWeightedSensitivityMID(observation, response, isZoom());
+  */
+
+  // const weightedensitivityRawValue = weightedSensitivityRawValueMid(response, isZoom());
+
+  const weightedSensitivity = isLow()
+    ? getWeightedSensitivityLOW(response, isZoom())
+    : getWeightedSensitivityMid(response, isZoom());
+
 
   const confusionNoise = getConfusionNoise(response, isZoom());
 
@@ -51,10 +60,12 @@ export default function calculateSensitivityCalculatorResults(
 
   const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom());
 
+  console.log('///// FOR SPECTRAL BELOW: /////////');
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
+  console.log('/////      /////////');
   const spectralBeamSize = isLow()
     ? getSpectralBeamSizeLOW(response, isZoom())
     : getSpectralBeamSizeMID(response, isZoom());
@@ -79,8 +90,9 @@ export default function calculateSensitivityCalculatorResults(
   const weightedSensitivityDisplay = isSensitivitySupplied
     ? convertSuppliedSensitivityToDisplayValue(weightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(weightedSensitivity);
+  console.log('isZoom()', isZoom());
   const totalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
-    totalSensitivity
+    isZoom() ? spectralTotalSensitivity : totalSensitivity
   );
   const beamSizeDisplay = { value: beamSize, units: 'arcsec2' };
   const sbsDisplay = { value: sbs, units: 'k' };
@@ -122,7 +134,9 @@ export default function calculateSensitivityCalculatorResults(
       },
       {
         field: `${observationTypeLabel}TotalSensitivity`,
-        value: totalSensitivityDisplay?.value.toString(),
+        // value: totalSensitivityDisplay?.value.toString(),
+        value: isZoom() ? spectralTotalSensitivityDisplay?.value.toString() : totalSensitivityDisplay?.value.toString(),
+        // value: !isZoom ? totalSensitivityDisplay?.value.toString() : spectralTotalSensitivityDisplay?.value.toString(),
         units: totalSensitivityDisplay?.unit
       },
       {
@@ -240,7 +254,9 @@ const getWeightedSensitivityMID = (
   response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean
 ) => {
+  console.log('::: in getWeightedSensitivityMID');
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
+  console.log('recCalc, ', recCalc);
   if (recCalc?.spectral_sensitivity?.value) {
     const sensitivity: number = recCalc?.spectral_sensitivity.value;
     const factor: number = isZoom
@@ -251,6 +267,41 @@ const getWeightedSensitivityMID = (
     return observation?.supplied.value;
   }
 };
+
+/*
+const weightedSensitivityRawValueMid = (
+  response: SensitivityCalculatorAPIResponseMid,
+  isZoom: boolean) => {
+  console.log('::: in weightedSensitivityRawValueMid');
+  console.log('response', response);
+  const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
+  const recWeight = isZoom ? response?.weighting[0] : response?.weighting;
+  const weightedensitivityRawValue = recCalc.continuum_sensitivity!.value! * recWeight.weighting_factor * 1e6;
+  console.log('weightedensitivityRawValue', weightedensitivityRawValue);
+  return weightedensitivityRawValue
+}
+
+const getWeightedSensitivityMid= (
+  weightedSensitivityRawValueInuJy: number) => {
+    const weightedSensitivity = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(weightedSensitivityRawValueInuJy);
+    console.log('weightedSensitivity test', weightedSensitivity);
+    return weightedSensitivity;
+}
+*/
+
+const getWeightedSensitivityRawValueMid = (
+  response: SensitivityCalculatorAPIResponseMid,
+  isZoom: boolean) => {
+  const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
+  const recWeight = isZoom ? response?.weighting[0] : response?.weighting;
+  return recCalc.continuum_sensitivity!.value! * recWeight.weighting_factor * 1e6;
+}
+
+const getWeightedSensitivityMid= (
+  response: SensitivityCalculatorAPIResponseMid,
+  isZoom: boolean) => {
+    return getWeightedSensitivityRawValueMid(response, isZoom);
+}
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): string => {
   const rec = isZoom ? response?.weighting[0] : response?.weightingLine[0];
