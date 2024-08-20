@@ -72,7 +72,7 @@ export default function GridObservationSummary({
   };
 
   const getDataProducts = (rec: { type?: number; id?: any }): string[] => {
-    const array = proposal.dataProductSDP.filter(e => e.observationId.find(el => el === rec.id));
+    const array = proposal.dataProductSDP?.filter(e => e.observationId.find(el => el === rec.id));
     if (!array || array.length === 0) {
       return [];
     } else {
