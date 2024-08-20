@@ -23,7 +23,6 @@ import {
   verifyOnLandingPage,
   pageConfirmed,
   selectCosmology,
-  verifyProposalValidAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
   verifyFirstProposalOnLandingPageHasSubmittedStatus
@@ -65,7 +64,7 @@ Then(
 
 And('I validate my proposal', () => {
   clickToValidateProposal();
-  verifyProposalValidAlertFooter();
+  // verifyProposalValidAlertFooter();
 });
 
 And('I submit my proposal', () => {

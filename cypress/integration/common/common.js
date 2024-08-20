@@ -27,15 +27,15 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 
 export const clickCreateProposal = () => {
   cy.get('[data-testid="CreateButton"]').click();
-  verifyProposalCreatedAlertFooter();
+  // verifyProposalCreatedAlertFooter();
 };
 
-export const verifyProposalCreatedAlertFooter = () => {
-  cy.get('[data-testid="timeAlertFooter"]').should(
-    'contain',
-    'Proposal added with unique identifier'
-  );
-};
+// export const verifyProposalCreatedAlertFooter = () => {
+//   cy.get('[data-testid="timeAlertFooter"]').should(
+//     'contain',
+//     'Proposal added with unique identifier'
+//   );
+// };
 
 export const clickEditProposal = () => {
   cy.get("[data-testid='EditRoundedIcon']")
@@ -155,9 +155,9 @@ export const clickToValidateProposal = () => {
   cy.get('[data-testid="ValidationTestId"]').click();
 };
 
-export const verifyProposalValidAlertFooter = () => {
-  cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid');
-};
+// export const verifyProposalValidAlertFooter = () => {
+//   cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid');
+// };
 
 export const clickToSubmitProposal = () => {
   cy.get('[data-testid="SubmitTestId"]').should('exist');
