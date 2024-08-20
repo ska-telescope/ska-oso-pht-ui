@@ -209,9 +209,10 @@ const getSpectralConfusionNoiseLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: Boolean
 ) => {
-  const spectralConfusionNoise = isZoom
+  const rawSpectralConfusionNoise = isZoom
     ? response.weighting[0].confusion_noise.value
-    : response.weighting.confusion_noise.value;
+    : response.weightingLine[0].confusion_noise.value;
+  const spectralConfusionNoise = sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise));
   return spectralConfusionNoise;
 };
 
@@ -281,9 +282,10 @@ const getSpectralConfusionNoiseMID = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: Boolean
 ) => {
-  const spectralConfusionNoise = isZoom
+  const rawSpectralConfusionNoise = isZoom
     ? response?.weighting[0]?.confusion_noise?.value
     : response?.weightingLine[0]?.confusion_noise?.value;
+  const spectralConfusionNoise = sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise));
   return spectralConfusionNoise;
 };
 
@@ -341,3 +343,11 @@ const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom
 const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
   return isZoom ? response.weighting[0].confusion_noise.value : response.weighting.confusion_noise.value;
 }
+
+/*
+const getRawSpectralConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
+  console.log('::: in getRawSpectralConfusionNoise response', response);
+  console.log('::: in getRawSpectralConfusionNoise confusion_noise', response.weightingLine[0].confusion_noise.value);
+  return isZoom ? response.weightingLine.confusion_noise.value : response.weightingLine[0].confusion_noise.value;
+}
+*/
