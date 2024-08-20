@@ -156,7 +156,6 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.get('[data-testid="timeAlertFooter"]').should('exist');
   cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid');
 };
 
