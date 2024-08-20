@@ -26,8 +26,8 @@ export default function calculateSensitivityCalculatorResults(
   const recWeight = isZoom()
     ? response?.weighting[0]
     : isLow()
-    ? response?.weightingLine[0]
-    : response?.weighting;
+      ? response?.weightingLine[0]
+      : response?.weighting;
   const isSensitivitySupplied = () => observation.supplied.type === TYPE_SUPPLIED_SENSITIVITY;
 
   const getSurfaceBrightnessSensitivity = (rec: { sbs_conv_factor: number }, sense: number) =>
@@ -43,7 +43,7 @@ export default function calculateSensitivityCalculatorResults(
 
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
-    : getWeightedSensitivityMid(response, isZoom());
+    : getWeightedSensitivityMid(response, isZoom(), observation);
 
 
   const confusionNoise = getConfusionNoise(response, isZoom());
@@ -291,16 +291,22 @@ const getWeightedSensitivityMid= (
 
 const getWeightedSensitivityRawValueMid = (
   response: SensitivityCalculatorAPIResponseMid,
-  isZoom: boolean) => {
+  isZoom: boolean,
+  observation: Observation) => {
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
   const recWeight = isZoom ? response?.weighting[0] : response?.weighting;
-  return recCalc.continuum_sensitivity!.value! * recWeight.weighting_factor * 1e6;
+  if (recCalc?.continuum_sensitivity?.value) {
+    return recCalc.continuum_sensitivity!.value! * recWeight.weighting_factor * 1e6;
+  } else {
+    return observation?.supplied.value;
+  }
 }
 
-const getWeightedSensitivityMid= (
+const getWeightedSensitivityMid = (
   response: SensitivityCalculatorAPIResponseMid,
-  isZoom: boolean) => {
-    return getWeightedSensitivityRawValueMid(response, isZoom);
+  isZoom: boolean,
+observation: Observation) => {
+  return getWeightedSensitivityRawValueMid(response, isZoom, observation);
 }
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): string => {
