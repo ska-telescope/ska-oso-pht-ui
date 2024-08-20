@@ -11,18 +11,18 @@ import {
 } from '../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
-  clickAddProposal()
+  clickAddProposal();
 });
 
 When('I provide a title and select the proposal category', () => {
-  enterProposalTitle()
-  clickStandardProposalSubTypeTargetOfOpportunity()
-  clickCreateProposal()
+  enterProposalTitle();
+  clickStandardProposalSubTypeTargetOfOpportunity();
+  clickCreateProposal();
   pageConfirmed('TEAM');
 });
 
 Then('a proposal with unique ID is created and I can see that on the landing page', () => {
-  clickHome()
-  verifyOnLandingPage()
-  verifyProposalOnLandingPage()
+  clickHome();
+  verifyOnLandingPage();
+  verifyProposalOnLandingPage();
 });

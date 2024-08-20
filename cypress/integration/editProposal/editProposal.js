@@ -27,39 +27,42 @@ import {
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
-  createStandardProposal()
+  createStandardProposal();
 });
 
 When('I get on the landing page and click on the edit button', () => {
-  clickHome()
-  verifyOnLandingPage()
-  verifyProposalOnLandingPage()
-  clickEditProposal()
+  clickHome();
+  verifyOnLandingPage();
+  verifyProposalOnLandingPage();
+  clickEditProposal();
   pageConfirmed('TITLE');
 });
 
-Then('I am able to continue my proposal from where I stopped, fill in all the necessary details', () => {
-  clickToTeamPage()
-  clickToGeneralPage()
-  addAbstract()
-  selectCosmology()
-  clickToSciencePage()
-  clickToTargetPage()
-  addM1TargetUsingResolve()
-  clickToAddTarget()
-  clickToObservationPage()
-  clickObservationSetup()
-  clickAddObservation()
-  verifyObservationInTable()
-  clickObservationFromTable()
-  clickToLinkTargetAndObservation()
-  clickToTechnicalPage()
-  clickToObservatoryDataProductPage()
-});
+Then(
+  'I am able to continue my proposal from where I stopped, fill in all the necessary details',
+  () => {
+    clickToTeamPage();
+    clickToGeneralPage();
+    addAbstract();
+    selectCosmology();
+    clickToSciencePage();
+    clickToTargetPage();
+    addM1TargetUsingResolve();
+    clickToAddTarget();
+    clickToObservationPage();
+    clickObservationSetup();
+    clickAddObservation();
+    verifyObservationInTable();
+    clickObservationFromTable();
+    clickToLinkTargetAndObservation();
+    clickToTechnicalPage();
+    clickToObservatoryDataProductPage();
+  }
+);
 
 And('I validate my proposal', () => {
-  clickToValidateProposal()
-  verifyProposalValidAlertFooter()
+  clickToValidateProposal();
+  verifyProposalValidAlertFooter();
 });
 
 And('I submit my proposal', () => {

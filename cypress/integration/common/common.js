@@ -1,6 +1,6 @@
 export const clickAddProposal = () => {
-  verifyAddProposalButtonExists()
-  clickAddProposalButton()
+  verifyAddProposalButtonExists();
+  clickAddProposalButton();
 };
 
 export const clickAddProposalButton = () => {
@@ -12,12 +12,12 @@ export const verifyAddProposalButtonExists = () => {
 };
 
 export const enterProposalTitle = () => {
-  cy.get('[id="titleId"]').type("Proposal Title");
+  cy.get('[id="titleId"]').type('Proposal Title');
 };
 
 export const selectCosmology = () => {
   cy.get('[data-testid="categoryId"]').click();
-  cy.get('[data-value="1"]').click({force: true});
+  cy.get('[data-value="1"]').click({ force: true });
 };
 
 export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
@@ -27,38 +27,43 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 
 export const clickCreateProposal = () => {
   cy.get('[data-testid="CreateButton"]').click();
-  verifyProposalCreatedAlertFooter()
+  verifyProposalCreatedAlertFooter();
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
   cy.get('[data-testid="timeAlertFooter"]').should('exist');
-  cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal added with unique identifier')
+  cy.get('[data-testid="timeAlertFooter"]').should(
+    'contain',
+    'Proposal added with unique identifier'
+  );
 };
 
 export const clickEditProposal = () => {
-  cy.get("[data-testid='EditRoundedIcon']").eq(0).click()
+  cy.get("[data-testid='EditRoundedIcon']")
+    .eq(0)
+    .click();
 };
 
 export const pageConfirmed = label => {
   cy.get('#pageTitle').contains(label);
 };
 
-export const landingPageConfirmed = ()  => {
-  verifyAddProposalButtonExists()
+export const landingPageConfirmed = () => {
+  verifyAddProposalButtonExists();
 };
 
-export const createStandardProposal = ()  => {
-  clickAddProposalButton()
+export const createStandardProposal = () => {
+  clickAddProposalButton();
   pageConfirmed('TITLE');
-  enterProposalTitle()
-  clickStandardProposalSubTypeTargetOfOpportunity()
-  clickCreateProposal()
+  enterProposalTitle();
+  clickStandardProposalSubTypeTargetOfOpportunity();
+  clickCreateProposal();
   pageConfirmed('TEAM');
 };
 
 export const clickHome = () => {
   cy.get('[data-testid="homeButtonTestId"]').should('exist');
-  cy.get('[data-testid="homeButtonTestId"]').click()
+  cy.get('[data-testid="homeButtonTestId"]').click();
 };
 
 export const clickToTeamPage = () => {
@@ -98,12 +103,12 @@ export const clickToObservatoryDataProductPage = () => {
 
 export const addAbstract = () => {
   cy.get('[id="abstractId"]').should('exist');
-  cy.get('[id="abstractId"]').type("Test abstract");
+  cy.get('[id="abstractId"]').type('Test abstract');
 };
 
 export const addM1TargetUsingResolve = () => {
   cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type("M1");
+  cy.get('[id="name"]').type('M1');
   cy.get('[data-testid="resolveButton"]').click();
 };
 
@@ -113,21 +118,22 @@ export const clickToAddTarget = () => {
 
 export const clickObservationSetup = () => {
   cy.get('[data-testid="addObservationButton"]').click();
-}
+};
 
 export const clickAddObservation = () => {
   cy.get('[data-testid="addObservationButton"]').click();
-}
+};
 
 export const verifyOnLandingPage = () => {
-  cy.get('[data-testid="addProposalButton"]').should('exist')
+  cy.get('[data-testid="addProposalButton"]').should('exist');
 };
 
 export const verifyProposalOnLandingPage = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]').eq(0)
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .eq(0)
     .children('div[role="row"]')
     .should('contain', 'prsl-t0001-')
-    .should('contain', 'Proposal Title')
+    .should('contain', 'Proposal Title');
 };
 
 export const verifyObservationInTable = () => {
@@ -152,5 +158,5 @@ export const clickToValidateProposal = () => {
 
 export const verifyProposalValidAlertFooter = () => {
   cy.get('[data-testid="timeAlertFooter"]').should('exist');
-  cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid')
+  cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid');
 };

@@ -1,6 +1,7 @@
 import { And, Given } from 'cypress-cucumber-preprocessor/steps';
 import {
-  clickToGeneralPage, clickToObservationPage,
+  clickToGeneralPage,
+  clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
@@ -8,13 +9,13 @@ import {
 } from '../common/common';
 
 Given('I have access to the PHT Application', () => {
-  landingPageConfirmed()
+  landingPageConfirmed();
 });
 
 And('I have navigated to the Observation Page', () => {
-  createStandardProposal()
-  clickToGeneralPage()
-  clickToSciencePage()
-  clickToTargetPage()
-  clickToObservationPage()
+  createStandardProposal();
+  clickToGeneralPage();
+  clickToSciencePage();
+  clickToTargetPage();
+  clickToObservationPage();
 });
