@@ -3,9 +3,6 @@ import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/co
 import MappingPutProposal from './putProposalMapping';
 
 async function PutProposal(proposal, status?) {
-  if (window.Cypress || USE_LOCAL_DATA) {
-    return 'success';
-  }
 
   try {
     const URL_PATH = `/proposals/${proposal.id}`;
