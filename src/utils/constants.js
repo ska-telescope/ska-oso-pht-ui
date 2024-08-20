@@ -186,21 +186,24 @@ export const Projects = [
     title: 'Principal Investigator (PI) projects',
     code: 'PI',
     mapping: 'standard_proposal',
-    description: 'Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.',
+    description:
+      'Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.',
     subProjects: [
       {
         id: 1,
         title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
         title: 'Joint SKA proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
@@ -215,7 +218,8 @@ export const Projects = [
         title: 'Long-term Projects',
         code: 'LTP',
         mapping: 'long_term_proposal',
-        description: 'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
+        description:
+          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
       }
     ]
   },
@@ -232,14 +236,16 @@ export const Projects = [
         title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
         title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
@@ -254,7 +260,8 @@ export const Projects = [
         title: 'Long-term Projects',
         code: 'LTP',
         mapping: 'long_term_proposal',
-        description: 'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
+        description:
+          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
       }
     ]
   },
@@ -264,21 +271,23 @@ export const Projects = [
     code: 'DDT',
     mapping: 'director_time_proposal',
     description:
-      "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee.",
+      'Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee.',
     subProjects: [
       {
         id: 1,
         title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
         title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
