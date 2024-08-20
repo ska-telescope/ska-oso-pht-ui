@@ -37,9 +37,7 @@ export default function calculateSensitivityCalculatorResults(
     ? getWeightedSensitivityLOW(response, isZoom())
     : getWeightedSensitivityMID(observation, response, isZoom());
 
-  const confusionNoise: number = isLow()
-    ? getConfusionNoiseLOW(response, isZoom())
-    : getConfusionNoiseMID(response, isZoom());
+  const confusionNoise = getConfusionNoise(response, isZoom());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
   const beamSize = isLow()
@@ -50,9 +48,9 @@ export default function calculateSensitivityCalculatorResults(
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
     : getSpectralWeightedSensitivityMID(observation, response, isZoom());
-  const spectralConfusionNoise = isLow()
-    ? getSpectralConfusionNoiseLOW(response, isZoom())
-    : getSpectralConfusionNoiseMID(response, isZoom());
+
+  const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom());
+
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
@@ -183,17 +181,6 @@ export default function calculateSensitivityCalculatorResults(
 
 /******************************************* LOW ********************************************/
 
-const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): number =>
-  isZoom ? getConfusionNoiseZoomLOW(response) : getConfusionNoiseContinuumLOW(response);
-
-const getConfusionNoiseContinuumLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
-  response.weighting.confusion_noise.value ? Number(response.weighting.confusion_noise.value) : 0;
-
-const getConfusionNoiseZoomLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
-  response.weighting[0].confusion_noise.value
-    ? Number(response.weighting[0].confusion_noise.value)
-    : 0;
-
 const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
@@ -217,16 +204,6 @@ const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): 
 };
 
 /* -------------- */
-
-const getSpectralConfusionNoiseLOW = (
-  response: SensitivityCalculatorAPIResponseLow,
-  isZoom: Boolean
-) => {
-  const spectralConfusionNoise = isZoom
-    ? response.weighting[0].confusion_noise.value
-    : response.weighting.confusion_noise.value;
-  return spectralConfusionNoise;
-};
 
 const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
@@ -257,23 +234,6 @@ const getSpectralSurfaceBrightnessLOW = (
 };
 
 /******************************************* MID ********************************************/
-
-const getConfusionNoiseMID = (
-  response: SensitivityCalculatorAPIResponseMid,
-  isZoom: boolean
-): number =>
-  isZoom ? getConfusionNoiseZoomMID(response) : getConfusionNoiseContinuumMID(response);
-
-const getConfusionNoiseContinuumMID = (response: SensitivityCalculatorAPIResponseMid): number => {
-  return response?.weighting?.confusion_noise?.value
-    ? Number(response.weighting.confusion_noise.value)
-    : 0;
-};
-
-const getConfusionNoiseZoomMID = (response: SensitivityCalculatorAPIResponseMid): number =>
-  response?.weighting[0]?.confusion_noise?.value
-    ? Number(response.weighting[0].confusion_noise.value)
-    : 0;
 
 const getWeightedSensitivityMID = (
   observation: Observation,
@@ -306,16 +266,6 @@ const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): 
 };
 
 /* -------------- */
-
-const getSpectralConfusionNoiseMID = (
-  response: SensitivityCalculatorAPIResponseLow,
-  isZoom: Boolean
-) => {
-  const spectralConfusionNoise = isZoom
-    ? response?.weighting[0]?.confusion_noise?.value
-    : response?.weightingLine[0]?.confusion_noise?.value;
-  return spectralConfusionNoise;
-};
 
 const getSpectralWeightedSensitivityMID = (
   observation: Observation,
@@ -358,7 +308,39 @@ const getSpectralSurfaceBrightnessMID = (
   return sense * conv_factor;
 };
 
-/********************************************************************************************/
+/********************************************* COMMON ***********************************************/
 
 const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
   sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
+
+const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
+  const rawConfusionNoise = getRawConfusionNoise(response, isZoom);
+  return rawConfusionNoise
+    ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise))
+    : 0;
+};
+
+const getSpectralConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+  isZoom: Boolean
+) => {
+  const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response, isZoom);
+  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(
+    Number(rawSpectralConfusionNoise)
+  );
+};
+
+const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
+  return isZoom
+    ? response.weighting[0].confusion_noise.value
+    : response.weighting.confusion_noise.value;
+};
+
+const getSpectralRawConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+  isZoom
+): number => {
+  return isZoom
+    ? response.weighting[0].confusion_noise.value
+    : response.weightingLine[0].confusion_noise.value;
+};
