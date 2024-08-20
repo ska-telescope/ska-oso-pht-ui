@@ -311,7 +311,7 @@ const getSpectralSurfaceBrightnessMID = (
 /********************************************* COMMON ***********************************************/
 
 const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
-  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise * 1e6, weightedSensitivity);
+  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise, weightedSensitivity);
 
 const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
   const rawConfusionNoise = getRawConfusionNoise(response, isZoom);
