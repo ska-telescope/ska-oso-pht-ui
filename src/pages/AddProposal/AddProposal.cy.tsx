@@ -42,7 +42,7 @@ describe('POST proposal/ bad request', () => {
   //   const text = 'Milky Way';
   //   cy.get('[data-testid="titleId"] input').type(text);
   //   cy.get('#ProposalType-1').click();
-  //   cy.get('#SubProposalType-1').click();
+  //   cy.get('#proposalAttribute-1').click();
   //   cy.get('[data-testid="CreateButton"]').click();
   //   cy.wait('@postProposalFail');
   //   cy.get('[data-testid="alertCreateErrorId"]')
@@ -65,7 +65,7 @@ describe('POST proposal', () => {
   //   const text = 'The Milky Way View';
   //   cy.get('[data-testid="titleId"] input').type(text);
   //   cy.get('#ProposalType-1').click();
-  //   cy.get('#SubProposalType-1').click();
+  //   cy.get('#proposalAttribute-1').click();
   //   cy.get('[data-testid="CreateButton"]').click();
   //   cy.get('[data-testid="alertCreateErrorId"]')
   //     .should('be.visible')

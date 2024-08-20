@@ -16,8 +16,7 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOT_SPECIFIED,
-  STATUS_ERROR
+  NOT_SPECIFIED
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -29,7 +28,7 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
 import { presentDate } from '../../utils/present';
-import StatusIconDisplay from '../../components/icon/status/statusIcon';
+import emptyCell from '../../components/fields/emptyCell/emptyCell';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -160,11 +159,6 @@ export default function LandingPage() {
     return scienceCategory ? scienceCategory : NOT_SPECIFIED;
   };
 
-  const SIZE = 20;
-  const emptyCell = () => {
-    return <StatusIconDisplay error="" level={STATUS_ERROR} onClick={null} size={SIZE} />;
-  };
-
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
   const COLUMNS = [
@@ -190,6 +184,7 @@ export default function LandingPage() {
     {
       field: 'pi',
       headerName: t('pi.short'),
+      flex: 2.5,
       renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
     },
     {
@@ -253,7 +248,11 @@ export default function LandingPage() {
     navigate(PATH[1]);
   };
 
-  const pageDescription = () => <Typography variant="h6">{t('page.11.desc')}</Typography>;
+  const pageDescription = () => (
+    <Typography variant="h6" minHeight="5vh">
+      {t('page.11.desc')}
+    </Typography>
+  );
 
   const addProposalButton = () => (
     <AddButton
@@ -311,13 +310,13 @@ export default function LandingPage() {
   );
 
   const row1 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
+    <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
       <Grid item>{pageDescription()}</Grid>
     </Grid>
   );
 
   const row2 = () => (
-    <Grid container direction="row" justifyContent="space-evenly" alignItems="center">
+    <Grid container p={1} direction="row" justifyContent="space-evenly" alignItems="center">
       <Grid item xs={2}>
         {addProposalButton()}
       </Grid>
