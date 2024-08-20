@@ -4,23 +4,45 @@
       "name": "cypress"
     },
     "summary": {
-      "tests": 1,
+      "tests": 3,
       "failed": 0,
-      "passed": 1,
+      "passed": 3,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723219060883,
-      "stop": 1723219069937
+      "start": 1724153260493,
+      "stop": 1724153299797
     },
     "tests": [
       {
-        "name": "PHT user journeys Verify dark mode",
+        "name": "Creating proposals Create a basic proposal",
         "status": "passed",
-        "duration": 5520,
+        "duration": 7950,
         "rawStatus": "passed",
         "type": "e2e",
-        "filePath": "cypress/integration/darkMode.feature",
+        "filePath": "cypress/integration/createProposal.feature",
+        "retries": 0,
+        "flaky": false,
+        "browser": "electron 118.0.5993.159"
+      },
+      {
+        "name": "Editing proposals Edit a basic proposal",
+        "status": "passed",
+        "duration": 13584,
+        "rawStatus": "passed",
+        "type": "e2e",
+        "filePath": "cypress/integration/editProposal.feature",
+        "retries": 0,
+        "flaky": false,
+        "browser": "electron 118.0.5993.159"
+      },
+      {
+        "name": "Creating observations Create a standard observation",
+        "status": "passed",
+        "duration": 7870,
+        "rawStatus": "passed",
+        "type": "e2e",
+        "filePath": "cypress/integration/observations.feature",
         "retries": 0,
         "flaky": false,
         "browser": "electron 118.0.5993.159"
