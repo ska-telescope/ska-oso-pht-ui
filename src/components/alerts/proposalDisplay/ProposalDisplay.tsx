@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { NOT_SPECIFIED, Projects, STATUS_ERROR } from '../../../utils/constants';
+import { NOT_SPECIFIED, Projects } from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -16,7 +16,7 @@ import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloa
 import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
-import StatusIconDisplay from '../../icon/status/statusIcon';
+import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -26,7 +26,6 @@ interface ProposalDisplayProps {
 }
 
 const GRID_HEIGHT = 300;
-const SIZE = 20;
 const TITLE_STYLE = 'h5';
 const LABEL_WIDTH = 4;
 const LABEL_STYLE = 'subtitle1';
@@ -61,10 +60,6 @@ export default function ProposalDisplay({
     //TODO
   };
 
-  const emptyCell = () => {
-    return <StatusIconDisplay error="" level={STATUS_ERROR} onClick={null} size={SIZE} />;
-  };
-
   const downloadPdf = async (fileType: string) => {
     try {
       const proposal = getProposal();
@@ -86,11 +81,11 @@ export default function ProposalDisplay({
     return `${proposalName}`;
   };
 
-  const subProposalTypes = () => {
+  const proposalAttributes = () => {
     let output = [];
     const subTypes: number[] = getProposal().proposalSubType;
     if (subTypes.length && subTypes[0] > 0) {
-      subTypes.forEach(element => output.push(t('subProposalType.' + element)));
+      subTypes.forEach(element => output.push(t('proposalAttribute.' + element)));
     }
     return output;
   };
@@ -129,13 +124,13 @@ export default function ProposalDisplay({
     );
   };
 
-  const element = (inValue: number | string) =>
-    inValue === NOT_SPECIFIED ? emptyCell() : content(inValue);
+  const element = (inValue: number | string, optional: boolean = false) =>
+    inValue === NOT_SPECIFIED && !optional ? emptyCell() : content(inValue);
 
-  const elementArray = (inArr: Array<number | string>) => {
+  const elementArray = (inArr: Array<number | string>, optional: boolean = false) => {
     return (
       <>
-        {inArr.length === 0 && emptyCell()}
+        {!optional && inArr.length === 0 && emptyCell()}
         {inArr.length > 0 && (
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => (
@@ -149,15 +144,18 @@ export default function ProposalDisplay({
     );
   };
 
-  const entry = (inLabel: string, inValue) => {
+  const entry = (inLabel: string, inValue, optional: boolean = false) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
           {label(inLabel)}
         </Grid>
         <Grid item xs={12 - LABEL_WIDTH}>
-          {typeof inValue !== 'number' && typeof inValue !== 'string' && elementArray(inValue)}
-          {typeof inValue === 'number' || (typeof inValue === 'string' && element(inValue))}
+          {typeof inValue !== 'number' &&
+            typeof inValue !== 'string' &&
+            elementArray(inValue, optional)}
+          {typeof inValue === 'number' ||
+            (typeof inValue === 'string' && element(inValue, optional))}
         </Grid>
       </Grid>
     );
@@ -249,7 +247,7 @@ export default function ProposalDisplay({
           {entry(t('scienceCategory.label'), scienceCategory())}
         </Grid>
         <Grid item xs={6}>
-          {entry(t('subProposalType.label'), subProposalTypes())}
+          {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
         </Grid>
       </Grid>
     </Grid>
