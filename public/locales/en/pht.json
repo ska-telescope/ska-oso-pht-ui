@@ -386,20 +386,16 @@
       "2": "observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.",
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee."
     },
-    "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.  It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
+    "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal. It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",
-    "plural": "Proposal Types",
-    "help1": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.",
-    "help2": "",
-    "help3": "It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
-    "help4": ""
+    "plural": "Proposal Types"
   },
   "subProposalType": {
-    "label": "Proposal Attributes",
-    "1": "Target of Opportunity",
-    "2": "Joint SKA Proposal",
-    "3": "Coordinated Proposal",
-    "4": "Long Term Proposal"
+    "title": {
+      "1": "Principle Investigation Projects",
+      "2": "Key Science Projects",
+      "3": "Director-General Discretionary Time"
+    }
   },
   "members": {
     "label": "Investigator(s)",
