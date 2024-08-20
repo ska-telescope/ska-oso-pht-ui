@@ -338,7 +338,7 @@
   },
   "pi": {
     "initials": "PI",
-    "label": "principal Investigator",
+    "label": "Principal Investigator",
     "help": "Check to indicate that this individual is the Principle Investigator of this proposal.",
     "short": "PI"
   },
