@@ -9,23 +9,23 @@ The PPT supports both light and dark modes and can be accessed at the top left c
 
 
 .. |icostatus| image:: /images/sunMoonBtn.png
-   :width: 15%
+   :width: 10%
    :alt: Page filter
 
 .. |icostatus2| image:: /images/statusnav1.png
-   :width: 30%
+   :width: 20%
    :alt: complete status
 
 .. |icostatus3| image:: /images/statusnav2.png
-   :width: 30%
+   :width: 20%
    :alt: incomplete status
 
 .. |icostatus4| image:: /images/statusnav3.png
-   :width: 30%
+   :width: 20%
    :alt: Not started status
 
 .. |icostatus5| image:: /images/statusnav4.png
-   :width: 30%
+   :width: 20%
    :alt: Failed validation status
 
 .. _figure1:
