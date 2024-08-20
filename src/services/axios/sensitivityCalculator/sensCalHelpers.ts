@@ -163,6 +163,11 @@ const sensCalHelpers = {
         throw new Error('Invalid bandwidth unit');
       }
       return bandwidthValue * unitMap[bandwidthUnits];
+    },
+    convertConfusionNoiseRawValueInuJy(inConfusionNoise: number): number {
+      // Confusion noise is returned from the API in uJy, but the other sensitivities are uJy, 
+      // so we convert here (and hope some future refactoring makes the unit handling more robust!)
+      return inConfusionNoise * 1e6;
     }
   },
   calculate: {

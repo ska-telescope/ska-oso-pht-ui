@@ -183,16 +183,14 @@ export default function calculateSensitivityCalculatorResults(
 
 /******************************************* LOW ********************************************/
 
-const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): number =>
-  isZoom ? getConfusionNoiseZoomLOW(response) : getConfusionNoiseContinuumLOW(response);
+const getConfusionNoiseLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
+  const rawConfusionNoise = getRawConfusionNoise(response, isZoom);
+  return rawConfusionNoise ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise)) : 0;
+}
 
-const getConfusionNoiseContinuumLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
-  response.weighting.confusion_noise.value ? Number(response.weighting.confusion_noise.value) : 0;
-
-const getConfusionNoiseZoomLOW = (response: SensitivityCalculatorAPIResponseLow): number =>
-  response.weighting[0].confusion_noise.value
-    ? Number(response.weighting[0].confusion_noise.value)
-    : 0;
+const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
+  return isZoom ? response.weighting[0].confusion_noise.value : response.weighting.confusion_noise.value;
+}
 
 const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
