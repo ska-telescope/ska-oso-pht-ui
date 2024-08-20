@@ -7,7 +7,7 @@ import {
   enterProposalTitle,
   pageConfirmed,
   verifyOnLandingPage,
-  verifyProposalOnLandingPage
+  verifyFirstProposalOnLandingPageIsVisible
 } from '../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
@@ -24,5 +24,5 @@ When('I provide a title and select the proposal category', () => {
 Then('a proposal with unique ID is created and I can see that on the landing page', () => {
   clickHome();
   verifyOnLandingPage();
-  verifyProposalOnLandingPage();
+  verifyFirstProposalOnLandingPageIsVisible();
 });

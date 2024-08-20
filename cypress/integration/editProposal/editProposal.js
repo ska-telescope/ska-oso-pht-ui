@@ -19,11 +19,14 @@ import {
   clickToValidateProposal,
   createStandardProposal,
   verifyObservationInTable,
-  verifyProposalOnLandingPage,
+  verifyFirstProposalOnLandingPageIsVisible,
   verifyOnLandingPage,
   pageConfirmed,
   selectCosmology,
-  verifyProposalValidAlertFooter
+  verifyProposalValidAlertFooter,
+  clickToSubmitProposal,
+  clickToConfirmProposalSubmission,
+  verifyFirstProposalOnLandingPageHasSubmittedStatus
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
@@ -33,7 +36,7 @@ Given('I am a PHT user who wants to continue editing my previously created propo
 When('I get on the landing page and click on the edit button', () => {
   clickHome();
   verifyOnLandingPage();
-  verifyProposalOnLandingPage();
+  verifyFirstProposalOnLandingPageIsVisible();
   clickEditProposal();
   pageConfirmed('TITLE');
 });
@@ -66,9 +69,10 @@ And('I validate my proposal', () => {
 });
 
 And('I submit my proposal', () => {
-  //TODO: Implement step when functionality is available
+  clickToSubmitProposal();
+  clickToConfirmProposalSubmission();
 });
 
 And('the proposal status should change to submitted', () => {
-  //TODO: Implement step when functionality is available
+  verifyFirstProposalOnLandingPageHasSubmittedStatus();
 });

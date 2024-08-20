@@ -128,7 +128,7 @@ export const verifyOnLandingPage = () => {
   cy.get('[data-testid="addProposalButton"]').should('exist');
 };
 
-export const verifyProposalOnLandingPage = () => {
+export const verifyFirstProposalOnLandingPageIsVisible = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .eq(0)
     .children('div[role="row"]')
@@ -159,4 +159,23 @@ export const clickToValidateProposal = () => {
 export const verifyProposalValidAlertFooter = () => {
   cy.get('[data-testid="timeAlertFooter"]').should('exist');
   cy.get('[data-testid="timeAlertFooter"]').should('contain', 'Proposal is Valid');
+};
+
+export const clickToSubmitProposal = () => {
+  cy.get('[data-testid="SubmitTestId"]').should('exist');
+  cy.get('[data-testid="SubmitTestId"]').click();
+};
+
+export const clickToConfirmProposalSubmission = () => {
+  cy.get('[data-testid="displayConfirmationButton"]').should('exist');
+  cy.get('[data-testid="displayConfirmationButton"]').click();
+};
+
+export const verifyFirstProposalOnLandingPageHasSubmittedStatus = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .eq(0)
+    .children('div[role="row"]')
+    .should('contain', 'prsl-t0001-')
+    .should('contain', 'Proposal Title')
+    .should('contain', 'Submitted');
 };
