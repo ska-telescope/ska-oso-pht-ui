@@ -4,16 +4,10 @@ import { Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
-import {
-  BANDWIDTH_TELESCOPE,
-  NOT_SPECIFIED,
-  OBSERVATION,
-  STATUS_ERROR
-} from '../../../utils/constants';
-import StatusIconDisplay from '../../icon/status/statusIcon';
+import { BANDWIDTH_TELESCOPE, NOT_SPECIFIED, OBSERVATION } from '../../../utils/constants';
+import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 
 const FIELD_OBS = 'observatoryDataProduct.options';
-const SIZE = 20;
 
 interface GridObservationSummaryProps {
   height?: number;
@@ -55,10 +49,6 @@ export default function GridObservationSummary({
     );
   };
 
-  const emptyCell = () => {
-    return <StatusIconDisplay error="" level={STATUS_ERROR} onClick={null} size={SIZE} />;
-  };
-
   const sensitivityIntegrationTime = rec => {
     return (
       OBSERVATION?.Supplied[rec.supplied.type]?.label +
@@ -82,7 +72,7 @@ export default function GridObservationSummary({
   };
 
   const getDataProducts = (rec: { type?: number; id?: any }): string[] => {
-    const array = proposal.dataProductSDP.filter(e => e.observationId.find(el => el === rec.id));
+    const array = proposal.dataProductSDP?.filter(e => e.observationId.find(el => el === rec.id));
     if (!array || array.length === 0) {
       return [];
     } else {

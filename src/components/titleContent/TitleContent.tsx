@@ -3,15 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
-import { Projects } from '../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION, Projects } from '../../utils/constants';
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import { validateTitlePage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../icon/viewIcon/viewIcon';
 
+const LABEL_WIDTH = 2;
+const FIELD_WIDTH = 10;
 interface TitleContentProps {
   page: number;
 }
@@ -30,6 +32,9 @@ export default function TitleContent({ page }: TitleContentProps) {
   const [openTitleLatexModal, setOpenTitleLatexModal] = React.useState(false);
   const handleOpenTitleLatexModal = () => setOpenTitleLatexModal(true);
   const handleCloseTitleLatexModal = () => setOpenTitleLatexModal(false);
+
+  const MAX_CHAR = Number(t('title.maxChar'));
+  const MAX_WORD = Number(t('title.maxWord'));
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -113,8 +118,20 @@ export default function TitleContent({ page }: TitleContentProps) {
     return num !== -1 ? 'active' : 'inactive';
   };
 
+  const displayLabel = (inValue: string) => (
+    <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+      {inValue}
+    </Typography>
+  );
+
+  const displayWordCount = () => (
+    <Typography variant="subtitle1">
+      {t('specialCharacters.cntWord')} {countWords(getProposal().title)} / {MAX_WORD}
+    </Typography>
+  );
+
   function ProposalType(TYPE: any) {
-    const { id, title, code, description } = TYPE;
+    const { id, code } = TYPE;
     return (
       <Grid key={id} item>
         <Card
@@ -147,8 +164,8 @@ export default function TitleContent({ page }: TitleContentProps) {
               }
               title={
                 <Typography variant="h6" component="div" maxWidth={200}>
-                  <Tooltip title={description} arrow>
-                    <Typography>{title}</Typography>
+                  <Tooltip title={t('proposalType.desc.' + id)} arrow>
+                    <Typography>{t('proposalType.title.' + id)}</Typography>
                   </Tooltip>
                 </Typography>
               }
@@ -159,8 +176,8 @@ export default function TitleContent({ page }: TitleContentProps) {
     );
   }
 
-  function ProposalSubType(TYPE: any) {
-    const { id, code, title, description } = TYPE;
+  function Attributes(TYPE: any) {
+    const { id, code } = TYPE;
     return (
       <Grid key={id} item>
         <Card
@@ -171,7 +188,7 @@ export default function TitleContent({ page }: TitleContentProps) {
           className={setCardClassName2(getProposal().proposalSubType, id)}
           onClick={() => clickSubProposal(id)}
           variant="outlined"
-          id={`SubProposalType-${id}`}
+          id={`proposalAttribute-${id}`}
         >
           <CardActionArea>
             <CardHeader
@@ -190,8 +207,8 @@ export default function TitleContent({ page }: TitleContentProps) {
               }
               title={
                 <Typography variant="h6" component="div">
-                  <Tooltip title={description} arrow>
-                    <Typography>{title}</Typography>
+                  <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
+                    <Typography>{t('proposalAttribute.title.' + id)}</Typography>
                   </Tooltip>
                 </Typography>
               }
@@ -217,30 +234,25 @@ export default function TitleContent({ page }: TitleContentProps) {
     );
   };
 
-  const titleField = () => {
-    const MAX_CHAR = Number(t('title.maxChar'));
-    const MAX_WORD = Number(t('title.maxWord'));
+  function validateWordCount(title: string) {
+    if (countWords(title) > MAX_WORD) {
+      return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
+        title
+      )} / ${MAX_WORD}`;
+    }
+  }
 
+  const titleField = () => {
     const setTitle = (e: string) => {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
-    function validateWordCount(title: string) {
-      if (countWords(title) > MAX_WORD) {
-        return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
-          title
-        )} / ${MAX_WORD}`;
-      }
-    }
-
-    const helperFunction = (title: string) =>
-      `${t('title.helper')} - ${t('specialCharacters.cntWord')} ${countWords(title)} / ${MAX_WORD}`;
-
     return (
       <TextEntry
         label={t('title.label')}
-        labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH * 2}
         required
         testId="titleId"
         value={getTitle()}
@@ -248,81 +260,140 @@ export default function TitleContent({ page }: TitleContentProps) {
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={helperFunction(getProposal().title)}
+        helperText={t('title.helper')}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
+    );
+  };
+
+  const titleHelpDisplay = (title: string, description: string) => {
+    return (
+      <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+        <Grid item xs={LABEL_WIDTH}>
+          {displayLabel(title)}
+        </Grid>
+        <Grid item xs={12 - LABEL_WIDTH}>
+          <Typography variant="body2">{description}</Typography>
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const proposalTypes = () => {
+    return (
+      <Grid
+        p={2}
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="baseline"
+        spacing={4}
+      >
+        {Projects.map((proposalType: any) => ProposalType(proposalType))}
+      </Grid>
+    );
+  };
+
+  const proposalAttributes = () => (
+    <Grid
+      p={2}
+      container
+      direction="row"
+      justifyContent="center"
+      alignItems="baseline"
+      spacing={2}
+      id="SubProposalContainer"
+    >
+      {getProposal().proposalType > 0 &&
+        Projects[getProposal().proposalType - 1].subProjects[0].id > 0 &&
+        Projects[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
+          Attributes(proposalType)
+        )}
+    </Grid>
+  );
+
+  const row1 = () => {
+    return (
+      <Grid
+        pl={2}
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item xs={FIELD_WIDTH / 2}>
+          {titleField()}
+        </Grid>
+        <Grid item xs={FIELD_WIDTH / 2}>
+          {displayWordCount()}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const row2 = () => {
+    return (
+      <Grid
+        pl={2}
+        pt={3}
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item xs={FIELD_WIDTH}>
+          {titleHelpDisplay(t('proposalType.plural') + ' *', t('proposalType.help'))}
+        </Grid>
+
+        <Grid item xs={FIELD_WIDTH}>
+          {proposalTypes()}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const row3 = () => {
+    return (
+      <Grid
+        pl={2}
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item xs={FIELD_WIDTH}>
+          {titleHelpDisplay(t('proposalAttribute.plural'), t('proposalAttribute.help'))}
+        </Grid>
+
+        <Grid item xs={FIELD_WIDTH}>
+          {proposalAttributes()}
+        </Grid>
+      </Grid>
     );
   };
 
   return (
     <>
       {getProposal() && (
-        <Grid container direction="column" alignItems="flex-start" justifyContent="space-evenly">
-          <Grid
-            pl={2}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-          >
-            <Grid item xs={5}>
-              {titleField()}
-            </Grid>
-            <Grid item xs={1}></Grid>
-            <Grid item xs={3}>
-              <Typography variant="body2">{t('title.help')}</Typography>
-              <Typography pr={2} variant="body2" sx={{ fontStyle: 'italic' }}></Typography>
-            </Grid>
+        <Grid
+          pl={2}
+          pr={2}
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Grid item xs={12}>
+            {row1()}
           </Grid>
-
-          <Grid
-            pl={2}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ mt: 4, mb: 4 }}
-            spacing={2}
-          >
-            <Grid item xs={2}>
-              <Typography variant="subtitle1">{t('proposalType.plural') + ' *'}</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body2">{t('proposalType.help1')}</Typography>
-              <Typography variant="body2">{t('proposalType.help2')}</Typography>
-              <Typography variant="body2">{t('proposalType.help3')}</Typography>
-              <Typography variant="body2" pt={2} sx={{ fontStyle: 'italic' }}>
-                {t('proposalType.help4')}
-              </Typography>
-            </Grid>
+          <Grid item xs={12}>
+            {row2()}
           </Grid>
-
-          <Grid
-            p={2}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="baseline"
-            spacing={4}
-          >
-            {Projects.map((proposalType: any) => ProposalType(proposalType))}
-          </Grid>
-
-          <Grid
-            p={2}
-            container
-            direction="row"
-            justifyContent="center"
-            alignItems="baseline"
-            spacing={2}
-            id="SubProposalContainer"
-          >
-            {getProposal().proposalType > 0 &&
-              Projects[getProposal().proposalType - 1].subProjects[0].id > 0 &&
-              Projects[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
-                ProposalSubType(proposalType)
-              )}
+          <Grid item xs={12}>
+            {getProposal().proposalType > 0 && row3()}
           </Grid>
         </Grid>
       )}
