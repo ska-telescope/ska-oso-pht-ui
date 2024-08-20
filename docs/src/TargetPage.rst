@@ -41,20 +41,20 @@ Key Information and Actions
 ===========================
 
 - Add target:
-  Use the entry form on the right of the page, under the tab **Add Target**
+  Use the entry form on the right of the page, under the tab ''**Add Target**''
 
 - Edit target:
-  When selected a modal is displayed with a form containing details of the selected target.
-  These fields can be adjusted and will update the target upon confirmation
+  When selected, a modal is displayed with a form containing details of the selected target.
+  These fields can be adjusted and will update the target upon confirmation.
 
-- Delete targets.
-  When selected a modal is displayed showing details of the selected target.
+- Delete targets:
+  When selected, a modal is displayed showing details of the selected target.
   There is the option to confirm or cancel.
   If confirmation is selected, then the target is removed, as well as any links to observations
 
-- Resolve Targets.
-  Resolve targets by name using the |icoresolve| button which allows you to query SIMBAD and NED.
-  This is available as part of the functionality of **Add Target**
+- Resolve Targets:
+  Resolve targets by name using the |icoresolve| button which allows you to query SIMBAD or NED.
+  This is available as part of the functionality of ''**Add Target**''
 
 
 Next Steps

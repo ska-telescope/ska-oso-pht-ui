@@ -354,19 +354,19 @@
   },
   "proposalAttribute": {
     "desc": {
-      "1": "A target of opportunity observing proposal",
-      "2": "A proposal that requires both SKA-MID and SKA-LOW telescopes",
-      "3": "A proposal requiring observing to be coordinated with another facility (either ground or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.",
-      "4": "A proposal that spans multiple PROPOSAL CYCLES"
+      "1": "These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.",
+      "2": "A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously",
+      "3": "A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
+      "4": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
-    "help": "These attributes ... ???",
+    "help": "These attributes ae optional and you can select more than one.",
     "label": "Attribute",
     "plural": "Attributes",
     "title": {
       "1": "Target of Opportunity",
-      "2": "Joint Proposal",
-      "3": "Coordinated Proposal",
-      "4": "Long Term Proposal"
+      "2": "Joint SKA Proposal",
+      "3": "Coordinated Projects",
+      "4": "Long Term Projects"
     }
   },
   "proposals": {
@@ -382,9 +382,9 @@
   },
   "proposalType": {
     "desc": {
-      "1": "Standard Observing Proposal",
-      "2": "A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle",
-      "3": "Director's discretionary time proposal. It does not follow the normal proposal submission policies."
+      "1": "Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.",
+      "2": "observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.",
+      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee."
     },
     "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.  It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",

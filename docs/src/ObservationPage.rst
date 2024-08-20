@@ -27,23 +27,22 @@ and after filling out the form and clicking "Add", the page will look like :numr
    :align: center
    :alt: screen in light mode 
 
-   Observation page with when observation set(s) added in light mode.
+   Observation page with observation set(s) and target(s) added in light mode.
 
 
 Layout and Navigation
 =====================
 
-The Observation Page consists of two distinct sections see :numref:`Figure %s <obspage1>`:
+The Observation Page consists of two distinct sections - see :numref:`Figure %s <obspage1>`:
 
 
 1. Observation set table which displays the following details :
   
    - **observation Id** : unique id for each observation set.
    - **observation group id** : displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
-   - **array** : Array of the observation set i.e if MID or LOW.
    - **sub-array** : This displays the sub-array of the observation set.
    - **type of observation** : If continuum or zoom.
-   - **Sensitivity Calculation status** : Indicates the overall status for the observation. Click to open a modal with individual results. See :numref:`Figure %s <senscal>`. 
+   - **Sensitivity Calculation status** : Indicates the overall status for the observation. Click to open a modal with individual results - see :numref:`Figure %s <senscal>`. 
    - **actions** : Icons providing the ability to edit or delete ( after confirmation ) the selected observation.
 
 2. Target List: 
@@ -53,6 +52,16 @@ The Observation Page consists of two distinct sections see :numref:`Figure %s <o
    - The *total sensitivity* based on the sensitivity calculator result.
    - The *beam size* based on the sensitivity calculator result.
 
+
+
+.. _senscal:
+
+.. figure:: /images/obssenscal.png
+   :width: 90%
+   :align: center
+   :alt: screen in light mode 
+
+   Sensitivity calculator result modal display.
 
 .. tip:: 
 
@@ -76,24 +85,23 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :n
 
    The add observation page.
 
-Edit an observation
+
+
+Actions
 +++++++++++++++++++
 
-Available via the appropriate icon in the list of observations.  Once clicked, the selected observation is displayed in a
-form identical the the Add Observation page, with the titling of the form and buttons changed to reflect the different functionality
-upon completion.   
 
-Upon completion of this action, any affected Sensitivity Calculation results will be replaced, so it is encouraged to check that the
-results are still appropriate.   Also affected may be any Data Products, so these should also be checked to ensure suitability
+- **Edit an observation**: Available via the appropriate icon in the list of observations.  Once clicked, the selected observation is displayed in a
+  form identical to the 'Add Observation page', with the titling of the form and buttons changed to reflect the different functionality
+  upon completion.   
+  
+  Upon completion of this action, any affected Sensitivity Calculation results will be replaced, so it is encouraged to check that the
+  results are still appropriate.   Also affected may be any Data Products, so these should also be checked to ensure suitability. While on this page, you can cancel the edit proess if you choose to.
 
-This also includes the ability to cancel the operation should the editing needs to be aborted.
 
-Remove an observation
-+++++++++++++++++++++
-
-Available via the appropriate icon in the list of observations.  Once clicked, a summary of the selected observation is displayed in a
-modal and a confirmation of the action is required. Upon confirmation, the selected observation, together to all the links to targets
-and data products is also removed.   If this action is cancelled, then the modal simply closes.
+- **Delete an observation**: Available via the appropriate icon in the list of observations.  Once clicked, a summary of the selected observation is displayed in a 
+  modal and a confirmation of the action is required. Upon confirmation, the selected observation, together with all the links to targets 
+  and data products is also removed.   If this action is cancelled, then the modal simply closes.
 
 .. note:: 
 
@@ -106,22 +114,12 @@ and data products is also removed.   If this action is cancelled, then the modal
 
 
 
-.. _senscal:
-
-.. figure:: /images/obssenscal.png
-   :width: 90%
-   :align: center
-   :alt: screen in light mode 
-
-   Sensitivity calculator result modal display.
-
-
 
 
 Key Information and Actions
 ===========================
 
-- The Observation Page allows you to:
+The Observation Page allows you to:
 
   - Create new observation entries.
   - Link observations to specific targets.
