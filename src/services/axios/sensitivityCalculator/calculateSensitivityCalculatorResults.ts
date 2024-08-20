@@ -50,7 +50,7 @@ export default function calculateSensitivityCalculatorResults(
     : getSpectralWeightedSensitivityMID(observation, response, isZoom());
 
   const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom());
-  
+
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
     spectralWeightedSensitivity
@@ -315,21 +315,32 @@ const getSensitivity = (confusionNoise: number, weightedSensitivity: number): nu
 
 const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
   const rawConfusionNoise = getRawConfusionNoise(response, isZoom);
-  return rawConfusionNoise ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise)) : 0;
-}
+  return rawConfusionNoise
+    ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise))
+    : 0;
+};
 
 const getSpectralConfusionNoise = (
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
   isZoom: Boolean
 ) => {
   const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response, isZoom);
-  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise));
+  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(
+    Number(rawSpectralConfusionNoise)
+  );
 };
 
 const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
-  return isZoom ? response.weighting[0].confusion_noise.value : response.weighting.confusion_noise.value;
-}
+  return isZoom
+    ? response.weighting[0].confusion_noise.value
+    : response.weighting.confusion_noise.value;
+};
 
-const getSpectralRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid, isZoom): number => {
-  return isZoom ? response.weighting[0].confusion_noise.value: response.weightingLine[0].confusion_noise.value;
-}
+const getSpectralRawConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+  isZoom
+): number => {
+  return isZoom
+    ? response.weighting[0].confusion_noise.value
+    : response.weightingLine[0].confusion_noise.value;
+};
