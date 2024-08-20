@@ -384,7 +384,7 @@
     "desc": {
       "1": "Standard Observing Proposal",
       "2": "A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle",
-      "3": "Director's discretionary time proposal. It does not follow the normal proposal submission policies. It only requires approval from DG."
+      "3": "Director's discretionary time proposal. It does not follow the normal proposal submission policies."
     },
     "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal.  It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",
