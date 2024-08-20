@@ -564,7 +564,7 @@
     "label": "Spectral Resolution"
   },
   "srcNet": {
-    "label": "SRC Net"
+    "label": "SrcNet"
   },
   "status": {
     "0": "All status types",
