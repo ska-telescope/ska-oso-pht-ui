@@ -388,9 +388,7 @@
     },
     "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal. It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",
-    "plural": "Proposal Types"
-  },
-  "subProposalType": {
+    "plural": "Proposal Types",
     "title": {
       "1": "Principle Investigation Projects",
       "2": "Key Science Projects",
