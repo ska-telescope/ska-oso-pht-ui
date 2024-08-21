@@ -56,7 +56,6 @@ export const createStandardProposal = () => {
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
   clickCreateProposal();
-  pageConfirmed('TEAM');
 };
 
 export const clickHome = () => {
