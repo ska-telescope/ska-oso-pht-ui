@@ -42,12 +42,9 @@ export default function calculateSensitivityCalculatorResults(
   const confusionNoise = getConfusionNoise(response, isZoom());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  console.log('*************************************');
-  console.log('beam size handling');
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
-  console.log('beam size', beamSize);
 
   const sbs = getSurfaceBrightnessSensitivity(recWeight, totalSensitivity);
   const spectralWeightedSensitivity = isLow()
