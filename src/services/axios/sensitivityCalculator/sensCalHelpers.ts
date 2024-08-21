@@ -30,13 +30,25 @@ const sensCalHelpers = {
     convertReturnedSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
       // TODO: add tests (cypress?)
       if (typeof sensitivity === 'number') {
+        if (sensitivity === 0) {
+          return {
+            value: 0.0,
+            unit: 'Jy/beam'
+          };
+        }
+        if (sensitivity < 1) {
+          // For < 1 uJy/beam, display the value in nJy/beam
+          return {
+            value: Number((sensitivity * 1e3).toFixed(precision)),
+            unit: 'nJy/beam'
+          };
+        }
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
           return {
             value: Number(sensitivity.toFixed(precision)),
             unit: 'uJy/beam'
           };
-          // return `${sensitivity.toFixed(precision)} uJy/beam`;
         }
         if (sensitivity < 1e6) {
           // For 1000 - 999999 uJy/beam, display the value in mJy/beam
@@ -44,14 +56,12 @@ const sensCalHelpers = {
             value: Number((sensitivity / 1e3).toFixed(precision)),
             unit: 'mJy/beam'
           };
-          // return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
         }
         // For values above 999999 uJy/beam, display the value in Jy/beam
         return {
           value: Number((sensitivity / 1e6).toFixed(precision)),
           unit: 'Jy/beam'
         };
-        // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
         return {
           value: 0,
