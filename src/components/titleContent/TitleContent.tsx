@@ -5,7 +5,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alerts/alertDialog/AlertDialog';
-import { LAB_IS_BOLD, LAB_POSITION, Projects } from '../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../utils/constants';
 import { countWords, helpers } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import { validateTitlePage } from '../../utils/proposalValidation';
@@ -289,7 +289,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         alignItems="baseline"
         spacing={4}
       >
-        {Projects.map((proposalType: any) => ProposalType(proposalType))}
+        {PROJECTS.map((proposalType: any) => ProposalType(proposalType))}
       </Grid>
     );
   };
@@ -305,8 +305,8 @@ export default function TitleContent({ page }: TitleContentProps) {
       id="SubProposalContainer"
     >
       {getProposal().proposalType > 0 &&
-        Projects[getProposal().proposalType - 1].subProjects[0].id > 0 &&
-        Projects[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
+        PROJECTS[getProposal().proposalType - 1].subProjects[0].id > 0 &&
+        PROJECTS[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
           Attributes(proposalType)
         )}
     </Grid>

@@ -21,6 +21,8 @@ export default function ImageWeightingField({
   const { t } = useTranslation('pht');
   const FIELD = 'imageWeighting';
 
+  const options = () => IMAGE_WEIGHTING.map(el => { return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value }; });
+
   return (
     <DropDown
       disabled={disabled}
@@ -30,7 +32,7 @@ export default function ImageWeightingField({
       labelPosition={LAB_POSITION}
       labelWidth={labelWidth}
       onFocus={onFocus}
-      options={IMAGE_WEIGHTING}
+      options={options()}
       required
       setValue={setValue}
       testId={FIELD}

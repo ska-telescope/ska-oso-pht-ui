@@ -4,7 +4,7 @@ import {
   AXIOS_CONFIG,
   DEFAULT_PI,
   GENERAL,
-  Projects,
+  PROJECTS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
@@ -12,7 +12,7 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
-    const project = Projects.find(({ id }) => id === proposalType);
+    const project = PROJECTS.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
       if (subtype) {
@@ -32,7 +32,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: Projects.find(item => item.id === proposal.proposalType)?.mapping,
+        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
         sub_type: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []

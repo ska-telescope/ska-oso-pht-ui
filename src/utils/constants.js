@@ -148,9 +148,9 @@ export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const IMAGE_WEIGHTING = [
-  { label: 'Natural', lookup: 'natural', value: 0 },
-  { label: 'Uniform', lookup: 'uniform', value: 1 },
-  { label: 'Briggs', lookup: 'robust', value: 2 }
+  { lookup: 'natural', value: 0 },
+  { lookup: 'uniform', value: 1 },
+  { lookup: 'robust', value: 2 }
 ];
 
 export const NOT_SPECIFIED = 'notSpecified';
@@ -180,7 +180,7 @@ export const NAV = [
 ];
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
-export const Projects = [
+export const PROJECTS = [
   {
     id: 1,
     mapping: 'standard_proposal',
