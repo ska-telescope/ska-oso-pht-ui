@@ -2,6 +2,8 @@ import sensCalHelpers from './sensCalHelpers';
 import Observation from '../../../utils/types/observation';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
+  LOW_BEAM_SIZE_PRECISION,
+  MID_BEAM_SIZE_PRECISION,
   OBS_TYPES,
   OBSERVATION,
   STATUS_OK,
@@ -207,7 +209,7 @@ const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): 
   return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec?.beam_size.beam_maj_scaled,
     rec?.beam_size.beam_min_scaled,
-    1
+    LOW_BEAM_SIZE_PRECISION
   );
 };
 
@@ -227,7 +229,7 @@ const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, i
   const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec.beam_maj_scaled,
     rec.beam_min_scaled,
-    1
+    LOW_BEAM_SIZE_PRECISION
   );
   return formattedBeams;
 };
@@ -271,7 +273,7 @@ const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): 
     return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
       rec?.beam_size?.beam_maj_scaled,
       rec?.beam_size?.beam_min_scaled,
-      1
+      MID_BEAM_SIZE_PRECISION
     );
   } else {
     return '';
@@ -310,7 +312,7 @@ const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, i
   const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec.beam_maj_scaled,
     rec.beam_min_scaled,
-    1
+    MID_BEAM_SIZE_PRECISION
   );
   return formattedBeams;
 };
