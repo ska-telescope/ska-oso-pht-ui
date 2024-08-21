@@ -28,8 +28,6 @@ export default function calculateSensitivityCalculatorResults(
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isSensitivitySupplied = () => observation.supplied.type === TYPE_SUPPLIED_SENSITIVITY;
 
-
-
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
     : getWeightedSensitivityMid(response, isZoom(), observation);
@@ -61,12 +59,19 @@ export default function calculateSensitivityCalculatorResults(
   const getSurfaceBrightnessSensitivity = (
     response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
     sense: number,
-    isZoom: boolean): ValueUnitPair => {
+    isZoom: boolean
+  ): ValueUnitPair => {
     const rec = isZoom ? response?.weighting[0] : response?.weighting;
     const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
-    return rec ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity) : { value: 0, unit: '' };
-  }
-  const sbs = getSurfaceBrightnessSensitivity(response, isZoom() ? spectralTotalSensitivity : totalSensitivity, isZoom());
+    return rec
+      ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
+      : { value: 0, unit: '' };
+  };
+  const sbs = getSurfaceBrightnessSensitivity(
+    response,
+    isZoom() ? spectralTotalSensitivity : totalSensitivity,
+    isZoom()
+  );
 
   const spectralSbs = isLow()
     ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity, isZoom())
@@ -250,7 +255,9 @@ const getSpectralSurfaceBrightnessLOW = (
   isZoom: boolean
 ) => {
   const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
-  return rec ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor) : { value: 0, unit: '' };
+  return rec
+    ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor)
+    : { value: 0, unit: '' };
 };
 
 /******************************************* MID ********************************************/
