@@ -126,6 +126,12 @@ export const verifyOnLandingPage = () => {
   cy.get('[data-testid="addProposalButton"]').should('exist');
 };
 
+export const verifyOnLandingPageFilterIsVisible = () => {
+  cy.get('[data-testid="proposalType"]').should('exist');
+  cy.get('[data-testid="proposalType"]').click();
+  cy.get('[data-value="draft"]').click({ force: true });
+};
+
 export const verifyFirstProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="dataGridId"]')
     .should('contain', 'prsl-t0001-')
