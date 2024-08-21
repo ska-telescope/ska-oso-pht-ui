@@ -4,7 +4,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../utils/types/notification';
 import StandardAlert from '../standardAlert/StandardAlert';
 
-const SECS = 5000;
+const SECS = 2000;
 
 interface TimedAlertProps {
   color: AlertColorTypes;

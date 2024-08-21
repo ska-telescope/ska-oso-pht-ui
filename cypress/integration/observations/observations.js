@@ -14,6 +14,7 @@ Given('I have access to the PHT Application', () => {
 
 And('I have navigated to the Observation Page', () => {
   createStandardProposal();
+  cy.wait(3000);
   clickToGeneralPage();
   clickToSciencePage();
   clickToTargetPage();
