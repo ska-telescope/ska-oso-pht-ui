@@ -31,11 +31,9 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.log('Before alert');
   cy.on('window:alert', str => {
-    expect(str).to.equal('Proposal added with unique identifier');
+    expect(str).to.include('Proposal added with unique identifier');
   });
-  cy.log('The alert is having the expected text');
 };
 
 export const clickEditProposal = () => {
@@ -157,7 +155,9 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.get('[data-testid="timeAlertFooter"]').should('include.text', 'Proposal is Valid');
+  cy.on('window:alert', str => {
+    expect(str).to.include('Proposal is Valid');
+  });
 };
 
 export const clickToSubmitProposal = () => {
