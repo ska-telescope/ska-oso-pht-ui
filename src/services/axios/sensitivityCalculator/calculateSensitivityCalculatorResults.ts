@@ -112,7 +112,9 @@ export default function calculateSensitivityCalculatorResults(
     section1: [
       {
         field: `${observationTypeLabel}SensitivityWeighted`,
-        value: weightedSensitivityDisplay?.value.toString(),
+        value: isZoom()
+          ? spectralWeightedSensitivityDisplay?.value.toString()
+          : weightedSensitivityDisplay?.value.toString(),
         units: weightedSensitivityDisplay?.unit
       },
       {
