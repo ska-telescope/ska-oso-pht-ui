@@ -16,7 +16,9 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
     return inValue;
   }
   const result = Number(inValue);
-  return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
+  // return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
+  // TODO restore back once done
+  return result;
 };
 
 export const presentDate = (inString: string, reverse: boolean = false) =>
