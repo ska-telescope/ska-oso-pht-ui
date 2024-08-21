@@ -207,7 +207,8 @@ const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): 
   return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec?.beam_size.beam_maj_scaled,
     rec?.beam_size.beam_min_scaled,
-    1);
+    1
+  );
 };
 
 /* -------------- */
