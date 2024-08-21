@@ -1,15 +1,15 @@
 General Page
 ~~~~~~~~~~~~
 The general page allows you to provide the abstract and select the science category of your proposal (see
-:numref:`Figure %s <figure6>` shows the general page in light and dark mode).
+:numref:`Figure %s <figure6>` shows the general page in light mode).
 
 .. _figure6:
 
 .. figure:: /images/generalPage.png
    :width: 100%
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
    
-   Light and dark mode of the general page.
+   Light mode of the general page.
 
 Layout and Navigation
 ++++++++++++++++++++++

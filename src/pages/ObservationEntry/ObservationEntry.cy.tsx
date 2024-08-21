@@ -202,10 +202,10 @@ function verifyTapering(value: number, contents: string) {
 }
 
 function verifyImageWeighting() {
-  cy.get('[data-testid="imageWeighting"]').contains('Uniform');
+  cy.get('[data-testid="imageWeighting"]').contains('imageWeighting.1');
   cy.get('[data-testid="imageWeighting"]').click();
   cy.get('[data-value="0"]').click();
-  cy.get('[data-testid="imageWeighting"]').contains('Natural');
+  cy.get('[data-testid="imageWeighting"]').contains('imageWeighting.0');
   cy.get('[data-testid="helpPanelId"]').contains('imageWeighting.help');
 }
 

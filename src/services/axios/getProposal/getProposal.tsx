@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
-  Projects,
+  PROJECTS,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA,
@@ -65,7 +65,7 @@ const getScienceSubCategory = () => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects?.find(({ mapping }) => mapping === proposalType.main_type);
+  const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
     project.subProjects?.find(({ mapping }) => mapping === subType)
   );
@@ -363,7 +363,7 @@ const getResultsSection1 = (
       // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
       // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
       // => see sensitivity calculator
-      // TODO once sens calcs results updated, mapping of results will need updating to refelect different fields for different results
+      // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
       field: 'continuumSensitivityWeighted',
       value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
       units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
@@ -445,7 +445,7 @@ const getResultsSection3 = (
     */
         'integrationTime'
       : 'sensitivity';
-  // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
+  // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
     {
@@ -507,7 +507,7 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
     id: inRec.prsl_id,
     title: inRec.info.title,
-    proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: inRec.metadata.last_modified_on,

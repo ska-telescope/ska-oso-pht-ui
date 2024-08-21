@@ -4,7 +4,7 @@ import {
   GENERAL,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
-  Projects,
+  PROJECTS,
   PROPOSAL_STATUS,
   REF_COORDINATES_UNITS,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -33,7 +33,7 @@ import TargetObservation from 'utils/types/targetObservation';
 import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
-  const project = Projects.find(({ id }) => id === proposalType);
+  const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
     if (subtype) {
@@ -466,18 +466,11 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
-    metadata: {
-      version: proposal.version + 1,
-      created_by: proposal.createdBy,
-      created_on: proposal.createdOn,
-      last_modified_by: `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}`,
-      last_modified_on: new Date().toDateString()
-    },
     cycle: GENERAL.Cycle,
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: Projects.find(item => item.id === proposal.proposalType)?.mapping,
+        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
         sub_type: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
