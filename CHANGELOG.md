@@ -7,6 +7,8 @@ Future
 
 ---
 
+* STAR-635: 
+   - Correct Sensitivity Calculator Results for Confusion Noise and Sensitivity
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
    - Upgrade to version 2.1.0 of ska-oso-pht-services
