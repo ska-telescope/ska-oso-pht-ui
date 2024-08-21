@@ -353,6 +353,12 @@
     "label": "Proposal Id"
   },
   "proposalAttribute": {
+    "code": {
+      "1": "ToO",
+      "2": "JSP",
+      "3": "CP",
+      "4": "LTP"
+    },
     "desc": {
       "1": "A target of opportunity observing proposal",
       "2": "A proposal that requires both SKA-MID and SKA-LOW telescopes",
@@ -381,6 +387,11 @@
     "under review": "Under Review"
   },
   "proposalType": {
+    "code": {
+      "1": "PI",
+      "2": "KSP",
+      "3": "DDT"
+    },
     "desc": {
       "1": "Standard Observing Proposal",
       "2": "A large project that requires observing time allocations over a period longer than one cycle. This differs from a LTP as KSPs require a lot of observing time whereas LTPs typically need small amounts of time spread over more than one cycle",

@@ -131,7 +131,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   );
 
   function ProposalType(TYPE: any) {
-    const { id, code } = TYPE;
+    const { id } = TYPE;
     return (
       <Grid key={id} item>
         <Card
@@ -158,7 +158,7 @@ export default function TitleContent({ page }: TitleContentProps) {
                   }}
                 >
                   <Typography variant="body2" component="div">
-                    {code}
+                    {t('proposalType.code.' + id)}
                   </Typography>
                 </Avatar>
               }
@@ -177,7 +177,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   }
 
   function Attributes(TYPE: any) {
-    const { id, code } = TYPE;
+    const { id } = TYPE;
     return (
       <Grid key={id} item>
         <Card
@@ -201,7 +201,7 @@ export default function TitleContent({ page }: TitleContentProps) {
                   }}
                 >
                   <Typography variant="body2" component="div">
-                    {code}
+                    {t('proposalAttribute.code.' + id)}
                   </Typography>
                 </Avatar>
               }

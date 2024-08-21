@@ -92,7 +92,6 @@ export default function GridObservationSummary({
     {
       field: 'id',
       renderHeader: () => headerDisplay('observations.id'),
-      flex: 0.75,
       disableClickEventBubbling: true
     },
     {
@@ -105,14 +104,13 @@ export default function GridObservationSummary({
     {
       field: 'telescope',
       renderHeader: () => headerDisplay('observingBand.label'),
-      flex: 1.5,
+      flex: 1,
       disableClickEventBubbling: true,
       renderCell: e => element(BANDWIDTH_TELESCOPE[e.row.observingBand]?.label)
     },
     {
       field: 'type',
       renderHeader: () => headerDisplay('observationType.short'),
-      flex: 0.75,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => element(t(`observationType.${e.row.type}`))
     },
@@ -123,14 +121,14 @@ export default function GridObservationSummary({
           'sensitivityCalculatorResults.sensitivity',
           'sensitivityCalculatorResults.integrationTime'
         ),
-      flex: 0.75,
+      flex: 1.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => element(sensitivityIntegrationTime(e.row))
     },
     {
       field: 'bandwidth',
       renderHeader: () => headerDisplay('page.7.plural'),
-      flex: 0.75,
+      flex: 1.5,
       disableClickEventBubbling: true,
       renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))
     }

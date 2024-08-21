@@ -183,102 +183,62 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 export const Projects = [
   {
     id: 1,
-    code: 'PI',
     mapping: 'standard_proposal',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        mapping: 'coordinated_proposal'
       },
       {
         id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        mapping: 'long_term_proposal',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+        mapping: 'long_term_proposal'
       }
     ]
   },
   {
     id: 2,
-    code: 'KSP',
     mapping: 'key_science_proposal',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        mapping: 'coordinated_proposal'
       },
       {
         id: 4,
-        title: 'Long term proposal',
-        code: 'LTP',
-        mapping: 'long_term_proposal',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+        mapping: 'long_term_proposal'
       }
     ]
   },
   {
     id: 3,
-    code: 'DDT',
-    mapping: 'director_time_proposal',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+        mapping: 'coordinated_proposal'
       }
     ]
   }
