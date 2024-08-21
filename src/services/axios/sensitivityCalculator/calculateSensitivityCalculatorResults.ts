@@ -26,30 +26,9 @@ export default function calculateSensitivityCalculatorResults(
 ): SensCalcResults {
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
-  const recWeight = isZoom()
-    ? response?.weighting[0]
-    : isLow()
-    ? response?.weightingLine[0]
-    : response?.weighting;
   const isSensitivitySupplied = () => observation.supplied.type === TYPE_SUPPLIED_SENSITIVITY;
 
-  const getSurfaceBrightnessSensitivity = (
-    rec: { sbs_conv_factor: number }, 
-    response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid, 
-    sense: number,
-    isZoom: boolean): ValueUnitPair => {
-    console.log('::: in getSurfaceBrightnessSensitivity');
-    console.log('rec', rec);
-    // console.log('rec.sbs_conv_factor', rec.sbs_conv_factor);
-    console.log('response', response);
-    console.log('isZoom', isZoom);
-    console.log('sense', sense);
-    const rec2 = isZoom ? response?.weighting[0] : response?.weighting;
-    console.log('rec2.sbs_conv_factor', rec2.sbs_conv_factor);
-    const rawSurfaceBrightnessSensitivity = rec2 ? sense * rec2?.sbs_conv_factor : 0;
-    // return rec ? sense * rec.sbs_conv_factor : 0;
-    return rec ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity) : {value: 0, unit: ''};
-  }
+
 
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
@@ -63,8 +42,6 @@ export default function calculateSensitivityCalculatorResults(
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
 
-  console.log('///////// HANDLE SBS /////////');
-  const sbs = getSurfaceBrightnessSensitivity(recWeight, response, totalSensitivity, isZoom());
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
     : getSpectralWeightedSensitivityMID(observation, response, isZoom());
@@ -75,13 +52,29 @@ export default function calculateSensitivityCalculatorResults(
     spectralConfusionNoise,
     spectralWeightedSensitivity
   );
-  const spectralBeamSize = isLow()
-    ? getSpectralBeamSizeLOW(response, isZoom())
-    : getSpectralBeamSizeMID(response, isZoom());
-  console.log('///////// HANDLE SPECTRAL SBS /////////');
+
+  // SBS for LOW should now be correct for Continuum/Spectral/Zoom
+  /* TODO
+    - refactor SBS LOW code (remove duplication, etc.)
+    - fix SBS results for MID
+  */
+  const getSurfaceBrightnessSensitivity = (
+    response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+    sense: number,
+    isZoom: boolean): ValueUnitPair => {
+    const rec = isZoom ? response?.weighting[0] : response?.weighting;
+    const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
+    return rec ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity) : { value: 0, unit: '' };
+  }
+  const sbs = getSurfaceBrightnessSensitivity(response, isZoom() ? spectralTotalSensitivity : totalSensitivity, isZoom());
+
   const spectralSbs = isLow()
     ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity, isZoom())
     : getSpectralSurfaceBrightnessMID(response, spectralTotalSensitivity, isZoom());
+
+  const spectralBeamSize = isLow()
+    ? getSpectralBeamSizeLOW(response, isZoom())
+    : getSpectralBeamSizeMID(response, isZoom());
 
   const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
     const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
@@ -104,7 +97,6 @@ export default function calculateSensitivityCalculatorResults(
     isZoom() ? spectralTotalSensitivity : totalSensitivity
   );
   const beamSizeDisplay = { value: beamSize, units: 'arcsec2' };
-  // const sbsDisplay = { value: sbs, units: 'k' };
 
   const spectralConfusionNoiseDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     spectralConfusionNoise
@@ -118,7 +110,6 @@ export default function calculateSensitivityCalculatorResults(
     spectralTotalSensitivity
   );
   const spectralBeamSizeDisplay = { value: spectralBeamSize, units: 'arcsec2' };
-  const spectralSbsDisplay = { value: spectralSbs, units: 'k' };
 
   const observationTypeLabel: string = OBS_TYPES[observation.type];
 
@@ -187,8 +178,8 @@ export default function calculateSensitivityCalculatorResults(
         },
         {
           field: 'spectralSurfaceBrightnessSensitivity',
-          value: spectralSbsDisplay?.value.toString(),
-          units: spectralSbsDisplay?.units
+          value: spectralSbs?.value.toString(),
+          units: spectralSbs?.unit
         }
       ]
     }),
@@ -211,12 +202,15 @@ const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
+  console.log('::: in getWeightedSensitivityLOW');
   const sensitivity = isZoom
     ? response.calculate.data.spectral_sensitivity?.value
     : response.calculate.data.continuum_sensitivity?.value;
   const factor = isZoom
     ? response.weighting[0].weighting_factor
     : response.weighting.weighting_factor;
+  console.log('sensitivity', sensitivity);
+  console.log('factor', factor);
   return (sensitivity ?? 0) * factor;
 };
 
@@ -256,7 +250,7 @@ const getSpectralSurfaceBrightnessLOW = (
   isZoom: boolean
 ) => {
   const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
-  return sense * rec.sbs_conv_factor;
+  return rec ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor) : { value: 0, unit: '' };
 };
 
 /******************************************* MID ********************************************/
