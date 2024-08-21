@@ -297,10 +297,6 @@ const getSpectralWeightedSensitivityMID = (
   isZoom: boolean
 ) => {
   return getSpectralWeightedSensitivityRawValueMid(observation, response, isZoom);
-  // TODO check if still correct for zoom
-  /*
-  - check if still correct for zoom
-  */
 };
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom: boolean) => {
