@@ -40,9 +40,12 @@ export default function calculateSensitivityCalculatorResults(
   const confusionNoise = getConfusionNoise(response, isZoom());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
+  console.log('*************************************');
+  console.log('beam size handling');
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
+  console.log('beam size', beamSize);
 
   const sbs = getSurfaceBrightnessSensitivity(recWeight, totalSensitivity);
   const spectralWeightedSensitivity = isLow()
@@ -200,7 +203,12 @@ const getWeightedSensitivityLOW = (
 };
 
 const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): string => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  console.log('::: in getBeamSizeLOW');
+  console.log('response', response);
+  console.log('isZoom', isZoom);
+  const rec = isZoom ? response.weightingLine[0] : response.weighting;
+  console.log('rec.beam_size.beam_maj_scaled', rec?.beam_size.beam_maj_scaled);
+  console.log('rec.beam_size.beam_min_scaled', rec?.beam_size.beam_min_scaled);
   return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec.beam_size.beam_maj_scaled,
     rec.beam_size.beam_min_scaled,
