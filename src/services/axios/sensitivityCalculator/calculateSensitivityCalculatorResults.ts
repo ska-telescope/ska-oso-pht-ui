@@ -56,6 +56,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
     : getSpectralWeightedSensitivityMID(observation, response, isZoom());
+  console.log('spectralWeightedSensitivity', spectralWeightedSensitivity);
 
   const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom());
 
@@ -104,6 +105,7 @@ export default function calculateSensitivityCalculatorResults(
   const spectralWeightedSensitivityDisplay = isSensitivitySupplied
     ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralWeightedSensitivity);
+  console.log('spectralWeightedSensitivityDisplay', spectralWeightedSensitivityDisplay);
 
   const spectralTotalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     spectralTotalSensitivity
@@ -191,6 +193,7 @@ export default function calculateSensitivityCalculatorResults(
       }
     ]
   };
+  console.log('theResults', theResults);
   return theResults;
 }
 
@@ -335,17 +338,41 @@ const getSpectralWeightedSensitivityMID = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
+  getSpectralWeightedSensitivityMIDNew(observation, response, isZoom); // HERE
   const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
   if (!rec) {
     return 0;
   }
   const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
   if (calc?.spectral_sensitivity?.value) {
-    return calc.spectral_sensitivity?.value * rec.weighting_factor;
+    console.log('::: in getSpectralWeightedSensitivityMID calc.spectral_sensitivity?.value * rec.weighting_factor * 1e6', calc.spectral_sensitivity?.value * rec.weighting_factor * 1e6);
+    return calc.spectral_sensitivity?.value * rec.weighting_factor * 1e6;
   } else {
     return observation?.supplied.value;
   }
 };
+
+const getSpectralWeightedSensitivityMIDNew = (
+  observation: Observation,
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean
+) => {
+  console.log('::: getSpectralWeightedSensitivityMIDNew RESPONSE', response);
+  const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
+  const recWeightLine = isZoom ? response?.weighting[0] : response?.weightingLine[0];
+  const result = recCalc.spectral_sensitivity?.value! * recWeightLine.weighting_factor * 1e6;
+  const convertedResult = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(result);
+  console.log('result', result);
+  console.log('convertedResult', convertedResult);
+  // TODO this returns correct spectral weighted sensitivity for continuum
+  /*
+  - clean up function (variable names, etc)
+  - handle supplied sensitivity scenario
+  - use it to return the weighted sensitivity
+  - check if still correct for zoom
+  */
+}
+
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom: boolean) => {
   const rec = isZoom ? response?.weighting[0]?.beam_size : response?.weightingLine[0]?.beam_size;
