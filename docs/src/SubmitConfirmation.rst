@@ -15,4 +15,4 @@ Review and click 'Confirm' to proceed or 'Cancel' to make changes.
 .. figure:: /images/submitConfirmation.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 

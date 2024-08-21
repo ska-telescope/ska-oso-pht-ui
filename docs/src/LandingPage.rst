@@ -1,7 +1,7 @@
 Starting a new Proposal
 ########################
 
-You need to start by creating an account. When you log into the proposal preparation tool (PPT), you will arrive on the landing page.
+You do not need an account to start a proposal but you will need to be signed int to submit your proposal. When you get into the proposal preparation tool (PPT), you will arrive on the landing page.
 
 
 .. |ico4| image:: /images/landingPageIcons.png
@@ -29,7 +29,7 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
 .. figure:: /images/landingPage.png
    :width: 100%
    :align: center
-   :alt: screen in light & dark mode of the landing page
+   :alt: screen in light mode of the landing page
    :class: with-border
 
    The Landing page in light mode.
@@ -75,7 +75,7 @@ Key Information and Actions
    :alt: Page filter
 
 .. |ico3| image:: /images/landingPageSearch.png
-   :width: 30%
+   :width: 35%
    :alt: Page search filter
 
 -  Click |ico1| Button to create a new proposal. This takes you to the title page.
