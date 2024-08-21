@@ -85,10 +85,9 @@ export default function calculateSensitivityCalculatorResults(
   const beamSizeDisplay = { value: beamSize, units: 'arcsec2' };
   const sbsDisplay = { value: sbs, units: 'k' };
 
-  const spectralConfusionNoiseDisplay =
-    observation.type === TYPE_CONTINUUM
-      ? sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralConfusionNoise)
-      : { value: '', unit: '' };
+  const spectralConfusionNoiseDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
+    spectralConfusionNoise
+  );
 
   const spectralWeightedSensitivityDisplay = isSensitivitySupplied()
     ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity)
@@ -119,7 +118,9 @@ export default function calculateSensitivityCalculatorResults(
       },
       {
         field: `${observationTypeLabel}ConfusionNoise`,
-        value: confusionNoiseDisplay?.value.toString(),
+        value: isZoom()
+          ? spectralConfusionNoiseDisplay?.value.toString()
+          : confusionNoiseDisplay?.value.toString(),
         units: confusionNoiseDisplay?.unit
       },
       {
@@ -343,9 +344,9 @@ const getSpectralConfusionNoise = (
   isZoom: Boolean
 ) => {
   const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response, isZoom);
-  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(
-    Number(rawSpectralConfusionNoise)
-  );
+  return rawSpectralConfusionNoise
+    ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise))
+    : 0;
 };
 
 const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {

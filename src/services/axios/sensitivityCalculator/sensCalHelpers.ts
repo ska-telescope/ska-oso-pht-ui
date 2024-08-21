@@ -28,42 +28,40 @@ const sensCalHelpers = {
      * @returns {object} the sensitivity as an object with the correct units and precision // the sensitivity as a string with the correct units and precision
      * **/
     convertReturnedSensitivityToDisplayValue(sensitivity: number, precision = 2): ValueUnitPair {
-      console.log('********************************************************************');
-      console.log('::: in convertReturnedSensitivityToDisplayValue sensitivity', sensitivity);
-      console.log('typeof sensitivity', typeof sensitivity);
       // TODO: add tests (cypress?)
       if (typeof sensitivity === 'number') {
+        if (sensitivity === 0) {
+          return {
+            value: 0.0,
+            unit: 'Jy/beam'
+          };
+        }
+        if (sensitivity < 1) {
+          // For < 1 uJy/beam, display the value in nJy/beam
+          return {
+            value: Number((sensitivity * 1e3).toFixed(precision)),
+            unit: 'nJy/beam'
+          };
+        }
         if (sensitivity < 1e3) {
           // For 0 - 999 uJy/beam, display the value in uJy/beam
-          console.log('::: in sensitivity < 1e3');
-          console.log('sensitivity', sensitivity);
           return {
             value: Number(sensitivity.toFixed(precision)),
             unit: 'uJy/beam'
           };
-          // return `${sensitivity.toFixed(precision)} uJy/beam`;
         }
         if (sensitivity < 1e6) {
-          console.log('::: in sensitivity < 1e6');
-          console.log('sensitivity', sensitivity);
-          console.log(
-            'Number((sensitivity / 1e3).toFixed(precision))',
-            Number((sensitivity / 1e3).toFixed(precision))
-          );
           // For 1000 - 999999 uJy/beam, display the value in mJy/beam
           return {
             value: Number((sensitivity / 1e3).toFixed(precision)),
             unit: 'mJy/beam'
           };
-          // return `${(sensitivity / 1e3).toFixed(precision)} mJy/beam`;
         }
         // For values above 999999 uJy/beam, display the value in Jy/beam
-        console.log('::: default');
         return {
           value: Number((sensitivity / 1e6).toFixed(precision)),
           unit: 'Jy/beam'
         };
-        // return `${(sensitivity / 1e6).toFixed(precision)} Jy/beam`;
       } else {
         return {
           value: 0,
