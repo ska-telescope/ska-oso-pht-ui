@@ -5,7 +5,6 @@ import {
   clickHome,
   clickStandardProposalSubTypeTargetOfOpportunity,
   enterProposalTitle,
-  pageConfirmed,
   verifyOnLandingPage,
   verifyFirstProposalOnLandingPageIsVisible
 } from '../common/common';
