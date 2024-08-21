@@ -13,7 +13,7 @@ interface TimedAlertProps {
   text: string;
 }
 
-export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
+export default function TimedAlert({ color, delay = 10, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
   const { updateAppContent5 } = storageObject.useStore();
 
