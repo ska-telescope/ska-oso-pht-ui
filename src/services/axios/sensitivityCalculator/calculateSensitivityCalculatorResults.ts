@@ -203,17 +203,11 @@ const getWeightedSensitivityLOW = (
 };
 
 const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): string => {
-  console.log('::: in getBeamSizeLOW');
-  console.log('response', response);
-  console.log('isZoom', isZoom);
-  const rec = isZoom ? response.weightingLine[0] : response.weighting;
-  console.log('rec.beam_size.beam_maj_scaled', rec?.beam_size.beam_maj_scaled);
-  console.log('rec.beam_size.beam_min_scaled', rec?.beam_size.beam_min_scaled);
+  const rec = isZoom ? response.weighting[0] : response.weighting;
   return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-    rec.beam_size.beam_maj_scaled,
-    rec.beam_size.beam_min_scaled,
-    1
-  );
+    rec?.beam_size.beam_maj_scaled,
+    rec?.beam_size.beam_min_scaled,
+    1);
 };
 
 /* -------------- */
