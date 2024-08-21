@@ -127,9 +127,7 @@ export const verifyOnLandingPage = () => {
 };
 
 export const verifyFirstProposalOnLandingPageIsVisible = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .eq(0)
-    .children('div[role="row"]')
+  cy.get('[data-testid="dataGridId"]')
     .should('contain', 'prsl-t0001-')
     .should('contain', 'Proposal Title');
 };
