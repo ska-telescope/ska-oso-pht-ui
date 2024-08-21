@@ -31,11 +31,11 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.log('Before alert')
-  cy.on('window:alert', (str) => {
-    expect(str).to.equal('Proposal added with unique identifier')
-  })
-  cy.log('The alert is having the expected text')
+  cy.log('Before alert');
+  cy.on('window:alert', str => {
+    expect(str).to.equal('Proposal added with unique identifier');
+  });
+  cy.log('The alert is having the expected text');
 };
 
 export const clickEditProposal = () => {
