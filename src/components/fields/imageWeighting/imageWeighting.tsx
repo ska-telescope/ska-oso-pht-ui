@@ -21,7 +21,10 @@ export default function ImageWeightingField({
   const { t } = useTranslation('pht');
   const FIELD = 'imageWeighting';
 
-  const options = () => IMAGE_WEIGHTING.map(el => { return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value }; });
+  const options = () =>
+    IMAGE_WEIGHTING.map(el => {
+      return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value };
+    });
 
   return (
     <DropDown

@@ -1,7 +1,6 @@
 Introduction
 ~~~~~~~~~~~~
 
-Welcome, astronomers!
 
 The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
@@ -10,32 +9,32 @@ The PPT supports both light and dark modes and can be accessed at the top left c
 
 
 .. |icostatus| image:: /images/sunMoonBtn.png
-   :width: 15%
+   :width: 10%
    :alt: Page filter
 
 .. |icostatus2| image:: /images/statusnav1.png
-   :width: 30%
+   :width: 20%
    :alt: complete status
 
 .. |icostatus3| image:: /images/statusnav2.png
-   :width: 30%
+   :width: 20%
    :alt: incomplete status
 
 .. |icostatus4| image:: /images/statusnav3.png
-   :width: 30%
+   :width: 20%
    :alt: Not started status
 
 .. |icostatus5| image:: /images/statusnav4.png
-   :width: 30%
+   :width: 20%
    :alt: Failed validation status
 
 .. _figure1:
 .. figure:: /images/toggle.png
    :width: 100%
-   :alt: screen in light & dark mode of the landing page
+   :alt: screen in light mode of the landing page
    :class: with-border
 
-   Location of light and dark mode toggle of the PPT.
+   Location of light/dark mode toggle of the PPT.
 
 
 
@@ -62,7 +61,7 @@ Common elements are recurring components found across multiple pages in the tool
 .. figure:: /images/statusnav.png
    :width: 100%
    :align: center
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
    Status, Navigation and Validation.
 
@@ -77,7 +76,7 @@ Additional Notes
 .. figure:: /images/landingPage.png
    :width: 90%
    :align: center
-   :alt: screen in light & dark mode
+   :alt: screen in light mode
 
    Landing page.
 

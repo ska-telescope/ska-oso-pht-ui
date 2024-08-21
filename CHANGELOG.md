@@ -7,6 +7,11 @@ Future
 
 ---
 
+* STAR-644:
+   - Updated display of the Title page
+   - Migrated Image Weighting labels to the PHT.json file
+   - Migrated Proposal Type labels and descriptions to the PHT.json file
+   - Migrated Proposal Attribute labels and descriptions to the PHT.json file
 * STAR-640:
    - Display only most recent proposal for duplicates in ProposalList
    - remove metadata section for PUT and POST mapping as handled by ODA
