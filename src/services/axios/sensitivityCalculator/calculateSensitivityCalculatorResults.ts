@@ -265,7 +265,7 @@ const getWeightedSensitivityMid = (
 };
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): string => {
-  const rec = isZoom ? response?.weighting[0] : response?.weightingLine[0];
+  const rec = isZoom ? response?.weighting[0] : response?.weighting;
   if (rec) {
     return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
       rec?.beam_size?.beam_maj_scaled,
