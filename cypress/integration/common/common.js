@@ -22,7 +22,7 @@ export const selectCosmology = () => {
 
 export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
   cy.get('[id="ProposalType-1"]').click({ force: true });
-  cy.get('[aria-label="A target of opportunity observing proposal"]').click();
+  cy.get('[id="proposalAttribute-1"]').click({ force: true });
 };
 
 export const clickCreateProposal = () => {
