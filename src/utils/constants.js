@@ -148,9 +148,9 @@ export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const IMAGE_WEIGHTING = [
-  { label: 'Natural', lookup: 'natural', value: 0 },
-  { label: 'Uniform', lookup: 'uniform', value: 1 },
-  { label: 'Briggs', lookup: 'robust', value: 2 }
+  { lookup: 'natural', value: 0 },
+  { lookup: 'uniform', value: 1 },
+  { lookup: 'robust', value: 2 }
 ];
 
 export const NOT_SPECIFIED = 'notSpecified';
@@ -180,122 +180,66 @@ export const NAV = [
 ];
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
-export const Projects = [
+export const PROJECTS = [
   {
     id: 1,
-    title: 'Principal Investigator (PI) projects',
-    code: 'PI',
     mapping: 'standard_proposal',
-    description:
-      'Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of Opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description:
-          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint SKA proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description:
-          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Project',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
+        mapping: 'coordinated_proposal'
       },
       {
         id: 4,
-        title: 'Long-term Projects',
-        code: 'LTP',
-        mapping: 'long_term_proposal',
-        description:
-          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
+        mapping: 'long_term_proposal'
       }
     ]
   },
   {
     id: 2,
-    title: 'Key Science Projects',
-    code: 'KSP',
     mapping: 'key_science_proposal',
-    description:
-      'observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of Opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description:
-          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint SKA Proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description:
-          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Project',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
+        mapping: 'coordinated_proposal'
       },
       {
         id: 4,
-        title: 'Long-term Projects',
-        code: 'LTP',
-        mapping: 'long_term_proposal',
-        description:
-          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
+        mapping: 'long_term_proposal'
       }
     ]
   },
   {
     id: 3,
-    title: "Director-General's Discretionary Time",
-    code: 'DDT',
     mapping: 'director_time_proposal',
-    description:
-      'Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of Opportunity',
-        code: 'ToO',
-        mapping: 'target_of_opportunity',
-        description:
-          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
+        mapping: 'target_of_opportunity'
       },
       {
         id: 2,
-        title: 'Joint SKA Proposal',
-        code: 'JSP',
-        mapping: 'joint_proposal',
-        description:
-          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
+        mapping: 'joint_proposal'
       },
       {
         id: 3,
-        title: 'Coordinated Project',
-        code: 'CP',
-        mapping: 'coordinated_proposal',
-        description:
-          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
+        mapping: 'coordinated_proposal'
       }
     ]
   }

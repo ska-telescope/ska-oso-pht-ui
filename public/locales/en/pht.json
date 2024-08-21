@@ -221,7 +221,10 @@
   },
   "imageWeighting": {
     "help": "Select natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
-    "label": "Image Weighting"
+    "label": "Image Weighting",
+    "0": "Natural",
+    "1": "Uniform",
+    "2": "Briggs"
   },
   "importFromFile": {
     "label": "Import from file."
@@ -353,20 +356,26 @@
     "label": "Proposal Id"
   },
   "proposalAttribute": {
+    "code": {
+      "1": "ToO",
+      "2": "JSP",
+      "3": "CP",
+      "4": "LTP"
+    },
     "desc": {
       "1": "These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.",
-      "2": "A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously",
-      "3": "A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
+      "2": "A JSP project requires both SKA-Low and SKA-Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.",
+      "3": "A project requiring SKA observations to be coordinated with another facility (either ground-based or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
       "4": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
-    "help": "These attributes ae optional and you can select more than one.",
+    "help": "One or more of these optional attributes may be selected to further refine the proposal",
     "label": "Attribute",
     "plural": "Attributes",
     "title": {
       "1": "Target of Opportunity",
-      "2": "Joint SKA Proposal",
-      "3": "Coordinated Projects",
-      "4": "Long Term Projects"
+      "2": "Joint SKA proposal",
+      "3": "Coordinated Project",
+      "4": "Long-term Projects"
     }
   },
   "proposals": {
@@ -381,18 +390,23 @@
     "under review": "Under Review"
   },
   "proposalType": {
+    "code": {
+      "1": "PI",
+      "2": "KSP",
+      "3": "DDT"
+    },
     "desc": {
       "1": "Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.",
-      "2": "observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.",
+      "2": "Observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.",
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee."
     },
     "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal. It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
-      "1": "Principle Investigation Projects",
+      "1": "Principal Investigator (PI) projects'",
       "2": "Key Science Projects",
-      "3": "Director-General Discretionary Time"
+      "3": "Director-General's Discretionary Time"
     }
   },
   "members": {

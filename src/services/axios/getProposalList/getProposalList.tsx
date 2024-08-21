@@ -3,7 +3,7 @@ import {
   AXIOS_CONFIG,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA,
-  Projects,
+  PROJECTS,
   GENERAL
 } from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
@@ -47,7 +47,7 @@ const getMostRecentProposals = (data: ProposalBackend[]) => {
 /*********************************************************** mapping *********************************************************/
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects.find(({ mapping }) => mapping === proposalType.main_type);
+  const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
     project.subProjects.find(({ mapping }) => mapping === subType)
   );
@@ -95,7 +95,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: inRec[i].metadata?.created_on,
       createdBy: inRec[i].metadata?.created_by,
       version: inRec[i].metadata?.version,
-      proposalType: Projects.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)?.id,
+      proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)?.id,
       proposalSubType: inRec[i].info?.proposal_type.sub_type
         ? getSubType(inRec[i].info?.proposal_type)
         : [],

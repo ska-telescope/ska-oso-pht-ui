@@ -13,7 +13,7 @@ import Alert from '../..//components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import { PATH } from '../../utils/constants';
-import DataProduct from '../../utils/types/dataProduct';
+import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 
 const PAGE = 7;
@@ -108,14 +108,16 @@ export default function SdpDataPage() {
         headerName: t('imageSize.label'),
         flex: 0.5,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: DataProduct }) => e.row.imageSizeValue + ' ' + e.row.imageSizeUnits
+        renderCell: (e: { row: DataProductSDP }) =>
+          e.row.imageSizeValue + ' ' + e.row.imageSizeUnits
       },
       {
         field: 'pixelSize',
         headerName: t('pixelSize.label'),
         flex: 0.5,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: DataProduct }) => e.row.pixelSizeValue + ' ' + e.row.pixelSizeUnits
+        renderCell: (e: { row: DataProductSDP }) =>
+          e.row.pixelSizeValue + ' ' + e.row.pixelSizeUnits
       },
       {
         field: 'weighting',

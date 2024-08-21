@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { NOT_SPECIFIED, Projects } from '../../../utils/constants';
+import { NOT_SPECIFIED } from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -77,7 +77,7 @@ export default function ProposalDisplay({
   const proposalType = () => {
     const proposalType = getProposal().proposalType;
     const proposalName =
-      !proposalType || proposalType < 1 ? NOT_SPECIFIED : Projects[proposalType - 1].title;
+      !proposalType || proposalType < 1 ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
   };
 
@@ -85,7 +85,7 @@ export default function ProposalDisplay({
     let output = [];
     const subTypes: number[] = getProposal().proposalSubType;
     if (subTypes.length && subTypes[0] > 0) {
-      subTypes.forEach(element => output.push(t('proposalAttribute.' + element)));
+      subTypes.forEach(element => output.push(t('proposalAttribute.title.' + element)));
     }
     return output;
   };
