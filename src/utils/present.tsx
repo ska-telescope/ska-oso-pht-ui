@@ -14,7 +14,6 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
     return inValue;
   }
   const result = Number(inValue);
-  // TODO put that back
-  // return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
+  return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
   return result;
 };
