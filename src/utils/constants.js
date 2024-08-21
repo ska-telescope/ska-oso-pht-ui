@@ -24,7 +24,7 @@ export const BAND_5B = 4;
 
 export const BANDWIDTH_TELESCOPE = [
   {
-    label: 'Low Band (50 - 350 MHz)',
+    label: 'Low (50 - 350 MHz)',
     telescope: 2,
     value: BAND_LOW,
     isBand5: false,
@@ -34,7 +34,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'low_band'
   },
   {
-    label: 'Band 1 (0.35 - 1.05 GHz)',
+    label: 'Mid Band 1 (0.35 - 1.05 GHz)',
     telescope: 1,
     value: BAND_1,
     isBand5: false,
@@ -44,7 +44,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_1'
   },
   {
-    label: 'Band 2 (0.95 - 1.76 GHz)',
+    label: 'Mid Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
     value: BAND_2,
     isBand5: false,
@@ -54,7 +54,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_2'
   },
   {
-    label: 'Band 5a (4.6 - 8.5 GHz)',
+    label: 'Mid Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
     value: BAND_5A,
     isBand5: true,
@@ -64,7 +64,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_3'
   }, // Band 5a
   {
-    label: 'Band 5b (8.3 - 15.4 GHz)',
+    label: 'Mid Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
@@ -183,102 +183,119 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 export const Projects = [
   {
     id: 1,
+    title: 'Principal Investigator (PI) projects',
     code: 'PI',
     mapping: 'standard_proposal',
+    description:
+      'Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
+        title: 'Coordinated Project',
         code: 'CP',
         mapping: 'coordinated_proposal',
         description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long-term Projects',
         code: 'LTP',
         mapping: 'long_term_proposal',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+        description:
+          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
       }
     ]
   },
   {
     id: 2,
+    title: 'Key Science Projects',
     code: 'KSP',
     mapping: 'key_science_proposal',
+    description:
+      'observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
+        title: 'Coordinated Project',
         code: 'CP',
         mapping: 'coordinated_proposal',
         description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
       },
       {
         id: 4,
-        title: 'Long term proposal',
+        title: 'Long-term Projects',
         code: 'LTP',
         mapping: 'long_term_proposal',
-        description: 'A proposal that spans multiple PROPOSAL CYCLES'
+        description:
+          'These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP.'
       }
     ]
   },
   {
     id: 3,
+    title: "Director-General's Discretionary Time",
     code: 'DDT',
     mapping: 'director_time_proposal',
+    description:
+      'Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee.',
     subProjects: [
       {
         id: 1,
-        title: 'Target of opportunity',
+        title: 'Target of Opportunity',
         code: 'ToO',
         mapping: 'target_of_opportunity',
-        description: 'A target of opportunity observing proposal'
+        description:
+          'These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.'
       },
       {
         id: 2,
-        title: 'Joint proposal',
+        title: 'Joint SKA Proposal',
         code: 'JSP',
         mapping: 'joint_proposal',
-        description: 'A proposal that requires both SKA-MID and Low telescopes'
+        description:
+          'A JSP project requires both SKA-Low and SKA- Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.'
       },
       {
         id: 3,
-        title: 'Coordinated Proposal',
+        title: 'Coordinated Project',
         code: 'CP',
         mapping: 'coordinated_proposal',
         description:
-          'A proposal requiring observing to be coordinated with another facility (either ground- or space-based) with user-specified SCHEDULING CONSTRAINTS provided. Note VLBI is considered a form of coordinated observing, though later more detailed requirements may create a specific VLBI proposal type.'
+          'A project requiring SKA observations to be coordinated with another facility (either ground- or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.'
       }
     ]
   }
