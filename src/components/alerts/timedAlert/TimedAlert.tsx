@@ -4,7 +4,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../utils/types/notification';
 import StandardAlert from '../standardAlert/StandardAlert';
 
-const SECS = 1000;
+const SECS = 5000;
 
 interface TimedAlertProps {
   color: AlertColorTypes;
@@ -13,7 +13,7 @@ interface TimedAlertProps {
   text: string;
 }
 
-export default function TimedAlert({ color, delay = 10, testId, text }: TimedAlertProps) {
+export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
   const { updateAppContent5 } = storageObject.useStore();
 
