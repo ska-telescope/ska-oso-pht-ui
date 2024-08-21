@@ -35,7 +35,6 @@ export default function calculateSensitivityCalculatorResults(
   const confusionNoise = getConfusionNoise(response, isZoom());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  console.log('totalSensitivity', totalSensitivity);
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
@@ -54,7 +53,7 @@ export default function calculateSensitivityCalculatorResults(
   // SBS for LOW should now be correct for Continuum/Spectral/Zoom
   /* TODO
     - refactor SBS LOW code (remove duplication, etc.)
-    - fix SBS results for MID
+    - fix SBS results for MID continuum and spectral (Mid Zoom ok)
   */
   const getSurfaceBrightnessSensitivity = (
     response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
@@ -207,15 +206,12 @@ const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
-  console.log('::: in getWeightedSensitivityLOW');
   const sensitivity = isZoom
     ? response.calculate.data.spectral_sensitivity?.value
     : response.calculate.data.continuum_sensitivity?.value;
   const factor = isZoom
     ? response.weighting[0].weighting_factor
     : response.weighting.weighting_factor;
-  console.log('sensitivity', sensitivity);
-  console.log('factor', factor);
   return (sensitivity ?? 0) * factor;
 };
 
@@ -340,9 +336,11 @@ const getSpectralSurfaceBrightnessMID = (
   isZoom: boolean
 ) => {
   const conv_factor = isZoom
-    ? response?.weighting?.sbs_conv_factor
+    ? response?.weighting[0]?.sbs_conv_factor
     : response?.weightingLine[0]?.sbs_conv_factor;
-  return sense * conv_factor;
+  return conv_factor
+    ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * conv_factor)
+    : { value: 0, unit: '' };
 };
 
 /********************************************* COMMON ***********************************************/
