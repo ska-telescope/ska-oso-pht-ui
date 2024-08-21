@@ -31,10 +31,7 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.get('[data-testid="PHTFooter"]').should(
-    'contain',
-    'Proposal added with unique identifier'
-  );
+  cy.get('[data-testid="PHTFooter"]').should('contain', 'Proposal added with unique identifier');
 };
 
 export const clickEditProposal = () => {

@@ -25,7 +25,8 @@ import {
   selectCosmology,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  verifyFirstProposalOnLandingPageHasSubmittedStatus, verifyProposalValidAlertFooter
+  verifyFirstProposalOnLandingPageHasSubmittedStatus,
+  verifyProposalValidAlertFooter
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
