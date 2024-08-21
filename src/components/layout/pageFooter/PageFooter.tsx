@@ -86,7 +86,6 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
 
   return (
     <Paper
-      data-testid="PHTFooter"
       sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
       elevation={0}
     >

@@ -31,7 +31,7 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.get('[data-testid="PHTFooter"]').should('contain', 'Proposal added with unique identifier');
+  cy.get('[data-testid="timeAlertFooter"]').should('include.text', 'Proposal added with unique identifier');
 };
 
 export const clickEditProposal = () => {
@@ -153,7 +153,7 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.get('[data-testid="PHTFooter"]').should('contain', 'Proposal is Valid');
+  cy.get('[data-testid="timeAlertFooter"]').should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {
