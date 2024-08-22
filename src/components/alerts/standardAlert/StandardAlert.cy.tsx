@@ -16,7 +16,11 @@ function mountingSuccess(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Success} testId="standardAlertSuccess" text="DUMMY TEXT" />
+          <StandardAlert
+            color={AlertColorTypes.Success}
+            testId="standardAlertSuccess"
+            text="DUMMY TEXT"
+          />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -30,7 +34,11 @@ function mountingError(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Error} testId="standardAlertError" text="DUMMY TEXT" />
+          <StandardAlert
+            color={AlertColorTypes.Error}
+            testId="standardAlertError"
+            text="DUMMY TEXT"
+          />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -44,7 +52,11 @@ function mountingWarning(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Warning} testId="standardAlertWarning" text="DUMMY TEXT" />
+          <StandardAlert
+            color={AlertColorTypes.Warning}
+            testId="standardAlertWarning"
+            text="DUMMY TEXT"
+          />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -58,7 +70,11 @@ function mountingInfo(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Info} testId="standardAlertInfo" text="DUMMY TEXT" />
+          <StandardAlert
+            color={AlertColorTypes.Info}
+            testId="standardAlertInfo"
+            text="DUMMY TEXT"
+          />
         </Router>
       </ThemeProvider>
     </StoreProvider>
