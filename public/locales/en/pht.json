@@ -404,7 +404,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
-      "1": "Principal Investigator (PI) projects'",
+      "1": "Principal Investigator (PI) projects",
       "2": "Key Science Projects",
       "3": "Director-General's Discretionary Time"
     }
@@ -761,7 +761,7 @@
     },
     "10": {
       "title": "Observation Setup",
-      "label": "Observation Setup(s).",
+      "label": "Observation Setup(s)",
       "desc": "Define the parameters of the observation setup."
     },
     "11": {
