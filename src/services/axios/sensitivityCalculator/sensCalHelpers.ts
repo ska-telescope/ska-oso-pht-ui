@@ -178,6 +178,19 @@ const sensCalHelpers = {
       // Confusion noise is returned from the API in uJy, but the other sensitivities are uJy,
       // so we convert here (and hope some future refactoring makes the unit handling more robust!)
       return inConfusionNoise * 1e6;
+    },
+    convertKelvinsToDisplayValue(value: number, precision = 2): ValueUnitPair {
+      // Converts a value in uK to a string with sensible units
+      if (value < 1e3) {
+        // For 0 - 999 uK, display the value in uK
+        return { value: Number(value.toFixed(precision)), unit: 'uK' };
+      }
+      if (value < 1e6) {
+        // For 1000 - 999999 uK, display the value in mK
+        return { value: Number((value / 1e3).toFixed(precision)), unit: 'mK' };
+      }
+      // For values above 999999 uK, display the value in K
+      return { value: Number((value / 1e6).toFixed(precision)), unit: 'K' };
     }
   },
   calculate: {

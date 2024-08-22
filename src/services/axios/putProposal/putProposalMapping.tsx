@@ -2,6 +2,7 @@ import {
   BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
+  IMAGE_WEIGHTING,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
   PROJECTS,
@@ -151,7 +152,8 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
 };
 
 const getObservingBand = (observingBand: number) => {
-  return BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  const obsBand = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  return obsBand;
 };
 
 const getSubArray = (incSubArray: number, incTelescope: number): string => {
@@ -252,7 +254,8 @@ const getObservationsSets = (
         supplied: getSupplied(obs),
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        image_weighting: obs.imageWeighting?.toString()
+        // image_weighting: obs.imageWeighting?.toString()
+        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
       },
       details: obs.details
     };

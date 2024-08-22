@@ -790,7 +790,10 @@ export const VELOCITY_TYPE = {
   REDSHIFT: 1
 };
 
-/**************************************************************8*/
+export const LOW_BEAM_SIZE_PRECISION = 1;
+export const MID_BEAM_SIZE_PRECISION = 3;
+
+/***************************************************************/
 
 export const DEFAULT_PI = {
   id: 'prp-ska01-202204-01',

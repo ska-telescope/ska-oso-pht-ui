@@ -17,7 +17,10 @@ import {
   RA_TYPE_GALACTIC,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
-  TELESCOPE_LOW_BACKEND_MAPPING
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  IMAGE_WEIGHTING,
+  BAND_LOW,
+  BAND_1
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -192,30 +195,16 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 /*********************************************************** observation parameters mapping *********************************************************/
 
 const getWeighting = inImageWeighting => {
-  const weighting = OBSERVATION.ImageWeighting?.find(
-    item => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
+  const weighting = IMAGE_WEIGHTING?.find(
+    item => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
 const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-  const mid1ObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 1'))?.value;
-  const lowObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Low Band'))?.value;
-  switch (inObsBand) {
-    case 'low_band':
-      return lowObsBand;
-    case 'mid_band_1':
-      return mid1ObsBand;
-    case 'mid_band_2':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 2'))?.value;
-    case 'mid_band_3':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5a'))?.value;
-    case 'mid_band_4':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5b'))?.value;
-    default:
-      // fallback: send low band for low array and mid band 1 for mid array
-      return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
-  }
+  const band = BANDWIDTH_TELESCOPE?.find(item => item.mapping === inObsBand)?.value;
+  const fallback = inObsArray.includes('low') ? BAND_LOW : BAND_1;
+  return band ? band : fallback;
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
