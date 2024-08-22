@@ -91,13 +91,14 @@ function setStubs() {
   updateAppContent2();
 }
 
-export function verifyHeader(pageNo: number) {
-  // Standard buttons
+export function verifyHeaderButtons(pageNo: number) {
   cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
   cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
   cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
-  // Status Array
+}
+
+export function verifyHeaderStatus(pageNo: number) {
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');
   cy.get('[data-testId="statusId3"]');
@@ -106,9 +107,17 @@ export function verifyHeader(pageNo: number) {
   cy.get('[data-testId="statusId6"]');
   cy.get('[data-testId="statusId7"]');
   cy.get('[data-testId="statusId8"]');
-  // Title & Description
+}
+
+export function verifyHeaderTitles(pageNo: number) {
   cy.get('#pageTitle').contains('PAGE.' + pageNo + '.TITLE');
   cy.get('#pageDesc').contains('page.' + pageNo + '.desc');
+}
+
+export function verifyHeader(pageNo: number) {
+  verifyHeaderButtons(pageNo);
+  verifyHeaderStatus(pageNo);
+  verifyHeaderTitles(pageNo);
 }
 
 export function verifyFooter(pageNo: number) {
