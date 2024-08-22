@@ -1,28 +1,33 @@
 import React from 'react';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BaseButton from '../Base/Button';
 
-interface PreviousPageProps {
-  action: Function;
+interface PreviousPageButtonProps {
+  action: string | Function;
   disabled?: boolean;
-  label?: string;
+  primary?: boolean;
+  testId?: string;
+  title?: string;
+  toolTip?: string;
 }
 
 export default function PreviousPageButton({
-  action,
   disabled = false,
-  label = ''
-}: PreviousPageProps) {
+  action,
+  primary = false,
+  title = 'button.add',
+  testId,
+  toolTip
+}: PreviousPageButtonProps) {
   return (
-    <Button
-      ariaDescription={`${label}Button`}
-      color={ButtonColorTypes.Inherit}
+    <BaseButton
+      action={action}
       disabled={disabled}
       icon={<ArrowBackIosIcon />}
-      label={label}
-      onClick={action}
-      testId={`${label}Button`}
-      variant={ButtonVariantTypes.Contained}
+      primary={primary}
+      testId={testId}
+      title={title}
+      toolTip={toolTip}
     />
   );
 }

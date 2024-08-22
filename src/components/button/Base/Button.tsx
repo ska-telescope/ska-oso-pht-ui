@@ -19,8 +19,8 @@ export default function BaseButton({
   title = 'button.add',
   icon,
   primary = false,
-  testId,
-  toolTip
+  testId = 'baseButtonTestId',
+  toolTip = ''
 }: BaseButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -43,8 +43,8 @@ export default function BaseButton({
       icon={icon}
       label={theTitle}
       onClick={ClickFunction}
-      testId={testId ? testId : 'BaseButton'}
-      toolTip={toolTip?.length ? t(toolTip) : ''}
+      testId={testId}
+      toolTip={toolTip}
       variant={ButtonVariantTypes.Contained}
     />
   );

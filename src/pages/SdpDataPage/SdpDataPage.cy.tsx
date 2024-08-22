@@ -95,8 +95,8 @@ export function verifyHeader(pageNo: number) {
   // Standard buttons
   cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
-  cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
-  cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
+  cy.get('[data-testId="validationBtnTestId"]').contains('validationBtn.label');
+  cy.get('[data-testId="submitBtnTestId"]').contains('button.submit'); // TODO DISABLED
   // Status Array
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');
@@ -114,8 +114,8 @@ export function verifyHeader(pageNo: number) {
 export function verifyFooter(pageNo: number) {
   const prevLabel = 'page.' + (pageNo - 1) + '.title';
   const nextLabel = 'page.' + (pageNo + 1) + '.title';
-  cy.get('[data-testId="' + prevLabel + 'Button"]').contains(prevLabel);
-  cy.get('[data-testId="' + nextLabel + 'Button"]').contains(nextLabel);
+  cy.get('[data-testId="prevButtonTestId"]').contains(prevLabel);
+  cy.get('[data-testId="nextButtonTestId"]').contains(nextLabel);
 }
 
 function mount(theTheme: any) {

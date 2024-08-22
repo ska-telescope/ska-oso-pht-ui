@@ -1,22 +1,33 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
+import BaseButton from '../Base/Button';
 
-export default function ValidateButton({ action }) {
-  const { t } = useTranslation('pht');
+interface ValidateButtonProps {
+  title?: string;
+  action: string | Function;
+  disabled?: boolean;
+  primary?: boolean;
+  testId?: string;
+  toolTip?: string;
+}
 
-  const title = t('validationBtn.label');
-
+export default function ValidateButton({
+  disabled = false,
+  action,
+  title = 'validationBtn.label',
+  primary = false,
+  testId = 'validationBtnTestId',
+  toolTip
+}: ValidateButtonProps) {
   return (
-    <Button
-      ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
+    <BaseButton
+      action={action}
+      disabled={disabled}
       icon={<FactCheckIcon />}
-      label={title}
-      onClick={action}
-      testId={`${title}TestId`}
-      variant={ButtonVariantTypes.Contained}
+      primary={primary}
+      testId={testId}
+      title={title}
+      toolTip={toolTip}
     />
   );
 }

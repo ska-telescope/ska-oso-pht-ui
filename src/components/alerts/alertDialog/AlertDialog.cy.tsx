@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
+import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import AlertDialog from './AlertDialog';
-import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
@@ -27,6 +27,14 @@ function mounting(theTheme) {
   );
 }
 
+function cancelButtonClick() {
+  cy.get('[data-testid="cancelButtonTestId"]').click();
+}
+
+function confirmButtonClick() {
+  cy.get('[data-testid="confirmButtonTestId"]').click();
+}
+
 describe('<AlertDialog />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -35,8 +43,16 @@ describe('<AlertDialog />', () => {
   }
 });
 
-describe('Content', () => {
+describe('Open and confirm', () => {
   beforeEach(() => {
     mounting(THEME_LIGHT);
+    confirmButtonClick();
+  });
+});
+
+describe('Open and cancel', () => {
+  beforeEach(() => {
+    mounting(THEME_LIGHT);
+    cancelButtonClick();
   });
 });

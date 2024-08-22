@@ -2,7 +2,7 @@ import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import BaseButton from '../Base/Button';
 
-interface CancelButtonProps {
+interface ConfirmButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -11,14 +11,14 @@ interface CancelButtonProps {
   toolTip?: string;
 }
 
-export default function CancelButton({
+export default function ConfirmButton({
   disabled = false,
   action,
   title = 'button.confirm',
   primary = false,
   testId,
   toolTip
-}: CancelButtonProps) {
+}: ConfirmButtonProps) {
   return (
     <BaseButton
       action={action}
