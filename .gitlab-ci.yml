@@ -76,7 +76,7 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+  image: cypress/browsers:node18.12.0-chrome106-ff106
   stage: test
   tags:
     - k8srunner
