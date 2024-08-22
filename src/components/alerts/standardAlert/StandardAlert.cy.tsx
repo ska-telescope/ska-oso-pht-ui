@@ -9,14 +9,14 @@ import { Router } from 'react-router-dom';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-function mounting(theTheme) {
+function mountingSuccess(theTheme) {
   cy.viewport(2000, 1000);
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Success} testId="testId" text="DUMMY TEXT" />
+          <StandardAlert color={AlertColorTypes.Success} testId="standardAlertSuccess" text="DUMMY TEXT" />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -30,7 +30,7 @@ function mountingError(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Error} testId="testId" text="DUMMY TEXT" />
+          <StandardAlert color={AlertColorTypes.Error} testId="standardAlertError" text="DUMMY TEXT" />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -44,7 +44,7 @@ function mountingWarning(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Warning} testId="testId" text="DUMMY TEXT" />
+          <StandardAlert color={AlertColorTypes.Warning} testId="standardAlertWarning" text="DUMMY TEXT" />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -58,7 +58,7 @@ function mountingInfo(theTheme) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <Router location="/" navigator={undefined}>
-          <StandardAlert color={AlertColorTypes.Info} testId="testId" text="DUMMY TEXT" />
+          <StandardAlert color={AlertColorTypes.Info} testId="standardAlertInfo" text="DUMMY TEXT" />
         </Router>
       </ThemeProvider>
     </StoreProvider>
@@ -68,7 +68,7 @@ function mountingInfo(theTheme) {
 describe('<StandardAlert /> Success', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
+      mountingSuccess(theTheme);
     });
   }
 });
@@ -99,6 +99,6 @@ describe('<StandardAlert /> Info', () => {
 
 describe('Content', () => {
   beforeEach(() => {
-    mounting(THEME_LIGHT);
+    mountingSuccess(THEME_LIGHT);
   });
 });
