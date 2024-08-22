@@ -5,6 +5,7 @@ import { GenerateCtrfReport } from 'cypress-ctrf-json-reporter';
 const cucumber = require('cypress-cucumber-preprocessor').default;
 
 export default defineConfig({
+  projectId: 'ssiwb9',
   fixturesFolder: 'tests/cypress/fixtures',
   screenshotsFolder: 'tests/cypress/screenshots',
   videosFolder: 'tests/cypress/videos',
