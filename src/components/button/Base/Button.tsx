@@ -7,7 +7,7 @@ interface BaseButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
-  icon: JSX.Element;
+  icon: string | JSX.Element;
   primary?: boolean;
   testId?: string;
   toolTip?: string;

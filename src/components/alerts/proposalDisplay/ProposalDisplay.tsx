@@ -25,6 +25,7 @@ interface ProposalDisplayProps {
   onConfirmLabel?: string;
 }
 
+const MODAL_WIDTH = '75%';
 const GRID_HEIGHT = 300;
 const TITLE_STYLE = 'h5';
 const LABEL_WIDTH = 4;
@@ -214,7 +215,7 @@ export default function ProposalDisplay({
   const headerContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item>{skaoIcon({ useSymbol: false })}</Grid>
+        <Grid item>{skaoIcon({ useSymbol: true })}</Grid>
         <Grid item>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
         <Grid item>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
@@ -373,8 +374,8 @@ export default function ProposalDisplay({
       id="alert-dialog-proposal-change"
       PaperProps={{
         style: {
-          minWidth: '95%',
-          maxWidth: '95%'
+          minWidth: MODAL_WIDTH,
+          maxWidth: MODAL_WIDTH
         }
       }}
     >
