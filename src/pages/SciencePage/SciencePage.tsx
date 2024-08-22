@@ -55,7 +55,8 @@ export default function SciencePage() {
     //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
     const file = {
       documentId: `science-doc-${getProposal().id}`,
-      link: (theFile as unknown) as string,
+      //link: (theFile as unknown) as string, TODO: remove dummy url
+      link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
       file: theFile
     };
     setProposal({ ...getProposal(), sciencePDF: file });
