@@ -23,10 +23,76 @@ function mounting(theTheme) {
   );
 }
 
-describe('<StandardAlert />', () => {
+function mountingError(theTheme) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <StandardAlert color={AlertColorTypes.Error} testId="testId" text="DUMMY TEXT" />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+function mountingWarning(theTheme) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <StandardAlert color={AlertColorTypes.Warning} testId="testId" text="DUMMY TEXT" />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+function mountingInfo(theTheme) {
+  cy.viewport(2000, 1000);
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <StandardAlert color={AlertColorTypes.Info} testId="testId" text="DUMMY TEXT" />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+describe('<StandardAlert /> Success', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
+    });
+  }
+});
+
+describe('<StandardAlert /> Error', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mountingError(theTheme);
+    });
+  }
+});
+
+describe('<StandardAlert /> Warning', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mountingWarning(theTheme);
+    });
+  }
+});
+
+describe('<StandardAlert /> Info', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      mountingInfo(theTheme);
     });
   }
 });
