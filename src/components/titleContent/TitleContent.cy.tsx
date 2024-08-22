@@ -154,25 +154,25 @@ describe('<TitleContent />', () => {
       //     // select 1st Proposal type
       //     cy.get('#ProposalType-1').click();
       //     // select 1st SubProposal type
-      //     cy.get('#SubProposalType-1').click();
+      //     cy.get('#proposalAttribute-1').click();
       //     // check if 1st proposal is selected
-      //     cy.get('#SubProposalType-1').should('have.class', 'active');
+      //     cy.get('#proposalAttribute-1').should('have.class', 'active');
       //   });
       //   it('sub-proposal NOT selected when sub-proposal NOT clicked', () => {
       //     // select 1st Proposal type
       //     cy.get('#ProposalType-1').click();
       //     // select 1st SubProposal type
-      //     cy.get('#SubProposalType-1').click();
+      //     cy.get('#proposalAttribute-1').click();
       //     // check if 3rd proposal is not selected
-      //     cy.get('#SubProposalType-3').should('have.class', 'inactive');
+      //     cy.get('#proposalAttribute-3').should('have.class', 'inactive');
       //   });
       //   it('should open alert dialog when changing sub-proposal type', () => {
       //     // select 1st Proposal type
       //     cy.get('#ProposalType-1').click();
       //     // select 1st SubProposal type
-      //     cy.get('#SubProposalType-1').click();
+      //     cy.get('#proposalAttribute-1').click();
       //     // select 2nd SubProposal type
-      //     cy.get('#SubProposalType-2').click();
+      //     cy.get('#proposalAttribute-2').click();
       //     // check if alert dialog open
       //     cy.get('#alert-dialog-proposal-change')
       //       .should('exist')
@@ -182,9 +182,9 @@ describe('<TitleContent />', () => {
       //     // select 2st Proposal type
       //     cy.get('#ProposalType-2').click();
       //     // select 5th SubProposal type
-      //     cy.get('#SubProposalType-5').click();
+      //     cy.get('#proposalAttribute-5').click();
       //     // select 5th SubProposal type
-      //     cy.get('#SubProposalType-5').click();
+      //     cy.get('#proposalAttribute-5').click();
       //     // check if alert dialog not open
       //     cy.get('#alert-dialog-proposal-change').should('not.exist');
       //   });
@@ -192,7 +192,7 @@ describe('<TitleContent />', () => {
       //     // select 2st Proposal type
       //     cy.get('#ProposalType-2').click();
       //     // select 5th SubProposal type
-      //     cy.get('#SubProposalType-5').click();
+      //     cy.get('#proposalAttribute-5').click();
       //     // check if alert dialog not open
       //     cy.get('#alert-dialog-proposal-change').should('not.exist');
       //   });
@@ -200,26 +200,26 @@ describe('<TitleContent />', () => {
       //     // select 2st Proposal type
       //     cy.get('#ProposalType-2').click();
       //     // select 5th SubProposal type
-      //     cy.get('#SubProposalType-5').click();
+      //     cy.get('#proposalAttribute-5').click();
       //     // select 6th SubProposal type
-      //     cy.get('#SubProposalType-6').click();
+      //     cy.get('#proposalAttribute-6').click();
       //     // click "continue button" of dialog
       //     cy.get('[data-testid="continueId"]').click();
       //     // check if 6th sub-proposal is selected
-      //     cy.get('#SubProposalType-6').should('have.class', 'active');
+      //     cy.get('#proposalAttribute-6').should('have.class', 'active');
       //   });
       //   it('should NOT change sub-proposal type if clicking "Cancel" on alert dialog', () => {
       //     // select 2st Proposal type
       //     cy.get('#ProposalType-2').click()s;
       //     // select 5th SubProposal type
-      //     cy.get('#SubProposalType-5').click();
+      //     cy.get('#proposalAttribute-5').click();
       //     // select 6th SubProposal type
-      //     cy.get('#SubProposalType-6').click();
+      //     cy.get('#proposalAttribute-6').click();
       //     // click "continue button" of dialog
       //     cy.get('[data-testid="cancelId"]').click();
       //     // check if 6th sub-proposal is NOT selected
-      //     cy.get('#SubProposalType-6').should('have.class', 'inactive');
-      //     cy.get('#SubProposalType-5').should('have.class', 'active');
+      //     cy.get('#proposalAttribute-6').should('have.class', 'inactive');
+      //     cy.get('#proposalAttribute-5').should('have.class', 'active');
       //   });
     });
   });

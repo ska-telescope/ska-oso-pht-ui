@@ -7,20 +7,16 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import {
-  BANDWIDTH_TELESCOPE,
-  NOT_SPECIFIED,
-  OBSERVATION,
-  Projects
-} from '../../../utils/constants';
+import { NOT_SPECIFIED } from '../../../utils/constants';
 import Target from '../../../utils/types/target';
-import Observation from '../../../utils/types/observation';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
+import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
+import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 
 interface ProposalDisplayProps {
   open: boolean;
@@ -29,11 +25,14 @@ interface ProposalDisplayProps {
   onConfirmLabel?: string;
 }
 
+const GRID_HEIGHT = 300;
 const TITLE_STYLE = 'h5';
 const LABEL_WIDTH = 4;
 const LABEL_STYLE = 'subtitle1';
 const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
+const BOLD_LABEL = true;
+const BOLD_CONTENT = false;
 
 export default function ProposalDisplay({
   open,
@@ -46,6 +45,8 @@ export default function ProposalDisplay({
   const { application } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
+
+  const getFont = (bold: boolean) => (bold ? 600 : 300);
 
   const handleConfirm = () => {
     onConfirm();
@@ -76,51 +77,38 @@ export default function ProposalDisplay({
   const proposalType = () => {
     const proposalType = getProposal().proposalType;
     const proposalName =
-      !proposalType || proposalType < 1
-        ? t('displayProposal.noneSelected')
-        : Projects[proposalType - 1].title;
+      !proposalType || proposalType < 1 ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
   };
 
-  const subProposalTypes = () => {
-    let output = '';
+  const proposalAttributes = () => {
+    let output = [];
     const subTypes: number[] = getProposal().proposalSubType;
     if (subTypes.length && subTypes[0] > 0) {
-      subTypes.forEach(
-        element =>
-          (output = (output.length ? output + ' | ' : '') + t('subProposalType.' + element))
-      );
+      subTypes.forEach(element => output.push(t('proposalAttribute.title.' + element)));
     }
     return output;
   };
 
   const scienceCategory = () => {
     const scienceCat = getProposal().scienceCategory;
-    return scienceCat ? t(`scienceCategory.${scienceCat}`) : t(`scienceCategory.${NOT_SPECIFIED}`);
-    // NOT REQUIRED, BUT MAY BE IN THE FUTURE SO KEEP
-    //const scienceSubCat = getProposal().scienceSubCategory;
-    //const scienceSubCatLabel = getProposal().scienceSubCategory
-    //  ? t(`scienceSubCategory.${scienceSubCat}`)
-    //  : t(`scienceSubCat.${NOT_SPECIFIED}`);
-    // return `${scienceCatLabel} / ${scienceSubCatLabel}`;
+    return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
-  // const telescope = (tel: number) => t(`arrayConfiguration.${tel}`);
-  // const subarray = (tel: number, arr: number) => t(`subArrayConfiguration.${arr}`);
-  // const observationType = (type: number) => t(`observationType.${type}`);
-
   const title = (inValue: string) => (
-    <Typography variant={TITLE_STYLE} style={{ fontWeight: 600 }}>
+    <Typography variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
       {inValue}
     </Typography>
   );
   const label = (inValue: string) => (
-    <Typography variant={LABEL_STYLE} style={{ fontWeight: 600 }}>
+    <Typography variant={LABEL_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
       {inValue}
     </Typography>
   );
   const content = (inValue: string | number) => (
-    <Typography variant={CONTENT_STYLE}>{inValue}</Typography>
+    <Typography variant={CONTENT_STYLE} style={{ fontWeight: getFont(BOLD_CONTENT) }}>
+      {inValue}
+    </Typography>
   );
 
   const cycle = (inLabel: string, inValue: string | number) => {
@@ -136,14 +124,38 @@ export default function ProposalDisplay({
     );
   };
 
-  const entry = (inLabel: string, inValue: string | number) => {
+  const element = (inValue: number | string, optional: boolean = false) =>
+    inValue === NOT_SPECIFIED && !optional ? emptyCell() : content(inValue);
+
+  const elementArray = (inArr: Array<number | string>, optional: boolean = false) => {
+    return (
+      <>
+        {!optional && inArr.length === 0 && emptyCell()}
+        {inArr.length > 0 && (
+          <Grid container direction="column" justifyContent="space-between" alignItems="left">
+            {inArr.map(el => (
+              <Grid item xs={12}>
+                {element(el)}
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </>
+    );
+  };
+
+  const entry = (inLabel: string, inValue, optional: boolean = false) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
           {label(inLabel)}
         </Grid>
         <Grid item xs={12 - LABEL_WIDTH}>
-          {content(inValue)}
+          {typeof inValue !== 'number' &&
+            typeof inValue !== 'string' &&
+            elementArray(inValue, optional)}
+          {typeof inValue === 'number' ||
+            (typeof inValue === 'string' && element(inValue, optional))}
         </Grid>
       </Grid>
     );
@@ -157,28 +169,9 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={12 - LABEL_WIDTH}>
           {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
-          {!contents && content(t('none'))}
+          {!contents && emptyCell()}
         </Grid>
       </Grid>
-    );
-  };
-
-  const getObservationTargets = (rec: Observation) => {
-    const array = getProposal().targetObservation.filter(e => e.observationId === rec.id);
-    if (array || array.length === 0) {
-      return t('none');
-    }
-    return 'TMP : Found';
-  };
-
-  const sensitivityIntegrationTime = (rec: Observation) => {
-    return (
-      OBSERVATION?.Supplied[rec.supplied.type]?.label +
-      ' ' +
-      rec.supplied.value +
-      ' ' +
-      OBSERVATION?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))
-        ?.label
     );
   };
 
@@ -221,7 +214,7 @@ export default function ProposalDisplay({
   const headerContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item>{skaoIcon({})}</Grid>
+        <Grid item>{skaoIcon({ useSymbol: false })}</Grid>
         <Grid item>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
         <Grid item>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
@@ -237,7 +230,9 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="column" justifyContent="center" alignItems="center">
         <Grid item>{label(t('abstract.label'))}</Grid>
-        <Grid item>{content(getProposal().abstract)}</Grid>
+        <Grid item>
+          {getProposal().abstract?.length ? content(getProposal().abstract) : emptyCell()}
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -252,10 +247,21 @@ export default function ProposalDisplay({
           {entry(t('scienceCategory.label'), scienceCategory())}
         </Grid>
         <Grid item xs={6}>
-          {entry(t('subProposalType.label'), subProposalTypes())}
+          {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
         </Grid>
       </Grid>
     </Grid>
+  );
+
+  const observationsContentGrid = () => (
+    <>
+      <Grid item>
+        <Grid item>{label(t('page.10.label'))}</Grid>
+      </Grid>
+      <Grid item>
+        <GridObservationSummary height={GRID_HEIGHT} proposal={getProposal()} />
+      </Grid>
+    </>
   );
 
   const teamContentGrid = () => (
@@ -264,7 +270,7 @@ export default function ProposalDisplay({
         <Grid item>{label(t('members.label'))}</Grid>
       </Grid>
       <Grid item>
-        <GridMembers rows={getProposal().team} />
+        <GridMembers height={GRID_HEIGHT} rows={getProposal().team} />
       </Grid>
     </>
   );
@@ -321,48 +327,6 @@ export default function ProposalDisplay({
         </Grid>
       </Grid>
     </Grid>
-  );
-
-  const observationsContent = () => (
-    <>
-      <Grid item>
-        <Grid item>{label(t('page.10.label'))}</Grid>
-      </Grid>
-
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item>{label(t('name.label'))}</Grid>
-        <Grid item>{label(t('page.4.label'))}</Grid>
-        <Grid item>{label(t('observationType.label'))}</Grid>
-        <Grid item>{label(t('observingBand.label'))}</Grid>
-        <Grid item>
-          {label(
-            t('sensitivityCalculatorResults.sensitivity') +
-              '/' +
-              t('sensitivityCalculatorResults.integrationTime')
-          )}
-        </Grid>
-        <Grid item>{label(t('page.13.label'))}</Grid>
-      </Grid>
-
-      <Grid item>
-        {getProposal().observations?.map((rec: Observation, index: number) => (
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            key={index}
-          >
-            <Grid item>{content(rec.id)}</Grid>
-            <Grid item>{content(getObservationTargets(rec))}</Grid>
-            <Grid item>{content(t('observationType.' + rec.type))}</Grid>
-            <Grid item>{content(BANDWIDTH_TELESCOPE[rec.observingBand].label)}</Grid>
-            <Grid item>{content(sensitivityIntegrationTime(rec))}</Grid>
-            <Grid item>{content(t('page.13.label'))}</Grid>
-          </Grid>
-        ))}
-      </Grid>
-    </>
   );
 
   const targetObservationContent = () => (
@@ -436,7 +400,7 @@ export default function ProposalDisplay({
             {sectionTitle()}
             {justificationContent()}
             {sectionTitle()}
-            {observationsContent()}
+            {observationsContentGrid()}
             {sectionTitle()}
             {teamContentGrid()}
             {false && sectionTitle()}

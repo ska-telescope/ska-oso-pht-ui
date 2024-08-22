@@ -7,9 +7,18 @@ Future
 
 ---
 
+* STAR-644:
+   - Updated display of the Title page
+   - Migrated Image Weighting labels to the PHT.json file
+   - Migrated Proposal Type labels and descriptions to the PHT.json file
+   - Migrated Proposal Attribute labels and descriptions to the PHT.json file
 * STAR-640:
    - Display only most recent proposal for duplicates in ProposalList
    - remove metadata section for PUT and POST mapping as handled by ODA
+* STAR-635: 
+   - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
+   Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
+   - Fix observing band not being retrieved in mapping after update
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
    - Upgrade to version 2.1.0 of ska-oso-pht-services
@@ -25,6 +34,11 @@ Future
    - Created GridMember component for use in Team Page and Proposal Display
    - Updated Proposal Display to reflect latest requirements
    - Minor resource file updates
+   - Added the active proposal ID into the bottom-right of the footer for reference 
+   - Addition of 'emptyCell' component
+   - Addition of some presentation function for various data types
+   - Started to check screen resizing ( landing page and page banner so far ).
+   - Standard height of the InfoCard
 * STAR-624: 
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Removed units from SensCalc multiple display modal

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
-  Projects,
+  PROJECTS,
   SKA_PHT_API_URL,
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA,
@@ -17,7 +17,10 @@ import {
   RA_TYPE_GALACTIC,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
-  TELESCOPE_LOW_BACKEND_MAPPING
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  IMAGE_WEIGHTING,
+  BAND_LOW,
+  BAND_1
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -65,7 +68,7 @@ const getScienceSubCategory = () => {
 };
 
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
-  const project = Projects?.find(({ mapping }) => mapping === proposalType.main_type);
+  const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
     project.subProjects?.find(({ mapping }) => mapping === subType)
   );
@@ -192,30 +195,16 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
 /*********************************************************** observation parameters mapping *********************************************************/
 
 const getWeighting = inImageWeighting => {
-  const weighting = OBSERVATION.ImageWeighting?.find(
-    item => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
+  const weighting = IMAGE_WEIGHTING?.find(
+    item => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
 const getObservingBand = (inObsBand: string, inObsArray: string): number => {
-  const mid1ObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 1'))?.value;
-  const lowObsBand = BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Low Band'))?.value;
-  switch (inObsBand) {
-    case 'low_band':
-      return lowObsBand;
-    case 'mid_band_1':
-      return mid1ObsBand;
-    case 'mid_band_2':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 2'))?.value;
-    case 'mid_band_3':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5a'))?.value;
-    case 'mid_band_4':
-      return BANDWIDTH_TELESCOPE?.find(item => item.label.includes('Band 5b'))?.value;
-    default:
-      // fallback: send low band for low array and mid band 1 for mid array
-      return inObsArray.includes('mid') ? mid1ObsBand : lowObsBand;
-  }
+  const band = BANDWIDTH_TELESCOPE?.find(item => item.mapping === inObsBand)?.value;
+  const fallback = inObsArray.includes('low') ? BAND_LOW : BAND_1;
+  return band ? band : fallback;
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
@@ -363,7 +352,7 @@ const getResultsSection1 = (
       // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
       // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
       // => see sensitivity calculator
-      // TODO once sens calcs results updated, mapping of results will need updating to refelect different fields for different results
+      // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
       field: 'continuumSensitivityWeighted',
       value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
       units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
@@ -445,7 +434,7 @@ const getResultsSection3 = (
     */
         'integrationTime'
       : 'sensitivity';
-  // TODO unswapp as above once PDM updated to use integration time for supplied sensitivity
+  // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
     {
@@ -507,7 +496,7 @@ function mapping(inRec: ProposalBackend): Proposal {
   const convertedProposal = {
     id: inRec.prsl_id,
     title: inRec.info.title,
-    proposalType: Projects?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
     proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: inRec.metadata.last_modified_on,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper, Typography } from '@mui/material';
+import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -27,6 +27,8 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
+import { presentDate } from '../../utils/present';
+import emptyCell from '../../components/fields/emptyCell/emptyCell';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -52,6 +54,10 @@ export default function LandingPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const DATA_GRID_HEIGHT = 70;
+
+  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight / 100);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -153,30 +159,54 @@ export default function LandingPage() {
     return scienceCategory ? scienceCategory : NOT_SPECIFIED;
   };
 
+  const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
+
   const COLUMNS = [
-    { field: 'id', headerName: t('id.label'), width: 200 },
+    { field: 'id', headerName: t('id.label') },
     {
       field: 'scienceCategory',
       headerName: t('scienceCategory.label'),
-      width: 200,
+      flex: 1.5,
       renderCell: (e: { row: any }) =>
-        t('scienceCategory.' + displayScienceCategory(e.row.scienceCategory))
+        element(
+          e.row.scienceCategory > 0
+            ? t('scienceCategory.' + displayScienceCategory(e.row.scienceCategory))
+            : NOT_SPECIFIED
+        )
     },
-    { field: 'cycle', headerName: t('cycle.label'), width: 150 },
-    { field: 'title', headerName: t('title.label'), width: 250 },
-    { field: 'pi', headerName: t('pi.short'), width: 150 },
+    { field: 'cycle', headerName: t('cycle.label'), flex: 1 },
+    {
+      field: 'title',
+      headerName: t('title.label'),
+      flex: 2.5,
+      renderCell: (e: any) => element(e.row.title?.length ? e.row.title : NOT_SPECIFIED)
+    },
+    {
+      field: 'pi',
+      headerName: t('pi.short'),
+      flex: 2.5,
+      renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
+    },
     {
       field: 'status',
       headerName: t('status.label'),
-      width: 100,
+      minWidth: 120,
+      maxWidth: 120,
       renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
     },
-    { field: 'lastUpdated', headerName: t('updated.label'), width: 150 },
+    {
+      field: 'lastUpdated',
+      headerName: t('updated.label'),
+      minWidth: 120,
+      maxWidth: 120,
+      renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
+    },
     {
       field: 'cpi',
       headerName: ' ',
       sortable: false,
-      width: 250,
+      minWidth: 200,
+      maxWidth: 200,
       disableClickEventBubbling: true,
       renderCell: (e: { row: any }) => (
         <>
@@ -218,85 +248,115 @@ export default function LandingPage() {
     navigate(PATH[1]);
   };
 
+  const pageDescription = () => (
+    <Typography variant="h6" minHeight="5vh">
+      {t('page.11.desc')}
+    </Typography>
+  );
+
+  const addProposalButton = () => (
+    <AddButton
+      action={clickFunction}
+      testId="addProposalButton"
+      title="addProposal.label"
+      toolTip="addProposal.toolTip"
+    />
+  );
+
+  const searchDropdown = () => (
+    <DropDown
+      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+      testId="proposalType"
+      value={searchType}
+      setValue={setSearchType}
+      label={t('status.0')}
+    />
+  );
+
+  const searchEntryField = () => (
+    <SearchEntry
+      label={t('search.label')}
+      testId="searchId"
+      value={searchTerm}
+      setValue={setSearchTerm}
+    />
+  );
+
+  const deleteClicked = () => (
+    <ProposalDisplay
+      open={openDeleteDialog}
+      onClose={() => setOpenDeleteDialog(false)}
+      onConfirm={deleteConfirmed}
+      onConfirmLabel="deleteProposal.confirm"
+    />
+  );
+
+  const cloneClicked = () => (
+    <ProposalDisplay
+      open={openCloneDialog}
+      onClose={() => setOpenCloneDialog(false)}
+      onConfirm={cloneConfirmed}
+      onConfirmLabel="cloneProposal.confirm"
+    />
+  );
+
+  const viewClicked = () => (
+    <ProposalDisplay
+      open={openViewDialog}
+      onClose={() => setOpenViewDialog(false)}
+      onConfirm={deleteConfirmed}
+      onConfirmLabel=""
+    />
+  );
+
+  const row1 = () => (
+    <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
+      <Grid item>{pageDescription()}</Grid>
+    </Grid>
+  );
+
+  const row2 = () => (
+    <Grid container p={1} direction="row" justifyContent="space-evenly" alignItems="center">
+      <Grid item xs={2}>
+        {addProposalButton()}
+      </Grid>
+      <Grid item xs={2}>
+        {searchDropdown()}
+      </Grid>
+      <Grid item xs={4} mt={-1}>
+        {searchEntryField()}
+      </Grid>
+    </Grid>
+  );
+
+  const row3 = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-around">
+      <Grid item xs={10}>
+        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+          <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+        )}
+        {!axiosViewError && filteredData.length > 0 && (
+          <DataGrid
+            testId="dataGridId"
+            rows={filteredData}
+            columns={extendedColumns}
+            height={gridHeight()}
+          />
+        )}
+      </Grid>
+    </Grid>
+  );
+
   return (
     <>
-      <Grid p={6} container direction="column" alignItems="center" justifyContent="center">
-        <Typography variant="h6">{t('page.11.desc')}</Typography>
-      </Grid>
-
-      <Grid p={1} spacing={2} container direction="row" alignItems="center" justifyContent="center">
-        <Grid item xs={2}>
-          <AddButton
-            action={clickFunction}
-            testId="addProposalButton"
-            title="addProposal.label"
-            toolTip="addProposal.toolTip"
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <DropDown
-            options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
-            testId="proposalType"
-            value={searchType}
-            setValue={setSearchType}
-            label={t('status.0')}
-          />
-        </Grid>
-        <Grid item xs={4} mt={-1}>
-          <SearchEntry
-            label={t('search.label')}
-            testId="searchId"
-            value={searchTerm}
-            setValue={setSearchTerm}
-          />
-        </Grid>
-      </Grid>
-
-      {!axiosViewError && (
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid item>
-            {(!filteredData || filteredData.length === 0) && (
-              <Alert
-                color={AlertColorTypes.Info}
-                text={t('proposals.empty')}
-                testId="helpPanelId"
-              />
-            )}
-            {filteredData.length > 0 && (
-              <DataGrid
-                testId="dataGridId"
-                rows={filteredData}
-                columns={extendedColumns}
-                height={500}
-              />
-            )}
-          </Grid>
-        </Grid>
-      )}
-      {openDeleteDialog && (
-        <ProposalDisplay
-          open={openDeleteDialog}
-          onClose={() => setOpenDeleteDialog(false)}
-          onConfirm={deleteConfirmed}
-          onConfirmLabel="deleteProposal.confirm"
-        />
-      )}
-      {openCloneDialog && (
-        <ProposalDisplay
-          open={openCloneDialog}
-          onClose={() => setOpenCloneDialog(false)}
-          onConfirm={cloneConfirmed}
-          onConfirmLabel="cloneProposal.confirm"
-        />
-      )}
-      {openViewDialog && (
-        <ProposalDisplay
-          open={openViewDialog}
-          onClose={() => setOpenViewDialog(false)}
-          onConfirm={deleteConfirmed}
-          onConfirmLabel=""
-        />
-      )}
+      <Stack direction="column">
+        {row1()}
+        {row2()}
+        {row3()}
+      </Stack>
+      {openDeleteDialog && deleteClicked()}
+      {openCloneDialog && cloneClicked()}
+      {openViewDialog && viewClicked()}
       <Paper
         sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
         elevation={0}
@@ -310,8 +370,6 @@ export default function LandingPage() {
                 text={axiosViewError}
               />
             )}
-          </Grid>
-          <Grid item>
             {axiosError && (
               <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
             )}

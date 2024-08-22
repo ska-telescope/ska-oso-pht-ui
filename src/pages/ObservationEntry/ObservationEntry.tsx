@@ -299,8 +299,8 @@ export default function ObservationEntry() {
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
-  const isBand5 = () => BANDWIDTH_TELESCOPE[observingBand].isBand5;
-  const telescope = () => BANDWIDTH_TELESCOPE[observingBand].telescope;
+  const isBand5 = () => BANDWIDTH_TELESCOPE[observingBand]?.isBand5;
+  const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const calculateSpectralResolution = () => {
     const getSpectralResolution = (inLabel: String, inValue: number | string) =>
@@ -418,7 +418,7 @@ export default function ObservationEntry() {
       const formattedGroupObs = [
         { label: t('groupObservations.none'), value: 0 },
         { label: newGroupObservationLabel, value: 1 },
-        ...uniqueGroups.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
+        ...uniqueGroups?.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
       ];
       return formattedGroupObs as any;
     };
@@ -438,7 +438,7 @@ export default function ObservationEntry() {
       if (telescope() > 0) {
         let subArrayOption = OBSERVATION.array[telescope() - 1]?.subarray;
         if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
-        return subArrayOption.map(e => {
+        return subArrayOption?.map(e => {
           return {
             label: t('subArrayConfiguration.' + e.value),
             value: e.value
@@ -776,7 +776,7 @@ export default function ObservationEntry() {
 
   const frequencyUnitsField = () => {
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
-      .centralFrequencyAndBandWidthUnits;
+      ?.centralFrequencyAndBandWidthUnits;
     if (FrequencyUnitOptions?.length === 1) {
       return FrequencyUnitOptions[0].label;
     } else {
@@ -862,7 +862,7 @@ export default function ObservationEntry() {
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH_OPT1}
-        suffix={BANDWIDTH_TELESCOPE[observingBand].units}
+        suffix={BANDWIDTH_TELESCOPE[observingBand]?.units}
         testId="continuumBandwidth"
         value={continuumBandwidth}
         setValue={setContinuumBandwidth}
@@ -1082,7 +1082,7 @@ export default function ObservationEntry() {
         getProposal().targetObservation.filter(rec => rec.observationId === observationId);
 
       const updateSensCalcPartial = (ob: Observation) =>
-        getAffected(ob.id).map(rec => {
+        getAffected(ob.id)?.map(rec => {
           const to: TargetObservation = {
             observationId: ob.id,
             targetId: rec.targetId,

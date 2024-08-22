@@ -2,9 +2,10 @@ import {
   BANDWIDTH_TELESCOPE,
   DEFAULT_PI,
   GENERAL,
+  IMAGE_WEIGHTING,
   OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
-  Projects,
+  PROJECTS,
   PROPOSAL_STATUS,
   REF_COORDINATES_UNITS,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -32,21 +33,12 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
 import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
-const convertCategoryFormat = (_inValue: string): string => {
-  const words = _inValue.split(' ');
-  const lowerCaseWords = words.map(word => word?.charAt(0)?.toLowerCase() + word.slice(1));
-  const formattedString = lowerCaseWords.join('_');
-  return formattedString;
-};
-
-const getSubCategory = (proposalType: number, proposalSubType: number[]): any => {
-  const project = Projects.find(({ id }) => id === proposalType);
+const getSubType = (proposalType: number, proposalSubType: number[]): any => {
+  const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
-    const sub = project.subProjects.find(item => item.id === subtype);
-    if (sub) {
-      const formattedSubType = convertCategoryFormat(sub.title);
-      subTypes.push(formattedSubType);
+    if (subtype) {
+      subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
     }
   }
   return subTypes;
@@ -160,7 +152,8 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
 };
 
 const getObservingBand = (observingBand: number) => {
-  return BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  const obsBand = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
+  return obsBand;
 };
 
 const getSubArray = (incSubArray: number, incTelescope: number): string => {
@@ -261,7 +254,8 @@ const getObservationsSets = (
         supplied: getSupplied(obs),
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        image_weighting: obs.imageWeighting?.toString()
+        // image_weighting: obs.imageWeighting?.toString()
+        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
       },
       details: obs.details
     };
@@ -479,8 +473,10 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     info: {
       title: proposal.title,
       proposal_type: {
-        main_type: convertCategoryFormat(Projects.find(p => p.id === proposal.proposalType).title),
-        sub_type: getSubCategory(proposal.proposalType, proposal.proposalSubType)
+        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
+        sub_type: proposal.proposalSubType
+          ? getSubType(proposal.proposalType, proposal.proposalSubType)
+          : []
       },
       abstract: proposal.abstract,
       science_category: GENERAL.ScienceCategory?.find(

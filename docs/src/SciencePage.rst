@@ -7,13 +7,13 @@ The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload 
 
 .. figure:: /images/sciencePage.png
    :width: 90%
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
-   Science Justification page
+   Science Justification page in light mode.
 
 .. note:: 
 
-   - Technical Page looks almost identical to the Science Justification page and has identical functionality.
+   - Technical Page is identical to the Science Justification page and has identical functionality.
 
 
 
@@ -27,9 +27,9 @@ The Science & Technical Pages have clear and consistent options:
 - 'Choose' button: Allows for the selection of a PDF file from the local device.
 - 'Clear' button: Visible once a file has been chosen, when clicked clears the selection
 - 'Upload' button: Visible once a file has been chosen, when clicked the file is uploaded to the proposal and stored 
-- 'Download' button: A file that has been uploaded is able to also be downloaded if this is clicked 
+- 'Download' button: Visible when a pdf has been uploaded. This button allows yu to download the uploaded file if desired. 
 - 'Preview' button: A file that has been uploaded is able to be previewed in a pop-up window when this is clicked.
-- 'Delete' button: A file that has been uploaded is able to also be deleted if this is clicked 
+- 'Delete' button: A file that has been uploaded can bee deleted using this button. 
 
 
 Key Information and Actions

@@ -17,9 +17,9 @@ Once on the team page, see :numref:`Figure %s <figure5>`,  you can move between 
 
 .. figure:: /images/teamPage.png
    :width: 100%
-   :alt: screen in light & dark mode 
+   :alt: screen in light mode 
 
-   The team page in light and dark mode.
+   The team page in light mode.
 
 
 

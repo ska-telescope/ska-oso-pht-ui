@@ -11,7 +11,8 @@ Minimal FAQs for the MVP
 
 .. admonition:: Can I edit or update my proposal after submission?
 
-   No. You will have to contact operations to withdraw if you wish to do so.
+      Yes. You edit and re-submit your proposal after submission before the deadline. However, after the deadline, yiou will have to contact operation if you wish to do so.
+
 
 
 .. admonition:: How will I be notified of the outcome of the proposal review process?
