@@ -133,7 +133,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item>
+      <Grid key={id} item md={4}>
         <Card
           style={{
             color: setCardFG(getProposal().proposalType, id),
@@ -179,7 +179,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   function Attributes(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item>
+      <Grid key={id} item md={6} lg={3}>
         <Card
           style={{
             color: setCardFG2(getProposal().proposalSubType, id),

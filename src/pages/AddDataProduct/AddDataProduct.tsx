@@ -2,13 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
-  Button,
-  ButtonColorTypes,
-  ButtonVariantTypes,
   DropDown,
   LABEL_POSITION,
   NumberEntry,
@@ -24,6 +20,7 @@ import ImageWeightingField from '../../components/fields/imageWeighting/imageWei
 import { SensCalcResults } from '../../utils/types/sensCalcResults';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
+import AddButton from '../../components/button/Add/Add';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -213,8 +210,6 @@ export default function AddDataProduct() {
   };
 
   const pageFooter = () => {
-    const getIcon = () => <AddIcon />;
-
     const enabled = () => {
       const dp = dp1 || dp2 || dp3 || dp4;
       return dp && pixelSizeValue > 0 && imageSizeValue > 0;
@@ -274,16 +269,7 @@ export default function AddDataProduct() {
           <Grid item />
           <Grid item />
           <Grid item>
-            <Button
-              ariaDescription="add Button"
-              color={ButtonColorTypes.Secondary}
-              disabled={!enabled()}
-              icon={getIcon()}
-              label={t('button.add')}
-              testId="addButton"
-              onClick={buttonClicked}
-              variant={ButtonVariantTypes.Contained}
-            />
+            <AddButton disabled={!enabled()} primary testId="addButton" action={buttonClicked} />
           </Grid>
         </Grid>
       </Paper>
