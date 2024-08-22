@@ -526,7 +526,6 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('GET converted proposal', convertedProposal);
   return convertedProposal;
 }
 

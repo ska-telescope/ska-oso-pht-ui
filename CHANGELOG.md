@@ -18,6 +18,7 @@ Future
 * STAR-635: 
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
    Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
+   - Fix observing band not being retrieved in mapping after update
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
    - Upgrade to version 2.1.0 of ska-oso-pht-services

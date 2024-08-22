@@ -153,7 +153,7 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
 
 const getObservingBand = (observingBand: number) => {
   const obsBand = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
-  return obsBand
+  return obsBand;
 };
 
 const getSubArray = (incSubArray: number, incTelescope: number): string => {
@@ -505,6 +505,5 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
-  console.log('PUT transformedProposal', transformedProposal);
   return transformedProposal;
 }
