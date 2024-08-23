@@ -32,6 +32,7 @@ export const clickCreateProposal = () => {
 export const verifyProposalCreatedAlertFooter = () => {
   cy.on('window:alert', str => {
     expect(str).to.include('Proposal added with unique identifier');
+    done();
   });
 };
 
@@ -57,7 +58,6 @@ export const createStandardProposal = () => {
   cy.wait(3000);
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
-  cy.wait(3000);
 };
 
 export const clickHome = () => {
