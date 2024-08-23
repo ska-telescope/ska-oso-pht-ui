@@ -26,7 +26,7 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 };
 
 export const clickCreateProposal = () => {
-  cy.get('[data-testid="CreateButton"]').click();
+  cy.get('[aria-label="Create"]').click();
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
