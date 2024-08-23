@@ -19,6 +19,10 @@ Future
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
    Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
+   - Disable Supplied Sensitivity for Low Observation and only offer h for Low Supplied units
+   - Change default integration time for Low 
+   - Use default continuum bandwidths per array for Low
+   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
    - Upgrade to version 2.1.0 of ska-oso-pht-services
