@@ -27,7 +27,6 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 
 export const clickCreateProposal = () => {
   cy.get('[data-testid="CreateButton"]').click();
-  verifyProposalCreatedAlertFooter();
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
@@ -55,7 +54,9 @@ export const createStandardProposal = () => {
   pageConfirmed('TITLE');
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
+  cy.wait(2000);
   clickCreateProposal();
+  verifyProposalCreatedAlertFooter();
 };
 
 export const clickHome = () => {
