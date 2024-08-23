@@ -25,7 +25,6 @@ import {
   SPECTRAL_AVERAGING_MIN,
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT,
-  TELESCOPES,
   TYPE_CONTINUUM,
   BAND_5A,
   BAND_5B,
@@ -509,26 +508,6 @@ export default function ObservationEntry() {
       setFunction,
       null,
       observingBand
-    );
-  };
-
-  const arrayField = () => {
-    const getOptions = () => {
-      return TELESCOPES;
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        disabled
-        testId="arrayConfiguration"
-        value={telescope()}
-        label={t('arrayConfiguration.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_SELECT}
-        onFocus={() => helpComponent(t('arrayConfiguration.help'))}
-      />
     );
   };
 
@@ -1176,9 +1155,7 @@ export default function ObservationEntry() {
               <Grid item xs={XS_TOP}>
                 {observingBandField()}
               </Grid>
-              <Grid item xs={XS_TOP}>
-                {arrayField()}
-              </Grid>
+              <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
                 {subArrayField(isBand5())}
               </Grid>

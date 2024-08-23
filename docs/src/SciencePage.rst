@@ -7,17 +7,13 @@ The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload 
 
 .. figure:: /images/sciencePage.png
    :width: 90%
-   :alt: screen in light mode 
+   :alt: Image of the Science Justification page.
 
-   Science Justification page in light mode.
+   Science Justification page.
 
 .. note:: 
 
    - Technical Page is identical to the Science Justification page and has identical functionality.
-
-
-
-.. _addobs:
 
 Layout and Navigation
 =====================
@@ -35,8 +31,8 @@ The Science & Technical Pages have clear and consistent options:
 Key Information and Actions
 ===========================
 
-- Upload your Technical and scientific justification document in PDF format.
-- Remember, only one PDF upload is allowed for each.
+- Upload your technical and scientific justification documents in PDF format.
+- Remember, only one PDF upload is allowed for each justification, so two in total for the proposal.
 
 Next Steps
 ==========
