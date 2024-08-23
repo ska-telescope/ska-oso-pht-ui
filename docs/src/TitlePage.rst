@@ -1,9 +1,9 @@
 Title Page
 ~~~~~~~~~~
-:numref:`Figure %s <titlepage>` shows the look of the title page in light mode. A proposal needs to be created using this page before you can proceed.
+:numref:`Figure %s <titlepage>` shows the look of the title page. A proposal needs to be created using this page before you can proceed.
 
-Entering Title and Creating a proposal
-======================================
+Page Details
+============
 .. |icocreate| image:: /images/create.png
    :width: 20%
    :alt: Page filter
@@ -17,7 +17,7 @@ Entering Title and Creating a proposal
 .. tip:: 
    On Hover:
 
-   - Hovering over a proposal type displays a description for your reference.
+   - Hovering over a proposal type displays a description of the proposal type for your reference.
   
    Optional:
 
@@ -25,11 +25,11 @@ Entering Title and Creating a proposal
 
 .. _titlepage:
 
-.. figure:: /images/titlepage.png
+.. figure:: /images/titlePage.png
    :width: 100%
-   :alt: title screen in light mode
+   :alt: Image of the Title page
 
-   The title page in light mode.
+   The Title page.
  
 
 
@@ -49,7 +49,7 @@ Entering Title and Creating a proposal
    :header: "Proposal SAtributes", "Initials", "Description"
 
     "Target of Opportunity", "ToO", "These are proposals that require rapid response to alerts that have been triggered by events either externally or internally to the SKA."
-    "Joint SKA proposal", "JSP", "A proposal that requires both SKA1-LOWand SKA1-MIDtelescopes to achieve the science goals. Such proposals may be linked so that observations can be executed contemporaneously."
+    "Joint SKA proposal", "JSP", "A proposal that requires both SKA-LOW and SKA-MID telescopes to achieve the science goals. Such proposals may be linked so that observations can be executed contemporaneously."
     "Coordinated Proposal", "CP", "A  proposal  requiring  observing  to  be  coordinated  with  another  facility    (either    ground- or   space-based)    with    user-specified scheduling constraints provided. The SKA Observatory will seek to establish  relationships  with  key,  complementary  facilities  (e.g.,  ALMA)  to  facilitate  CPs.  Proposals  for  VLBI  will be  considered  as  Coordinated Proposals."
     "Long Term Proposal", "LTP", "These are for projects that require more than one time allocation cycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP."
 
@@ -59,7 +59,7 @@ Entering Title and Creating a proposal
 Next Steps
 ==========
 
-After successfully creating your proposal on this page, you'll move on to the "Team" page.
+After successfully creating your proposal on this page, you will move on to the "Team" page.
 
 Additional Notes
 ================
