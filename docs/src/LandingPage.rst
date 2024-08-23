@@ -11,15 +11,15 @@ You do not need an account to start a proposal but you will need to be signed in
 
 Landing Page
 ============
-On the landing is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
-investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` list your proposals with the following information:
+On the landing page is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
+investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` lists your proposals with the following information:
 
 - Proposal ID : Unique identifier for each proposal.
-- Category : The main categoy of the proposal. 
+- Science Category : The main category of the proposal. 
 - Cycle : SKAO observing cycle associated with the proposals.
-- Title : Proposal title.
+- Proposal Title : The title of the proposal
 - PI : Principal Investigator of the proposal.
-- Status : Current stage of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
+- Status : Current status of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
 - Last Updated : Date and time the proposal was last modified.
 - Allowed actions |ico4| on each proposal. See  :numref:`Table %s <mytest>`.
 
@@ -29,10 +29,10 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
 .. figure:: /images/landingPage.png
    :width: 100%
    :align: center
-   :alt: screen in light mode of the landing page
+   :alt: Image of the landing page
    :class: with-border
 
-   The Landing page in light mode.
+   Image of the landing page.
 
 
 

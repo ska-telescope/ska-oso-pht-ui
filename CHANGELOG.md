@@ -1,9 +1,14 @@
-# Changelog
+Changelog
+~~~~~~~~~
 
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-Future
+Future 
+
+---
+
+0.4.0
 
 ---
 
@@ -17,7 +22,7 @@ Future
    - remove metadata section for PUT and POST mapping as handled by ODA
 * STAR-635: 
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
-   Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
+   - Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
 * STAR-570:
    - Added Delete PDF button in Science and Technical Page
@@ -65,39 +70,48 @@ Future
    - GetProposal mapping
    - Update proposal frontend types
    - Update pages accordingly for breaking changes
-* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-540 : Proposal mapping:
+* STAR-508: Spectral Resolution
+   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-540: Proposal mapping:
    - Update getProposalList mapping to new backend proposal format
    - Move front-end to backend mapping into putProposal and postProposal
    - Update postProposal mapping
    - Update proposal Backend types and Mocks
 * STAR-529: Implement validation from OSD with validate endpoint
    - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-* STAR-537 : Added the ability to Edit a target
-* STAR-547 : Migrate page validations into separate utility 
-* STAR-573 : Add e2e Testing into the CI/CD Pipeline
-* STAR-575 : Update target list on target page to show Redshift & Velocity
-* STAR-587
+* STAR-469: 
+   - Upgraded Observation page so it can support multiple target/observation combinations
+* STAR-537: 
+   - Added the ability to Edit a target
+* STAR-547:  
+   - Migrate page validations into separate utility 
+* STAR-573:  
+   - Add e2e Testing into the CI/CD Pipeline
+* STAR-575:  
+   - Update target list on target page to show Redshift & Velocity
+* STAR-587:
    - Migrated Image Weighting to a separate component with testing coverage of 100%
    - Updated the Observation selection to remove duplicates and update fields correctly when selected
    - Corrected SensCalc loading issue
    - Updated structure of the DataProduct to cater for value/unit pairs
    - Updated screens to reflect new structure
    - Updated display of the SensCalc for Observations
-* STAR-608 : Observation page updated for LOW / CONTINUUM
+* STAR-608: Observation page updated for LOW / CONTINUUM
    - Continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
    - Tapering field should not be available on Low.
    - Weather field should not be available for Low, only Mid
-* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-540 : Proposal mapping:
+* STAR-469:  
+   - Upgraded Observation page so it can support multiple target/observation combinations
+* STAR-508:  
+   - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
+* STAR-540: Proposal mapping:
    - Update getProposalList mapping to new backend proposal format
    - Move front-end to backend mapping into putProposal and postProposal
    - Update postProposal mapping
    - Update proposal Backend types and Mocks
    - Upgrade to version 2.0.1 of SKA-PHT-SERVICES and 5.2.0 of SKA-DB-ODA
-* STAR-529: Implement validation from OSD with validate endpoint
+* STAR-529:  
+   - Implement validation from OSD with validate endpoint
 
 0.3.1
 

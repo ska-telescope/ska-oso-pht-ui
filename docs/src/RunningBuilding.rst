@@ -40,15 +40,11 @@ There are two ways that this can be done as below:
 
 1. Run using docker compose
 
-````
- docker-compose up -d
-````
+- `> docker-compose up -d`
 
 2. build the docker file in the root directory and run the container exposing port 6101.
 
-````
- docker build -t ska-oso-pht-ui .
- docker run -p 6101:6101 ska-oso-pht-ui
-````
+- `> docker build -t ska-oso-pht-ui .`
+- `> docker run -p 6101:6101 ska-oso-pht-ui`
 
 The project will then be accessible at the url http://localhost:6101/

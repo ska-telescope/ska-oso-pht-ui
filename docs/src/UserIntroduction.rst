@@ -31,7 +31,7 @@ The PPT supports both light and dark modes and can be accessed at the top left c
 .. _figure1:
 .. figure:: /images/toggle.png
    :width: 100%
-   :alt: screen in light mode of the landing page
+   :alt: Image showing the location of light/dark mode toggle of the PPT
    :class: with-border
 
    Location of light/dark mode toggle of the PPT.
@@ -61,7 +61,7 @@ Common elements are recurring components found across multiple pages in the tool
 .. figure:: /images/statusnav.png
    :width: 100%
    :align: center
-   :alt: screen in light mode 
+   :alt: Image of Status, Navigation and Validation.
 
    Status, Navigation and Validation.
 
@@ -69,22 +69,22 @@ Common elements are recurring components found across multiple pages in the tool
 Additional Notes
 ================
 
-- You need to be logged in to access the landing page and its features  :numref:`Figure %s <landpage>`.
+- You need to be logged in to access the landing page :numref:`Figure %s <landpage>`  and its features.
 
 .. _landpage:
 
 .. figure:: /images/landingPage.png
    :width: 90%
    :align: center
-   :alt: screen in light mode
+   :alt: Image of the Landing page.
 
    Landing page.
 
-Additionally, :numref:`Figure %s <figure2>` provides three funtions which are navigation, status and validation of each page as outlined below.
+Additionally, :numref:`Figure %s <figure2>` provides three functions which are navigation, status and validation of each page as outlined below.
 
 - |icostatus2| represents a complete and validated page.
 - |icostatus3| represents an incomplete page. 
-- |icostatus4| represents a page that is not started and 
+- |icostatus4| represents a page that is not started (Only visible during the creation of a new proposal).
 - |icostatus5| a page that has one or more failed field validations.
 
 .. admonition:: Please note
