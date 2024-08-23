@@ -1,6 +1,5 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import DownloadIcon from '@mui/icons-material/DownloadRounded';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import skaoIcon from './skaoIcon';
@@ -15,21 +14,21 @@ function viewPort() {
 }
 
 function mountingDefault(theTheme: any) {
-  viewPort() 
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-        {skaoIcon({})}
+      {skaoIcon({})}
     </ThemeProvider>
   );
 }
 
 function mounting(theTheme: any, useSymbol: boolean) {
-  viewPort() 
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-        {skaoIcon({useSymbol : useSymbol, logoHeight: LOGO_HEIGHT})}
+      {skaoIcon({ useSymbol: useSymbol, logoHeight: LOGO_HEIGHT })}
     </ThemeProvider>
   );
 }
@@ -45,11 +44,11 @@ function validateToolTip() {
 
 describe('<Icon />', () => {
   for (const theTheme of THEME) {
-      it(`Theme ${theTheme} | Disabled DEFAULT`, () => {
-        mountingDefault(theTheme);
-        validateClick();
-        validateToolTip();
-      });
+    it(`Theme ${theTheme} | Disabled DEFAULT`, () => {
+      mountingDefault(theTheme);
+      validateClick();
+      validateToolTip();
+    });
   }
 
   for (const theTheme of THEME) {
