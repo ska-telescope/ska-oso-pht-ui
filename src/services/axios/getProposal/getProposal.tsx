@@ -489,15 +489,6 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
-  // let sciencePDF: DocumentPDF;
-  // getPDF(inRec?.info?.documents, 'proposal_science').then(pdf => {
-  //   sciencePDF = pdf;
-  // });
-  // let technicalPDF: DocumentPDF;
-  // getPDF(inRec?.info?.documents, 'proposal_technical').then(pdf => {
-  //   technicalPDF = pdf;
-  // });
-
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
   sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
