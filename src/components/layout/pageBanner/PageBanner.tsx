@@ -89,9 +89,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     }
   };
 
-  const pageTitle = () => (
+  const pageTitle = (shorten: boolean = false) => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {t(`page.${pageNo}.title`).toUpperCase()}
+      {t(shorten ? `page.${pageNo}.status` : `page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
@@ -147,7 +147,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       </Grid>
 
       <Grid item display={{ xs: 'block', lg: 'none' }}>
-        {pageTitle()}
+        {pageTitle(true)}
       </Grid>
 
       <Grid item>{buttonsRight()}</Grid>
