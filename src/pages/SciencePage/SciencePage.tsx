@@ -34,7 +34,6 @@ export default function SciencePage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  // const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -73,7 +72,6 @@ export default function SciencePage() {
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
-    // setUploadButtonStatus(status);
   };
 
   const uploadPdftoSignedUrl = async theFile => {
