@@ -7,8 +7,7 @@ import {
   enterProposalTitle,
   verifyOnLandingPage,
   verifyFirstProposalOnLandingPageIsVisible,
-  verifyOnLandingPageFilterIsVisible,
-  verifyProposalCreatedAlertFooter
+  verifyOnLandingPageFilterIsVisible
 } from '../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
@@ -18,7 +17,6 @@ Given('I am a PHT user who wants to create a proposal', () => {
 When('I provide a title and select the proposal category', () => {
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
-  verifyProposalCreatedAlertFooter();
   clickCreateProposal();
 });
 

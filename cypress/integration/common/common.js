@@ -27,14 +27,22 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 
 export const clickCreateProposal = () => {
   cy.get('[aria-label="Create"]').click();
-};
 
-export const verifyProposalCreatedAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal added with unique identifier');
+  cy.on('window:alert', text => {
+    cy.get('[data-testid="timeAlertFooter"]').should(
+      'include',
+      'Proposal added with unique identifier'
+    );
     done();
   });
 };
+
+// export const verifyProposalCreatedAlertFooter = () => {
+//   cy.on('window:alert', str => {
+//     expect(str).to.include('Proposal added with unique identifier');
+//     done();
+//   });
+// };
 
 export const clickEditProposal = () => {
   cy.get("[data-testid='EditRoundedIcon']")
@@ -57,7 +65,7 @@ export const createStandardProposal = () => {
   clickStandardProposalSubTypeTargetOfOpportunity();
   cy.wait(3000);
   clickCreateProposal();
-  verifyProposalCreatedAlertFooter();
+  // verifyProposalCreatedAlertFooter();
 };
 
 export const clickHome = () => {
