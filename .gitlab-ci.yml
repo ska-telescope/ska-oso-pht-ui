@@ -87,6 +87,7 @@ test_e2e:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
+    - yarn add cypress
     - yarn start &
     - yarn test:e2e:headless
     - yarn test:coverage:report:ci
