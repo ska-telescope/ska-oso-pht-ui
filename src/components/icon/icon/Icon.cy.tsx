@@ -7,9 +7,29 @@ import Icon from './Icon';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
+const DISABLED = [true, false];
+
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+function mountingDefault(theTheme: any) {
+  viewPort();
+  cy.mount(
+    <ThemeProvider theme={theme(theTheme)}>
+      <CssBaseline />
+      <Icon
+        icon={<DownloadIcon />}
+        onClick={cy.stub().as('setValue')}
+        testId="iconIcon"
+        toolTip={TOOLTIP}
+      />
+    </ThemeProvider>
+  );
+}
 
 function mounting(theTheme: any, disabled: boolean) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -35,15 +55,20 @@ function validateToolTip() {
 
 describe('<Icon />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders (enabled)`, () => {
-      mounting(theTheme, true);
+    it(`Theme ${theTheme} | Disabled DEFAULT`, () => {
+      mountingDefault(theTheme);
       validateClick();
       validateToolTip();
     });
-    it(`Theme ${theTheme}: Renders (disabled)`, () => {
-      mounting(theTheme, false);
-      validateClick();
-      validateToolTip();
-    });
+  }
+
+  for (const theTheme of THEME) {
+    for (const disabled of DISABLED) {
+      it(`Theme ${theTheme} | Disabled ${disabled}`, () => {
+        mounting(theTheme, disabled);
+        validateClick();
+        validateToolTip();
+      });
+    }
   }
 });

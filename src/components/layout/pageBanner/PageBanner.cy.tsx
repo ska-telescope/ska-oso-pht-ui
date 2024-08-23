@@ -14,8 +14,8 @@ export function verifyHeader(pageNo: number) {
   // Standard buttons
   cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
-  cy.get('[data-testId="validationBtn.labelTestId"]').contains('validationBtn.label');
-  cy.get('[data-testId="button.submitTestId"]').contains('button.submit'); // TODO DISABLED
+  cy.get('[data-testid="validationBtnTestId"]').contains('validationBtn.label');
+  cy.get('[data-testId="submitBtnTestId"]').contains('button.submit'); // TODO DISABLED
   // Status Array
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');
@@ -106,7 +106,7 @@ describe('POST proposal (VALIDATE)', () => {
       statusCode: 500,
       body: 'Internal Server Error'
     }).as('apiCallValidate500');
-    cy.get('[data-testid="validationBtn.labelTestId"]').click();
+    cy.get('[data-testid="validationBtnTestId"]').click();
     // cy.wait('@apiCallValidate500'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
@@ -115,7 +115,7 @@ describe('POST proposal (VALIDATE)', () => {
       statusCode: 200,
       body: 'OK'
     }).as('apiCallValidateOK');
-    cy.get('[data-testid="validationBtn.labelTestId"]').click();
+    cy.get('[data-testid="validationBtnTestId"]').click();
     // cy.wait('@apiCallValidateOK'); // TODO investigate why the api call is not being triggered anymore
     // TODO: Add verification of popup which lasts a few seconds with user journey
   });
