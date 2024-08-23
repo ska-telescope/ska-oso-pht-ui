@@ -27,14 +27,13 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 
 export const clickCreateProposal = () => {
   cy.get('[aria-label="Create"]').click();
-
-  cy.on('window:alert', text => {
-    cy.get('[data-testid="timeAlertFooter"]').should(
-      'include',
-      'Proposal added with unique identifier'
-    );
-    done();
-  });
+  cy.get('[data-testid="timeAlertFooter"]').should(
+    'include',
+    'Proposal added with unique identifier'
+  );
+  // cy.on('window:alert', text => {
+  //   done();
+  // });
 };
 
 // export const verifyProposalCreatedAlertFooter = () => {
