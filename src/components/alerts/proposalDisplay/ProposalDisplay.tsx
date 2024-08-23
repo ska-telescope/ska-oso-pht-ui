@@ -69,6 +69,8 @@ export default function ProposalDisplay({
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       window.open(signedUrl, '_blank');
+
+      //TODO: clarify conditions to oepn new window
       // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
       //   window.open(signedUrl, '_blank');
       // }
