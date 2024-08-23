@@ -60,7 +60,12 @@ export default function calculateSensitivityCalculatorResults(
     sense: number,
     isZoom: boolean
   ): ValueUnitPair => {
+    console.log('::: in getSurfaceBrightnessSensitivity');
+    console.log('isZoom', isZoom);
+    console.log('sense', sense);
+    console.log('response', response);
     const rec = isZoom ? response?.weighting[0] : response?.weighting;
+    console.log('rec?.sbs_conv_factor', rec?.sbs_conv_factor);
     const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
     return rec
       ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
@@ -230,8 +235,24 @@ const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
+  console.log('------------------------');
+  console.log('::: getSpectralWeightedSensitivityLOW');
+  console.log('isZoom', isZoom);
+  console.log('response', response);
   const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
   const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
+  // zoomCalculateResult[0];
+  console.log(
+    'SpectralWeightedSensitivity',
+    calc.spectral_sensitivity?.value * rec.weighting_factor
+  );
+  console.log('-> calc.spectral_sensitivity?.value', calc.spectral_sensitivity?.value);
+  console.log('-> rec.weighting_factor', rec.weighting_factor);
+  console.log('------------------------');
+  // TODO check calc.spectral_sensitivity.value and rec.weighting_factor individually
+  // -> rec.weighting_factor same
+  // -> calc.spectral_sensitivity?.value different -> why?
+  // for PHT and Sens Calc
   return (calc.spectral_sensitivity?.value ?? 0) * rec.weighting_factor;
 };
 

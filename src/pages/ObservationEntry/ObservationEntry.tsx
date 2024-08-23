@@ -24,7 +24,8 @@ import {
   SPECTRAL_AVERAGING_MAX,
   SPECTRAL_AVERAGING_MIN,
   STATUS_PARTIAL,
-  SUPPLIED_VALUE_DEFAULT,
+  SUPPLIED_VALUE_DEFAULT_MID,
+  TELESCOPES,
   TYPE_CONTINUUM,
   BAND_5A,
   BAND_5B,
@@ -39,7 +40,10 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST
+  ROBUST,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_INTEGRATION_TIME_UNITS_S,
+  SUPPLIED_VALUE_DEFAULT_LOW
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
@@ -87,7 +91,7 @@ export default function ObservationEntry() {
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
-  const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT);
+  const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(4);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
@@ -280,7 +284,9 @@ export default function ObservationEntry() {
         return;
       default:
         if (isContinuum()) {
-          setContinuumBandwidth(OBSERVATION.ContinuumBandwidthOBLow[0].value);
+          setContinuumBandwidth(
+            lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, subarrayConfig)
+          );
         }
     }
   };
@@ -290,6 +296,12 @@ export default function ObservationEntry() {
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
+    isLow()
+      ? setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H)
+      : setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
+    isLow()
+      ? setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW)
+      : setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
   }, [observingBand, observationType, bandwidth]);
 
   React.useEffect(() => {
@@ -637,7 +649,7 @@ export default function ObservationEntry() {
   };
 
   const suppliedTypeField = () => {
-    const getOptions = () => OBSERVATION?.Supplied;
+    const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
 
     return (
       <Box pb={2}>
@@ -646,6 +658,7 @@ export default function ObservationEntry() {
           testId="suppliedType"
           value={suppliedType}
           setValue={setSuppliedType}
+          disabled={getOptions().length < 2}
           label=""
           onFocus={() => helpComponent(t('suppliedType.help'))}
           required
@@ -655,8 +668,9 @@ export default function ObservationEntry() {
   };
 
   const suppliedUnitsField = () => {
-    const getOptions = () =>
-      suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+    const getOptions = () => {
+      return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+    };
 
     return (
       <Box>
@@ -664,6 +678,7 @@ export default function ObservationEntry() {
           options={getOptions()}
           testId="suppliedUnits"
           value={suppliedUnits}
+          disabled={isLow()}
           setValue={setSuppliedUnits}
           label=""
           onFocus={() => helpComponent(t('suppliedUnits.help'))}

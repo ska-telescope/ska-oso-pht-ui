@@ -680,6 +680,9 @@ export const OBSERVATION = {
   ]
 };
 
+export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
+export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
+
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
 export const ROBUST = [
@@ -736,7 +739,8 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
-export const SUPPLIED_VALUE_DEFAULT = 600;
+export const SUPPLIED_VALUE_DEFAULT_MID = 600;
+export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,

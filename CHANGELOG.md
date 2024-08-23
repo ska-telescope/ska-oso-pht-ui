@@ -38,6 +38,10 @@ Future
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
    - Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
+   - Disable Supplied Sensitivity for Low Observation and only offer h for Low Supplied units
+   - Change default integration time for Low 
+   - Use default continuum bandwidths per array for Low
+   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
    - Update SensCalc display results to display sensitivity or integration time
    - Added units to data in Observation SensCalc results modal
    - Removed units from SensCalc multiple display modal
