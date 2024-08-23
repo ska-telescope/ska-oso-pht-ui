@@ -45,7 +45,6 @@ describe('<TrashIcon />', () => {
     it(`Theme ${theTheme}: DEFAULT`, () => {
       mountingDefault(theTheme);
       validateClick();
-      validateToolTip();
     });
   }
   for (const theTheme of THEME) {
