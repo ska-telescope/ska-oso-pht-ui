@@ -7,8 +7,22 @@ import DownloadIcon from './downloadIcon';
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+function mountingDefault(theTheme: any) {
+  viewPort();
+  cy.mount(
+    <ThemeProvider theme={theme(theTheme)}>
+      <CssBaseline />
+      <DownloadIcon onClick={cy.stub().as('setValue')} />
+    </ThemeProvider>
+  );
+}
+
 function mounting(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -27,6 +41,12 @@ function validateToolTip() {
 }
 
 describe('<DownloadIcon />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: DEFAULT`, () => {
+      mountingDefault(theTheme);
+      validateClick();
+    });
+  }
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
