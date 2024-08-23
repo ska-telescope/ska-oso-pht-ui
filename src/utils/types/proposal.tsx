@@ -16,6 +16,7 @@ import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
 import { DEFAULT_PI } from '../constants';
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 export type ProposalBackend = {
   prsl_id: string;
@@ -93,7 +94,7 @@ export const NEW_PROPOSAL = {
   pi: '',
   abstract: '',
   sciencePDF: null,
-  scienceLoadStatus: 0,
+  scienceLoadStatus: FileUploadStatus.INITIAL,
   targetOption: 1,
   targets: [],
   observations: [],

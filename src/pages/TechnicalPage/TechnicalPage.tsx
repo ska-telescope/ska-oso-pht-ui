@@ -54,8 +54,9 @@ export default function TechnicalPage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     const file = {
-      documentId: theFile ? `technical-doc-${getProposal().id}` : '',
-      link: theFile ? ((theFile as unknown) as string) : '',
+      documentId: `technical-doc-${getProposal().id}`,
+      // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
+      link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
       file: theFile
     };
     setProposal({

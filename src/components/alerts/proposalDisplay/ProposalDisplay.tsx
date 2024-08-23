@@ -58,13 +58,15 @@ export default function ProposalDisplay({
   };
 
   const downloadPdf = async (fileType: string) => {
+    console.log('ProposalDisplay downloadPdf fileType');
     try {
       const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
-        window.open(signedUrl, '_blank');
-      }
+      window.open(signedUrl, '_blank');
+      // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      //   window.open(signedUrl, '_blank');
+      // }
     } catch (e) {
       new Error(t('pdfDownload.error'));
     }
@@ -158,6 +160,13 @@ export default function ProposalDisplay({
   };
 
   const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
+    console.log('link content:', content);
+    console.log('link inLabel:', inLabel);
+    console.log('link toolTip:', toolTip);
+    console.log('link onClick:', onClick);
+    console.log('link getProposal().sciencePDF', getProposal().sciencePDF);
+    console.log('link getProposal().id', getProposal().id);
+
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
@@ -282,7 +291,7 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={6}>
           {link(
-            t('page.3.label'),
+            t('page.6.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
             proposal.technicalPDF

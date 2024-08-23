@@ -43,6 +43,7 @@ import {
 } from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -98,14 +99,18 @@ const extractFileFromURL = (url): Promise<File> => {
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
+    console.log('get Proposal getPDF return null');
     return null;
   }
+  console.log('get Proposal getPDF after if null');
   const file = (await extractFileFromURL(pdf.link)) as File;
   const pdfDoc: DocumentPDF = {
     documentId: pdf?.document_id,
     link: pdf?.link,
     file: file ? file : null
   };
+
+  console.log('getProposal getPDF pdfDoc', pdfDoc);
   return pdfDoc as DocumentPDF;
 };
 
@@ -483,15 +488,20 @@ const getTargetObservation = (
 
 /*************************************************************************************************************************/
 
-function mapping(inRec: ProposalBackend): Proposal {
+async function mapping(inRec: ProposalBackend): Promise<Proposal> {
+  // let sciencePDF: DocumentPDF;
+  // getPDF(inRec?.info?.documents, 'proposal_science').then(pdf => {
+  //   sciencePDF = pdf;
+  // });
+  // let technicalPDF: DocumentPDF;
+  // getPDF(inRec?.info?.documents, 'proposal_technical').then(pdf => {
+  //   technicalPDF = pdf;
+  // });
+
   let sciencePDF: DocumentPDF;
-  getPDF(inRec?.info?.documents, 'proposal_science').then(pdf => {
-    sciencePDF = pdf;
-  });
   let technicalPDF: DocumentPDF;
-  getPDF(inRec?.info?.documents, 'proposal_technical').then(pdf => {
-    technicalPDF = pdf;
-  });
+  sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
+  technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
 
   const convertedProposal = {
     id: inRec.prsl_id,
@@ -511,7 +521,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF ? 1 : 0,
+    scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
     targetOption: 1, // TODO check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
@@ -521,15 +531,16 @@ function mapping(inRec: ProposalBackend): Proposal {
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets, inRec.info.targets)
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: technicalPDF ? 1 : 0,
+    technicalLoadStatus: technicalPDF ? 1 : 0, //TODO align loadStatus to UploadButton status
     dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+  console.log('getProposal convertedProposal', convertedProposal);
   return convertedProposal;
 }
 
-export function GetMockProposal(): Proposal {
+export async function GetMockProposal(): Promise<Proposal> {
   return mapping(MockProposalBackend);
 }
 
