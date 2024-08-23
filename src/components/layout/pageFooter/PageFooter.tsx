@@ -54,7 +54,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
       setProposal({ ...getProposal(), id: response });
       setTimeout(() => {
         navigate(NAV[1]);
-      }, 2000);
+      }, 5000);
     } else {
       NotifyError(response.error);
     }

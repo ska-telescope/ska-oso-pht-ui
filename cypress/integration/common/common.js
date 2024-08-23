@@ -54,7 +54,6 @@ export const createStandardProposal = () => {
   pageConfirmed('TITLE');
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
-  cy.wait(2000);
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
 };
