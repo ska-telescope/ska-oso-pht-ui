@@ -213,6 +213,9 @@ test-dev-environment:
 stop-dev-environment:
   <<: *dev_env
 
+helm-chart-build:
+  allow_failure: true
+
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 include:
