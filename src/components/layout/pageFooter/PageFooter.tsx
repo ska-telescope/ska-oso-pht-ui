@@ -91,7 +91,13 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     >
       <Grid p={2} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
-          {usedPageNo > 0 && <PreviousPageButton label={prevLabel()} action={prevPageNav} />}
+          {usedPageNo > 0 && (
+            <PreviousPageButton
+              action={prevPageNav}
+              testId="prevButtonTestId"
+              title={prevLabel()}
+            />
+          )}
         </Grid>
         <Grid item>
           {(application.content5 as Notification)?.message?.length > 0 && (
@@ -107,7 +113,8 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
           {usedPageNo < LAST_PAGE - 1 && (
             <NextPageButton
               disabled={buttonDisabled}
-              label={nextLabel()}
+              testId="nextButtonTestId"
+              title={nextLabel()}
               page={usedPageNo}
               primary
               action={nextPageClicked}
