@@ -33,7 +33,7 @@ export default function SciencePage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+  // const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -65,14 +65,14 @@ export default function SciencePage() {
       setCurrentFile(theFile);
     } else {
       console.log('setFile null');
-      setProposal({ ...getProposal(), sciencePDF: null });
+      setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
     }
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
-    setUploadButtonStatus(status);
+    // setUploadButtonStatus(status);
   };
 
   const uploadPdftoSignedUrl = async theFile => {
@@ -126,6 +126,7 @@ export default function SciencePage() {
       setUploadStatus(FileUploadStatus.INITIAL);
       NotifyOK(t('pdfDelete.science.success'));
     } catch (e) {
+      console.log('deletePdfUsingSignedUrl e', e);
       new Error(t('pdfDelete.science.error'));
       NotifyError(t('pdfDelete.science.error'));
     }
@@ -175,11 +176,9 @@ export default function SciencePage() {
   }, [validateToggle]);
 
   React.useEffect(() => {
-    console.log('useEffect uploadButtonStatus', uploadButtonStatus);
-
     console.log('useEffect getProposal().scienceLoadStatus', getProposal().scienceLoadStatus);
-    console.log('useEffect getProposal().sciencePDF', getProposal().sciencePDF);
-  }, [uploadButtonStatus, getProposal().scienceLoadStatus, getProposal().sciencePDF]);
+    console.log('useEffect getProposal()', getProposal());
+  }, [getProposal().scienceLoadStatus, getProposal()]);
 
   return (
     <Shell page={PAGE}>
