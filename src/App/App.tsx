@@ -35,7 +35,7 @@ function App() {
   const [showCopyright, setShowCopyright] = React.useState(false);
   const [apiVersion] = React.useState('2.1.0'); // TODO : Obtain real api version number
 
-  const XS = () => useMediaQuery(useTheme().breakpoints.down('sm')); // Allows us to code depending upon screen size
+  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
 
   const skao = t('toolTip.button.skao');
@@ -76,7 +76,7 @@ function App() {
         <Header
           docs={docs}
           testId="headerId"
-          title={t(XS() ? 'pht.short' : 'pht.title')}
+          title={t(LG() ? 'pht.short' : 'pht.title')}
           toolTip={toolTip}
           selectTelescope={false}
           storage={theStorage}
