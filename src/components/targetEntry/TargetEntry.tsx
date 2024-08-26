@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../utils/types/proposal';
 import AddButton from '../button/Add/Add';
 import ResolveButton from '../button/Resolve/Resolve';
@@ -13,7 +13,7 @@ import VelocityField from '../fields/velocity/Velocity';
 import HelpPanel from '../info/helpPanel/helpPanel';
 import GetCoordinates from '../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../utils/types/target';
-import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../utils/constants';
+import { LAB_POSITION, RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../utils/constants';
 
 interface TargetEntryProps {
   id?: number;
@@ -147,7 +147,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
         required
         label={t('name.label')}
         labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
         testId="name"
         value={target?.name}
@@ -212,7 +212,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
       {target?.velType === RA_TYPE_EQUATORIAL && (
         <ReferenceFrameField
           labelBold={true}
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LAB_WIDTH}
           onFocus={() => helpComponent(t('referenceFrame.help'))}
           setValue={setReferenceFrame}

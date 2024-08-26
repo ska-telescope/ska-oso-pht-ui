@@ -12,10 +12,10 @@ const PAGE_NO = 5;
 
 export function verifyHeader(pageNo: number) {
   // Standard buttons
-  cy.get('[data-testId="homeButtonTestId"]').contains('button.home');
+  cy.get('[data-testId="homeButtonTestId"]').contains('homeBtn.label');
   cy.get('[data-testId="saveButtonTestId"]').contains('saveBtn.label');
   cy.get('[data-testid="validationBtnTestId"]').contains('validationBtn.label');
-  cy.get('[data-testId="submitBtnTestId"]').contains('button.submit'); // TODO DISABLED
+  cy.get('[data-testId="submitBtnTestId"]').contains('submitBtn.label'); // TODO DISABLED
   // Status Array
   cy.get('[data-testId="statusId1"]');
   cy.get('[data-testId="statusId2"]');

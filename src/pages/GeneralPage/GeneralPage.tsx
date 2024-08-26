@@ -2,10 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Shell from '../../components/layout/Shell/Shell';
-import { GENERAL } from '../../utils/constants';
+import { GENERAL, LAB_POSITION } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
 import { validateGeneralPage } from '../../utils/proposalValidation';
@@ -99,7 +99,7 @@ export default function GeneralPage() {
         <TextEntry
           label={t('abstract.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           testId="abstractId"
           rows={numRows}
           value={getProposal().abstract}
@@ -122,12 +122,13 @@ export default function GeneralPage() {
   const categoryField = () => (
     <DropDown
       options={GENERAL.ScienceCategory}
+      required
       testId="categoryId"
       value={getProposal().scienceCategory}
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold
-      labelPosition={LABEL_POSITION.START}
+      labelPosition={LAB_POSITION}
       onFocus={() => helpComponent(t('scienceCategory.help'))}
     />
   );
