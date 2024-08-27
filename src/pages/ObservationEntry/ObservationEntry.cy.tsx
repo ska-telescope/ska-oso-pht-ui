@@ -37,13 +37,15 @@ function verifySuppliedTypeValueAndUnits() {
 // HERE
 function verifySuppliedTypeValueAndUnitsLow() {
   cy.get('[data-testid="suppliedType"]').contains('Integration Time');
-  cy.get('[data-testid="suppliedType"]').find('input')
-  .should('be.disabled');
+  cy.get('[data-testid="suppliedType"]')
+    .find('input')
+    .should('be.disabled');
   cy.get('[data-testid="suppliedValue"]').type('3');
   cy.get('[data-testid="helpPanelId"]').contains('suppliedValue.help');
   cy.get('[data-testid="suppliedUnits"]').contains('h');
-  cy.get('[data-testid="suppliedUnits"]').find('input')
-  .should('be.disabled');
+  cy.get('[data-testid="suppliedUnits"]')
+    .find('input')
+    .should('be.disabled');
 }
 
 function verifyElevationField() {
