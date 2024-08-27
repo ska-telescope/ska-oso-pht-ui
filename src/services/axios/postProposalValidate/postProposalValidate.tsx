@@ -8,14 +8,14 @@ import {
 import MappingPutProposal from '../putProposal/putProposalMapping';
 
 interface ValidateResponseData {
-  result: Boolean,
-  validation_errors: string[]
-};
+  result: Boolean;
+  validation_errors: string[];
+}
 
 interface ValidateServiceResponse {
-  error?: string,
-  valid?: string
-};
+  error?: string;
+  valid?: string;
+}
 
 async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {
