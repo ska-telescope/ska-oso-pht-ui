@@ -52,7 +52,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
         NotifyError(response.error);
         setCanSubmit(false);
       }
-      
     };
     ValidateTheProposal();
   };
