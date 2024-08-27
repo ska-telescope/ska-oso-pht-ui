@@ -14,7 +14,7 @@ function viewPort() {
   cy.viewport(2000, 1000);
 }
 
-function mounting(theTheme) {
+function mounting(theTheme, proposal) {
   viewPort();
   cy.mount(
     <StoreProvider>
@@ -22,6 +22,7 @@ function mounting(theTheme) {
         <CssBaseline />
         <Router location="/" navigator={undefined}>
           <ProposalDisplay
+            proposal={proposal}
             onClose={cy.stub().as('handleCancel')}
             onConfirm={cy.stub().as('handleConfirm')}
             open={true}
@@ -32,14 +33,29 @@ function mounting(theTheme) {
   );
 }
 
+function verifyErrorPanel() {
+  cy.get('[data-testId="timedAlertId"]').contains('displayProposal.warning');
+}
+
+function verifyContent() {
+  // cy.get('[data-testId="title"]').contains('displayProposal.warning');
+}
+
 describe('<ProposalDisplay />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
+    it(`Theme ${theTheme}: Proposal : NULL`, () => {
+      mounting(theTheme, null);
+      verifyErrorPanel();
+    });
+
+    it(`Theme ${theTheme}: Proposal : Contents`, () => {
+      mounting(theTheme, GetMockProposal);
+      verifyContent();
     });
   }
 });
 
+/*
 describe('Content', () => {
   beforeEach(() => {
     cy.stub()
@@ -75,3 +91,4 @@ describe('Content', () => {
 //     .should('contain', 'Success');
 // });
 // });
+*/

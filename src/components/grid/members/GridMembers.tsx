@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SvgIcon, Typography } from '@mui/material';
-import { StarRateRounded } from '@mui/icons-material';
-import CheckIcon from '@mui/icons-material/Check';
+import { Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import StarIcon from '../../../components/icon/starIcon/starIcon';
+import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import TeamMember from '../../../utils/types/teamMember';
@@ -27,13 +27,13 @@ export default function GridMembers({
 
   const PIStar = ({ pi }) => {
     if (pi) {
-      return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" />;
+      return <StarIcon />;
     }
   };
 
   const PHDThesis = ({ value }) => {
     if (value) {
-      return <SvgIcon component={CheckIcon} viewBox="0 0 24 24" />;
+      return <TickIcon />;
     }
   };
 
@@ -52,7 +52,7 @@ export default function GridMembers({
       headerName: t('phdThesis.label'),
       flex: 1,
       disableClickEventBubbling: true,
-      renderHeader: () => headerDisplay('phdThesis.label'),
+      renderHeader: () => headerDisplay('phdThesis.grid'),
       renderCell: (params: { row: { phdThesis: string; status: string } }) => (
         <PHDThesis value={params.row.phdThesis} />
       )

@@ -17,8 +17,6 @@
     "confirmSubmit": "Confirm Proposal Submission",
     "close": "Close",
     "create": "Create",
-    "home": "Home",
-    "submit": "Submit",
     "sendInvite": "Send invitation",
     "update": "Update"
   },
@@ -74,10 +72,6 @@
     "label": "Change Proposal's type?",
     "content1": "You are about to change the type of your proposal.",
     "content2": "Some data specific to the proposal type may be lost."
-  },
-  "clearBtn": {
-    "label": "Clear",
-    "toolTip": "This will clear the file upload selection"
   },
   "cloneProposal": {
     "toolTip": "Clone proposal",
@@ -211,6 +205,10 @@
     "idPrefix": "group-",
     "toolTip": "Add a group if the observation needs to be executed concurrently"
   },
+  "homeBtn": {
+    "label": "Home",
+    "tooltip": "Returns to the list of proposals"
+  },
   "id": {
     "label": "Id"
   },
@@ -325,12 +323,46 @@
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
   },
-  "pdfPreview": {
-    "label": "PDF Preview",
-    "science": "This is the PDF preview button on the Science page",
-    "technical": "This is the PDF preview button on the Technical page"
+  "pdfUpload": {
+    "science": {
+      "label": {
+        "choose": "Choose file",
+        "clear": "Clear",
+        "delete": "Delete",
+        "download": "Download",
+        "preview": "Preview",
+        "upload": "Upload"
+      },
+      "tooltip": {
+        "choose": "Choose the science justification PDF for upload",
+        "clear": "Clears the currently selected file",
+        "delete": "Delete the science justification PDF",
+        "download": "Download the science justification PDF",
+        "preview": "This is the PDF preview button on the science page",
+        "upload": "Upload the selected PDF for use as the science justification"
+      }
+    },
+    "technical": {
+      "label": {
+        "choose": "Choose file",
+        "clear": "Clear",
+        "delete": "Delete",
+        "download": "Download",
+        "preview": "Preview",
+        "upload": "Upload"
+      },
+      "tooltip": {
+        "choose": "Choose the technical justification PDF for upload",
+        "clear": "Clears the currently selected file",
+        "delete": "Delete the technical justification PDF",
+        "download": "Download the technical justification PDF",
+        "preview": "This is the PDF preview button on the technical page",
+        "upload": "Upload the selected PDF for use as the technical justification"
+      }
+    }
   },
   "phdThesis": {
+    "grid": "PhD",
     "title": "PhD Thesis",
     "label": "for PhD Thesis",
     "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
@@ -396,11 +428,11 @@
       "3": "DDT"
     },
     "desc": {
-      "1": "Observing projects that require less time than a KSP, typically over a single Time Allocation cycle.",
-      "2": "Observing projects that require the allocation of significant observing time and resources often over a period longer than one Observing cycle. Specific criteria that define a KSP will be described in each Call for Proposals.",
-      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee."
+      "1": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",
+      "2": "Observing projects that require the allocation of significant observing time and resources often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
+      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TMC)."
     },
-    "help": "When highlighted, the individual proposal types will display additional information to aid in the selection appropriate to the proposal. It is possible to change proposal type at a later date, however be aware that this may information previously entered content.",
+    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
@@ -447,7 +479,8 @@
   },
   "saveBtn": {
     "label": "Save",
-    "success": "Save was successful"
+    "success": "Save was successful",
+    "tooltip": "Saves the proposal in the current state to the database"
   },
   "scienceCategory": {
     "1": "Cosmology",
@@ -616,6 +649,10 @@
     "11": "AA4 (core only)",
     "20": "Custom"
   },
+  "submitBtn": {
+    "label": "Submit",
+    "tooltip": "Progress the proposal to the submitted state"
+  },
   "suppliedType": {
     "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
   },
@@ -669,8 +706,9 @@
     "label": "Upload PDF"
   },
   "validationBtn": {
-    "label": "Validation",
-    "success": "Proposal is Valid."
+    "label": "Validate",
+    "success": "Proposal is Valid.",
+    "tooltip": "Performs enhanced validation upon the proposal"
   },
   "velocity": {
     "label": "Velocity",
@@ -712,7 +750,7 @@
     "1": {
       "status": "Team",
       "title": "Team",
-      "desc": "Principal investigators should ensure Co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation."
+      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal."
     },
     "2": {
       "status": "General",
@@ -766,7 +804,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "Proposals where you have participated in as a principal- or Co-investigator.",
+      "desc": "Proposals where the user is listed as as either principal investigator or co-investigator.",
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {

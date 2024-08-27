@@ -1,10 +1,10 @@
 Observatory Data Product Page
-==================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Data Products are associated to one or more Observation Set(s) which have a valid association to a target with resultant sensitivity calculation results.
 
-The observatory data product page is linked with the observation page so observation sets can be specified for which a data product is requested. 
-Here, you can request a single or multiple observatory data data products for an observation set or all observation sets added to your proposal.
-The "Add Data Product" will not be active until an observation set exists, has been linked to a target and has a valid sensitivity Calculation Result. :numref:`Figure %s <_datapageextra>` shows the layout of the observatory data product data page in light mode when no data product has been added to observation set(s).
+Here, you can request a single or multiple observatory data products for an observation set or all observation sets added to your proposal.
+The "Add Data Product" function is not active until an observation set exists, has been linked to a target and has a valid Sensitivity Calculation Result. :numref:`Figure %s <datapageextra>` shows the layout of the observatory data product data page when no data product has been added to observation set(s).
 
 
 .. |icosdp| image:: /images/addsdp.png
@@ -14,11 +14,11 @@ The "Add Data Product" will not be active until an observation set exists, has b
 
 .. _datapageextra:
 
-.. figure:: /images/dataProductPage.png
-   :width: 100%
-   :alt: Observatory data page in screen in light mode 
+   .. figure:: /images/dataProductPage.png
+      :width: 100%
+      :alt: Image of the Observatory Data Product page. 
 
-   Figure : Observatory Data Product page in light mode.
+   Figure : Observatory Data Product page.
 
 Layout and Navigation
 =====================
@@ -35,24 +35,33 @@ The are two parts to the observatory data product page:
       - *Observation set(s)*: Observation set selected for which the observatory data product(s) is added.
       - *Observatory Data Products*:  A list of added data products(s).
       - *Image Size*: Image size requested.
-      - *Pixel Size*: Pixel size  calculated based on the beam size returned from the sensitivity calculator =  :math:`\frac{\theta_{minor}}{3}`.
+      - *Pixel Size*: Pixel size calculated based on the beam size returned from the sensitivity calculator =  :math:`\frac{\theta_{minor}}{3}`.
       - *Weighting*: The weighting of the selected observation set.
       - *"Actions"* : "Delete" is the only option available at the moment.
 
+.. note:: 
 
+   Observatory Data Products
+
+   Below is the list as available at this time
+
+   - Visibilities
+   - Image Products 1 : Image Cubes
+   - Image Products 2 : UV Grids
+   - LSM Catalogue
 
 .. _datapage1:
 
 .. figure:: /images/sdpdata1.png
    :width: 90%
-   :alt: Observatory Data Product page in screen in light mode 
+   :alt: Image of the Observatory Data Product page with data products added. 
 
-   Observatory Data Product page in light mode with data products added.
+   Observatory Data Product page with data products added.
 
 
   
 
-1. **Data Product Management**
+2. **Data Product Management**
 
 - Clicking on the |icosdp| button takes the user to a page where parameters of the 
   data product(s) can be specified as shown in :numref:`Figure %s <datapage2>`
@@ -61,9 +70,9 @@ The are two parts to the observatory data product page:
 
 .. figure:: /images/sdpdata2.png
    :width: 90%
-   :alt: Observatory Data Product management page screen in light mode 
+   :alt: Image of the Observatory Data Product management page 
 
-   Observatory Data Product  management page in light mode.
+   Observatory Data Product management page.
 
 
 Key Information and Actions

@@ -3,12 +3,10 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
 import { NOT_SPECIFIED } from '../../../utils/constants';
-import Target from '../../../utils/types/target';
 import DownloadButton from '../../button/Download/Download';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
@@ -19,6 +17,7 @@ import GridObservationSummary from '../../../components/grid/observationSummary/
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 
 interface ProposalDisplayProps {
+  proposal: Proposal;
   open: boolean;
   onClose: Function;
   onConfirm: Function;
@@ -30,12 +29,12 @@ const GRID_HEIGHT = 300;
 const TITLE_STYLE = 'h5';
 const LABEL_WIDTH = 4;
 const LABEL_STYLE = 'subtitle1';
-const CONTENT_WIDTH = 12 - LABEL_WIDTH;
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
 const BOLD_CONTENT = false;
 
 export default function ProposalDisplay({
+  proposal,
   open,
   onClose,
   onConfirm,
@@ -43,9 +42,6 @@ export default function ProposalDisplay({
 }: ProposalDisplayProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
-  const { application } = storageObject.useStore();
-
-  const getProposal = () => application.content2 as Proposal;
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);
 
@@ -63,7 +59,6 @@ export default function ProposalDisplay({
 
   const downloadPdf = async (fileType: string) => {
     try {
-      const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
@@ -76,7 +71,7 @@ export default function ProposalDisplay({
   };
 
   const proposalType = () => {
-    const proposalType = getProposal().proposalType;
+    const proposalType = proposal.proposalType;
     const proposalName =
       !proposalType || proposalType < 1 ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
@@ -84,20 +79,20 @@ export default function ProposalDisplay({
 
   const proposalAttributes = () => {
     let output = [];
-    const subTypes: number[] = getProposal().proposalSubType;
-    if (subTypes.length && subTypes[0] > 0) {
+    const subTypes: number[] = proposal.proposalSubType;
+    if (subTypes?.length && subTypes[0] > 0) {
       subTypes.forEach(element => output.push(t('proposalAttribute.title.' + element)));
     }
     return output;
   };
 
   const scienceCategory = () => {
-    const scienceCat = getProposal().scienceCategory;
+    const scienceCat = proposal.scienceCategory;
     return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
   const title = (inValue: string) => (
-    <Typography variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
+    <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
       {inValue}
     </Typography>
   );
@@ -131,8 +126,8 @@ export default function ProposalDisplay({
   const elementArray = (inArr: Array<number | string>, optional: boolean = false) => {
     return (
       <>
-        {!optional && inArr.length === 0 && emptyCell()}
-        {inArr.length > 0 && (
+        {!optional && inArr?.length === 0 && emptyCell()}
+        {inArr?.length > 0 && (
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => (
               <Grid item xs={12}>
@@ -200,7 +195,7 @@ export default function ProposalDisplay({
       <Grid item>
         <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid>
-      {onConfirmLabel.length > 0 && (
+      {onConfirmLabel?.length > 0 && (
         <Grid item>
           <ConfirmButton
             action={handleConfirm}
@@ -216,11 +211,11 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid item>{title(t('page.9.title') + ' : ' + getProposal().title)}</Grid>
+        <Grid item>{title(t('page.9.title') + ' : ' + proposal.title)}</Grid>
         <Grid item>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid item>{cycle(t('page.12.short'), getProposal().cycle)}</Grid>
-            <Grid item>{content(getProposal().id)}</Grid>
+            <Grid item>{cycle(t('page.12.short'), proposal.cycle)}</Grid>
+            <Grid item>{content(proposal.id)}</Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -231,9 +226,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="column" justifyContent="center" alignItems="center">
         <Grid item>{label(t('abstract.label'))}</Grid>
-        <Grid item>
-          {getProposal().abstract?.length ? content(getProposal().abstract) : emptyCell()}
-        </Grid>
+        <Grid item>{proposal.abstract?.length ? content(proposal.abstract) : emptyCell()}</Grid>
       </Grid>
     </Grid>
   );
@@ -260,7 +253,7 @@ export default function ProposalDisplay({
         <Grid item>{label(t('page.10.label'))}</Grid>
       </Grid>
       <Grid item>
-        <GridObservationSummary height={GRID_HEIGHT} proposal={getProposal()} />
+        <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />
       </Grid>
     </>
   );
@@ -271,7 +264,7 @@ export default function ProposalDisplay({
         <Grid item>{label(t('members.label'))}</Grid>
       </Grid>
       <Grid item>
-        <GridMembers height={GRID_HEIGHT} rows={getProposal().team} />
+        <GridMembers height={GRID_HEIGHT} rows={proposal.team} />
       </Grid>
     </>
   );
@@ -284,7 +277,7 @@ export default function ProposalDisplay({
             t('page.3.label'),
             t('pdfDownload.science.toolTip'),
             () => downloadPdf('science'),
-            getProposal().sciencePDF
+            proposal.sciencePDF
           )}
         </Grid>
         <Grid item xs={6}>
@@ -292,74 +285,8 @@ export default function ProposalDisplay({
             t('page.3.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
-            getProposal().technicalPDF
+            proposal.technicalPDF
           )}
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
-  const targetContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('targets.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targets?.map((rec: Target) => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.id}</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant={CONTENT_STYLE}>{rec.name}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.ra}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.dec}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.vel}</Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
-  const targetObservationContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('targetSelection.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          {getProposal().targetObservation?.map(rec => (
-            <Grid container direction="row" justifyContent="space-between" alignItems="center">
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.targetId}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant={CONTENT_STYLE}>{rec.observationId}</Typography>
-              </Grid>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Grid>
-  );
-
-  const dataContent = () => (
-    <Grid item>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
-          <Typography variant={LABEL_STYLE}>{t('observatoryDataProduct.label')}</Typography>
-        </Grid>
-        <Grid item xs={CONTENT_WIDTH}>
-          <Typography variant={CONTENT_STYLE}>{getProposal().pipeline}</Typography>
         </Grid>
       </Grid>
     </Grid>
@@ -379,12 +306,12 @@ export default function ProposalDisplay({
         }
       }}
     >
-      {getProposal() === null && (
+      {proposal === null && (
         <Alert testId="timedAlertId" color={AlertColorTypes.Warning}>
           <Typography>{t('displayProposal.warning')}</Typography>
         </Alert>
       )}
-      {getProposal() !== null && (
+      {proposal !== null && (
         <DialogContent>
           <Grid
             p={2}
@@ -404,16 +331,10 @@ export default function ProposalDisplay({
             {observationsContentGrid()}
             {sectionTitle()}
             {teamContentGrid()}
-            {false && sectionTitle()}
-            {false && targetContent()}
-            {false && sectionTitle()}
-            {false && targetObservationContent()}
-            {false && sectionTitle()}
-            {false && dataContent()}
           </Grid>
         </DialogContent>
       )}
-      {getProposal() !== null && <DialogActions>{pageFooter()}</DialogActions>}
+      {proposal !== null && <DialogActions>{pageFooter()}</DialogActions>}
     </Dialog>
   );
 }

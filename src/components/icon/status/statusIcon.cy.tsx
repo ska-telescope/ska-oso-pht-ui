@@ -7,8 +7,12 @@ import { STATUS_OK } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
 function mounting(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -17,10 +21,15 @@ function mounting(theTheme: any) {
   );
 }
 
+function validateClick() {
+  cy.get('[data-testid="statusId"]').click();
+}
+
 describe('<Icon />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
+      validateClick();
     });
   }
 });

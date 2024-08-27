@@ -38,7 +38,7 @@ export default function StandardAlert({ color, testId, text }: StandardAlertProp
           <StatusIcon icon level={getLevel(color)} size={FONTSIZE} testId={testId + 'Icon'} />
         </Grid>
         <Grid item>
-          <Typography>{text}</Typography>
+          <Typography id="standardAlertId">{text}</Typography>
         </Grid>
         <Grid item></Grid>
       </Grid>

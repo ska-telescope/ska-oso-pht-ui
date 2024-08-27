@@ -3,18 +3,18 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
+import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import { mailto } from '../../../services/mailto/mailto';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
-  const LABEL_WIDTH = 5;
+  const LABEL_WIDTH = 6;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
@@ -171,7 +171,7 @@ export default function MemberInvite() {
         <TextEntry
           label={t('firstName.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
           testId="firstName"
           value={firstName}
@@ -190,7 +190,7 @@ export default function MemberInvite() {
         <TextEntry
           label={t('lastName.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
           testId="lastName"
           value={lastName}
@@ -209,7 +209,7 @@ export default function MemberInvite() {
         <TextEntry
           label={t('email.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
           testId="email"
           value={email}
@@ -228,7 +228,7 @@ export default function MemberInvite() {
         <TickBox
           label={t('pi.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
           testId="piCheckbox"
           checked={pi}
@@ -245,7 +245,7 @@ export default function MemberInvite() {
         <TickBox
           label={t('phdThesis.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
           testId="PhDCheckbox"
           checked={phdThesis}
