@@ -7,9 +7,19 @@ import {
 } from '../../../utils/constants';
 import MappingPutProposal from '../putProposal/putProposalMapping';
 
-async function PostProposalValidate(proposal) {
+interface ValidateResponseData {
+  result: Boolean,
+  validation_errors: string[]
+};
+
+interface ValidateServiceResponse {
+  error?: string,
+  valid?: string
+};
+
+async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {
-    return 'LOCAL DATA success';
+    return { valid: 'success' };
   }
 
   try {
@@ -20,9 +30,17 @@ async function PostProposalValidate(proposal) {
       convertedProposal,
       AXIOS_CONFIG
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+
+    const validateResponseData: ValidateResponseData = result.data;
+    if (typeof validateResponseData === 'undefined') {
+      return { error: 'error.API_UNKNOWN_ERROR' };
+    } else if (validateResponseData.result === false) {
+      return { error: validateResponseData.validation_errors[0] };
+    } else {
+      return { valid: 'success' };
+    }
   } catch (e) {
-    const errorMessage = `${e?.message}: ${e?.response?.data?.message}`;
+    const errorMessage = `${e?.message}: ${e?.response?.data?.title}`;
     return { error: errorMessage };
   }
 }
