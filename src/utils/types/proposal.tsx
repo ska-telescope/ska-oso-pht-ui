@@ -101,7 +101,7 @@ export const NEW_PROPOSAL = {
   groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
-  technicalLoadStatus: 0,
+  technicalLoadStatus: FileUploadStatus.INITIAL,
   dataProductSDP: [],
   dataProductSRC: [],
   pipeline: ''

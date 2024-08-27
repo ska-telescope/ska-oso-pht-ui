@@ -52,7 +52,6 @@ export default function SciencePage() {
 
   const setFile = (theFile: File) => {
     if (theFile) {
-      console.log('setFile if theFile');
       //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
       const file = {
         documentId: `science-doc-${getProposal().id}`,
@@ -63,7 +62,6 @@ export default function SciencePage() {
       setProposal({ ...getProposal(), sciencePDF: file });
       setCurrentFile(theFile);
     } else {
-      console.log('setFile null');
       setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
     }
@@ -120,11 +118,10 @@ export default function SciencePage() {
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
       }
-      setFile(null);
+      setFile(null); //TODO: revisit redux not removed after delete pdf
       setUploadStatus(FileUploadStatus.INITIAL);
       NotifyOK(t('pdfDelete.science.success'));
     } catch (e) {
-      console.log('deletePdfUsingSignedUrl e', e);
       new Error(t('pdfDelete.science.error'));
       NotifyError(t('pdfDelete.science.error'));
     }
@@ -172,11 +169,6 @@ export default function SciencePage() {
   React.useEffect(() => {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
-
-  React.useEffect(() => {
-    console.log('useEffect getProposal().scienceLoadStatus', getProposal().scienceLoadStatus);
-    console.log('useEffect getProposal()', getProposal());
-  }, [getProposal().scienceLoadStatus, getProposal()]);
 
   return (
     <Shell page={PAGE}>

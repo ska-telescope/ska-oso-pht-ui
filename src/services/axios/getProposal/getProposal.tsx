@@ -99,18 +99,14 @@ const extractFileFromURL = (url): Promise<File> => {
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
-    console.log('get Proposal getPDF return null');
     return null;
   }
-  console.log('get Proposal getPDF after if null');
   const file = (await extractFileFromURL(pdf.link)) as File;
   const pdfDoc: DocumentPDF = {
     documentId: pdf?.document_id,
     link: pdf?.link,
     file: file ? file : null
   };
-
-  console.log('getProposal getPDF pdfDoc', pdfDoc);
   return pdfDoc as DocumentPDF;
 };
 
@@ -512,7 +508,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
+    scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: getTargets(inRec.info.targets),
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
@@ -522,12 +518,11 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
         ? getTargetObservation(inRec.info.results, inRec.info.observation_sets, inRec.info.targets)
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: technicalPDF ? 1 : 0, //TODO align loadStatus to UploadButton status
+    technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('getProposal convertedProposal', convertedProposal);
   return convertedProposal;
 }
 

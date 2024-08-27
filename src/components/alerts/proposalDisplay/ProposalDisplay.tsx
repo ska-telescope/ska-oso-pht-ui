@@ -62,7 +62,6 @@ export default function ProposalDisplay({
   };
 
   const downloadPdf = async (fileType: string) => {
-    console.log('ProposalDisplay downloadPdf fileType');
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
@@ -167,13 +166,6 @@ export default function ProposalDisplay({
   };
 
   const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
-    console.log('link content:', content);
-    console.log('link inLabel:', inLabel);
-    console.log('link toolTip:', toolTip);
-    console.log('link onClick:', onClick);
-    console.log('link getProposal().sciencePDF', getProposal().sciencePDF);
-    console.log('link getProposal().id', getProposal().id);
-
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH}>
