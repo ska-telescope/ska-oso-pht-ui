@@ -50,25 +50,6 @@ export default function TechnicalPage() {
     updateAppContent1(temp);
   };
 
-<<<<<<< HEAD
-  const setFile = (theFile: File) => {
-    //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
-    const file = {
-      documentId: `technical-doc-${getProposal().id}`,
-      // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
-      link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-      file: theFile
-    };
-    setProposal({
-      ...getProposal(),
-      technicalPDF: theFile !== null ? file : null,
-      technicalLoadStatus: FileUploadStatus.INITIAL
-    });
-    setCurrentFile(theFile);
-  };
-
-=======
->>>>>>> cbe6b8b7 (STAR-658: move changes to technical page, remove console.log, added TODO)
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
@@ -105,6 +86,7 @@ export default function TechnicalPage() {
         throw new Error('Technical PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      NotifyOK(t('pdfDelete.technical.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -196,8 +178,10 @@ export default function TechnicalPage() {
           <Grid item xs={6}>
             <FileUpload
               chooseFileTypes=".pdf"
-              clearLabel={t('clearBtn.label')}
-              clearToolTip={t('clearBtn.toolTip')}
+              chooseLabel={t('pdfUpload.technical.label.choose')}
+              chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+              clearLabel={t('pdfUpload.technical.label.clear')}
+              clearToolTip={t('pdfUpload.technical.tooltip.clear')}
               direction="row"
               file={getProposal()?.technicalPDF?.file}
               maxFileWidth={25}
@@ -205,6 +189,7 @@ export default function TechnicalPage() {
               setStatus={setUploadStatus}
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
+              uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
               status={getProposal().technicalLoadStatus}
             />
           </Grid>
@@ -214,14 +199,19 @@ export default function TechnicalPage() {
         <Grid item>
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
-              <PDFPreviewButton toolTip={'pdfPreview.technical'} action={previewSignedUrl} />
+              <PDFPreviewButton
+                title="pdfUpload.technical.label.preview"
+                toolTip="pdfUpload.technical.tooltip.preview"
+                action={previewSignedUrl}
+              />
             )}
         </Grid>
         <Grid item>
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
-                toolTip={'pdfDownload.technical.toolTip'}
+                title="pdfUpload.technical.label.download"
+                toolTip="pdfUpload.technical.tooltip.download"
                 action={downloadPDFToSignedUrl}
               />
             )}

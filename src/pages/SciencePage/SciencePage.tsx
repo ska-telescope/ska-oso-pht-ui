@@ -87,6 +87,7 @@ export default function SciencePage() {
         throw new Error('Science PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      NotifyOK(t('pdfUpload.science.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -178,8 +179,10 @@ export default function SciencePage() {
           <Grid item xs={6}>
             <FileUpload
               chooseFileTypes=".pdf"
-              clearLabel={t('clearBtn.label')}
-              clearToolTip={t('clearBtn.toolTip')}
+              chooseLabel={t('pdfUpload.science.label.choose')}
+              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+              clearLabel={t('pdfUpload.science.label.clear')}
+              clearToolTip={t('pdfUpload.science.tooltip.clear')}
               direction="row"
               file={getProposal()?.sciencePDF?.file}
               maxFileWidth={25}
@@ -187,6 +190,7 @@ export default function SciencePage() {
               setStatus={setUploadStatus}
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
+              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
               status={getProposal().scienceLoadStatus}
             />
           </Grid>
@@ -196,14 +200,19 @@ export default function SciencePage() {
         <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <PDFPreviewButton toolTip={'pdfPreview.science'} action={previewSignedUrl} />
+              <PDFPreviewButton
+                title="pdfUpload.science.label.preview"
+                toolTip="pdfUpload.science.tooltip.preview"
+                action={previewSignedUrl}
+              />
             )}
         </Grid>
         <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
-                toolTip={'pdfDownload.science.toolTip'}
+                title="pdfUpload.science.label.download"
+                toolTip="pdfUpload.science.tooltip.download"
                 action={downloadPDFToSignedUrl}
               />
             )}
@@ -212,7 +221,8 @@ export default function SciencePage() {
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DeleteButton
-                toolTip={'pdfDelete.science.toolTip'}
+                title={'pdfUpload.science.label.delete'}
+                toolTip="pdfUpload.science.tooltip.delete"
                 action={deletePdfUsingSignedUrl}
               />
             )}
