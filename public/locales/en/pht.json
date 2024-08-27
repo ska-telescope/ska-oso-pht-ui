@@ -364,7 +364,7 @@
   "phdThesis": {
     "grid": "PhD",
     "title": "PhD Thesis",
-    "label": "for PhD Thesis",
+    "label": "For PhD Thesis",
     "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
   },
   "pht": {
@@ -374,7 +374,7 @@
   "pi": {
     "initials": "PI",
     "label": "Principal Investigator",
-    "help": "Check to indicate that this individual is the Principle Investigator of this proposal.",
+    "help": "Check to indicate that this individual is the Principal Investigator of this proposal.",
     "short": "PI"
   },
   "pixelSize": {
@@ -540,7 +540,7 @@
     },
     "units": {
       "1": {
-        "0": "hourangle",
+        "0": "hh:mm:ss",
         "1": "deg"
       },
       "2": {
