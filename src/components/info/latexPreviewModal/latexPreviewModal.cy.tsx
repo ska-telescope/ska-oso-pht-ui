@@ -6,12 +6,23 @@ import LatexPreviewModal from './latexPreviewModal';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+const SOME_TEXT = 'THIS IS SOME DUMMY TEXT';
+
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
 function mountingBasic(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <LatexPreviewModal value={null} open={false} onClose={null} title="" />
+      <LatexPreviewModal
+        value={SOME_TEXT}
+        open={true}
+        onClose={cy.stub().as('onClose')}
+        title="DUMMY TITLE"
+      />
     </ThemeProvider>
   );
 }

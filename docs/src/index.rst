@@ -1,5 +1,5 @@
-Welcome to ska-oso-pht-ui's documentation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Welcome to PPT documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This project is is based upon the ska-react-webapp-skeleton, which is intended as a basis for all React applications
 

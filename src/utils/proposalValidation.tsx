@@ -35,8 +35,8 @@ export const validateGeneralPage = (proposal: Proposal) => {
 
 export const validateSciencePage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = proposal?.sciencePDF ? 1 : 0;
-  count += proposal?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
+  let count = typeof proposal?.sciencePDF === 'object' ? 1 : 0;
+  count += count && proposal?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
   return result[count];
 };
 
@@ -56,8 +56,8 @@ export const validateObservationPage = (proposal: Proposal) => {
 
 export const validateTechnicalPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = proposal?.technicalPDF ? 1 : 0;
-  count += proposal?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
+  let count = typeof proposal?.technicalPDF === 'object' ? 1 : 0;
+  count += count && proposal?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
   return result[count];
 };
 

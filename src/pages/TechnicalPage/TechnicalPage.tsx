@@ -19,6 +19,7 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
+import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -53,11 +54,15 @@ export default function TechnicalPage() {
   const setFile = (theFile: File) => {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     const file = {
-      documentId: `technical-doc-${getProposal().id}`,
-      link: (theFile as unknown) as string,
+      documentId: theFile ? `technical-doc-${getProposal().id}` : '',
+      link: theFile ? ((theFile as unknown) as string) : '',
       file: theFile
     };
-    setProposal({ ...getProposal(), technicalPDF: file });
+    setProposal({
+      ...getProposal(),
+      technicalPDF: theFile !== null ? file : null,
+      technicalLoadStatus: FileUploadStatus.INITIAL
+    });
     setCurrentFile(theFile);
   };
 
@@ -127,7 +132,7 @@ export default function TechnicalPage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         setCurrentFile(signedUrl);
         setOpenPDFViewer(true);
       }
@@ -170,15 +175,18 @@ export default function TechnicalPage() {
         <Grid item xs={6}>
           <FileUpload
             chooseFileTypes=".pdf"
-            clearLabel={t('clearBtn.label')}
-            clearToolTip={t('clearBtn.toolTip')}
+            chooseLabel={t('pdfUpload.technical.label.choose')}
+            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+            clearLabel={t('pdfUpload.technical.label.clear')}
+            clearToolTip={t('pdfUpload.technical.tooltip.clear')}
             direction="row"
             file={getProposal()?.technicalPDF?.file}
-            maxFileWidth={25}
+            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
             setFile={setFile}
             setStatus={setUploadStatus}
             testId="fileUpload"
             uploadFunction={uploadPdftoSignedUrl}
+            uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
             status={uploadButtonStatus}
           />
         </Grid>
@@ -186,21 +194,27 @@ export default function TechnicalPage() {
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton toolTip={'pdfPreview.technical'} action={previewSignedUrl} />
+            <PDFPreviewButton
+              title="pdfUpload.technical.label.preview"
+              toolTip="pdfUpload.technical.tooltip.preview"
+              action={previewSignedUrl}
+            />
           )}
         </Grid>
         <Grid item>
           {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
             <DownloadButton
-              toolTip={'pdfDownload.technical.toolTip'}
+              title="pdfUpload.technical.label.download"
+              toolTip="pdfUpload.technical.tooltip.download"
               action={downloadPDFToSignedUrl}
             />
           )}
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
+          {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
             <DeleteButton
-              toolTip={'pdfDelete.technical.toolTip'}
+              title={'pdfUpload.technical.label.delete'}
+              toolTip="pdfUpload.technical.tooltip.delete"
               action={deletePdfUsingSignedUrl}
             />
           )}

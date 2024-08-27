@@ -1,4 +1,5 @@
 import React from 'react';
+import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
@@ -6,44 +7,113 @@ import DeleteButton from './Delete';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
+const TITLE = 'BASE BUTTON';
 
-function mounting(theTheme: any, disabled: boolean) {
-  cy.viewport(2000, 1000);
+const DISABLED = [true, false];
+const PRIMARY = [true, false];
+
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+function mountingDefault(theTheme: any) {
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <DeleteButton
-        action={cy.stub().as('action')}
-        disabled={disabled}
-        primary
-        testId="testId"
-        title="BUTTON"
-        toolTip={TOOLTIP}
-      />
+      <Router location="/" navigator={undefined}>
+        <DeleteButton action={'action URL'} />
+      </Router>
     </ThemeProvider>
   );
 }
 
-function validateClick() {
-  // cy.get('[data-testid="testId"]').click({ multiple: true });
+function mountingAction(theTheme: any, disabled: boolean, primary: boolean) {
+  viewPort();
+  cy.mount(
+    <ThemeProvider theme={theme(theTheme)}>
+      <CssBaseline />
+      <Router location="/" navigator={undefined}>
+        <DeleteButton
+          action={cy.stub().as('action')}
+          disabled={disabled}
+          primary={primary}
+          title={TITLE}
+          toolTip={TOOLTIP}
+        />
+      </Router>
+    </ThemeProvider>
+  );
 }
 
-function validateToolTip() {
-  // cy.get('[data-testid="testId"]').trigger('mouseover');
-  // cy.contains(TOOLTIP).should('be.visible');
+function mountingURL(theTheme: any, disabled: boolean, primary: boolean) {
+  viewPort();
+  cy.mount(
+    <ThemeProvider theme={theme(theTheme)}>
+      <CssBaseline />
+      <Router location="/" navigator={undefined}>
+        <DeleteButton
+          action={'dummy URL'}
+          disabled={disabled}
+          primary={primary}
+          title={TITLE}
+          toolTip={TOOLTIP}
+        />
+      </Router>
+    </ThemeProvider>
+  );
 }
 
-describe('<DeleteButton />', () => {
+function validate(inLabel, inToolTip) {
+  cy.get('[data-testid="baseButtonTestId"]').contains(inLabel);
+  cy.get('[aria-label="' + inToolTip + '"]').trigger('mouseover');
+  cy.contains(inToolTip).should('be.visible');
+}
+
+function clickButton() {
+  cy.get('[aria-label="' + TOOLTIP + '"]').click();
+}
+
+function buttonDisabled() {
+  // cy.get('[data-testid="baseButtonTestId"]').should('be.disabled');
+}
+
+describe('<BaseButton />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders (enabled)`, () => {
-      mounting(theTheme, true);
-      validateClick();
-      validateToolTip();
+    it(`Theme: ${theTheme} | disabled: DEFAULT | primary: DEFAULT`, () => {
+      mountingDefault(theTheme);
     });
-    it(`Theme ${theTheme}: Renders (disabled)`, () => {
-      mounting(theTheme, false);
-      validateClick();
-      validateToolTip();
-    });
+  }
+
+  for (const theTheme of THEME) {
+    for (const disabled of DISABLED) {
+      for (const primary of PRIMARY) {
+        it(`Theme: ${theTheme} | disabled: ${disabled} | primary: ${primary}`, () => {
+          mountingAction(theTheme, disabled, primary);
+          validate(TITLE, TOOLTIP);
+          if (disabled) {
+            buttonDisabled();
+          } else {
+            clickButton();
+          }
+        });
+      }
+    }
+  }
+
+  for (const theTheme of THEME) {
+    for (const disabled of DISABLED) {
+      for (const primary of PRIMARY) {
+        it(`Theme: ${theTheme} | disabled: ${disabled} | primary: ${primary}`, () => {
+          mountingURL(theTheme, disabled, primary);
+          validate(TITLE, TOOLTIP);
+          if (disabled) {
+            buttonDisabled();
+          } else {
+            clickButton();
+          }
+        });
+      }
+    }
   }
 });

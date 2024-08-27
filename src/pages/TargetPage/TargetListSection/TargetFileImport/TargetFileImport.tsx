@@ -5,7 +5,7 @@ import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../../utils/types/notification';
-import { RA_TYPE_EQUATORIAL } from '../../../../utils/constants';
+import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import Papa from 'papaparse';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -160,7 +160,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
         clearLabel={t('clearBtn.label')}
         clearToolTip={t('clearBtn.toolTip')}
         direction="row"
-        maxFileWidth={25}
+        maxFileWidth={UPLOAD_MAX_WIDTH_CSV}
         testId="csvUpload"
         uploadFunction={validateUploadCsv}
         status={uploadButtonStatus}

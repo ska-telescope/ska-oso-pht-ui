@@ -28,7 +28,7 @@ describe('<TechnicalPage />', () => {
     it(`Theme ${theTheme}: Renders & has choose button`, () => {
       mounting(theTheme);
       cy.get('[data-testid="SearchIcon"]').click();
-      cy.get('[data-testid="fileUploadChooseButton"]').contains('Choose file');
+      cy.get('[data-testid="fileUploadChooseButton"]').contains('pdfUpload.technical.label.choose');
     });
   }
 });

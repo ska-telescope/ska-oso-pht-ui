@@ -25,7 +25,6 @@ import {
   SPECTRAL_AVERAGING_MIN,
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
-  TELESCOPES,
   TYPE_CONTINUUM,
   BAND_5A,
   BAND_5B,
@@ -520,26 +519,6 @@ export default function ObservationEntry() {
       setFunction,
       null,
       observingBand
-    );
-  };
-
-  const arrayField = () => {
-    const getOptions = () => {
-      return TELESCOPES;
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        disabled
-        testId="arrayConfiguration"
-        value={telescope()}
-        label={t('arrayConfiguration.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_SELECT}
-        onFocus={() => helpComponent(t('arrayConfiguration.help'))}
-      />
     );
   };
 
@@ -1092,23 +1071,26 @@ export default function ObservationEntry() {
         }
       }
 
-      const getAffected = (observationId: string) =>
-        getProposal().targetObservation.filter(rec => rec.observationId === observationId);
-
-      const updateSensCalcPartial = (ob: Observation) =>
-        getAffected(ob.id)?.map(rec => {
-          const to: TargetObservation = {
-            observationId: ob.id,
-            targetId: rec.targetId,
-            sensCalc: {
-              id: rec.targetId,
-              title: '',
-              statusGUI: STATUS_PARTIAL,
-              error: ''
-            }
-          };
-          return to;
+      const updateSensCalcPartial = (ob: Observation) => {
+        const result = getProposal().targetObservation.map(rec => {
+          if (rec.observationId === ob.id) {
+            const to: TargetObservation = {
+              observationId: rec.observationId,
+              targetId: rec.targetId,
+              sensCalc: {
+                id: rec.targetId,
+                title: '',
+                statusGUI: STATUS_PARTIAL,
+                error: ''
+              }
+            };
+            return to;
+          } else {
+            return rec;
+          }
         });
+        return result;
+      };
 
       setProposal({
         ...getProposal(),
@@ -1190,9 +1172,7 @@ export default function ObservationEntry() {
               <Grid item xs={XS_TOP}>
                 {observingBandField()}
               </Grid>
-              <Grid item xs={XS_TOP}>
-                {arrayField()}
-              </Grid>
+              <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
                 {subArrayField(isBand5())}
               </Grid>

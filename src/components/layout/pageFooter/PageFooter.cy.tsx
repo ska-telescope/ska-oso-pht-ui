@@ -13,8 +13,8 @@ const PAGE_NO = 5;
 export function verifyFooter(pageNo: number) {
   const prevLabel = 'page.' + (pageNo - 1) + '.title';
   const nextLabel = 'page.' + (pageNo + 1) + '.title';
-  cy.get('[data-testId="' + prevLabel + 'Button"]').contains(prevLabel);
-  cy.get('[data-testId="' + nextLabel + 'Button"]').contains(nextLabel);
+  cy.get('[data-testId="prevButtonTestId"]').contains(prevLabel);
+  cy.get('[data-testId="nextButtonTestId"]').contains(nextLabel);
 }
 
 describe('<PageFooter />', () => {
