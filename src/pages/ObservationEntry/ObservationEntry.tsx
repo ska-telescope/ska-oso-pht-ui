@@ -1057,23 +1057,26 @@ export default function ObservationEntry() {
         }
       }
 
-      const getAffected = (observationId: string) =>
-        getProposal().targetObservation.filter(rec => rec.observationId === observationId);
-
-      const updateSensCalcPartial = (ob: Observation) =>
-        getAffected(ob.id)?.map(rec => {
-          const to: TargetObservation = {
-            observationId: ob.id,
-            targetId: rec.targetId,
-            sensCalc: {
-              id: rec.targetId,
-              title: '',
-              statusGUI: STATUS_PARTIAL,
-              error: ''
-            }
-          };
-          return to;
+      const updateSensCalcPartial = (ob: Observation) => {
+        const result = getProposal().targetObservation.map(rec => {
+          if (rec.observationId === ob.id) {
+            const to: TargetObservation = {
+              observationId: rec.observationId,
+              targetId: rec.targetId,
+              sensCalc: {
+                id: rec.targetId,
+                title: '',
+                statusGUI: STATUS_PARTIAL,
+                error: ''
+              }
+            };
+            return to;
+          } else {
+            return rec;
+          }
         });
+        return result;
+      };
 
       setProposal({
         ...getProposal(),

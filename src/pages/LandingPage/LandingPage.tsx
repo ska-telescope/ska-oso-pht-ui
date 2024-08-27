@@ -284,6 +284,7 @@ export default function LandingPage() {
 
   const deleteClicked = () => (
     <ProposalDisplay
+      proposal={getProposal()}
       open={openDeleteDialog}
       onClose={() => setOpenDeleteDialog(false)}
       onConfirm={deleteConfirmed}
@@ -293,6 +294,7 @@ export default function LandingPage() {
 
   const cloneClicked = () => (
     <ProposalDisplay
+      proposal={getProposal()}
       open={openCloneDialog}
       onClose={() => setOpenCloneDialog(false)}
       onConfirm={cloneConfirmed}
@@ -302,6 +304,7 @@ export default function LandingPage() {
 
   const viewClicked = () => (
     <ProposalDisplay
+      proposal={getProposal()}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
       onConfirm={deleteConfirmed}

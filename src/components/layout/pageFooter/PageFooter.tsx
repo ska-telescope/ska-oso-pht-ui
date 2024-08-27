@@ -62,15 +62,15 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
 
   const nextLabel = () => {
     if (usedPageNo === -2) {
-      return t(`button.add`);
+      return `button.add`;
     }
     if (usedPageNo === -1) {
-      return t(`button.create`);
+      return `button.create`;
     }
-    return t(`page.${usedPageNo + 1}.title`);
+    return `page.${usedPageNo + 1}.title`;
   };
 
-  const prevLabel = () => t(`page.${usedPageNo - 1}.title`);
+  const prevLabel = () => `page.${usedPageNo - 1}.title`;
 
   const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
 
@@ -85,10 +85,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   };
 
   return (
-    <Paper
-      sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-      elevation={0}
-    >
+    <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
       <Grid p={2} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid item>
           {usedPageNo > 0 && (

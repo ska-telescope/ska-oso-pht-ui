@@ -34,6 +34,7 @@ export default function BaseButton({
   };
 
   const theTitle = t(title);
+  const theToolTip = toolTip.length ? t(toolTip) : '';
 
   return (
     <Button
@@ -44,7 +45,7 @@ export default function BaseButton({
       label={theTitle}
       onClick={ClickFunction}
       testId={testId}
-      toolTip={toolTip}
+      toolTip={theToolTip}
       variant={ButtonVariantTypes.Contained}
     />
   );

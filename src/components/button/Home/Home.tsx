@@ -14,10 +14,10 @@ interface HomeButtonProps {
 
 export default function HomeButton({
   disabled = false,
-  title = 'button.home',
+  title = 'homeBtn.label',
   primary = false,
   testId,
-  toolTip
+  toolTip = 'homeBtn.tooltip'
 }: HomeButtonProps) {
   const navigate = useNavigate();
 

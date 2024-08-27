@@ -14,10 +14,10 @@ interface SubmitButtonProps {
 export default function SubmitButton({
   disabled = false,
   action,
-  title = 'button.submit',
+  title = 'submitBtn.label',
   primary = true,
   testId = 'submitBtnTestId',
-  toolTip
+  toolTip = 'submitBtn.tooltip'
 }: SubmitButtonProps) {
   return (
     <BaseButton

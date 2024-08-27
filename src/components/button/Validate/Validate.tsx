@@ -17,7 +17,7 @@ export default function ValidateButton({
   title = 'validationBtn.label',
   primary = true,
   testId = 'validationBtnTestId',
-  toolTip
+  toolTip = 'validationBtn.tooltip'
 }: ValidateButtonProps) {
   return (
     <BaseButton

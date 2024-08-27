@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DropDown, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
+import { LAB_POSITION } from '../../../utils/constants';
 
 interface ReferenceCoordinatesFieldProps {
   labelWidth?: number;
@@ -35,7 +36,7 @@ export default function ReferenceCoordinatesField({
           setValue={setValue}
           label={t(FIELD + '.label')}
           labelBold
-          labelPosition={LABEL_POSITION.START}
+          labelPosition={LAB_POSITION}
           labelWidth={labelWidth}
           onFocus={valueFocus}
           required

@@ -1,12 +1,13 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { LABEL_POSITION, THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
+import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import ReferenceFrame from './ReferenceFrame';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { LAB_POSITION } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
-const value = '';
+const value = 0;
 
 describe('<TitleContent />', () => {
   describe('Theme', () => {
@@ -18,7 +19,7 @@ describe('<TitleContent />', () => {
               <CssBaseline />
               <ReferenceFrame
                 labelBold={true}
-                labelPosition={LABEL_POSITION.START}
+                labelPosition={LAB_POSITION}
                 setValue={cy.stub().as('setValue')}
                 value={value}
               />
