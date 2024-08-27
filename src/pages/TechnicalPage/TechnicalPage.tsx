@@ -33,7 +33,6 @@ export default function TechnicalPage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -51,6 +50,7 @@ export default function TechnicalPage() {
     updateAppContent1(temp);
   };
 
+<<<<<<< HEAD
   const setFile = (theFile: File) => {
     //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
     const file = {
@@ -67,9 +67,27 @@ export default function TechnicalPage() {
     setCurrentFile(theFile);
   };
 
+=======
+>>>>>>> cbe6b8b7 (STAR-658: move changes to technical page, remove console.log, added TODO)
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), technicalLoadStatus: status });
-    setUploadButtonStatus(status);
+  };
+
+  const setFile = (theFile: File) => {
+    if (theFile) {
+      //TODO: to decide when to set technicalPDF when adding the link in PUT endpoint
+      const file = {
+        documentId: `technical-doc-${getProposal().id}`,
+        // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
+        link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
+        file: theFile
+      };
+      setProposal({ ...getProposal(), technicalPDF: file });
+      setCurrentFile(theFile);
+    } else {
+      setProposal((({ technicalPDF, ...rest }) => rest)(getProposal()));
+      setCurrentFile(null);
+    }
   };
 
   const uploadPdftoSignedUrl = async theFile => {
@@ -119,7 +137,8 @@ export default function TechnicalPage() {
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to delete Technical PDF');
       }
-      setFile(null);
+      setFile(null); //TODO: revisit redux not removed after delete pdf
+      setUploadStatus(FileUploadStatus.INITIAL);
       NotifyOK(t('pdfDelete.technical.success'));
     } catch (e) {
       new Error(t('pdfDelete.technical.error'));
@@ -172,55 +191,52 @@ export default function TechnicalPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
-          <FileUpload
-            chooseFileTypes=".pdf"
-            chooseLabel={t('pdfUpload.technical.label.choose')}
-            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
-            clearLabel={t('pdfUpload.technical.label.clear')}
-            clearToolTip={t('pdfUpload.technical.tooltip.clear')}
-            direction="row"
-            file={getProposal()?.technicalPDF?.file}
-            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-            setFile={setFile}
-            setStatus={setUploadStatus}
-            testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
-            uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-            status={uploadButtonStatus}
-          />
+      {getProposal().technicalLoadStatus === FileUploadStatus.INITIAL && (
+        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+          <Grid item xs={6}>
+            <FileUpload
+              chooseFileTypes=".pdf"
+              clearLabel={t('clearBtn.label')}
+              clearToolTip={t('clearBtn.toolTip')}
+              direction="row"
+              file={getProposal()?.technicalPDF?.file}
+              maxFileWidth={25}
+              setFile={setFile}
+              setStatus={setUploadStatus}
+              testId="fileUpload"
+              uploadFunction={uploadPdftoSignedUrl}
+              status={getProposal().technicalLoadStatus}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
-          {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton
-              title="pdfUpload.technical.label.preview"
-              toolTip="pdfUpload.technical.tooltip.preview"
-              action={previewSignedUrl}
-            />
-          )}
+          {getProposal().technicalPDF != null &&
+            getProposal().technicalLoadStatus === FileUploadStatus.OK && (
+              <PDFPreviewButton toolTip={'pdfPreview.technical'} action={previewSignedUrl} />
+            )}
         </Grid>
         <Grid item>
-          {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <DownloadButton
-              title="pdfUpload.technical.label.download"
-              toolTip="pdfUpload.technical.tooltip.download"
-              action={downloadPDFToSignedUrl}
-            />
-          )}
+          {getProposal().technicalPDF != null &&
+            getProposal().technicalLoadStatus === FileUploadStatus.OK && (
+              <DownloadButton
+                toolTip={'pdfDownload.technical.toolTip'}
+                action={downloadPDFToSignedUrl}
+              />
+            )}
         </Grid>
         <Grid item>
-          {getProposal().technicalPDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <DeleteButton
-              title={'pdfUpload.technical.label.delete'}
-              toolTip="pdfUpload.technical.tooltip.delete"
-              action={deletePdfUsingSignedUrl}
-            />
-          )}
+          {getProposal().technicalPDF != null &&
+            getProposal().technicalLoadStatus === FileUploadStatus.OK && (
+              <DeleteButton
+                toolTip={'pdfDelete.technical.toolTip'}
+                action={deletePdfUsingSignedUrl}
+              />
+            )}
         </Grid>
       </Grid>
+
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
