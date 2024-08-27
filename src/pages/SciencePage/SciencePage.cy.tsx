@@ -23,7 +23,7 @@ function mounting(theTheme: any) {
   );
 }
 
-//TODO: enable test after fixing science page pdf
+//TODO: enable test after fixing science page pdf delete issue
 // describe('<SciencePage />', () => {
 //   for (const theTheme of THEME) {
 //     it(`Theme ${theTheme}: Renders & has choose button`, () => {
