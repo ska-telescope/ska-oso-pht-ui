@@ -5,20 +5,22 @@
     },
     "summary": {
       "tests": 1,
-      "failed": 0,
-      "passed": 1,
+      "failed": 1,
+      "passed": 0,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723219060883,
-      "stop": 1723219069937
+      "start": 1724748382976,
+      "stop": 1724748388153
     },
     "tests": [
       {
         "name": "PHT user journeys Verify dark mode",
-        "status": "passed",
-        "duration": 5520,
-        "rawStatus": "passed",
+        "status": "failed",
+        "duration": 828,
+        "message": "CypressError: `cy.visit()` failed trying to load:\n\nhttp://localhost:6101/\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: connect ECONNREFUSED 127.0.0.1:6101\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n    at <unknown> (http://localhost:33769/__cypress/runner/cypress_runner.js:131916:74)\n    at visitFailedByErr (http://localhost:33769/__cypress/runner/cypress_runner.js:131315:12)\n    at <unknown> (http://localhost:33769/__cypress/runner/cypress_runner.js:131915:11)\n    at tryCatcher (http://localhost:33769/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:33769/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:33769/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:33769/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:33769/__cypress/runner/cypress_runner.js:1697:18)\n    at _drainQueueStep (http://localhost:33769/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:33769/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:33769/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:33769/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (cypress/integration/darkMode/darkMode.js:4:5)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)\n\nFrom Node.js Internals:\n  Error: connect ECONNREFUSED 127.0.0.1:6101\n      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1495:16)",
+        "trace": "CypressError: `cy.visit()` failed trying to load:\n\nhttp://localhost:6101/\n\nWe attempted to make an http request to this URL but the request failed without a response.\n\nWe received this error at the network level:\n\n  > Error: connect ECONNREFUSED 127.0.0.1:6101\n\nCommon situations why this would fail:\n  - you don't have internet access\n  - you forgot to run / boot your web server\n  - your web server isn't accessible\n  - you have weird network configuration settings on your computer\n    at <unknown> (http://localhost:33769/__cypress/runner/cypress_runner.js:131916:74)\n    at visitFailedByErr (http://localhost:33769/__cypress/runner/cypress_runner.js:131315:12)\n    at <unknown> (http://localhost:33769/__cypress/runner/cypress_runner.js:131915:11)\n    at tryCatcher (http://localhost:33769/__cypress/runner/cypress_runner.js:1807:23)\n    at Promise._settlePromiseFromHandler (http://localhost:33769/__cypress/runner/cypress_runner.js:1519:31)\n    at Promise._settlePromise (http://localhost:33769/__cypress/runner/cypress_runner.js:1576:18)\n    at Promise._settlePromise0 (http://localhost:33769/__cypress/runner/cypress_runner.js:1621:10)\n    at Promise._settlePromises (http://localhost:33769/__cypress/runner/cypress_runner.js:1697:18)\n    at _drainQueueStep (http://localhost:33769/__cypress/runner/cypress_runner.js:2407:12)\n    at _drainQueue (http://localhost:33769/__cypress/runner/cypress_runner.js:2400:9)\n    at Async._drainQueues (http://localhost:33769/__cypress/runner/cypress_runner.js:2416:5)\n    at Async.drainQueues (http://localhost:33769/__cypress/runner/cypress_runner.js:2286:14)\nFrom Your Spec Code:\n    at Context.eval (cypress/integration/darkMode/darkMode.js:4:5)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)\n\nFrom Node.js Internals:\n  Error: connect ECONNREFUSED 127.0.0.1:6101\n      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1495:16)",
+        "rawStatus": "failed",
         "type": "e2e",
         "filePath": "cypress/integration/darkMode.feature",
         "retries": 0,
