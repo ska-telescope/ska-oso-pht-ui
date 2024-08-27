@@ -153,8 +153,6 @@ export const IMAGE_WEIGHTING = [
   { lookup: 'robust', value: 2 }
 ];
 
-export const NOT_SPECIFIED = 'notSpecified';
-
 export const IMAGE_SIZE_UNITS = {
   ARCSECS: 'arcseconds',
   ARCMINS: 'arcmins',
@@ -178,6 +176,7 @@ export const NAV = [
   '/proposal/data',
   '/proposal/src'
 ];
+export const NOT_SPECIFIED = 'notSpecified';
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
@@ -690,6 +689,9 @@ export const ROBUST = [
   { label: '1', value: 4 },
   { label: '2', value: 5 }
 ];
+
+export const UPLOAD_MAX_WIDTH_CSV = 25;
+export const UPLOAD_MAX_WIDTH_PDF = 25;
 
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },

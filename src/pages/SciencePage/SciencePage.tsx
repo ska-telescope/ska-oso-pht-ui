@@ -20,6 +20,7 @@ import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
+import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -123,7 +124,7 @@ export default function SciencePage() {
       NotifyOK(t('pdfDelete.science.success'));
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
-      NotifyError(t('pdfDelete.science.error'));
+      NotifyError('pdfDelete.science.error');
     }
   };
 
@@ -177,16 +178,19 @@ export default function SciencePage() {
           <Grid item xs={6}>
             <FileUpload
               chooseFileTypes=".pdf"
-              clearLabel={t('clearBtn.label')}
-              clearToolTip={t('clearBtn.toolTip')}
+              chooseLabel={t('pdfUpload.science.label.choose')}
+            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+            clearLabel={t('pdfUpload.science.label.clear')}
+              clearToolTip={t('pdfUpload.science.tooltip.clear')}
               direction="row"
               file={getProposal()?.sciencePDF?.file}
-              maxFileWidth={25}
+              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
               setFile={setFile}
               setStatus={setUploadStatus}
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
-              status={getProposal().scienceLoadStatus}
+              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+            status={getProposal().scienceLoadStatus}
             />
           </Grid>
         </Grid>
@@ -195,14 +199,19 @@ export default function SciencePage() {
         <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <PDFPreviewButton toolTip={'pdfPreview.science'} action={previewSignedUrl} />
+              <PDFPreviewButton
+              title="pdfUpload.science.label.preview"
+              toolTip="pdfUpload.science.tooltip.preview"
+              action={previewSignedUrl}
+            />
             )}
         </Grid>
         <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
-                toolTip={'pdfDownload.science.toolTip'}
+                title="pdfUpload.science.label.download"
+              toolTip="pdfUpload.science.tooltip.download"
                 action={downloadPDFToSignedUrl}
               />
             )}
@@ -211,9 +220,13 @@ export default function SciencePage() {
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DeleteButton
-                toolTip={'pdfDelete.science.toolTip'}
+               
+              title={'pdfUpload.science.label.delete'}
+              toolTip="pdfUpload.science.tooltip.delete"
+             
                 action={deletePdfUsingSignedUrl}
-              />
+             
+            />
             )}
         </Grid>
       </Grid>

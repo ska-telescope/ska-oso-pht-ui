@@ -2,7 +2,7 @@ import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
-import TrashIcon from './trashIcon';
+import StarIcon from './starIcon';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
@@ -16,7 +16,7 @@ function mountingDefault(theTheme: any) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <TrashIcon onClick={cy.stub().as('setValue')} />
+      <StarIcon />
     </ThemeProvider>
   );
 }
@@ -26,21 +26,21 @@ function mounting(theTheme: any) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <TrashIcon onClick={cy.stub().as('setValue')} toolTip={TOOLTIP} />
+      <StarIcon toolTip={TOOLTIP} />
     </ThemeProvider>
   );
 }
 
 function validateClick() {
-  cy.get('[data-testid="trashIcon"]').click();
+  cy.get('[data-testid="starIcon"]').click();
 }
 
 function validateToolTip() {
-  cy.get('[data-testid="trashIcon"]').trigger('mouseover');
+  cy.get('[data-testid="starIcon"]').trigger('mouseover');
   cy.contains(TOOLTIP).should('be.visible');
 }
 
-describe('<TrashIcon />', () => {
+describe('<StarIcon />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: DEFAULT`, () => {
       mountingDefault(theTheme);

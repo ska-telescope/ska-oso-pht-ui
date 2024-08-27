@@ -2,7 +2,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
-import { StarRateRounded } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateTeamPage } from '../../utils/proposalValidation';
@@ -14,12 +13,13 @@ import MemberSearch from './MemberSearch/MemberSearch';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
+import StarIcon from '../../components/icon/starIcon/starIcon';
 
 const PAGE = 1;
 
 export function PIStar({ pi }) {
   if (pi) {
-    return <SvgIcon component={StarRateRounded} viewBox="0 0 24 24" />;
+    return <StarIcon />;
   }
 }
 

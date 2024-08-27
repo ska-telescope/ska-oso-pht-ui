@@ -111,7 +111,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       pl={2}
     >
       <Grid item>
-        {backPage > 0 && <PreviousPageButton title={t('button.cancel')} action={prevPageNav} />}
+        {backPage > 0 && <PreviousPageButton title="button.cancel" action={prevPageNav} />}
         {!backPage && <HomeButton testId="homeButtonTestId" />}
       </Grid>
       <Grid item>
@@ -188,6 +188,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       </Grid>
       {openDialog && (
         <ProposalDisplay
+          proposal={getProposal()}
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onConfirm={submitConfirmed}

@@ -19,6 +19,7 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
+import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -176,16 +177,19 @@ export default function TechnicalPage() {
           <Grid item xs={6}>
             <FileUpload
               chooseFileTypes=".pdf"
-              clearLabel={t('clearBtn.label')}
-              clearToolTip={t('clearBtn.toolTip')}
+              chooseLabel={t('pdfUpload.technical.label.choose')}
+            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+            clearLabel={t('pdfUpload.technical.label.clear')}
+              clearToolTip={t('pdfUpload.technical.tooltip.clear')}
               direction="row"
               file={getProposal()?.technicalPDF?.file}
-              maxFileWidth={25}
+              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
               setFile={setFile}
               setStatus={setUploadStatus}
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
-              status={getProposal().technicalLoadStatus}
+              uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
+            status={getProposal().technicalLoadStatus}
             />
           </Grid>
         </Grid>
@@ -194,14 +198,19 @@ export default function TechnicalPage() {
         <Grid item>
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
-              <PDFPreviewButton toolTip={'pdfPreview.technical'} action={previewSignedUrl} />
+              <PDFPreviewButton
+              title="pdfUpload.technical.label.preview"
+              toolTip="pdfUpload.technical.tooltip.preview"
+              action={previewSignedUrl}
+            />
             )}
         </Grid>
         <Grid item>
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
-                toolTip={'pdfDownload.technical.toolTip'}
+                title="pdfUpload.technical.label.download"
+              toolTip="pdfUpload.technical.tooltip.download"
                 action={downloadPDFToSignedUrl}
               />
             )}
@@ -210,6 +219,7 @@ export default function TechnicalPage() {
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
               <DeleteButton
+                title={'pdfUpload.technical.label.delete'}
                 toolTip={'pdfDelete.technical.toolTip'}
                 action={deletePdfUsingSignedUrl}
               />

@@ -21,6 +21,7 @@ import { SensCalcResults } from '../../utils/types/sensCalcResults';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 import AddButton from '../../components/button/Add/Add';
+import { LAB_POSITION } from '../../utils/constants';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -114,7 +115,7 @@ export default function AddDataProduct() {
             setValue={setObservationId}
             label={t('observations.single')}
             labelBold
-            labelPosition={LABEL_POSITION.START}
+            labelPosition={LAB_POSITION}
             labelWidth={LABEL_WIDTH}
             onFocus={() => helpComponent(t('observations.dp.help'))}
             required
@@ -179,7 +180,7 @@ export default function AddDataProduct() {
       <NumberEntry
         label={t('imageSize.label')}
         labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH}
         testId="imageSize"
         value={imageSizeValue}
@@ -197,7 +198,7 @@ export default function AddDataProduct() {
       <NumberEntry
         label={t('pixelSize.label')}
         labelBold
-        labelPosition={LABEL_POSITION.START}
+        labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH}
         testId="pixelSize"
         value={pixelSizeValue}
