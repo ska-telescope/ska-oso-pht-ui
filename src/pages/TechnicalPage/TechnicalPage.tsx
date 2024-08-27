@@ -86,6 +86,7 @@ export default function TechnicalPage() {
         throw new Error('Technical PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      NotifyOK(t('pdfDelete.technical.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -178,8 +179,8 @@ export default function TechnicalPage() {
             <FileUpload
               chooseFileTypes=".pdf"
               chooseLabel={t('pdfUpload.technical.label.choose')}
-            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
-            clearLabel={t('pdfUpload.technical.label.clear')}
+              chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+              clearLabel={t('pdfUpload.technical.label.clear')}
               clearToolTip={t('pdfUpload.technical.tooltip.clear')}
               direction="row"
               file={getProposal()?.technicalPDF?.file}
@@ -189,7 +190,7 @@ export default function TechnicalPage() {
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
               uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-            status={getProposal().technicalLoadStatus}
+              status={getProposal().technicalLoadStatus}
             />
           </Grid>
         </Grid>
@@ -199,10 +200,10 @@ export default function TechnicalPage() {
           {getProposal().technicalPDF != null &&
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
               <PDFPreviewButton
-              title="pdfUpload.technical.label.preview"
-              toolTip="pdfUpload.technical.tooltip.preview"
-              action={previewSignedUrl}
-            />
+                title="pdfUpload.technical.label.preview"
+                toolTip="pdfUpload.technical.tooltip.preview"
+                action={previewSignedUrl}
+              />
             )}
         </Grid>
         <Grid item>
@@ -210,7 +211,7 @@ export default function TechnicalPage() {
             getProposal().technicalLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
                 title="pdfUpload.technical.label.download"
-              toolTip="pdfUpload.technical.tooltip.download"
+                toolTip="pdfUpload.technical.tooltip.download"
                 action={downloadPDFToSignedUrl}
               />
             )}
