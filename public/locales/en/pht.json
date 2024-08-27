@@ -333,6 +333,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
         "clear": "Clears the currently selected file",
@@ -351,6 +352,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "success": "Technical Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the technical justification PDF for upload",
         "clear": "Clears the currently selected file",

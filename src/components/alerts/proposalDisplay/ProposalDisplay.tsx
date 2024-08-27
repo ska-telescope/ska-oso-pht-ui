@@ -62,9 +62,12 @@ export default function ProposalDisplay({
       const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
-        window.open(signedUrl, '_blank');
-      }
+      window.open(signedUrl, '_blank');
+
+      //TODO: clarify conditions to oepn new window
+      // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
+      //   window.open(signedUrl, '_blank');
+      // }
     } catch (e) {
       new Error(t('pdfDownload.error'));
     }
@@ -282,7 +285,7 @@ export default function ProposalDisplay({
         </Grid>
         <Grid item xs={6}>
           {link(
-            t('page.3.label'),
+            t('page.6.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
             proposal.technicalPDF
