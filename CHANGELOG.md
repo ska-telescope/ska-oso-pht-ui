@@ -42,6 +42,7 @@ Future
    - Added units to data in Observation SensCalc results modal
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
+   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename
@@ -58,8 +59,12 @@ Future
    - Updated the default proposal for use with Add Proposal
    - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
    - Fixed continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Make use of default continuum bandwidths for each array for Low
    - Tapering field should not be available on Low.
    - Weather field should not be available for Low, only Mid
+   - Supplied Sensitivity should not be available for Low, only Mid
+   - Supplied Units for Low should only be H
+   - Updated default Integration Time value for Low to 1
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Image Size forced to be +ve
    - Migrated Image Weighting to a separate component with testing coverage of 100%

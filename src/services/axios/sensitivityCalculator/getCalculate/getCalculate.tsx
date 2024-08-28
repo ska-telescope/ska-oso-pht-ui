@@ -222,25 +222,19 @@ async function GetCalculate(observation: Observation, target: Target) {
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
       ); // low zoom bandwidth should be sent in KHz
+      // TODO send bandwidth will all decimal instead of rounded number
     }
-    const integrationTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
-      // TODO handle sensitivity?
-      observation.supplied.units
-    );
     const params = {
       subarray_configuration: getSubArray(),
-      // LOW should always use integration time in supplied
-      duration: sensCalHelpers.format
-        .convertIntegrationTimeToSeconds(Number(observation.supplied.value), integrationTimeUnits)
-        ?.toString(),
+      integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
-      freq_centre: observation.centralFrequency.toString(),
+      freq_centre_mhz: observation.centralFrequency.toString(),
       elevation_limit: observation.elevation?.toString(),
+      spectral_averaging_factor: observation.spectralAveraging,
       ...mode_specific_parameters
     };
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
-
     return urlSearchParams;
   }
 
