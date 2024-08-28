@@ -7,9 +7,9 @@ import {
   OBS_TYPES,
   OBSERVATION,
   STATUS_OK,
+  SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
-  TYPE_SUPPLIED_SENSITIVITY,
   TYPE_ZOOM
 } from '../../../utils/constants';
 import {
@@ -19,6 +19,8 @@ import {
 import Target from '../../../utils/types/target';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
+// STAR-612 : Note that the actual calculation for this will be done in a separate ticket
+
 export default function calculateSensitivityCalculatorResults(
   response: any,
   observation: Observation,
@@ -26,7 +28,7 @@ export default function calculateSensitivityCalculatorResults(
 ): SensCalcResults {
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
-  const isSensitivitySupplied = () => observation.supplied.type === TYPE_SUPPLIED_SENSITIVITY;
+  const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
@@ -38,6 +40,12 @@ export default function calculateSensitivityCalculatorResults(
   const beamSize = isLow()
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
+
+  console.log('TREVOR', response);
+  const continuumIntegrationTime = isSensitivity()
+    ? getContinuumIntegrationTimeMID(response, isZoom())
+    : 0;
+  const spectralIntegrationTime = isSensitivity() ? getSpectralIntegrationTimeMID(response) : 0;
 
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
@@ -82,7 +90,7 @@ export default function calculateSensitivityCalculatorResults(
 
   const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
     const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
-      item => item.value === TYPE_SUPPLIED_SENSITIVITY
+      item => item.value === SUPPLIED_TYPE_SENSITIVITY
     ).units;
     const displayValue = {
       value: suppliedSensitivity,
@@ -94,7 +102,7 @@ export default function calculateSensitivityCalculatorResults(
   const confusionNoiseDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
     confusionNoise
   );
-  const weightedSensitivityDisplay = isSensitivitySupplied()
+  const weightedSensitivityDisplay = isSensitivity()
     ? convertSuppliedSensitivityToDisplayValue(weightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(weightedSensitivity);
   const totalSensitivityDisplay = sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
@@ -106,7 +114,7 @@ export default function calculateSensitivityCalculatorResults(
     spectralConfusionNoise
   );
 
-  const spectralWeightedSensitivityDisplay = isSensitivitySupplied()
+  const spectralWeightedSensitivityDisplay = isSensitivity()
     ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralWeightedSensitivity);
 
@@ -152,9 +160,11 @@ export default function calculateSensitivityCalculatorResults(
         units: beamSizeDisplay?.units
       },
       {
-        field: `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-        value: sbs?.value.toString(),
-        units: sbs?.unit
+        field: isSensitivity()
+          ? `${observationTypeLabel}IntegrationTime`
+          : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
+        value: isSensitivity() ? continuumIntegrationTime?.value.toString() : sbs?.value.toString(),
+        units: isSensitivity() ? continuumIntegrationTime?.unit : sbs?.unit
       }
     ],
     // only return section2 if continuum
@@ -181,9 +191,13 @@ export default function calculateSensitivityCalculatorResults(
           units: spectralBeamSizeDisplay?.units
         },
         {
-          field: 'spectralSurfaceBrightnessSensitivity',
-          value: spectralSbs?.value.toString(),
-          units: spectralSbs?.unit
+          field: isSensitivity()
+            ? 'spectralIntegrationTime'
+            : 'spectralSurfaceBrightnessSensitivity',
+          value: isSensitivity()
+            ? spectralIntegrationTime?.value.toString()
+            : spectralSbs?.value.toString(),
+          units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
         }
       ]
     }),
@@ -307,6 +321,23 @@ const getSpectralWeightedSensitivityRawValueMid = (
   } else {
     return observation?.supplied.value;
   }
+};
+
+const getContinuumIntegrationTimeMID = (
+  response: {
+    calculate: { data: { spectral_integration_time: any; continuum_integration_time: any } };
+  },
+  isZoom: Boolean
+) => {
+  return isZoom
+    ? response.calculate.data[0].spectral_integration_time
+    : response.calculate.data.continuum_integration_time;
+};
+
+const getSpectralIntegrationTimeMID = (response: {
+  calculate: { data: { spectral_integration_time: any } };
+}) => {
+  return response.calculate.data.spectral_integration_time;
 };
 
 const getSpectralWeightedSensitivityMID = (
