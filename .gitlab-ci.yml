@@ -86,6 +86,8 @@ test_e2e:
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
+    - minikube start
+    - make dev-up
   script:
     - yarn add cypress
     - yarn start &
