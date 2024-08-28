@@ -1,6 +1,6 @@
 export const clickAddProposal = () => {
-  verifyAddProposalButtonExists()
-  clickAddProposalButton()
+  verifyAddProposalButtonExists();
+  clickAddProposalButton();
 };
 
 export const clickAddProposalButton = () => {
@@ -12,7 +12,7 @@ export const verifyAddProposalButtonExists = () => {
 };
 
 export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
-  cy.get('[id="titleId"]').type("Proposal Title");
+  cy.get('[id="titleId"]').type('Proposal Title');
   cy.get('[id="ProposalType-1"]').click({ force: true });
   cy.get('[aria-label="A target of opportunity observing proposal"]').click();
 };
@@ -32,15 +32,15 @@ export const pageConfirmed = label => {
   cy.get('#pageTitle').contains(label);
 };
 
-export const landingPageConfirmed = ()  => {
-  verifyAddProposalButtonExists()
+export const landingPageConfirmed = () => {
+  verifyAddProposalButtonExists();
 };
 
-export const createStandardProposal = ()  => {
-  clickAddProposalButton()
+export const createStandardProposal = () => {
+  clickAddProposalButton();
   pageConfirmed('TITLE');
-  clickStandardProposalSubTypeTargetOfOpportunity()
-  clickCreateProposal()
+  clickStandardProposalSubTypeTargetOfOpportunity();
+  clickCreateProposal();
   pageConfirmed('TEAM');
 };
 
@@ -91,12 +91,12 @@ export const clickToSDPDataPage = () => {
 
 export const addAbstract = () => {
   cy.get('[id="abstractId"]').should('exist');
-  cy.get('[id="abstractId"]').type("Test abstract");
+  cy.get('[id="abstractId"]').type('Test abstract');
 };
 
 export const addTargetUsingResolve = () => {
   cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type("M1");
+  cy.get('[id="name"]').type('M1');
   cy.get('[data-testid="resolveButton"]').click();
 };
 
@@ -106,19 +106,19 @@ export const clickToAddTarget = () => {
 
 export const clickObservationSetup = () => {
   cy.get('[data-testid="addObservationButton"]').click();
-}
+};
 
 export const clickAddObservation = () => {
   cy.get('[data-testid="addObservationButton"]').click();
-}
+};
 
 export const verifyProposalOnLandingPage = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .should('contain', 'prsl-t0001-')
     .should('contain', 'Cosmology')
-    .should('contain', 'test')
-    .should('have.length', 1);
+    .should('contain', 'Proposal Title')
+    .should('have.length', 1); // TODO : Need to be able to clear the array for this to be able to be done locally.
 };
 
 export const verifyObservationInTable = () => {
@@ -140,5 +140,3 @@ export const clickToValidateProposal = () => {
   cy.get('[data-testid="ValidationTestId"]').should('exist');
   cy.get('[data-testid="ValidationTestId"]').click();
 };
-
-

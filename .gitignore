@@ -7,6 +7,7 @@
 
 charts/*/Chart.lock
 charts/*/charts
+ctrf-report.json
 
 # testing
 /coverage

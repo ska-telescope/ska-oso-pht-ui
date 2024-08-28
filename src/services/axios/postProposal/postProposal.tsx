@@ -71,7 +71,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
 }
 
 async function PostProposal(proposal: Proposal, status?: string) {
-  if (window.Cypress || USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA) {
     return 'PROPOSAL-ID-001';
   }
 

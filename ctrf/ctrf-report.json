@@ -5,20 +5,22 @@
     },
     "summary": {
       "tests": 3,
-      "failed": 0,
-      "passed": 3,
+      "failed": 2,
+      "passed": 1,
       "skipped": 0,
       "pending": 0,
       "other": 0,
-      "start": 1723552102850,
-      "stop": 1723552147253
+      "start": 1724835244591,
+      "stop": 1724835286745
     },
     "tests": [
       {
         "name": "Creating proposals Create a basic proposal",
-        "status": "passed",
-        "duration": 9458,
-        "rawStatus": "passed",
+        "status": "failed",
+        "duration": 11759,
+        "message": "AssertionError: Timed out retrying after 4000ms: expected '[ <div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--firstVisible>, 2 more... ]' to contain 'test'\n    at verifyProposalOnLandingPage (cypress/integration/common/common.js:120:5)\n    at Context.eval (cypress/integration/createProposal/createProposal.js:23:30)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "trace": "AssertionError: Timed out retrying after 4000ms: expected '[ <div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--firstVisible>, 2 more... ]' to contain 'test'\n    at verifyProposalOnLandingPage (cypress/integration/common/common.js:120:5)\n    at Context.eval (cypress/integration/createProposal/createProposal.js:23:30)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "rawStatus": "failed",
         "type": "e2e",
         "filePath": "cypress/integration/createProposal.feature",
         "retries": 0,
@@ -27,9 +29,11 @@
       },
       {
         "name": "Editing proposals Edit a basic proposal",
-        "status": "passed",
-        "duration": 14564,
-        "rawStatus": "passed",
+        "status": "failed",
+        "duration": 11560,
+        "message": "AssertionError: Timed out retrying after 4000ms: expected '[ <div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--firstVisible>, 4 more... ]' to contain 'test'\n    at verifyProposalOnLandingPage (cypress/integration/common/common.js:120:5)\n    at Context.eval (cypress/integration/editProposal/editProposal.js:33:30)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "trace": "AssertionError: Timed out retrying after 4000ms: expected '[ <div.super-app-theme.MuiDataGrid-row.MuiDataGrid-row--firstVisible>, 4 more... ]' to contain 'test'\n    at verifyProposalOnLandingPage (cypress/integration/common/common.js:120:5)\n    at Context.eval (cypress/integration/editProposal/editProposal.js:33:30)\n    at Context.resolveAndRunStepDefinition (node_modules/cypress-cucumber-preprocessor/lib/resolveStepDefinition.js:193:0)\n    at Context.eval (node_modules/cypress-cucumber-preprocessor/lib/createTestFromScenario.js:27:0)",
+        "rawStatus": "failed",
         "type": "e2e",
         "filePath": "cypress/integration/editProposal.feature",
         "retries": 0,
@@ -39,7 +43,7 @@
       {
         "name": "Creating observations Create a standard observation",
         "status": "passed",
-        "duration": 10106,
+        "duration": 7663,
         "rawStatus": "passed",
         "type": "e2e",
         "filePath": "cypress/integration/observations.feature",
