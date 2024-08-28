@@ -518,7 +518,12 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
       inRec?.info?.results?.length > 0
-        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets, inRec.info.targets, targets)
+        ? getTargetObservation(
+            inRec.info.results,
+            inRec.info.observation_sets,
+            inRec.info.targets,
+            targets
+          )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
