@@ -34,7 +34,6 @@ export default function SciencePage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const [currentFile, setCurrentFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -53,24 +52,24 @@ export default function SciencePage() {
   };
 
   const setFile = (theFile: File) => {
-    //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
-    const file = {
-      documentId: theFile ? `science-doc-${getProposal().id}` : '',
-      link: theFile ? ((theFile as unknown) as string) : '',
-      file: theFile,
-      name: theFile ? theFile : ''
-    };
-    setProposal({
-      ...getProposal(),
-      sciencePDF: theFile !== null ? file : null,
-      scienceLoadStatus: FileUploadStatus.INITIAL
-    });
-    setCurrentFile(theFile);
+    if (theFile) {
+      //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
+      const file = {
+        documentId: `science-doc-${getProposal().id}`,
+        // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
+        link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
+        file: theFile
+      };
+      setProposal({ ...getProposal(), sciencePDF: file });
+      setCurrentFile(theFile);
+    } else {
+      setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
+      setCurrentFile(null);
+    }
   };
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
-    setUploadButtonStatus(status);
   };
 
   const uploadPdftoSignedUrl = async theFile => {
@@ -88,6 +87,7 @@ export default function SciencePage() {
         throw new Error('Science PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      NotifyOK(t('pdfUpload.science.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -120,8 +120,9 @@ export default function SciencePage() {
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
       }
-      setFile(null);
-      NotifyOK('pdfDelete.science.success');
+      setFile(null); //TODO: revisit redux not removed after delete pdf
+      setUploadStatus(FileUploadStatus.INITIAL);
+      NotifyOK(t('pdfDelete.science.success'));
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
       NotifyError('pdfDelete.science.error');
@@ -173,53 +174,58 @@ export default function SciencePage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
-          <FileUpload
-            chooseFileTypes=".pdf"
-            chooseLabel={t('pdfUpload.science.label.choose')}
-            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-            clearLabel={t('pdfUpload.science.label.clear')}
-            clearToolTip={t('pdfUpload.science.tooltip.clear')}
-            direction="row"
-            file={getProposal()?.sciencePDF?.file}
-            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-            setFile={setFile}
-            setStatus={setUploadStatus}
-            testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
-            uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-            status={uploadButtonStatus}
-          />
+      {getProposal().scienceLoadStatus === FileUploadStatus.INITIAL && (
+        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+          <Grid item xs={6}>
+            <FileUpload
+              chooseFileTypes=".pdf"
+              chooseLabel={t('pdfUpload.science.label.choose')}
+              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+              clearLabel={t('pdfUpload.science.label.clear')}
+              clearToolTip={t('pdfUpload.science.tooltip.clear')}
+              direction="row"
+              file={getProposal()?.sciencePDF?.file}
+              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+              setFile={setFile}
+              setStatus={setUploadStatus}
+              testId="fileUpload"
+              uploadFunction={uploadPdftoSignedUrl}
+              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+              status={getProposal().scienceLoadStatus}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
-          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <PDFPreviewButton
-              title="pdfUpload.science.label.preview"
-              toolTip="pdfUpload.science.tooltip.preview"
-              action={previewSignedUrl}
-            />
-          )}
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <PDFPreviewButton
+                title="pdfUpload.science.label.preview"
+                toolTip="pdfUpload.science.tooltip.preview"
+                action={previewSignedUrl}
+              />
+            )}
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <DownloadButton
-              title="pdfUpload.science.label.download"
-              toolTip="pdfUpload.science.tooltip.download"
-              action={downloadPDFToSignedUrl}
-            />
-          )}
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DownloadButton
+                title="pdfUpload.science.label.download"
+                toolTip="pdfUpload.science.tooltip.download"
+                action={downloadPDFToSignedUrl}
+              />
+            )}
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null && uploadButtonStatus === FileUploadStatus.OK && (
-            <DeleteButton
-              title={'pdfUpload.science.label.delete'}
-              toolTip="pdfUpload.science.tooltip.delete"
-              action={deletePdfUsingSignedUrl}
-            />
-          )}
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DeleteButton
+                title={'pdfUpload.science.label.delete'}
+                toolTip="pdfUpload.science.tooltip.delete"
+                action={deletePdfUsingSignedUrl}
+              />
+            )}
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
