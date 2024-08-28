@@ -8,9 +8,9 @@ const MockProposalBackend: ProposalBackend = {
   investigator_refs: ['prp-ska01-202204-01', '1'],
   metadata: {
     version: 1,
-    last_modified_by: 'Van Loo Cheng',
+    last_modified_by: 'DefaultUser',
     last_modified_on: 'Thu Aug 15 2024',
-    created_by: 'Van Loo Cheng',
+    created_by: 'DefaultUser',
     created_on: 'Thu Aug 14 2024'
   },
   cycle: 'SKA_5000_2023',
@@ -57,8 +57,8 @@ const MockProposalBackend: ProposalBackend = {
     investigators: [
       {
         investigator_id: 'prp-ska01-202204-01',
-        given_name: 'Van Loo',
-        family_name: 'Cheng',
+        given_name: 'DefaultUser',
+        family_name: 'DefaultUser',
         email: 'ask.lop@map.com',
         organization: 'University of Free Town',
         for_phd: false,

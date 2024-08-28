@@ -38,7 +38,7 @@
         "for_phd": "No",
         "has_phd": "No",
         "investigator_id": "user1",
-        "last_name": "Cheng",
+        "last_name": "DefaultUser",
         "organization_id": "University of Free Town",
         "principal_investigator": "yes"
       },
@@ -49,7 +49,7 @@
         "for_phd": "No",
         "has_phd?": "No",
         "investigator_id": "user1",
-        "last_name": "Cheng",
+        "last_name": "DefaultUser",
         "organization_id": "University of Free Town",
         "principal_investigator": "no"
       }
