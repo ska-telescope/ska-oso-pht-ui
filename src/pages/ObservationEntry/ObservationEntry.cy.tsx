@@ -34,7 +34,6 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('suppliedUnits.help');
 }
 
-// HERE
 function verifySuppliedTypeValueAndUnitsLow() {
   cy.get('[data-testid="suppliedType"]').contains('Integration Time');
   cy.get('[data-testid="suppliedType"]')
