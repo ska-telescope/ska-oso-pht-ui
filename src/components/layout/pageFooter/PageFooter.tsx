@@ -47,7 +47,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    NotifyWarning(t('addProposal.warning'));
+    // NotifyWarning(t('addProposal.warning'));
     const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);

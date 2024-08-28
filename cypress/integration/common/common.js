@@ -26,7 +26,7 @@ export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
 };
 
 export const clickCreateProposal = () => {
-  cy.get('[aria-label="Create"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 // export const verifyProposalCreatedAlertFooter = () => {
@@ -66,38 +66,38 @@ export const clickHome = () => {
 };
 
 export const clickToTeamPage = () => {
-  cy.get('[data-testid="TeamButton"]').should('exist');
-  cy.get('[data-testid="TeamButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToGeneralPage = () => {
-  cy.get('[data-testid="GeneralButton"]').should('exist');
-  cy.get('[data-testid="GeneralButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToSciencePage = () => {
-  cy.get('[data-testid="ScienceButton"]').should('exist');
-  cy.get('[data-testid="ScienceButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToTargetPage = () => {
-  cy.get('[data-testid="TargetButton"]').should('exist');
-  cy.get('[data-testid="TargetButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToObservationPage = () => {
-  cy.get('[data-testid="ObservationButton"]').should('exist');
-  cy.get('[data-testid="ObservationButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToTechnicalPage = () => {
-  cy.get('[data-testid="TechnicalButton"]').should('exist');
-  cy.get('[data-testid="TechnicalButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const clickToObservatoryDataProductPage = () => {
-  cy.get('[data-testid="Observatory Data ProductButton"]').should('exist');
-  cy.get('[data-testid="Observatory Data ProductButton"]').click();
+  cy.get('[data-testid="nextButtonTestId"]').should('exist');
+  cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
 export const addAbstract = () => {
@@ -155,8 +155,8 @@ export const clickToLinkTargetAndObservation = () => {
 };
 
 export const clickToValidateProposal = () => {
-  cy.get('[data-testid="ValidationTestId"]').should('exist');
-  cy.get('[data-testid="ValidationTestId"]').click();
+  cy.get('[data-testid="validationBtnTestId"]').should('exist');
+  cy.get('[data-testid="validationBtnTestId"]').click();
 };
 
 export const verifyProposalValidAlertFooter = () => {
@@ -166,8 +166,8 @@ export const verifyProposalValidAlertFooter = () => {
 };
 
 export const clickToSubmitProposal = () => {
-  cy.get('[data-testid="SubmitTestId"]').should('exist');
-  cy.get('[data-testid="SubmitTestId"]').click();
+  cy.get('[data-testid="submitBtnTestId"]').should('exist');
+  cy.get('[data-testid="submitBtnTestId"]').click();
 };
 
 export const clickToConfirmProposalSubmission = () => {
