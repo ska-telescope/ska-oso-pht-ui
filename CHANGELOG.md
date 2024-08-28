@@ -38,36 +38,11 @@ Future
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
    - Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
-   - Disable Supplied Sensitivity for Low Observation and only offer h for Low Supplied units
-   - Change default integration time for Low 
-   - Use default continuum bandwidths per array for Low
-   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
-* STAR-570:
-   - Added Delete PDF button in Science and Technical Page
-   - Upgrade to version 2.1.0 of ska-oso-pht-services
-* STAR-625:
-   - Mapping to/from API for the SDP Data Products
-* STAR-636:
-   - Added 'under development notes to the Add Data Product & SRC Net pages"
-* STAR-588:
-   - Added mailto to the Team Member invitation button
-* STAR-627:
-   - Fix download pdf filename for science and technical page
-* STAR-296:
-   - Created GridMember component for use in Team Page and Proposal Display
-   - Updated Proposal Display to reflect latest requirements
-   - Minor resource file updates
-   - Added the active proposal ID into the bottom-right of the footer for reference 
-   - Addition of 'emptyCell' component
-   - Addition of some presentation function for various data types
-   - Started to check screen resizing ( landing page and page banner so far ).
-   - Standard height of the InfoCard
-* STAR-624: 
-   - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Update SensCalc display results to display sensitivity or integration time
    - Added units to data in Observation SensCalc results modal
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
+   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename
@@ -84,8 +59,12 @@ Future
    - Updated the default proposal for use with Add Proposal
    - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
    - Fixed continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Make use of default continuum bandwidths for each array for Low
    - Tapering field should not be available on Low.
    - Weather field should not be available for Low, only Mid
+   - Supplied Sensitivity should not be available for Low, only Mid
+   - Supplied Units for Low should only be H
+   - Updated default Integration Time value for Low to 1
    - Updated SensCalc mapping & display ( Zoom & Continuum )
    - Image Size forced to be +ve
    - Migrated Image Weighting to a separate component with testing coverage of 100%
