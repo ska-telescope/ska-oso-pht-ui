@@ -29,6 +29,7 @@ export const clickCreateProposal = () => {
   cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
+//TODO: Reinstate once api is up and running
 // export const verifyProposalCreatedAlertFooter = () => {
 //   cy.on('window:alert', str => {
 //     expect(str).to.include('Proposal added with unique identifier');
@@ -57,6 +58,7 @@ export const createStandardProposal = () => {
   clickStandardProposalSubTypeTargetOfOpportunity();
   cy.wait(3000);
   clickCreateProposal();
+  //TODO: Enable once functionality is working in the cloud
   // verifyProposalCreatedAlertFooter();
 };
 
@@ -66,36 +68,41 @@ export const clickHome = () => {
 };
 
 export const clickToTeamPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('TEAM');
 };
 
 export const clickToGeneralPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('GENERAL');
 };
 
 export const clickToSciencePage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('SCIENCE');
 };
 
 export const clickToTargetPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('TARGET');
 };
 
 export const clickToObservationPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('OBSERVATION');
 };
 
 export const clickToTechnicalPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
+  clickToNextPage()
+  pageConfirmed('TECHNICAL');
 };
 
 export const clickToObservatoryDataProductPage = () => {
+  clickToNextPage()
+  pageConfirmed('OBSERVATORY DATA PRODUCT');
+};
+
+export const clickToNextPage = () => {
   cy.get('[data-testid="nextButtonTestId"]').should('exist');
   cy.get('[data-testid="nextButtonTestId"]').click();
 };
@@ -134,6 +141,7 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyFirstProposalOnLandingPageIsVisible = () => {
+  //TODO: Enable once cloud issues are resolved
   // cy.get('[data-testid="dataGridId"]')
   //   .should('contain', 'prsl-t0001-')
   //   .should('contain', 'Proposal Title');

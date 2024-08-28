@@ -47,7 +47,6 @@ Then(
   'I am able to continue my proposal from where I stopped, fill in all the necessary details',
   () => {
     clickToTeamPage();
-    cy.wait(3000);
     clickToGeneralPage();
     addAbstract();
     selectCosmology();
