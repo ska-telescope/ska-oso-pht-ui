@@ -8,6 +8,9 @@ Future
 
 ---
 
+* API mappings:
+   - Updated PHT services version 2.2.0 to use refactored validate endpoint
+
 0.4.0
 
 ---
