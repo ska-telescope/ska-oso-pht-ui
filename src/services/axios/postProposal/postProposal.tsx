@@ -5,7 +5,7 @@ import {
   DEFAULT_PI,
   GENERAL,
   PROJECTS,
-  SKA_PHT_API_URL
+  SKA_PHT_API_URL, USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
@@ -63,6 +63,10 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
 }
 
 async function PostProposal(proposal: Proposal, status?: string) {
+  if (USE_LOCAL_DATA) {
+    return 'PROPOSAL-ID-001';
+  }
+
   try {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status);
