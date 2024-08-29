@@ -367,6 +367,7 @@ export const OBSERVATION = {
           disableForBand5: false
         }
       ],
+      // TODO use more precise values instead of rounded
       bandWidth: [
         { label: '3.125 MHz', value: 1, mapping: 'MHz' },
         { label: '6.25 MHz', value: 2, mapping: 'MHz' },
@@ -470,14 +471,14 @@ export const OBSERVATION = {
         }
       ],
       bandWidth: [
-        { label: '24.4 KHz', value: 1, mapping: 'kHz' },
-        { label: '48.8 KHz', value: 2, mapping: 'kHz' },
-        { label: '97.7 KHz', value: 3, mapping: 'kHz' },
-        { label: '195.3 KHz', value: 4, mapping: 'kHz' },
-        { label: '390.6 KHz', value: 5, mapping: 'kHz' },
-        { label: '781.2 KHz', value: 6, mapping: 'kHz' },
+        { label: '24.4140625 KHz', value: 1, mapping: 'kHz' },
+        { label: '48.828125 KHz', value: 2, mapping: 'kHz' },
+        { label: '97.65625 KHz', value: 3, mapping: 'kHz' },
+        { label: '195.3125 KHz', value: 4, mapping: 'kHz' },
+        { label: '390.625 KHz', value: 5, mapping: 'kHz' },
+        { label: '781.25 KHz', value: 6, mapping: 'kHz' },
         { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
-        { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
+        { label: '3125 KHz', value: 8, mapping: 'kHz' }
       ],
       centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
