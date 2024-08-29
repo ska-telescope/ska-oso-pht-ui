@@ -34,6 +34,19 @@ function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="helpPanelId"]').contains('suppliedUnits.help');
 }
 
+function verifySuppliedTypeValueAndUnitsLow() {
+  cy.get('[data-testid="suppliedType"]').contains('Integration Time');
+  cy.get('[data-testid="suppliedType"]')
+    .find('input')
+    .should('be.disabled');
+  cy.get('[data-testid="suppliedValue"]').type('3');
+  cy.get('[data-testid="helpPanelId"]').contains('suppliedValue.help');
+  cy.get('[data-testid="suppliedUnits"]').contains('h');
+  cy.get('[data-testid="suppliedUnits"]')
+    .find('input')
+    .should('be.disabled');
+}
+
 function verifyElevationField() {
   cy.get('[id="elevation"]').clear();
   cy.get('[id="elevation"]').type('15');
@@ -121,7 +134,7 @@ function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
 }
 
 function verifyContinuumBandwidthContinuumLowBand() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 75);
+  cy.get('[id="continuumBandwidth"]').should('have.value', 300);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
@@ -444,7 +457,7 @@ describe('<ObservationEntry />', () => {
     verifyElevationField();
     // verifyWeatherField();
     verifyObservationTypeZoom();
-    verifySuppliedTypeValueAndUnits();
+    verifySuppliedTypeValueAndUnitsLow();
     // verifyFrequencyUnitsLow();
     // verifyBandwidth(2, '48.8 KHz');
     // verifySpectralResolutionLowZoom();
@@ -471,7 +484,8 @@ describe('<ObservationEntry />', () => {
     verifyElevationField();
     // verifyWeatherField();
     verifyObservationTypeContinuum();
-    verifySuppliedTypeValueAndUnits();
+    // verifySuppliedTypeValueAndUnits();
+    verifySuppliedTypeValueAndUnitsLow();
     verifyCentralFrequencyContinuumLowBand();
     verifyContinuumBandwidthContinuumLowBand();
     // verifyFrequencyUnitsLow();

@@ -124,7 +124,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const target: Target = {
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
       decUnit: e.reference_coordinate?.unit[1],
-      id: i + 1,
+      id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
@@ -458,18 +458,20 @@ const getResultObsType = (
 const getTargetObservation = (
   inResults: SensCalcResultsBackend[],
   inObservationSets: ObservationSetBackend[],
-  inTargets: TargetBackend[]
+  inTargets: TargetBackend[],
+  outTargets: Target[]
 ): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
     const targetObs: TargetObservation = {
-      targetId: Number(result.target_ref),
+      // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
+      targetId: outTargets.find(tar => tar.name === result.target_ref).id,
       observationId: result.observation_set_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
-        title: inTargets[Number(result.target_ref) - 1]?.target_id,
+        title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(result, isContinuum),
@@ -489,6 +491,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
   let technicalPDF: DocumentPDF;
   sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
   technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
+  const targets = getTargets(inRec.info.targets);
 
   const convertedProposal = {
     id: inRec.prsl_id,
@@ -510,12 +513,17 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
-    targets: getTargets(inRec.info.targets),
+    targets: targets,
     observations: getObservations(inRec.info.observation_sets, inRec.info.results),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
       inRec?.info?.results?.length > 0
-        ? getTargetObservation(inRec.info.results, inRec.info.observation_sets, inRec.info.targets)
+        ? getTargetObservation(
+            inRec.info.results,
+            inRec.info.observation_sets,
+            inRec.info.targets,
+            targets
+          )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
