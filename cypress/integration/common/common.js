@@ -68,37 +68,37 @@ export const clickHome = () => {
 };
 
 export const clickToTeamPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('TEAM');
 };
 
 export const clickToGeneralPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('GENERAL');
 };
 
 export const clickToSciencePage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('SCIENCE');
 };
 
 export const clickToTargetPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('TARGET');
 };
 
 export const clickToObservationPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('OBSERVATION');
 };
 
 export const clickToTechnicalPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('TECHNICAL');
 };
 
 export const clickToObservatoryDataProductPage = () => {
-  clickToNextPage()
+  clickToNextPage();
   pageConfirmed('OBSERVATORY DATA PRODUCT');
 };
 

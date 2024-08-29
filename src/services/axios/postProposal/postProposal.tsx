@@ -5,7 +5,8 @@ import {
   DEFAULT_PI,
   GENERAL,
   PROJECTS,
-  SKA_PHT_API_URL, USE_LOCAL_DATA
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 

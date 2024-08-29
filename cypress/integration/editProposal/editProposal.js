@@ -53,7 +53,7 @@ Then(
     clickToSciencePage();
     clickToTargetPage();
     addM1TargetUsingResolve();
-    cy.wait(3000)
+    cy.wait(3000);
     clickToAddTarget();
     clickToObservationPage();
     clickObservationSetup();

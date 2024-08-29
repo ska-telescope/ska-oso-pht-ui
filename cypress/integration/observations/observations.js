@@ -3,7 +3,8 @@ import {
   clickToGeneralPage,
   clickToObservationPage,
   clickToSciencePage,
-  clickToTargetPage, clickToTeamPage,
+  clickToTargetPage,
+  clickToTeamPage,
   createStandardProposal,
   landingPageConfirmed
 } from '../common/common';
@@ -14,7 +15,7 @@ Given('I have access to the PHT Application', () => {
 
 And('I have navigated to the Observation Page', () => {
   createStandardProposal();
-  clickToTeamPage()
+  clickToTeamPage();
   clickToGeneralPage();
   clickToSciencePage();
   clickToTargetPage();
