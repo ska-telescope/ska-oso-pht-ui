@@ -454,6 +454,7 @@
   "referenceCoordinates": {
     "help": "Only Galactic and Equatorial reference coordinates are available.",
     "label": "Reference Coordinate",
+    "tooltip": "This feature is currently disabled",
     "0": "Equatorial",
     "1": "Galactic"
   },

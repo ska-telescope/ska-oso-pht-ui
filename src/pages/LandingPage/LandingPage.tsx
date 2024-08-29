@@ -240,7 +240,7 @@ export default function LandingPage() {
   function filterProposals() {
     return proposals.filter(
       item =>
-        ['title', 'cycle', 'pi'].some(field =>
+        ['id', 'title', 'cycle', 'pi'].some(field =>
           item[field]?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
         (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
