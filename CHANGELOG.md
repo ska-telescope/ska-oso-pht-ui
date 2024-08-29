@@ -46,6 +46,7 @@ Future
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
    - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
+   - Use non rounded value for Low Zoom bandwith in mapping for Sensitivity Calculator endpoints
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename
