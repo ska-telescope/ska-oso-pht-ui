@@ -8,7 +8,7 @@ interface PutProposalServiceResponse {
 }
 
 async function PutProposal(proposal, status?): Promise<PutProposalServiceResponse> {
-  if (window.Cypress || USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA) {
     return { valid: 'success' };
   }
 
