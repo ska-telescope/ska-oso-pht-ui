@@ -12,8 +12,14 @@ export const presentUnits = (inUnits: string) => {
 };
 
 export const presentValue = (inValue: string | number, fractionLength = 2) => {
-  if (typeof inValue === 'string' && inValue.split(' ').length > 1) {
-    return inValue;
+  if (typeof inValue === 'string') {
+    if (inValue.split(' ').length > 1) {
+      return inValue;
+    }
+    const eArr = inValue.split('e');
+    if (eArr.length > 1) {
+      return Number(eArr[0]).toFixed(fractionLength) + 'e' + eArr[1];
+    }
   }
   const result = Number(inValue);
   return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
