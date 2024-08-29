@@ -805,7 +805,7 @@ export const MID_BEAM_SIZE_PRECISION = 3;
 
 export const DEFAULT_PI = {
   id: 'prp-ska01-202204-01',
-  firstName: 'Van Loo',
+  firstName: 'DefaultUser',
   lastName: 'DefaultUser',
   email: 'ask.lop@map.com',
   country: 'Lagoon',

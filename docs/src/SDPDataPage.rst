@@ -45,10 +45,10 @@ The are two parts to the observatory data product page:
 
    Below is the list as available at this time
 
-   - Visibilities
    - Image Products 1 : Image Cubes
    - Image Products 2 : UV Grids
    - LSM Catalogue
+   - Visibilities
 
 .. _datapage1:
 
