@@ -452,8 +452,9 @@
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and Equatorial reference systems are available.",
-    "label": "Reference System",
+    "help": "Only Galactic and Equatorial reference coordinates are available.",
+    "label": "Reference Coordinate",
+    "tooltip": "This feature is currently disabled",
     "0": "Equatorial",
     "1": "Galactic"
   },
