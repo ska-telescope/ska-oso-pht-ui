@@ -83,7 +83,7 @@ export default function SensCalcModalMultiple({
     field: 'field1',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label1),
+    renderHeader: () => headerDisplay(isSensitivity() ? label2 : label1),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[0] : null)
   };
@@ -92,7 +92,7 @@ export default function SensCalcModalMultiple({
     field: 'field2',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label2),
+    renderHeader: () => headerDisplay(isSensitivity() ? label3 : label2),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[1] : null)
   };
@@ -101,7 +101,7 @@ export default function SensCalcModalMultiple({
     field: 'field3',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label3),
+    renderHeader: () => headerDisplay(isSensitivity() ? label4 : label3),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[2] : null)
   };
@@ -128,7 +128,7 @@ export default function SensCalcModalMultiple({
     field: 'field6',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label6),
+    renderHeader: () => headerDisplay(isSensitivity() ? label7 : label6),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[0] : null)
   };
@@ -137,7 +137,7 @@ export default function SensCalcModalMultiple({
     field: 'field7',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label7),
+    renderHeader: () => headerDisplay(isSensitivity() ? label8 : label7),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[1] : null),
     optional: params => params.value !== null
@@ -147,7 +147,7 @@ export default function SensCalcModalMultiple({
     field: 'field8',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label8),
+    renderHeader: () => headerDisplay(isSensitivity() ? label9 : label8),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[2] : null),
     optional: params => params.value !== null
@@ -210,25 +210,21 @@ export default function SensCalcModalMultiple({
   const getColumns = (data: { section2: any }[]) => {
     const results = [];
     results.push(colTitle);
-    if (!isSensitivity()) {
-      results.push(colField1);
-    }
+    results.push(colField1);
     results.push(colField2);
+    results.push(colField3);
     if (!isSensitivity()) {
-      results.push(colField3);
+      results.push(colField4);
+      results.push(colField5);
     }
-    results.push(colField4);
-    results.push(colField5);
     if (isContinuum()) {
-      if (!isSensitivity()) {
-        results.push(colField6);
-      }
+      results.push(colField6);
       results.push(colField7);
+      results.push(colField8);
       if (!isSensitivity()) {
-        results.push(colField8);
+        results.push(colField9);
+        results.push(colField10);
       }
-      results.push(colField9);
-      results.push(colField10);
     }
     results.push(colField11);
     results.push(colStatus);

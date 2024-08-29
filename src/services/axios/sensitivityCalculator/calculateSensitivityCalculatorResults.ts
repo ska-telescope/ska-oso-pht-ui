@@ -29,6 +29,7 @@ export default function calculateSensitivityCalculatorResults(
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+  const isContinuum = () => observation.type === TYPE_CONTINUUM;
 
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom())
@@ -41,7 +42,6 @@ export default function calculateSensitivityCalculatorResults(
     ? getBeamSizeLOW(response, isZoom())
     : getBeamSizeMID(response, isZoom());
 
-  console.log('TREVOR', response);
   const continuumIntegrationTime = isSensitivity()
     ? getContinuumIntegrationTimeMID(response, isZoom())
     : 0;
@@ -128,89 +128,118 @@ export default function calculateSensitivityCalculatorResults(
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === observation.supplied.type)
     ?.sensCalcResultsLabel;
 
+  const results1 = {
+    field: `${observationTypeLabel}SensitivityWeighted`,
+    value: isZoom()
+      ? spectralWeightedSensitivityDisplay?.value.toString()
+      : weightedSensitivityDisplay?.value.toString(),
+    units: weightedSensitivityDisplay?.unit
+  };
+
+  const results2 = {
+    field: `${observationTypeLabel}ConfusionNoise`,
+    value: isZoom()
+      ? spectralConfusionNoiseDisplay?.value.toString()
+      : confusionNoiseDisplay?.value.toString(),
+    units: confusionNoiseDisplay?.unit
+  };
+
+  const results3 = {
+    field: `${observationTypeLabel}TotalSensitivity`,
+    value: isZoom()
+      ? spectralTotalSensitivityDisplay?.value.toString()
+      : totalSensitivityDisplay?.value.toString(),
+    units: totalSensitivityDisplay?.unit
+  };
+
+  const results4 = {
+    field: `${observationTypeLabel}SynthBeamSize`,
+    value: beamSizeDisplay?.value,
+    units: beamSizeDisplay?.units
+  };
+
+  const results5 = {
+    field: isSensitivity()
+      ? `${observationTypeLabel}IntegrationTime`
+      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
+    value: isSensitivity() ? continuumIntegrationTime?.value.toString() : sbs?.value.toString(),
+    units: isSensitivity() ? continuumIntegrationTime?.unit : sbs?.unit
+  };
+
+  const results6 = {
+    field: 'spectralSensitivityWeighted',
+    value: spectralWeightedSensitivityDisplay.value.toString(),
+    units: spectralWeightedSensitivityDisplay.unit // TODO set correct unit when using supplied sensitivity
+  };
+
+  const results7 = {
+    field: 'spectralConfusionNoise',
+    value: spectralConfusionNoiseDisplay?.value.toString(),
+    units: spectralConfusionNoiseDisplay?.unit
+  };
+
+  const results8 = {
+    field: 'spectralTotalSensitivity',
+    value: spectralTotalSensitivityDisplay.value.toString(),
+    units: spectralTotalSensitivityDisplay.unit
+  };
+
+  const results9 = {
+    field: 'spectralSynthBeamSize',
+    value: spectralBeamSizeDisplay?.value,
+    units: spectralBeamSizeDisplay?.units
+  };
+
+  const results10 = {
+    field: isSensitivity() ? 'spectralIntegrationTime' : 'spectralSurfaceBrightnessSensitivity',
+    value: isSensitivity()
+      ? spectralIntegrationTime?.value.toString()
+      : spectralSbs?.value.toString(),
+    units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
+  };
+
+  const results11 = {
+    field: suppliedType,
+    value: observation.supplied.value.toString(),
+    units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+      u => u.value === observation.supplied.units
+    )?.label
+  };
+
   const theResults: SensCalcResults = {
     id: target.id,
     title: target.name,
     statusGUI: STATUS_OK,
-    section1: [
-      {
-        field: `${observationTypeLabel}SensitivityWeighted`,
-        value: isZoom()
-          ? spectralWeightedSensitivityDisplay?.value.toString()
-          : weightedSensitivityDisplay?.value.toString(),
-        units: weightedSensitivityDisplay?.unit
-      },
-      {
-        field: `${observationTypeLabel}ConfusionNoise`,
-        value: isZoom()
-          ? spectralConfusionNoiseDisplay?.value.toString()
-          : confusionNoiseDisplay?.value.toString(),
-        units: confusionNoiseDisplay?.unit
-      },
-      {
-        field: `${observationTypeLabel}TotalSensitivity`,
-        value: isZoom()
-          ? spectralTotalSensitivityDisplay?.value.toString()
-          : totalSensitivityDisplay?.value.toString(),
-        units: totalSensitivityDisplay?.unit
-      },
-      {
-        field: `${observationTypeLabel}SynthBeamSize`,
-        value: beamSizeDisplay?.value,
-        units: beamSizeDisplay?.units
-      },
-      {
-        field: isSensitivity()
-          ? `${observationTypeLabel}IntegrationTime`
-          : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-        value: isSensitivity() ? continuumIntegrationTime?.value.toString() : sbs?.value.toString(),
-        units: isSensitivity() ? continuumIntegrationTime?.unit : sbs?.unit
-      }
-    ],
-    // only return section2 if continuum
-    ...(observation.type === TYPE_CONTINUUM && {
-      section2: [
-        {
-          field: 'spectralSensitivityWeighted',
-          value: spectralWeightedSensitivityDisplay.value.toString(),
-          units: spectralWeightedSensitivityDisplay.unit // TODO set correct unit when using supplied sensitivity
-        },
-        {
-          field: 'spectralConfusionNoise',
-          value: spectralConfusionNoiseDisplay?.value.toString(),
-          units: spectralConfusionNoiseDisplay?.unit
-        },
-        {
-          field: 'spectralTotalSensitivity',
-          value: spectralTotalSensitivityDisplay.value.toString(),
-          units: spectralTotalSensitivityDisplay.unit
-        },
-        {
-          field: 'spectralSynthBeamSize',
-          value: spectralBeamSizeDisplay?.value,
-          units: spectralBeamSizeDisplay?.units
-        },
-        {
-          field: isSensitivity()
-            ? 'spectralIntegrationTime'
-            : 'spectralSurfaceBrightnessSensitivity',
-          value: isSensitivity()
-            ? spectralIntegrationTime?.value.toString()
-            : spectralSbs?.value.toString(),
-          units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
-        }
-      ]
+    section1: [],
+    ...(isContinuum() && {
+      section2: []
     }),
-    section3: [
-      {
-        field: suppliedType,
-        value: observation.supplied.value.toString(),
-        units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-          u => u.value === observation.supplied.units
-        )?.label
-      }
-    ]
+    section3: [results11]
   };
+
+  // Section 1
+  if (!isSensitivity()) {
+    theResults.section1.push(results1);
+  }
+  theResults.section1.push(results2);
+  theResults.section1.push(results3);
+  theResults.section1.push(results4);
+  if (!isSensitivity()) {
+    theResults.section1.push(results5);
+  }
+  // Section 2
+  if (isContinuum()) {
+    if (!isSensitivity()) {
+      theResults.section2.push(results6);
+    }
+    theResults.section2.push(results7);
+    theResults.section2.push(results8);
+    theResults.section2.push(results9);
+    if (!isSensitivity()) {
+      theResults.section2.push(results10);
+    }
+  }
+
   return theResults;
 }
 
