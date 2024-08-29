@@ -367,7 +367,6 @@ export const OBSERVATION = {
           disableForBand5: false
         }
       ],
-      // TODO use more precise values instead of rounded
       bandWidth: [
         { label: '3.125 MHz', value: 1, mapping: 'MHz' },
         { label: '6.25 MHz', value: 2, mapping: 'MHz' },
