@@ -33,7 +33,7 @@ function App() {
     updateTelescope
   } = storageObject.useStore();
   const [showCopyright, setShowCopyright] = React.useState(false);
-  const [apiVersion] = React.useState('2.1.0'); // TODO : Obtain real api version number
+  const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
 
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');

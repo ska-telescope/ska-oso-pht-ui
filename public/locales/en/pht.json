@@ -333,6 +333,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
         "clear": "Clears the currently selected file",
@@ -351,6 +352,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "success": "Technical Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the technical justification PDF for upload",
         "clear": "Clears the currently selected file",
@@ -450,8 +452,9 @@
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and Equatorial reference systems are available.",
-    "label": "Reference System",
+    "help": "Only Galactic and Equatorial reference coordinates are available.",
+    "label": "Reference Coordinate",
+    "tooltip": "This feature is currently disabled",
     "0": "Equatorial",
     "1": "Galactic"
   },

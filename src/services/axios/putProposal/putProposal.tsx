@@ -2,9 +2,14 @@ import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import MappingPutProposal from './putProposalMapping';
 
-async function PutProposal(proposal, status?) {
+interface PutProposalServiceResponse {
+  error?: string;
+  valid?: any;
+}
+
+async function PutProposal(proposal, status?): Promise<PutProposalServiceResponse> {
   if (window.Cypress || USE_LOCAL_DATA) {
-    return 'success';
+    return { valid: 'success' };
   }
 
   try {
@@ -16,7 +21,7 @@ async function PutProposal(proposal, status?) {
       convertedProposal,
       AXIOS_CONFIG
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
+    return typeof result === 'undefined' ? { error: 'error.API_UNKNOWN_ERROR' } : { valid: result };
   } catch (e) {
     return { error: e.message };
   }

@@ -155,8 +155,13 @@ export default function LandingPage() {
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  /*
   const displayScienceCategory = scienceCategory => {
     return scienceCategory ? scienceCategory : NOT_SPECIFIED;
+  };
+  */
+  const displayProposalType = proposalType => {
+    return proposalType ? proposalType : NOT_SPECIFIED;
   };
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
@@ -164,13 +169,13 @@ export default function LandingPage() {
   const COLUMNS = [
     { field: 'id', headerName: t('id.label') },
     {
-      field: 'scienceCategory',
-      headerName: t('scienceCategory.label'),
+      field: 'proposalType',
+      headerName: t('proposalType.label'),
       flex: 1.5,
       renderCell: (e: { row: any }) =>
         element(
-          e.row.scienceCategory > 0
-            ? t('scienceCategory.' + displayScienceCategory(e.row.scienceCategory))
+          e.row.proposalType > 0
+            ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
             : NOT_SPECIFIED
         )
     },
@@ -235,7 +240,7 @@ export default function LandingPage() {
   function filterProposals() {
     return proposals.filter(
       item =>
-        ['title', 'cycle', 'pi'].some(field =>
+        ['id', 'title', 'cycle', 'pi'].some(field =>
           item[field]?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
         (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())

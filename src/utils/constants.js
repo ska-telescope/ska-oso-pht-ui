@@ -253,7 +253,6 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
-export const TYPE_SUPPLIED_SENSITIVITY = 2;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
@@ -279,6 +278,9 @@ export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
+
+export const SUPPLIED_TYPE_INTEGRATION = 1;
+export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const OBSERVATION = {
   array: [
     {
@@ -645,7 +647,7 @@ export const OBSERVATION = {
       label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
       mappingLabel: 'integration_time',
-      value: 1,
+      value: SUPPLIED_TYPE_INTEGRATION,
       units: [
         { label: 'd', value: 1 },
         { label: 'h', value: 2 },
@@ -660,7 +662,7 @@ export const OBSERVATION = {
       label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'sensitivity',
       mappingLabel: 'sensitivity',
-      value: 2,
+      value: SUPPLIED_TYPE_SENSITIVITY,
       units: [
         { label: 'Jy/beam', value: 1 },
         { label: 'mJy/beam', value: 2 },
@@ -679,6 +681,9 @@ export const OBSERVATION = {
     { label: 'Hz', value: 4 }
   ]
 };
+
+export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
+export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
@@ -736,7 +741,8 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
-export const SUPPLIED_VALUE_DEFAULT = 600;
+export const SUPPLIED_VALUE_DEFAULT_MID = 600;
+export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
