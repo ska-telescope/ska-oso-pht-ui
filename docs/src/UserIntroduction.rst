@@ -2,9 +2,9 @@ Introduction
 ~~~~~~~~~~~~
 
 
-The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
+The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
-The PPT supports both light and dark modes and can be accessed at the top left corner |icostatus| of your screen - see :numref:`Figure %s <figure1>`.
+The PHT supports both light and dark modes and can be accessed at the top left corner |icostatus| of your screen - see :numref:`Figure %s <figure1>`.
 
 
 
