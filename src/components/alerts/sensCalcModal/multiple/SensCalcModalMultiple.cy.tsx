@@ -1,36 +1,15 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
+import { Router } from 'react-router';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../../services/theme/theme';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { SENSCALC_EMPTY_MOCKED } from '../../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
+import { NEW_OBSERVATION } from '../../../../utils/types/observation';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
-
-describe('<SensCalcModalMultiple />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(2000, 1000);
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <SensCalcModalMultiple
-              open
-              onClose={cy.stub().as('handleCancel')}
-              data={SENSCALC_EMPTY_MOCKED}
-              observation={null}
-              level={1}
-              levelError={null}
-            />
-          </ThemeProvider>
-        </StoreProvider>
-      );
-    });
-  }
-});
 
 /*
 describe('Modal with no data', () => {
@@ -183,3 +162,57 @@ describe('Modal with data - Spectral', () => {
   });
 });
 */
+
+function verifyHeader(id) {
+  cy.get('[data-testid="statusId"]');
+  cy.get('.MuiCardHeader-content > .MuiTypography-root').contains(
+    'sensitivityCalculatorResults.title (' + id + ')'
+  );
+  cy.get('[data-testid="baseButtonTestId"]').contains('button.close');
+}
+
+function closeButtonClick() {
+  cy.get('[data-testid="baseButtonTestId"]').click();
+}
+
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+function mounting(theTheme: any, observation, data) {
+  viewPort();
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <SensCalcModalMultiple
+            open
+            onClose={cy.stub().as('handleCancel')}
+            data={data}
+            observation={observation}
+            level={1}
+            levelError={null}
+          />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+describe('<SensCalcModalMultiple />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: DEFAULT`, () => {
+      mounting(theTheme, null, SENSCALC_EMPTY_MOCKED);
+    });
+  }
+  /* TODO
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: NEW OBSERVATION`, () => {
+      mounting(theTheme, NEW_OBSERVATION, SENSCALC_EMPTY_MOCKED);
+      verifyHeader(NEW_OBSERVATION.id);
+      closeButtonClick();
+    });
+  }
+  */
+});

@@ -51,7 +51,7 @@
     "@mui/material": "^5.12.1",
     "@mui/x-charts": "^7.12.1",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.0.14",
+    "@ska-telescope/ska-gui-components": "^2.0.15",
     "@ska-telescope/ska-gui-local-storage": "^1.0.1",
     "axios": "^1.6.3",
     "babel-core": "6",
@@ -76,7 +76,7 @@
     "react-scroll": "^1.9.0",
     "react-test-renderer": "^18.2.0",
     "resend": "^3.5.0",
-    "typescript": "^5.1.6"
+    "typescript": "5.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
@@ -102,7 +102,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "css-loader": "^6.7.1",
-    "cypress": "^13.7.1",
+    "cypress": "^13.13.3",
     "cypress-ctrf-json-reporter": "^0.0.10",
     "cypress-cucumber-preprocessor": "^4.3.1",
     "cypress-file-upload": "^5.0.8",

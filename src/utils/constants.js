@@ -153,8 +153,6 @@ export const IMAGE_WEIGHTING = [
   { lookup: 'robust', value: 2 }
 ];
 
-export const NOT_SPECIFIED = 'notSpecified';
-
 export const IMAGE_SIZE_UNITS = {
   ARCSECS: 'arcseconds',
   ARCMINS: 'arcmins',
@@ -178,6 +176,7 @@ export const NAV = [
   '/proposal/data',
   '/proposal/src'
 ];
+export const NOT_SPECIFIED = 'notSpecified';
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
@@ -254,7 +253,6 @@ export const PROPOSAL_STATUS = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
-export const TYPE_SUPPLIED_SENSITIVITY = 2;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
@@ -280,6 +278,9 @@ export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
 export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
+
+export const SUPPLIED_TYPE_INTEGRATION = 1;
+export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const OBSERVATION = {
   array: [
     {
@@ -471,14 +472,14 @@ export const OBSERVATION = {
         }
       ],
       bandWidth: [
-        { label: '24.4 KHz', value: 1, mapping: 'kHz' },
-        { label: '48.8 KHz', value: 2, mapping: 'kHz' },
-        { label: '97.7 KHz', value: 3, mapping: 'kHz' },
-        { label: '195.3 KHz', value: 4, mapping: 'kHz' },
-        { label: '390.6 KHz', value: 5, mapping: 'kHz' },
-        { label: '781.2 KHz', value: 6, mapping: 'kHz' },
+        { label: '24.4140625 KHz', value: 1, mapping: 'kHz' },
+        { label: '48.828125 KHz', value: 2, mapping: 'kHz' },
+        { label: '97.65625 KHz', value: 3, mapping: 'kHz' },
+        { label: '195.3125 KHz', value: 4, mapping: 'kHz' },
+        { label: '390.625 KHz', value: 5, mapping: 'kHz' },
+        { label: '781.25 KHz', value: 6, mapping: 'kHz' },
         { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
-        { label: '3125.0 KHz', value: 8, mapping: 'kHz' }
+        { label: '3125 KHz', value: 8, mapping: 'kHz' }
       ],
       centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
     }
@@ -646,7 +647,7 @@ export const OBSERVATION = {
       label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
       mappingLabel: 'integration_time',
-      value: 1,
+      value: SUPPLIED_TYPE_INTEGRATION,
       units: [
         { label: 'd', value: 1 },
         { label: 'h', value: 2 },
@@ -661,7 +662,7 @@ export const OBSERVATION = {
       label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'sensitivity',
       mappingLabel: 'sensitivity',
-      value: 2,
+      value: SUPPLIED_TYPE_SENSITIVITY,
       units: [
         { label: 'Jy/beam', value: 1 },
         { label: 'mJy/beam', value: 2 },
@@ -681,6 +682,9 @@ export const OBSERVATION = {
   ]
 };
 
+export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
+export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
+
 export const RA_TYPE_EQUATORIAL = 0;
 export const RA_TYPE_GALACTIC = 1;
 export const ROBUST = [
@@ -690,6 +694,9 @@ export const ROBUST = [
   { label: '1', value: 4 },
   { label: '2', value: 5 }
 ];
+
+export const UPLOAD_MAX_WIDTH_CSV = 25;
+export const UPLOAD_MAX_WIDTH_PDF = 25;
 
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },
@@ -734,7 +741,8 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
-export const SUPPLIED_VALUE_DEFAULT = 600;
+export const SUPPLIED_VALUE_DEFAULT_MID = 600;
+export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
@@ -797,8 +805,8 @@ export const MID_BEAM_SIZE_PRECISION = 3;
 
 export const DEFAULT_PI = {
   id: 'prp-ska01-202204-01',
-  firstName: 'Van Loo',
-  lastName: 'Cheng',
+  firstName: 'DefaultUser',
+  lastName: 'DefaultUser',
   email: 'ask.lop@map.com',
   country: 'Lagoon',
   affiliation: 'University of Free Town',

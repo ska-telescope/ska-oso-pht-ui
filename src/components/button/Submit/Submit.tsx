@@ -1,28 +1,33 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import PublishIcon from '@mui/icons-material/Publish';
+import BaseButton from '../Base/Button';
 
 interface SubmitButtonProps {
-  disabled: boolean;
-  action: Function;
+  title?: string;
+  action: string | Function;
+  disabled?: boolean;
+  primary?: boolean;
+  testId?: string;
+  toolTip?: string;
 }
 
-export default function SubmitButton({ disabled, action }: SubmitButtonProps) {
-  const { t } = useTranslation('pht');
-
-  const title = t('button.submit');
-
+export default function SubmitButton({
+  disabled = false,
+  action,
+  title = 'submitBtn.label',
+  primary = true,
+  testId = 'submitBtnTestId',
+  toolTip = 'submitBtn.tooltip'
+}: SubmitButtonProps) {
   return (
-    <Button
-      ariaDescription={`${title}Button`}
-      color={ButtonColorTypes.Secondary}
+    <BaseButton
+      action={action}
       disabled={disabled}
       icon={<PublishIcon />}
-      label={title}
-      onClick={action}
-      testId={`${title}TestId`}
-      variant={ButtonVariantTypes.Contained}
+      primary={primary}
+      testId={testId}
+      title={title}
+      toolTip={toolTip}
     />
   );
 }

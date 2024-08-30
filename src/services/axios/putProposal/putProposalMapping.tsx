@@ -256,8 +256,7 @@ const getObservationsSets = (
         effective_resolution: obs.effectiveResolution,
         // image_weighting: obs.imageWeighting?.toString()
         image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
-      },
-      details: obs.details
+      }
     };
     outObservationsSets.push(observation);
   }
@@ -418,7 +417,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
         : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
     let result: SensCalcResultsBackend = {
       observation_set_ref: tarObs.observationId,
-      target_ref: tarObs.targetId?.toString(),
+      target_ref: tarObs.sensCalc?.title,
       result_details: {
         supplied_type: suppliedType,
         ...suppliedRelatedFields

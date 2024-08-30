@@ -16,18 +16,18 @@ and after filling out the form and clicking "Add", the page will look like :numr
 .. figure:: /images/observationPage2.png
    :width: 90%
    :align: center
-   :alt: screen in light mode 
+   :alt: Image of the Observation page
 
-   Observation page in light mode.
+   Image of the Observation page.
 
 
 .. _obspage1:
 .. figure:: /images/observationPage.png
    :width: 90%
    :align: center
-   :alt: screen in light mode 
+   :alt: Observation page with observation set(s) and target(s) added.
 
-   Observation page with observation set(s) and target(s) added in light mode.
+   Observation page with observation set(s) and target(s) added.
 
 
 Layout and Navigation
@@ -41,7 +41,7 @@ The Observation Page consists of two distinct sections - see :numref:`Figure %s 
    - **observation Id** : unique id for each observation set.
    - **observation group id** : displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
    - **sub-array** : This displays the sub-array of the observation set.
-   - **type of observation** : If continuum or zoom.
+   - **observation type** : Continuum or Zoom.
    - **Sensitivity Calculation status** : Indicates the overall status for the observation. Click to open a modal with individual results - see :numref:`Figure %s <senscal>`. 
    - **actions** : Icons providing the ability to edit or delete ( after confirmation ) the selected observation.
 
@@ -59,7 +59,7 @@ The Observation Page consists of two distinct sections - see :numref:`Figure %s 
 .. figure:: /images/obssenscal.png
    :width: 90%
    :align: center
-   :alt: screen in light mode 
+   :alt: Sensitivity calculator result modal display.
 
    Sensitivity calculator result modal display.
 
@@ -81,7 +81,7 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :n
 .. figure:: /images/observationSetup.png
    :width: 90%
    :align: center
-   :alt: screen in light mode 
+   :alt: Image of the add observation page.
 
    The add observation page.
 
@@ -110,7 +110,7 @@ Actions
    - The user has the option to group observations together by adding them to a group.
    - The observation can be added to an existing group or a new group can be created.
    - Adding an observation to a group is optional.
-   - At the moment, once an observation has been added to a group, it can not be removed.
+   - Currently, once an observation has been added to a group, it can not be removed. Removal will be implemented at a later date
 
 
 

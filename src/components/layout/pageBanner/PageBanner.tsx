@@ -45,8 +45,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
       const response = await PostProposalValidate(getProposal());
-      if (response && !response.error) {
-        NotifyOK('validationBtn.success');
+      if (response.valid && !response.error) {
+        NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
         NotifyError(response.error);
@@ -80,7 +80,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const submitConfirmed = async () => {
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
-      NotifyOK(response);
+      NotifyOK(response.valid);
       setOpenDialog(false);
       navigate(PATH[0]);
     } else {
@@ -111,7 +111,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       pl={2}
     >
       <Grid item>
-        {backPage > 0 && <PreviousPageButton label={t('button.cancel')} action={prevPageNav} />}
+        {backPage > 0 && <PreviousPageButton title="button.cancel" action={prevPageNav} />}
         {!backPage && <HomeButton testId="homeButtonTestId" />}
       </Grid>
       <Grid item>
@@ -133,7 +133,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     >
       <Grid item>{pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}</Grid>
       <Grid item>
-        {pageNo < LAST_PAGE && <SubmitButton disabled={!canSubmit} action={submitClicked} />}
+        {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
       </Grid>
     </Grid>
   );
@@ -188,6 +188,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       </Grid>
       {openDialog && (
         <ProposalDisplay
+          proposal={getProposal()}
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onConfirm={submitConfirmed}

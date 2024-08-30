@@ -1,103 +1,93 @@
-# Changelog
+Changelog
+~~~~~~~~~
 
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
+
+Future 
+
+---
+
+* API mappings:
+   - Updated PHT services version 2.2.0 to use refactored validate endpoint
 
 0.4.0
 
 ---
 
-* STAR-644:
-   - Updated display of the Title page
+* API mappings:
+   - Updated models to follow changes in the PHT services version 2.1.0
+      - Removed metadata section for PUT and POST mapping as handled by ODA
+      - Mapping to/from API for the SDP Data Products
+      - Updated getProposalList mapping to new backend proposal format
+      - Move front-end to backend mapping into putProposal and postProposal
+      - Update postProposal mapping
+      - PutProposal mapping
+      - GetProposal mapping
+      - Update proposal frontend types
+   - Move putProposal mapping into a separate service to be used for save and validation
+   - Update proposal Backend types and Mocks
+   - Upgrade to version 5.2.0 of SKA-DB-ODA
+   - Update pages accordingly for breaking changes
+* Migrations:
+   - Added the active proposal ID into the bottom-right of the footer for reference 
    - Migrated Image Weighting labels to the PHT.json file
    - Migrated Proposal Type labels and descriptions to the PHT.json file
    - Migrated Proposal Attribute labels and descriptions to the PHT.json file
-* STAR-640:
-   - Display only most recent proposal for duplicates in ProposalList
-   - remove metadata section for PUT and POST mapping as handled by ODA
-* STAR-635: 
+   - Migrate page validations into separate utility 
+* Duplicates:
+   - BUG: Display only most recent proposal for duplicates in ProposalList
+* Sensitivity Calculation results: 
    - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
-   Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
+   - Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
-* STAR-570:
-   - Added Delete PDF button in Science and Technical Page
-   - Upgrade to version 2.1.0 of ska-oso-pht-services
-* STAR-625:
-   - Mapping to/from API for the SDP Data Products
-* STAR-636:
-   - Added 'under development notes to the Add Data Product & SRC Net pages"
-* STAR-588:
-   - Added mailto to the Team Member invitation button
-* STAR-627:
-   - Fix download pdf filename for science and technical page
-* STAR-296:
-   - Created GridMember component for use in Team Page and Proposal Display
-   - Updated Proposal Display to reflect latest requirements
-   - Minor resource file updates
-   - Added the active proposal ID into the bottom-right of the footer for reference 
-   - Addition of 'emptyCell' component
-   - Addition of some presentation function for various data types
-   - Started to check screen resizing ( landing page and page banner so far ).
-   - Standard height of the InfoCard
-* STAR-624: 
-   - Updated SensCalc mapping & display ( Zoom & Continuum )
+   - Update SensCalc display results to display sensitivity or integration time
+   - Added units to data in Observation SensCalc results modal
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
+   - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
+   - Use non rounded value for Low Zoom bandwith in mapping for Sensitivity Calculator endpoints
+* Science And Technical Page
+   - Added Delete PDF button
+   - Fix download pdf filename
+* Data Product pages:
+   - Added 'under development notes to the Add Data Product & SRC Net pages"
    - Updated SDP Page to only accept observations with passing SensCalc results
-   - Image Size forced to be +ve
-* STAR-536: 
+   - Updated structure of the DataProduct to cater for value/unit pairs
+* Team Page:
+   - Added mailto to the Team Member invitation button
+* Observation page:
    - Ability to Edit an Observation
+   - Upgraded Observation page so it can support multiple target/observation combinations
    - Edit proposal forces all linked target/observations to be re-calculated
    - Updated the default proposal for use with Add Proposal
-   - Added units to data in Observation SensCalc results modal
-* STAR-609: 
-   - Observation updates in regards to MID Telescope
-   - Correction of most of the console.log warnings
-   - Addition of robust to the mappings
-   - Some code refactoring and tidy up
-* STAR-615: Proposal mapping:
-   - PutProposal mapping
-   - Move putProposal mapping into a separate service to be used for save and validation
-   - Update SensCalc display results to display sensitivity or integration time
-   - Update pages accordingly for breaking changes
-   - Update proposal frontend types
-* STAR-606: Proposal mapping:
-   - GetProposal mapping
-   - Update proposal frontend types
-   - Update pages accordingly for breaking changes
-* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-540 : Proposal mapping:
-   - Update getProposalList mapping to new backend proposal format
-   - Move front-end to backend mapping into putProposal and postProposal
-   - Update postProposal mapping
-   - Update proposal Backend types and Mocks
-* STAR-529: Implement validation from OSD with validate endpoint
    - Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-* STAR-537 : Added the ability to Edit a target
-* STAR-547 : Migrate page validations into separate utility 
-* STAR-573 : Add e2e Testing into the CI/CD Pipeline
-* STAR-575 : Update target list on target page to show Redshift & Velocity
-* STAR-587
-   - Migrated Image Weighting to a separate component with testing coverage of 100%
-   - Updated the Observation selection to remove duplicates and update fields correctly when selected
-   - Corrected SensCalc loading issue
-   - Updated structure of the DataProduct to cater for value/unit pairs
-   - Updated screens to reflect new structure
-   - Updated display of the SensCalc for Observations
-* STAR-608 : Observation page updated for LOW / CONTINUUM
-   - Continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Fixed continuum bandwidth 300 MHz with AA4 subarray shows Value outside allowed range warning when it should be correct
+   - Make use of default continuum bandwidths for each array for Low
    - Tapering field should not be available on Low.
    - Weather field should not be available for Low, only Mid
-* STAR-469 : Upgraded Observation page so it can support multiple target/observation combinations
-* STAR-508: Updated spectral resolution and effective resolution according to bandwidth, array selection and tapering values for Zoom modes
-* STAR-540 : Proposal mapping:
-   - Update getProposalList mapping to new backend proposal format
-   - Move front-end to backend mapping into putProposal and postProposal
-   - Update postProposal mapping
-   - Update proposal Backend types and Mocks
-   - Upgrade to version 2.0.1 of SKA-PHT-SERVICES and 5.2.0 of SKA-DB-ODA
-* STAR-529: Implement validation from OSD with validate endpoint
+   - Supplied Sensitivity should not be available for Low, only Mid
+   - Supplied Units for Low should only be H
+   - Updated default Integration Time value for Low to 1
+   - Updated SensCalc mapping & display ( Zoom & Continuum )
+   - Image Size forced to be +ve
+   - Migrated Image Weighting to a separate component with testing coverage of 100%
+   - Updated the Observation selection to remove duplicates and update fields correctly when selected
+   - Corrected SensCalc loading issue  
+   - Updated display of the SensCalc for Observations
+   - Observation updates in regards to MID Telescope
+   - Addition of robust to the mappings
+* Target Page:
+   - Added the ability to Edit a target
+   - Update target list on target page to show Redshift & Velocity
+Screen Auto-resizing:
+   - Started to check screen resizing ( landing page and page banner so far ).
+   - Standard height of the InfoCard
+* Testing:  
+   - Add e2e Testing into the CI/CD Pipeline
+   - added user journeys
+* Validation:  
+   - Implement validation from of proposal with validate endpoint
 
 0.3.1
 

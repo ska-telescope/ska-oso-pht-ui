@@ -124,54 +124,51 @@ export default function TitleContent({ page }: TitleContentProps) {
     </Typography>
   );
 
-  const displayWordCount = () => (
-    <Typography variant="subtitle1">
-      {t('specialCharacters.cntWord')} {countWords(getProposal().title)} / {MAX_WORD}
-    </Typography>
-  );
+  const displayWordCount = () =>
+    `${t('specialCharacters.cntWord')} ${countWords(getProposal().title)} / ${MAX_WORD}`;
 
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item>
-        <Card
-          style={{
-            color: setCardFG(getProposal().proposalType, id),
-            backgroundColor: setCardBG(getProposal().proposalType, id),
+      <Grid key={id} item md={3}>
+        <Tooltip title={t('proposalType.desc.' + id)} arrow>
+          <Card
+            style={{
+              color: setCardFG(getProposal().proposalType, id),
+              backgroundColor: setCardBG(getProposal().proposalType, id),
 
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-          className={setCardClassName(getProposal().proposalType, id)}
-          onClick={() => clickProposal(id)}
-          variant="outlined"
-          id={`ProposalType-${id}`}
-        >
-          <CardActionArea>
-            <CardHeader
-              avatar={
-                <Avatar
-                  variant="rounded"
-                  style={{
-                    color: setCardBG(getProposal().proposalType, id),
-                    backgroundColor: setCardFG(getProposal().proposalType, id)
-                  }}
-                >
-                  <Typography variant="body2" component="div">
-                    {t('proposalType.code.' + id)}
-                  </Typography>
-                </Avatar>
-              }
-              title={
-                <Typography variant="h6" component="div" maxWidth={200}>
-                  <Tooltip title={t('proposalType.desc.' + id)} arrow>
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+            className={setCardClassName(getProposal().proposalType, id)}
+            onClick={() => clickProposal(id)}
+            variant="outlined"
+            id={`ProposalType-${id}`}
+          >
+            <CardActionArea>
+              <CardHeader
+                avatar={
+                  <Avatar
+                    variant="rounded"
+                    style={{
+                      color: setCardBG(getProposal().proposalType, id),
+                      backgroundColor: setCardFG(getProposal().proposalType, id)
+                    }}
+                  >
+                    <Typography variant="body2" component="div">
+                      {t('proposalType.code.' + id)}
+                    </Typography>
+                  </Avatar>
+                }
+                title={
+                  <Typography variant="h6" component="div" maxWidth={200}>
                     <Typography>{t('proposalType.title.' + id)}</Typography>
-                  </Tooltip>
-                </Typography>
-              }
-            />
-          </CardActionArea>
-        </Card>
+                  </Typography>
+                }
+              />
+            </CardActionArea>
+          </Card>
+        </Tooltip>
       </Grid>
     );
   }
@@ -179,42 +176,42 @@ export default function TitleContent({ page }: TitleContentProps) {
   function Attributes(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item>
-        <Card
-          style={{
-            color: setCardFG2(getProposal().proposalSubType, id),
-            backgroundColor: setCardBG2(getProposal().proposalSubType, id)
-          }}
-          className={setCardClassName2(getProposal().proposalSubType, id)}
-          onClick={() => clickSubProposal(id)}
-          variant="outlined"
-          id={`proposalAttribute-${id}`}
-        >
-          <CardActionArea>
-            <CardHeader
-              avatar={
-                <Avatar
-                  variant="rounded"
-                  style={{
-                    color: setCardBG2(getProposal().proposalSubType, id),
-                    backgroundColor: setCardFG2(getProposal().proposalSubType, id)
-                  }}
-                >
-                  <Typography variant="body2" component="div">
-                    {t('proposalAttribute.code.' + id)}
-                  </Typography>
-                </Avatar>
-              }
-              title={
-                <Typography variant="h6" component="div">
-                  <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
+      <Grid key={id} item md={6} lg={3}>
+        <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
+          <Card
+            style={{
+              color: setCardFG2(getProposal().proposalSubType, id),
+              backgroundColor: setCardBG2(getProposal().proposalSubType, id)
+            }}
+            className={setCardClassName2(getProposal().proposalSubType, id)}
+            onClick={() => clickSubProposal(id)}
+            variant="outlined"
+            id={`proposalAttribute-${id}`}
+          >
+            <CardActionArea>
+              <CardHeader
+                avatar={
+                  <Avatar
+                    variant="rounded"
+                    style={{
+                      color: setCardBG2(getProposal().proposalSubType, id),
+                      backgroundColor: setCardFG2(getProposal().proposalSubType, id)
+                    }}
+                  >
+                    <Typography variant="body2" component="div">
+                      {t('proposalAttribute.code.' + id)}
+                    </Typography>
+                  </Avatar>
+                }
+                title={
+                  <Typography variant="h6" component="div">
                     <Typography>{t('proposalAttribute.title.' + id)}</Typography>
-                  </Tooltip>
-                </Typography>
-              }
-            />
-          </CardActionArea>
-        </Card>
+                  </Typography>
+                }
+              />
+            </CardActionArea>
+          </Card>
+        </Tooltip>
       </Grid>
     );
   }
@@ -235,7 +232,9 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   function validateWordCount(title: string) {
-    if (countWords(title) > MAX_WORD) {
+    if (title.length === 0) {
+      return `${t('title.empty')}`;
+    } else if (countWords(title) > MAX_WORD) {
       return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
         title
       )} / ${MAX_WORD}`;
@@ -249,30 +248,29 @@ export default function TitleContent({ page }: TitleContentProps) {
 
     return (
       <TextEntry
-        label={t('title.label')}
+        label=""
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH * 2}
-        required
+        labelWidth={0}
         testId="titleId"
         value={getTitle()}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={t('title.helper')}
+        helperText={getProposal().title.length > 0 ? t('title.helper') : ''}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
   };
 
-  const titleHelpDisplay = (title: string, description: string) => {
+  const titleHelpDisplay = (title: string, description: string, labelWidth = LABEL_WIDTH) => {
     return (
       <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-        <Grid item xs={LABEL_WIDTH}>
+        <Grid item xs={labelWidth}>
           {displayLabel(title)}
         </Grid>
-        <Grid item xs={12 - LABEL_WIDTH}>
+        <Grid item xs={12 - labelWidth}>
           <Typography variant="body2">{description}</Typography>
         </Grid>
       </Grid>
@@ -322,11 +320,34 @@ export default function TitleContent({ page }: TitleContentProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH / 2}>
-          {titleField()}
+        <Grid item xs={FIELD_WIDTH}>
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+            <Grid item xs={LABEL_WIDTH}>
+              {displayLabel(t('title.label') + ' *')}
+            </Grid>
+            <Grid item xs={6 - LABEL_WIDTH}>
+              {titleField()}
+            </Grid>
+            <Grid item md={6}></Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={FIELD_WIDTH / 2}>
-          {displayWordCount()}
+      </Grid>
+    );
+  };
+
+  const row1b = () => {
+    return (
+      <Grid
+        pl={2}
+        pt={1}
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item xs={FIELD_WIDTH}>
+          {titleHelpDisplay('', displayWordCount())}
         </Grid>
       </Grid>
     );
@@ -388,6 +409,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         >
           <Grid item xs={12}>
             {row1()}
+            {row1b()}
           </Grid>
           <Grid item xs={12}>
             {row2()}

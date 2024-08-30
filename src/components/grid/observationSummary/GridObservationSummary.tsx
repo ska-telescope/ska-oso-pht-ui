@@ -38,7 +38,7 @@ export default function GridObservationSummary({
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => {
               return (
-                <Grid item xs={12}>
+                <Grid key={el} item xs={12}>
                   {element(el)}
                 </Grid>
               );
@@ -51,8 +51,6 @@ export default function GridObservationSummary({
 
   const sensitivityIntegrationTime = rec => {
     return (
-      OBSERVATION?.Supplied[rec.supplied.type]?.label +
-      ' ' +
       rec.supplied.value +
       ' ' +
       OBSERVATION?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))

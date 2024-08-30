@@ -28,7 +28,6 @@ type Observation = {
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
   numStations?: number;
-  details: string;
   // TODO: get right ascension + declination from target => store in target and send it as pointing_centre: '00:00:00.0 00:00:00.0',
 };
 
@@ -60,8 +59,7 @@ export const NEW_OBSERVATION: Observation = {
   numSubBands: 0,
   num15mAntennas: 4,
   num13mAntennas: 0,
-  numStations: 0,
-  details: 'DUMMY'
+  numStations: 0
 };
 
 export default Observation;

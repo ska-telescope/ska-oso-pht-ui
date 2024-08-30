@@ -17,9 +17,9 @@ Once on the team page, see :numref:`Figure %s <figure5>`,  you can move between 
 
 .. figure:: /images/teamPage.png
    :width: 100%
-   :alt: screen in light mode 
+   :alt: Image of the Team page
 
-   The team page in light mode.
+   The Team page.
 
 
 
@@ -47,6 +47,13 @@ The Team Page has two sections:
 - Import from File: *Not available at the moment*.
 - Search for a Member: *Not available at the moment*.
 
+.. note:: 
+
+   Invite Team Members
+
+   This option is intended for individuals that are not known as having already registered with an account. 
+   For those that are known as having an account, they can be located via the Search for a Member option,
+   which is not currently implemented
 
 
 

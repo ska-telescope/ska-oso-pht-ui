@@ -24,8 +24,7 @@ import {
   SPECTRAL_AVERAGING_MAX,
   SPECTRAL_AVERAGING_MIN,
   STATUS_PARTIAL,
-  SUPPLIED_VALUE_DEFAULT,
-  TELESCOPES,
+  SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   BAND_5A,
   BAND_5B,
@@ -40,7 +39,10 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST
+  ROBUST,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_INTEGRATION_TIME_UNITS_S,
+  SUPPLIED_VALUE_DEFAULT_LOW
 } from '../../utils/constants';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
@@ -54,7 +56,6 @@ import TargetObservation from '../../utils/types/targetObservation';
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const BACK_PAGE = 5;
-const LINE_OFFSET = 30;
 
 const LABEL_WIDTH_SELECT = 6;
 const LABEL_WIDTH_OPT1 = 6;
@@ -88,7 +89,7 @@ export default function ObservationEntry() {
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
-  const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT);
+  const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(4);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
@@ -96,7 +97,6 @@ export default function ObservationEntry() {
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
-  const [details, setDetails] = React.useState('');
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -131,7 +131,6 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas);
     setNumOf13mAntennas(ob?.num13mAntennas);
     setNumOfStations(ob?.numStations);
-    setDetails(ob?.details);
   };
 
   const observationOut = () => {
@@ -167,8 +166,7 @@ export default function ObservationEntry() {
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
-      numStations: numOfStations,
-      details: details
+      numStations: numOfStations
     };
     return newObservation;
   };
@@ -225,8 +223,7 @@ export default function ObservationEntry() {
     subBands,
     numOf15mAntennas,
     numOf13mAntennas,
-    numOfStations,
-    details
+    numOfStations
   ]);
 
   const calculateEffectiveResolution = () => {
@@ -281,7 +278,9 @@ export default function ObservationEntry() {
         return;
       default:
         if (isContinuum()) {
-          setContinuumBandwidth(OBSERVATION.ContinuumBandwidthOBLow[0].value);
+          setContinuumBandwidth(
+            lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, subarrayConfig)
+          );
         }
     }
   };
@@ -291,6 +290,12 @@ export default function ObservationEntry() {
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
+    isLow()
+      ? setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H)
+      : setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
+    isLow()
+      ? setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW)
+      : setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
   }, [observingBand, observationType, bandwidth]);
 
   React.useEffect(() => {
@@ -512,26 +517,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const arrayField = () => {
-    const getOptions = () => {
-      return TELESCOPES;
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        disabled
-        testId="arrayConfiguration"
-        value={telescope()}
-        label={t('arrayConfiguration.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_SELECT}
-        onFocus={() => helpComponent(t('arrayConfiguration.help'))}
-      />
-    );
-  };
-
   const taperingField = () => {
     const frequencyInGHz = () => {
       return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
@@ -563,10 +548,31 @@ export default function ObservationEntry() {
   );
 
   const bandwidthField = () => {
-    const getOptions = () => {
+    interface BandwidthOptions {
+      label: string;
+      value: number;
+      mapping: string;
+    }
+    const getOptions = (): BandwidthOptions[] => {
       return OBSERVATION.array[telescope() - 1].bandWidth;
     };
-    return fieldDropdown(false, 'bandwidth', getOptions(), true, setBandwidth, null, bandwidth);
+    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
+      options.map(obj => {
+        return {
+          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
+          value: obj.value,
+          mapping: obj.mapping
+        };
+      });
+    return fieldDropdown(
+      false,
+      'bandwidth',
+      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
+      true,
+      setBandwidth,
+      null,
+      bandwidth
+    );
   };
 
   const robustField = () => {
@@ -658,7 +664,7 @@ export default function ObservationEntry() {
   };
 
   const suppliedTypeField = () => {
-    const getOptions = () => OBSERVATION?.Supplied;
+    const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
 
     return (
       <Box pb={2}>
@@ -667,6 +673,7 @@ export default function ObservationEntry() {
           testId="suppliedType"
           value={suppliedType}
           setValue={setSuppliedType}
+          disabled={getOptions().length < 2}
           label=""
           onFocus={() => helpComponent(t('suppliedType.help'))}
           required
@@ -676,8 +683,9 @@ export default function ObservationEntry() {
   };
 
   const suppliedUnitsField = () => {
-    const getOptions = () =>
-      suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+    const getOptions = () => {
+      return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+    };
 
     return (
       <Box>
@@ -685,6 +693,7 @@ export default function ObservationEntry() {
           options={getOptions()}
           testId="suppliedUnits"
           value={suppliedUnits}
+          disabled={isLow()}
           setValue={setSuppliedUnits}
           label=""
           onFocus={() => helpComponent(t('suppliedUnits.help'))}
@@ -1013,25 +1022,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const detailsField = () => {
-    const numRows = Number(t('observationDetails.minDisplayRows'));
-    return (
-      <Box sx={{ height: LINE_OFFSET * numRows }}>
-        <TextEntry
-          label={t('observationDetails.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH_OPT1}
-          testId="observationDetails"
-          value={details}
-          setValue={setDetails}
-          onFocus={() => helpComponent(t('observationDetails.help'))}
-          rows={t('observationDetails.minDisplayRows')}
-        />
-      </Box>
-    );
-  };
-
   const addButtonDisabled = () => {
     // TODO : We need to ensure we are able to progress.
     return false;
@@ -1078,23 +1068,26 @@ export default function ObservationEntry() {
         }
       }
 
-      const getAffected = (observationId: string) =>
-        getProposal().targetObservation.filter(rec => rec.observationId === observationId);
-
-      const updateSensCalcPartial = (ob: Observation) =>
-        getAffected(ob.id)?.map(rec => {
-          const to: TargetObservation = {
-            observationId: ob.id,
-            targetId: rec.targetId,
-            sensCalc: {
-              id: rec.targetId,
-              title: '',
-              statusGUI: STATUS_PARTIAL,
-              error: ''
-            }
-          };
-          return to;
+      const updateSensCalcPartial = (ob: Observation) => {
+        const result = getProposal().targetObservation.map(rec => {
+          if (rec.observationId === ob.id) {
+            const to: TargetObservation = {
+              observationId: rec.observationId,
+              targetId: rec.targetId,
+              sensCalc: {
+                id: rec.targetId,
+                title: '',
+                statusGUI: STATUS_PARTIAL,
+                error: ''
+              }
+            };
+            return to;
+          } else {
+            return rec;
+          }
         });
+        return result;
+      };
 
       setProposal({
         ...getProposal(),
@@ -1176,9 +1169,7 @@ export default function ObservationEntry() {
               <Grid item xs={XS_TOP}>
                 {observingBandField()}
               </Grid>
-              <Grid item xs={XS_TOP}>
-                {arrayField()}
-              </Grid>
+              <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
                 {subArrayField(isBand5())}
               </Grid>
@@ -1234,10 +1225,6 @@ export default function ObservationEntry() {
                   <Grid item xs={XS_BOTTOM}>
                     {imageWeighting === IW_BRIGGS && robustField()}
                   </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {detailsField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}></Grid>
                 </Grid>
               </CardContent>
             </Card>
