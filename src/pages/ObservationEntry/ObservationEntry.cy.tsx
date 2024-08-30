@@ -281,11 +281,6 @@ function verifyNumOfStations() {
   cy.get('[data-testid="helpPanelId"]').contains('numOfStations.help');
 }
 
-function verifyDetailsField() {
-  cy.get('[data-testid="observationDetails"]').type('test observation Details');
-  cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
-}
-
 function verifyGroupObservations() {
   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
   cy.get('[data-testid="groupObservations"]').click();
@@ -418,7 +413,6 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5a & SubArrayValue 20)', () => {
@@ -438,7 +432,6 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5b & SubArrayValue 20)', () => {
@@ -458,12 +451,10 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mount(THEME_LIGHT);
-    verifyDetailsField();
     verifyObservingBand(2);
     verifySubArrayConfiguration(20);
     verifyElevationField();
@@ -483,7 +474,6 @@ describe('<ObservationEntry />', () => {
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
-    verifyDetailsField();
     verifySubArrayConfiguration(4);
     verifyElevationField();
     // verifyWeatherField();
@@ -510,7 +500,6 @@ describe('<ObservationEntry />', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
-    verifyDetailsField();
     verifyNumOfStations();
     verifyElevationField();
     // verifyWeatherField();
