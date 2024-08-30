@@ -553,10 +553,31 @@ export default function ObservationEntry() {
   );
 
   const bandwidthField = () => {
-    const getOptions = () => {
+    interface BandwidthOptions {
+      label: string;
+      value: number;
+      mapping: string;
+    }
+    const getOptions = (): BandwidthOptions[] => {
       return OBSERVATION.array[telescope() - 1].bandWidth;
     };
-    return fieldDropdown(false, 'bandwidth', getOptions(), true, setBandwidth, null, bandwidth);
+    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
+      options.map(obj => {
+        return {
+          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
+          value: obj.value,
+          mapping: obj.mapping
+        };
+      });
+    return fieldDropdown(
+      false,
+      'bandwidth',
+      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
+      true,
+      setBandwidth,
+      null,
+      bandwidth
+    );
   };
 
   const robustField = () => {
