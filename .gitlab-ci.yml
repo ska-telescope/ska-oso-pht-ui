@@ -76,7 +76,7 @@ test_and_coverage:
       - build/
 
 test_e2e:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.60-1-ff-125.0.2-edge-124.0.2478.51-1
+  image: node:20.2.0-alpine3.18
   stage: test
   tags:
     - k8srunner
@@ -87,69 +87,11 @@ test_e2e:
     - mkdir -p build/.nyc_output
     - yarn install --frozen-lockfile
   script:
+    - yarn add cypress
     - yarn start &
     - yarn test:e2e:headless
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
-
-integration-test:
-  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-  stage: test
-  tags:
-    - k8srunner
-  variables:
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
-  before_script:
-    - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile; exit 1")'
-    - 'make help | grep k8s-test'
-    - make k8s-install-chart
-    - make k8s-wait
-  script:
-    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
-    - apt-get -qq -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-    - apt-get -y install jq
-    - tmp=$(mktemp)
-    - jq -n --arg BASE_URL $KUBE_HOST/$KUBE_NAMESPACE/senscalc '.baseUrl = $BASE_URL' cypress.json > "$tmp" && mv "$tmp" cypress.json
-    - yarn add cypress
-    - yarn test:e2e:headless
-  rules:
-    - exists:
-        - cypress/**/*
-  cache:
-    paths:
-      - node_modules/
-      - .cache/Cypress
-    policy: pull
-  environment:
-    name: test/$CI_COMMIT_REF_SLUG
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
-    on_stop: stop-k8s-test
-    auto_stop_in: 1 minute
-  artifacts:
-    when: always
-    reports:
-      junit: build/reports/*.xml
-    paths:
-      - cypress/screenshots
-      - cypress/videos
-      - build
-
-stop-k8s-test:
-  image: $SKA_K8S_TOOLS_BUILD_DEPLOY
-  stage: test
-  tags:
-    - k8srunner
-  when: manual
-  variables:
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
-  script:
-    - make k8s-uninstall-chart
-    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-    - make k8s-delete-namespace
-  environment:
-    name: test/$CI_COMMIT_REF_SLUG
-    action: stop
 
 # list the current top level dependencies for the project
 list_dependencies:
