@@ -36,22 +36,6 @@ export default function SensCalcModalMultiple({
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  const observationTypeLabel: string = OBS_TYPES[observation.type];
-  const label1 = `${observationTypeLabel}SensitivityWeighted`;
-  const label2 = `${observationTypeLabel}ConfusionNoise`;
-  const label3 = `${observationTypeLabel}TotalSensitivity`;
-  const label4 = `${observationTypeLabel}SynthBeamSize`;
-  const label5 = isSensitivity()
-    ? `${observationTypeLabel}IntegrationTime`
-    : `${observationTypeLabel}SurfaceBrightnessSensitivity`;
-  const label6 = 'spectralSensitivityWeighted';
-  const label7 = 'spectralConfusionNoise';
-  const label8 = 'spectralTotalSensitivity';
-  const label9 = 'spectralSynthBeamSize';
-  const label10 = isSensitivity()
-    ? 'spectralIntegrationTime'
-    : 'spectralSurfaceBrightnessSensitivity';
-
   let i = 0; // Just here so that the key warning is dealt with
 
   function HeaderLine(str: string) {
@@ -83,7 +67,7 @@ export default function SensCalcModalMultiple({
     field: 'field1',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label2 : label1),
+    renderHeader: () => headerDisplay(data[0].section1[0].field),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[0] : null)
   };
@@ -92,7 +76,7 @@ export default function SensCalcModalMultiple({
     field: 'field2',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label3 : label2),
+    renderHeader: () => headerDisplay(data[0].section1[1].field),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[1] : null)
   };
@@ -101,7 +85,7 @@ export default function SensCalcModalMultiple({
     field: 'field3',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label4 : label3),
+    renderHeader: () => headerDisplay(data[0].section1[2].field),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[2] : null)
   };
@@ -110,7 +94,7 @@ export default function SensCalcModalMultiple({
     field: 'field4',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label4),
+    renderHeader: () => headerDisplay(data[0].section1[3].field),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[3] : null)
   };
@@ -119,7 +103,7 @@ export default function SensCalcModalMultiple({
     field: 'field5',
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label5),
+    renderHeader: () => headerDisplay(data[0].section1[4].field),
     renderCell: (e: { row: { section1: { value: any }[] } }) =>
       presentation(e.row.section1 ? e.row.section1[4] : null)
   };
@@ -128,7 +112,7 @@ export default function SensCalcModalMultiple({
     field: 'field6',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label7 : label6),
+    renderHeader: () => headerDisplay(data[0].section2[0].field),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[0] : null)
   };
@@ -137,7 +121,7 @@ export default function SensCalcModalMultiple({
     field: 'field7',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label8 : label7),
+    renderHeader: () => headerDisplay(data[0].section2[1].field),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[1] : null),
     optional: params => params.value !== null
@@ -147,7 +131,7 @@ export default function SensCalcModalMultiple({
     field: 'field8',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? label9 : label8),
+    renderHeader: () => headerDisplay(data[0].section2[2].field),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[2] : null),
     optional: params => params.value !== null
@@ -157,7 +141,7 @@ export default function SensCalcModalMultiple({
     field: 'field9',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label9),
+    renderHeader: () => headerDisplay(data[0].section2[3].field),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[3] : null),
     optional: params => params.value !== null
@@ -167,7 +151,7 @@ export default function SensCalcModalMultiple({
     field: 'field10',
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(label10),
+    renderHeader: () => headerDisplay(data[0].section2[4].field),
     renderCell: (e: { row: { section2: { value: any }[] } }) =>
       presentation(e.row.section2 ? e.row.section2[4] : null),
     optional: params => params.value !== null
@@ -177,7 +161,7 @@ export default function SensCalcModalMultiple({
     field: 'field11',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(isSensitivity() ? 'sensitivity' : 'integrationTime'),
+    renderHeader: () => headerDisplay(data[0].section3[0].field),
     renderCell: (e: { row: { section3: { value: any }[] } }) =>
       presentation(e.row.section3 ? e.row.section3[0] : null),
     optional: params => params.value !== null
@@ -207,7 +191,7 @@ export default function SensCalcModalMultiple({
     }
   };
 
-  const getColumns = (data: { section2: any }[]) => {
+  const getColumns = () => {
     const results = [];
     results.push(colTitle);
     results.push(colField1);
@@ -273,7 +257,7 @@ export default function SensCalcModalMultiple({
           {data ? (
             <DataGrid
               rows={data}
-              columns={getColumns(data)}
+              columns={getColumns()}
               columnHeaderHeight={100}
               height={500}
               testId="sensCalcDetailsList"

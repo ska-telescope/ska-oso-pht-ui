@@ -222,22 +222,22 @@ export default function calculateSensitivityCalculatorResults(
     theResults.section1.push(results1);
   }
   theResults.section1.push(results2);
-  theResults.section1.push(results3);
-  theResults.section1.push(results4);
   if (!isSensitivity()) {
-    theResults.section1.push(results5);
+    theResults.section1.push(results3);
   }
+  theResults.section1.push(results4);
+  theResults.section1.push(results5);
   // Section 2
   if (isContinuum()) {
     if (!isSensitivity()) {
       theResults.section2.push(results6);
     }
     theResults.section2.push(results7);
-    theResults.section2.push(results8);
-    theResults.section2.push(results9);
     if (!isSensitivity()) {
-      theResults.section2.push(results10);
+      theResults.section2.push(results8);
     }
+    theResults.section2.push(results9);
+    theResults.section2.push(results10);
   }
 
   return theResults;
