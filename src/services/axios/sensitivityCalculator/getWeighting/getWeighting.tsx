@@ -113,7 +113,6 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   const getParamZoomLOW = () => {
     return {
       weighting_mode: getWeightingMode(),
-      robustness: getRobustness(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centres_mhz: observation.centralFrequency
@@ -128,7 +127,6 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centre_mhz: observation.centralFrequency
-      // subband_freq_centres_mhz:
     };
   };
 

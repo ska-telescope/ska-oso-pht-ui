@@ -222,14 +222,13 @@ async function GetCalculate(observation: Observation, target: Target) {
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
       ); // low zoom bandwidth should be sent in KHz
-      // TODO send bandwidth will all decimal instead of rounded number
     }
     const params = {
       subarray_configuration: getSubArray(),
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
-      freq_centre_mhz: observation.centralFrequency.toString(),
       elevation_limit: observation.elevation?.toString(),
+      freq_centre_mhz: observation.centralFrequency.toString(),
       spectral_averaging_factor: observation.spectralAveraging,
       ...mode_specific_parameters
     };

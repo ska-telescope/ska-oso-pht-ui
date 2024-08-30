@@ -1,8 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { LAB_POSITION } from '../../../utils/constants';
+
+// TODO : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
 
 interface ReferenceCoordinatesFieldProps {
   labelWidth?: number;
@@ -21,27 +23,30 @@ export default function ReferenceCoordinatesField({
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-    const OPTIONS = [0, 1];
+    const OPTIONS = [0]; // TODO , 1];
 
     const getOptions = () => {
       return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
     };
 
     return (
-      <Box pt={1}>
-        <DropDown
-          options={getOptions()}
-          testId={FIELD + 'Type'}
-          value={value}
-          setValue={setValue}
-          label={t(FIELD + '.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={labelWidth}
-          onFocus={valueFocus}
-          required
-        />
-      </Box>
+      <Tooltip title={t(FIELD + '.tooltip')}>
+        <Box pt={1}>
+          <DropDown
+            disabled // TODO : Need to implement Galactic
+            options={getOptions()}
+            testId={FIELD + 'Type'}
+            value={value}
+            setValue={setValue}
+            label={t(FIELD + '.label')}
+            labelBold
+            labelPosition={LAB_POSITION}
+            labelWidth={labelWidth}
+            onFocus={valueFocus}
+            required
+          />
+        </Box>
+      </Tooltip>
     );
   };
 

@@ -467,7 +467,7 @@ const getTargetObservation = (
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
-      targetId: outTargets.find(tar => tar.name === result.target_ref).id,
+      targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
       observationId: result.observation_set_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
