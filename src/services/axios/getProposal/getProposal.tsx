@@ -44,6 +44,7 @@ import {
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -97,6 +98,7 @@ const extractFileFromURL = (url): Promise<File> => {
 };
 
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
+  // TODO use boolean from API to check instead of link
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
     return null;
@@ -104,7 +106,7 @@ const getPDF = async (documents: DocumentBackend[], docType: string): Promise<Do
   const file = (await extractFileFromURL(pdf.link)) as File;
   const pdfDoc: DocumentPDF = {
     documentId: pdf?.document_id,
-    link: pdf?.link,
+    link: pdf?.link, // TODO use hardcoded pdf link from Jack instead??? clarify
     file: file ? file : null
   };
   return pdfDoc as DocumentPDF;
@@ -178,18 +180,16 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
-const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
-
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    imageSizeValue: Number(getFromArray(dp.image_size, 0)),
-    imageSizeUnits: getFromArray(dp.image_size, 1),
-    pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
-    pixelSizeUnits: getFromArray(dp.pixel_size, 1),
+    imageSizeValue: dp.image_size.value,
+    imageSizeUnits: dp.image_size.unit,
+    pixelSizeValue: dp.pixel_size.value,
+    pixelSizeUnits: dp.pixel_size.unit,
     weighting: Number(dp.weighting)
   }));
 };
@@ -234,9 +234,9 @@ const getFrequencyAndBandwidthUnits = (
   return units
     ? units
     : array.centralFrequencyAndBandWidthUnits?.find(
-        item =>
-          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
-      )?.value;
+      item =>
+        item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+    )?.value;
 };
 
 const getBandwidth = (incBandwidth: number, telescope: number): number => {
@@ -265,7 +265,7 @@ const getObservations = (
     )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
-      OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
+        OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
         ? 0
         : 1;
     const observingBand = getObservingBand(
@@ -326,13 +326,12 @@ const getObservations = (
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
-              inValue[i]?.observation_type_details?.bandwidth?.unit,
-              arr,
-              observingBand
-            )
+            inValue[i]?.observation_type_details?.bandwidth?.unit,
+            arr,
+            observingBand
+          )
           : undefined,
-      numStations: numStations,
-      details: inValue[i].details
+      numStations: numStations
     };
     results.push(obs);
   }
@@ -340,6 +339,17 @@ const getObservations = (
 };
 
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
+
+const getSurfaceBrightnessSensitivity = (incSBSValue: number, field: string): ResultsSection => {
+  // SBS is always saved in uK in mapping
+  // convert back to a sensible display unit
+  const convertedSBS = sensCalHelpers.format.convertKelvinsToDisplayValue(incSBSValue);
+  return {
+    field: field,
+    value: convertedSBS.value?.toString(),
+    units: convertedSBS?.unit
+  }
+}
 
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
@@ -371,16 +381,22 @@ const getResultsSection1 = (
     } as ResultsSection);
     section1.push({
       field: 'continuumSynthBeamSize',
-      // value: inResult.synthesized_beam_size?.value,
-      // mock beam size value for now as format enforced by backend not correct
-      value: `${inResult.synthesized_beam_size?.value} x 171.3`,
-      units: inResult?.synthesized_beam_size?.unit
+      value: inResult.synthesized_beam_size?.continuum,
+      units: inResult?.synthesized_beam_size?.unit, // unit is the same for spectral or continuum
     } as ResultsSection);
-    section1.push({
+    section1.push(
+      getSurfaceBrightnessSensitivity(inResult.result_details?.surface_brightness_sensitivity.continuum, 'continuumSurfaceBrightnessSensitivity')
+    )
+    // TODO remove comment below once checked above works
+    /*
+    {
       field: 'continuumSurfaceBrightnessSensitivity',
+
       value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
+      // value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
       units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
+   */
     // for zoom observation
   } else {
     section1 = getResultsSection2(inResult);
@@ -407,16 +423,21 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
   });
   section2.push({
     field: 'spectralSynthBeamSize',
-    // value: inResult.synthesized_beam_size?.value,
-    // mock beam size value for now as format enforced by backend not correct
-    value: '190.0 x 171.3',
-    units: inResult?.synthesized_beam_size?.unit
+    value: inResult.synthesized_beam_size?.spectral,
+    units: inResult?.synthesized_beam_size?.unit, // unit is the same for spectral or continuum
   });
-  section2.push({
+  section2.push(
+    /*
+    {
     field: 'spectralSurfaceBrightnessSensitivity',
     value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
     units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-  });
+    // TODO convert back to sensible unit
+  }
+    */
+    // TODO remove comment above once checked below works
+    getSurfaceBrightnessSensitivity(inResult.result_details?.surface_brightness_sensitivity.spectral, 'spectralSurfaceBrightnessSensitivity')
+  );
   return section2;
 };
 
@@ -430,12 +451,13 @@ const getResultsSection3 = (
   const suppliedType = inResult.result_details.supplied_type;
   const field =
     suppliedType === 'sensitivity'
-      ? /*
       ? 'sensitivity'
-      : 'integrationTime';
-    */
-        'integrationTime'
-      : 'sensitivity';
+      : 'integrationTime'; // USWAPPED // TODO check it works
+  /*
+  ?
+    'integrationTime'
+  : 'sensitivity'; // SWAPPED // TODO remove once we checked above is working
+  */
   // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
@@ -521,11 +543,11 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     targetObservation:
       inRec?.info?.results?.length > 0
         ? getTargetObservation(
-            inRec.info.results,
-            inRec.info.observation_sets,
-            inRec.info.targets,
-            targets
-          )
+          inRec.info.results,
+          inRec.info.observation_sets,
+          inRec.info.targets,
+          targets
+        )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
