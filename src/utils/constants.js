@@ -22,6 +22,7 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+// TODO remove BANDWIDTH_TELESCOPE once coming from OSD
 export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Low (50 - 350 MHz)',
@@ -116,12 +117,12 @@ export const GENERAL = {
       value: 3
     },
     {
-      label: 'Extra Galactic continuum',
+      label: 'Extragalactic continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 4
     },
     {
-      label: 'Extra Galactic Spectral line',
+      label: 'Extragalactic Spectral line',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 5
     },
@@ -179,6 +180,8 @@ export const NAV = [
 export const NOT_SPECIFIED = 'notSpecified';
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+// TODO remove projects and sub projects constants once projects and sub projects will be fetched from OSD Services
+// TODO remove project in pht.json translation too
 export const PROJECTS = [
   {
     id: 1,

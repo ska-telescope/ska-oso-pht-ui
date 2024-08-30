@@ -49,7 +49,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   for (let i = 0; i < targets.length; i++) {
     const tar = targets[i];
     const outTarget: TargetBackend = {
-      target_id: tar.name,
+      target_id: tar.name, // TODO use tar.id once it's a number too (Do we remove name in UI then?)
       reference_coordinate: {
         kind: REF_COORDINATES_UNITS[0]?.label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
         ra: tar.ra,
@@ -152,6 +152,8 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
 };
 
 const getObservingBand = (observingBand: number) => {
+  // TODO obs band can now be any string
+  // TODO change this once coming from OSD
   const obsBand = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
   return obsBand;
 };
@@ -169,6 +171,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
     const lowArrayDetails: ArrayDetailsLowBackend = {
       array: TELESCOPE_LOW_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
+      // TODO change subarray to any string once coming from OSD (Update constants too)
       number_of_stations: incObs.numStations,
       spectral_averaging: incObs.spectralAveraging?.toString()
     };
@@ -177,6 +180,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
     const midArrayDetails: ArrayDetailsMidBackend = {
       array: TELESCOPE_MID_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
+      // TODO change subarray to any string once coming from OSD (Update constants too)
       weather: incObs.weather,
       number_15_antennas: incObs.num15mAntennas,
       number_13_antennas: incObs.num13mAntennas,
@@ -418,7 +422,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
         : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
     let result: SensCalcResultsBackend = {
       observation_set_ref: tarObs.observationId,
-      target_ref: tarObs.sensCalc?.title,
+      target_ref: tarObs.sensCalc?.title, // TODO use tarObs.sensCalc.id once our id is a string too
       result_details: {
         supplied_type: suppliedType,
         ...suppliedRelatedFields

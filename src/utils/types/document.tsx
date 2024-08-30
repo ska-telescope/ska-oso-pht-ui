@@ -1,6 +1,7 @@
 export type DocumentBackend = {
   document_id?: string;
-  link?: string;
+  // link?: string;
+  uploadPdf: boolean; // TODO replace link by uploadPdf in mapping // How???
   type?: string;
 };
 
