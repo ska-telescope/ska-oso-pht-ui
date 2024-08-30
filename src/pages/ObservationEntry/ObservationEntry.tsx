@@ -56,7 +56,6 @@ import TargetObservation from '../../utils/types/targetObservation';
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
 const BACK_PAGE = 5;
-const LINE_OFFSET = 30;
 
 const LABEL_WIDTH_SELECT = 6;
 const LABEL_WIDTH_OPT1 = 6;
@@ -98,7 +97,6 @@ export default function ObservationEntry() {
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
-  const [details, setDetails] = React.useState('');
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -133,7 +131,6 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas);
     setNumOf13mAntennas(ob?.num13mAntennas);
     setNumOfStations(ob?.numStations);
-    setDetails(ob?.details);
   };
 
   const observationOut = () => {
@@ -169,8 +166,7 @@ export default function ObservationEntry() {
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
-      numStations: numOfStations,
-      details: details
+      numStations: numOfStations
     };
     return newObservation;
   };
@@ -227,8 +223,7 @@ export default function ObservationEntry() {
     subBands,
     numOf15mAntennas,
     numOf13mAntennas,
-    numOfStations,
-    details
+    numOfStations
   ]);
 
   const calculateEffectiveResolution = () => {
@@ -1006,25 +1001,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const detailsField = () => {
-    const numRows = Number(t('observationDetails.minDisplayRows'));
-    return (
-      <Box sx={{ height: LINE_OFFSET * numRows }}>
-        <TextEntry
-          label={t('observationDetails.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH_OPT1}
-          testId="observationDetails"
-          value={details}
-          setValue={setDetails}
-          onFocus={() => helpComponent(t('observationDetails.help'))}
-          rows={t('observationDetails.minDisplayRows')}
-        />
-      </Box>
-    );
-  };
-
   const addButtonDisabled = () => {
     // TODO : We need to ensure we are able to progress.
     return false;
@@ -1228,10 +1204,6 @@ export default function ObservationEntry() {
                   <Grid item xs={XS_BOTTOM}>
                     {imageWeighting === IW_BRIGGS && robustField()}
                   </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {detailsField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}></Grid>
                 </Grid>
               </CardContent>
             </Card>

@@ -688,6 +688,7 @@
   },
   "title": {
     "label": "Proposal Title",
+    "empty": "A value is required",
     "maxChar": "939",
     "maxWord": "50",
     "help": "",

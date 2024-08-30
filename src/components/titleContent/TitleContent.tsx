@@ -232,7 +232,9 @@ export default function TitleContent({ page }: TitleContentProps) {
   };
 
   function validateWordCount(title: string) {
-    if (countWords(title) > MAX_WORD) {
+    if (title.length === 0) {
+      return `${t('title.empty')}`;
+    } else if (countWords(title) > MAX_WORD) {
       return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
         title
       )} / ${MAX_WORD}`;
@@ -246,18 +248,17 @@ export default function TitleContent({ page }: TitleContentProps) {
 
     return (
       <TextEntry
-        label={t('title.label')}
+        label=""
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        required
+        labelWidth={0}
         testId="titleId"
         value={getTitle()}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={t('title.helper')}
+        helperText={getProposal().title.length > 0 ? t('title.helper') : ''}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
@@ -320,7 +321,15 @@ export default function TitleContent({ page }: TitleContentProps) {
         spacing={2}
       >
         <Grid item xs={FIELD_WIDTH}>
-          {titleField()}
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+            <Grid item xs={LABEL_WIDTH}>
+              {displayLabel(t('title.label') + ' *')}
+            </Grid>
+            <Grid item xs={6 - LABEL_WIDTH}>
+              {titleField()}
+            </Grid>
+            <Grid item md={6}></Grid>
+          </Grid>
         </Grid>
       </Grid>
     );

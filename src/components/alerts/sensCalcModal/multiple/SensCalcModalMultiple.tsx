@@ -5,7 +5,7 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
-import { OBS_TYPES, SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
+import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
 import { presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
