@@ -4,13 +4,23 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-Future 
+Future
+
+---
+
+0.4.1 
 
 ---
 
 * API mappings:
    - Updated PHT services version 2.2.0 to use refactored validate endpoint
-
+* Target Page:
+   - Disabled galactic coordinate 
+* Observation page:
+   - Updated senscal results modal and results
+* Testing: 
+   - Added BDD tests
+   
 0.4.0
 
 ---
