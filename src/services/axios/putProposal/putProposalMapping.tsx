@@ -256,8 +256,7 @@ const getObservationsSets = (
         effective_resolution: obs.effectiveResolution,
         // image_weighting: obs.imageWeighting?.toString()
         image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
-      },
-      details: obs.details
+      }
     };
     outObservationsSets.push(observation);
   }
