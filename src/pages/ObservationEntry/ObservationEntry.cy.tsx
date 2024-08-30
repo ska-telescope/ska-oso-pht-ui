@@ -10,12 +10,48 @@ import { BANDWIDTH_TELESCOPE } from '../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+function mount(theTheme: any) {
+  viewPort();
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <BrowserRouter>
+          <ObservationEntry />
+        </BrowserRouter>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
+function verifyObservingBand(dataValue: number) {
+  cy.get('[data-testid="observingBand"]').click();
+  cy.get('[data-value="' + dataValue + '"]').click();
+  cy.get('[data-testid="observingBand"]').contains(BANDWIDTH_TELESCOPE[dataValue].label);
+  cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
+}
+
 function verifySubArrayConfiguration(inValue: number) {
   cy.get('[data-testid="subArrayConfiguration"]').click();
   cy.get('[data-value="' + inValue + '"]').click();
   cy.get('[data-testid="subArrayConfiguration"]').contains('subArrayConfiguration.' + inValue);
   cy.get('[data-testid="helpPanelId"]').contains('subArrayConfiguration.help');
 }
+
+/* TREVOR : Please please leave for now
+function verifyObservationType(inValue: number) {
+  cy.get('[data-testid="observationType"]').click();
+  cy.get('[data-value="' + inValue + '"]').click();
+  cy.get('[data-testid="observationType"]').contains('observationType.' + inValue);
+  cy.get('[data-testid="helpPanelId"]').contains('observationType.help');
+}
+  */
+
+/*****************************************************************************************************/
 
 function verifySuppliedTypeValueAndUnits() {
   cy.get('[data-testid="suppliedType"]').contains('Integration Time');
@@ -98,13 +134,6 @@ function verifyCentralFrequencyContinuumLowBand() {
   cy.get('[id="centralFrequency"]').should('have.value', 200);
   cy.get('[id="centralFrequency"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('centralFrequency.help');
-}
-
-function verifyObservingBand(dataValue: number) {
-  cy.get('[data-testid="observingBand"]').click();
-  cy.get('[data-value="' + dataValue + '"]').click();
-  cy.get('[data-testid="observingBand"]').contains(BANDWIDTH_TELESCOPE[dataValue].label);
-  cy.get('[data-testid="helpPanelId"]').contains('observingBand.help');
 }
 
 function verifyFrequencyUnits() {
@@ -252,11 +281,6 @@ function verifyNumOfStations() {
   cy.get('[data-testid="helpPanelId"]').contains('numOfStations.help');
 }
 
-function verifyDetailsField() {
-  cy.get('[data-testid="observationDetails"]').type('test observation Details');
-  cy.get('[data-testid="helpPanelId"]').contains('observationDetails.help');
-}
-
 function verifyGroupObservations() {
   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
   cy.get('[data-testid="groupObservations"]').click();
@@ -337,29 +361,31 @@ function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
   */
 }
 
-function mounting(theTheme: any) {
-  cy.viewport(2000, 1000);
-  cy.mount(
-    <StoreProvider>
-      <ThemeProvider theme={theme(theTheme)}>
-        <CssBaseline />
-        <BrowserRouter>
-          <ObservationEntry />
-        </BrowserRouter>
-      </ThemeProvider>
-    </StoreProvider>
-  );
-}
-
 describe('<ObservationEntry />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
+      mount(theTheme);
     });
   }
 
+  /* TREVOR : Please ignore, will update shortly
+
+  for (const theBand of BANDWIDTH_TELESCOPE) {
+    for (const subArray of subArrayOptions(BANDWIDTH_TELESCOPE[theBand.value])) {
+      for (const type of OBSERVATION_TYPE) {
+        it(`${BANDWIDTH_TELESCOPE[theBand.value].label} | ${subArray.label} | ${type}`, () => {
+          mount(THEME_LIGHT);
+          verifyObservingBand(theBand.value);
+          verifySubArrayConfiguration(subArray.value);
+          verifyObservationType(type);
+        });
+      }
+    }
+  }
+    */
+
   it('Verify the observation can be added to a group observation', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyGroupObservations();
     cy.get('[data-testid="addGroupButton"]').should('be.disabled');
     cy.get('[data-testid="groupObservations"]')
@@ -369,7 +395,7 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(2);
     verifySubArrayConfiguration(2);
     verifyNumOf15mAntennas();
@@ -387,11 +413,10 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5a & SubArrayValue 20)', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(3);
     verifySubArrayConfiguration(20);
     verifyElevationField();
@@ -407,11 +432,10 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5b & SubArrayValue 20)', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(4);
     verifySubArrayConfiguration(20);
     verifyElevationField();
@@ -427,12 +451,10 @@ describe('<ObservationEntry />', () => {
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
-    verifyDetailsField();
   });
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
-    mounting(THEME_LIGHT);
-    verifyDetailsField();
+    mount(THEME_LIGHT);
     verifyObservingBand(2);
     verifySubArrayConfiguration(20);
     verifyElevationField();
@@ -450,9 +472,8 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(0);
-    verifyDetailsField();
     verifySubArrayConfiguration(4);
     verifyElevationField();
     // verifyWeatherField();
@@ -469,17 +490,16 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify Array Config LOW and observation type Zoom is not available with certain sub-bands ', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
     verifyObservationTypeZoomUnavailable();
   });
 
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
-    verifyDetailsField();
     verifyNumOfStations();
     verifyElevationField();
     // verifyWeatherField();
@@ -498,14 +518,14 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
     verifyCentralFrequencyContinuumLowBand();
   });
 
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config AA4 LOW', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(4);
     verifyObservationTypeZoom();
@@ -513,7 +533,7 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band2', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(2);
     verifySubArrayConfiguration(6);
     verifyObservationTypeZoom();
@@ -521,7 +541,7 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band5A', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(3);
     verifySubArrayConfiguration(6);
     verifyObservationTypeZoom();
@@ -529,7 +549,7 @@ describe('<ObservationEntry />', () => {
   });
 
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band5B', () => {
-    mounting(THEME_LIGHT);
+    mount(THEME_LIGHT);
     verifyObservingBand(4);
     verifySubArrayConfiguration(9);
     verifyObservationTypeZoom();

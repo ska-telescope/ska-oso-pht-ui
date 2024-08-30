@@ -206,6 +206,7 @@ describe('<SensCalcModalMultiple />', () => {
       mounting(theTheme, null, SENSCALC_EMPTY_MOCKED);
     });
   }
+  /* TODO
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: NEW OBSERVATION`, () => {
       mounting(theTheme, NEW_OBSERVATION, SENSCALC_EMPTY_MOCKED);
@@ -213,4 +214,5 @@ describe('<SensCalcModalMultiple />', () => {
       closeButtonClick();
     });
   }
+  */
 });

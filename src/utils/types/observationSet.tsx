@@ -11,7 +11,6 @@ export type ObservationSetBackend = {
   elevation?: number;
   array_details?: ArrayDetailsLowBackend | ArrayDetailsMidBackend;
   observation_type_details?: ObservationTypeDetailsBackend;
-  details: string;
 };
 
 export type ObservationTypeDetailsBackend = {

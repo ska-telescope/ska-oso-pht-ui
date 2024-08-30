@@ -330,8 +330,7 @@ const getObservations = (
               observingBand
             )
           : undefined,
-      numStations: numStations,
-      details: inValue[i].details
+      numStations: numStations
     };
     results.push(obs);
   }
