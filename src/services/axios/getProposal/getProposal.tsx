@@ -234,9 +234,9 @@ const getFrequencyAndBandwidthUnits = (
   return units
     ? units
     : array.centralFrequencyAndBandWidthUnits?.find(
-      item =>
-        item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
-    )?.value;
+        item =>
+          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+      )?.value;
 };
 
 const getBandwidth = (incBandwidth: number, telescope: number): number => {
@@ -265,7 +265,7 @@ const getObservations = (
     )?.value;
     const type =
       inValue[i].observation_type_details?.observation_type.toLocaleLowerCase() ===
-        OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
+      OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
         ? 0
         : 1;
     const observingBand = getObservingBand(
@@ -326,10 +326,10 @@ const getObservations = (
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
-            inValue[i]?.observation_type_details?.bandwidth?.unit,
-            arr,
-            observingBand
-          )
+              inValue[i]?.observation_type_details?.bandwidth?.unit,
+              arr,
+              observingBand
+            )
           : undefined,
       numStations: numStations
     };
@@ -348,8 +348,8 @@ const getSurfaceBrightnessSensitivity = (incSBSValue: number, field: string): Re
     field: field,
     value: convertedSBS.value?.toString(),
     units: convertedSBS?.unit
-  }
-}
+  };
+};
 
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
@@ -382,11 +382,14 @@ const getResultsSection1 = (
     section1.push({
       field: 'continuumSynthBeamSize',
       value: inResult.synthesized_beam_size?.continuum,
-      units: inResult?.synthesized_beam_size?.unit, // unit is the same for spectral or continuum
+      units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
     } as ResultsSection);
     section1.push(
-      getSurfaceBrightnessSensitivity(inResult.result_details?.surface_brightness_sensitivity.continuum, 'continuumSurfaceBrightnessSensitivity')
-    )
+      getSurfaceBrightnessSensitivity(
+        inResult.result_details?.surface_brightness_sensitivity.continuum,
+        'continuumSurfaceBrightnessSensitivity'
+      )
+    );
     // TODO remove comment below once checked above works
     /*
     {
@@ -424,7 +427,7 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
   section2.push({
     field: 'spectralSynthBeamSize',
     value: inResult.synthesized_beam_size?.spectral,
-    units: inResult?.synthesized_beam_size?.unit, // unit is the same for spectral or continuum
+    units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
   });
   section2.push(
     /*
@@ -436,7 +439,10 @@ const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['
   }
     */
     // TODO remove comment above once checked below works
-    getSurfaceBrightnessSensitivity(inResult.result_details?.surface_brightness_sensitivity.spectral, 'spectralSurfaceBrightnessSensitivity')
+    getSurfaceBrightnessSensitivity(
+      inResult.result_details?.surface_brightness_sensitivity.spectral,
+      'spectralSurfaceBrightnessSensitivity'
+    )
   );
   return section2;
 };
@@ -449,10 +455,7 @@ const getResultsSection3 = (
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
   const suppliedType = inResult.result_details.supplied_type;
-  const field =
-    suppliedType === 'sensitivity'
-      ? 'sensitivity'
-      : 'integrationTime'; // USWAPPED // TODO check it works
+  const field = suppliedType === 'sensitivity' ? 'sensitivity' : 'integrationTime'; // USWAPPED // TODO check it works
   /*
   ?
     'integrationTime'
@@ -543,11 +546,11 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     targetObservation:
       inRec?.info?.results?.length > 0
         ? getTargetObservation(
-          inRec.info.results,
-          inRec.info.observation_sets,
-          inRec.info.targets,
-          targets
-        )
+            inRec.info.results,
+            inRec.info.observation_sets,
+            inRec.info.targets,
+            targets
+          )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status

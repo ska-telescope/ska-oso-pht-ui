@@ -28,7 +28,7 @@ export type SensCalcResultsBackend = {
   synthesized_beam_size?: {
     continuum?: string;
     spectral: string;
-    unit: string
+    unit: string;
   };
   spectral_confusion_noise?: ValueUnitPair;
 };

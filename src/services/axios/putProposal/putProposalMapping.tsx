@@ -31,7 +31,7 @@ import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
-import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
@@ -136,8 +136,8 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: {value: dp.imageSizeValue, unit: dp.imageSizeUnits},
-    pixel_size: {value: dp.pixelSizeValue, unit: dp.pixelSizeUnits},
+    image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
+    pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
     weighting: dp.weighting?.toString()
   }));
 };
@@ -280,23 +280,25 @@ const convertSBSToMicroKelvins = (value: number, unit: string): number => {
     default:
       throw new Error(`Unsupported unit: ${unit}`);
   }
-}
+};
 
 const getSBS = (tarObs: TargetObservation, field: string) => {
   const continuumSBS = tarObs.sensCalc.section1?.find(o => o.field === field);
   return convertSBSToMicroKelvins(Number(continuumSBS.value), continuumSBS.units);
-}
+};
 
-const getSurfaceBrightnessSensitivity = (obsType: number, tarObs: TargetObservation, spectralSection: string) => {
+const getSurfaceBrightnessSensitivity = (
+  obsType: number,
+  tarObs: TargetObservation,
+  spectralSection: string
+) => {
   return {
     continuum:
-      obsType === TYPE_CONTINUUM
-        ? getSBS(tarObs, 'continuumSurfaceBrightnessSensitivity')
-        : 0, // null, // TODO remove dummy value and put back to null once PDM is updated to have continuum as optional
+      obsType === TYPE_CONTINUUM ? getSBS(tarObs, 'continuumSurfaceBrightnessSensitivity') : 0, // null, // TODO remove dummy value and put back to null once PDM is updated to have continuum as optional
     spectral: getSBS(tarObs, 'spectralSurfaceBrightnessSensitivity'),
     unit: 'uK' // we have converted SBS values to uK
-  }
-}
+  };
+};
 
 interface SuppliedRelatedFields {
   supplied_type: string;
@@ -358,7 +360,11 @@ const getSuppliedFieldsSensitivity = (
     ),
     unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.units
   };
-  params.surface_brightness_sensitivity = getSurfaceBrightnessSensitivity(obsType, tarObs, spectralSection);
+  params.surface_brightness_sensitivity = getSurfaceBrightnessSensitivity(
+    obsType,
+    tarObs,
+    spectralSection
+  );
   return params;
 };
 
@@ -413,8 +419,8 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const obsType = getObsType(tarObs, incObs); // spectral or continuum
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
-    //  tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity'; // SWAPPED // TODO remove once checked that below works
-    tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time'; // USWAPPED // TODO check it works
+      //  tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity'; // SWAPPED // TODO remove once checked that below works
+      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time'; // USWAPPED // TODO check it works
     // TODO un-swap sensitivity and integration time as above once PDM updated
     // => we want supplied integration time fields for supplied sensitivity
     // and supplied sensitivity fields for supplied integration time for RESULTS
@@ -445,11 +451,17 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
               unit: 'uJy/beam'
             },
       synthesized_beam_size: {
-        continuum: obsType === TYPE_CONTINUUM ? tarObs.sensCalc[spectralSection]?.find(o => o.field === 'continuumSynthBeamSize')?.value : '', // TODO check if PDM would accept no continuum beam size instead of empty one once PDM changes implemented
-        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')?.value,
-        unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')?.units // spectral and continuum beam size will have the same unit so pick either
+        continuum:
+          obsType === TYPE_CONTINUUM
+            ? tarObs.sensCalc[spectralSection]?.find(o => o.field === 'continuumSynthBeamSize')
+                ?.value
+            : '', // TODO check if PDM would accept no continuum beam size instead of empty one once PDM changes implemented
+        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+          ?.value,
+        unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+          ?.units // spectral and continuum beam size will have the same unit so pick either
       },
-        // TODO for surface brightness sensitivity // for sbs check units are the same and convert if not as we use 1 unit field for both
+      // TODO for surface brightness sensitivity // for sbs check units are the same and convert if not as we use 1 unit field for both
       spectral_confusion_noise: {
         value: Number(
           tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value

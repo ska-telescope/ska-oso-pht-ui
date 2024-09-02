@@ -1,4 +1,4 @@
-import { ValueUnitPair } from "./valueUnitPair";
+import { ValueUnitPair } from './valueUnitPair';
 
 export type DataProductSDPsBackend = {
   data_products_sdp_id: string;
