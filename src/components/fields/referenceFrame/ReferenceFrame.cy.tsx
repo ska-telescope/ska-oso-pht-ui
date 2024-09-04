@@ -10,23 +10,21 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const value = 0;
 
 describe('<TitleContent />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}: Renders`, () => {
-        cy.mount(
-          <StoreProvider>
-            <ThemeProvider theme={theme(theTheme)}>
-              <CssBaseline />
-              <ReferenceFrame
-                labelBold={true}
-                labelPosition={LAB_POSITION}
-                setValue={cy.stub().as('setValue')}
-                value={value}
-              />
-            </ThemeProvider>
-          </StoreProvider>
-        );
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      cy.mount(
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <ReferenceFrame
+              labelBold={true}
+              labelPosition={LAB_POSITION}
+              setValue={cy.stub().as('setValue')}
+              value={value}
+            />
+          </ThemeProvider>
+        </StoreProvider>
+      );
+    });
+  }
 });

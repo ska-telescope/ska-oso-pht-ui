@@ -9,18 +9,16 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const value = '';
 
 describe('<SkyDirection2 />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}: Renders`, () => {
-        cy.mount(
-          <StoreProvider>
-            <ThemeProvider theme={theme(theTheme)}>
-              <CssBaseline />
-              <SkyDirection2 setValue={cy.stub().as('setValue')} skyUnits={0} value={value} />
-            </ThemeProvider>
-          </StoreProvider>
-        );
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      cy.mount(
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <SkyDirection2 setValue={cy.stub().as('setValue')} skyUnits={0} value={value} />
+          </ThemeProvider>
+        </StoreProvider>
+      );
+    });
+  }
 });

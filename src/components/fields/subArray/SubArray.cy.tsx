@@ -51,21 +51,18 @@ function mountSized(theTheme: any, band: any) {
 function verifySubArrayConfiguration(inValue: number) {
   cy.get('[data-testid="subArrayConfiguration"]').click();
   cy.get('[data-value="' + inValue + '"]').click();
-  // cy.get('[data-testid="subArrayConfiguration"]').contains('subArrayConfiguration.' + inValue);
 }
 
 describe('<SubArray />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      for (const band of BANDWIDTH_TELESCOPE) {
-        it(`Theme ${theTheme}, Band ${band.value}`, () => {
-          mountBasic(theTheme, band);
-        });
-        it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
-          mountSized(theTheme, band);
-          verifySubArrayConfiguration(1);
-        });
-      }
+  for (const theTheme of THEME) {
+    for (const band of BANDWIDTH_TELESCOPE) {
+      it(`Theme ${theTheme}, Band ${band.value}`, () => {
+        mountBasic(theTheme, band);
+      });
+      it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
+        mountSized(theTheme, band);
+        verifySubArrayConfiguration(1);
+      });
     }
-  });
+  }
 });

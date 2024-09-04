@@ -37,14 +37,12 @@ function mountSized(theTheme: any) {
 }
 
 describe('<SpectralAveraging />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}`, () => {
-        mountBasic(theTheme);
-      });
-      it(`Theme ${theTheme}, suffix`, () => {
-        mountSized(theTheme);
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}`, () => {
+      mountBasic(theTheme);
+    });
+    it(`Theme ${theTheme}, suffix`, () => {
+      mountSized(theTheme);
+    });
+  }
 });

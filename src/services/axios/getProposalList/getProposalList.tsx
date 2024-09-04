@@ -87,7 +87,6 @@ const getPI = (investigators: InvestigatorBackend[]): string => {
 function mappingList(inRec: ProposalBackend[]): Proposal[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
-    console.log('TREVOR inRec', inRec[i].prsl_id, inRec[i].status);
     const rec: Proposal = {
       id: inRec[i].prsl_id?.toString(),
       status: inRec[i].status,

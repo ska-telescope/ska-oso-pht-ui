@@ -38,19 +38,16 @@ function mountSized(theTheme: any) {
 
 function verifySpectralAveragingConfiguration(inValue: number) {
   cy.get('[data-testid="spectralAveraging"]').click();
-  // cy.get('[data-testid="subArrayConfiguration"]').contains('subArrayConfiguration.' + inValue);
 }
 
 describe('<SpectralAveraging />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}`, () => {
-        mountBasic(theTheme);
-      });
-      it(`Theme ${theTheme}, suffix`, () => {
-        mountSized(theTheme);
-        verifySpectralAveragingConfiguration(1);
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}`, () => {
+      mountBasic(theTheme);
+    });
+    it(`Theme ${theTheme}, suffix`, () => {
+      mountSized(theTheme);
+      verifySpectralAveragingConfiguration(1);
+    });
+  }
 });

@@ -43,17 +43,15 @@ function verifyField(inValue: number) {
 }
 
 describe('<NumStations />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      for (const band of BANDWIDTH_TELESCOPE) {
-        it(`Theme ${theTheme}, Band ${band.value}`, () => {
-          mountBasic(theTheme, band);
-        });
-        it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
-          mountSized(theTheme, band);
-          verifyField(1);
-        });
-      }
+  for (const theTheme of THEME) {
+    for (const band of BANDWIDTH_TELESCOPE) {
+      it(`Theme ${theTheme}, Band ${band.value}`, () => {
+        mountBasic(theTheme, band);
+      });
+      it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
+        mountSized(theTheme, band);
+        verifyField(1);
+      });
     }
-  });
+  }
 });

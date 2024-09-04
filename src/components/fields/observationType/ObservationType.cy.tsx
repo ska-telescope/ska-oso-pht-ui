@@ -48,15 +48,13 @@ function verifyObservationTypeConfiguration(inValue: number) {
 }
 
 describe('<ObservationType />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}`, () => {
-        mountBasic(theTheme);
-      });
-      it(`Theme ${theTheme}, suffix`, () => {
-        mountSized(theTheme);
-        verifyObservationTypeConfiguration(1);
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}`, () => {
+      mountBasic(theTheme);
+    });
+    it(`Theme ${theTheme}, suffix`, () => {
+      mountSized(theTheme);
+      verifyObservationTypeConfiguration(1);
+    });
+  }
 });

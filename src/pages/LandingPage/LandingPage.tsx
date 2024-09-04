@@ -68,7 +68,6 @@ export default function LandingPage() {
   }, []);
 
   React.useEffect(() => {
-    console.log('TREVOR getList');
     const fetchData = async () => {
       const response = await GetProposalList();
       if (typeof response === 'string') {
@@ -149,11 +148,9 @@ export default function LandingPage() {
   const deleteConfirmed = async () => {
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !response.error) {
-      console.log('TREVOR OK', response);
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
     } else {
-      console.log('TREVOR ERROR', response);
       setOpenDeleteDialog(false);
     }
   };
