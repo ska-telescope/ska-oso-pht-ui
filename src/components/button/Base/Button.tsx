@@ -1,7 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import {
+  Button,
+  ButtonColorTypes,
+  ButtonSizeTypes,
+  ButtonVariantTypes
+} from '@ska-telescope/ska-gui-components';
 
 interface BaseButtonProps {
   title?: string;
@@ -9,6 +14,7 @@ interface BaseButtonProps {
   disabled?: boolean;
   icon: string | JSX.Element;
   primary?: boolean;
+  size?: ButtonSizeTypes;
   testId?: string;
   toolTip?: string;
 }
@@ -19,6 +25,7 @@ export default function BaseButton({
   title = 'button.add',
   icon,
   primary = false,
+  size = ButtonSizeTypes.Medium,
   testId = 'baseButtonTestId',
   toolTip = ''
 }: BaseButtonProps) {
@@ -41,6 +48,7 @@ export default function BaseButton({
       ariaDescription={`${theTitle} Button`}
       color={primary ? ButtonColorTypes.Secondary : ButtonColorTypes.Inherit}
       disabled={disabled}
+      size={size}
       icon={icon}
       label={theTitle}
       onClick={ClickFunction}

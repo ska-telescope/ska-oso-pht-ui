@@ -141,7 +141,7 @@ export const GENERAL = {
   ]
 };
 
-export const HELP_FONT = 18;
+export const HELP_FONT = 16;
 export const HELP_VIEWPORT = '15vh';
 
 export const IW_BRIGGS = 2;

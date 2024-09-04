@@ -29,6 +29,7 @@ import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
 import { presentDate } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
+import PutProposal from '../../services/axios/putProposal/putProposal';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -52,6 +53,8 @@ export default function LandingPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
+  const [fetchList, setFetchList] = React.useState(false);
+
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -60,25 +63,22 @@ export default function LandingPage() {
   const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight / 100);
 
   React.useEffect(() => {
-    let isMounted = true;
-
     updateAppContent2(null);
+    setFetchList(!fetchList);
+  }, []);
 
+  React.useEffect(() => {
+    console.log('TREVOR getList');
     const fetchData = async () => {
       const response = await GetProposalList();
-      if (isMounted) {
-        if (typeof response === 'string') {
-          setAxiosError(response);
-        } else {
-          setProposals(response);
-        }
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setProposals(response);
       }
     };
     fetchData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [fetchList]);
 
   const getTheProposal = async (id: string) => {
     helpComponent('');
@@ -146,9 +146,16 @@ export default function LandingPage() {
     }
   };
 
-  const deleteConfirmed = () => {
-    // TODO : We need to access a delete endpoint here
-    setOpenDeleteDialog(false);
+  const deleteConfirmed = async () => {
+    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    if (response && !response.error) {
+      console.log('TREVOR OK', response);
+      setOpenDeleteDialog(false);
+      setFetchList(!fetchList);
+    } else {
+      console.log('TREVOR ERROR', response);
+      setOpenDeleteDialog(false);
+    }
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
