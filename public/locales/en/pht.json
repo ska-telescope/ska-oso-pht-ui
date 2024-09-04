@@ -273,7 +273,7 @@
       "upper": 64
     }
   },
-  "numOfStations": {
+  "numStations": {
     "help": "Valid range is 0 - 512 inclusive",
     "label": "Number of Stations",
     "range": {
