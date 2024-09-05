@@ -1,6 +1,5 @@
 import {
   BANDWIDTH_TELESCOPE,
-  DEFAULT_PI,
   GENERAL,
   IMAGE_WEIGHTING,
   OBSERVATION,
@@ -463,8 +462,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : '',
-    submitted_by:
-      status === PROPOSAL_STATUS.SUBMITTED ? `${DEFAULT_PI.firstName} ${DEFAULT_PI.lastName}` : '',
+    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `LOGGED IN USER` : '', // TODO : Need to replaced with the logged in user.
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),

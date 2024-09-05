@@ -44,7 +44,6 @@ function mountSized(theTheme: any) {
 function verifyObservationTypeConfiguration(inValue: number) {
   cy.get('[data-testid="observationType"]').click();
   cy.get('[data-value="' + inValue + '"]').click();
-  // cy.get('[data-testid="subArrayConfiguration"]').contains('subArrayConfiguration.' + inValue);
 }
 
 describe('<ObservationType />', () => {
