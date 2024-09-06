@@ -9,18 +9,16 @@ const THEME = [THEME_DARK, THEME_LIGHT];
 const value = 0;
 
 describe('<TitleContent />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}: Renders`, () => {
-        cy.mount(
-          <StoreProvider>
-            <ThemeProvider theme={theme(theTheme)}>
-              <CssBaseline />
-              <ImageWeighting value={value} />
-            </ThemeProvider>
-          </StoreProvider>
-        );
-      });
-    }
-  });
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      cy.mount(
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <ImageWeighting value={value} />
+          </ThemeProvider>
+        </StoreProvider>
+      );
+    });
+  }
 });

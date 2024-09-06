@@ -20,9 +20,6 @@ import {
   NAV,
   BAND_LOW,
   OBSERVATION,
-  OBSERVATION_TYPE,
-  SPECTRAL_AVERAGING_MAX,
-  SPECTRAL_AVERAGING_MIN,
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
@@ -52,6 +49,11 @@ import GroupObservation from '../../utils/types/groupObservation';
 import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
 import Observation from '../../utils/types/observation';
 import TargetObservation from '../../utils/types/targetObservation';
+import SubArrayField from '../../components/fields/subArray/SubArray';
+import ObservingBandField from '../../components/fields/observingBand/ObservingBand';
+import ObservationTypeField from '../../components/fields/observationType/ObservationType';
+import SpectralAveragingField from '../../components/fields/spectralAveraging/SpectralAveraging';
+import NumStations from '../../components/fields/numStations/NumStations';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -200,6 +202,9 @@ export default function ObservationEntry() {
         setNumOfStations(record.numOfStations);
       }
     }
+    if (isContinuumOnly()) {
+      setObservationType(TYPE_CONTINUUM);
+    }
     setCentralFrequency(calculateFrequency());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
@@ -285,18 +290,51 @@ export default function ObservationEntry() {
     }
   };
 
+  const setSupplied = () => {
+    setSuppliedUnits(
+      isLow() ? SUPPLIED_INTEGRATION_TIME_UNITS_H : SUPPLIED_INTEGRATION_TIME_UNITS_S
+    );
+    setSuppliedValue(isLow() ? SUPPLIED_VALUE_DEFAULT_LOW : SUPPLIED_VALUE_DEFAULT_MID);
+  };
+
+  React.useEffect(() => {
+    const calculateSubarray = () => {
+      if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
+        if (subarrayConfig === OB_SUBARRAY_AA4_15) {
+          setSubarrayConfig(OB_SUBARRAY_AA4);
+        }
+      } else {
+        if (subarrayConfig === OB_SUBARRAY_AA_STAR) {
+          setSubarrayConfig(OB_SUBARRAY_AA_STAR_15);
+        }
+        if (subarrayConfig === OB_SUBARRAY_AA4 || subarrayConfig === OB_SUBARRAY_AA4_13) {
+          setSubarrayConfig(OB_SUBARRAY_AA4_15);
+        }
+      }
+    };
+    calculateSubarray();
+    setCentralFrequency(calculateFrequency());
+    setSpectralResolution(calculateSpectralResolution());
+    calculateContinuumBandwidth();
+    setValidateToggle(!validateToggle);
+    setSupplied();
+  }, [observingBand]);
+
   React.useEffect(() => {
     setCentralFrequency(calculateFrequency());
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
-    isLow()
-      ? setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H)
-      : setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
-    isLow()
-      ? setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW)
-      : setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
-  }, [observingBand, observationType, bandwidth]);
+    setSupplied();
+  }, [observationType]);
+
+  React.useEffect(() => {
+    setCentralFrequency(calculateFrequency());
+    setSpectralResolution(calculateSpectralResolution());
+    calculateContinuumBandwidth();
+    setValidateToggle(!validateToggle);
+    setSupplied();
+  }, [bandwidth]);
 
   React.useEffect(() => {
     setEffectiveResolution(calculateEffectiveResolution());
@@ -304,7 +342,6 @@ export default function ObservationEntry() {
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
-  const isBand5 = () => BANDWIDTH_TELESCOPE[observingBand]?.isBand5;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const calculateSpectralResolution = () => {
@@ -347,14 +384,6 @@ export default function ObservationEntry() {
     subarrayConfig === OB_SUBARRAY_AA1 ||
     (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
 
-  // TODO : We should move this to a utility at some point
-  const options = (prefix: string, arr: number[]) => {
-    let results = [];
-    arr.forEach(element => {
-      results.push({ label: t(prefix + '.' + element), value: element });
-    });
-    return results;
-  };
   const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
 
   const buttonGroupObservationsField = () => {
@@ -438,85 +467,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const subArrayField = (isBand5: boolean) => {
-    const getOptions = () => {
-      if (telescope() > 0) {
-        let subArrayOption = OBSERVATION.array[telescope() - 1]?.subarray;
-        if (isBand5) subArrayOption = subArrayOption.filter(e => !e.disableForBand5);
-        return subArrayOption?.map(e => {
-          return {
-            label: t('subArrayConfiguration.' + e.value),
-            value: e.value
-          };
-        });
-      }
-    };
-    return fieldDropdown(
-      false,
-      'subArrayConfiguration',
-      getOptions(),
-      true,
-      setSubarrayConfig,
-      null,
-      subarrayConfig
-    );
-  };
-
-  const observationTypeField = (continuumOnly: boolean) => {
-    const getOptions = () =>
-      options(
-        'observationType',
-        continuumOnly ? OBSERVATION_TYPE.filter(e => e === TYPE_CONTINUUM) : OBSERVATION_TYPE
-      );
-    return fieldDropdown(
-      false,
-      'observationType',
-      getOptions(),
-      true,
-      setObservationType,
-      null,
-      observationType
-    );
-  };
-
-  const observingBandField = () => {
-    // NOTE: Not all configurations are available, and it is pre-setting to stop console warning.
-    const calculateSubarray = (inValue: number) => {
-      if (inValue !== BAND_5A && inValue !== BAND_5B) {
-        if (subarrayConfig === OB_SUBARRAY_AA4_15) {
-          setSubarrayConfig(OB_SUBARRAY_AA4);
-        }
-      } else {
-        if (subarrayConfig === OB_SUBARRAY_AA_STAR) {
-          setSubarrayConfig(OB_SUBARRAY_AA_STAR_15);
-        }
-        if (subarrayConfig === OB_SUBARRAY_AA4 || subarrayConfig === OB_SUBARRAY_AA4_13) {
-          setSubarrayConfig(OB_SUBARRAY_AA4_15);
-        }
-      }
-    };
-
-    const setFunction = (e: number) => {
-      calculateSubarray(e);
-      setObservingBand(e);
-    };
-    const getOptions = () => {
-      return BANDWIDTH_TELESCOPE
-        ? BANDWIDTH_TELESCOPE
-        : [{ label: 'Not applicable', telescope: 2, value: 0 }];
-    };
-    const disabled = !getOptions() || getOptions()?.length < 2;
-    return fieldDropdown(
-      disabled,
-      'observingBand',
-      getOptions(),
-      true,
-      setFunction,
-      null,
-      observingBand
-    );
-  };
-
   const taperingField = () => {
     const frequencyInGHz = () => {
       return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
@@ -594,28 +544,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const spectralAveragingField = () => {
-    const errorMessage = () =>
-      spectralAveraging < SPECTRAL_AVERAGING_MIN || spectralAveraging > SPECTRAL_AVERAGING_MAX
-        ? t('spectralAveraging.range.error')
-        : '';
-
-    return (
-      <NumberEntry
-        testId="spectralAveraging"
-        value={String(spectralAveraging)}
-        setValue={setSpectralAveraging}
-        label={t('spectralAveraging.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        onFocus={() => helpComponent(t('spectralAveraging.help'))}
-        required
-        errorText={errorMessage()}
-      />
-    );
-  };
-
   const fieldDropdown = (
     disabled: boolean,
     field: string,
@@ -646,20 +574,6 @@ export default function ObservationEntry() {
           {suffix}
         </Grid>
       </Grid>
-    );
-  };
-
-  const spectralAveragingDropdown = () => {
-    const getOptions = () => OBSERVATION.SpectralAveraging;
-
-    return fieldDropdown(
-      false,
-      'spectralAveraging',
-      getOptions(),
-      true,
-      setSpectralAveraging,
-      null,
-      spectralAveraging
     );
   };
 
@@ -996,32 +910,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const NumOfStationsField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (
-        num >= Number(t('numOfStations.range.lower')) &&
-        num <= Number(t('numOfStations.range.upper'))
-      ) {
-        setNumOfStations(num);
-      }
-    };
-
-    return (
-      <NumberEntry
-        disabled={subarrayConfig !== 20}
-        label={t('numOfStations.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_SELECT}
-        testId="numOfStations"
-        value={numOfStations}
-        setValue={validate}
-        onFocus={() => helpComponent(t('numOfStations.help'))}
-      />
-    );
-  };
-
   const addButtonDisabled = () => {
     // TODO : We need to ensure we are able to progress.
     return false;
@@ -1167,14 +1055,28 @@ export default function ObservationEntry() {
               </Grid>
               <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
-                {observingBandField()}
+                <ObservingBandField required value={observingBand} setValue={setObservingBand} />
               </Grid>
               <Grid item xs={XS_TOP}></Grid>
               <Grid item xs={XS_TOP}>
-                {subArrayField(isBand5())}
+                <SubArrayField
+                  observingBand={observingBand}
+                  required
+                  telescope={telescope()}
+                  value={subarrayConfig}
+                  setValue={setSubarrayConfig}
+                />
               </Grid>
               <Grid item xs={XS_TOP}>
-                {isLow() ? NumOfStationsField() : AntennasFields()}
+                {isLow() ? (
+                  <NumStations
+                    disabled={subarrayConfig !== 20}
+                    setValue={setNumOfStations}
+                    value={numOfStations}
+                  />
+                ) : (
+                  AntennasFields()
+                )}
               </Grid>
               <Grid item xs={XS_TOP}>
                 {elevationField()}
@@ -1193,7 +1095,13 @@ export default function ObservationEntry() {
                   justifyContent="space-evenly"
                 >
                   <Grid item xs={XS_BOTTOM}>
-                    {observationTypeField(isContinuumOnly())}
+                    <ObservationTypeField
+                      disabled={isContinuumOnly()}
+                      isContinuumOnly={isContinuumOnly()}
+                      required
+                      value={observationType}
+                      setValue={setObservationType}
+                    />
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {suppliedField()}
@@ -1208,7 +1116,11 @@ export default function ObservationEntry() {
                     {spectralResolutionField()}
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
-                    {isLow() ? spectralAveragingField() : spectralAveragingDropdown()}
+                    <SpectralAveragingField
+                      isLow={isLow()}
+                      value={spectralAveraging}
+                      setValue={setSpectralAveraging}
+                    />
                   </Grid>
                   <Grid item xs={XS_BOTTOM}>
                     {effectiveResolutionField()}

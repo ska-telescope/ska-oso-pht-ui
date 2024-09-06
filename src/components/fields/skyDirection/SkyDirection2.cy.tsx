@@ -8,19 +8,17 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 const THEME = [THEME_DARK, THEME_LIGHT];
 const value = '';
 
-describe('<TitleContent />', () => {
-  describe('Theme', () => {
-    for (const theTheme of THEME) {
-      it(`Theme ${theTheme}: Renders`, () => {
-        cy.mount(
-          <StoreProvider>
-            <ThemeProvider theme={theme(theTheme)}>
-              <CssBaseline />
-              <SkyDirection2 setValue={cy.stub().as('setValue')} skyUnits={0} value={value} />
-            </ThemeProvider>
-          </StoreProvider>
-        );
-      });
-    }
-  });
+describe('<SkyDirection2 />', () => {
+  for (const theTheme of THEME) {
+    it(`Theme ${theTheme}: Renders`, () => {
+      cy.mount(
+        <StoreProvider>
+          <ThemeProvider theme={theme(theTheme)}>
+            <CssBaseline />
+            <SkyDirection2 setValue={cy.stub().as('setValue')} skyUnits={0} value={value} />
+          </ThemeProvider>
+        </StoreProvider>
+      );
+    });
+  }
 });

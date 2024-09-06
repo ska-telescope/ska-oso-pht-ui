@@ -2,13 +2,14 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
 import { NOT_SPECIFIED } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import Alert from '../../alerts/standardAlert/StandardAlert';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GridMembers from '../../grid/members/GridMembers';
@@ -310,9 +311,11 @@ export default function ProposalDisplay({
       }}
     >
       {proposal === null && (
-        <Alert testId="timedAlertId" color={AlertColorTypes.Warning}>
-          <Typography>{t('displayProposal.warning')}</Typography>
-        </Alert>
+        <Alert
+          color={AlertColorTypes.Warning}
+          text={t('displayProposal.warning')}
+          testId="helpPanelId"
+        />
       )}
       {proposal !== null && (
         <DialogContent>

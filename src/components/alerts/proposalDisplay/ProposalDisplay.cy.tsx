@@ -34,7 +34,7 @@ function mounting(theTheme, proposal) {
 }
 
 function verifyErrorPanel() {
-  cy.get('[data-testId="timedAlertId"]').contains('displayProposal.warning');
+  cy.get('[data-testId="helpPanelId"]').contains('displayProposal.warning');
 }
 
 function verifyContent() {

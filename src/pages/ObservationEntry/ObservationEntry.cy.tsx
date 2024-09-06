@@ -277,8 +277,8 @@ function verifyNumOfStations() {
   verifyObservingBand(0);
   cy.get('[data-testid="subArrayConfiguration"]').click();
   cy.get('[data-value="20"]').click();
-  cy.get('[data-testid="numOfStations"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('numOfStations.help');
+  cy.get('[data-testid="numStations"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains('numStations.help');
 }
 
 function verifyGroupObservations() {

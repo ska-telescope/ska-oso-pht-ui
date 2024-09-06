@@ -4,11 +4,8 @@ import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
-import { subArrayOptions } from '../../../utils/observationOptions';
 
-interface SubArrayFieldProps {
-  observingBand: number;
-  telescope: number;
+interface ObservingBandFieldProps {
   disabled?: boolean;
   required?: boolean;
   setValue?: Function;
@@ -18,9 +15,7 @@ interface SubArrayFieldProps {
   widthLabel?: number;
 }
 
-export default function SubArrayField({
-  observingBand,
-  telescope,
+export default function ObservingBandField({
   disabled = false,
   required = false,
   setValue,
@@ -28,20 +23,15 @@ export default function SubArrayField({
   value,
   widthButton = 2,
   widthLabel = 6
-}: SubArrayFieldProps) {
+}: ObservingBandFieldProps) {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
-  const FIELD = 'subArrayConfiguration';
+  const FIELD = 'observingBand';
 
   const getOptions = () => {
-    if (telescope > 0) {
-      return subArrayOptions(BANDWIDTH_TELESCOPE[observingBand])?.map(e => {
-        return {
-          label: t('subArrayConfiguration.' + e.value),
-          value: e.value
-        };
-      });
-    }
+    return BANDWIDTH_TELESCOPE
+      ? BANDWIDTH_TELESCOPE
+      : [{ label: 'Not applicable', telescope: 2, value: 0 }];
   };
 
   return (

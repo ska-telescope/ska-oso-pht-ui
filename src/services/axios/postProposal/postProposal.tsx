@@ -2,7 +2,6 @@ import axios from 'axios';
 import { helpers } from '../../../utils/helpers';
 import {
   AXIOS_CONFIG,
-  DEFAULT_PI,
   GENERAL,
   PROJECTS,
   SKA_PHT_API_URL,
@@ -27,7 +26,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     status: status,
     submitted_on: '',
     submitted_by: '',
-    investigator_refs: [DEFAULT_PI.id],
+    investigator_refs: [],
     cycle: GENERAL.Cycle,
     info: {
       title: proposal.title,
@@ -41,17 +40,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
       science_category: '',
       targets: [],
       documents: [],
-      investigators: [
-        {
-          investigator_id: DEFAULT_PI.id,
-          given_name: DEFAULT_PI.firstName,
-          family_name: DEFAULT_PI.lastName,
-          email: DEFAULT_PI.email,
-          organization: DEFAULT_PI.affiliation,
-          for_phd: DEFAULT_PI.phdThesis,
-          principal_investigator: DEFAULT_PI.pi
-        }
-      ],
+      investigators: [],
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],

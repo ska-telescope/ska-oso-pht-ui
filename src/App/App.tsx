@@ -9,7 +9,9 @@ import {
   Footer,
   Header,
   Spacer,
-  SPACER_VERTICAL
+  SPACER_VERTICAL,
+  THEME_DARK,
+  THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Alert from '../components/alerts/standardAlert/StandardAlert';
@@ -24,14 +26,10 @@ const FOOTER_HEIGHT = 20;
 
 function App() {
   const { t } = useTranslation('pht');
-  const {
-    help,
-    helpToggle,
-    telescope,
-    themeMode,
-    toggleTheme,
-    updateTelescope
-  } = storageObject.useStore();
+  const { help, helpToggle } = storageObject.useStore();
+  const [theMode, setTheMode] = React.useState(
+    localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
+  );
   const [showCopyright, setShowCopyright] = React.useState(false);
   const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
 
@@ -46,13 +44,19 @@ function App() {
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+
+  const modeToggle = () => {
+    const newMode = theMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+    localStorage.setItem('skao_theme_mode', newMode);
+    setTheMode(newMode);
+  };
   const theStorage = {
     help: help,
     helpToggle: helpToggle,
-    telescope: telescope,
-    themeMode: themeMode.mode,
-    toggleTheme: toggleTheme,
-    updateTelescope: updateTelescope
+    telescope: null,
+    themeMode: theMode,
+    toggleTheme: modeToggle,
+    updateTelescope: null
   };
 
   const { application } = storageObject.useStore();
@@ -69,7 +73,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme(themeMode.mode)}>
+    <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
       <React.Suspense fallback={<Loader />}>
         <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />

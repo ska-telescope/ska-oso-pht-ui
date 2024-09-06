@@ -6,31 +6,62 @@ import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import PageFooter from './PageFooter';
+import { LAST_PAGE } from '../../../utils/constants';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
-const PAGE_NO = 5;
+const PAGES = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+
+function viewport() {
+  cy.viewport(2000, 1000);
+}
+
+function mount(theTheme: any, pageNo: number) {
+  viewport();
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme(theTheme)}>
+        <CssBaseline />
+        <Router location="/" navigator={undefined}>
+          <PageFooter pageNo={pageNo} />
+        </Router>
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
 
 export function verifyFooter(pageNo: number) {
-  const prevLabel = 'page.' + (pageNo - 1) + '.title';
-  const nextLabel = 'page.' + (pageNo + 1) + '.title';
-  cy.get('[data-testId="prevButtonTestId"]').contains(prevLabel);
-  cy.get('[data-testId="nextButtonTestId"]').contains(nextLabel);
+  if (true && pageNo > 0) {
+    cy.get('[data-testId="prevButtonTestId"]').contains('page.' + (pageNo - 1) + '.title');
+  }
+  if (pageNo < LAST_PAGE - 1) {
+    cy.get('[data-testId="nextButtonTestId"]').contains('page.' + (pageNo + 1) + '.title');
+  }
+}
+
+export function verifyFooterNegative(pageNo: number) {
+  if (pageNo === -1) {
+    cy.get('[data-testId="nextButtonTestId"]').contains('button.create');
+  }
+  if (pageNo === -2) {
+    cy.get('[data-testId="nextButtonTestId"]').contains('button.add');
+  }
 }
 
 describe('<PageFooter />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      cy.mount(
-        <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <Router location="/" navigator={undefined}>
-              <PageFooter pageNo={PAGE_NO} />
-            </Router>
-          </ThemeProvider>
-        </StoreProvider>
-      );
-      verifyFooter(PAGE_NO);
+    for (const page of PAGES) {
+      it(`Theme ${theTheme}, Page ${page}`, () => {
+        mount(theTheme, page);
+        verifyFooter(page);
+      });
+    }
+    it(`Theme ${theTheme}, Page ${-1}`, () => {
+      mount(theTheme, -1);
+      verifyFooterNegative(-1);
+    });
+    it(`Theme ${theTheme}, Page ${-2}`, () => {
+      mount(theTheme, -2);
+      verifyFooterNegative(-2);
     });
   }
 });
