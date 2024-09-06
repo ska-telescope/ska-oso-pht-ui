@@ -1,11 +1,6 @@
 import axios from 'axios';
 import { helpers } from '../../../utils/helpers';
-import {
-  AXIOS_CONFIG,
-  PROJECTS,
-  SKA_PHT_API_URL,
-  USE_LOCAL_DATA
-} from '../../../utils/constants';
+import { AXIOS_CONFIG, PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
