@@ -143,12 +143,12 @@ export default function GeneralPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item xs={8}>
+        <Grid item md={12} lg={8}>
           {cycleField()}
           {abstractField()}
           {categoryField()}
         </Grid>
-        <Grid item xs={3}>
+        <Grid item md={12} lg={3}>
           <HelpPanel />
         </Grid>
       </Grid>

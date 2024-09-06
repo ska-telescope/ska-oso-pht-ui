@@ -84,6 +84,7 @@ function App() {
           toolTip={toolTip}
           selectTelescope={false}
           storage={theStorage}
+          useSymbol={LG()}
         />
         <>
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />

@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
+import useTheme from '@mui/material/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -30,6 +32,7 @@ import { validateProposal } from '../../utils/proposalValidation';
 import { presentDate } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
+import Latex from 'react-latex-next';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -43,6 +46,8 @@ export default function LandingPage() {
     updateAppContent2,
     updateAppContent3
   } = storageObject.useStore();
+
+  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -170,76 +175,79 @@ export default function LandingPage() {
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
-  const COLUMNS = [
-    { field: 'id', headerName: t('id.label') },
-    {
-      field: 'proposalType',
-      headerName: t('proposalType.label'),
-      flex: 1.5,
-      renderCell: (e: { row: any }) =>
-        element(
-          e.row.proposalType > 0
-            ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
-            : NOT_SPECIFIED
-        )
-    },
-    { field: 'cycle', headerName: t('cycle.label'), flex: 1 },
-    {
-      field: 'title',
-      headerName: t('title.label'),
-      flex: 2.5,
-      renderCell: (e: any) => element(e.row.title?.length ? e.row.title : NOT_SPECIFIED)
-    },
-    {
-      field: 'pi',
-      headerName: t('pi.short'),
-      flex: 2.5,
-      renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
-    },
-    {
-      field: 'status',
-      headerName: t('status.label'),
-      minWidth: 120,
-      maxWidth: 120,
-      renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-    },
-    {
-      field: 'lastUpdated',
-      headerName: t('updated.label'),
-      minWidth: 120,
-      maxWidth: 120,
-      renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
-    },
-    {
-      field: 'cpi',
-      headerName: ' ',
-      sortable: false,
-      minWidth: 200,
-      maxWidth: 200,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: any }) => (
-        <>
-          <EditIcon
-            onClick={() => editIconClicked(e.row.id)}
-            disabled={!canEdit(e)}
-            toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-          />
-          <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
-          <CloneIcon
-            onClick={() => cloneIconClicked(e.row.id)}
-            disabled={!canClone()}
-            toolTip={t('cloneProposal.toolTip')}
-          />
-          <TrashIcon
-            onClick={() => deleteIconClicked(e.row.id)}
-            disabled={!canDelete(e)}
-            toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-          />
-        </>
+  const colId = { field: 'id', headerName: t('id.label') };
+  const colType = {
+    field: 'proposalType',
+    headerName: t('proposalType.label'),
+    flex: 1.5,
+    renderCell: (e: { row: any }) =>
+      element(
+        e.row.proposalType > 0
+          ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
+          : NOT_SPECIFIED
       )
-    }
+  };
+  const colCycle = { field: 'cycle', headerName: t('cycle.label'), flex: 1 };
+  const colTitle = {
+    field: 'title',
+    headerName: t('title.label'),
+    flex: 2.5,
+    renderCell: (e: any) => <Latex>{e.row.title}</Latex>
+  };
+  const colPI = {
+    field: 'pi',
+    flex: 2.5,
+    renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
+  };
+
+  const colStatus = {
+    field: 'status',
+    headerName: t('status.label'),
+    minWidth: 120,
+    maxWidth: 120,
+    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+  };
+
+  const colUpdated = {
+    field: 'lastUpdated',
+    headerName: t('updated.label'),
+    minWidth: 120,
+    maxWidth: 120,
+    renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
+  };
+
+  const colActions = {
+    field: 'actions',
+    type: 'actions',
+    sortable: false,
+    minWidth: 200,
+    maxWidth: 200,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: any }) => (
+      <>
+        <EditIcon
+          onClick={() => editIconClicked(e.row.id)}
+          disabled={!canEdit(e)}
+          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+        />
+        <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
+        <CloneIcon
+          onClick={() => cloneIconClicked(e.row.id)}
+          disabled={!canClone()}
+          toolTip={t('cloneProposal.toolTip')}
+        />
+        <TrashIcon
+          onClick={() => deleteIconClicked(e.row.id)}
+          disabled={!canDelete(e)}
+          toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
+        />
+      </>
+    )
+  };
+
+  const stdColumns = [
+    ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
   ];
-  const extendedColumns = [...COLUMNS];
 
   function filterProposals() {
     return proposals.filter(
@@ -267,7 +275,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title="addProposal.label"
+      title={LG() ? 'addProposal.short' : 'addProposal.label'}
       toolTip="addProposal.toolTip"
     />
   );
@@ -348,12 +356,14 @@ export default function LandingPage() {
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
         )}
         {!axiosViewError && filteredData.length > 0 && (
-          <DataGrid
-            testId="dataGridId"
-            rows={filteredData}
-            columns={extendedColumns}
-            height={gridHeight()}
-          />
+          <div style={{ width: '100%' }}>
+            <DataGrid
+              testId="dataGridId"
+              rows={filteredData}
+              columns={stdColumns}
+              height={gridHeight()}
+            />
+          </div>
         )}
       </Grid>
     </Grid>

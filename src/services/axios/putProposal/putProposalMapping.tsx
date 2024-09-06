@@ -32,6 +32,10 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
 import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 
+const isContinuum = (type: number) => type === TYPE_CONTINUUM;
+const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
+const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
+
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
@@ -50,23 +54,23 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
     const outTarget: TargetBackend = {
       target_id: tar.name,
       reference_coordinate: {
-        kind: REF_COORDINATES_UNITS[0]?.label, // hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+        kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
         ra: tar.ra,
         dec: tar.dec,
-        unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // hardcoded as not fully implemented in UI (not added to proposal)
-        reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // hardcoded for now as not implemented in UI
+        unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
+        reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // TODO : hardcoded for now as not implemented in UI
       },
       radial_velocity: {
         quantity: {
-          value: tar.velType === VELOCITY_TYPE.VELOCITY ? Number(tar.vel) : 0, // if reference frame is velocity use velocity value, otherwise set to 0
+          value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
           unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
         },
-        definition: 'RADIO', // hardcoded for now as not implemented in UI
+        definition: 'RADIO', // TODO : hardcoded for now as not implemented in UI
         reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
-        // hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC
+        // TODO : hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC
         // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame
         // -> using raReferenceFrame for now as data format is different
-        redshift: tar.velType === VELOCITY_TYPE.REDSHIFT ? Number(tar.redshift) : 0 // if reference frame is redshift use redshift, otherwise set to 0
+        redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
       }
     };
     /********************* pointing pattern *********************/
@@ -82,7 +86,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         ]
       }
     };
-    // As pointingPattern is not currently used in the UI, mock it if it doesn't exist
+    // TODO : As pointingPattern is not currently used in the UI, mock it if it doesn't exist
     const usedSingleParam = tar.pointingPattern
       ? tar.pointingPattern
       : mockPointingPattern.pointing_pattern;
@@ -101,7 +105,6 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         }
       ]
     };
-    /***********************************************************/
     outTargets.push(outTarget);
   }
   return outTargets;
@@ -160,7 +163,7 @@ const getSubArray = (incSubArray: number, incTelescope: number): string => {
   const subArray = array?.subarray
     ?.find(sub => sub.value === incSubArray)
     ?.label?.toLocaleLowerCase();
-  return subArray ? subArray : 'aa4'; // fallback
+  return subArray ? subArray : 'aa4'; // TODO : fallback needs to be moved to a constant
 };
 
 const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDetailsMidBackend => {
@@ -194,25 +197,24 @@ const getFrequencyAndBandwidthUnits = (incTelescope: number, incUnitValue: numbe
   return unit;
 };
 
-const getBandwidth = (incObs: Observation): ValueUnitPair => {
-  if (incObs.type === TYPE_CONTINUUM) {
-    // continuum
-    return {
-      value: incObs.continuumBandwidth,
-      unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.continuumBandwidthUnits)
-    };
-  } else {
-    // zoom
-    const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
-    const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
-    const valueUnit = bandwidth?.label.split(' ');
-    const value = Number(valueUnit[0]);
-    return {
-      value: value,
-      unit: bandwidth.mapping ? bandwidth.mapping : '' // fallback
-    };
-  }
+const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
+  return {
+    value: incObs.continuumBandwidth,
+    unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.continuumBandwidthUnits)
+  };
 };
+const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
+  const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
+  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
+  const valueUnit = bandwidth?.label.split(' ');
+  const value = Number(valueUnit[0]);
+  return {
+    value: value,
+    unit: bandwidth.mapping ? bandwidth.mapping : ''
+  };
+};
+const getBandwidth = (ob: Observation): ValueUnitPair =>
+  isContinuum(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
 
 const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
   return {
@@ -227,7 +229,7 @@ const getSupplied = (inObs: Observation) => {
     type: supplied?.mappingLabel,
     quantity: {
       value: inObs.supplied?.value,
-      unit: 'm/s' // supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
+      unit: 'm/s' // TODO : supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
       // hardcoded for now as backend rejects supplied units such as 'jy/beam'
       // TODO put back commented mapping to units once PDM updated
     }
@@ -253,7 +255,6 @@ const getObservationsSets = (
         supplied: getSupplied(obs),
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        // image_weighting: obs.imageWeighting?.toString()
         image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
       }
     };
@@ -267,13 +268,13 @@ const getObservationsSets = (
 
 interface SuppliedRelatedFields {
   supplied_type: string;
-  // sensitivity fields
+  /* sensitivity fields */
   weighted_continuum_sensitivity?: ValueUnitPair;
   weighted_spectral_sensitivity?: ValueUnitPair;
   total_continuum_sensitivity?: ValueUnitPair;
   total_spectral_sensitivity?: ValueUnitPair;
   surface_brightness_sensitivity?: { continuum: number; spectral: number; unit: string };
-  // integration_time fields
+  /* integration_time fields */
   continuum?: ValueUnitPair;
   spectral?: ValueUnitPair;
 }
@@ -287,31 +288,25 @@ const getSuppliedFieldsSensitivity = (
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
-  if (obsType === TYPE_CONTINUUM) {
-    params.weighted_continuum_sensitivity = {
-      value: Number(
-        tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
-      ),
-      unit: tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.units
-    };
-    params.total_continuum_sensitivity = {
-      value: Number(
-        tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
-      ),
-      unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
-    };
-  } else {
-    // TODO remove once PDM is updated to have continuum as optional
-    // (continuum params are shown as optional in PDM, however results are rejected if not added)
-    params.weighted_continuum_sensitivity = {
-      value: 0,
-      unit: 'uJy/beam'
-    };
-    params.total_continuum_sensitivity = {
-      value: 0,
-      unit: 'uJy/beam'
-    };
-  }
+  params.weighted_continuum_sensitivity = {
+    value: isContinuum(obsType)
+      ? Number(
+          tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
+        )
+      : 0,
+    unit: isContinuum(obsType)
+      ? tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.units
+      : ''
+  };
+  params.total_continuum_sensitivity = {
+    value: isContinuum(obsType)
+      ? Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value)
+      : 0,
+    unit: isContinuum(obsType)
+      ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
+      : ''
+  };
+
   params.weighted_spectral_sensitivity = {
     value: Number(
       tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')?.value
@@ -326,13 +321,12 @@ const getSuppliedFieldsSensitivity = (
     unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.units
   };
   params.surface_brightness_sensitivity = {
-    continuum:
-      obsType === TYPE_CONTINUUM
-        ? Number(
-            tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
-              ?.value
-          )
-        : 0, // null, // TODO remove dummy value and put back to null once PDM is updated to have continuum as optional
+    continuum: isContinuum(obsType)
+      ? Number(
+          tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
+            ?.value
+        )
+      : 0,
     spectral: Number(
       tarObs.sensCalc[spectralSection]?.find(
         o => o.field === 'spectralSurfaceBrightnessSensitivity'
@@ -353,24 +347,16 @@ const getSuppliedFieldsIntegrationTime = (
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
-  if (obsType === TYPE_CONTINUUM) {
-    params.continuum = {
-      value: Number(tarObs.sensCalc.section3[0]?.value),
-      unit: tarObs.sensCalc.section3[0]?.units
-    };
-  } else {
-    // TODO remove once PDM is updated to have continuum as optional
-    // (continuum param is shown as optional in PDM, however results are rejected if not added)
-    params.continuum = {
-      value: 0,
-      unit: 'uJy/beam'
-    };
-  }
+  params.continuum = {
+    value: isContinuum(obsType) ? Number(tarObs.sensCalc.section3[0]?.value) : 0,
+    unit: isContinuum(obsType) ? tarObs.sensCalc.section3[0]?.units : ''
+  };
+
   params.spectral = {
     value: Number(tarObs.sensCalc.section3[0]?.value),
     unit: tarObs.sensCalc.section3[0]?.units
   };
-  // TODO check if it's ok to send the same value for continuum and zoom? Is this not implmented in the UI?
+  // TODO : check if it's ok to send the same value for continuum and zoom? Is this not implmented in the UI?
   return params;
 };
 /***********************************************************/
@@ -380,17 +366,13 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
   return obs.type;
 };
 
-const getSpectralSection = (obsType: number) => {
-  // - for continuum observations, section1 contains continuum results & section2 spectral results
-  // - for zoom (spectral) observations, section1 contains spectral results & section2 is empty
-  return obsType === TYPE_CONTINUUM ? 'section2' : 'section1';
-};
+const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
 const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
   const beamSize = incSensCalcResultsSpectralSection?.find(o => o.field === 'spectralSynthBeamSize')
     ?.value;
   const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
-  return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // fallback
+  return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // TODO : fallback
   // As PDM only accepts a number, we only save the 1st part of the beam size for now
   // TODO send the whole beam size as a string once PDM updated to accept a string
 };
@@ -398,7 +380,6 @@ const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSecti
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
   for (let tarObs of incTargetObservations) {
-    // if there is a sens calc error, we don't save the results
     if (tarObs.sensCalc?.error) {
       break;
     }
@@ -421,23 +402,18 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
         supplied_type: suppliedType,
         ...suppliedRelatedFields
       },
-      continuum_confusion_noise:
-        obsType === TYPE_CONTINUUM
-          ? {
-              value: Number(
-                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-              ),
-              unit: tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')
-                ?.units
-            }
-          : // null,
-            // // TODO remove once PDM is updated to have continuum as optional
-            {
-              value: 0,
-              unit: 'uJy/beam'
-            },
+      continuum_confusion_noise: {
+        value: isContinuum(obsType)
+          ? Number(
+              tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+            )
+          : 0,
+        unit: isContinuum(obsType)
+          ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
+          : ''
+      },
       synthesized_beam_size: {
-        value: getBeamSizeFirstSection(tarObs.sensCalc[spectralSection]), // Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+        value: getBeamSizeFirstSection(tarObs.sensCalc[spectralSection]), // TODO : Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
         // TODO use commented synthBeamSize value once backends accepts the format
@@ -500,7 +476,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       results: getResults(proposal.targetObservation, proposal.observations)
     }
   };
-  // trim undefined properties
   helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }

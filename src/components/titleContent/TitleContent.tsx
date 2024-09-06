@@ -130,7 +130,7 @@ export default function TitleContent({ page }: TitleContentProps) {
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item md={3}>
+      <Grid key={id} item md={4} lg={3}>
         <Tooltip title={t('proposalType.desc.' + id)} arrow>
           <Card
             style={{

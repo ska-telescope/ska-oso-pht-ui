@@ -83,7 +83,7 @@ const getScienceCategory = (scienceCat: string) => {
 };
 
 const getPI = (investigators: InvestigatorBackend[]) => {
-  return investigators?.find(item => item.principal_investigator === true).investigator_id;
+  return investigators?.find(item => item.principal_investigator === true)?.investigator_id;
 };
 
 const extractFileFromURL = (url): Promise<File> => {
