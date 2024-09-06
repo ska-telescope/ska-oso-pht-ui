@@ -31,6 +31,7 @@ import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arra
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
 import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -442,7 +443,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
-    cycle: GENERAL.Cycle,
+    cycle: fetchCycleData().id,
     info: {
       title: proposal.title,
       proposal_type: {

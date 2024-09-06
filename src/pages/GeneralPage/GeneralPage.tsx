@@ -11,6 +11,7 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateGeneralPage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
+import { fetchCycleData } from '../../utils/storage/cycleData';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -67,7 +68,7 @@ export default function GeneralPage() {
         </Typography>
       </Grid>
       <Grid item xs={8}>
-        <Typography variant="subtitle1">{GENERAL.Cycle}</Typography>
+        <Typography variant="subtitle1">{fetchCycleData().id}</Typography>
       </Grid>
     </Grid>
   );

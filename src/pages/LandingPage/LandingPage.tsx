@@ -11,6 +11,7 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
+import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
@@ -33,6 +34,7 @@ import { presentDate } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import Latex from 'react-latex-next';
+import { storeCycleData } from '../../utils/storage/cycleData';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -58,6 +60,7 @@ export default function LandingPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
+  const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -70,6 +73,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     updateAppContent2(null);
     setFetchList(!fetchList);
+    setCycleData(!cycleData);
   }, []);
 
   React.useEffect(() => {
@@ -83,6 +87,18 @@ export default function LandingPage() {
     };
     fetchData();
   }, [fetchList]);
+
+  React.useEffect(() => {
+    const cycleData = async () => {
+      const response = await GetCycleData();
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        storeCycleData(response);
+      }
+    };
+    cycleData();
+  }, [cycleData]);
 
   const getTheProposal = async (id: string) => {
     helpComponent('');

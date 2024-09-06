@@ -2,12 +2,12 @@ import axios from 'axios';
 import { helpers } from '../../../utils/helpers';
 import {
   AXIOS_CONFIG,
-  GENERAL,
   PROJECTS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
@@ -27,7 +27,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     submitted_on: '',
     submitted_by: '',
     investigator_refs: [],
-    cycle: GENERAL.Cycle,
+    cycle: fetchCycleData().id,
     info: {
       title: proposal.title,
       proposal_type: {

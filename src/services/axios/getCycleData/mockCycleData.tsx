@@ -4,10 +4,7 @@ import { CycleData } from '../../../utils/types/cycleData';
 
 const MockCycleData: CycleData[] = [
   {
-    id: 'prp-ska01-202204-02'
-  },
-  {
-    id: 'prp-ska01-202204-01'
+    id: 'SKA_1962_2024'
   }
 ];
 
