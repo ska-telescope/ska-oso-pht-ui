@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Future
 
+* Sensitivity Calculations
+   - Updated mappings
+   - Updated display variations
+
 ---
 
 0.4.1 
