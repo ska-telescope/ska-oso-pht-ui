@@ -57,9 +57,7 @@ export default function AddDataProduct() {
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
-    //TODO: Double check no adverse affects with save
-    let i = 0;
-    setBaseObservations([...results?.map(e => ({ label: e.id, value: i++ }))]);
+    setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
   }, []);
 
   React.useEffect(() => {
