@@ -7,7 +7,7 @@ import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, USE_LOCAL_DATA } from '../../../utils/constants';
+import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import { mailto } from '../../../services/mailto/mailto';
@@ -161,7 +161,8 @@ export default function MemberInvite() {
         email,
         t('email.invitation.subject'),
         t('email.invitation.body', { id: getProposal().id })
-      );    }
+      );
+    }
     AddTeamMember();
     clearForm();
   };

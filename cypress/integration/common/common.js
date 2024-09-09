@@ -58,7 +58,6 @@ export const createStandardProposal = () => {
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
-
 };
 
 export const clickHome = () => {
@@ -114,7 +113,7 @@ export const clickToNextPage = () => {
 };
 
 export const clickAddDataProduct = () => {
-  cy.get('[data-testid="addDataProductButton"]', { timeout: 80000 }).should('be.enabled', );
+  cy.get('[data-testid="addDataProductButton"]', { timeout: 80000 }).should('be.enabled');
   cy.get('[data-testid="addDataProductButton"]').click();
 };
 
@@ -123,7 +122,7 @@ export const addObservatoryDataProduct = () => {
   cy.get('[id="observations"]').click();
   cy.get('[data-value="0"]').click();
   cy.get('[data-testid="observatoryDataProduct1"]').click();
-  cy.get('[id="imageSize"]').type("1");
+  cy.get('[id="imageSize"]').type('1');
 };
 
 export const addAbstract = () => {

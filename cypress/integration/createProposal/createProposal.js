@@ -7,7 +7,8 @@ import {
   enterProposalTitle,
   verifyOnLandingPage,
   verifyFirstProposalOnLandingPageIsVisible,
-  verifyOnLandingPageFilterIsVisible, verifyProposalCreatedAlertFooter
+  verifyOnLandingPageFilterIsVisible,
+  verifyProposalCreatedAlertFooter
 } from '../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
