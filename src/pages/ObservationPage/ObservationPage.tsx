@@ -21,7 +21,8 @@ import {
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
-  STATUS_PARTIAL
+  STATUS_PARTIAL,
+  SUPPLIED_TYPE_INTEGRATION
 } from '../../utils/constants';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
@@ -62,6 +63,9 @@ export default function ObservationPage() {
     }
     updateAppContent1(temp);
   };
+
+  const isIntegrationTime = (ob: { suppliedType: number }) =>
+    ob?.suppliedType === SUPPLIED_TYPE_INTEGRATION;
 
   const getLevel = (obs: Observation) => {
     let result = STATUS_INITIAL;
@@ -343,7 +347,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
-        headerName: t('actions.label'),
+        type: 'actions',
         sortable: false,
         flex: 1,
         disableClickEventBubbling: true,
@@ -389,24 +393,60 @@ export default function ObservationPage() {
       { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
       { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
       {
-        field: 'vel',
-        renderHeader: () =>
-          currObs ? (
-            <Grid container direction="row" justifyContent="space-between" alignItems="right">
-              <Grid ml={10}>{t('sensitivityCalculatorResults.totalSensitivity')}</Grid>
-              <Grid ml={15}>{t('sensitivityCalculatorResults.beamSize')}</Grid>
-            </Grid>
-          ) : (
-            <></>
-          ),
+        field: 'actions',
+        type: 'actions',
         sortable: false,
-        flex: 5,
+        flex: 0.5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
+              field="icon"
+            />
+          );
+        }
+      },
+      {
+        field: 'vel',
+        renderHeader: () =>
+          currObs ? (
+            <>
+              {t(
+                isIntegrationTime(currObs)
+                  ? 'sensitivityCalculatorResults.weightedSensitivity'
+                  : 'sensitivityCalculatorResults.integrationTime'
+              )}
+            </>
+          ) : (
+            <></>
+          ),
+        sortable: false,
+        flex: 2,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: any }) => {
+          return (
+            <SensCalcDisplaySingle
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              show={isTargetSelected(e.row.id)}
+              field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'SensitivityWeighted'} // TODO : Correct when SensCalc corrected
+            />
+          );
+        }
+      },
+      {
+        field: 'vel2',
+        renderHeader: () => (currObs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>),
+        sortable: false,
+        flex: 2.5,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: any }) => {
+          return (
+            <SensCalcDisplaySingle
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              show={isTargetSelected(e.row.id)}
+              field="SynthBeamSize"
             />
           );
         }

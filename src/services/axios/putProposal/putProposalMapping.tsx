@@ -230,9 +230,7 @@ const getSupplied = (inObs: Observation) => {
     type: supplied?.mappingLabel,
     quantity: {
       value: inObs.supplied?.value,
-      unit: 'm/s' // TODO : supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
-      // hardcoded for now as backend rejects supplied units such as 'jy/beam'
-      // TODO put back commented mapping to units once PDM updated
+      unit: supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
     }
   };
 };
@@ -246,7 +244,7 @@ const getObservationsSets = (
     const observation: ObservationSetBackend = {
       observation_set_id: obs.id,
       group_id: getGroupObservation(obs.id, incObservationGroups),
-      elevation: 23,
+      elevation: 23, // TODO : HArd coded value
       observing_band: getObservingBand(obs.observingBand),
       array_details: getArrayDetails(obs),
       observation_type_details: {
@@ -357,7 +355,7 @@ const getSuppliedFieldsIntegrationTime = (
     value: Number(tarObs.sensCalc.section3[0]?.value),
     unit: tarObs.sensCalc.section3[0]?.units
   };
-  // TODO : check if it's ok to send the same value for continuum and zoom? Is this not implmented in the UI?
+  // TODO : check if it's ok to send the same value for continuum and zoom? Is this not implemented in the UI?
   return params;
 };
 /***********************************************************/

@@ -8,6 +8,7 @@ import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import AddButton from '../../components/button/Add/Add';
+import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import Alert from '../..//components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -15,6 +16,7 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import { PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
+import { presentUnits } from '../../utils/present';
 
 const PAGE = 7;
 const DATA_GRID_HEIGHT = 450;
@@ -109,7 +111,7 @@ export default function SdpDataPage() {
         flex: 0.5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: DataProductSDP }) =>
-          e.row.imageSizeValue + ' ' + e.row.imageSizeUnits
+          e.row.imageSizeValue + ' ' + presentUnits(e.row.imageSizeUnits)
       },
       {
         field: 'pixelSize',
@@ -117,7 +119,7 @@ export default function SdpDataPage() {
         flex: 0.5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: DataProductSDP }) =>
-          e.row.pixelSizeValue + ' ' + e.row.pixelSizeUnits
+          e.row.pixelSizeValue + ' ' + presentUnits(e.row.pixelSizeUnits)
       },
       {
         field: 'weighting',
@@ -129,17 +131,28 @@ export default function SdpDataPage() {
         }
       },
       {
-        field: 'id',
-        headerName: t('actions.label'),
+        field: 'actions',
+        type: 'actions',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { id: number } }) => (
-          <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
+          <>
+            <EditIcon
+              onClick={editIconClicked}
+              disabled
+              toolTip="This feature is currently disabled"
+            />
+            <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
+          </>
         )
       }
     ]
   ];
+
+  const editIconClicked = async () => {
+    // TODO
+  };
 
   const deleteIconClicked = () => {
     setOpenDialog(true);

@@ -22,9 +22,15 @@ import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 import AddButton from '../../components/button/Add/Add';
 import { LAB_POSITION } from '../../utils/constants';
+import { presentUnits } from '../../utils/present';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
+const PAGE_PREFIX = 'SDP';
+const FOOTER_HEIGHT = 40;
+const FIELD_OBS = 'observatoryDataProduct.options';
+const LABEL_WIDTH = 5;
+const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -46,8 +52,6 @@ export default function AddDataProduct() {
   const [weighting, setWeighting] = React.useState(0);
 
   const { t } = useTranslation('pht');
-  const FIELD_OBS = 'observatoryDataProduct.options';
-  const LABEL_WIDTH = 5;
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
@@ -135,7 +139,7 @@ export default function AddDataProduct() {
         label={t(FIELD_OBS + '.' + key)}
         labelBold
         labelPosition={LABEL_POSITION.END}
-        labelWidth={11}
+        labelWidth={LABEL_WIDTH_TICK}
         testId={'observatoryDataProduct' + key}
         checked={value}
         onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
@@ -205,7 +209,7 @@ export default function AddDataProduct() {
         setValue={setPixelSizeValue}
         required
         disabled
-        suffix={pixelSizeUnits}
+        suffix={presentUnits(pixelSizeUnits)}
       />
     );
   };
@@ -228,7 +232,7 @@ export default function AddDataProduct() {
       const observatoryDataProduct = [dp1, dp2, dp3, dp4];
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
-        dataProductsSDPId: `SDP-${highestId + 1}`,
+        dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
         observatoryDataProduct,
         observationId: [observationId],
         imageSizeValue,
@@ -257,7 +261,7 @@ export default function AddDataProduct() {
 
     return (
       <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: FOOTER_HEIGHT, left: 0, right: 0 }}
         elevation={0}
       >
         <Grid

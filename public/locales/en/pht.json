@@ -586,7 +586,7 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "Total sensitivity",
+    "weightedSensitivity": "Weighted sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
     "partial": "Fetching results..."
