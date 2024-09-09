@@ -37,6 +37,7 @@
     "button": "Observation Setup"
   },
   "addProposal": {
+    "short": "Add",
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
@@ -672,6 +673,9 @@
     "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering",
     "0": "No tapering"
+  },
+  "targetImport": {
+    "help": "Help information for the importing of targets"
   },
   "targetObservation": {
     "label": "Target / Observation relationship"

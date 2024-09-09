@@ -113,47 +113,6 @@ export default function TargetListSection() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const extendedColumns = [
-    ...[
-      { field: 'name', headerName: t('name.label'), width: 200 },
-      { field: 'ra', headerName: t('skyDirection.label.1.' + raType), width: 150 },
-      { field: 'dec', headerName: t('skyDirection.label.2.' + raType), width: 150 },
-      {
-        field: 'vel',
-        headerName: t('velocity.0'),
-        width: 100,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: Target }) => {
-          if (e.row.vel === null || e.row.vel === '') {
-            return null;
-          }
-          const units = e.row.velUnit === 1 ? 1 : 0;
-          return e.row.vel + ' ' + t('velocity.units.' + units);
-        }
-      },
-      { field: 'redshift', headerName: t('velocity.1'), width: 100 },
-      {
-        field: 'id',
-        headerName: t('actions.label'),
-        sortable: false,
-        flex: 1,
-        disableClickEventBubbling: true,
-        renderCell: (e: any) => {
-          const rec: Target = e.row;
-          return (
-            <>
-              <EditIcon onClick={() => editIconClicked(rec)} toolTip={t('editTarget.toolTip')} />
-              <TrashIcon
-                onClick={() => deleteIconClicked(rec)}
-                toolTip={t('deleteTarget.toolTip')}
-              />
-            </>
-          );
-        }
-      }
-    ]
-  ];
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -174,7 +133,7 @@ export default function TargetListSection() {
     return (
       <>
         <Grid item md={GRID_OFFSET} xs={0}></Grid>
-        <Grid item md={GRID_WIDTH} xs={11}>
+        <Grid item xs={8}>
           <ReferenceCoordinatesField labelWidth={LAB_WIDTH} setValue={setRAType} value={raType} />
         </Grid>
         <Grid item md={12 - GRID_OFFSET - GRID_WIDTH} xs={0}></Grid>
@@ -182,10 +141,51 @@ export default function TargetListSection() {
     );
   };
 
-  return (
-    <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-      {RefOptions()}
-      <Grid item md={5} xs={11}>
+  const displayGrid = () => {
+    const extendedColumns = [
+      ...[
+        { field: 'name', headerName: t('name.label'), flex: 3 },
+        { field: 'ra', headerName: t('skyDirection.label.1.' + raType), flex: 3 },
+        { field: 'dec', headerName: t('skyDirection.label.2.' + raType), flex: 3 },
+        {
+          field: 'vel',
+          headerName: t('velocity.0'),
+          flex: 2,
+          disableClickEventBubbling: true,
+          renderCell: (e: { row: Target }) => {
+            if (e.row.vel === null || e.row.vel === '') {
+              return null;
+            }
+            const units = e.row.velUnit === 1 ? 1 : 0;
+            return e.row.vel + ' ' + t('velocity.units.' + units);
+          }
+        },
+        { field: 'redshift', headerName: t('velocity.1'), flex: 2 },
+        {
+          field: 'actions',
+          type: 'actions',
+          headerName: t('actions.label'),
+          sortable: false,
+          flex: 2,
+          disableClickEventBubbling: true,
+          renderCell: (e: any) => {
+            const rec: Target = e.row;
+            return (
+              <>
+                <EditIcon onClick={() => editIconClicked(rec)} toolTip={t('editTarget.toolTip')} />
+                <TrashIcon
+                  onClick={() => deleteIconClicked(rec)}
+                  toolTip={t('deleteTarget.toolTip')}
+                />
+              </>
+            );
+          }
+        }
+      ]
+    ];
+
+    return (
+      <>
         {getProposal().targets.length > 0 && (
           <DataGrid
             rows={getProposal().targets}
@@ -197,8 +197,64 @@ export default function TargetListSection() {
         {getProposal().targets.length === 0 && (
           <Alert color={AlertColorTypes.Error} text={t('targets.empty')} testId="helpPanelId" />
         )}
+      </>
+    );
+  };
+
+  const displayRow1 = () => {
+    return (
+      <Grid
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-evenly"
+        display={{ md: 'none', lg: 'flex' }}
+      >
+        <Grid item lg={5}>
+          {displayGrid()}
+        </Grid>
+        <Grid item lg={6}>
+          <Box sx={{ width: '100%', border: '1px solid grey' }}>
+            <Box>
+              <Tabs
+                textColor="secondary"
+                indicatorColor="secondary"
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab
+                  label={t('addTarget.label')}
+                  {...a11yProps(0)}
+                  sx={{ border: '1px solid grey' }}
+                />
+                <Tab
+                  label={t('importFromFile.label')}
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey' }}
+                />
+                <Tab
+                  label={t('spatialImaging.label')}
+                  {...a11yProps(2)}
+                  sx={{ border: '1px solid grey' }}
+                  disabled
+                />
+              </Tabs>
+            </Box>
+            {value === 0 && (
+              <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />
+            )}
+            {value === 1 && <TargetFileImport raType={raType} />}
+            {value === 2 && <SpatialImaging />}
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item md={6} xs={11}>
+    );
+  };
+
+  const displayRow2 = () => {
+    return (
+      <Grid item md={11} display={{ md: 'block', lg: 'none' }}>
         <Box sx={{ width: '100%', border: '1px solid grey' }}>
           <Box>
             <Tabs
@@ -233,6 +289,23 @@ export default function TargetListSection() {
           {value === 2 && <SpatialImaging />}
         </Box>
       </Grid>
+    );
+  };
+
+  const displayRow3 = () => {
+    return (
+      <Grid item sx={{ width: '90vw' }} display={{ md: 'block', lg: 'none' }}>
+        {displayGrid()}
+      </Grid>
+    );
+  };
+
+  return (
+    <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+      {RefOptions()}
+      {displayRow1()}
+      {displayRow2()}
+      {displayRow3()}
       {openDeleteDialog && (
         <AlertDialog
           open={openDeleteDialog}
