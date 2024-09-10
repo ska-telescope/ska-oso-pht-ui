@@ -90,7 +90,7 @@ Future
 * Target Page:
    - Added the ability to Edit a target
    - Update target list on target page to show Redshift & Velocity
-Screen Auto-resizing:
+* Screen Auto-resizing:
    - Started to check screen resizing ( landing page and page banner so far ).
    - Standard height of the InfoCard
 * Testing:  
