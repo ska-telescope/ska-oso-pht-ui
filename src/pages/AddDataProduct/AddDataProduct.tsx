@@ -45,7 +45,7 @@ export default function AddDataProduct() {
   const [dp2, setDP2] = React.useState(false);
   const [dp3, setDP3] = React.useState(false);
   const [dp4, setDP4] = React.useState(false);
-  const [imageSizeValue, setImageSizeValue] = React.useState(0);
+  const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNITS.DEGREES);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
@@ -180,6 +180,12 @@ export default function AddDataProduct() {
 
   const imageSizeField = () => {
     const errorText = () => (imageSizeValue ? '' : t('imageSize.error'));
+
+    const setTheNumber = (inNum: number) => {
+      const str = Math.abs(inNum).toString();
+      const num = Number(str);
+      setImageSizeValue(num.toString());
+    };
     return (
       <NumberEntry
         label={t('imageSize.label')}
@@ -188,7 +194,7 @@ export default function AddDataProduct() {
         labelWidth={LABEL_WIDTH}
         testId="imageSize"
         value={imageSizeValue}
-        setValue={(e: number) => setImageSizeValue(Math.abs(e))}
+        setValue={(e: number) => setTheNumber(e)}
         onFocus={() => helpComponent(t('imageSize.help'))}
         required
         suffix={imageSizeUnitsField()}
@@ -214,10 +220,21 @@ export default function AddDataProduct() {
     );
   };
 
+  const imageWeightingField = () => {
+    return (
+      <ImageWeightingField
+        disabled
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        value={weighting}
+      />
+    );
+  };
+
   const pageFooter = () => {
     const enabled = () => {
       const dp = dp1 || dp2 || dp3 || dp4;
-      return dp && pixelSizeValue > 0 && imageSizeValue > 0;
+      return dp && pixelSizeValue > 0 && Number(imageSizeValue) > 0;
     };
 
     const addToProposal = () => {
@@ -235,7 +252,7 @@ export default function AddDataProduct() {
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
         observatoryDataProduct,
         observationId: [observationId],
-        imageSizeValue,
+        imageSizeValue: Number(imageSizeValue),
         imageSizeUnits,
         pixelSizeValue,
         pixelSizeUnits,
@@ -308,14 +325,7 @@ export default function AddDataProduct() {
             <Grid item>{dataProductsField()}</Grid>
             <Grid item>{imageSizeField()}</Grid>
             <Grid item>{pixelSizeField()}</Grid>
-            <Grid item>
-              <ImageWeightingField
-                disabled
-                labelWidth={LABEL_WIDTH}
-                onFocus={() => helpComponent(t('imageWeighting.help'))}
-                value={weighting}
-              />
-            </Grid>
+            <Grid item>{imageWeightingField()}</Grid>
           </Grid>
         </Grid>
         <Grid item xs={3} ml={5}>

@@ -16,6 +16,7 @@ import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
+import { presentLatex } from '../../../utils/present';
 
 interface ProposalDisplayProps {
   proposal: Proposal;
@@ -65,7 +66,7 @@ export default function ProposalDisplay({
 
       window.open(signedUrl, '_blank');
 
-      //TODO: clarify conditions to oepn new window
+      //TODO: clarify conditions to open new window
       // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
       //   window.open(signedUrl, '_blank');
       // }
@@ -95,9 +96,9 @@ export default function ProposalDisplay({
     return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
-  const title = (inValue: string) => (
+  const title = (inLabel: string, inValue: string) => (
     <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-      {inValue}
+      {inLabel} {presentLatex(inValue)}
     </Typography>
   );
   const label = (inValue: string) => (
@@ -215,7 +216,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid item>{title(t('page.9.title') + ' : ' + proposal.title)}</Grid>
+        <Grid item>{title(t('page.9.title') + ' : ', proposal.title)}</Grid>
         <Grid item>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
             <Grid item>{cycle(t('page.12.short'), proposal.cycle)}</Grid>

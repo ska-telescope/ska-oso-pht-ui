@@ -64,8 +64,8 @@ export default function ObservationPage() {
     updateAppContent1(temp);
   };
 
-  const isIntegrationTime = (ob: { suppliedType: number }) =>
-    ob?.suppliedType === SUPPLIED_TYPE_INTEGRATION;
+  const isIntegrationTime = (ob: { supplied: { type: number } }) =>
+    ob?.supplied?.type === SUPPLIED_TYPE_INTEGRATION;
 
   const getLevel = (obs: Observation) => {
     let result = STATUS_INITIAL;

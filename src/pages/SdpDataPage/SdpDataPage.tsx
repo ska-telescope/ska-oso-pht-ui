@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { IMAGE_WEIGHTING, STATUS_OK } from '../../utils/constants';
+import { STATUS_OK } from '../../utils/constants';
 import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -80,81 +80,86 @@ export default function SdpDataPage() {
     return str;
   };
 
-  const extendedColumnsObservations = [
-    ...[
-      {
-        field: 'observationId',
-        headerName: t('observations.dp.label'),
-        flex: 0.5,
-        disableClickEventBubbling: true
-      },
-      {
-        field: 'observatoryDataProduct',
-        headerName: t('observatoryDataProduct.label'),
-        flex: 2,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { observatoryDataProduct: number } }) => (
-          <Box pt={2}>
-            <Tooltip
-              data-testid="odp-values"
-              title={getODPString(e.row.observatoryDataProduct)}
-              arrow
-            >
-              <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
-            </Tooltip>
-          </Box>
-        )
-      },
-      {
-        field: 'imageSize',
-        headerName: t('imageSize.label'),
-        flex: 0.5,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: DataProductSDP }) =>
-          e.row.imageSizeValue + ' ' + presentUnits(e.row.imageSizeUnits)
-      },
-      {
-        field: 'pixelSize',
-        headerName: t('pixelSize.label'),
-        flex: 0.5,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: DataProductSDP }) =>
-          e.row.pixelSizeValue + ' ' + presentUnits(e.row.pixelSizeUnits)
-      },
-      {
-        field: 'weighting',
-        headerName: t('imageWeighting.label'),
-        flex: 1,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { weighting: number } }) => {
-          return IMAGE_WEIGHTING[e.row.weighting]?.label;
-        }
-      },
-      {
-        field: 'actions',
-        type: 'actions',
-        sortable: false,
-        flex: 0.5,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => (
-          <>
-            <EditIcon
-              onClick={editIconClicked}
-              disabled
-              toolTip="This feature is currently disabled"
-            />
-            <TrashIcon onClick={deleteIconClicked} toolTip={t(`deleteDataProduct.label`)} />
-          </>
-        )
-      }
-    ]
-  ];
-
-  const editIconClicked = async () => {
-    // TODO
+  const colObservationId = {
+    field: 'observationId',
+    headerName: t('observations.dp.label'),
+    flex: 0.5,
+    disableClickEventBubbling: true
   };
 
-  const deleteIconClicked = () => {
+  const colDataProduct = {
+    field: 'observatoryDataProduct',
+    headerName: t('observatoryDataProduct.label'),
+    flex: 2,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { observatoryDataProduct: number } }) => (
+      <Box pt={2}>
+        <Tooltip data-testid="odp-values" title={getODPString(e.row.observatoryDataProduct)} arrow>
+          <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
+        </Tooltip>
+      </Box>
+    )
+  };
+
+  const colImageSize = {
+    field: 'imageSize',
+    headerName: t('imageSize.label'),
+    flex: 0.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: DataProductSDP }) =>
+      e.row.imageSizeValue + ' ' + presentUnits(e.row.imageSizeUnits)
+  };
+
+  const colPixelSize = {
+    field: 'pixelSize',
+    headerName: t('pixelSize.label'),
+    flex: 0.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: DataProductSDP }) =>
+      e.row.pixelSizeValue + ' ' + presentUnits(e.row.pixelSizeUnits)
+  };
+
+  const colImageWeighting = {
+    field: 'weighting',
+    headerName: t('imageWeighting.label'),
+    flex: 1,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { weighting: number } }) => {
+      return t('imageWeighting.' + e.row.weighting);
+    }
+  };
+
+  const colActions = {
+    field: 'actions',
+    type: 'actions',
+    sortable: false,
+    flex: 0.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { id: number } }) => (
+      <>
+        <EditIcon
+          onClick={() => editIconClicked(e.row.id)}
+          disabled
+          toolTip="This feature is currently disabled"
+        />
+        <TrashIcon
+          onClick={() => deleteIconClicked(e.row.id)}
+          toolTip={t(`deleteDataProduct.label`)}
+        />
+      </>
+    )
+  };
+
+  const columnsObservations = [
+    ...[colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting, colActions]
+  ];
+
+  const editIconClicked = async (id: React.SetStateAction<number>) => {
+    setCurrentRow(id);
+  };
+
+  const deleteIconClicked = (id: React.SetStateAction<number>) => {
+    setCurrentRow(id);
     setOpenDialog(true);
   };
 
@@ -181,26 +186,34 @@ export default function SdpDataPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.observationId}</Typography>
-          <Typography variant="body1">{rec.observationId}</Typography>
+          <Typography variant="body1">{rec?.observationId}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {t(`observatoryDataProduct.options.${rec.observatoryDataProduct}`)}
-          </Typography>
+          {rec?.observatoryDataProduct[0] && (
+            <Typography variant="body1">{t('observatoryDataProduct.options.1')}</Typography>
+          )}
+          {rec?.observatoryDataProduct[1] && (
+            <Typography variant="body1">{t('observatoryDataProduct.options.2')}</Typography>
+          )}
+          {rec?.observatoryDataProduct[2] && (
+            <Typography variant="body1">{t('observatoryDataProduct.options.3')}</Typography>
+          )}
+          {rec?.observatoryDataProduct[3] && (
+            <Typography variant="body1">{t('observatoryDataProduct.options.4')}</Typography>
+          )}
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {rec.imageSizeValue} {rec.imageSizeUnits}
+            {rec?.imageSizeValue} {presentUnits(rec?.imageSizeUnits)}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {rec.pixelSizeValue} {rec.pixelSizeUnits}
+            {rec?.pixelSizeValue} {presentUnits(rec?.pixelSizeUnits)}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.weighting}</Typography>
+          <Typography variant="body1">{t('imageWeighting.' + rec?.weighting)}</Typography>
         </FieldWrapper>
       </Grid>
     );
@@ -225,13 +238,15 @@ export default function SdpDataPage() {
             testId="addDataProductButton"
           />
           {getRows()?.length > 0 && (
-            <DataGrid
-              rows={getRows()}
-              columns={extendedColumnsObservations}
-              height={DATA_GRID_HEIGHT}
-              onRowClick={clickRow}
-              testId="observationDetails"
-            />
+            <div style={{ width: '100%' }}>
+              <DataGrid
+                rows={getRows()}
+                columns={columnsObservations}
+                height={DATA_GRID_HEIGHT}
+                onRowClick={clickRow}
+                testId="observationDetails"
+              />
+            </div>
           )}
           {(!getRows() || getRows().length === 0) && (
             <Alert
@@ -245,6 +260,7 @@ export default function SdpDataPage() {
 
       {openDialog && (
         <AlertDialog
+          maxWidth="md"
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onDialogResponse={deleteConfirmed}

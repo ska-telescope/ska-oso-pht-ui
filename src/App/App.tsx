@@ -18,11 +18,8 @@ import Alert from '../components/alerts/standardAlert/StandardAlert';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
 import theme from '../services/theme/theme';
-import { USE_LOCAL_DATA } from '../utils/constants';
+import { FOOTER_HEIGHT, HEADER_HEIGHT, USE_LOCAL_DATA } from '../utils/constants';
 import Proposal from '../utils/types/proposal';
-
-const HEADER_HEIGHT = 70;
-const FOOTER_HEIGHT = 20;
 
 function App() {
   const { t } = useTranslation('pht');

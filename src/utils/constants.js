@@ -102,6 +102,8 @@ export const ELEVATION_DEFAULT = 45;
 export const ELEVATION_MAX = 59.2;
 export const ELEVATION_UNITS = 'deg';
 
+export const FOOTER_HEIGHT = 20;
+
 export const GENERAL = {
   // REPLACED, BUT KEEP FOR NOW : Cycle: 'SKA_5000_2023',
   Abstract:
@@ -140,6 +142,8 @@ export const GENERAL = {
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ]
 };
+
+export const HEADER_HEIGHT = 70;
 
 export const HELP_FONT = 16;
 export const HELP_VIEWPORT = '15vh';

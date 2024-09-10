@@ -19,7 +19,8 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOT_SPECIFIED
+  NOT_SPECIFIED,
+  HEADER_HEIGHT
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -30,11 +31,11 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate } from '../../utils/present';
+import { presentDate, presentLatex } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
-import Latex from 'react-latex-next';
-import { storeCycleData } from '../../utils/storage/cycleData';
+import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
+import TeamMember from 'utils/types/teamMember';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -45,8 +46,7 @@ export default function LandingPage() {
     clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2,
-    updateAppContent3
+    updateAppContent2
   } = storageObject.useStore();
 
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
@@ -68,7 +68,7 @@ export default function LandingPage() {
 
   const DATA_GRID_HEIGHT = 70;
 
-  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight / 100);
+  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight - HEADER_HEIGHT / 100);
 
   React.useEffect(() => {
     updateAppContent2(null);
@@ -108,13 +108,13 @@ export default function LandingPage() {
     if (typeof response === 'string') {
       updateAppContent1(null);
       updateAppContent2(null);
-      updateAppContent3(null);
+      storeProposalCopy(null);
       setAxiosViewError(response);
       return false;
     } else {
       updateAppContent1(validateProposal(response));
       updateAppContent2(response);
-      updateAppContent3(response);
+      storeProposalCopy(response);
       validateProposal(response);
       return true;
     }
@@ -180,16 +180,28 @@ export default function LandingPage() {
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
-  /*
-  const displayScienceCategory = scienceCategory => {
-    return scienceCategory ? scienceCategory : NOT_SPECIFIED;
-  };
-  */
+
   const displayProposalType = proposalType => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
+
+  const getPIs = (arr: TeamMember[]) => {
+    if (!arr || arr.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    const results = [];
+    arr.forEach(e => {
+      if (e.pi) {
+        results.push(e.lastName + ', ' + e.firstName);
+      }
+    });
+    if (results.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
+  };
 
   const colId = { field: 'id', headerName: t('id.label') };
   const colType = {
@@ -208,12 +220,15 @@ export default function LandingPage() {
     field: 'title',
     headerName: t('title.label'),
     flex: 2.5,
-    renderCell: (e: any) => <Latex>{e.row.title}</Latex>
+    renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
     field: 'pi',
+    headerName: t('pi.short'),
     flex: 2.5,
-    renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
+    renderCell: (e: any) => {
+      return getPIs(e.row.team);
+    }
   };
 
   const colStatus = {
