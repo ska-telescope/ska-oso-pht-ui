@@ -125,16 +125,15 @@ export default function TargetListSection() {
   };
 
   const RefOptions = () => {
-    const GRID_OFFSET = 1;
-    const GRID_WIDTH = 4;
-    const LAB_WIDTH = 5;
+    const GRID_OFFSET = 2;
+    const LAB_WIDTH = 7;
     return (
       <>
         <Grid item md={GRID_OFFSET} xs={0}></Grid>
-        <Grid item xs={8}>
+        <Grid item md={5} lg={3}>
           <ReferenceCoordinatesField labelWidth={LAB_WIDTH} setValue={setRAType} value={raType} />
         </Grid>
-        <Grid item md={12 - GRID_OFFSET - GRID_WIDTH} xs={0}></Grid>
+        <Grid item md={GRID_OFFSET} xs={0}></Grid>
       </>
     );
   };

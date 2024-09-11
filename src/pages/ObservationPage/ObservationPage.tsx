@@ -131,7 +131,7 @@ export default function ObservationPage() {
   const popElementO = (rec: Observation) => {
     return {
       id: rec.id,
-      id2: rec.id, // Only here to satisfy syntax of DataGrid headers
+      id2: rec.id /* Only here to satisfy syntax of DataGrid headers */,
       rec: rec,
       telescope: rec.telescope,
       subarray: rec.subarray,
@@ -140,7 +140,7 @@ export default function ObservationPage() {
     };
   };
 
-  // This type is required for the DataGrid showing the Targets
+  /* This type is required for the DataGrid showing the Targets */
   type ElementT = {
     id: number;
     name: string;
@@ -430,7 +430,7 @@ export default function ObservationPage() {
             <SensCalcDisplaySingle
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
-              field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'SensitivityWeighted'} // TODO : Correct when SensCalc corrected
+              field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'IntegrationTime'}
             />
           );
         }
