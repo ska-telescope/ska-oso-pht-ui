@@ -36,6 +36,7 @@ yarn-error.log*
 
 public/env.js
 *.cy.ts
+*.test.ts
 
 # built docs
 /docs/build
