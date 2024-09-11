@@ -6,12 +6,12 @@ your proposal against the capability of the telescope for the current cycle.
 If the proposal is valid, you will see a confirmation message at the bottom of the screen that says "Proposal is valid". 
 If the proposal is not valid, you will see an error message, and the proposal is unable to be submitted.
 
-Clicking 'Submit' after that will bring up a Confirmation Page summarizing your proposal (see :numref:`Figure %s <subpage1>`). 
+Clicking 'Submit' after that will bring up a Confirmation Page summarizing your proposal (see :numref:`Figure %s <subPage>`). 
 Review and click 'Confirm' to proceed or 'Cancel' to abandon submission at this time.
 
 
 
-.. _subpage1:
+.. _subPage:
 
 .. figure:: /images/submitConfirmation.png
    :width: 90%
