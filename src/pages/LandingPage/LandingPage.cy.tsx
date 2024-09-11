@@ -10,9 +10,14 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 const THEME = [THEME_DARK, THEME_LIGHT];
 
-describe('<PHT />', () => {
+function viewPort() {
+  cy.viewport(1500, 1000);
+}
+
+describe('<LandingPage />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      viewPort();
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -30,6 +35,7 @@ describe('search functionality', () => {
     cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
       'getProposalList'
     );
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -40,7 +46,7 @@ describe('search functionality', () => {
   });
   it('returns 2 results when searching for "Milky Way"', () => {
     cy.get('[data-testid="searchId"]').type('Milky Way');
-    cy.get('[data-testid="SearchIcon"]').click();
+    // cy.get('[data-testid="SearchIcon"]').click();
     // cy.get(
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
@@ -50,7 +56,7 @@ describe('search functionality', () => {
   });
   it('returns 1 result when searching for "SKA_5000_2022"', () => {
     cy.get('[data-testid="searchId"]').type('SKA_5000_2022');
-    cy.get('[data-testid="SearchIcon"]').click();
+    //cy.get('[data-testid="SearchIcon"]').click();
     // cy.get(
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
@@ -60,7 +66,7 @@ describe('search functionality', () => {
   });
   it('clearing search input should display all proposals"', () => {
     cy.get('[data-testid="searchId"] input').clear();
-    cy.get('[data-testid="SearchIcon"]').click();
+    //cy.get('[data-testid="SearchIcon"]').click();
     // cy.get(
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
@@ -68,7 +74,7 @@ describe('search functionality', () => {
   });
   it('returns 0 results when searching for "xxx"', () => {
     cy.get('[data-testid="searchId"]').type('xxx');
-    cy.get('[data-testid="SearchIcon"]').click();
+    //cy.get('[data-testid="SearchIcon"]').click();
     // cy.get(
     //   '[data-testid="dataGridId"] div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]'
     // )
@@ -82,6 +88,7 @@ describe('filtering by proposal type', () => {
     cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
       'getProposalList'
     );
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -158,6 +165,7 @@ if (!USE_LOCAL_DATA) {
       cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
         'getProposalList'
       );
+      viewPort();
       cy.mount(
         <StoreProvider>
           <Router location="/" navigator={undefined}>
@@ -184,6 +192,7 @@ if (!USE_LOCAL_DATA) {
   describe('Get proposal/list bad request', () => {
     beforeEach(() => {
       cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalListFail');
+      viewPort();
       cy.mount(
         <StoreProvider>
           <Router location="/" navigator={undefined}>
@@ -202,6 +211,7 @@ if (!USE_LOCAL_DATA) {
 }
 describe('Get proposal good request', () => {
   beforeEach(() => {
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>

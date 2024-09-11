@@ -321,10 +321,10 @@ export default function LandingPage() {
     />
   );
 
-  const searchEntryField = () => (
+  const searchEntryField = (testId: string) => (
     <SearchEntry
       label={t('search.label')}
-      testId="searchId"
+      testId={testId}
       value={searchTerm}
       setValue={setSearchTerm}
     />
@@ -375,7 +375,7 @@ export default function LandingPage() {
         {searchDropdown()}
       </Grid>
       <Grid item lg={4} mt={-1} display={{ xs: 'none', lg: 'block' }}>
-        {searchEntryField()}
+        {searchEntryField('searchId')}
       </Grid>
     </Grid>
   );
@@ -383,7 +383,7 @@ export default function LandingPage() {
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-around">
       <Grid item xs={10} display={{ xs: 'block', lg: 'none' }}>
-        {searchEntryField()}
+        {searchEntryField('searchId2')}
       </Grid>
     </Grid>
   );
