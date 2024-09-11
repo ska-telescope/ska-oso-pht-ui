@@ -58,7 +58,6 @@ export type Proposal = {
   scienceCategory?: number;
   scienceSubCategory?: number[];
   team?: TeamMember[];
-  pi?: string;
   abstract?: string;
   sciencePDF?: DocumentPDF;
   scienceLoadStatus?: number;

@@ -1,7 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable react/no-array-index-key */
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
@@ -19,6 +15,8 @@ import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
 import Target, { NEW_TARGET } from '../../../utils/types/target';
+
+const DATA_GRID_HEIGHT = 400;
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
@@ -190,7 +188,7 @@ export default function TargetListSection() {
           <DataGrid
             rows={getProposal().targets}
             columns={extendedColumns}
-            height={400}
+            height={DATA_GRID_HEIGHT}
             testId="targetListColumns"
           />
         )}

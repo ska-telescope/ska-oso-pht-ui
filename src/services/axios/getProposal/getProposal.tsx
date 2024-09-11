@@ -51,7 +51,6 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
       id: inValue[i].investigator_id,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
-      country: 'United Kingdom', // TODO should we remove country as not in backend?
       email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
@@ -80,10 +79,6 @@ const getScienceCategory = (scienceCat: string) => {
     cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
-};
-
-const getPI = (investigators: InvestigatorBackend[]) => {
-  return investigators?.find(item => item.principal_investigator === true)?.investigator_id;
 };
 
 const extractFileFromURL = (url): Promise<File> => {
@@ -504,7 +499,6 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     version: inRec.metadata.version,
     cycle: inRec.cycle,
     team: getTeamMembers(inRec.info.investigators),
-    pi: getPI(inRec.info.investigators),
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],

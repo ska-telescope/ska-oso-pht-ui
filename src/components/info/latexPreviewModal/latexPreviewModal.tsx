@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Box, Typography } from '@mui/material';
 
 import 'katex/dist/katex.min.css';
-import Latex from 'react-latex-next';
+import { presentLatex } from '../../../utils/present';
 
 interface LatexPreviewProps {
   value: string;
@@ -34,7 +34,7 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
         <Typography id="modal-modal-title" variant="h6" component="h2">
           {title}
         </Typography>
-        <Latex>{value}</Latex>
+        {presentLatex(value)}
       </Box>
     </Modal>
   );

@@ -1,4 +1,8 @@
+import React from 'react';
+import Latex from 'react-latex-next';
 import { t } from 'i18next';
+
+export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
 
 export const presentUnits = (inUnits: string) => {
   switch (inUnits) {

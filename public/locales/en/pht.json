@@ -586,7 +586,7 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "Total sensitivity",
+    "weightedSensitivity": "Weighted sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
     "partial": "Fetching results..."
@@ -675,7 +675,7 @@
     "0": "No tapering"
   },
   "targetImport": {
-    "help": "Help information for the importing of targets"
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
   },
   "targetObservation": {
     "label": "Target / Observation relationship"
