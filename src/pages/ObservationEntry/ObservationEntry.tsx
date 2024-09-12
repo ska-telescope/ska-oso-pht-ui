@@ -338,7 +338,7 @@ export default function ObservationEntry() {
 
   React.useEffect(() => {
     setEffectiveResolution(calculateEffectiveResolution());
-  }, [spectralResolution]);
+  }, [spectralResolution, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
