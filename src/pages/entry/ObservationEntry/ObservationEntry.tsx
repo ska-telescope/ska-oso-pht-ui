@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
+import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
@@ -40,20 +40,20 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW
-} from '../../utils/constants';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
-import Proposal from '../../utils/types/proposal';
-import { generateId } from '../../utils/helpers';
-import AddButton from '../../components/button/Add/Add';
-import GroupObservation from '../../utils/types/groupObservation';
-import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
-import Observation from '../../utils/types/observation';
-import TargetObservation from '../../utils/types/targetObservation';
-import SubArrayField from '../../components/fields/subArray/SubArray';
-import ObservingBandField from '../../components/fields/observingBand/ObservingBand';
-import ObservationTypeField from '../../components/fields/observationType/ObservationType';
-import SpectralAveragingField from '../../components/fields/spectralAveraging/SpectralAveraging';
-import NumStations from '../../components/fields/numStations/NumStations';
+} from '../../../utils/constants';
+import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import Proposal from '../../../utils/types/proposal';
+import { generateId } from '../../../utils/helpers';
+import AddButton from '../../../components/button/Add/Add';
+import GroupObservation from '../../../utils/types/groupObservation';
+import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
+import Observation from '../../../utils/types/observation';
+import TargetObservation from '../../../utils/types/targetObservation';
+import SubArrayField from '../../../components/fields/subArray/SubArray';
+import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
+import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
+import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
+import NumStations from '../../../components/fields/numStations/NumStations';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -1003,7 +1003,7 @@ export default function ObservationEntry() {
         elevation={0}
       >
         <Grid
-          p={1}
+          p={2}
           container
           direction="row"
           alignItems="space-between"
@@ -1026,127 +1026,124 @@ export default function ObservationEntry() {
   };
 
   return (
-    <>
-      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item>
-          <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
-        </Grid>
-
-        <Grid
-          p={1}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-around"
-          spacing={1}
-        >
-          <Grid item xs={9}>
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              gap={1}
-              spacing={1}
-              pb={3}
-              justifyContent="space-evenly"
-            >
-              <Grid item xs={XS_TOP}>
-                {groupObservationsField()}
-              </Grid>
-              <Grid item xs={XS_TOP}></Grid>
-              <Grid item xs={XS_TOP}>
-                <ObservingBandField required value={observingBand} setValue={setObservingBand} />
-              </Grid>
-              <Grid item xs={XS_TOP}></Grid>
-              <Grid item xs={XS_TOP}>
-                <SubArrayField
-                  observingBand={observingBand}
-                  required
-                  telescope={telescope()}
-                  value={subarrayConfig}
-                  setValue={setSubarrayConfig}
-                />
-              </Grid>
-              <Grid item xs={XS_TOP}>
-                {isLow() ? (
-                  <NumStations
-                    disabled={subarrayConfig !== 20}
-                    setValue={setNumOfStations}
-                    value={numOfStations}
-                  />
-                ) : (
-                  AntennasFields()
-                )}
-              </Grid>
-              <Grid item xs={XS_TOP}>
-                {elevationField()}
-              </Grid>
-              <Grid item xs={XS_TOP}>
-                {!isLow() && weatherField()}
-              </Grid>
+    <Box pt={2}>
+      <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+        spacing={1}
+      >
+        <Grid item xs={9}>
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            gap={1}
+            spacing={1}
+            pb={3}
+            justifyContent="space-evenly"
+          >
+            <Grid item xs={XS_TOP}>
+              {groupObservationsField()}
             </Grid>
-            <Card variant="outlined">
-              <CardContent>
-                <Grid
-                  container
-                  direction="row"
-                  alignItems="center"
-                  gap={1}
-                  justifyContent="space-evenly"
-                >
-                  <Grid item xs={XS_BOTTOM}>
-                    <ObservationTypeField
-                      disabled={isContinuumOnly()}
-                      isContinuumOnly={isContinuumOnly()}
-                      required
-                      value={observationType}
-                      setValue={setObservationType}
-                    />
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {suppliedField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {centralFrequencyField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {spectralResolutionField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    <SpectralAveragingField
-                      isLow={isLow()}
-                      value={spectralAveraging}
-                      setValue={setSpectralAveraging}
-                    />
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {effectiveResolutionField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {!isLow() && taperingField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {isContinuum() && SubBandsField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {imageWeightingField()}
-                  </Grid>
-                  <Grid item xs={XS_BOTTOM}>
-                    {imageWeighting === IW_BRIGGS && robustField()}
-                  </Grid>
+            <Grid item xs={XS_TOP}></Grid>
+            <Grid item xs={XS_TOP}>
+              <ObservingBandField required value={observingBand} setValue={setObservingBand} />
+            </Grid>
+            <Grid item xs={XS_TOP}></Grid>
+            <Grid item xs={XS_TOP}>
+              <SubArrayField
+                observingBand={observingBand}
+                required
+                telescope={telescope()}
+                value={subarrayConfig}
+                setValue={setSubarrayConfig}
+              />
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {isLow() ? (
+                <NumStations
+                  disabled={subarrayConfig !== 20}
+                  setValue={setNumOfStations}
+                  value={numOfStations}
+                  rangeLower={Number(t('numStations.range.lower'))}
+                  rangeUpper={Number(t('numStations.range.upper'))}
+                />
+              ) : (
+                AntennasFields()
+              )}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {elevationField()}
+            </Grid>
+            <Grid item xs={XS_TOP}>
+              {!isLow() && weatherField()}
+            </Grid>
+          </Grid>
+          <Card variant="outlined">
+            <CardContent>
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                gap={1}
+                justifyContent="space-evenly"
+              >
+                <Grid item xs={XS_BOTTOM}>
+                  <ObservationTypeField
+                    disabled={isContinuumOnly()}
+                    isContinuumOnly={isContinuumOnly()}
+                    required
+                    value={observationType}
+                    setValue={setObservationType}
+                  />
                 </Grid>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={3}>
-            <HelpPanel />
-          </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {suppliedField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {centralFrequencyField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {spectralResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  <SpectralAveragingField
+                    isLow={isLow()}
+                    value={spectralAveraging}
+                    setValue={setSpectralAveraging}
+                  />
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {effectiveResolutionField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {!isLow() && taperingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {isContinuum() && SubBandsField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {imageWeightingField()}
+                </Grid>
+                <Grid item xs={XS_BOTTOM}>
+                  {imageWeighting === IW_BRIGGS && robustField()}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
-        {pageFooter()}
+        <Grid item xs={3}>
+          <HelpPanel />
+        </Grid>
       </Grid>
-    </>
+      {pageFooter()}
+    </Box>
   );
 }

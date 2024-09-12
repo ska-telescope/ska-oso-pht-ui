@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '../../utils/types/proposal';
-import AddButton from '../button/Add/Add';
-import ResolveButton from '../button/Resolve/Resolve';
-import ReferenceFrameField from '../fields/referenceFrame/ReferenceFrame';
-import SkyDirection1 from '../fields/skyDirection/SkyDirection1';
-import SkyDirection2 from '../fields/skyDirection/SkyDirection2';
-import VelocityField from '../fields/velocity/Velocity';
-import HelpPanel from '../info/helpPanel/helpPanel';
-import GetCoordinates from '../../services/axios/getCoordinates/getCoordinates';
-import Target from '../../utils/types/target';
-import { LAB_POSITION, RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../utils/constants';
+import { Proposal } from '../../../utils/types/proposal';
+import AddButton from '../../../components/button/Add/Add';
+import ResolveButton from '../../../components/button/Resolve/Resolve';
+import ReferenceFrameField from '../../../components/fields/referenceFrame/ReferenceFrame';
+import SkyDirection1 from '../../../components/fields/skyDirection/SkyDirection1';
+import SkyDirection2 from '../../../components/fields/skyDirection/SkyDirection2';
+import VelocityField from '../../../components/fields/velocity/Velocity';
+import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
+import Target from '../../../utils/types/target';
+import { LAB_POSITION, RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
 
 interface TargetEntryProps {
   id?: number;

@@ -4,7 +4,8 @@ import theme from '../../../services/theme/theme';
 import LatexPreviewModal from './latexPreviewModal';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const SOME_TEXT = 'THIS IS SOME DUMMY TEXT';
+// eslint-disable-next-line prettier/prettier
+const SOME_TEXT = '$c = pmsqrt{a^2 + b^2}$';
 
 function mountingBasic(theTheme: any) {
   viewPort();
@@ -21,10 +22,15 @@ function mountingBasic(theTheme: any) {
   );
 }
 
+function clickOutside() {
+  cy.get('body').click(0, 0);
+}
+
 describe('<LatexPreviewModal />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (basic)`, () => {
       mountingBasic(theTheme);
+      clickOutside();
     });
   }
 });

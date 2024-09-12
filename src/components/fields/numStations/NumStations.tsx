@@ -12,22 +12,27 @@ interface NumStationsFieldProps {
   value: number;
   widthButton?: number;
   widthLabel?: number;
+  rangeLower?: number;
+  rangeUpper?: number;
 }
 
 export default function NumStationsField({
   disabled = false,
   setValue,
   value,
-  widthLabel = 6
+  widthLabel = 6,
+  rangeLower = 0,
+  rangeUpper = 1
 }: NumStationsFieldProps) {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'numStations';
 
   const validate = (e: number) => {
-    const num = Number(Math.abs(e).toFixed(0));
-    if (num >= Number(t(FIELD + '.range.lower')) && num <= Number(t(FIELD + '.range.upper'))) {
-      setValue(num);
+    const str = Math.abs(e).toString();
+    const num = Number(str);
+    if (num >= rangeLower && num <= rangeUpper) {
+      setValue(num.toString());
     }
   };
 

@@ -2,11 +2,11 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../services/theme/theme';
+import theme from '../../../services/theme/theme';
 import ObservationEntry from './ObservationEntry';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { BANDWIDTH_TELESCOPE } from '../../utils/constants';
-import { THEME, viewPort } from '../../utils/testing/cypress';
+import { BANDWIDTH_TELESCOPE } from '../../../utils/constants';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mount(theTheme: any) {
   viewPort();

@@ -1,10 +1,10 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router-dom';
-import theme from '../../services/theme/theme';
+import theme from '../../../services/theme/theme';
 import AddDataProduct from './AddDataProduct';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { THEME, viewPort } from '../../utils/testing/cypress';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 /*
 function verifyCancelButton() {
@@ -62,7 +62,6 @@ function verifyAddButton() {
   cy.get('[data-testid="addButton"]').contains('button.add');
 }
 */
-
 describe('<AddDataProduct />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {

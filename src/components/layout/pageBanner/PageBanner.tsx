@@ -175,17 +175,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   return (
     <>
-      <Grid container direction="row" alignItems="center" justifyContent="space-space-be">
-        <Grid item xs={12}>
-          {row1()}
-        </Grid>
-        <Grid item xs={12}>
-          {row2()}
-        </Grid>
-        <Grid item xs={12}>
-          {row3()}
-        </Grid>
-      </Grid>
+      {row1()}
+      {row2()}
+      {row3()}
       {openDialog && (
         <ProposalDisplay
           proposal={getProposal()}

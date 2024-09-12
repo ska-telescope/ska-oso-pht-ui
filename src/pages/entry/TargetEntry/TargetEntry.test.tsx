@@ -3,11 +3,11 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import theme from '../../services/theme/theme';
+import theme from '../../../services/theme/theme';
 import TargetEntry from './TargetEntry';
-import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '../../utils/constants';
-import Target from '../../utils/types/target';
-import { THEME, viewPort } from '../../utils/testing/cypress';
+import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '../../../utils/constants';
+import Target from '../../../utils/types/target';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 // TODO : Replace setTarget stub with a real function, below would be ideal
 // const [newTarget, setNewTarget] = React.useState(null);

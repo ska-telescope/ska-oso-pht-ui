@@ -4,21 +4,21 @@ import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } f
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import AlertDialog from '../alerts/alertDialog/AlertDialog';
-import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../utils/constants';
-import { countWords, helpers } from '../../utils/helpers';
-import { Proposal } from '../../utils/types/proposal';
-import { validateTitlePage } from '../../utils/proposalValidation';
-import LatexPreviewModal from '../info/latexPreviewModal/latexPreviewModal';
-import ViewIcon from '../icon/viewIcon/viewIcon';
+import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
+import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../../utils/constants';
+import { countWords, helpers } from '../../../utils/helpers';
+import { Proposal } from '../../../utils/types/proposal';
+import { validateTitlePage } from '../../../utils/proposalValidation';
+import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
+import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 
 const LABEL_WIDTH = 2;
 const FIELD_WIDTH = 10;
-interface TitleContentProps {
+interface TitleEntryProps {
   page: number;
 }
 
-export default function TitleContent({ page }: TitleContentProps) {
+export default function TitleEntry({ page }: TitleEntryProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
