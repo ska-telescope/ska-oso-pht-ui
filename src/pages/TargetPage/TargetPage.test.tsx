@@ -1,16 +1,14 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import TargetPage from './TargetPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { Router } from 'react-router-dom';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../utils/testing/cypress';
 
 function mount(theTheme) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -30,7 +28,7 @@ describe('<TargetPage />', () => {
     });
   }
   it(`Verify target elements`, () => {
-    mount(THEME_LIGHT);
+    mount(THEME[1]);
     cy.get('#noSpecificTarget');
     cy.get('#listOfTargets').contains('listOfTargets.label');
     cy.get('#targetMosaic').contains('targetMosaic.label');

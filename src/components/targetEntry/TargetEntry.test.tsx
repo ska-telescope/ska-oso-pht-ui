@@ -2,14 +2,12 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../services/theme/theme';
 import TargetEntry from './TargetEntry';
 import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '../../utils/constants';
 import Target from '../../utils/types/target';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../utils/testing/cypress';
 
 // TODO : Replace setTarget stub with a real function, below would be ideal
 // const [newTarget, setNewTarget] = React.useState(null);
@@ -50,10 +48,6 @@ function editTarget() {
     velUnit: 0
   };
   return newTarget;
-}
-
-function viewPort() {
-  cy.viewport(2000, 1000);
 }
 
 function stubResolveButton() {
@@ -200,7 +194,7 @@ describe('<TargetEntry />', () => {
 
   describe('Content. Add, raType = EQUATORIAL', () => {
     beforeEach(() => {
-      mountingAdd(THEME_LIGHT, RA_TYPE_EQUATORIAL);
+      mountingAdd(THEME[1], RA_TYPE_EQUATORIAL);
     });
     it('Entering basic details', () => {
       verifyNameField();
@@ -224,7 +218,7 @@ describe('<TargetEntry />', () => {
 
   describe('Content. Add, raType = GALACTIC', () => {
     beforeEach(() => {
-      mountingAdd(THEME_LIGHT, RA_TYPE_GALACTIC);
+      mountingAdd(THEME[1], RA_TYPE_GALACTIC);
     });
     it('Entering basic details', () => {
       verifyNameField();
@@ -247,7 +241,7 @@ describe('<TargetEntry />', () => {
 
   describe('Content. Edit, raType = EQUATORIAL', () => {
     beforeEach(() => {
-      mountingEdit(THEME_LIGHT, RA_TYPE_EQUATORIAL);
+      mountingEdit(THEME[1], RA_TYPE_EQUATORIAL);
     });
     it('Entering basic details', () => {
       /*
@@ -264,7 +258,7 @@ describe('<TargetEntry />', () => {
 
   describe('Content. Edit, raType = GALACTIC', () => {
     beforeEach(() => {
-      mountingEdit(THEME_LIGHT, RA_TYPE_GALACTIC);
+      mountingEdit(THEME[1], RA_TYPE_GALACTIC);
     });
     /*
     it('Entering basic details', () => {

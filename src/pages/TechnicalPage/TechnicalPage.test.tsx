@@ -1,18 +1,17 @@
 /*
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import TechnicalPage from './TechnicalPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { Router } from 'react-router-dom';
+import { THEME, viewPort } from '../../utils/testing/cypress';
 */
 
-// const THEME = [THEME_DARK, THEME_LIGHT];
-
 /*
+
 function mounting(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>

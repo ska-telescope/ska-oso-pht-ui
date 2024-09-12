@@ -1,18 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import ProposalDisplay from './ProposalDisplay';
 import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
 import { Router } from 'react-router-dom';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
-
-function viewPort() {
-  cy.viewport(2000, 1000);
-}
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mounting(theTheme, proposal) {
   viewPort();
@@ -61,7 +55,7 @@ describe('Content', () => {
     cy.stub()
       .as('getProposal')
       .returns(GetMockProposal);
-    mounting(THEME_LIGHT);
+    mounting(THEME[1]);
   });
   it('verify content', () => {
     // cy.get('[data-testId="downloadButtonTestId"]').should('be.disabled');

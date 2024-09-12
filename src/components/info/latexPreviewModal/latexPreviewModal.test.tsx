@@ -1,16 +1,10 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import LatexPreviewModal from './latexPreviewModal';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 const SOME_TEXT = 'THIS IS SOME DUMMY TEXT';
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
 
 function mountingBasic(theTheme: any) {
   viewPort();

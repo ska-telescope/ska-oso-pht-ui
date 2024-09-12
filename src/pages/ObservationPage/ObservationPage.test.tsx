@@ -2,17 +2,12 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import ObservationPage from './ObservationPage';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { THEME, viewPort } from '../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const PAGE_NO = 5;
-
-function viewPort() {
-  cy.viewport(2000, 1000);
-}
 
 function getProposal(isEmpty: boolean) {
   if (false || isEmpty) {
@@ -160,7 +155,7 @@ describe('<ObservationContent />', () => {
   }
   it(`Renders - empty page`, () => {
     getProposal(false);
-    mount(THEME_LIGHT);
+    mount(THEME[1]);
     verifyHeader(PAGE_NO);
     verifyFooter(PAGE_NO);
     verifyAddObservationButton();
@@ -171,7 +166,7 @@ describe('<ObservationContent />', () => {
 
   it(`Renders - with data`, () => {
     getProposal(true);
-    mount(THEME_LIGHT);
+    mount(THEME[1]);
     verifyHeader(PAGE_NO);
     verifyFooter(PAGE_NO);
     verifyAddObservationButton();

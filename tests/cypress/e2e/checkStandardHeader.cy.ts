@@ -1,7 +1,9 @@
+// TODO : Move the viewPort to a common function
+
 describe('GIVEN that I am a PHT user', () => {
   context('WHEN I want to check the header', () => {
     beforeEach(() => {
-      cy.viewport(2000, 2000);
+      cy.viewport(1500, 1000);
       cy.visit('http://localhost:6101/');
       cy.get('[data-testid="skaoLogo"]', { timeout: 30000 });
     });

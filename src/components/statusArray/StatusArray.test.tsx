@@ -1,13 +1,11 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../services/theme/theme';
 import StatusArray from './StatusArray';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../utils/testing/cypress';
 
 function mountingBasic(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
