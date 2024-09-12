@@ -6,7 +6,7 @@ import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
-import TargetEntry from '../../../components/targetEntry/TargetEntry';
+import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';

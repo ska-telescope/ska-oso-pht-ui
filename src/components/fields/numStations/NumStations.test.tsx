@@ -32,9 +32,9 @@ function mountSized(theTheme: any, band: any) {
   );
 }
 
-function verifyField(inValue: number) {
+function verifyField(inValue: number, success: boolean = true) {
   cy.get('[data-testid="numStations"]').click();
-  // TODO : Extend to cover remaining test variations
+  cy.get('[data-testid="numStations"]').type(inValue.toString());
 }
 
 describe('<NumStations />', () => {
@@ -45,7 +45,9 @@ describe('<NumStations />', () => {
       });
       it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
         mountSized(theTheme, band);
+        verifyField(0);
         verifyField(1);
+        verifyField(2, false);
       });
     }
   }

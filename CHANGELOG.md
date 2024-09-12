@@ -9,6 +9,14 @@ Future
 * Sensitivity Calculations
    - Updated mappings
    - Updated display variations
+* Testing
+   - Renamed all component test files to conform to new standards
+   - Added standard functions to help simplify testing process
+* Responsiveness
+   - Pages are now starting to be enhanced so that tablets can correctly display the application
+* Codebase
+   - Consolidation of folder structure
+   - Code being reviewed and split to better conform to DRY
 
 ---
 

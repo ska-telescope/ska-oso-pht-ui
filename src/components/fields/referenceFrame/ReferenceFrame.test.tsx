@@ -8,7 +8,7 @@ import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 const value = 0;
 
-describe('<TitleContent />', () => {
+describe('<ReferenceFrame />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       viewPort();
