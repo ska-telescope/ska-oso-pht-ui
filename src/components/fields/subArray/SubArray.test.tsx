@@ -1,20 +1,15 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import SubArray from './SubArray';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { BANDWIDTH_TELESCOPE } from '../../../utils/constants';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const value = 0;
 
-function viewport() {
-  cy.viewport(2000, 1000);
-}
-
 function mountBasic(theTheme: any, band: any) {
-  viewport();
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -31,7 +26,7 @@ function mountBasic(theTheme: any, band: any) {
 }
 
 function mountSized(theTheme: any, band: any) {
-  viewport();
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>

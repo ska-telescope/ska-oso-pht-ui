@@ -1,15 +1,9 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import StatusIconDisplay from './statusIcon';
 import { STATUS_OK } from '../../../utils/constants';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mounting(theTheme: any) {
   viewPort();

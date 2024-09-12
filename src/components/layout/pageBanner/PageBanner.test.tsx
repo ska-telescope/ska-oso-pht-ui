@@ -1,13 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../services/theme/theme';
 import PageBanner from './PageBanner';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const PAGE_NO = 5;
 
 export function verifyHeader(pageNo: number) {
@@ -33,6 +32,7 @@ export function verifyHeader(pageNo: number) {
 describe('<PageBanner />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
+      viewPort();
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -51,6 +51,7 @@ describe('<PageBanner />', () => {
 describe('POST proposal/ bad request', () => {
   beforeEach(() => {
     // cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -63,6 +64,7 @@ describe('POST proposal/ bad request', () => {
 
 describe('PUT proposal (SAVE)', () => {
   beforeEach(() => {
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -93,6 +95,7 @@ describe('PUT proposal (SAVE)', () => {
 
 describe('POST proposal (VALIDATE)', () => {
   beforeEach(() => {
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>

@@ -2,20 +2,15 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import BaseButton from './Button';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 const TITLE = 'BASE BUTTON';
 
 const DISABLED = [true, false];
 const PRIMARY = [true, false];
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
 
 function mountingDefault(theTheme: any) {
   viewPort();
