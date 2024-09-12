@@ -344,7 +344,7 @@ function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
 }
 
 function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
-  verifySpectralResolution('0.21 kHz (5.3 m/s)');
+  verifySpectralResolution('0.21 kHz (5.3 m/s)'); // TODO finish check testing -> error here
   verifyEffectiveResolution('0.2 kHz (5.3 m/s)');
   /*
   cy.get('[data-testid="spectralResolution"]').click();
@@ -383,8 +383,6 @@ describe('<ObservationEntry />', () => {
     }
   }
     */
-
-  /*
 
   it('Verify the observation can be added to a group observation', () => {
     mount(THEME_LIGHT);
@@ -525,9 +523,7 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(2);
     verifyCentralFrequencyContinuumLowBand();
   });
-  */
 
-  /////////
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config AA4 LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);

@@ -346,11 +346,10 @@ export default function ObservationEntry() {
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const calculateSpectralResolution = () => {
-
     const getSpectralResolution = (inLabel: String, inValue: number | string) => {
       return lookupArrayValue(OBSERVATION[inLabel], inValue);
     };
-    
+
     switch (observingBand) {
       case BAND_1:
         return getSpectralResolution(
@@ -366,19 +365,19 @@ export default function ObservationEntry() {
         return isContinuum()
           ? OBSERVATION.SpectralResolutionOb5a[0].value
           : OBSERVATION.SpectralResolutionOb5aZoom.find(
-            item => item.bandWidthValue.toString() === bandwidth.toString()
-          ).value;
+              item => item.bandWidthValue.toString() === bandwidth.toString()
+            ).value;
       case BAND_5B:
         return isContinuum()
           ? OBSERVATION.SpectralResolutionOb5b[0].value
           : OBSERVATION.SpectralResolutionOb5bZoom.find(
-            item => item.bandWidthValue.toString() === bandwidth.toString()
-          ).value;
+              item => item.bandWidthValue.toString() === bandwidth.toString()
+            ).value;
       default:
         return isContinuum()
           ? OBSERVATION.SpectralResolutionObLow[0].value
           : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
-          .value;
+              .value;
     }
   };
 
@@ -536,7 +535,11 @@ export default function ObservationEntry() {
     return (
       <TextEntry
         testId="spectralResolution"
-        value={roundSpectralResolution(spectralResolution)} // spectralResolutionDisplay
+        value={
+          !isContinuum && observingBand === BAND_5B
+            ? roundSpectralResolution(spectralResolution)
+            : spectralResolution
+        }
         label={t('spectralResolution.label')}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
@@ -722,7 +725,7 @@ export default function ObservationEntry() {
   const centralFrequencyField = () => {
     const errorMessage = () =>
       Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
-        Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
+      Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
         ? t('centralFrequency.range.error')
         : '';
 

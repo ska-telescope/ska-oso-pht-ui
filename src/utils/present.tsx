@@ -48,4 +48,4 @@ export const roundSpectralResolution = (res: string) => {
     }
   }
   return res;
-}
+};
