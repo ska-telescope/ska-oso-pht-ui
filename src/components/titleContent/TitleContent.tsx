@@ -320,7 +320,18 @@ export default function TitleContent({ page }: TitleContentProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH}>
+        <Grid item xs={FIELD_WIDTH} display={{ xs: 'block', lg: 'none' }}>
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+            <Grid item xs={LABEL_WIDTH}>
+              {displayLabel(t('title.label') + ' *')}
+            </Grid>
+            <Grid item xs={12 - LABEL_WIDTH}>
+              {titleField()}
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item xs={FIELD_WIDTH} display={{ xs: 'none', lg: 'block' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
@@ -423,7 +434,7 @@ export default function TitleContent({ page }: TitleContentProps) {
         value={getTitle()}
         open={openTitleLatexModal}
         onClose={handleCloseTitleLatexModal}
-        title={t('latex.previewTitle')}
+        title={t('title.label')}
       />
       <AlertDialog
         open={openDialog}

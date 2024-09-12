@@ -13,6 +13,7 @@ export default defineConfig({
 
   component: {
     supportFile: 'tests/cypress/support/component.js',
+    specPattern: '**/*.test.{js,jsx,ts,tsx}',
     indexHtmlFile: 'tests/cypress/support/component-index.html',
     devServer: {
       framework: 'react',

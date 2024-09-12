@@ -1,7 +1,7 @@
 {
     "all": true,
     "check-coverage": false,
-    "exclude": ["**/*.cy.{js,jsx,ts,tsx}"],
+    "exclude": ["**/*.test.{js,jsx,ts,tsx}"],
     "reporter": ["cobertura", "html"],
     "report-dir": "./build/coverage",
     "temp-dir": "./build/.nyc_output",
