@@ -297,7 +297,7 @@ export default function LandingPage() {
   };
 
   const pageDescription = () => (
-    <Typography variant="h6" minHeight="5vh">
+    <Typography align="center" variant="h6" minHeight="5vh">
       {t('page.11.desc')}
     </Typography>
   );
@@ -321,10 +321,10 @@ export default function LandingPage() {
     />
   );
 
-  const searchEntryField = () => (
+  const searchEntryField = (testId: string) => (
     <SearchEntry
       label={t('search.label')}
-      testId="searchId"
+      testId={testId}
       value={searchTerm}
       setValue={setSearchTerm}
     />
@@ -367,21 +367,29 @@ export default function LandingPage() {
   );
 
   const row2 = () => (
-    <Grid container p={1} direction="row" justifyContent="space-evenly" alignItems="center">
+    <Grid container direction="row" alignItems="center" justifyContent="space-around">
       <Grid item xs={2}>
         {addProposalButton()}
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} lg={2}>
         {searchDropdown()}
       </Grid>
-      <Grid item xs={4} mt={-1}>
-        {searchEntryField()}
+      <Grid item lg={4} mt={-1} display={{ xs: 'none', lg: 'block' }}>
+        {searchEntryField('searchId')}
       </Grid>
     </Grid>
   );
 
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-around">
+      <Grid item xs={10} display={{ xs: 'block', lg: 'none' }}>
+        {searchEntryField('searchId2')}
+      </Grid>
+    </Grid>
+  );
+
+  const row4 = () => (
+    <Grid pt={1} container direction="row" alignItems="center" justifyContent="space-around">
       <Grid item xs={10}>
         {!axiosViewError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
@@ -406,6 +414,7 @@ export default function LandingPage() {
         {row1()}
         {row2()}
         {row3()}
+        {row4()}
       </Stack>
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}

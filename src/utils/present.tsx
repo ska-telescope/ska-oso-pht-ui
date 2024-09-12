@@ -1,6 +1,7 @@
 import React from 'react';
 import Latex from 'react-latex-next';
 import { t } from 'i18next';
+import 'katex/dist/katex.min.css';
 
 export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
 
