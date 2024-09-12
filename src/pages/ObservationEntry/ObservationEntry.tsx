@@ -91,7 +91,6 @@ export default function ObservationEntry() {
   const [robust, setRobust] = React.useState(3);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
-  const [spectralResolutionDisplay, setSpectralResolutionDisplay] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(4);
@@ -347,24 +346,17 @@ export default function ObservationEntry() {
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const calculateSpectralResolution = () => {
-    const getSpectralResolutionLowZoom = () => {
-      const spectralRes = OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
-        .value
-      /*use rounded for display in form, non rounded to save in observation & send to sens calc*/
-      const rounded = roundSpectralResolution(spectralRes);
-      setSpectralResolutionDisplay(rounded)
-      return spectralRes;
-    }
+
     const getSpectralResolution = (inLabel: String, inValue: number | string) => {
       return lookupArrayValue(OBSERVATION[inLabel], inValue);
     };
-
+    
     switch (observingBand) {
       case BAND_1:
         return getSpectralResolution(
           isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
           calculateFrequency()
-        ); // round here?
+        );
       case BAND_2:
         return getSpectralResolution(
           isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
@@ -385,7 +377,8 @@ export default function ObservationEntry() {
       default:
         return isContinuum()
           ? OBSERVATION.SpectralResolutionObLow[0].value
-          : getSpectralResolutionLowZoom();
+          : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
+          .value;
     }
   };
 
@@ -543,7 +536,7 @@ export default function ObservationEntry() {
     return (
       <TextEntry
         testId="spectralResolution"
-        value={spectralResolutionDisplay}
+        value={roundSpectralResolution(spectralResolution)} // spectralResolutionDisplay
         label={t('spectralResolution.label')}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}

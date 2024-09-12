@@ -291,18 +291,18 @@ function verifyGroupObservations() {
 }
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
-  // verifySpectralResolution('14.1 Hz  (21.2 m/s)');
+  verifySpectralResolution('14.1 Hz (21.2 m/s)');
   verifySpectralAveraging(1);
   verifyEffectiveResolution('14.1 Hz (21.2 m/s)');
   verifyBandwidth(3, '97.7 KHz');
-  verifySpectralResolution('56.5 Hz  (84.7 m/s)');
-  // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
+  verifySpectralResolution('56.5 Hz (84.7 m/s)');
+  verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
   enterSpectralAveraging(3);
-  // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
+  verifyEffectiveResolution('169.5 Hz (254.1 m/s)');
   enterSpectralAveraging(5);
-  // verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
+  verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
   verifyBandwidth(7, '1562.5 KHz');
-  // verifySpectralResolution('904.2 Hz  (1.4 km/s)');
+  verifySpectralResolution('904.2 Hz (1.4 km/s)');
   verifyEffectiveResolution('4521.1 Hz (6.8 km/s)');
 }
 
@@ -536,8 +536,6 @@ describe('<ObservationEntry />', () => {
     verifyLowZoomBandwidthSpectralEffectiveResolutionA4();
   });
 
-  /*
-
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band2', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(2);
@@ -561,5 +559,4 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
-  */
 });
