@@ -35,3 +35,17 @@ export const presentDate = (inString: string, reverse: boolean = false) =>
 export const presentTime = (inString: string) => t('time_format', { date: new Date(inString) });
 export const presentDateTime = (inString: string, reverse: boolean = false) =>
   presentDate(inString, reverse) + ' ' + presentTime(inString);
+
+export const roundSpectralResolution = (res: string) => {
+  const spaceIndex = res.indexOf(' ');
+  if (spaceIndex >= 0) {
+    const numberStr = res.substring(0, spaceIndex);
+    const number = Number(numberStr);
+    if (!isNaN(number)) {
+      const roundedNumber = number.toFixed(1);
+      const unitStr = res.substring(spaceIndex);
+      return roundedNumber + unitStr;
+    }
+  }
+  return res;
+}

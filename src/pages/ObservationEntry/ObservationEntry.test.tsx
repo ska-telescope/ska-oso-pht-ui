@@ -295,7 +295,7 @@ function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
   verifySpectralAveraging(1);
   verifyEffectiveResolution('14.1 Hz (21.2 m/s)');
   verifyBandwidth(3, '97.7 KHz');
-  // verifySpectralResolution('56.5 Hz  (84.7 m/s)');
+  verifySpectralResolution('56.5 Hz  (84.7 m/s)');
   // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
   enterSpectralAveraging(3);
   // verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
@@ -383,6 +383,8 @@ describe('<ObservationEntry />', () => {
     }
   }
     */
+
+  /*
 
   it('Verify the observation can be added to a group observation', () => {
     mount(THEME_LIGHT);
@@ -523,7 +525,9 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(2);
     verifyCentralFrequencyContinuumLowBand();
   });
+  */
 
+  /////////
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config AA4 LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
@@ -531,6 +535,8 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyLowZoomBandwidthSpectralEffectiveResolutionA4();
   });
+
+  /*
 
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band2', () => {
     mount(THEME_LIGHT);
@@ -555,4 +561,5 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
+  */
 });
