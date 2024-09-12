@@ -344,7 +344,7 @@ function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
 }
 
 function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
-  verifySpectralResolution('0.21 kHz (5.3 m/s)'); // TODO finish check testing -> error here
+  verifySpectralResolution('0.21 kHz (5.3 m/s)');
   verifyEffectiveResolution('0.2 kHz (5.3 m/s)');
   /*
   cy.get('[data-testid="spectralResolution"]').click();

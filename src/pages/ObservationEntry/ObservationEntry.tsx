@@ -536,7 +536,7 @@ export default function ObservationEntry() {
       <TextEntry
         testId="spectralResolution"
         value={
-          !isContinuum && observingBand === BAND_5B
+          !isContinuum() && observingBand === BAND_LOW
             ? roundSpectralResolution(spectralResolution)
             : spectralResolution
         }
