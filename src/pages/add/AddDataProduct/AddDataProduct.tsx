@@ -179,8 +179,7 @@ export default function AddDataProduct() {
   };
 
   const imageSizeField = () => {
-    const errorText = () => (imageSizeValue ? '' : t('imageSize.error'));
-
+    const errorText = () => (Number(imageSizeValue) ? '' : t('imageSize.error'));
     const setTheNumber = (inNum: number) => {
       const str = Math.abs(inNum).toString();
       const num = Number(str);
