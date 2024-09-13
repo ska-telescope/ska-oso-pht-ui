@@ -347,7 +347,15 @@ export default function ObservationEntry() {
 
   const calculateSpectralResolution = () => {
     const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-      return lookupArrayValue(OBSERVATION[inLabel], inValue);
+      if (isContinuum()) {
+        return lookupArrayValue(OBSERVATION[inLabel], inValue);
+      } else {
+        return OBSERVATION[inLabel].find(
+          e =>
+            e.lookup.toString() === inValue.toString() &&
+            e.bandWidthValue?.toString() === bandwidth?.toString()
+        )?.value;
+      }
     };
 
     switch (observingBand) {

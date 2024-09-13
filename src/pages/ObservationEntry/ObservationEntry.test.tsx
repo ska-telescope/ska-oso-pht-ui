@@ -214,7 +214,8 @@ function enterSpectralAveragingLow(contents: number) {
 function verifySpectralAveragingMid(contents: number) {
   cy.get('#spectralAveraging').contains(contents);
 }
-function enterSpectralAveragingMid(contents: number) { // HERE
+function enterSpectralAveragingMid(contents: number) {
+  // HERE
   cy.get('#spectralAveraging').click();
   cy.get(`[data-value=${contents}]`).click();
   verifySpectralAveragingMid(contents);
@@ -322,14 +323,12 @@ function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
   // verifySpectralResolution('1.68 kHz (371.7 m/s)');
   // verifyEffectiveResolution('1.68 kHz (371.7 m/s)');
 
-
   verifyBandwidth(2, '6.25 MHz'); // TODO spectral res not updated on bandwidth change, check code
 
   cy.get('[data-testid="spectralResolution"]').click();
   cy.get('[data-value="2"]').click();
   verifySpectralResolution('1.68 kHz (371.7 m/s)');
   verifyEffectiveResolution('3.36 kHz (743.4 m/s)');
-
 
   /*
   cy.get('[data-testid="spectralResolution"]').click();
@@ -543,7 +542,7 @@ describe('<ObservationEntry />', () => {
     verifyLowZoomBandwidthSpectralEffectiveResolutionA4();
   });
   */
-  
+
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band2', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(2);
