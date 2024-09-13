@@ -315,36 +315,24 @@ function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
 }
 
 function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
-  // HERE
   verifySpectralResolution('0.21 kHz (46.5 m/s)');
   verifySpectralAveragingMid(1);
   verifyEffectiveResolution('0.2 kHz (46.5 m/s)');
-  verifyBandwidth(4, '25 MHz');
-  // verifySpectralResolution('1.68 kHz (371.7 m/s)');
-  // verifyEffectiveResolution('1.68 kHz (371.7 m/s)');
-
-  verifyBandwidth(2, '6.25 MHz'); // TODO spectral res not updated on bandwidth change, check code
-
-  cy.get('[data-testid="spectralResolution"]').click();
-  cy.get('[data-value="2"]').click();
-  verifySpectralResolution('1.68 kHz (371.7 m/s)');
-  verifyEffectiveResolution('3.36 kHz (743.4 m/s)');
-
-  /*
-  cy.get('[data-testid="spectralResolution"]').click();
-  cy.get('[data-value="8"]').click();
-  verifySpectralResolution('1.68 kHz (371.7 m/s)');
-  verifyEffectiveResolution('13.44 kHz (3.0 km/s)');
+  verifyBandwidth(2, '6.25 MHz');
+  verifySpectralResolution('0.42 kHz (92.9 m/s)');
+  verifyEffectiveResolution('0.4 kHz (92.9 m/s)');
+  enterSpectralAveragingMid(8);
+  verifySpectralResolution('0.42 kHz (92.9 m/s)');
+  verifyEffectiveResolution('3.4 kHz (743.4 m/s)');
   verifyBandwidth(3, '12.5 MHz');
   verifySpectralResolution('0.84 kHz (185.8 m/s)');
-  verifyEffectiveResolution('6.72 kHz (1.5 km/s)');
-  cy.get('[id="effectiveResolution"]').click();
-  cy.get('[data-value="1"]').click();
-  verifyEffectiveResolution('0.84 kHz (185.8 m/s)');
+  verifyEffectiveResolution('6.7 kHz (1.5 km/s)');
+  enterSpectralAveragingMid(1);
+  verifySpectralResolution('0.84 kHz (185.8 m/s)');
+  verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
   verifySubArrayConfiguration(5);
-  verifySpectralResolution('0.84 kHz (192.2 m/s)');
-  verifyEffectiveResolution('0.84 kHz (192.2 m/s)');
-  */
+  verifySpectralResolution('0.84 kHz (185.8 m/s)');
+  verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
 }
 
 function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
@@ -548,7 +536,7 @@ describe('<ObservationEntry />', () => {
     verifyObservingBand(2);
     verifySubArrayConfiguration(6);
     verifyObservationTypeZoom();
-    verifyMidBand2ZoomBandwidthSpectralEffectiveResolution();
+    verifyMidBand2ZoomBandwidthSpectralEffectiveResolution(); // DONE TODO check other tests
   });
 
   /*
