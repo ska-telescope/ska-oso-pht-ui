@@ -54,6 +54,7 @@ import ObservingBandField from '../../../components/fields/observingBand/Observi
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import NumStations from '../../../components/fields/numStations/NumStations';
+import { roundSpectralResolution } from '../../../utils/present';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -338,15 +339,24 @@ export default function ObservationEntry() {
 
   React.useEffect(() => {
     setEffectiveResolution(calculateEffectiveResolution());
-  }, [spectralResolution]);
+  }, [spectralResolution, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const calculateSpectralResolution = () => {
-    const getSpectralResolution = (inLabel: String, inValue: number | string) =>
-      lookupArrayValue(OBSERVATION[inLabel], inValue);
+    const getSpectralResolution = (inLabel: String, inValue: number | string) => {
+      if (isContinuum()) {
+        return lookupArrayValue(OBSERVATION[inLabel], inValue);
+      } else {
+        return OBSERVATION[inLabel].find(
+          e =>
+            e.lookup.toString() === inValue.toString() &&
+            e.bandWidthValue?.toString() === bandwidth?.toString()
+        )?.value;
+      }
+    };
 
     switch (observingBand) {
       case BAND_1:
@@ -533,7 +543,11 @@ export default function ObservationEntry() {
     return (
       <TextEntry
         testId="spectralResolution"
-        value={spectralResolution}
+        value={
+          !isContinuum() && observingBand === BAND_LOW
+            ? roundSpectralResolution(spectralResolution)
+            : spectralResolution
+        }
         label={t('spectralResolution.label')}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
