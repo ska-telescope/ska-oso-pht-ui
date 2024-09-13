@@ -3,15 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  AlertColorTypes,
-  DropDown,
-  LABEL_POSITION,
-  NumberEntry,
-  TickBox
-} from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DropDown, LABEL_POSITION, NumberEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../utils/constants';
+import { IMAGE_SIZE_UNITS, LAB_POSITION, NAV, STATUS_OK } from '../../utils/constants';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import Proposal from '../../utils/types/proposal';
@@ -21,7 +15,6 @@ import { SensCalcResults } from '../../utils/types/sensCalcResults';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 import AddButton from '../../components/button/Add/Add';
-import { LAB_POSITION } from '../../utils/constants';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
