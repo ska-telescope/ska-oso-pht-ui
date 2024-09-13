@@ -1,12 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../../services/theme/theme';
 import TargetFileImport from './TargetFileImport';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../../utils/testing/cypress';
 
 describe('<TargetFileImport />', () => {
   for (const theTheme of THEME) {
@@ -25,10 +23,10 @@ describe('<TargetFileImport />', () => {
 
 describe('Content', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
-        <ThemeProvider theme={theme(THEME_LIGHT)}>
+        <ThemeProvider theme={theme(THEME[1])}>
           <CssBaseline />
           <TargetFileImport raType={0} />
         </ThemeProvider>

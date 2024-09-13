@@ -1,20 +1,15 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import NumStations from './NumStations';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { BANDWIDTH_TELESCOPE } from '../../../utils/constants';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const value = 0;
 
-function viewport() {
-  cy.viewport(2000, 1000);
-}
-
 function mountBasic(theTheme: any, band: any) {
-  viewport();
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -26,7 +21,7 @@ function mountBasic(theTheme: any, band: any) {
 }
 
 function mountSized(theTheme: any, band: any) {
-  viewport();
+  viewPort();
   cy.mount(
     <StoreProvider>
       <ThemeProvider theme={theme(theTheme)}>
@@ -37,9 +32,9 @@ function mountSized(theTheme: any, band: any) {
   );
 }
 
-function verifyField(inValue: number) {
+function verifyField(inValue: number, success: boolean = true) {
   cy.get('[data-testid="numStations"]').click();
-  // TODO : Extend to cover remaining test variations
+  cy.get('[data-testid="numStations"]').type(inValue.toString());
 }
 
 describe('<NumStations />', () => {
@@ -50,7 +45,9 @@ describe('<NumStations />', () => {
       });
       it(`Theme ${theTheme}, Band ${band.value}, suffix`, () => {
         mountSized(theTheme, band);
+        verifyField(0);
         verifyField(1);
+        verifyField(2, false);
       });
     }
   }

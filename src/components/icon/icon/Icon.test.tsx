@@ -1,17 +1,12 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/DownloadRounded';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import Icon from './Icon';
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-const THEME = [THEME_DARK, THEME_LIGHT];
 const TOOLTIP = 'Tooltip';
 const DISABLED = [true, false];
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
 
 function mountingDefault(theTheme: any) {
   viewPort();

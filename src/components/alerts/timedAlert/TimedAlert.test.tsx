@@ -3,16 +3,11 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import TimedAlert from './TimedAlert';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 const DELAY = 5;
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
 
 function mountingDefault(theTheme: any) {
   viewPort();

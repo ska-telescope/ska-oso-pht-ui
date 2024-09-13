@@ -1,14 +1,12 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import theme from '../../../services/theme/theme';
 import GridMembers from './GridMembers';
 import { DEFAULT_PI } from '../../../utils/constants';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mounting(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -18,7 +16,7 @@ function mounting(theTheme: any) {
 }
 
 function mountingWithRow(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -30,7 +28,7 @@ function mountingWithRow(theTheme: any) {
 function mountingWithRowThesis(theTheme: any) {
   const DEFAULT_PI_WITH_THESIS = { ...DEFAULT_PI, phdThesis: true };
 
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
@@ -40,7 +38,7 @@ function mountingWithRowThesis(theTheme: any) {
 }
 
 function mountingWithRowAction(theTheme: any) {
-  cy.viewport(2000, 1000);
+  viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />

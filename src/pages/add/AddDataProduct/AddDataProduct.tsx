@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
@@ -10,19 +10,19 @@ import {
   NumberEntry,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import PageBanner from '../../components/layout/pageBanner/PageBanner';
-import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../utils/constants';
-import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
-import Proposal from '../../utils/types/proposal';
-import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import ImageWeightingField from '../../components/fields/imageWeighting/imageWeighting';
-import { SensCalcResults } from '../../utils/types/sensCalcResults';
-import { DataProductSDP } from '../../utils/types/dataProduct';
-import Observation from '../../utils/types/observation';
-import AddButton from '../../components/button/Add/Add';
-import { LAB_POSITION } from '../../utils/constants';
-import { presentUnits } from '../../utils/present';
+import PageBanner from '../../../components/layout/pageBanner/PageBanner';
+import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../../utils/constants';
+import Alert from '../../../components/alerts/standardAlert/StandardAlert';
+import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import Proposal from '../../../utils/types/proposal';
+import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
+import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
+import { SensCalcResults } from '../../../utils/types/sensCalcResults';
+import { DataProductSDP } from '../../../utils/types/dataProduct';
+import Observation from '../../../utils/types/observation';
+import AddButton from '../../../components/button/Add/Add';
+import { LAB_POSITION } from '../../../utils/constants';
+import { presentUnits } from '../../../utils/present';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -179,8 +179,7 @@ export default function AddDataProduct() {
   };
 
   const imageSizeField = () => {
-    const errorText = () => (imageSizeValue ? '' : t('imageSize.error'));
-
+    const errorText = () => (Number(imageSizeValue) ? '' : t('imageSize.error'));
     const setTheNumber = (inNum: number) => {
       const str = Math.abs(inNum).toString();
       const num = Number(str);
@@ -282,7 +281,7 @@ export default function AddDataProduct() {
         elevation={0}
       >
         <Grid
-          p={1}
+          p={2}
           container
           direction="row"
           alignItems="space-between"
@@ -299,10 +298,8 @@ export default function AddDataProduct() {
   };
 
   return (
-    <Grid p={1} container direction="column" alignItems="space-evenly" justifyContent="center">
-      <Grid item>
-        <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
-      </Grid>
+    <Box p={2}>
+      <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
 
       <Grid
         p={1}
@@ -338,6 +335,6 @@ export default function AddDataProduct() {
         </Grid>
       </Grid>
       {pageFooter()}
-    </Grid>
+    </Box>
   );
 }

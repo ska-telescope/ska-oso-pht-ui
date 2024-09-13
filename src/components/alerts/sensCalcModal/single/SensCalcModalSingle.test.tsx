@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { Router } from 'react-router-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../../services/theme/theme';
@@ -11,13 +10,12 @@ import {
   SENSCALC_CONTINUUM_MOCKED,
   SENSCALC_SPECTRAL_MOCKED
 } from '../../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../../utils/testing/cypress';
 
 describe('<SensCalcModalSingle />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
-      cy.viewport(2000, 1000);
+      viewPort();
       cy.mount(
         <StoreProvider>
           <ThemeProvider theme={theme(theTheme)}>
@@ -36,7 +34,7 @@ describe('<SensCalcModalSingle />', () => {
 
 describe('Modal with no data', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -59,7 +57,7 @@ describe('Modal with no data', () => {
 
 describe('Modal with data - Continuum', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -128,7 +126,7 @@ describe('Modal with data - Continuum', () => {
 
 describe('Modal with data - Spectral', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>

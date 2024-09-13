@@ -2,18 +2,17 @@
 import React from 'react';
 import { Router } from 'react-router';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { THEME_DARK, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import theme from '../../../../services/theme/theme';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { SENSCALC_EMPTY_MOCKED } from '../../../../services/axios/sensitivityCalculator/SensCalcResultsMOCK';
-
-const THEME = [THEME_DARK, THEME_LIGHT];
+import { THEME, viewPort } from '../../../../utils/testing/cypress';
 
 /*
+  
 describe('Modal with no data', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -39,7 +38,7 @@ describe('Modal with no data', () => {
 
 describe('Modal with data - Continuum', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -111,7 +110,7 @@ describe('Modal with data - Continuum', () => {
 
 describe('Modal with data - Spectral', () => {
   beforeEach(() => {
-    cy.viewport(2000, 1000);
+    viewPort();
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>
@@ -175,10 +174,6 @@ function closeButtonClick() {
   cy.get('[data-testid="baseButtonTestId"]').click();
 }
 */
-
-function viewPort() {
-  cy.viewport(1500, 1000);
-}
 
 function mounting(theTheme: any, observation, data) {
   viewPort();
