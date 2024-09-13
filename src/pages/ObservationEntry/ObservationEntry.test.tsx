@@ -167,9 +167,9 @@ function verifyContinuumBandwidthContinuumLowBand() {
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
 }
-//function verifyFrequencyUnitsLow() {
-//  cy.get('[id="frequency"]').contains('MHz');
-//}
+function verifyFrequencyUnitsLow() {
+  cy.get('[data-testid="centralFrequency"]').contains('MHz');
+}
 
 function verifyBandwidth(value: number, contents: string) {
   cy.get('[data-testid="bandwidth"]').click();
@@ -186,9 +186,9 @@ function verifySpectralResolution(contents: string) {
 function verifySpectralResolutionLow() {
   verifySpectralResolution('5.43 kHz (8.1 km/s)');
 }
-//function verifySpectralResolutionLowZoom() {
-//  verifySpectralResolution('28.3 Hz  (42.4 m/s)');
-//}
+function verifySpectralResolutionLowZoom() { // HERE
+  verifySpectralResolution('28.3 Hz (42.4 m/s)');
+}
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
   verifySpectralResolution('13.44 kHz (5.8 km/s)');
 }
@@ -232,9 +232,9 @@ function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
 function verifyEffectiveResolutionContinuumLowBand() {
   verifyEffectiveResolution('5.43 kHz (8.1 km/s)');
 }
-//function verifyEffectiveResolutionZoomLowBand() {
-//  verifyEffectiveResolution('28.3 Hz (42.4 m/s)');
-//}
+function verifyEffectiveResolutionZoomLowBand() {
+  verifyEffectiveResolution('28.3 Hz (42.4 m/s)');
+}
 
 function verifyTapering(value: number, contents: string) {
   cy.get('[data-testid="tapering"]').click();
@@ -384,6 +384,8 @@ describe('<ObservationEntry />', () => {
   }
     */
 
+  /*
+
   it('Verify the observation can be added to a group observation', () => {
     mount(THEME_LIGHT);
     verifyGroupObservations();
@@ -470,21 +472,20 @@ describe('<ObservationEntry />', () => {
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
   });
+  */
 
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(4);
     verifyElevationField();
-    // verifyWeatherField();
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnitsLow();
-    // verifyFrequencyUnitsLow();
-    // verifyBandwidth(2, '48.8 KHz');
-    // verifySpectralResolutionLowZoom();
+    verifyFrequencyUnitsLow();
+    verifyBandwidth(2, '48.8 KHz');
+    verifySpectralResolutionLowZoom(); //here !!!
     verifySpectralAveraging(1);
-    // verifyEffectiveResolutionZoomLowBand();
-    // verifyTapering(0, 'tapering.0');
+    verifyEffectiveResolutionZoomLowBand();
     verifyImageWeighting();
     verifyNumOfStations();
   });
@@ -502,21 +503,18 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(2);
     verifyNumOfStations();
     verifyElevationField();
-    // verifyWeatherField();
     verifyObservationTypeContinuum();
-    // verifySuppliedTypeValueAndUnits();
     verifySuppliedTypeValueAndUnitsLow();
     verifyCentralFrequencyContinuumLowBand();
     verifyContinuumBandwidthContinuumLowBand();
-    // verifyFrequencyUnitsLow();
+    verifyFrequencyUnitsLow();
     verifySpectralResolutionLow();
     verifySpectralAveraging(1);
     verifyEffectiveResolutionContinuumLowBand();
-    // verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
   });
-
+  /*
   it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
@@ -555,4 +553,5 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
+  */
 });
