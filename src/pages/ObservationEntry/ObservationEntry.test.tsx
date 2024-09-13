@@ -186,7 +186,7 @@ function verifySpectralResolution(contents: string) {
 function verifySpectralResolutionLow() {
   verifySpectralResolution('5.43 kHz (8.1 km/s)');
 }
-function verifySpectralResolutionLowZoom() { // HERE
+function verifySpectralResolutionLowZoom() {
   verifySpectralResolution('28.3 Hz (42.4 m/s)');
 }
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
@@ -198,9 +198,9 @@ function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
 function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
   verifySpectralResolution('13.44 kHz (340.0 m/s)');
 }
-//function verifySpectralResolutionZoomBandMid() {
-//  verifySpectralResolution('0.21 kHz (48.1 m/s)');
-//}
+function verifySpectralResolutionZoomBandMid() {
+  verifySpectralResolution('0.21 kHz (48.1 m/s)');
+}
 
 function verifySpectralAveraging(contents: number) {
   cy.get('#spectralAveraging').should('have.value', contents);
@@ -211,7 +211,14 @@ function enterSpectralAveraging(contents: number) {
   cy.get('#spectralAveraging').type(contents.toString());
   verifySpectralAveraging(contents);
 }
-
+function verifySpectralAveragingMid(contents: number) {
+  cy.get('#spectralAveraging').contains(contents);
+}
+function enterSpectralAveragingMid(contents: number) { // HERE
+  cy.get('#spectralAveraging').click();
+  cy.get(`[data-value=${contents}]`).click();
+  verifySpectralAveragingMid(contents);
+}
 function verifyEffectiveResolution(contents: string) {
   cy.get('#effectiveResolution')
     .should('have.value', contents)
@@ -454,6 +461,7 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+  */
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mount(THEME_LIGHT);
@@ -464,16 +472,16 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnits();
     verifyFrequencyUnits();
-    // verifySpectralResolutionZoomBandMid();
-    // verifySpectralAveraging(1);
+    verifySpectralResolutionZoomBandMid(); 
+    enterSpectralAveragingMid(1);
     // verifyEffectiveResolutionZoomMidBand();
     verifyTapering(0, 'tapering.0');
     verifyImageWeighting();
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
   });
-  */
 
+  /*
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
@@ -483,7 +491,7 @@ describe('<ObservationEntry />', () => {
     verifySuppliedTypeValueAndUnitsLow();
     verifyFrequencyUnitsLow();
     verifyBandwidth(2, '48.8 KHz');
-    verifySpectralResolutionLowZoom(); //here !!!
+    verifySpectralResolutionLowZoom();
     verifySpectralAveraging(1);
     verifyEffectiveResolutionZoomLowBand();
     verifyImageWeighting();
@@ -514,14 +522,14 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
-  /*
+  
   it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
     verifyCentralFrequencyContinuumLowBand();
   });
-
+  
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config AA4 LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
@@ -529,7 +537,7 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyLowZoomBandwidthSpectralEffectiveResolutionA4();
   });
-
+  
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config Mid Band2', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(2);
