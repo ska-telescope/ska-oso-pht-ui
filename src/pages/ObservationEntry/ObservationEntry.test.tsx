@@ -202,14 +202,14 @@ function verifySpectralResolutionZoomBandMid() {
   verifySpectralResolution('0.21 kHz (48.1 m/s)');
 }
 
-function verifySpectralAveraging(contents: number) {
+function verifySpectralAveragingLow(contents: number) {
   cy.get('#spectralAveraging').should('have.value', contents);
 }
-function enterSpectralAveraging(contents: number) {
+function enterSpectralAveragingLow(contents: number) {
   cy.get('#spectralAveraging').click();
   cy.get('#spectralAveraging').clear();
   cy.get('#spectralAveraging').type(contents.toString());
-  verifySpectralAveraging(contents);
+  verifySpectralAveragingLow(contents);
 }
 function verifySpectralAveragingMid(contents: number) {
   cy.get('#spectralAveraging').contains(contents);
@@ -233,9 +233,9 @@ function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
 function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
   verifyEffectiveResolution('13.44 kHz (340.0 m/s)');
 }
-//function verifyEffectiveResolutionZoomMidBand() {
-//  verifyEffectiveResolution('13.44 kHz (3.0 km/s)');
-//}
+function verifyEffectiveResolutionZoomMidBand2() {
+  verifyEffectiveResolution('0.2 kHz (48.1 m/s)');
+}
 function verifyEffectiveResolutionContinuumLowBand() {
   verifyEffectiveResolution('5.43 kHz (8.1 km/s)');
 }
@@ -299,14 +299,14 @@ function verifyGroupObservations() {
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
   verifySpectralResolution('14.1 Hz (21.2 m/s)');
-  verifySpectralAveraging(1);
+  verifySpectralAveragingLow(1);
   verifyEffectiveResolution('14.1 Hz (21.2 m/s)');
   verifyBandwidth(3, '97.7 KHz');
   verifySpectralResolution('56.5 Hz (84.7 m/s)');
   verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
-  enterSpectralAveraging(3);
+  enterSpectralAveragingLow(3);
   verifyEffectiveResolution('169.5 Hz (254.1 m/s)');
-  enterSpectralAveraging(5);
+  enterSpectralAveragingLow(5);
   verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
   verifyBandwidth(7, '1562.5 KHz');
   verifySpectralResolution('904.2 Hz (1.4 km/s)');
@@ -391,8 +391,6 @@ describe('<ObservationEntry />', () => {
   }
     */
 
-  /*
-
   it('Verify the observation can be added to a group observation', () => {
     mount(THEME_LIGHT);
     verifyGroupObservations();
@@ -417,7 +415,7 @@ describe('<ObservationEntry />', () => {
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb1SubArrayValue20();
     verifySpectralResolutionContinuumOb1SubArrayValue20();
-    // verifySpectralAveraging(1);
+    enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb1SubArrayValue20();
     verifyTapering(0, 'tapering.0');
     verifySubBands();
@@ -436,7 +434,7 @@ describe('<ObservationEntry />', () => {
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb5aSubArrayValue20();
     verifySpectralResolutionContinuumOb5aSubArrayValue20();
-    // verifySpectralAveraging(1);
+    enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb5aSubArrayValue20();
     verifyTapering(0, 'tapering.0');
     verifySubBands();
@@ -455,13 +453,12 @@ describe('<ObservationEntry />', () => {
     verifyFrequencyUnits();
     verifyContinuumBandwidthContinuumOb5bSubArrayValue20();
     verifySpectralResolutionContinuumOb5bSubArrayValue20();
-    // verifySpectralAveraging(1);
+    enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb5bSubArrayValue20();
     verifyTapering(0, 'tapering.0');
     verifySubBands();
     verifyImageWeighting();
   });
-  */
 
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mount(THEME_LIGHT);
@@ -474,14 +471,13 @@ describe('<ObservationEntry />', () => {
     verifyFrequencyUnits();
     verifySpectralResolutionZoomBandMid(); 
     enterSpectralAveragingMid(1);
-    // verifyEffectiveResolutionZoomMidBand();
+    verifyEffectiveResolutionZoomMidBand2();
     verifyTapering(0, 'tapering.0');
     verifyImageWeighting();
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
   });
 
-  /*
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mount(THEME_LIGHT);
     verifyObservingBand(0);
@@ -492,7 +488,7 @@ describe('<ObservationEntry />', () => {
     verifyFrequencyUnitsLow();
     verifyBandwidth(2, '48.8 KHz');
     verifySpectralResolutionLowZoom();
-    verifySpectralAveraging(1);
+    verifySpectralAveragingLow(1);
     verifyEffectiveResolutionZoomLowBand();
     verifyImageWeighting();
     verifyNumOfStations();
@@ -517,7 +513,7 @@ describe('<ObservationEntry />', () => {
     verifyContinuumBandwidthContinuumLowBand();
     verifyFrequencyUnitsLow();
     verifySpectralResolutionLow();
-    verifySpectralAveraging(1);
+    verifySpectralAveragingLow(1);
     verifyEffectiveResolutionContinuumLowBand();
     verifySubBands();
     verifyImageWeighting();
@@ -561,5 +557,4 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
-  */
 });
