@@ -182,6 +182,11 @@ export const clickToLinkTargetAndObservation = () => {
   cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
+export const clickSensitivityCalculatorResults = () => {
+  cy.get('[aria-label="Status : OK "]').should('exist');
+  cy.get('[aria-label="Status : OK "]').click();
+};
+
 export const clickToValidateProposal = () => {
   cy.get('[data-testid="validationBtnTestId"]').should('exist');
   cy.get('[data-testid="validationBtnTestId"]').click();
