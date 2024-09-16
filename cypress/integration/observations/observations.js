@@ -1,14 +1,19 @@
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import {
   addM2TargetUsingResolve,
-  clickAddObservation, clickObservationFromTable,
-  clickObservationSetup, clickSensitivityCalculatorResults, clickToAddTarget,
-  clickToGeneralPage, clickToLinkTargetAndObservation,
+  clickAddObservation,
+  clickObservationFromTable,
+  clickObservationSetup,
+  clickSensitivityCalculatorResults,
+  clickToAddTarget,
+  clickToGeneralPage,
+  clickToLinkTargetAndObservation,
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  landingPageConfirmed, verifyObservationInTable
+  landingPageConfirmed,
+  verifyObservationInTable
 } from '../common/common';
 
 Given('I have access to the PHT Application', () => {
@@ -16,13 +21,13 @@ Given('I have access to the PHT Application', () => {
 });
 
 And('I create a proposal', () => {
-  createStandardProposal()
+  createStandardProposal();
 });
 
 And('I have created an M2 target', () => {
-  clickToGeneralPage()
-  clickToSciencePage()
-  clickToTargetPage()
+  clickToGeneralPage();
+  clickToSciencePage();
+  clickToTargetPage();
   addM2TargetUsingResolve();
   clickToAddTarget();
 });
@@ -43,8 +48,8 @@ And('I have navigated to the Observation Page', () => {
 });
 
 When('I create a LOW Continuum observation using default values', () => {
-  clickObservationSetup()
-  clickAddObservation()
+  clickObservationSetup();
+  clickAddObservation();
   verifyObservationInTable();
 });
 
@@ -54,9 +59,9 @@ And('I have a LOW Continuum observation linked with an M2 target', () => {
 });
 
 And('I click to view sensitivity calculator results', () => {
-  clickSensitivityCalculatorResults()
+  clickSensitivityCalculatorResults();
 });
 
 Then('the sensitivity calculator results for a LOW Continuum observation are valid', () => {
-//TODO: Implement once linking of target/observations has been refactored
+  //TODO: Implement once linking of target/observations has been refactored
 });

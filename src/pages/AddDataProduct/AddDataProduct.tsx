@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, DropDown, LABEL_POSITION, NumberEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import {
+  AlertColorTypes,
+  DropDown,
+  LABEL_POSITION,
+  NumberEntry,
+  TickBox
+} from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../components/layout/pageBanner/PageBanner';
 import { IMAGE_SIZE_UNITS, LAB_POSITION, NAV, STATUS_OK } from '../../utils/constants';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
