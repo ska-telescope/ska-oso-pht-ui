@@ -163,6 +163,11 @@ async function GetCalculate(observation: Observation, target: Target) {
     };
   };
 
+  const getThermalSensitivity = () => {
+    console.log('::: in getThermalSensitivity');
+    return observation.supplied.value.toString();
+  }
+
   const getSensitivityJYSpelling = () => {
     return isZoom() ? 'sensitivities_jy' : 'sensitivity_jy';
   };
@@ -174,7 +179,7 @@ async function GetCalculate(observation: Observation, target: Target) {
 
     if (SUPPLIED_IS_SENSITIVITY) {
       const sensitivityJYParamName = getSensitivityJYSpelling();
-      urlSearchParams.append(sensitivityJYParamName, observation.supplied.value.toString());
+      urlSearchParams.append(sensitivityJYParamName, getThermalSensitivity());
     } else {
       const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
         observation.supplied.units
