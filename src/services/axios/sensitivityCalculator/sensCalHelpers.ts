@@ -196,7 +196,9 @@ const sensCalHelpers = {
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
       return Math.sqrt(value1 ** 2 + value2 ** 2);
-    }
+    },
+    thermalSensitivity: (sensitivity: number, confusion_noise: number, weighting_factor: number): number =>
+      Math.sqrt((sensitivity * sensitivity) - (confusion_noise * confusion_noise)) / weighting_factor,
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {

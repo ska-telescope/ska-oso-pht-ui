@@ -165,6 +165,11 @@ async function GetCalculate(observation: Observation, target: Target) {
 
   const getThermalSensitivity = () => {
     console.log('::: in getThermalSensitivity');
+    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(observation.supplied.value,1,1);
+    console.log('thermalSensitivity', thermalSensitivity);
+    // TODO we need to access confusion noise and weighting factor from weighting results
+    // => move this calculation outside? where we get the response
+    
     return observation.supplied.value.toString();
   }
 
