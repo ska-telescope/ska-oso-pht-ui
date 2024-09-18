@@ -249,9 +249,11 @@ const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
+  console.log('HEY in getWeightedSensitivityLOW response.calculate', response?.calculate);
+  console.log('HEY response', response);
   const sensitivity = isZoom
     ? response.calculate.data.spectral_sensitivity?.value
-    : response.calculate.data.continuum_sensitivity?.value;
+    : response?.calculate?.data?.continuum_sensitivity?.value;
   const factor = isZoom
     ? response.weighting[0].weighting_factor
     : response.weighting.weighting_factor;
@@ -359,14 +361,14 @@ const getContinuumIntegrationTimeMID = (
   isZoom: Boolean
 ) => {
   return isZoom
-    ? response.calculate.data[0].spectral_integration_time
-    : response.calculate.data.continuum_integration_time;
+    ? response.calculate?.data[0]?.spectral_integration_time
+    : response.calculate?.data?.continuum_integration_time;
 };
 
 const getSpectralIntegrationTimeMID = (response: {
   calculate: { data: { spectral_integration_time: any } };
 }) => {
-  return response.calculate.data.spectral_integration_time;
+  return response.calculate?.data?.spectral_integration_time;
 };
 
 const getSpectralWeightedSensitivityMID = (

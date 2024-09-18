@@ -55,6 +55,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
       makeResponse(target, STATUS_PARTIAL, ''),
       makeResponse(target, STATUS_ERROR, e)
     );
+    console.log('HEY sesn calc results error', e);
     return results as SensCalcResults;
   }
 }
@@ -79,104 +80,63 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting
   */
 
-  /* // original, keep it for a bit
+
+  // original, keep it for a bit
+  /*
   const promises = [
     GetCalculate(observation, target),
     GetWeighting(observation, target, observation.type)
   ];
 
   if (observation.type === TYPE_CONTINUUM) {
-    promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
+    promises.push(GetWeighting(observation, target, TYPE_ZOOM));
     if (observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY) {
       promises.push(GetCalculate(observation, target),);
     }
   }
-  const [weighting, weightingLine] = await Promise.all(promises);
-    */
+   const [calculate, weighting, weightingLine] = await Promise.all(promises);
 
-
-  function handleWeighting (resolve, reject, obsType, Weightingresponses) {
-    console.log('::: HEY in handleWeighting');
-    const responseName = obsType === TYPE_CONTINUUM ? 'weighting' : 'weightingLine';
-    GetWeighting(observation, target, obsType)
-      .then((weightingRes) => {
-        console.log('HEY weightingRes', weightingRes);
-        Weightingresponses[responseName] = weightingRes;
-        resolve(Weightingresponses); // Resolve the promise with the response value
-      })
-      .catch((error) => {
-        console.error('HEY error', error);
-        reject(error); // Reject the promise with the error object
-      });
-  }
-
-  const promise = new Promise(function(resolve, reject) {
-    const Weightingresponses = {};
-    handleWeighting(resolve, reject, observation.type, Weightingresponses);
-    if (observation.type === TYPE_CONTINUUM) {
-      handleWeighting(resolve, reject, TYPE_ZOOM, Weightingresponses);
-    }
-  }).then(function(response) {
-    console.log('HEY test');
-    console.log('HEY response', response);
-    // Then do some other stuff with the response
-    // TODO add calculate calls now, using response from weighting
-    return response;
-  })
-  .catch((error) => {
-    console.error('HEY error 2', error); // Handle errors
-  });
-
-  console.log('HEY promise', promise);
-
-  const response = await promise;
-  console.log('HEY test response', response);
-
-
-  // this works, just trying to optimize - keep it for a bit
-  /*
-  new Promise(function(resolve, reject) {
-    const Weightingresponses = [];
-    GetWeighting(observation, target, observation.type)
-      .then((weighting) => {
-        console.log('HEY response', response);
-        Weightingresponses.push({weighting});
-        resolve(Weightingresponses); // Resolve the promise with the response value
-      })
-      .catch((error) => {
-        console.error('HEY error', error);
-        reject(error); // Reject the promise with the error object
-      });
-    if (observation.type === TYPE_CONTINUUM) {
-      GetWeighting(observation, target, TYPE_ZOOM)
-      .then((weightingLine) => {
-        console.log('HEY response', response);
-        Weightingresponses.push({weightingLine});
-        resolve(Weightingresponses); // Resolve the promise with the response value
-      })
-      .catch((error) => {
-        console.error('HEY error', error);
-        reject(error); // Reject the promise with the error object
-      });
-    }
-  }).then(function(response) {
-    console.log('HEY test');
-    console.log('HEY response 2', response);
-    // Then do some other stuff with the response
-  })
-  .catch((error) => {
-    console.error('HEY error 2', error); // Handle errors
-  });
-  */
-
-  /*
-  const response = {
+   const response = {
     calculate,
     weighting,
     weightingLine
   };
   */
 
+
+
+  // NEW 2
+  // weighting responses
+  const promisesWeighting = [
+    GetWeighting(observation, target, observation.type)
+  ];
+  if (observation.type === TYPE_CONTINUUM) {
+    promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
+  }
+  const [weighting, weightingLine] = await Promise.all(promisesWeighting);
+  const weightingResponse = {
+    weighting,
+    weightingLine
+  };
+
+  // calculate responses
+  const promisesCalculate = [
+    GetCalculate(observation, target, weighting, observation.type)
+  ];
+  if (observation.type === TYPE_CONTINUUM && observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY) {
+    promisesCalculate.push(GetCalculate(observation, target, weightingLine, TYPE_ZOOM));
+  }
+  const [calculate, calculateSpectral] = await Promise.all(promisesCalculate);
+  const calculateResponse = {
+    calculate,
+    calculateSpectral
+  };
+
+  // put responses together and format
+  const response = {
+    ...weightingResponse,
+    ...calculateResponse
+  };
   helpers.transform.trimObject(response);
   console.log('HEY trim response', response);
   return response;

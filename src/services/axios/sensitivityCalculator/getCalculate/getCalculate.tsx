@@ -16,10 +16,12 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
+import { Zoom } from '@mui/material';
 
 const URL_CALCULATE = `calculate`;
 
-async function GetCalculate(observation: Observation, target: Target) {
+async function GetCalculate(observation: Observation, target: Target, weightingResponse:any, inMode: number) { // TODO create propoer type for weightingResponse
+  console.log('::: HEY in GetCalculate - weightingResponse', weightingResponse);
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
@@ -164,12 +166,13 @@ async function GetCalculate(observation: Observation, target: Target) {
   };
 
   const getThermalSensitivity = () => {
-    console.log('::: in getThermalSensitivity');
-    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(observation.supplied.value,1,1);
-    console.log('thermalSensitivity', thermalSensitivity);
-    // TODO we need to access confusion noise and weighting factor from weighting results
-    // => move this calculation outside? where we get the response
-    
+    console.log('::: HEY in getThermalSensitivity');
+    console.log('::: HEY weightingResponse', weightingResponse);
+    console.log('HEY inMode', inMode);
+    const confusionNoise = inMode === TYPE_CONTINUUM ? weightingResponse?.confusion_noise.value : weightingResponse[0]?.confusion_noise.value;
+    const weightingFactor = inMode === TYPE_CONTINUUM ? weightingResponse.weighting_factor : weightingResponse[0]?.weighting_factor;
+    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(observation.supplied.value,confusionNoise,weightingFactor);
+    console.log('HEY thermalSensitivity', thermalSensitivity);
     return observation.supplied.value.toString();
   }
 
