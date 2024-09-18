@@ -140,9 +140,10 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
 
   /*
   TODO
-  - check if observation sensitivity needs to be converted before calculating thermal sens
+  - tidy up getThermalSensitivity
   - Use thermal semsitivity in get calculate request
   - calculate integration time with returned response
+  - harmonise responses format before pasing to endpoint? (handling[0] for zoom, etc)
   */
 
   // put responses together and format

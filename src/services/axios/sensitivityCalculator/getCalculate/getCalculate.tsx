@@ -7,7 +7,8 @@ import {
   TYPE_CONTINUUM,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  SUPPLIED_TYPE_SENSITIVITY
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -174,6 +175,17 @@ async function GetCalculate(
     console.log('::: HEY in getThermalSensitivity');
     console.log('::: HEY weightingResponse', weightingResponse);
     console.log('HEY inMode', inMode);
+    console.log('HEY supplied', observation.supplied);
+    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(item => item.value === SUPPLIED_TYPE_SENSITIVITY).units;
+    console.log('HEY suppliedSensitivityUnits', suppliedSensitivityUnits);
+    const selectedUnit = suppliedSensitivityUnits.find(item => item.value === observation.supplied.units).label;
+    console.log('HEY selectedUnit', selectedUnit);
+    const sbs_conv_factor = inMode === TYPE_CONTINUUM
+    ? weightingResponse?.sbs_conv_factor
+    : weightingResponse[0]?.sbs_conv_factor;
+    const sensitivityJy = sensCalHelpers.format.sensitivityOnUnit(selectedUnit, 
+      observation.supplied.value, sbs_conv_factor);
+    console.log('HEY sensitivityJy', sensitivityJy);
     const confusionNoise =
       inMode === TYPE_CONTINUUM
         ? weightingResponse?.confusion_noise.value
@@ -183,7 +195,7 @@ async function GetCalculate(
         ? weightingResponse.weighting_factor
         : weightingResponse[0]?.weighting_factor;
     const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
-      observation.supplied.value,
+      sensitivityJy,
       confusionNoise,
       weightingFactor
     );

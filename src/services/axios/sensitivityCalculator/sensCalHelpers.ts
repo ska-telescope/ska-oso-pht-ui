@@ -191,7 +191,9 @@ const sensCalHelpers = {
       }
       // For values above 999999 uK, display the value in K
       return { value: Number((value / 1e6).toFixed(precision)), unit: 'K' };
-    }
+    },
+    sensitivityOnUnit: (unit: string, sensitivity: number, conversion_factor: number): number =>
+      ['K', 'mK', 'uK'].includes(unit) ? (sensitivity / conversion_factor) : sensitivity,
   },
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
