@@ -37,7 +37,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   };
 
   try {
-    const output = await fetchSensCalc(observation, target);
+    const output:any = await fetchSensCalc(observation, target);
     if ('error' in output) {
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
@@ -103,11 +103,27 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   */
 
   // NEW 2
-  // weighting responses
-  const promisesWeighting = [GetWeighting(observation, target, observation.type)];
-  if (observation.type === TYPE_CONTINUUM) {
-    promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
+  function handleWeighting() {
+    const promisesWeighting = [GetWeighting(observation, target, observation.type)];
+    if (observation.type === TYPE_CONTINUUM) {
+      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
+    }
+    return promisesWeighting;
   }
+
+  function handleCalculate(weightingResponse) {
+    const promisesCalculate = [GetCalculate(observation, target, weightingResponse.weighting, observation.type)];
+    if (
+      observation.type === TYPE_CONTINUUM &&
+      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY
+    ) {
+      promisesCalculate.push(GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM));
+    }
+    return promisesCalculate;
+  }
+
+  // weighting responses
+  const promisesWeighting = handleWeighting();
   const [weighting, weightingLine] = await Promise.all(promisesWeighting);
   const weightingResponse = {
     weighting,
@@ -115,22 +131,15 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   };
 
   // calculate responses
-  const promisesCalculate = [GetCalculate(observation, target, weighting, observation.type)];
-  if (
-    observation.type === TYPE_CONTINUUM &&
-    observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY
-  ) {
-    promisesCalculate.push(GetCalculate(observation, target, weightingLine, TYPE_ZOOM));
-  }
+  const promisesCalculate = handleCalculate(weightingResponse);
   const [calculate, calculateSpectral] = await Promise.all(promisesCalculate);
-  const calculateResponse = {
-    calculate,
-    calculateSpectral
-  };
+    const calculateResponse = {
+      calculate,
+      calculateSpectral
+    };
 
   /*
   TODO
-  - optimise above - call 2 functions for calculate responses and weighting responses?
   - check if observation sensitivity needs to be converted before calculating thermal sens
   - Use thermal semsitivity in get calculate request
   - calculate integration time with returned response
