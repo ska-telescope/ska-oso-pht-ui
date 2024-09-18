@@ -132,6 +132,14 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     calculateSpectral
   };
 
+  /*
+  TODO
+  - optimise above - call 2 functions for calculate responses and weighting responses?
+  - check if observation sensitivity needs to be converted before calculating thermal sens
+  - Use thermal semsitivity in get calculate request
+  - calculate integration time with returned response
+  */
+
   // put responses together and format
   const response = {
     ...weightingResponse,
