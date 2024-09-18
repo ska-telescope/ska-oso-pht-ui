@@ -16,11 +16,16 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
-import { Zoom } from '@mui/material';
 
 const URL_CALCULATE = `calculate`;
 
-async function GetCalculate(observation: Observation, target: Target, weightingResponse:any, inMode: number) { // TODO create propoer type for weightingResponse
+async function GetCalculate(
+  observation: Observation,
+  target: Target,
+  weightingResponse: any,
+  inMode: number
+) {
+  // TODO create propoer type for weightingResponse
   console.log('::: HEY in GetCalculate - weightingResponse', weightingResponse);
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
@@ -169,12 +174,22 @@ async function GetCalculate(observation: Observation, target: Target, weightingR
     console.log('::: HEY in getThermalSensitivity');
     console.log('::: HEY weightingResponse', weightingResponse);
     console.log('HEY inMode', inMode);
-    const confusionNoise = inMode === TYPE_CONTINUUM ? weightingResponse?.confusion_noise.value : weightingResponse[0]?.confusion_noise.value;
-    const weightingFactor = inMode === TYPE_CONTINUUM ? weightingResponse.weighting_factor : weightingResponse[0]?.weighting_factor;
-    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(observation.supplied.value,confusionNoise,weightingFactor);
+    const confusionNoise =
+      inMode === TYPE_CONTINUUM
+        ? weightingResponse?.confusion_noise.value
+        : weightingResponse[0]?.confusion_noise.value;
+    const weightingFactor =
+      inMode === TYPE_CONTINUUM
+        ? weightingResponse.weighting_factor
+        : weightingResponse[0]?.weighting_factor;
+    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
+      observation.supplied.value,
+      confusionNoise,
+      weightingFactor
+    );
     console.log('HEY thermalSensitivity', thermalSensitivity);
     return observation.supplied.value.toString();
-  }
+  };
 
   const getSensitivityJYSpelling = () => {
     return isZoom() ? 'sensitivities_jy' : 'sensitivity_jy';
