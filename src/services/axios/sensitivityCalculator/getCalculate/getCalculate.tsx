@@ -171,36 +171,52 @@ async function GetCalculate(
     };
   };
 
+  const getSuppliedSensitivityUnits = () => {
+    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
+      item => item.value === SUPPLIED_TYPE_SENSITIVITY
+    ).units;
+    return suppliedSensitivityUnits.find(item => item.value === observation.supplied.units).label;
+  };
+
+  const getSBSConvFactor = () => {
+    return inMode === TYPE_CONTINUUM
+      ? weightingResponse?.sbs_conv_factor
+      : weightingResponse[0]?.sbs_conv_factor;
+  };
+
+  const getSensitivityJy = () => {
+    const selectedUnit = getSuppliedSensitivityUnits();
+    const sbs_conv_factor = getSBSConvFactor();
+    return sensCalHelpers.format.sensitivityOnUnit(
+      selectedUnit,
+      observation.supplied.value,
+      sbs_conv_factor
+    );
+  };
+
+  const getConfusionNoise = () => {
+    return inMode === TYPE_CONTINUUM
+      ? weightingResponse?.confusion_noise.value
+      : weightingResponse[0]?.confusion_noise.value;
+  };
+
+  const getWeightingFactor = () => {
+    return inMode === TYPE_CONTINUUM
+      ? weightingResponse.weighting_factor
+      : weightingResponse[0]?.weighting_factor;
+  };
+
   const getThermalSensitivity = () => {
-    console.log('::: HEY in getThermalSensitivity');
-    console.log('::: HEY weightingResponse', weightingResponse);
-    console.log('HEY inMode', inMode);
-    console.log('HEY supplied', observation.supplied);
-    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(item => item.value === SUPPLIED_TYPE_SENSITIVITY).units;
-    console.log('HEY suppliedSensitivityUnits', suppliedSensitivityUnits);
-    const selectedUnit = suppliedSensitivityUnits.find(item => item.value === observation.supplied.units).label;
-    console.log('HEY selectedUnit', selectedUnit);
-    const sbs_conv_factor = inMode === TYPE_CONTINUUM
-    ? weightingResponse?.sbs_conv_factor
-    : weightingResponse[0]?.sbs_conv_factor;
-    const sensitivityJy = sensCalHelpers.format.sensitivityOnUnit(selectedUnit, 
-      observation.supplied.value, sbs_conv_factor);
-    console.log('HEY sensitivityJy', sensitivityJy);
-    const confusionNoise =
-      inMode === TYPE_CONTINUUM
-        ? weightingResponse?.confusion_noise.value
-        : weightingResponse[0]?.confusion_noise.value;
-    const weightingFactor =
-      inMode === TYPE_CONTINUUM
-        ? weightingResponse.weighting_factor
-        : weightingResponse[0]?.weighting_factor;
+    const sensitivityJy = getSensitivityJy();
+    const confusionNoise = getConfusionNoise();
+    const weightingFactor = getWeightingFactor();
     const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
       sensitivityJy,
       confusionNoise,
       weightingFactor
     );
     console.log('HEY thermalSensitivity', thermalSensitivity);
-    return observation.supplied.value.toString();
+    return thermalSensitivity.toString();
   };
 
   const getSensitivityJYSpelling = () => {
