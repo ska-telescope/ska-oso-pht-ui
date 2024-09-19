@@ -55,6 +55,7 @@ export type SensitivityCalculatorAPIResponseLow = {
   };
 };
 
+// TODO modify resonses types to include supplied senitivity scenarios
 export type SensitivityCalculatorAPIResponseMid = {
   calculate: {
     data: {

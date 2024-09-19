@@ -175,7 +175,8 @@ async function GetCalculate(
     const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
       item => item.value === SUPPLIED_TYPE_SENSITIVITY
     ).units;
-    const units = suppliedSensitivityUnits.find(item => item.value === observation.supplied.units).label;
+    const units = suppliedSensitivityUnits.find(item => item.value === observation.supplied.units)
+      .label;
     console.log('HEY units', units);
     return units;
   };
@@ -189,16 +190,13 @@ async function GetCalculate(
   const getSensitivityJy = () => {
     const selectedUnit = getSuppliedSensitivityUnits();
     /* handles conversion to Jy */
-    console.log('HEY supplied sensitivity', observation.supplied.value);
-    const sensitivityJy = sensCalHelpers.format.convertSensitivityToJy(observation.supplied.value, selectedUnit);
-    console.log('HEY sensitivityJy', sensitivityJy);
-    const sbs_conv_factor = getSBSConvFactor();
-    /* additional step to handle conversion from K/mK/uK conversion to Jy */
-    return sensCalHelpers.format.sensitivityOnUnit(
-      selectedUnit,
-      sensitivityJy,
-      sbs_conv_factor
+    const sensitivityJy = sensCalHelpers.format.convertSensitivityToJy(
+      observation.supplied.value,
+      selectedUnit
     );
+    /* additional step to handle conversion from K/mK/uK conversion to Jy */
+    const sbs_conv_factor = getSBSConvFactor();
+    return sensCalHelpers.format.sensitivityOnUnit(selectedUnit, sensitivityJy, sbs_conv_factor);
   };
 
   const getConfusionNoise = () => {
@@ -215,7 +213,6 @@ async function GetCalculate(
 
   const getThermalSensitivity = () => {
     const sensitivityJy = getSensitivityJy();
-    console.log('HEY sensitivityJy', sensitivityJy);
     const confusionNoise = getConfusionNoise();
     const weightingFactor = getWeightingFactor();
     const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(

@@ -45,7 +45,9 @@ export default function calculateSensitivityCalculatorResults(
   const continuumIntegrationTime = isSensitivity()
     ? getContinuumIntegrationTimeMID(response, isZoom())
     : 0;
-  const spectralIntegrationTime = isSensitivity() ? getSpectralIntegrationTimeMID(response) : 0;
+  const spectralIntegrationTime = isSensitivity()
+    ? getSpectralIntegrationTimeMID(response, isZoom())
+    : 0;
 
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
@@ -249,8 +251,6 @@ const getWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
-  console.log('HEY in getWeightedSensitivityLOW response.calculate', response?.calculate);
-  console.log('HEY response', response);
   const sensitivity = isZoom
     ? response.calculate.data.spectral_sensitivity?.value
     : response?.calculate?.data?.continuum_sensitivity?.value;
@@ -365,11 +365,30 @@ const getContinuumIntegrationTimeMID = (
     : response.calculate?.data?.continuum_integration_time;
 };
 
-const getSpectralIntegrationTimeMID = (response: {
-  calculate: { data: { spectral_integration_time: any } };
-}) => {
-  return response.calculate?.data?.spectral_integration_time;
+const getSpectralIntegrationTimeMID = (
+  response: {
+    calculate: {
+      data: { spectral_integration_time: any };
+    };
+    calculateSpectral: {
+      data: { spectral_integration_time: any };
+    };
+  },
+  isZoom: boolean
+) => {
+  console.log('HEY ::: in getSpectralIntegrationTimeMID');
+  console.log('HEY response', response);
+  console.log('HEY mode isZoom', isZoom);
+  return isZoom
+    ? response.calculate?.data?.spectral_integration_time
+    : response.calculateSpectral?.data?.spectral_integration_time;
+  // LOOKS like picking the correct spectral integration time ok
 };
+// 2 different integration time to be picked:
+/*
+  - spectral integration time -> one not picked up yet, from second calculate call for continuum mode
+  - zoom integration time
+*/
 
 const getSpectralWeightedSensitivityMID = (
   observation: Observation,

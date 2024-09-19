@@ -47,6 +47,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     if (output['weighting']['error'] && output['weighting']['error']['detail']) {
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     }
+    console.log('HEY output', output);
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
@@ -144,8 +145,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
 
   /*
   TODO
-  - convert thermal sensitivity to appropriate format depending units selected
-  - calculate integration time with returned response
+  - modify mock responses and responses types to add the new calculateSpectral responses
   - harmonise responses format before pasing to endpoint? (handling[0] for zoom, etc)
   */
 

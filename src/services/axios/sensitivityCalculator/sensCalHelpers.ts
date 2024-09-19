@@ -193,25 +193,25 @@ const sensCalHelpers = {
       return { value: Number((value / 1e6).toFixed(precision)), unit: 'K' };
     },
     sensitivityOnUnit(unit: string, sensitivity: number, conversion_factor: number): number {
-      return ['K', 'mK', 'uK'].includes(unit) ? sensitivity / conversion_factor : sensitivity
+      return ['K', 'mK', 'uK'].includes(unit) ? sensitivity / conversion_factor : sensitivity;
     },
     convertSensitivityToJy(inputSensitivity: number, unit: string): number {
-      if (unit == 'mJy/beam') {
+      if (unit === 'mJy/beam') {
         return inputSensitivity * 1e-3;
       }
-      if (unit == 'uJy/beam') {
+      if (unit === 'uJy/beam') {
         return inputSensitivity * 1e-6;
       }
-      if (unit == 'nJy/beam') {
+      if (unit === 'nJy/beam') {
         return inputSensitivity * 1e-9;
       }
-      if (unit == 'K') {
+      if (unit === 'K') {
         return inputSensitivity * 1;
       }
-      if (unit == 'mK') {
+      if (unit === 'mK') {
         return inputSensitivity / 1000;
       }
-      if (unit == 'uK') {
+      if (unit === 'uK') {
         return inputSensitivity / 1000000;
       }
       return inputSensitivity;
