@@ -192,8 +192,30 @@ const sensCalHelpers = {
       // For values above 999999 uK, display the value in K
       return { value: Number((value / 1e6).toFixed(precision)), unit: 'K' };
     },
-    sensitivityOnUnit: (unit: string, sensitivity: number, conversion_factor: number): number =>
-      ['K', 'mK', 'uK'].includes(unit) ? sensitivity / conversion_factor : sensitivity
+    sensitivityOnUnit(unit: string, sensitivity: number, conversion_factor: number): number {
+      return ['K', 'mK', 'uK'].includes(unit) ? sensitivity / conversion_factor : sensitivity
+    },
+    convertSensitivityToJy(inputSensitivity: number, unit: string): number {
+      if (unit == 'mJy/beam') {
+        return inputSensitivity * 1e-3;
+      }
+      if (unit == 'uJy/beam') {
+        return inputSensitivity * 1e-6;
+      }
+      if (unit == 'nJy/beam') {
+        return inputSensitivity * 1e-9;
+      }
+      if (unit == 'K') {
+        return inputSensitivity * 1;
+      }
+      if (unit == 'mK') {
+        return inputSensitivity / 1000;
+      }
+      if (unit == 'uK') {
+        return inputSensitivity / 1000000;
+      }
+      return inputSensitivity;
+    }
   },
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
