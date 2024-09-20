@@ -18,17 +18,16 @@ import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components'
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
 import { CalculateMidContinuumQuery, CalculateMidZoomQuery, CalculateLowContinuumQuery, CalculateLowZoomQuery } from '../../../../utils/types/sensCalcCalculateQuery';
+import { WeightingResponse } from '../../../../utils/types/sensitivityCalculatorAPIResponse';
 
 const URL_CALCULATE = `calculate`;
 
 async function GetCalculate(
   observation: Observation,
   target: Target,
-  weightingResponse: any,
+  weightingResponse: WeightingResponse,
   inMode: number
 ) {
-  // TODO create propoer type for weightingResponse
-  console.log('::: HEY in GetCalculate - weightingResponse', weightingResponse);
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
@@ -132,7 +131,6 @@ async function GetCalculate(
     ).units;
     const units = suppliedSensitivityUnits.find(item => item.value === observation.supplied.units)
       .label;
-    console.log('HEY units', units);
     return units;
   };
 
@@ -175,7 +173,6 @@ async function GetCalculate(
       confusionNoise,
       weightingFactor
     );
-    console.log('HEY thermalSensitivity', thermalSensitivity);
     return thermalSensitivity.toString();
   };
 
@@ -209,7 +206,6 @@ async function GetCalculate(
   /*********************************************************** LOW *********************************************************/
 
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
-    console.log('HEY getParamContinuumLow');
     return {
       subarray_configuration: getSubArray(),
       integration_time_h: Number(observation.supplied.value),
@@ -229,7 +225,6 @@ async function GetCalculate(
   }
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {
-    console.log('HEY getParamZoomLow');
     const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
     return {
       subarray_configuration: getSubArray(),

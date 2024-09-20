@@ -364,9 +364,6 @@ const getSpectralIntegrationTimeMID = (
   response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean
 ) => {
-  console.log('HEY ::: in getSpectralIntegrationTimeMID');
-  console.log('HEY response', response);
-  console.log('HEY mode isZoom', isZoom);
   return isZoom
     ? response.calculate?.data?.spectral_integration_time
     : response.calculateSpectral?.data?.spectral_integration_time;

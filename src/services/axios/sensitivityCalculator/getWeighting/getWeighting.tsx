@@ -29,7 +29,6 @@ import { WeightingLowContinuumQuery, WeightingLowZoomQuery, WeightingMidContinuu
 const URL_WEIGHTING = `weighting`;
 
 async function GetWeighting(observation: Observation, target: Target, inMode: number) {
-  console.log('HEY ROBUST', observation.robust);
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;

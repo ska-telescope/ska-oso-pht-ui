@@ -47,7 +47,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     if (output['weighting']['error'] && output['weighting']['error']['detail']) {
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     }
-    console.log('HEY output', output);
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
@@ -56,7 +55,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
       makeResponse(target, STATUS_PARTIAL, ''),
       makeResponse(target, STATUS_ERROR, e)
     );
-    console.log('HEY sesn calc results error', e);
     return results as SensCalcResults;
   }
 }
@@ -144,8 +142,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
 
   /*
   TODO
-  - modify mock responses and responses types to add the new calculateSpectral responses
-  - harmonise responses format before pasing to endpoint? (handling[0] for zoom, etc)
+  - harmonise responses format before passing to endpoint? (handling[0] for zoom, etc)
   */
 
   // put responses together and format
@@ -154,7 +151,6 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
-  console.log('HEY trim response', response);
   return response;
 }
 
