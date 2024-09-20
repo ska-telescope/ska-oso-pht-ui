@@ -118,7 +118,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     calculateSpectral
   };
 
-  // TODO harmonise responses format before passing to 
+  // TODO harmonise responses format before passing to
   // calculateSensitivityCalculatorResults? (handling[0] for zoom, etc)
 
   const response = {
