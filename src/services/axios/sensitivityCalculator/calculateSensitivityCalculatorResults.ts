@@ -45,7 +45,7 @@ export default function calculateSensitivityCalculatorResults(
   const continuumIntegrationTime = isSensitivity()
     ? getContinuumIntegrationTimeMID(response, isZoom())
     : 0;
-  const spectralIntegrationTime:any = isSensitivity()
+  const spectralIntegrationTime: any = isSensitivity()
     ? getSpectralIntegrationTimeMID(response, isZoom())
     : 0;
 

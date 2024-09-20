@@ -1,9 +1,9 @@
-import { ValueUnitPair } from "./valueUnitPair";
+import { ValueUnitPair } from './valueUnitPair';
 
 export type CalculateResponseLow = {
   freq_centre?: ValueUnitPair;
   continuum_sensitivity?: ValueUnitPair;
-  spectral_sensitivity?:ValueUnitPair;
+  spectral_sensitivity?: ValueUnitPair;
   spectropolarimetry_results?: ValueUnitPair;
   max_faraday_depth_extent?: ValueUnitPair;
   max_faraday_depth?: ValueUnitPair;

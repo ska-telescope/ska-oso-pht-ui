@@ -17,7 +17,12 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
-import { CalculateMidContinuumQuery, CalculateMidZoomQuery, CalculateLowContinuumQuery, CalculateLowZoomQuery } from '../../../../utils/types/sensCalcCalculateQuery';
+import {
+  CalculateMidContinuumQuery,
+  CalculateMidZoomQuery,
+  CalculateLowContinuumQuery,
+  CalculateLowZoomQuery
+} from '../../../../utils/types/sensCalcCalculateQuery';
 import { WeightingResponse } from '../../../../utils/types/sensitivityCalculatorAPIResponse';
 
 const URL_CALCULATE = `calculate`;
@@ -95,13 +100,15 @@ async function GetCalculate(
     return {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`,
       subarray_configuration: getSubArray(),
-      freq_centres_hz:
-        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits),
+      freq_centres_hz: convertFrequency(
+        observation.centralFrequency,
+        observation.centralFrequencyUnits
+      ),
       pointing_centre: rightAscension() + ' ' + declination(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       spectral_resolutions_hz: getSpectralResolution(),
-      total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]),
+      total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1])
     };
   };
 
@@ -222,7 +229,7 @@ async function GetCalculate(
       ), // low continuum bandwidth should be sent in MH
       n_subbands: observation.numSubBands?.toString()
     };
-  }
+  };
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {
     const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
@@ -239,7 +246,7 @@ async function GetCalculate(
         bandwidthValueUnit[1]
       ) // low zoom bandwidth should be sent in KHz
     };
-  }
+  };
 
   function mapQueryCalculateLow(): URLSearchParams {
     const params = isContinuum() ? getParamContinuumLow() : getParamZoomLow();

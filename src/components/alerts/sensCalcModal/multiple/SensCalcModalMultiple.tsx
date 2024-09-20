@@ -54,7 +54,8 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = rec => (rec ? presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units) : '');
+  const presentation = rec =>
+    rec ? presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units) : '';
 
   const colTitle = {
     field: 'title',

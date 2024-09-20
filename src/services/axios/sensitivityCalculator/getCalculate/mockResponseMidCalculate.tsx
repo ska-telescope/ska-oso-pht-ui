@@ -1,4 +1,7 @@
-import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensCalcCalculateQuery'
+import {
+  CalculateMidContinuumQuery,
+  CalculateMidZoomQuery
+} from '../../../../utils/types/sensCalcCalculateQuery';
 
 export const MockQueryMidCalculate: CalculateMidContinuumQuery = {
   integration_time_s: 600,
@@ -26,53 +29,53 @@ export const MockQuerryMidCalculateZoom: CalculateMidZoomQuery = {
 };
 
 export const MockResponseMidCalculate = {
-    continuum_sensitivity: {
-        value: 4.251275922660714e-06,
-        unit: "Jy"
+  continuum_sensitivity: {
+    value: 4.251275922660714e-6,
+    unit: 'Jy'
+  },
+  spectral_sensitivity: {
+    value: 0.0005408156982760501,
+    unit: 'Jy'
+  },
+  spectropolarimetry_results: {
+    fwhm_of_the_rmsf: {
+      value: 19.25408156918427,
+      unit: 'rad / m2'
     },
-    spectral_sensitivity: {
-        value: 0.0005408156982760501,
-        unit: "Jy"
+    max_faraday_depth_extent: {
+      value: 36.01049157747405,
+      unit: 'rad / m2'
     },
-    spectropolarimetry_results: {
-        fwhm_of_the_rmsf: {
-            value: 19.25408156918427,
-            unit: "rad / m2"
-        },
-        max_faraday_depth_extent: {
-            value: 36.01049157747405,
-            unit: "rad / m2"
-        },
-        max_faraday_depth: {
-            value: 69947.81170649514,
-            unit: "rad / m2"
-        }
+    max_faraday_depth: {
+      value: 69947.81170649514,
+      unit: 'rad / m2'
     }
+  }
 };
 
 export const MockResponseMidCalculateZoom = [
   {
-      freq_centre: {
-          "value": 797500000.0,
-          "unit": "Hz"
+    freq_centre: {
+      value: 797500000.0,
+      unit: 'Hz'
+    },
+    spectral_sensitivity: {
+      value: 0.006118631161970125,
+      unit: 'Jy'
+    },
+    spectropolarimetry_results: {
+      fwhm_of_the_rmsf: {
+        value: 3128.146807579617,
+        unit: 'rad / m2'
       },
-      spectral_sensitivity: {
-          value: 0.006118631161970125,
-          unit: "Jy"
+      max_faraday_depth_extent: {
+        value: 22.31874920746199,
+        unit: 'rad / m2'
       },
-      spectropolarimetry_results: {
-          fwhm_of_the_rmsf: {
-              value: 3128.146807579617,
-              unit: "rad / m2"
-          },
-          max_faraday_depth_extent: {
-              value: 22.31874920746199,
-              unit: "rad / m2"
-          },
-          max_faraday_depth: {
-              value: 23136997.673582196,
-              unit: "rad / m2"
-          }
+      max_faraday_depth: {
+        value: 23136997.673582196,
+        unit: 'rad / m2'
       }
+    }
   }
 ];

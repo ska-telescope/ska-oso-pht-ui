@@ -24,7 +24,12 @@ import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
-import { WeightingLowContinuumQuery, WeightingLowZoomQuery, WeightingMidContinuumQuery, WeightingMidZoomQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
+import {
+  WeightingLowContinuumQuery,
+  WeightingLowZoomQuery,
+  WeightingMidContinuumQuery,
+  WeightingMidZoomQuery
+} from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -73,9 +78,11 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
     const getParamZoomMID = (): WeightingMidZoomQuery => {
-      const params =  {
-        freq_centres_hz:
-          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits),
+      const params = {
+        freq_centres_hz: convertFrequency(
+          observation.centralFrequency,
+          observation.centralFrequencyUnits
+        ),
         pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
