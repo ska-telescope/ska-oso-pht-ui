@@ -82,6 +82,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
+        // TODO check how taper is handled in the sens calc as seems off
+        // their value displayed is different than value sent
       };
       if (observation.imageWeighting === IW_BRIGGS) {
         params['robustness'] = getRobustness();
@@ -101,6 +103,8 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
+        // TODO check how taper is handled in the sens calc as seems off
+        // their value displayed is different than value sent
       };
       if (observation.imageWeighting === IW_BRIGGS) {
         params['robustness'] = getRobustness();
