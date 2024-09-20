@@ -17,7 +17,7 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
-import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery';
+import { CalculateMidContinuumQuery, CalculateMidZoomQuery, CalculateLowContinuumQuery, CalculateLowZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery';
 
 const URL_CALCULATE = `calculate`;
 
@@ -94,32 +94,32 @@ async function GetCalculate(
   const getParamZoom = (): CalculateMidZoomQuery => {
     const bandwidthValueUnit = getZoomBandwidthValueUnit();
     return {
-      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`,
       subarray_configuration: getSubArray(),
       freq_centres_hz:
-        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits), // MANDATORY
-      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits),
+      pointing_centre: rightAscension() + ' ' + declination(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
-      spectral_resolutions_hz: getSpectralResolution(), // MANDATORY,
+      spectral_resolutions_hz: getSpectralResolution(),
       total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]),
     };
   };
 
   const getParamContinuum = (): CalculateMidContinuumQuery => {
     return {
-      rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
+      rx_band: `Band ${getBandNumber(observation.observingBand)}`,
       subarray_configuration: getSubArray(),
       freq_centre_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
-      ), // MANDATORY
+      ),
       bandwidth_hz: convertFrequency(
         observation.continuumBandwidth,
         observation.continuumBandwidthUnits
-      ), // MANDATORY
+      ),
       spectral_averaging_factor: observation.spectralAveraging,
-      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+      pointing_centre: rightAscension() + ' ' + declination(),
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       n_subbands: observation.numSubBands?.toString()
@@ -208,44 +208,46 @@ async function GetCalculate(
 
   /*********************************************************** LOW *********************************************************/
 
-  interface ModeSpecificParametersLow {
-    bandwidth_mhz?: number;
-    spectral_averaging_factor?: string;
-    spectral_resolution_hz?: string;
-    total_bandwidth_khz?: number;
-    n_subbands?: string;
-  }
-
-  function mapQueryCalculateLow(): URLSearchParams {
-    let mode_specific_parameters: ModeSpecificParametersLow = {};
-    if (isContinuum()) {
-      mode_specific_parameters.bandwidth_mhz = sensCalHelpers.format.convertBandwidthToMHz(
-        observation.continuumBandwidth,
-        sensCalHelpers.map.getFrequencyAndBandwidthUnits(
-          observation.continuumBandwidthUnits,
-          observation.telescope
-        )
-      ); // low continuum bandwidth should be sent in MH
-      mode_specific_parameters.spectral_averaging_factor = observation.spectralAveraging?.toString();
-      mode_specific_parameters.n_subbands = observation.numSubBands?.toString();
-    } else {
-      mode_specific_parameters.spectral_resolution_hz = getSpectralResolution();
-
-      const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-      mode_specific_parameters.total_bandwidth_khz = sensCalHelpers.format.convertBandwidthToKHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
-      ); // low zoom bandwidth should be sent in KHz
-    }
-    const params = {
+  const getParamContinuumLow = (): CalculateLowContinuumQuery => {
+    console.log('HEY getParamContinuumLow');
+    return {
       subarray_configuration: getSubArray(),
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
       freq_centre_mhz: observation.centralFrequency.toString(),
       spectral_averaging_factor: observation.spectralAveraging,
-      ...mode_specific_parameters
+      bandwidth_mhz: sensCalHelpers.format.convertBandwidthToMHz(
+        observation.continuumBandwidth,
+        sensCalHelpers.map.getFrequencyAndBandwidthUnits(
+          observation.continuumBandwidthUnits,
+          observation.telescope
+        )
+      ), // low continuum bandwidth should be sent in MH
+      n_subbands: observation.numSubBands?.toString()
     };
+  }
+
+  const getParamZoomLow = (): CalculateLowZoomQuery => {
+    console.log('HEY getParamZoomLow');
+    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+    return {
+      subarray_configuration: getSubArray(),
+      integration_time_h: Number(observation.supplied.value),
+      pointing_centre: rightAscension() + ' ' + declination(),
+      elevation_limit: observation.elevation?.toString(),
+      freq_centres_mhz: observation.centralFrequency.toString(),
+      spectral_averaging_factor: observation.spectralAveraging,
+      spectral_resolutions_hz: getSpectralResolution(),
+      total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
+        bandwidthValueUnit[0],
+        bandwidthValueUnit[1]
+      ) // low zoom bandwidth should be sent in KHz
+    };
+  }
+
+  function mapQueryCalculateLow(): URLSearchParams {
+    const params = isContinuum() ? getParamContinuumLow() : getParamZoomLow();
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
     return urlSearchParams;

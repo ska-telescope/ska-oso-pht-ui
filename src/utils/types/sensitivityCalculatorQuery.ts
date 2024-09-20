@@ -12,7 +12,7 @@ export type CalculateMidContinuumQuery = {
     n_subbands: number | string;
 }
 
-export type CalculateMidZoomQuery   = {
+export type CalculateMidZoomQuery = {
     integration_time_s?: number | string;
     sensitivity_jy?: number | string;
     rx_band: string;
@@ -23,4 +23,26 @@ export type CalculateMidZoomQuery   = {
     el: number | string;
     spectral_resolutions_hz: number | string;
     total_bandwidths_hz: number | string;
+}
+
+export type CalculateLowContinuumQuery = {
+    integration_time_h: number | string;
+    subarray_configuration: string;
+    pointing_centre: string;
+    elevation_limit: number | string;
+    freq_centre_mhz: number | string;
+    spectral_averaging_factor: number | string;
+    bandwidth_mhz: number | string;
+    n_subbands: number | string;
+}
+
+export type CalculateLowZoomQuery = {
+    subarray_configuration: string,
+    integration_time_h: number | string,
+    pointing_centre: string,
+    elevation_limit: number | string,
+    freq_centres_mhz: number | string,
+    spectral_averaging_factor: number | string,
+    spectral_resolutions_hz: number | string,
+    total_bandwidths_khz: number | string
 }
