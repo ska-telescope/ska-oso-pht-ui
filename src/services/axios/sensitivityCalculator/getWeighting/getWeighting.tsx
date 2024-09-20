@@ -9,7 +9,8 @@ import {
   OBSERVATION_TYPE_BACKEND,
   TYPE_ZOOM,
   IMAGE_WEIGHTING,
-  ROBUST
+  ROBUST,
+  IW_BRIGGS
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -23,10 +24,12 @@ import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
+import { WeightingLowContinuumQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
 async function GetWeighting(observation: Observation, target: Target, inMode: number) {
+  console.log('HEY ROBUST', observation.robust);
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
@@ -39,7 +42,9 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
   };
 
-  const getRobustness = () => (observation?.robust ? ROBUST[observation.robust].label : 0);
+  const getRobustness = () => {
+    return ROBUST.find(item => item.value === observation.robust)?.label;
+  };
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
@@ -119,15 +124,18 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     };
   };
 
-  const getParamContinuumLOW = () => {
-    return {
+  const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
+    const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
-      robustness: getRobustness(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centre_mhz: observation.centralFrequency
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
   };
 
   function mapQueryLowWeighting(): URLSearchParams {

@@ -1,4 +1,4 @@
-import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery'
+import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensCalcCalculateQuery'
 
 export const MockQueryMidCalculate: CalculateMidContinuumQuery = {
   integration_time_s: 600,

@@ -17,7 +17,7 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
-import { CalculateMidContinuumQuery, CalculateMidZoomQuery, CalculateLowContinuumQuery, CalculateLowZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery';
+import { CalculateMidContinuumQuery, CalculateMidZoomQuery, CalculateLowContinuumQuery, CalculateLowZoomQuery } from '../../../../utils/types/sensCalcCalculateQuery';
 
 const URL_CALCULATE = `calculate`;
 
