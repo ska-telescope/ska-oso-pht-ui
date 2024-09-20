@@ -13,7 +13,7 @@ Future
    - Use get Weighting results to send thermal sensitivity for integration time calculations
    - Update mock requests
    - Update responses types
-   - Correct robustess issue sent in request
+   - Correct robustness issue sent in request
 * Observation page:
  - Fix effective resolution not updating on Spectral Averaging changes
  - Fix Spectral Resolution not updating on bandwidth changes for Zoom modes
