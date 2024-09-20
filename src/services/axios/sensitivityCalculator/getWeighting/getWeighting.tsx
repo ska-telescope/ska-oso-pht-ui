@@ -24,7 +24,7 @@ import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
-import { WeightingLowContinuumQuery, WeightingLowZoomQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
+import { WeightingLowContinuumQuery, WeightingLowZoomQuery, WeightingMidContinuumQuery, WeightingMidZoomQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -73,34 +73,39 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     const convertFrequency = (value: number | string, units: number | string) =>
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    const getParamZoomMID = () => {
-      return {
-        freq_centres_hz: [
-          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
-        ], // MANDATORY
+    const getParamZoomMID = (): WeightingMidZoomQuery => {
+      const params =  {
+        freq_centres_hz:
+          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits),
         pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // subband_freq_centrres_hz
       };
+      if (observation.imageWeighting === IW_BRIGGS) {
+        params['robustness'] = getRobustness();
+      }
+      return params;
     };
 
-    const getParamContinuumMID = () => {
-      return {
-        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // MANDATORY
+    const getParamContinuumMID = (): WeightingMidContinuumQuery => {
+      const params = {
+        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
         freq_centre_hz: convertFrequency(
           observation.centralFrequency,
           observation.centralFrequencyUnits
-        ), // MANDATORY
-        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        ),
+        pointing_centre: rightAscension() + ' ' + declination(),
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // subband_freq_centrres_hz
       };
+      if (observation.imageWeighting === IW_BRIGGS) {
+        params['robustness'] = getRobustness();
+      }
+      return params;
     };
 
     const params = isZoom() ? getParamZoomMID() : getParamContinuumMID();
