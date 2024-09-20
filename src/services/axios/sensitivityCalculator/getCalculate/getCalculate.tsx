@@ -17,7 +17,7 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
-import { CalculateMidContinuum, CalculateMidZoom } from '../../../../utils/types/sensitivityCalculatorQuerry';
+import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery';
 
 const URL_CALCULATE = `calculate`;
 
@@ -91,7 +91,7 @@ async function GetCalculate(
     return spectralResValue?.toString();
   };
 
-  const getParamZoom = (): CalculateMidZoom => {
+  const getParamZoom = (): CalculateMidZoomQuery => {
     const bandwidthValueUnit = getZoomBandwidthValueUnit();
     return {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
@@ -106,7 +106,7 @@ async function GetCalculate(
     };
   };
 
-  const getParamContinuum = (): CalculateMidContinuum => {
+  const getParamContinuum = (): CalculateMidContinuumQuery => {
     return {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
       subarray_configuration: getSubArray(),

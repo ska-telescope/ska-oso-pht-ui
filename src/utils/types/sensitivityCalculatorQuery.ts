@@ -1,4 +1,4 @@
-export type CalculateMidContinuum = {
+export type CalculateMidContinuumQuery = {
     integration_time_s?: number | string;
     sensitivity_jy?: number | string;
     rx_band: string;
@@ -12,7 +12,7 @@ export type CalculateMidContinuum = {
     n_subbands: number | string;
 }
 
-export type CalculateMidZoom   = {
+export type CalculateMidZoomQuery   = {
     integration_time_s?: number | string;
     sensitivity_jy?: number | string;
     rx_band: string;

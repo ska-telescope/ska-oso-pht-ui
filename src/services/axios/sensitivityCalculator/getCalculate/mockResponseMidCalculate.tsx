@@ -1,6 +1,6 @@
-import { CalculateMidContinuum } from '../../../../utils/types/sensitivityCalculatorQuerry'
+import { CalculateMidContinuumQuery, CalculateMidZoomQuery } from '../../../../utils/types/sensitivityCalculatorQuery'
 
-export const MockQueryMidCalculate: CalculateMidContinuum = {
+export const MockQueryMidCalculate: CalculateMidContinuumQuery = {
   integration_time_s: 600,
   rx_band: 'Band 1',
   subarray_configuration: 'AA4',
@@ -13,7 +13,7 @@ export const MockQueryMidCalculate: CalculateMidContinuum = {
   n_subbands: 1
 };
 
-export const MockQuerryMidCalculateZoom = {
+export const MockQuerryMidCalculateZoom: CalculateMidZoomQuery = {
   rx_band: 'Band 1',
   subarray_configuration: 'AA4',
   freq_centres_hz: 797500000,
