@@ -55,20 +55,48 @@ export type SensitivityCalculatorAPIResponseLow = {
   };
 };
 
-// TODO modify resonses types to include supplied sensitivity scenarios
 export type SensitivityCalculatorAPIResponseMid = {
   calculate: {
     data: {
-      continuum_sensitivity: {
+      continuum_sensitivity?: {
         value: number;
         unit: string;
       };
-      spectral_sensitivity: {
+      spectral_sensitivity?: {
         value: number;
         unit: string;
       };
+      continuum_integration_time?: {
+        value: number;
+        unit: string;
+      },
+      spectral_integration_time?: {
+        value: number;
+        unit: string;
+      },
     };
-    status: number;
+    // status: number;
+  };
+  calculateSpectral?: {
+    data: {
+      continuum_sensitivity?: {
+        value: number;
+        unit: string;
+      };
+      spectral_sensitivity?: {
+        value: number;
+        unit: string;
+      };
+      continuum_integration_time?: {
+        value: number;
+        unit: string;
+      },
+      spectral_integration_time?: {
+        value: number;
+        unit: string;
+      },
+    };
+    // status: number;
   };
   weighting: {
     beam_size: [
