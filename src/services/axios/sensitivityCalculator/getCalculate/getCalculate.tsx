@@ -17,6 +17,7 @@ import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
 import { helpers } from '../../../../utils/helpers';
+import { CalculateMidContinuum, CalculateMidZoom } from '../../../../utils/types/sensitivityCalculatorQuerry';
 
 const URL_CALCULATE = `calculate`;
 
@@ -90,52 +91,25 @@ async function GetCalculate(
     return spectralResValue?.toString();
   };
 
-  const getParamZoom = () => {
+  const getParamZoom = (): CalculateMidZoom => {
     const bandwidthValueUnit = getZoomBandwidthValueUnit();
     return {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
       subarray_configuration: getSubArray(),
-      // n_ska
-      // n_meer
-      freq_centres_hz: [
-        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
-      ], // MANDATORY
-      bandwidth_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]), // MANDATORY
-      // spectral_averaging_factor
+      freq_centres_hz:
+        convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits), // MANDATORY
       pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       spectral_resolutions_hz: getSpectralResolution(), // MANDATORY,
-      total_bandwidths_hz: sensCalHelpers.format.convertBandwidthToHz(bandwidthValueUnit[0], 2),
-      n_subbands: observation.numSubBands?.toString()
-      // subband_sensitivities_jy
-      // eta_system
-      // eta_pointing
-      // eta_coherence
-      // eta_digitisation
-      // eta-correlation
-      // eta_bandpass
-      // t_sys_ska
-      // t_rx_ska
-      // t_spl_ska
-      // t_sys_meer
-      // t_rx_meer
-      // t_spl_meer
-      // t_sky_ska
-      // t_gal_ska
-      // t_gal_meer
-      // alpha
-      // eta_meer
-      // eta_ska
+      total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1]),
     };
   };
 
-  const getParamContinuum = () => {
+  const getParamContinuum = (): CalculateMidContinuum => {
     return {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`, // MANDATORY
       subarray_configuration: getSubArray(),
-      // n_ska
-      // n_meer
       freq_centre_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
@@ -144,30 +118,11 @@ async function GetCalculate(
         observation.continuumBandwidth,
         observation.continuumBandwidthUnits
       ), // MANDATORY
-      // spectral_averaging_factor
+      spectral_averaging_factor: observation.spectralAveraging,
       pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
       pwv: observation.weather?.toString(),
       el: observation.elevation?.toString(),
       n_subbands: observation.numSubBands?.toString()
-      // subband_sensitivities_jy
-      // eta_system
-      // eta_pointing
-      // eta_coherence
-      // eta_digitisation
-      // eta-correlation
-      // eta_bandpass
-      // t_sys_ska
-      // t_rx_ska
-      // t_spl_ska
-      // t_sys_meer
-      // t_rx_meer
-      // t_spl_meer
-      // t_sky_ska
-      // t_gal_ska
-      // t_gal_meer
-      // alpha
-      // eta_meer
-      // eta_ska
     };
   };
 
@@ -260,8 +215,6 @@ async function GetCalculate(
     total_bandwidth_khz?: number;
     n_subbands?: string;
   }
-
-  // TODO double check observation parameters passed in observation form as some values seem off (spectral resolution always 1? tapering always 1? -> keys mapping?)
 
   function mapQueryCalculateLow(): URLSearchParams {
     let mode_specific_parameters: ModeSpecificParametersLow = {};

@@ -103,7 +103,6 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   };
   */
 
-  // NEW 2
   function handleWeighting() {
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
