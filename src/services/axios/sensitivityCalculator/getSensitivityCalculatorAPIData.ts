@@ -79,28 +79,6 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to GetWeighting
   */
 
-  // original, keep it for a bit
-  /*
-  const promises = [
-    GetCalculate(observation, target),
-    GetWeighting(observation, target, observation.type)
-  ];
-
-  if (observation.type === TYPE_CONTINUUM) {
-    promises.push(GetWeighting(observation, target, TYPE_ZOOM));
-    if (observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY) {
-      promises.push(GetCalculate(observation, target),);
-    }
-  }
-   const [calculate, weighting, weightingLine] = await Promise.all(promises);
-
-   const response = {
-    calculate,
-    weighting,
-    weightingLine
-  };
-  */
-
   function handleWeighting() {
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
@@ -140,12 +118,9 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     calculateSpectral
   };
 
-  /*
-  TODO
-  - harmonise responses format before passing to endpoint? (handling[0] for zoom, etc)
-  */
+  // TODO harmonise responses format before passing to 
+  // calculateSensitivityCalculatorResults? (handling[0] for zoom, etc)
 
-  // put responses together and format
   const response = {
     ...weightingResponse,
     ...calculateResponse
