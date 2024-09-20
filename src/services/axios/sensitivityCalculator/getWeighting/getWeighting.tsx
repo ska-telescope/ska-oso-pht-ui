@@ -24,7 +24,7 @@ import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
-import { WeightingLowContinuumQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
+import { WeightingLowContinuumQuery, WeightingLowZoomQuery } from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -115,13 +115,17 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return rightAscension() + ' ' + declination();
   }
 
-  const getParamZoomLOW = () => {
-    return {
+  const getParamZoomLOW = (): WeightingLowZoomQuery => {
+    const params = {
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centres_mhz: observation.centralFrequency
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
   };
 
   const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
