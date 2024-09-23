@@ -207,11 +207,11 @@ export default function LandingPage() {
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    flex: 1.5,
+    flex: 2.5,
     renderCell: (e: { row: any }) =>
       element(
         e.row.proposalType > 0
-          ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
+          ? t('proposalType.title.' + displayProposalType(e.row.proposalType))
           : NOT_SPECIFIED
       )
   };
