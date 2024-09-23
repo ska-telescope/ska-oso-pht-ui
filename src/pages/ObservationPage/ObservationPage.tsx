@@ -343,7 +343,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
-        headerName: 'Actions',
+        headerName: t('actions.label'),
         sortable: false,
         flex: 1,
         disableClickEventBubbling: true,

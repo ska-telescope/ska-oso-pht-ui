@@ -175,7 +175,7 @@ export default function LandingPage() {
       renderCell: (e: { row: any }) =>
         element(
           e.row.proposalType > 0
-            ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
+            ? t('proposalType.title.' + displayProposalType(e.row.proposalType))
             : NOT_SPECIFIED
         )
     },
@@ -208,7 +208,7 @@ export default function LandingPage() {
     },
     {
       field: 'cpi',
-      headerName: ' ',
+      headerName: t('actions.label'),
       sortable: false,
       minWidth: 200,
       maxWidth: 200,
