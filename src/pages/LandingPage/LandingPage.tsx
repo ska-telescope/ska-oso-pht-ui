@@ -250,6 +250,7 @@ export default function LandingPage() {
   const colActions = {
     field: 'actions',
     type: 'actions',
+    headerName: 'Actions',
     sortable: false,
     minWidth: 200,
     maxWidth: 200,
