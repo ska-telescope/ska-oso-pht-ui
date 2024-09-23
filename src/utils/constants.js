@@ -118,12 +118,12 @@ export const GENERAL = {
       value: 3
     },
     {
-      label: 'Extra Galactic continuum',
+      label: 'Extragalactic continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 4
     },
     {
-      label: 'Extra Galactic Spectral line',
+      label: 'Extragalactic Spectral line',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 5
     },

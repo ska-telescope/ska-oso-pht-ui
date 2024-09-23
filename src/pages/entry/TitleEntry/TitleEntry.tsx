@@ -161,7 +161,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
                   </Avatar>
                 }
                 title={
-                  <Typography variant="h6" component="div" maxWidth={200}>
+                  <Typography variant="h6" component="div" maxWidth={230}>
                     <Typography>{t('proposalType.title.' + id)}</Typography>
                   </Typography>
                 }
