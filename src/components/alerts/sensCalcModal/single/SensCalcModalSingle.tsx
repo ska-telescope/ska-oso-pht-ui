@@ -34,7 +34,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
         </Grid>
         <Grid item xs={6}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-            {eId === 'targetName' ? eValue : presentValue(eValue)}{' '}
+            {eId === 'targetName' ? eValue : presentValue(eValue, eId)}{' '}
             {eId === 'targetName' ? eUnits : presentUnits(eUnits)}
           </Typography>
         </Grid>

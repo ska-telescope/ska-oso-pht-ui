@@ -16,7 +16,7 @@ export const presentUnits = (inUnits: string) => {
   }
 };
 
-export const presentValue = (inValue: string | number, fractionLength = 2) => {
+export const presentValue = (inValue: string | number, eLabel?, fractionLength = 2) => {
   if (typeof inValue === 'string') {
     if (inValue.split(' ').length > 1) {
       return inValue;
@@ -27,6 +27,9 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
     }
   }
   const result = Number(inValue);
+  if (eLabel === 'continuumIntegrationTime' || eLabel === 'spectralIntegrationTime') {
+    return result;
+  }
   return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 

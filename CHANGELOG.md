@@ -9,6 +9,11 @@ Future
 * Sensitivity Calculations
    - Updated mappings
    - Updated display variations
+   - Send a 2dn get Calculate request for supplied sensitivity case
+   - Use get Weighting results to send thermal sensitivity for integration time calculations
+   - Update mock requests
+   - Update responses types
+   - Correct robustness issue sent in request
 * Observation page:
  - Fix effective resolution not updating on Spectral Averaging changes
  - Fix Spectral Resolution not updating on bandwidth changes for Zoom modes

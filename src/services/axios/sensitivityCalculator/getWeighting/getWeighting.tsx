@@ -9,7 +9,8 @@ import {
   OBSERVATION_TYPE_BACKEND,
   TYPE_ZOOM,
   IMAGE_WEIGHTING,
-  ROBUST
+  ROBUST,
+  IW_BRIGGS
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -23,6 +24,12 @@ import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
+import {
+  WeightingLowContinuumQuery,
+  WeightingLowZoomQuery,
+  WeightingMidContinuumQuery,
+  WeightingMidZoomQuery
+} from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
@@ -39,7 +46,9 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
   };
 
-  const getRobustness = () => (observation?.robust ? ROBUST[observation.robust].label : 0);
+  const getRobustness = () => {
+    return ROBUST.find(item => item.value === observation.robust)?.label;
+  };
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
@@ -68,34 +77,45 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     const convertFrequency = (value: number | string, units: number | string) =>
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    const getParamZoomMID = () => {
-      return {
-        freq_centres_hz: [
-          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
-        ], // MANDATORY
+    const getParamZoomMID = (): WeightingMidZoomQuery => {
+      const params = {
+        freq_centres_hz: convertFrequency(
+          observation.centralFrequency,
+          observation.centralFrequencyUnits
+        ),
         pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // subband_freq_centrres_hz
+        // TODO check how taper is handled in the sens calc as seems off
+        // their value displayed is different than value sent
       };
+      if (observation.imageWeighting === IW_BRIGGS) {
+        params['robustness'] = getRobustness();
+      }
+      return params;
     };
 
-    const getParamContinuumMID = () => {
-      return {
-        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // MANDATORY
+    const getParamContinuumMID = (): WeightingMidContinuumQuery => {
+      const params = {
+        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
         freq_centre_hz: convertFrequency(
           observation.centralFrequency,
           observation.centralFrequencyUnits
-        ), // MANDATORY
-        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        ),
+        pointing_centre: rightAscension() + ' ' + declination(),
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // subband_freq_centrres_hz
+        // TODO check how taper is handled in the sens calc as seems off
+        // their value displayed is different than value sent
       };
+      if (observation.imageWeighting === IW_BRIGGS) {
+        params['robustness'] = getRobustness();
+      }
+      return params;
     };
 
     const params = isZoom() ? getParamZoomMID() : getParamContinuumMID();
@@ -110,24 +130,31 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return rightAscension() + ' ' + declination();
   }
 
-  const getParamZoomLOW = () => {
-    return {
+  const getParamZoomLOW = (): WeightingLowZoomQuery => {
+    const params = {
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centres_mhz: observation.centralFrequency
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
   };
 
-  const getParamContinuumLOW = () => {
-    return {
+  const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
+    const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
-      robustness: getRobustness(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centre_mhz: observation.centralFrequency
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
   };
 
   function mapQueryLowWeighting(): URLSearchParams {
