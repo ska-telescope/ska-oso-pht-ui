@@ -349,8 +349,8 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_AA4_15,
           map: 'AA4 (15-m antennas only)',
           label: 'AA4 (15-m antennas only)',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 64,
+          numOf15mAntennas: 133,
+          numOf13mAntennas: 0,
           numOfStations: 0,
           disableForBand5: false
         },
