@@ -439,7 +439,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
-      "1": "Principal Investigator (PI) projects",
+      "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
       "3": "Director-General's Discretionary Time"
     }
@@ -490,8 +490,8 @@
     "1": "Cosmology",
     "2": "Cradle of Life",
     "3": "Epoch of Re-ionization",
-    "4": "Extra Galactic continuum",
-    "5": "Extra Galactic Spectral line",
+    "4": "Extragalactic continuum",
+    "5": "Extragalactic Spectral line",
     "6": "Gravitational Waves",
     "7": "High Energy Cosmic Particles",
     "8": "HI Galaxy science",
