@@ -320,7 +320,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH} display={{ xs: 'block', lg: 'none' }}>
+        <Grid item xs={8} display={{ xs: 'block', lg: 'none' }}>
           <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
