@@ -158,77 +158,77 @@ stop-integration-test:
     name: test/$CI_COMMIT_REF_SLUG
     action: stop
 
-# list the current top level dependencies for the project
-list_dependencies:
-  image: node:20.2.0-alpine3.18
-  stage: test
-  tags:
-    - ska-default
-  allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-    paths:
-      - .public
+# # list the current top level dependencies for the project
+# list_dependencies:
+#   image: node:20.2.0-alpine3.18
+#   stage: test
+#   tags:
+#     - ska-default
+#   allow_failure: true
+#   cache:
+#     paths:
+#       - node_modules/
+#     policy: pull
+#   script:
+#     - yarn install --immutable
+#     - yarn list --depth=0 --json >> npm_deps.json
+#     - yarn list --depth=0  >> npm_deps.txt
+#     - mkdir .public
+#     - cp npm_deps.txt .public/
+#     - cp npm_deps.json .public/
+#   artifacts:
+#     paths:
+#       - .public
 
-test-counts:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
-  stage: test
-  tags:
-    - ska-default
-  before_script:
-    - rm -rf node_modules
-    - mkdir -p build/tests
-    - yarn install --immutable
-  script:
-    - yarn test:cypress:component:ci
-    - yarn merge-reports
-  artifacts:
-    paths:
-      - build/
+# test-counts:
+#   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+#   stage: test
+#   tags:
+#     - ska-default
+#   before_script:
+#     - rm -rf node_modules
+#     - mkdir -p build/tests
+#     - yarn install --immutable
+#   script:
+#     - yarn test:cypress:component:ci
+#     - yarn merge-reports
+#   artifacts:
+#     paths:
+#       - build/
 
-# Build the application
-build:
-  image: node:20.2.0-alpine3.18
-  stage: build
-  tags:
-    - ska-default
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - yarn install --immutable
-    - yarn build
+# # Build the application
+# build:
+#   image: node:20.2.0-alpine3.18
+#   stage: build
+#   tags:
+#     - ska-default
+#   cache:
+#     paths:
+#       - node_modules/
+#     policy: pull
+#   script:
+#     - yarn install --immutable
+#     - yarn build
 
-# export the report
-pages:
-  stage: pages
-  tags:
-    - ska-default
-  dependencies:
-    - test-counts
-    - test_and_coverage
-    - test_e2e
-    - list_dependencies
-    - code_quality
-  script:
-    - mv public/* .
-    - cp -r build/* public
-    - cp -r .public/* public
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
+# # export the report
+# pages:
+#   stage: pages
+#   tags:
+#     - ska-default
+#   dependencies:
+#     - test-counts
+#     - test_and_coverage
+#     - test_e2e
+#     - list_dependencies
+#     - code_quality
+#   script:
+#     - mv public/* .
+#     - cp -r build/* public
+#     - cp -r .public/* public
+#   artifacts:
+#     paths:
+#       - public
+#     expire_in: 30 days
 
 ########################## PHT SPECIFIC STUFF BELOW HERE #################################
 
