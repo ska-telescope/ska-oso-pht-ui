@@ -5,6 +5,15 @@ K8S_CHART ?= ska-oso-pht-ui-umbrella
 KUBE_HOST ?= http://`minikube ip`
 RELEASE_NAME ?= test
 
+# JS Template Variables
+JS_E2E_TEST_BASE_URL ?= http://$(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+JS_E2E_COVERAGE_COMMAND_ENABLED = false
+JS_ESLINT_CONFIG ?= .eslintrc
+
+JS_COMMAND_RUNNER ?= yarn
+JS_TEST_COMMAND ?= cypress
+JS_TEST_DEFAULT_SWITCHES = run --e2e --headless --config video=false
+
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
@@ -21,6 +30,8 @@ K8S_CHART_PARAMS += \
 -include .make/release.mk
 -include PrivateRules.mak
 -include .make/xray.mk
+-include .make/js.mk
+
 
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json

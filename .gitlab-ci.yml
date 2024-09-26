@@ -22,83 +22,148 @@ install_dependencies:
   image: node:20.2.0-alpine3.18
   stage: dependencies
   tags:
-    - k8srunner
+    - ska-default
   before_script:
     - rm -rf node_modules
   script:
-    - yarn install --immutable
+    - make js-install
   cache:
     paths:
-      - node_modules/
+      - ${JS_PROJECT_DIR}/node_modules/
     policy: push
 
-#Run the static code analysis
-code_analysis:
-  image: node:20.2.0-alpine3.18
-  stage: lint
-  tags:
-    - k8srunner
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/reports
-  script:
-    - yarn install --immutable
-    - yarn code-analysis
-    - mv linting.xml build/reports/linting.xml
-  artifacts:
-    paths:
-      - build/
+# #Run the static code analysis
+# code_analysis:
+#   image: node:20.2.0-alpine3.18
+#   stage: lint
+#   tags:
+#     - ska-default
+#   cache:
+#     paths:
+#       - node_modules/
+#     policy: pull
+#   before_script:
+#     - mkdir -p build/reports
+#   script:
+#     - yarn install --immutable
+#     - yarn code-analysis
+#     - mv linting.xml build/reports/linting.xml
+#   artifacts:
+#     paths:
+#       - build/
 
-# run the cypress test coverage reports
-test_and_coverage:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
-  stage: test
+js-audit:
+  image: node:${JS_NODE_VERSION}
+  stage: scan
   tags:
-    - k8srunner
-  before_script:
-    - rm -rf node_modules
-    - mkdir -p build/reports
-    - mkdir -p build/.nyc_output
-    - yarn install --frozen-lockfile
-  script:
-    - yarn test:component:headless
-    - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: build/reports/cobertura-coverage.xml
-    paths:
-      - build/
-
-test_e2e:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
-  stage: test
-  tags:
-    - k8srunner
+    - ska-default
   allow_failure: true
   before_script:
-    - rm -rf node_modules
-    - mkdir -p build/reports
-    - mkdir -p build/.nyc_output
-    - yarn install --frozen-lockfile
+    - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
+    - 'make help | grep js-audit'
   script:
-    - yarn add cypress
-    - yarn start &
-    - yarn test:e2e:headless
+    - make js-audit
+
+# # run the cypress test coverage reports
+# test_and_coverage:
+#   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+#   stage: test
+#   tags:
+#     - ska-default
+#   before_script:
+#     - rm -rf node_modules
+#     - mkdir -p build/reports
+#     - mkdir -p build/.nyc_output
+#     - yarn install --frozen-lockfile
+#   script:
+#     - yarn test:component:headless
+#     - yarn test:coverage:report:ci
+#     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+#   artifacts:
+#     reports:
+#       coverage_report:
+#         coverage_format: cobertura
+#         path: build/reports/cobertura-coverage.xml
+#     paths:
+#       - build/
+
+# test_e2e:
+#   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+#   stage: test
+#   tags:
+#     - ska-k8s
+#   allow_failure: true
+#   before_script:
+#     - rm -rf node_modules
+#     - mkdir -p build/reports
+#     - mkdir -p build/.nyc_output
+#     - yarn install --frozen-lockfile
+#   script:
+#     - yarn add cypress
+#     - yarn start &
+#     - yarn test:e2e:headless
+#     - yarn test:coverage:report:ci
+#     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+
+
+integration-test:
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  stage: test
+  tags:
+    - ska-k8s
+  variables:
+    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
+  before_script:
+    - apt update && apt install -y make
+    - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile"; exit 1;)'
+    - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
+    - make k8s-install-chart
+    - make k8s-wait
+    - curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+    - apt-get -q=2 install nodejs -y
+    - apt-get -q=2 install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb # install Cypress dependencies
+    - npm install -g yarn
+    - make js-install-reinstall
+  script:
+    - make js-e2e-test
     - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+  rules:
+    - exists:
+        - tests/cypress/**/*
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    on_stop: stop-integration-test
+    auto_stop_in: 1 minute
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+  artifacts:
+    when: always
+    paths:
+      - tests/cypress/artefacts
+      - build
+
+stop-integration-test:
+  image: $SKA_K8S_TOOLS_BUILD_DEPLOY
+  stage: test
+  tags:
+    - ska-k8s
+  when: manual
+  variables:
+    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
+  script:
+    - make k8s-uninstall-chart
+    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - make k8s-delete-namespace
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    action: stop
 
 # list the current top level dependencies for the project
 list_dependencies:
   image: node:20.2.0-alpine3.18
   stage: test
   tags:
-    - k8srunner
+    - ska-default
   allow_failure: true
   cache:
     paths:
@@ -119,7 +184,7 @@ test-counts:
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
   tags:
-    - k8srunner
+    - ska-default
   before_script:
     - rm -rf node_modules
     - mkdir -p build/tests
@@ -136,7 +201,7 @@ build:
   image: node:20.2.0-alpine3.18
   stage: build
   tags:
-    - k8srunner
+    - ska-default
   cache:
     paths:
       - node_modules/
@@ -149,7 +214,7 @@ build:
 pages:
   stage: pages
   tags:
-    - k8srunner
+    - ska-default
   dependencies:
     - test-counts
     - test_and_coverage
@@ -244,14 +309,20 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
 
+  # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-test.gitlab-ci.yml'
+
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
   artifacts:
     paths: [gl-code-quality-report.json]
-  # disable dind service as it's not needed for k8srunner runners
+  # disable dind service as it's not needed for ska-default runners
   services: []
   tags:
-    - k8srunner
+    - ska-default
   # We need to merge the rules with what we have here on template rules
   # https://gitlab.com/ska-telescope/templates-repository/-/blob/master/gitlab-ci/includes/rules.gitlab-ci.yml
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
