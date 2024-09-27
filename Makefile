@@ -27,7 +27,6 @@ K8S_CHART_PARAMS += \
 -include .make/oci.mk
 -include .make/helm.mk
 -include .make/k8s.mk
--include .make/release.mk
 -include PrivateRules.mak
 -include .make/xray.mk
 -include .make/js.mk

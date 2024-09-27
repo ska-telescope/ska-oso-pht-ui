@@ -113,6 +113,7 @@ integration-test:
     - ska-k8s
   variables:
     KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
+    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
   before_script:
     - apt update && apt install -y make
     - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile"; exit 1;)'
