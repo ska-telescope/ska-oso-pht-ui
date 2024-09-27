@@ -127,6 +127,7 @@ integration-test:
     - make js-install-reinstall
   script:
     # - make js-e2e-test
+    - yarn start &
     - yarn test:e2e:headless
     - yarn test:coverage:report:ci
   rules:
