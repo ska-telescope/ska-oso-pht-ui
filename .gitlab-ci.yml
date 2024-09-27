@@ -126,7 +126,8 @@ integration-test:
     - npm install -g yarn
     - make js-install-reinstall
   script:
-    - make js-e2e-test
+    # - make js-e2e-test
+    - yarn test:e2e:headless
     - yarn test:coverage:report:ci
   rules:
     - exists:
