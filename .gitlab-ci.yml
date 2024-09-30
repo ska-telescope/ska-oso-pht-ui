@@ -126,13 +126,6 @@ integration-test:
     - npm install -g yarn
     - make js-install-reinstall
   script:
-    # - make js-e2e-test
-    # - yarn start & # The frontend is already deployed by the helm chart
-    # - yarn test:e2e:headless
-    # --e2e --headless --reporter junit --reporter-options \
-    # "mochaFile=$(JS_E2E_BUILD_TESTS_DIRECTORY)/e2e-tests-[hash].xml" --config baseUrl=$(JS_E2E_TEST_BASE_URL) \
-    # $(JS_E2E_TEST_SWITCHES)
-    # - cypress run --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --e2e --headless --config video=false --config baseUrl=$(JS_E2E_TEST_BASE_URL)
     - make js-e2e-test
     - yarn test:coverage:report:ci
   rules:
@@ -149,8 +142,8 @@ integration-test:
     paths:
       - tests/cypress/artefacts
       - build
-      - cypress/screenshots/**
-      - cypress/videos/**
+      - tests/cypress/screenshots/**
+      - tests/cypress/videos/**
 
 stop-integration-test:
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY
