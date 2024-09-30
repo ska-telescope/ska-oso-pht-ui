@@ -12,7 +12,7 @@ JS_ESLINT_CONFIG ?= .eslintrc
 
 JS_COMMAND_RUNNER ?= yarn
 JS_TEST_COMMAND ?= cypress
-JS_E2E_TEST_SWITCHES = --e2e --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --headless --config video=false 
+# JS_E2E_TEST_SWITCHES = --e2e --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --headless --config video=false 
 JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
 
 
