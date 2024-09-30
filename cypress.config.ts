@@ -26,7 +26,7 @@ export default defineConfig({
     excludeSpecPattern: 'tests/cypress/e2e/**'
   },
   e2e: {
-    baseUrl: 'http://localhost:8090',
+    baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
     setupNodeEvents(on, config) {
       on('file:preprocessor', cucumber());
