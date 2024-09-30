@@ -807,7 +807,7 @@
     "8": {
       "status": "SrcNet",
       "title": "SrcNet Resources",
-      "titleShort": "SrcNet Resources",
+      "titleShort": "SrcNet",
       "desc": "This page allows you to request and define SRC Net data products."
     },
     "9": {
@@ -832,11 +832,13 @@
     },
     "13": {
       "title": "Data Product",
+      "titleShort": "Data Product",
       "label": "Data Product(s)",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     },
     "14": {
       "title": "Observation Update",
+      "titleShort": "Observation Update",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "next": "Next",
