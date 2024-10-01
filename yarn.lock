@@ -3134,10 +3134,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^2.0.15":
-  version "2.0.15"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.0.15.tgz#5fc024d50ed4886403501c74a1d34797e5f43dd9"
-  integrity sha512-KJ12BGDMPXLTvRnfhbZGCxOzLvBR2FmpvTV43O7UQqsORKuDQkbnSxwgZNpk/+TpIWQxe9W9KlNThPfTOfC+TA==
+"@ska-telescope/ska-gui-components@^2.0.16":
+  version "2.0.16"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.0.16.tgz#bef8657a0f9dd46e6b0014d4356f01464013c5f4"
+  integrity sha512-vd11hubZyOOsShSnRPPgPNbzZYYRA/emptghuS5ExDsCfqSLVMrK4N7SIMYG1gvBsTuhyDALnoeFemXSBF9fWw==
   dependencies:
     "@mui/icons-material" "^5.15.19"
     "@mui/lab" "^5.0.0-alpha.170"
@@ -3146,7 +3146,7 @@
     "@mui/x-data-grid" "^7.3.0"
     "@mui/x-tree-view" "6.17.0"
     "@react-spring/web" "^9.7.3"
-    "@ska-telescope/ska-javascript-components" "^2.0.4"
+    "@ska-telescope/ska-javascript-components" "^2.0.6"
     "@types/uuid" "^9.0.4"
     junit-report-merger "^6.0.2"
     typescript "5.5.3"
@@ -3192,10 +3192,10 @@
     react-scripts "^5.0.1"
     svgo "^3.2.0"
 
-"@ska-telescope/ska-javascript-components@^2.0.4":
-  version "2.0.4"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-2.0.4.tgz#3802ea973505da72c6f7c99234da3d7b45e8a684"
-  integrity sha512-nRaXt6h6SKeyaXWeb1c3t0ShhB3E0e3qjDgNUIirjGNRJopBcVMMEsk8oc6tPI6hqcTCsi3fATi6Eor8s4VvSA==
+"@ska-telescope/ska-javascript-components@^2.0.6":
+  version "2.0.6"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-2.0.6.tgz#bf1a689947020fbaaf9d1da4e3953eac296f023e"
+  integrity sha512-oHep2/Z2+uwkdWd9PmsqF9DT1F/C/Tx6Z5hQ1mPcyl+9ZSMqgMkmhzTRS6SBTLvb6Q9uDYk1e0aax94O1P9cDw==
   dependencies:
     babel-jest "^29.5.0"
     babel-plugin-import "^1.13.5"
