@@ -27,7 +27,7 @@ import {
   clickToConfirmProposalSubmission,
   verifyFirstProposalOnLandingPageHasSubmittedStatus,
   verifyProposalValidAlertFooter,
-  verifyOnLandingPageFilterIsVisible, secondAttemptToTargetPage
+  verifyOnLandingPageFilterIsVisible
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
