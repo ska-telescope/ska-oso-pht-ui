@@ -124,6 +124,10 @@ integration-test:
     - apt-get -q=2 install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb # install Cypress dependencies
     - npm install -g yarn
     - make js-install-reinstall
+    - rm -rf node_modules
+    - mkdir -p build/reports
+    - mkdir -p build/.nyc_output
+    - yarn install --frozen-lockfile
   script:
     - make js-e2e-test
     - yarn test:coverage:report:ci
