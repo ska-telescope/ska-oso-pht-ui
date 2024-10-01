@@ -127,6 +127,8 @@ integration-test:
   script:
     - make js-e2e-test
     - yarn test:coverage:report:ci
+    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+
   rules:
     - exists:
         - tests/cypress/**/*
