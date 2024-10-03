@@ -1,8 +1,7 @@
 import { AXIOS_CONFIG, SKA_PHT_API_URL } from '../../../utils/constants';
 import axios from 'axios';
-import { EmailInvite } from '../../../utils/types/emailInvite';
 
-async function PostSendEmailInvite(email: EmailInvite) {
+async function PostSendEmailInvite(email: { id: string; email: string }) {
   try {
     const URL_PATH = `/send-email`;
 

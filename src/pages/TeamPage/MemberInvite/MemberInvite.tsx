@@ -146,10 +146,11 @@ export default function MemberInvite() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
-  async function sendEmailInvite() {
-    const response = await PostSendEmailInvite();
+  async function sendEmailInvite(id: string, email: string) {
+    const emailInvite ={id, email};
+    const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
-    return "success"
+    return "Email has been queued"
     } else {
     return response.error
     }
@@ -164,8 +165,8 @@ export default function MemberInvite() {
   }
 
   const clickFunction = () => {
-    sendEmailInvite().then();
     AddTeamMember();
+    sendEmailInvite(getProposal().id, formValues.email.value);
     clearForm();
   };
 
