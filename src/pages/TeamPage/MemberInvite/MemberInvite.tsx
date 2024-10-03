@@ -15,7 +15,6 @@ import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/pos
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
-
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
