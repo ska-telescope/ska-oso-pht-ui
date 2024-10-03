@@ -152,7 +152,7 @@ pages:
   dependencies:
     - test-counts
     - test_and_coverage
-    - test_e2e
+    - js-e2e-test
     - list_dependencies
     - code_quality
   script:
