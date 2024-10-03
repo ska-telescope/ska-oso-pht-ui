@@ -22,14 +22,14 @@ install_dependencies:
   image: node:20.2.0-alpine3.18
   stage: dependencies
   tags:
-    - ska-default
+    - k8srunner
   before_script:
     - rm -rf node_modules
   script:
-    - make js-install
+    - yarn install --immutable
   cache:
     paths:
-      - ${JS_PROJECT_DIR}/node_modules/
+      - node_modules/
     policy: push
 
 #Run the static code analysis
