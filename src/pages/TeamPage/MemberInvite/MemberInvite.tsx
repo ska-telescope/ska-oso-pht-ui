@@ -150,7 +150,7 @@ export default function MemberInvite() {
     const emailInvite ={id, email};
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
-    return "Email has been queued"
+    return "Email invite has been queued"
     } else {
     return response.error
     }
