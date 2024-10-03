@@ -38,9 +38,6 @@ export default function SensCalcModalMultiple({
 
   let i = 0; // Just here so that the key warning is dealt with
   let headerNumber = 0;
-  console.log('TREVOR');
-  console.log(data);
-  console.log('==================');
 
   function HeaderLine(str: string) {
     return <Typography key={i++}>{str}</Typography>;
