@@ -15,6 +15,10 @@ JS_TEST_COMMAND ?= cypress
 # JS_E2E_TEST_SWITCHES = --e2e --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --headless --config video=false 
 JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
 
+# Post hook for coverage reports
+js-post-e2e-test:
+	yarn test:coverage:report:ci
+	cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
