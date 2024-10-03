@@ -93,7 +93,7 @@ export default function ObservationEntry() {
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
-  const [suppliedUnits, setSuppliedUnits] = React.useState(4);
+  const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
   const [subBands, setSubBands] = React.useState(1);
@@ -172,6 +172,19 @@ export default function ObservationEntry() {
       numStations: numOfStations
     };
     return newObservation;
+  };
+
+  const setTheObservingBand = (e: React.SetStateAction<number>) => {
+    if (isLow() && e !== 0) {
+      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
+      setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
+    }
+    if (!isLow() && e === 0) {
+      setSuppliedType(1);
+      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
+      setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
+    }
+    setObservingBand(e);
   };
 
   React.useEffect(() => {
@@ -291,13 +304,6 @@ export default function ObservationEntry() {
     }
   };
 
-  const setSupplied = () => {
-    setSuppliedUnits(
-      isLow() ? SUPPLIED_INTEGRATION_TIME_UNITS_H : SUPPLIED_INTEGRATION_TIME_UNITS_S
-    );
-    setSuppliedValue(isLow() ? SUPPLIED_VALUE_DEFAULT_LOW : SUPPLIED_VALUE_DEFAULT_MID);
-  };
-
   React.useEffect(() => {
     const calculateSubarray = () => {
       if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
@@ -318,7 +324,6 @@ export default function ObservationEntry() {
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
-    setSupplied();
   }, [observingBand]);
 
   React.useEffect(() => {
@@ -326,7 +331,6 @@ export default function ObservationEntry() {
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
-    setSupplied();
   }, [observationType]);
 
   React.useEffect(() => {
@@ -334,7 +338,6 @@ export default function ObservationEntry() {
     setSpectralResolution(calculateSpectralResolution());
     calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
-    setSupplied();
   }, [bandwidth]);
 
   React.useEffect(() => {
@@ -1065,7 +1068,7 @@ export default function ObservationEntry() {
             </Grid>
             <Grid item xs={XS_TOP}></Grid>
             <Grid item xs={XS_TOP}>
-              <ObservingBandField required value={observingBand} setValue={setObservingBand} />
+              <ObservingBandField required value={observingBand} setValue={setTheObservingBand} />
             </Grid>
             <Grid item xs={XS_TOP}></Grid>
             <Grid item xs={XS_TOP}>
