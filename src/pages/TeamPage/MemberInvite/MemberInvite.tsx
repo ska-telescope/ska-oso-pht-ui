@@ -10,7 +10,7 @@ import { helpers } from '../../../utils/helpers';
 import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
-import { mailto } from '../../../services/mailto/mailto';
+import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
@@ -147,6 +147,15 @@ export default function MemberInvite() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
+  async function sendEmailInvite() {
+    const response = await PostSendEmailInvite();
+    if (response && !response.error) {
+    return "success"
+    } else {
+    return response.error
+    }
+  }
+
   function clearForm() {
     formValues.firstName.setValue('');
     formValues.lastName.setValue('');
@@ -156,13 +165,7 @@ export default function MemberInvite() {
   }
 
   const clickFunction = () => {
-    if (!window.Cypress) {
-      mailto(
-        email,
-        t('email.invitation.subject'),
-        t('email.invitation.body', { id: getProposal().id })
-      );
-    }
+    sendEmailInvite().then();
     AddTeamMember();
     clearForm();
   };
