@@ -280,7 +280,7 @@ export default function TargetListSection() {
             </Tabs>
           </Box>
           {value === 0 && (
-            <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />
+            <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} ipad />
           )}
           {value === 1 && <TargetFileImport raType={raType} />}
           {value === 2 && <SpatialImaging />}
