@@ -20,6 +20,10 @@ js-post-e2e-test:
 	yarn test:coverage:report:ci
 	cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
 
+js-pre-e2e-test:
+	mkdir -p build/reports
+	mkdir -p build/.nyc_output
+
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
