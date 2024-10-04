@@ -147,12 +147,12 @@ export default function MemberInvite() {
   }
 
   async function sendEmailInvite(id: string, email: string) {
-    const emailInvite ={id, email};
+    const emailInvite = { id, email };
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
-    return "Email invite has been queued"
+      return 'Email invite has been queued';
     } else {
-    return response.error
+      return response.error;
     }
   }
 
