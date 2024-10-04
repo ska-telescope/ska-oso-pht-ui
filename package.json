@@ -28,7 +28,7 @@
     "test:component:headless": "cypress run --component --headless --config video=false",
     "test:cypress:e2e:ci": "cypress run --e2e --headless --reporter junit --config video=false --reporter-options mochaFile=build/tests/unit-tests[hash].xml",
     "test:cypress:component:ci": "cypress run --component --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
-    "test:e2e:headless": "cypress run --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --e2e --headless --config video=false"
+    "test:e2e:headless": "cypress run --e2e --headless --config video=false"
   },
   "resolutions": {
     "@cypress/request": "3.x.x",
