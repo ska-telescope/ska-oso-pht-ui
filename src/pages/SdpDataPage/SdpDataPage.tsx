@@ -230,7 +230,7 @@ export default function SdpDataPage() {
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
-        <Grid item xs={10}>
+        <Grid item xs={11}>
           <AddButton
             title="dataProduct.button"
             action={PATH[3]}

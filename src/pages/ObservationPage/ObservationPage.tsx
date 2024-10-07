@@ -487,7 +487,7 @@ export default function ObservationPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item xs={5}>
+        <Grid item md={11} lg={5}>
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
@@ -520,7 +520,7 @@ export default function ObservationPage() {
             )}
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item md={11} lg={6}>
           <Card variant="outlined">
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>

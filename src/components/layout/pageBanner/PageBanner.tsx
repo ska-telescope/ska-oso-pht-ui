@@ -16,6 +16,8 @@ import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/material/styles/useTheme';
 
 interface PageBannerProps {
   pageNo: number;
@@ -23,6 +25,7 @@ interface PageBannerProps {
 }
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
+  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
@@ -91,7 +94,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {t(`page.${pageNo}.title`).toUpperCase()}
+      {LG()
+        ? t(`page.${pageNo}.titleShort`).toUpperCase()
+        : t(`page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
