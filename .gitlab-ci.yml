@@ -75,7 +75,6 @@ test_and_coverage:
     paths:
       - build/
 
-
 stop-integration-test:
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY
   stage: test
