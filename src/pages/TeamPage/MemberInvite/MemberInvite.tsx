@@ -146,8 +146,8 @@ export default function MemberInvite() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
-  async function sendEmailInvite(email: string, proposalId: string) {
-    const emailInvite = { email, proposalId };
+  async function sendEmailInvite(email: string, prsl_id: string) {
+    const emailInvite = { email, prsl_id };
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
       return 'Email invite has been queued';

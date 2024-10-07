@@ -1,4 +1,4 @@
-export type EmailInvite = {
+export type EmailInviteBackend = {
   email: string;
-  proposalId: string;
+  prsl_id: string;
 };
