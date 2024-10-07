@@ -146,7 +146,7 @@ export default function MemberInvite() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
-  async function sendEmailInvite(email: string, proposalId: string, ) {
+  async function sendEmailInvite(email: string, proposalId: string) {
     const emailInvite = { email, proposalId };
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
