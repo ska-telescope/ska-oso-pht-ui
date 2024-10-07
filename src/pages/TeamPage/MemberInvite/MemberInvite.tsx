@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
@@ -11,11 +11,17 @@ import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
+import Notification from '../../../utils/types/notification';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const {
+    application,
+    helpComponent,
+    updateAppContent2,
+    updateAppContent5
+  } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -32,6 +38,8 @@ export default function MemberInvite() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   function formValidation() {
     let count = 0;
@@ -146,13 +154,26 @@ export default function MemberInvite() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
+  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      delay: NOTIFICATION_DELAY_IN_SECONDS,
+      message: t(str),
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+
   async function sendEmailInvite(email: string, prsl_id: string) {
     const emailInvite = { email, prsl_id };
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
-      return 'Email invite has been queued';
+      NotifyOK(t('email.success'));
     } else {
-      return response.error;
+      NotifyError(t('email.error'));
     }
   }
 

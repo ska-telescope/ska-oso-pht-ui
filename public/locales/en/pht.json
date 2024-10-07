@@ -156,7 +156,9 @@
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
-    }
+    },
+    "success": "Email invite has been queued",
+    "error": "Email invite was unsuccessful in being added to the queue"
   },
   "fileName": {
     "label": "File name"
