@@ -30,10 +30,7 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal added with unique identifier');
-    done();
-  });
+  cy.get('#standardAlertId').should('contain', 'Proposal added with unique identifier');
 };
 
 export const clickEditProposal = () => {
@@ -75,6 +72,10 @@ export const addTeamMember = () => {
   cy.get('[data-testid="lastName"]').type('User');
   cy.get('[data-testid="email"]').type('TestUser@test.com');
   cy.get('[data-testid="sendInviteButton"]').click();
+};
+
+export const verifyEmailQueuedAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
 };
 
 export const clickToGeneralPage = () => {
@@ -187,9 +188,7 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal is Valid');
-  });
+  cy.get('#standardAlertId').should('contain', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {
