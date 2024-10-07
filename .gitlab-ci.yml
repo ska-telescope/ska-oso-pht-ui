@@ -37,7 +37,7 @@ code_analysis:
   image: node:20.2.0-alpine3.18
   stage: lint
   tags:
-    - k8srunner
+    - ska-default
   cache:
     paths:
       - node_modules/
@@ -57,7 +57,7 @@ test_and_coverage:
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
   tags:
-    - k8srunner
+    - ska-default
   before_script:
     - rm -rf node_modules
     - mkdir -p build/reports
@@ -75,30 +75,29 @@ test_and_coverage:
     paths:
       - build/
 
-test_e2e:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+
+stop-integration-test:
+  image: $SKA_K8S_TOOLS_BUILD_DEPLOY
   stage: test
   tags:
-    - k8srunner
-  allow_failure: true
-  before_script:
-    - rm -rf node_modules
-    - mkdir -p build/reports
-    - mkdir -p build/.nyc_output
-    - yarn install --frozen-lockfile
+    - ska-k8s
+  when: manual
+  variables:
+    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
   script:
-    - yarn add cypress
-    - yarn start &
-    - yarn test:e2e:headless
-    - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+    - make k8s-uninstall-chart
+    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - make k8s-delete-namespace
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    action: stop
 
 # list the current top level dependencies for the project
 list_dependencies:
   image: node:20.2.0-alpine3.18
   stage: test
   tags:
-    - k8srunner
+    - ska-default
   allow_failure: true
   cache:
     paths:
@@ -119,7 +118,7 @@ test-counts:
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
   tags:
-    - k8srunner
+    - ska-default
   before_script:
     - rm -rf node_modules
     - mkdir -p build/tests
@@ -136,7 +135,7 @@ build:
   image: node:20.2.0-alpine3.18
   stage: build
   tags:
-    - k8srunner
+    - ska-default
   cache:
     paths:
       - node_modules/
@@ -149,11 +148,11 @@ build:
 pages:
   stage: pages
   tags:
-    - k8srunner
+    - ska-default
   dependencies:
     - test-counts
     - test_and_coverage
-    - test_e2e
+    - js-e2e-test
     - list_dependencies
     - code_quality
   script:
@@ -165,7 +164,7 @@ pages:
       - public
     expire_in: 30 days
 
-########################## PHT SPECIFIC STUFF BELOW HERE #################################
+######################### PHT SPECIFIC STUFF BELOW HERE #################################
 
 .info_script: &info_script
   - |-
@@ -243,15 +242,24 @@ include:
     # Upload BDD test results to JIRA X-ray
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
+    # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
+
+js-e2e-test:
+  variables:
+    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
   artifacts:
     paths: [gl-code-quality-report.json]
-  # disable dind service as it's not needed for k8srunner runners
+  # disable dind service as it's not needed for ska-default runners
   services: []
   tags:
-    - k8srunner
+    - ska-default
   # We need to merge the rules with what we have here on template rules
   # https://gitlab.com/ska-telescope/templates-repository/-/blob/master/gitlab-ci/includes/rules.gitlab-ci.yml
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
