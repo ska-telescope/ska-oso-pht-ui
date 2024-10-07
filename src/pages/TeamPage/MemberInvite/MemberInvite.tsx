@@ -166,7 +166,7 @@ export default function MemberInvite() {
 
   const clickFunction = () => {
     AddTeamMember();
-    sendEmailInvite(getProposal().id, formValues.email.value);
+    sendEmailInvite(formValues.email.value, getProposal().id);
     clearForm();
   };
 
