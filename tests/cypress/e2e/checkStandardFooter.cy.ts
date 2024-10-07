@@ -1,3 +1,5 @@
+// TODO : Move the viewPort to a common function
+
 describe('GIVEN that I am a user on the main page of the PHT', () => {
   context('WHEN I want to check the footer', () => {
     beforeEach(() => {

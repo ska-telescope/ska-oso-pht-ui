@@ -156,11 +156,13 @@ export default function MemberInvite() {
   }
 
   const clickFunction = () => {
-    mailto(
-      email,
-      t('email.invitation.subject'),
-      t('email.invitation.body', { id: getProposal().id })
-    );
+    if (!window.Cypress) {
+      mailto(
+        email,
+        t('email.invitation.subject'),
+        t('email.invitation.body', { id: getProposal().id })
+      );
+    }
     AddTeamMember();
     clearForm();
   };

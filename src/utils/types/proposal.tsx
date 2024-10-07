@@ -15,7 +15,6 @@ import TeamMember from './teamMember';
 import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
-import { DEFAULT_PI } from '../constants';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 export type ProposalBackend = {
@@ -59,7 +58,6 @@ export type Proposal = {
   scienceCategory?: number;
   scienceSubCategory?: number[];
   team?: TeamMember[];
-  pi?: string;
   abstract?: string;
   sciencePDF?: DocumentPDF;
   scienceLoadStatus?: number;
@@ -90,7 +88,7 @@ export const NEW_PROPOSAL = {
   proposalSubType: [0],
   scienceCategory: 1,
   scienceSubCategory: [1],
-  team: [DEFAULT_PI],
+  team: [],
   pi: '',
   abstract: '',
   sciencePDF: null,

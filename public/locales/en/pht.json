@@ -37,6 +37,7 @@
     "button": "Observation Setup"
   },
   "addProposal": {
+    "short": "Add",
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
@@ -273,7 +274,7 @@
       "upper": 64
     }
   },
-  "numOfStations": {
+  "numStations": {
     "help": "Valid range is 0 - 512 inclusive",
     "label": "Number of Stations",
     "range": {
@@ -438,7 +439,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
-      "1": "Principal Investigator (PI) projects",
+      "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
       "3": "Director-General's Discretionary Time"
     }
@@ -489,8 +490,8 @@
     "1": "Cosmology",
     "2": "Cradle of Life",
     "3": "Epoch of Re-ionization",
-    "4": "Extra Galactic continuum",
-    "5": "Extra Galactic Spectral line",
+    "4": "Extragalactic continuum",
+    "5": "Extragalactic Spectral line",
     "6": "Gravitational Waves",
     "7": "High Energy Cosmic Particles",
     "8": "HI Galaxy science",
@@ -585,7 +586,7 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "Total sensitivity",
+    "weightedSensitivity": "Weighted sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
     "partial": "Fetching results..."
@@ -672,6 +673,9 @@
     "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering",
     "0": "No tapering"
+  },
+  "targetImport": {
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
   },
   "targetObservation": {
     "label": "Target / Observation relationship"

@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { NAV, PATH } from '../../utils/constants';
-import AddDataProduct from '../AddDataProduct/AddDataProduct';
-import AddProposal from '../AddProposal/AddProposal';
+import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
+import AddProposal from '../add/AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
 import SrcDataPage from '../SrcDataPage/SrcDataPage';
 import GeneralPage from '../GeneralPage/GeneralPage';
-import ObservationEntry from '../ObservationEntry/ObservationEntry';
+import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import ObservationPage from '../ObservationPage/ObservationPage';
 import SciencePage from '../SciencePage/SciencePage';
 import TargetPage from '../TargetPage/TargetPage';

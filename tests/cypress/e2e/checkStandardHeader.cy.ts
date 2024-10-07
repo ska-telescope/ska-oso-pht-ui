@@ -1,3 +1,5 @@
+// TODO : Move the viewPort to a common function
+
 describe('GIVEN that I am a PHT user', () => {
   context('WHEN I want to check the header', () => {
     beforeEach(() => {

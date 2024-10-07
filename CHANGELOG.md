@@ -6,6 +6,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Future
 
+* Sensitivity Calculations
+   - Updated mappings
+   - Updated display variations
+   - Send a 2dn get Calculate request for supplied sensitivity case
+   - Use get Weighting results to send thermal sensitivity for integration time calculations
+   - Update mock requests
+   - Update responses types
+   - Correct robustness issue sent in request
+* Observation page:
+ - Fix effective resolution not updating on Spectral Averaging changes
+ - Fix Spectral Resolution not updating on bandwidth changes for Zoom modes
+* Testing
+   - Renamed all component test files to conform to new standards
+   - Added standard functions to help simplify testing process
+* Responsiveness
+   - Pages are now starting to be enhanced so that tablets can correctly display the application
+* Codebase
+   - Consolidation of folder structure
+   - Code being reviewed and split to better conform to DRY
+
 ---
 
 0.4.1 
@@ -90,7 +110,7 @@ Future
 * Target Page:
    - Added the ability to Edit a target
    - Update target list on target page to show Redshift & Velocity
-Screen Auto-resizing:
+* Screen Auto-resizing:
    - Started to check screen resizing ( landing page and page banner so far ).
    - Standard height of the InfoCard
 * Testing:  
