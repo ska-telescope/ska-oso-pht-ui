@@ -20,16 +20,9 @@ interface TargetEntryProps {
   raType: number;
   setTarget: Function;
   target: Target;
-  ipad?: boolean;
 }
 
-export default function TargetEntry({
-  id = 0,
-  raType,
-  setTarget,
-  target,
-  ipad = false
-}: TargetEntryProps) {
+export default function TargetEntry({ id = 0, raType, setTarget, target }: TargetEntryProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
 
@@ -156,13 +149,13 @@ export default function TargetEntry({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
-        testId={ipad ? 'nameIpad' : 'name'}
+        testId={'name'}
         value={target?.name}
         setValue={setName}
         suffix={
           <ResolveButton
             action={() => getCoordinates(target?.name, raType)}
-            testId={ipad ? 'resolveIpadButton' : 'resolveButton'}
+            testId={'resolveButton'}
           />
         }
         onFocus={() => helpComponent(t('name.help'))}
@@ -251,7 +244,7 @@ export default function TargetEntry({
                 <AddButton
                   action={addButtonAction}
                   disabled={disabled()}
-                  testId={ipad ? 'addTargetIpadButton' : 'addTargetButton'}
+                  testId={'addTargetButton'}
                   title="addTarget.label"
                   toolTip="addTarget.toolTip"
                 />
