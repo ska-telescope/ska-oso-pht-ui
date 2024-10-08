@@ -33,7 +33,7 @@ function validateContent() {
   cy.get('#arrayConfigurationData').contains('arrayConfiguration.0');
   cy.get('#subArrayConfigurationData').contains('subArrayConfiguration.0');
   cy.get('#observationTypeData').contains('observationType.0');
-  cy.get('#deleteObservationContent').contains('deleteObservation.content1');
+  cy.get('#standardAlertId').contains('deleteObservation.info');
 
   cy.get('[data-testid="cancelButtonTestId"]').contains('button.cancel');
   cy.get('[data-testid="confirmButtonTestId"]').contains('button.confirm');
