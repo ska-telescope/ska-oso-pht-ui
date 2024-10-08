@@ -93,11 +93,11 @@ export default function TargetListSection() {
           <Typography variant="body1">{rec.redshift}</Typography>
         </FieldWrapper>
 
-        <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
-          <Grid item>
-            <Typography variant="caption">{t('deleteTarget.content1')}</Typography>
-          </Grid>
-        </Grid>
+        <Alert
+          color={AlertColorTypes.Info}
+          text={t('deleteTarget.info')}
+          testId="deleteTargetInfoId"
+        />
       </Grid>
     );
   };
