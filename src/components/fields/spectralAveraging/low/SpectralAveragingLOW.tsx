@@ -19,7 +19,7 @@ interface SpectralAveragingMIDFieldProps {
   widthLabel?: number;
 }
 
-export default function SpectralAveragingMIDField({
+export default function SpectralAveragingLOWField({
   required = false,
   setValue,
   value,
