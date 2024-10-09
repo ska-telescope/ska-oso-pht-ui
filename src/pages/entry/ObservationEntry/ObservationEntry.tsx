@@ -1053,7 +1053,7 @@ export default function ObservationEntry() {
         justifyContent="space-around"
         spacing={1}
       >
-        <Grid item xs={9}>
+        <Grid item md={12} lg={9}>
           <Grid
             container
             direction="row"
@@ -1156,7 +1156,7 @@ export default function ObservationEntry() {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item md={12} lg={3}>
           <HelpPanel />
         </Grid>
       </Grid>

@@ -309,7 +309,7 @@ export default function AddDataProduct() {
         justifyContent="center"
         spacing={1}
       >
-        <Grid item md={9}>
+        <Grid item md={12} lg={9}>
           <Grid
             container
             direction="column"
@@ -325,7 +325,7 @@ export default function AddDataProduct() {
             <Grid item>{imageWeightingField()}</Grid>
           </Grid>
         </Grid>
-        <Grid item md={3}>
+        <Grid item md={12} lg={3}>
           <HelpPanel />
           <Alert
             color={AlertColorTypes.Info}

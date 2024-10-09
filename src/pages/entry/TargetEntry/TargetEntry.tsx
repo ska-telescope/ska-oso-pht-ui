@@ -244,6 +244,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
                 <AddButton
                   action={addButtonAction}
                   disabled={disabled()}
+                  primary
                   testId={'addTargetButton'}
                   title="addTarget.label"
                   toolTip="addTarget.toolTip"

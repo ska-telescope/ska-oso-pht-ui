@@ -106,7 +106,7 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "content1": "NOTE : Selections to the observations will also be removed",
+    "info": "Deleting this target will also remove any related links to observations",
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
@@ -114,7 +114,7 @@
   },
   "deleteObservation": {
     "label": "Delete this observation ? ",
-    "content1": "NOTE : Links to the targets will also be removed"
+    "info": "Deleting this observation will also remove any related links to targets"
   },
   "deleteProposal": {
     "toolTip": "Delete proposal",

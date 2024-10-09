@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -179,7 +179,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   );
 
   return (
-    <>
+    <Box p={2}>
       {row1()}
       {row2()}
       {row3()}
@@ -192,6 +192,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           onConfirmLabel={t('button.confirmSubmit')}
         />
       )}
-    </>
+    </Box>
   );
 }
