@@ -12,7 +12,7 @@ export const verifyAddProposalButtonExists = () => {
 };
 
 export const enterProposalTitle = () => {
-  cy.get('[id="titleId"]').type('Proposal Title');
+  cy.get('[data-testid="titleId"]').type('Proposal Title');
 };
 
 export const selectCosmology = () => {
@@ -30,10 +30,7 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal added with unique identifier');
-    done();
-  });
+  cy.get('#standardAlertId').should('contain', 'Proposal added with unique identifier');
 };
 
 export const clickEditProposal = () => {
@@ -75,6 +72,10 @@ export const addTeamMember = () => {
   cy.get('[data-testid="lastName"]').type('User');
   cy.get('[data-testid="email"]').type('TestUser@test.com');
   cy.get('[data-testid="sendInviteButton"]').click();
+};
+
+export const verifyEmailQueuedAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
 };
 
 export const clickToGeneralPage = () => {
@@ -119,10 +120,10 @@ export const clickAddDataProduct = () => {
 
 export const addObservatoryDataProduct = () => {
   pageConfirmed('DATA PRODUCT');
-  cy.get('[id="observations"]').click();
-  cy.get('[data-value="0"]').click();
+  cy.get('[id="observations"]').type('{enter}');
   cy.get('[data-testid="observatoryDataProduct1"]').click();
   cy.get('[id="imageSize"]').type('1');
+  cy.get('[data-testid="addButton"]').click();
 };
 
 export const addAbstract = () => {
@@ -160,10 +161,9 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyFirstProposalOnLandingPageIsVisible = () => {
-  //TODO: Enable once cloud issues are resolved
-  // cy.get('[data-testid="dataGridId"]')
-  //   .should('contain', 'prsl-t0001-')
-  //   .should('contain', 'Proposal Title');
+  cy.get('[data-testid="dataGridId"]')
+    .should('contain', 'prsl-t0001-')
+    .should('contain', 'Proposal Title');
 };
 
 export const verifyObservationInTable = () => {
@@ -188,9 +188,7 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal is Valid');
-  });
+  cy.get('#standardAlertId').should('contain', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

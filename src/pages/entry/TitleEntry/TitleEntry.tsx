@@ -241,7 +241,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     }
   }
 
-  const titleField = () => {
+  const titleField = (ipad: boolean = false) => {
     const setTitle = (e: string) => {
       setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
@@ -252,7 +252,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={0}
-        testId="titleId"
+        testId={ipad ? 'titleIdIpad' : 'titleId'}
         value={getTitle()}
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
@@ -325,8 +325,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
             </Grid>
-            <Grid item xs={8 - LABEL_WIDTH}>
-              {titleField()}
+            <Grid item xs={12 - LABEL_WIDTH}>
+              {titleField(true)}
             </Grid>
           </Grid>
         </Grid>

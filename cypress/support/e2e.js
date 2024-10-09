@@ -3,6 +3,6 @@ import './commands';
 import 'cypress-file-upload';
 
 before(() => {
-  cy.viewport(1500, 1000);
-  cy.visit('http://localhost:6101/');
+  cy.viewport(2000, 2000);
+  cy.visit('/');
 });

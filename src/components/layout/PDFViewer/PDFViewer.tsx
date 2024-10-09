@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Grid, Typography } from '@mui/material';
-import { Document, Page } from 'react-pdf';
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';

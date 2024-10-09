@@ -200,17 +200,11 @@ export default function TargetListSection() {
 
   const displayRow1 = () => {
     return (
-      <Grid
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-evenly"
-        display={{ md: 'none', lg: 'flex' }}
-      >
-        <Grid item lg={5}>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+        <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
           {displayGrid()}
         </Grid>
-        <Grid item lg={6}>
+        <Grid item md={11} lg={6} order={{ md: 1, lg: 2 }}>
           <Box sx={{ width: '100%', border: '1px solid grey' }}>
             <Box>
               <Tabs
@@ -249,60 +243,10 @@ export default function TargetListSection() {
     );
   };
 
-  const displayRow2 = () => {
-    return (
-      <Grid item md={11} display={{ md: 'block', lg: 'none' }}>
-        <Box sx={{ width: '100%', border: '1px solid grey' }}>
-          <Box>
-            <Tabs
-              textColor="secondary"
-              indicatorColor="secondary"
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab
-                label={t('addTarget.label')}
-                {...a11yProps(0)}
-                sx={{ border: '1px solid grey' }}
-              />
-              <Tab
-                label={t('importFromFile.label')}
-                {...a11yProps(1)}
-                sx={{ border: '1px solid grey' }}
-              />
-              <Tab
-                label={t('spatialImaging.label')}
-                {...a11yProps(2)}
-                sx={{ border: '1px solid grey' }}
-                disabled
-              />
-            </Tabs>
-          </Box>
-          {value === 0 && (
-            <TargetEntry raType={raType} setTarget={setNewTarget} target={newTarget} />
-          )}
-          {value === 1 && <TargetFileImport raType={raType} />}
-          {value === 2 && <SpatialImaging />}
-        </Box>
-      </Grid>
-    );
-  };
-
-  const displayRow3 = () => {
-    return (
-      <Grid item sx={{ width: '90vw' }} display={{ md: 'block', lg: 'none' }}>
-        {displayGrid()}
-      </Grid>
-    );
-  };
-
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       {RefOptions()}
       {displayRow1()}
-      {displayRow2()}
-      {displayRow3()}
       {openDeleteDialog && (
         <AlertDialog
           open={openDeleteDialog}
