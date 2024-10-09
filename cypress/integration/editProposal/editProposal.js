@@ -1,7 +1,7 @@
 import { Given, When, Then, And } from 'cypress-cucumber-preprocessor/steps';
 import {
   addAbstract,
-  addM1TargetUsingResolve,
+  addM2TargetUsingResolve,
   clickAddObservation,
   clickEditProposal,
   clickHome,
@@ -27,7 +27,11 @@ import {
   clickToConfirmProposalSubmission,
   verifyFirstProposalOnLandingPageHasSubmittedStatus,
   verifyProposalValidAlertFooter,
-  verifyOnLandingPageFilterIsVisible
+  verifyOnLandingPageFilterIsVisible,
+  addTeamMember,
+  clickAddDataProduct,
+  addObservatoryDataProduct,
+  verifyEmailQueuedAlertFooter
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
@@ -47,13 +51,14 @@ Then(
   'I am able to continue my proposal from where I stopped, fill in all the necessary details',
   () => {
     clickToTeamPage();
+    addTeamMember();
+    verifyEmailQueuedAlertFooter();
     clickToGeneralPage();
     addAbstract();
     selectCosmology();
     clickToSciencePage();
     clickToTargetPage();
-    addM1TargetUsingResolve();
-    cy.wait(3000);
+    addM2TargetUsingResolve();
     clickToAddTarget();
     clickToObservationPage();
     clickObservationSetup();
@@ -63,6 +68,8 @@ Then(
     clickToLinkTargetAndObservation();
     clickToTechnicalPage();
     clickToObservatoryDataProductPage();
+    clickAddDataProduct();
+    addObservatoryDataProduct();
   }
 );
 

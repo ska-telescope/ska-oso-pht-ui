@@ -124,6 +124,7 @@ module.exports = () => {
           },
           // Material UI
           '@mui/material': { singleton: true, requiredVersion: deps['@mui/material'], eager: true },
+          '@mui/system': { singleton: true, requiredVersion: deps['@mui/system'], eager: true },
           '@mui/icons-material': {
             singleton: true,
             requiredVersion: deps['@mui/icons-material'],

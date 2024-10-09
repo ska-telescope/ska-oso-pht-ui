@@ -15,7 +15,6 @@ Given('I have access to the PHT Application', () => {
 
 And('I have navigated to the Observation Page', () => {
   createStandardProposal();
-  clickToTeamPage();
   clickToGeneralPage();
   clickToSciencePage();
   clickToTargetPage();

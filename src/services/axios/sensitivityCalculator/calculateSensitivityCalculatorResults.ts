@@ -45,7 +45,9 @@ export default function calculateSensitivityCalculatorResults(
   const continuumIntegrationTime = isSensitivity()
     ? getContinuumIntegrationTimeMID(response, isZoom())
     : 0;
-  const spectralIntegrationTime = isSensitivity() ? getSpectralIntegrationTimeMID(response) : 0;
+  const spectralIntegrationTime: any = isSensitivity()
+    ? getSpectralIntegrationTimeMID(response, isZoom())
+    : 0;
 
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
@@ -58,11 +60,6 @@ export default function calculateSensitivityCalculatorResults(
     spectralWeightedSensitivity
   );
 
-  // SBS for LOW should now be correct for Continuum/Spectral/Zoom
-  /* TODO
-    - refactor SBS LOW code (remove duplication, etc.)
-    - fix SBS results for MID continuum and spectral (Mid Zoom ok)
-  */
   const getSurfaceBrightnessSensitivity = (
     response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
     sense: number,
@@ -251,7 +248,7 @@ const getWeightedSensitivityLOW = (
 ) => {
   const sensitivity = isZoom
     ? response.calculate.data.spectral_sensitivity?.value
-    : response.calculate.data.continuum_sensitivity?.value;
+    : response?.calculate?.data?.continuum_sensitivity?.value;
   const factor = isZoom
     ? response.weighting[0].weighting_factor
     : response.weighting.weighting_factor;
@@ -340,7 +337,7 @@ const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom): 
 
 const getSpectralWeightedSensitivityRawValueMid = (
   observation: Observation,
-  response: SensitivityCalculatorAPIResponseLow,
+  response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean
 ) => {
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
@@ -359,19 +356,22 @@ const getContinuumIntegrationTimeMID = (
   isZoom: Boolean
 ) => {
   return isZoom
-    ? response.calculate.data[0].spectral_integration_time
-    : response.calculate.data.continuum_integration_time;
+    ? response.calculate?.data[0]?.spectral_integration_time
+    : response.calculate?.data?.continuum_integration_time;
 };
 
-const getSpectralIntegrationTimeMID = (response: {
-  calculate: { data: { spectral_integration_time: any } };
-}) => {
-  return response.calculate.data.spectral_integration_time;
+const getSpectralIntegrationTimeMID = (
+  response: SensitivityCalculatorAPIResponseMid,
+  isZoom: boolean
+) => {
+  return isZoom
+    ? response.calculate?.data?.spectral_integration_time
+    : response.calculateSpectral?.data?.spectral_integration_time;
 };
 
 const getSpectralWeightedSensitivityMID = (
   observation: Observation,
-  response: SensitivityCalculatorAPIResponseLow,
+  response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean
 ) => {
   return getSpectralWeightedSensitivityRawValueMid(observation, response, isZoom);

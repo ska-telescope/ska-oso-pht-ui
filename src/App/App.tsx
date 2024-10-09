@@ -9,29 +9,24 @@ import {
   Footer,
   Header,
   Spacer,
-  SPACER_VERTICAL
+  SPACER_VERTICAL,
+  THEME_DARK,
+  THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Alert from '../components/alerts/standardAlert/StandardAlert';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
 import theme from '../services/theme/theme';
-import { USE_LOCAL_DATA } from '../utils/constants';
+import { FOOTER_HEIGHT, HEADER_HEIGHT, USE_LOCAL_DATA } from '../utils/constants';
 import Proposal from '../utils/types/proposal';
-
-const HEADER_HEIGHT = 70;
-const FOOTER_HEIGHT = 20;
 
 function App() {
   const { t } = useTranslation('pht');
-  const {
-    help,
-    helpToggle,
-    telescope,
-    themeMode,
-    toggleTheme,
-    updateTelescope
-  } = storageObject.useStore();
+  const { help, helpToggle } = storageObject.useStore();
+  const [theMode, setTheMode] = React.useState(
+    localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
+  );
   const [showCopyright, setShowCopyright] = React.useState(false);
   const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
 
@@ -46,13 +41,19 @@ function App() {
   const toolTip = { skao, mode };
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+
+  const modeToggle = () => {
+    const newMode = theMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+    localStorage.setItem('skao_theme_mode', newMode);
+    setTheMode(newMode);
+  };
   const theStorage = {
     help: help,
     helpToggle: helpToggle,
-    telescope: telescope,
-    themeMode: themeMode.mode,
-    toggleTheme: toggleTheme,
-    updateTelescope: updateTelescope
+    telescope: null,
+    themeMode: theMode,
+    toggleTheme: modeToggle,
+    updateTelescope: null
   };
 
   const { application } = storageObject.useStore();
@@ -69,7 +70,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme(themeMode.mode)}>
+    <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
       <React.Suspense fallback={<Loader />}>
         <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />
@@ -80,6 +81,7 @@ function App() {
           toolTip={toolTip}
           selectTelescope={false}
           storage={theStorage}
+          useSymbol={LG()}
         />
         <>
           <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />

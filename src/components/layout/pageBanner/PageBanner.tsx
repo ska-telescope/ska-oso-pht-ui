@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -16,6 +16,8 @@ import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/material/styles/useTheme';
 
 interface PageBannerProps {
   pageNo: number;
@@ -23,6 +25,7 @@ interface PageBannerProps {
 }
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
+  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
@@ -91,7 +94,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {t(`page.${pageNo}.title`).toUpperCase()}
+      {LG()
+        ? t(`page.${pageNo}.titleShort`).toUpperCase()
+        : t(`page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
@@ -174,18 +179,10 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   );
 
   return (
-    <>
-      <Grid container direction="row" alignItems="center" justifyContent="space-space-be">
-        <Grid item xs={12}>
-          {row1()}
-        </Grid>
-        <Grid item xs={12}>
-          {row2()}
-        </Grid>
-        <Grid item xs={12}>
-          {row3()}
-        </Grid>
-      </Grid>
+    <Box p={2}>
+      {row1()}
+      {row2()}
+      {row3()}
       {openDialog && (
         <ProposalDisplay
           proposal={getProposal()}
@@ -195,6 +192,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           onConfirmLabel={t('button.confirmSubmit')}
         />
       )}
-    </>
+    </Box>
   );
 }

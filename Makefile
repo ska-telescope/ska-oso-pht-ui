@@ -5,6 +5,24 @@ K8S_CHART ?= ska-oso-pht-ui-umbrella
 KUBE_HOST ?= http://`minikube ip`
 RELEASE_NAME ?= test
 
+# JS Template Variables
+JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+JS_E2E_COVERAGE_COMMAND_ENABLED = false
+JS_ESLINT_CONFIG ?= .eslintrc
+
+JS_COMMAND_RUNNER ?= yarn
+JS_TEST_COMMAND ?= cypress
+JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
+
+# Post hook for coverage reports
+js-post-e2e-test:
+	yarn test:coverage:report:ci
+	cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+
+js-pre-e2e-test:
+	mkdir -p build/reports
+	mkdir -p build/.nyc_output
+
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
@@ -18,9 +36,10 @@ K8S_CHART_PARAMS += \
 -include .make/oci.mk
 -include .make/helm.mk
 -include .make/k8s.mk
--include .make/release.mk
 -include PrivateRules.mak
 -include .make/xray.mk
+-include .make/js.mk
+
 
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json

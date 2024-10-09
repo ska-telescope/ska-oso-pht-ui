@@ -12,7 +12,7 @@ export const verifyAddProposalButtonExists = () => {
 };
 
 export const enterProposalTitle = () => {
-  cy.get('[id="titleId"]').type('Proposal Title');
+  cy.get('[data-testid="titleId"]').type('Proposal Title');
 };
 
 export const selectCosmology = () => {
@@ -29,13 +29,9 @@ export const clickCreateProposal = () => {
   cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
-//TODO: Reinstate once api is up and running
-// export const verifyProposalCreatedAlertFooter = () => {
-//   cy.on('window:alert', str => {
-//     expect(str).to.include('Proposal added with unique identifier');
-//     done();
-//   });
-// };
+export const verifyProposalCreatedAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Proposal added with unique identifier');
+};
 
 export const clickEditProposal = () => {
   cy.get("[data-testid='EditRoundedIcon']")
@@ -56,10 +52,9 @@ export const createStandardProposal = () => {
   pageConfirmed('TITLE');
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
-  cy.wait(3000);
   clickCreateProposal();
-  //TODO: Enable once functionality is working in the cloud
-  // verifyProposalCreatedAlertFooter();
+  verifyProposalCreatedAlertFooter();
+  pageConfirmed('TEAM');
 };
 
 export const clickHome = () => {
@@ -70,6 +65,17 @@ export const clickHome = () => {
 export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
+};
+
+export const addTeamMember = () => {
+  cy.get('[data-testid="firstName"]').type('Test');
+  cy.get('[data-testid="lastName"]').type('User');
+  cy.get('[data-testid="email"]').type('TestUser@test.com');
+  cy.get('[data-testid="sendInviteButton"]').click();
+};
+
+export const verifyEmailQueuedAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
 };
 
 export const clickToGeneralPage = () => {
@@ -107,18 +113,32 @@ export const clickToNextPage = () => {
   cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
+export const clickAddDataProduct = () => {
+  cy.get('[data-testid="addDataProductButton"]', { timeout: 80000 }).should('be.enabled');
+  cy.get('[data-testid="addDataProductButton"]').click();
+};
+
+export const addObservatoryDataProduct = () => {
+  pageConfirmed('DATA PRODUCT');
+  cy.get('[id="observations"]').type('{enter}');
+  cy.get('[data-testid="observatoryDataProduct1"]').click();
+  cy.get('[id="imageSize"]').type('1');
+  cy.get('[data-testid="addButton"]').click();
+};
+
 export const addAbstract = () => {
   cy.get('[id="abstractId"]').should('exist');
   cy.get('[id="abstractId"]').type('Test abstract');
 };
 
-export const addM1TargetUsingResolve = () => {
+export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type('M1');
+  cy.get('[id="name"]').type('M2');
   cy.get('[data-testid="resolveButton"]').click();
 };
 
 export const clickToAddTarget = () => {
+  cy.get('[data-testid="addTargetButton"]').should('exist');
   cy.get('[data-testid="addTargetButton"]').click();
 };
 
@@ -141,10 +161,9 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyFirstProposalOnLandingPageIsVisible = () => {
-  //TODO: Enable once cloud issues are resolved
-  // cy.get('[data-testid="dataGridId"]')
-  //   .should('contain', 'prsl-t0001-')
-  //   .should('contain', 'Proposal Title');
+  cy.get('[data-testid="dataGridId"]')
+    .should('contain', 'prsl-t0001-')
+    .should('contain', 'Proposal Title');
 };
 
 export const verifyObservationInTable = () => {
@@ -160,6 +179,7 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click();
+  cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
 export const clickToValidateProposal = () => {
@@ -168,9 +188,7 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.on('window:alert', str => {
-    expect(str).to.include('Proposal is Valid');
-  });
+  cy.get('#standardAlertId').should('contain', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

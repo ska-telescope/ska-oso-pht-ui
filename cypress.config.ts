@@ -13,6 +13,7 @@ export default defineConfig({
 
   component: {
     supportFile: 'tests/cypress/support/component.js',
+    specPattern: '**/*.test.{js,jsx,ts,tsx}',
     indexHtmlFile: 'tests/cypress/support/component-index.html',
     devServer: {
       framework: 'react',
@@ -26,6 +27,7 @@ export default defineConfig({
     excludeSpecPattern: 'tests/cypress/e2e/**'
   },
   e2e: {
+    baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
     setupNodeEvents(on, config) {
       on('file:preprocessor', cucumber());

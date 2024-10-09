@@ -37,6 +37,7 @@
     "button": "Observation Setup"
   },
   "addProposal": {
+    "short": "Add",
     "label": "Add Proposal",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
@@ -105,7 +106,7 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "content1": "NOTE : Selections to the observations will also be removed",
+    "info": "Deleting this target will also remove any related links to observations",
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
@@ -113,7 +114,7 @@
   },
   "deleteObservation": {
     "label": "Delete this observation ? ",
-    "content1": "NOTE : Links to the targets will also be removed"
+    "info": "Deleting this observation will also remove any related links to targets"
   },
   "deleteProposal": {
     "toolTip": "Delete proposal",
@@ -155,7 +156,9 @@
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
-    }
+    },
+    "success": "Email invite has been sent.",
+    "error": "Email invite was unsuccessful - please check email address and re-send."
   },
   "fileName": {
     "label": "File name"
@@ -273,7 +276,7 @@
       "upper": 64
     }
   },
-  "numOfStations": {
+  "numStations": {
     "help": "Valid range is 0 - 512 inclusive",
     "label": "Number of Stations",
     "range": {
@@ -438,7 +441,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "title": {
-      "1": "Principal Investigator (PI) projects",
+      "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
       "3": "Director-General's Discretionary Time"
     }
@@ -489,8 +492,8 @@
     "1": "Cosmology",
     "2": "Cradle of Life",
     "3": "Epoch of Re-ionization",
-    "4": "Extra Galactic continuum",
-    "5": "Extra Galactic Spectral line",
+    "4": "Extragalactic continuum",
+    "5": "Extragalactic Spectral line",
     "6": "Gravitational Waves",
     "7": "High Energy Cosmic Particles",
     "8": "HI Galaxy science",
@@ -585,7 +588,7 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Calculator Results",
     "targetName": "Target name",
-    "totalSensitivity": "Total sensitivity",
+    "weightedSensitivity": "Weighted sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
     "partial": "Fetching results..."
@@ -673,6 +676,9 @@
     "label": "Tapering",
     "0": "No tapering"
   },
+  "targetImport": {
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
+  },
   "targetObservation": {
     "label": "Target / Observation relationship"
   },
@@ -749,38 +755,45 @@
     "0": {
       "status": "Title",
       "title": "Title",
+      "titleShort": "Title",
       "desc": "This page allows users to provide the title and proposal category."
     },
     "1": {
       "status": "Team",
       "title": "Team",
+      "titleShort": "Team",
       "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal."
     },
     "2": {
       "status": "General",
       "title": "General",
+      "titleShort": "General",
       "desc": "This page allows the user to provide general information about the proposal."
     },
     "3": {
       "status": "Science",
       "title": "Science",
+      "titleShort": "Science",
       "label": "Science justification",
       "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
     },
     "4": {
       "status": "Target",
       "title": "Target",
+      "titleShort": "Target",
       "label": "Target(s)",
       "desc": "Select a category to associate target(s) with this proposal."
     },
     "5": {
       "status": "Observation",
       "title": "Observation",
+      "titleShort": "Observation",
       "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results."
     },
     "6": {
       "status": "Technical",
       "title": "Technical",
+      "titleShort": "Technical",
       "label": "Technical justification",
       "desc": "Upload a Technical justification for this proposal in a portable document format (pdf)."
     },
@@ -790,11 +803,13 @@
       "status": "Data Product",
       "plural": "Data Products",
       "title": "Observatory Data Product",
+      "titleShort": "Data Product",
       "desc": "This page allows you to request and define observatory data products for observation set(s)."
     },
     "8": {
       "status": "SrcNet",
       "title": "SrcNet Resources",
+      "titleShort": "SrcNet",
       "desc": "This page allows you to request and define SRC Net data products."
     },
     "9": {
@@ -803,6 +818,7 @@
     },
     "10": {
       "title": "Observation Setup",
+      "titleShort": "Observation Setup",
       "label": "Observation Setup(s)",
       "desc": "Define the parameters of the observation setup."
     },
@@ -818,11 +834,13 @@
     },
     "13": {
       "title": "Data Product",
+      "titleShort": "Data Product",
       "label": "Data Product(s)",
       "desc": "Add data product(s) to your observation set(s). You can request more than one data products for an observation set."
     },
     "14": {
       "title": "Observation Update",
+      "titleShort": "Observation Update",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "next": "Next",
