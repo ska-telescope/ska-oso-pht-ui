@@ -27,6 +27,8 @@ When('I begin to add an observation setup', () => {
 
 Then('I verify spectral average limits for LOW Continuum observations', () => {
   verifyContinuumSpectralAverageRangeAA4();
+  verifyContinuumSpectralAverageRangeAA2();
+  verifyContinuumSpectralAverageRangeAA1();
 });
 
 And('I verify spectral average limits for LOW Zoom observations', () => {});
@@ -38,9 +40,34 @@ const verifyContinuumSpectralAverageRangeAA4 = value => {
   verifySpectralAverageRangeError();
 };
 
+const verifyContinuumSpectralAverageRangeAA2 = value => {
+  selectSubArrayAA2();
+  enterSpectralAverageValue(0);
+  verifySpectralAverageRangeError();
+  enterSpectralAverageValue(13813);
+  verifySpectralAverageRangeError();
+};
+
+const verifyContinuumSpectralAverageRangeAA1 = value => {
+  selectSubArrayAA1();
+  enterSpectralAverageValue(0);
+  verifySpectralAverageRangeError();
+  enterSpectralAverageValue(6907);
+  verifySpectralAverageRangeError();
+};
 const enterSpectralAverageValue = value => {
   cy.get('[data-testid="spectralAveraging"]').type('{selectall}{del}');
   cy.get('[data-testid="spectralAveraging"]').type(value);
+};
+
+const selectSubArrayAA2 = value => {
+  cy.get('[data-testid="subArrayConfiguration"]').click();
+  cy.get('[data-value="3"]').click({ force: true });
+};
+
+const selectSubArrayAA1 = value => {
+  cy.get('[data-testid="subArrayConfiguration"]').click();
+  cy.get('[data-value="2"]').click({ force: true });
 };
 
 const verifySpectralAverageRangeError = () => {
