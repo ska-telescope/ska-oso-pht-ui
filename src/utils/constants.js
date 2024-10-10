@@ -400,7 +400,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 6,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 6096
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -409,7 +410,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 18,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 6096
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -418,7 +420,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 64,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 13812
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
@@ -427,7 +430,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 40,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 13812
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -436,7 +440,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 307,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 27624
         },
         {
           value: OB_SUBARRAY_AA_STAR_CORE,
@@ -445,7 +450,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 199,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 27624
         },
         {
           value: OB_SUBARRAY_AA4,
@@ -454,7 +460,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 512,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 27624
         },
         {
           value: OB_SUBARRAY_AA4_CORE,
@@ -463,7 +470,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 224,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 27624
         },
         {
           value: OB_SUBARRAY_CUSTOM,
@@ -472,7 +480,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          spectralAveragingMax : 27624
         }
       ],
       bandWidth: [
