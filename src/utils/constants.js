@@ -741,7 +741,6 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
 ];
-export const SPECTRAL_AVERAGING_MAX = 27624;
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const STATUS_OK = 0;
