@@ -1,10 +1,10 @@
-import { And, Given } from 'cypress-cucumber-preprocessor/steps';
+import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import {
+  clickObservationSetup,
   clickToGeneralPage,
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
-  clickToTeamPage,
   createStandardProposal,
   landingPageConfirmed
 } from '../common/common';
@@ -20,3 +20,32 @@ And('I have navigated to the Observation Page', () => {
   clickToTargetPage();
   clickToObservationPage();
 });
+
+When('I begin to add an observation setup', () => {
+  clickObservationSetup();
+});
+
+Then('I verify spectral average limits for LOW Continuum observations', () => {
+  verifyContinuumSpectralAverageRangeAA4();
+});
+
+And('I verify spectral average limits for LOW Zoom observations', () => {});
+
+const verifyContinuumSpectralAverageRangeAA4 = value => {
+  enterSpectralAverageValue(0);
+  verifySpectralAverageRangeError();
+  enterSpectralAverageValue(27625);
+  verifySpectralAverageRangeError();
+};
+
+const enterSpectralAverageValue = value => {
+  cy.get('[data-testid="spectralAveraging"]').type('{selectall}{del}');
+  cy.get('[data-testid="spectralAveraging"]').type(value);
+};
+
+const verifySpectralAverageRangeError = () => {
+  cy.get('[id="spectralAveraging-helper-text"]').should(
+    'contain',
+    'Value is outside of allowed range'
+  );
+};
