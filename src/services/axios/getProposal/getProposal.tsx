@@ -513,7 +513,7 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
-  console.log('PROPOSAL BACKEND', inRec);
+  // console.log('PROPOSAL BACKEND', inRec);
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
   sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
@@ -557,7 +557,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('PROPOSAL FRONTEND', convertedProposal);
+  // console.log('PROPOSAL FRONTEND', convertedProposal);
   return convertedProposal;
 }
 

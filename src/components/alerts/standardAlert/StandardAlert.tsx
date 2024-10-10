@@ -1,16 +1,20 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
+import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
 
 interface StandardAlertProps {
   color: AlertColorTypes;
   testId: string;
   text: string;
+  closeFunc?: Function;
 }
 
 const FONTSIZE = 25;
 
-export default function StandardAlert({ color, testId, text }: StandardAlertProps) {
+export default function StandardAlert({ color, testId, text, closeFunc }: StandardAlertProps) {
+  const { t } = useTranslation('pht');
   function getLevel(color: AlertColorTypes): number {
     switch (color) {
       case AlertColorTypes.Success:
@@ -40,7 +44,13 @@ export default function StandardAlert({ color, testId, text }: StandardAlertProp
         <Grid item>
           <Typography id="standardAlertId">{text}</Typography>
         </Grid>
-        <Grid item></Grid>
+        <Grid item>
+          {closeFunc ? (
+            <CloseIcon onClick={() => closeFunc()} toolTip={t('button.close')} />
+          ) : (
+            <></>
+          )}
+        </Grid>
       </Grid>
     </Alert>
   );

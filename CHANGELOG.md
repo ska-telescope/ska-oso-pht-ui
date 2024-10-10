@@ -5,10 +5,24 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 Future
+
+---
+
+* Utilities
+  - Optional Close icon added to notifications 
+* Target Page
+  - Increased padding around contents
+* Observation page
+  - Add observation button set to primary color if there are no observations on the proposal
+
+---
+
+0.4.2 
+
 ---
 
 * Team Page:
-   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilising /send-email endpoint 
+   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilizing /send-email endpoint 
 * Types:
    - Added new model EmailInviteBackend to support new endpoint /send-email 
 * Sensitivity Calculations
@@ -42,7 +56,7 @@ Future
 * Target Page:
    - Disabled galactic coordinate 
 * Observation page:
-   - Updated senscal results modal and results
+   - Updated sensitivity calculator results modal and results
 * Testing: 
    - Added BDD tests
    
@@ -81,7 +95,7 @@ Future
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
    - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
-   - Use non rounded value for Low Zoom bandwith in mapping for Sensitivity Calculator endpoints
+   - Use non rounded value for Low Zoom bandwidth in mapping for Sensitivity Calculator endpoints
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename
