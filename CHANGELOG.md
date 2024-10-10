@@ -13,7 +13,10 @@ Future
 * Target Page
   - Increased padding around contents
 * Observation page
-  - Add observation button set to primary color if there are no observations on the proposal
+  - Updated observation button set to primary color if there are no observations on the proposal
+* Observation Entry
+  - Updated the Group Observation field into it's own component
+  - Removed the need for the Add Group Button by hooking it directly to the dropdown valueS
 
 ---
 

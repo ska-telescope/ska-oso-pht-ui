@@ -60,7 +60,7 @@ export default function GroupObservationsField({
     });
 
     const formattedGroupObs = [
-      { label: t('groupObservations.new'), value: 9999999999 },
+      { label: t('groupObservations.new'), value: -1 },
       { label: t('groupObservations.none'), value: 0 },
       ...uniqueGroups.map(group => ({
         label: group?.groupId,
