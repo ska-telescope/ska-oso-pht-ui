@@ -7,18 +7,26 @@ interface SpectralAveragingFieldProps {
   setValue?: Function;
   value: number;
   subarray?: number;
+  type?: number;
 }
 
 export default function SpectralAveragingField({
   isLow = false,
   setValue,
   value,
-  subarray
+  subarray,
+  type
 }: SpectralAveragingFieldProps) {
   return (
     <>
       {isLow && (
-        <SpectralAveragingLOWField required value={value} setValue={setValue} subarray={subarray} />
+        <SpectralAveragingLOWField
+          required
+          value={value}
+          setValue={setValue}
+          subarray={subarray}
+          type={type}
+        />
       )}
       {!isLow && <SpectralAveragingMIDField required value={value} setValue={setValue} />}
     </>

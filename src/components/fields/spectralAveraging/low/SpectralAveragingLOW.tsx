@@ -6,7 +6,8 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   OBSERVATION,
-  SPECTRAL_AVERAGING_MIN
+  SPECTRAL_AVERAGING_MIN,
+  ZOOM_SPECTRAL_AVERAGING_MAX
 } from '../../../../utils/constants';
 
 interface SpectralAveragingLOWFieldProps {
@@ -18,6 +19,7 @@ interface SpectralAveragingLOWFieldProps {
   widthButton?: number;
   widthLabel?: number;
   subarray: number;
+  type: number;
 }
 
 export default function SpectralAveragingLOWField({
@@ -25,7 +27,8 @@ export default function SpectralAveragingLOWField({
   setValue,
   value,
   widthLabel = 6,
-  subarray
+  subarray,
+  type
 }: SpectralAveragingLOWFieldProps) {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
@@ -33,8 +36,13 @@ export default function SpectralAveragingLOWField({
 
   const errorMessage = () => {
     const subarrayConfig = OBSERVATION.array[1].subarray.find(item => item.value === subarray);
-
-    return value < SPECTRAL_AVERAGING_MIN || value > subarrayConfig?.spectralAveragingMax
+    let spectralAverageMax: number;
+    if (type == 1) {
+      spectralAverageMax = subarrayConfig?.continuumSpectralAveragingMax;
+    } else {
+      spectralAverageMax = ZOOM_SPECTRAL_AVERAGING_MAX;
+    }
+    return value < SPECTRAL_AVERAGING_MIN || value > spectralAverageMax
       ? t('spectralAveraging.range.error')
       : '';
   };
