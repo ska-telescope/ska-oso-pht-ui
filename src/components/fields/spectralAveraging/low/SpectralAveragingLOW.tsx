@@ -34,7 +34,7 @@ export default function SpectralAveragingLOWField({
   const errorMessage = () => {
     const subarrayConfig = OBSERVATION.array[1].subarray.find(item => item.value === subarray);
 
-    return value < SPECTRAL_AVERAGING_MIN || value > subarrayConfig.spectralAveragingMax
+    return value < SPECTRAL_AVERAGING_MIN || value > subarrayConfig?.spectralAveragingMax
       ? t('spectralAveraging.range.error')
       : '';
   };
