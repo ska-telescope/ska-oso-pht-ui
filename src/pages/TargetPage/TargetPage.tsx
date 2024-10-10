@@ -81,7 +81,6 @@ export default function TargetPage() {
     <Shell page={PAGE}>
       <Grid container direction="column" justifyContent="space-around">
         <Grid
-          p={1}
           container
           direction="row"
           justifyContent="space-evenly"
@@ -95,12 +94,14 @@ export default function TargetPage() {
 
         <Grid
           mt={1}
+          pl={3}
+          pr={3}
           container
           direction="column"
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid item sx={{ width: '100%' }}>
+          <Grid item xs={11}>
             {getProposal().targetOption === 1 && <TargetListSection />}
           </Grid>
           <Grid item>{getProposal().targetOption === 2 && <TargetMosaicSection />}</Grid>

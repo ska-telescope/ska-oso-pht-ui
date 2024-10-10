@@ -45,8 +45,8 @@ import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
 import { generateId } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
-import GroupObservation from '../../../utils/types/groupObservation';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
+import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
 import Observation from '../../../utils/types/observation';
 import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
@@ -103,17 +103,12 @@ export default function ObservationEntry() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
-  const [groupObservationId, setGroupObservationId] = React.useState(null);
-  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
-  const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
   const [myObsId, setMyObsId] = React.useState('');
-  const [selectedGroupObservation, setSelectedGroupObservation] = React.useState(null);
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
-    // TODO : What to do about linked field ?
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
@@ -145,7 +140,7 @@ export default function ObservationEntry() {
       type: observationType,
       observingBand,
       weather,
-      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capure info needed for ElevationBackend type and update sens calc mapping
+      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capture info needed for ElevationBackend type and update sens calc mapping
       centralFrequency: Number(centralFrequency),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
@@ -195,15 +190,6 @@ export default function ObservationEntry() {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
     }
   }, []);
-
-  React.useEffect(() => {
-    if (!groupObservationId) {
-      setGroupObservationLabel(t('groupObservations.new'));
-    } else {
-      setGroupObservationLabel(groupObservationId);
-      setAddGroupObsDisabled(true);
-    }
-  }, groupObservationId);
 
   React.useEffect(() => {
     if (telescope() > 0) {
@@ -397,89 +383,6 @@ export default function ObservationEntry() {
     subarrayConfig === OB_SUBARRAY_AA1 ||
     (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
 
-  const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
-
-  const buttonGroupObservationsField = () => {
-    const generateGroupId = () => {
-      if (hasGroupObservations()) {
-        // get latest group id and add + 1
-        const groups = getProposal().groupObservations;
-        const lastGroup = groups[groups.length - 1];
-        const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
-        return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
-      } else {
-        return `${t('groupObservations.idPrefix')}1`;
-      }
-    };
-
-    const buttonClicked = groupObservationValue => {
-      switch (groupObservationValue) {
-        case 0: // null
-          break;
-        case 1: // new group
-          const newGroupObs: GroupObservation = {
-            groupId: generateGroupId(),
-            observationId: myObsId
-          };
-          setGroupObservationId(newGroupObs.groupId); // to display new ID in dropdown
-          setSelectedGroupObservation(newGroupObs);
-          break;
-        default:
-          // existing group
-          const existingGroup: GroupObservation = {
-            groupId: groupObservationValue,
-            observationId: myObsId
-          };
-          setGroupObservationId(groupObservationValue);
-          setSelectedGroupObservation(existingGroup);
-      }
-    };
-
-    return (
-      <Box pl={1} pt={0} pb={3}>
-        <AddButton
-          action={() => buttonClicked(groupObservation)}
-          disabled={addGroupObsDisabled}
-          testId="addGroupButton"
-          toolTip="groupObservations.toolTip"
-        />
-      </Box>
-    );
-  };
-
-  const groupObservationsField = () => {
-    const getOptions = () => {
-      const groups: GroupObservation[] = hasGroupObservations()
-        ? getProposal()?.groupObservations
-        : [];
-
-      // don't display duplicate groupIds
-      const uniqueGroups = groups.reduce((acc, group) => {
-        const existingGroup = acc.find(g => g.groupId === group.groupId);
-        if (!existingGroup) {
-          acc.push(group);
-        }
-        return acc;
-      }, []);
-
-      const formattedGroupObs = [
-        { label: t('groupObservations.none'), value: 0 },
-        { label: newGroupObservationLabel, value: 1 },
-        ...uniqueGroups?.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
-      ];
-      return formattedGroupObs as any;
-    };
-    return fieldDropdown(
-      groupObservationId,
-      'groupObservations',
-      getOptions(),
-      false,
-      setGroupObservation,
-      buttonGroupObservationsField(),
-      groupObservation
-    );
-  };
-
   const taperingField = () => {
     const frequencyInGHz = () => {
       return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
@@ -496,6 +399,20 @@ export default function ObservationEntry() {
 
     return fieldDropdown(false, 'tapering', getOptions(), true, setTapering, null, tapering);
   };
+
+  const groupObservationsField = () => (
+    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+      <Grid pl={0} item xs={12}>
+        <GroupObservationsField
+          labelWidth={LABEL_WIDTH_OPT1}
+          onFocus={() => helpComponent(t('groupObservations.help'))}
+          setValue={setGroupObservation}
+          value={groupObservation}
+          obsId={myObsId}
+        />
+      </Grid>
+    </Grid>
+  );
 
   const imageWeightingField = () => (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
@@ -937,10 +854,7 @@ export default function ObservationEntry() {
       const newObservation: Observation = observationOut();
       setProposal({
         ...getProposal(),
-        observations: [...getProposal().observations, newObservation],
-        groupObservations: selectedGroupObservation
-          ? [...getProposal().groupObservations, selectedGroupObservation]
-          : getProposal().groupObservations
+        observations: [...getProposal().observations, newObservation]
       });
     };
 
@@ -955,22 +869,6 @@ export default function ObservationEntry() {
         });
       } else {
         newObservations.push(newObservation);
-      }
-
-      const oldGroupObservations = getProposal().groupObservations;
-      const newGroupObservations: GroupObservation[] = selectedGroupObservation
-        ? []
-        : oldGroupObservations;
-      if (selectedGroupObservation) {
-        if (oldGroupObservations.length > 0) {
-          oldGroupObservations.forEach(inValue => {
-            newObservations.push(
-              inValue === selectedGroupObservation.id ? selectedGroupObservation : inValue
-            );
-          });
-        } else {
-          newGroupObservations.push(selectedGroupObservation);
-        }
       }
 
       const updateSensCalcPartial = (ob: Observation) => {
@@ -997,8 +895,7 @@ export default function ObservationEntry() {
       setProposal({
         ...getProposal(),
         observations: newObservations,
-        targetObservation: updateSensCalcPartial(newObservation),
-        groupObservations: newGroupObservations
+        targetObservation: updateSensCalcPartial(newObservation)
       });
 
       /*

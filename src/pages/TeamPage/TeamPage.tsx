@@ -126,7 +126,14 @@ export default function TeamPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        pr={3}
+        pl={3}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
         <Grid
           p={1}
           container
