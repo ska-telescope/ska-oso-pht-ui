@@ -41,5 +41,7 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
     setShow(true);
     timer();
   }, []);
-  return <>{show && <StandardAlert color={color} testId={testId} text={text} />}</>;
+  return (
+    <>{show && <StandardAlert color={color} testId={testId} text={text} closeFunc={setShow} />}</>
+  );
 }

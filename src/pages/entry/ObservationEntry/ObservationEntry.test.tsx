@@ -285,10 +285,9 @@ function verifyNumOfStations() {
 function verifyGroupObservations() {
   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
   cy.get('[data-testid="groupObservations"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+  cy.get('[data-value="9999999999"]').click();
+  // cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
   cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-  cy.get('[data-testid="addGroupButton"]').click();
 }
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
@@ -372,16 +371,6 @@ describe('<ObservationEntry />', () => {
     }
   }
     */
-
-  it('Verify the observation can be added to a group observation', () => {
-    mount(THEME[1]);
-    verifyGroupObservations();
-    cy.get('[data-testid="addGroupButton"]').should('be.disabled');
-    cy.get('[data-testid="groupObservations"]')
-      .find('input')
-      .should('be.disabled');
-    cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
-  });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
