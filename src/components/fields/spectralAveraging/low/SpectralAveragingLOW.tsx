@@ -37,11 +37,8 @@ export default function SpectralAveragingLOWField({
   const errorMessage = () => {
     const subarrayConfig = OBSERVATION.array[1].subarray.find(item => item.value === subarray);
     let spectralAverageMax: number;
-    if (type == 1) {
-      spectralAverageMax = subarrayConfig?.continuumSpectralAveragingMax;
-    } else {
-      spectralAverageMax = ZOOM_SPECTRAL_AVERAGING_MAX;
-    }
+    spectralAverageMax =
+      type === 1 ? subarrayConfig?.continuumSpectralAveragingMax : ZOOM_SPECTRAL_AVERAGING_MAX;
     return value < SPECTRAL_AVERAGING_MIN || value > spectralAverageMax
       ? t('spectralAveraging.range.error')
       : '';

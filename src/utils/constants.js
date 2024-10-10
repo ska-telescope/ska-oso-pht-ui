@@ -401,7 +401,7 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 6,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6096
+          continuumSpectralAveragingMax: 6906
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -411,7 +411,7 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 18,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6096
+          continuumSpectralAveragingMax: 6906
         },
         {
           value: OB_SUBARRAY_AA2,
