@@ -5,11 +5,12 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   LAB_IS_BOLD,
   LAB_POSITION,
-  SPECTRAL_AVERAGING_MAX,
-  SPECTRAL_AVERAGING_MIN
+  OBSERVATION,
+  SPECTRAL_AVERAGING_MIN,
+  ZOOM_SPECTRAL_AVERAGING_MAX
 } from '../../../../utils/constants';
 
-interface SpectralAveragingMIDFieldProps {
+interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;
   required?: boolean;
   setValue?: Function;
@@ -17,22 +18,31 @@ interface SpectralAveragingMIDFieldProps {
   value: number;
   widthButton?: number;
   widthLabel?: number;
+  subarray: number;
+  type: number;
 }
 
-export default function SpectralAveragingMIDField({
+export default function SpectralAveragingLOWField({
   required = false,
   setValue,
   value,
-  widthLabel = 6
-}: SpectralAveragingMIDFieldProps) {
+  widthLabel = 6,
+  subarray,
+  type
+}: SpectralAveragingLOWFieldProps) {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 
-  const errorMessage = () =>
-    value < SPECTRAL_AVERAGING_MIN || value > SPECTRAL_AVERAGING_MAX
+  const errorMessage = () => {
+    const subarrayConfig = OBSERVATION.array[1].subarray.find(item => item.value === subarray);
+    let spectralAverageMax: number;
+    spectralAverageMax =
+      type === 1 ? subarrayConfig?.continuumSpectralAveragingMax : ZOOM_SPECTRAL_AVERAGING_MAX;
+    return value < SPECTRAL_AVERAGING_MIN || value > spectralAverageMax
       ? t('spectralAveraging.range.error')
       : '';
+  };
 
   return (
     <NumberEntry

@@ -2,7 +2,7 @@ import '@cypress/code-coverage/support';
 import './commands';
 import 'cypress-file-upload';
 
-before(() => {
+beforeEach(() => {
   cy.viewport(2000, 2000);
   cy.visit('/');
 });
