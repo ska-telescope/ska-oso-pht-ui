@@ -1135,6 +1135,7 @@ export default function ObservationEntry() {
                     isLow={isLow()}
                     value={spectralAveraging}
                     setValue={setSpectralAveraging}
+                    subarray={subarrayConfig}
                   />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
