@@ -202,7 +202,7 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "Add observations to a group using the add button.",
+    "help": "Optionally select an existing group to associate the observation to it.  Select `New Group` to add a new group to the list",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
