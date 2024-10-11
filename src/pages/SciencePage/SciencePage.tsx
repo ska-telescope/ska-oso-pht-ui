@@ -20,7 +20,7 @@ import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
-import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import DragDrop from '../../components/DragDropComponent';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -177,22 +177,7 @@ export default function SciencePage() {
       {getProposal().scienceLoadStatus === FileUploadStatus.INITIAL && (
         <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
           <Grid item xs={6}>
-            <FileUpload
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.science.label.choose')}
-              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-              clearLabel={t('pdfUpload.science.label.clear')}
-              clearToolTip={t('pdfUpload.science.tooltip.clear')}
-              direction="row"
-              file={getProposal()?.sciencePDF?.file}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-              status={getProposal().scienceLoadStatus}
-            />
+            <DragDrop />
           </Grid>
         </Grid>
       )}
