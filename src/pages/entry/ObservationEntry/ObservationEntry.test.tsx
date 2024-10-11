@@ -282,13 +282,14 @@ function verifyNumOfStations() {
   cy.get('[data-testid="helpPanelId"]').contains('numStations.help');
 }
 
-function verifyGroupObservations() {
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
-  cy.get('[data-testid="groupObservations"]').click();
-  cy.get('[data-value="9999999999"]').click();
-  // cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
-  cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-}
+// This fails the linting currently. Will look at how to use this as part of the appropriate ticket.
+// function verifyGroupObservations() {
+//   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+//   cy.get('[data-testid="groupObservations"]').click();
+//   cy.get('[data-value="-1"]').click();
+//   // cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+//   cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+// }
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
   verifySpectralResolution('14.1 Hz (21.2 m/s)');

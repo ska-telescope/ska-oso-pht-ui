@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DropDown } from '@ska-telescope/ska-gui-components';
+import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
@@ -26,11 +26,12 @@ export default function GroupObservationsField({
   const { t } = useTranslation('pht');
   const FIELD = 'groupObservations';
   const { application, updateAppContent2 } = storageObject.useStore();
+  const [editing, setEditing] = React.useState(false);
+  const [groupId, setGroupId] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
-  const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
+  const inputRef = React.useRef(null);
 
   const observationGroupId = (id: string) => {
     if (
@@ -48,7 +49,13 @@ export default function GroupObservationsField({
     if (groupId.length) {
       setValue(groupId);
     }
-  }, [obsId]);
+  }, [obsId, getProposal().groupObservations]);
+
+  React.useEffect(() => {
+    if (editing) {
+      inputRef.current.focus();
+    }
+  }, [editing]);
 
   const options = () => {
     const uniqueGroups = [];
@@ -79,16 +86,8 @@ export default function GroupObservationsField({
   };
 
   const addGroup = () => {
-    const prefix = t('groupObservations.idPrefix');
-    let suffix = 1;
-    if (hasGroupObservations()) {
-      const lastGroup = getProposal().groupObservations[getProposal().groupObservations.length - 1];
-      const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
-      suffix = lastGroupId + 1;
-    }
-    const groupId = `${prefix}${suffix}`;
     const newGroupObs: GroupObservation = {
-      groupId: `${prefix}${suffix}`,
+      groupId: groupId,
       observationId: obsId
     };
     const filtered = getProposal()?.groupObservations?.filter(item => item.observationId !== obsId);
@@ -96,6 +95,7 @@ export default function GroupObservationsField({
       ...getProposal(),
       groupObservations: [...filtered, newGroupObs]
     });
+    setEditing(false);
     return groupId;
   };
 
@@ -114,7 +114,7 @@ export default function GroupObservationsField({
 
   const processEntry = (e: number) => {
     if (e < 0) {
-      setValue(addGroup());
+      setEditing(true);
     } else if (e === 0) {
       removeGroup();
       setValue(e);
@@ -123,19 +123,42 @@ export default function GroupObservationsField({
     }
   };
 
+  const setGroupValue = (e: string) => {
+    setGroupId(e);
+  };
+
   return (
-    <DropDown
-      disabled={disabled}
-      value={value}
-      label={t('groupObservations.label')}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
-      onFocus={onFocus}
-      options={options()}
-      required
-      setValue={processEntry}
-      testId={FIELD}
-    />
+    <>
+      {editing && (
+        <TextEntry
+          inputRef={inputRef}
+          label={t('groupObservations.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={labelWidth}
+          testId={FIELD + 'Value1'}
+          value={groupId}
+          setValue={setGroupValue}
+          onBlur={addGroup}
+          onFocus={onFocus}
+          required
+        />
+      )}
+      {!editing && (
+        <DropDown
+          disabled={disabled}
+          value={value}
+          label={t('groupObservations.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={labelWidth}
+          onFocus={onFocus}
+          options={options()}
+          required
+          setValue={processEntry}
+          testId={FIELD + 'Entry'}
+        />
+      )}
+    </>
   );
 }
