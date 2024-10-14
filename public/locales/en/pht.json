@@ -74,6 +74,10 @@
     "content1": "You are about to change the type of your proposal.",
     "content2": "Some data specific to the proposal type may be lost."
   },
+  "clearBtn": {
+    "label": "Clear",
+    "toolTip": "This will clear the file upload selection"
+  },
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
