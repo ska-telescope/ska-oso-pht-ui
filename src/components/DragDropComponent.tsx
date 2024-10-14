@@ -11,7 +11,7 @@ export default function DragDrop() {
   return (
     <div className="App">
       <FileUploader multiple={false} handleChange={handleChange} name="file" types={fileTypes} />
-      <p>{file ? `File name: ${file[0].name}` : 'no files uploaded yet'}</p>
+      <p>{file ? `File name: ${file.name}` : 'no files uploaded yet'}</p>
     </div>
   );
 }
