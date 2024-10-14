@@ -39,7 +39,9 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
     };
 
     setShow(true);
-    timer();
+    if (color === AlertColorTypes.Info || color === AlertColorTypes.Success) {
+      timer();
+    }
   }, []);
   return (
     <>{show && <StandardAlert color={color} testId={testId} text={text} closeFunc={setShow} />}</>

@@ -9,14 +9,16 @@ Future
 ---
 
 * Utilities
-  - Optional Close icon added to notifications 
+  - Close icon added to Warning/Error notifications, timer removed
+  - Close icon added to Success/Info notifications, timer still in place  
 * Target Page
   - Increased padding around contents
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
 * Observation Entry
   - Updated the Group Observation field into it's own component
-  - Removed the need for the Add Group Button by hooking it directly to the dropdown valueS
+  - Removed the need for the Add Group Button by hooking it directly to the dropdown values
+  - User is able to add their own group name
 
 ---
 
