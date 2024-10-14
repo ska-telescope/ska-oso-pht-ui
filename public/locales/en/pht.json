@@ -74,6 +74,10 @@
     "content1": "You are about to change the type of your proposal.",
     "content2": "Some data specific to the proposal type may be lost."
   },
+  "clearBtn": {
+    "label": "Clear",
+    "toolTip": "This will clear the file upload selection"
+  },
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
@@ -202,7 +206,7 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "Add observations to a group using the add button.",
+    "help": "Optionally select an existing group to associate the observation to it.  Select `New Group` to add a new group to the list",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
