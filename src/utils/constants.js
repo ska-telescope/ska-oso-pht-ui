@@ -382,12 +382,7 @@ export const OBSERVATION = {
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
       ],
-      centralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1, mapping: 'GHz' },
-        { label: 'MHz', value: 2, mapping: 'MHz' },
-        { label: 'KHz', value: 3, mapping: 'kHz' },
-        { label: 'Hz', value: 4, mapping: 'Hz' }
-      ]
+      centralFrequencyAndBandWidthUnits: [{ label: 'GHz', value: 1, mapping: 'GHz' }]
     },
     {
       value: 2,
