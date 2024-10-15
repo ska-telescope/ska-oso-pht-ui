@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import SearchIcon from '@mui/icons-material/Search';
 import { Grid, Typography } from '@mui/material';
 import {
   Button,

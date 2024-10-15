@@ -9,6 +9,7 @@
   "rules": {
     "prettier/prettier": ["error"],
     "linebreak-style": 0,
+    "@typescript-eslint/no-unused-expressions": "warn",
     "react-hooks/exhaustive-deps": 0
   }
 }
