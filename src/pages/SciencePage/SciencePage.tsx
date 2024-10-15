@@ -179,9 +179,6 @@ export default function SciencePage() {
         <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
           <Grid item xs={6}>
             <DragDrop
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.science.label.choose')}
-              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
               clearLabel={t('pdfUpload.science.label.clear')}
               clearToolTip={t('pdfUpload.science.tooltip.clear')}
               direction="row"
