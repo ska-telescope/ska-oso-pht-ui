@@ -59,7 +59,6 @@ export function DragDrop({
   uploadVariant = ButtonVariantTypes.Contained
 }: DragDropProps) {
   const [theFile, setTheFile] = React.useState<File | null>(null);
-  const [name, setName] = React.useState('');
   const [state, setState] = React.useState(FileUploadStatus.INITIAL);
 
   React.useEffect(() => {

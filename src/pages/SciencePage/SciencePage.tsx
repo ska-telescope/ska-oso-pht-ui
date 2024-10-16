@@ -21,7 +21,6 @@ import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
-import { Preview } from '@mui/icons-material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const PAGE = 3;
@@ -47,6 +46,7 @@ export function SciencePage({
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
+  const [name, setName] = React.useState('');
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
