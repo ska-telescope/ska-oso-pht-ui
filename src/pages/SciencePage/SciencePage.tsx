@@ -22,6 +22,10 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import Notification from '../../utils/types/notification';
 import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import DeleteIcon from '@mui/icons-material/DeleteRounded';
+import { Preview } from '@mui/icons-material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -190,24 +194,21 @@ export default function SciencePage() {
           status={getProposal().scienceLoadStatus}
         />
         <Grid item>
-          <PDFPreviewButton
-            title="pdfUpload.science.label.preview"
-            toolTip="pdfUpload.science.tooltip.preview"
-            action={previewSignedUrl}
+          <PictureAsPdfIcon
+            toolTip={t('pdfUpload.science.tooltip.preview')}
+            onClick={previewSignedUrl}
           />
         </Grid>
         <Grid item>
-          <DownloadButton
-            title="pdfUpload.science.label.download"
-            toolTip="pdfUpload.science.tooltip.download"
-            action={downloadPDFToSignedUrl}
+          <DownloadIcon
+            toolTip={t('pdfUpload.science.tooltip.download')}
+            onClick={downloadPDFToSignedUrl}
           />
         </Grid>
         <Grid item>
-          <DeleteButton
-            title={'pdfUpload.science.label.delete'}
-            toolTip="pdfUpload.science.tooltip.delete"
-            action={deletePdfUsingSignedUrl}
+          <DeleteIcon
+            toolTip={t('pdfUpload.science.tooltip.delete')}
+            onClick={deletePdfUsingSignedUrl}
           />
         </Grid>
       </Grid>
