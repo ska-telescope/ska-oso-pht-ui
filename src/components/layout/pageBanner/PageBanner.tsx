@@ -33,6 +33,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
+  const [validationResults, setValidationResults] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -51,9 +52,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     const ValidateTheProposal = async () => {
       const response = await PostProposalValidate(getProposal());
       if (response.valid && !response.error) {
+        setValidationResults(null);
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
+        setValidationResults(response.error);
         setOpenValidationResults(true);
         setCanSubmit(false);
       }
@@ -196,11 +199,10 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       )}
       {openValidationResults && (
         <ValidationResults
-          proposal={getProposal()}
           open={openValidationResults}
           onClose={() => setOpenValidationResults(false)}
-          onConfirm={submitConfirmed}
-          onConfirmLabel={t('button.confirmSubmit')}
+          proposal={getProposal()}
+          results={validationResults}
         />
       )}
     </Box>

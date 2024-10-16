@@ -724,6 +724,9 @@
     "success": "Proposal is Valid.",
     "tooltip": "Performs enhanced validation upon the proposal"
   },
+  "validationResults": {
+    "title": "Validation issues"
+  },
   "velocity": {
     "label": "Velocity",
     "help": "Optionally specify the radial velocity.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
