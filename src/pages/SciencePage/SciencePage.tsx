@@ -14,10 +14,7 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
-import DownloadButton from '../../components/button/Download/Download';
-import DeleteButton from '../../components/button/Delete/Delete';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
-import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import DragDrop from '../../components/fileUpload/DragDrop';
@@ -194,22 +191,31 @@ export default function SciencePage() {
           status={getProposal().scienceLoadStatus}
         />
         <Grid item>
-          <PictureAsPdfIcon
-            toolTip={t('pdfUpload.science.tooltip.preview')}
-            onClick={previewSignedUrl}
-          />
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <PictureAsPdfIcon
+                toolTip={t('pdfUpload.science.tooltip.preview')}
+                onClick={previewSignedUrl}
+              />
+            )}
         </Grid>
         <Grid item>
-          <DownloadIcon
-            toolTip={t('pdfUpload.science.tooltip.download')}
-            onClick={downloadPDFToSignedUrl}
-          />
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DownloadIcon
+                toolTip={t('pdfUpload.science.tooltip.download')}
+                onClick={downloadPDFToSignedUrl}
+              />
+            )}
         </Grid>
         <Grid item>
-          <DeleteIcon
-            toolTip={t('pdfUpload.science.tooltip.delete')}
-            onClick={deletePdfUsingSignedUrl}
-          />
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DeleteIcon
+                toolTip={t('pdfUpload.science.tooltip.delete')}
+                onClick={deletePdfUsingSignedUrl}
+              />
+            )}
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />

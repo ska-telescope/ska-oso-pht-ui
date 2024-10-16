@@ -33,7 +33,7 @@ var c,
     c ||
       (c = d(
         [
-          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 500px;\n  border: solid 2px ',
+          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 350px;\n  border: solid 2px ',
           ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: solid 2px ',
           ';\n    cursor: no-drop;\n    svg {\n      fill: ',
           ';\n      color: ',
@@ -42,7 +42,7 @@ var c,
           ';\n      }\n    }\n  }\n'
         ],
         [
-          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 500px;\n  border: solid 2px ',
+          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 350px;\n  border: solid 2px ',
           ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: solid 2px ',
           ';\n    cursor: no-drop;\n    svg {\n      fill: ',
           ';\n      color: ',
@@ -96,11 +96,11 @@ var c,
       (v = d(
         [
           '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 20px;\n    color: ',
-          ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 100px;\n  }\n'
+          ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 80px;\n  }\n'
         ],
         [
           '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 20px;\n    color: ',
-          ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 100px;\n  }\n'
+          ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 80px;\n  }\n'
         ]
       ))
   ),
