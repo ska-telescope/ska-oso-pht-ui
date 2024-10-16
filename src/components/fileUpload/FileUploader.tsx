@@ -1,8 +1,14 @@
 import { jsx as n, jsxs as e, Fragment as r } from 'react/jsx-runtime';
 import t, { css as o } from 'styled-components';
-import { useState as i, useCallback as a, useEffect as l, useRef as s } from 'react';
+import React, { useState as i, useCallback as a, useEffect as l, useRef as s } from 'react';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-var p = function() {
+var p: {
+  <T extends {}, U>(target: T, source: U): T & U;
+  <T extends {}, U, V>(target: T, source1: U, source2: V): T & U & V;
+  <T extends {}, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
+  (target: object, ...sources: any[]): any;
+} = function() {
   return (
     (p =
       Object.assign ||
@@ -27,8 +33,8 @@ var c,
     c ||
       (c = d(
         [
-          '\n  display: flex;\n  align-items: center;\n  min-width: 322px;\n  max-width: 508px;\n  height: 48px;\n  border: dashed 2px ',
-          ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: dashed 2px ',
+          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 500px;\n  border: solid 2px ',
+          ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: solid 2px ',
           ';\n    cursor: no-drop;\n    svg {\n      fill: ',
           ';\n      color: ',
           ';\n      path {\n        fill: ',
@@ -36,8 +42,8 @@ var c,
           ';\n      }\n    }\n  }\n'
         ],
         [
-          '\n  display: flex;\n  align-items: center;\n  min-width: 322px;\n  max-width: 508px;\n  height: 48px;\n  border: dashed 2px ',
-          ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: dashed 2px ',
+          '\n  display: flex;\n  align-items: center;\n  min-width: 600px;\n  max-width: 800px;\n  height: 500px;\n  border: solid 2px ',
+          ';\n  padding: 8px 16px 8px 8px;\n  border-radius: 5px;\n  cursor: pointer;\n  flex-grow: 0;\n\n  &.is-disabled {\n    border: solid 2px ',
           ';\n    cursor: no-drop;\n    svg {\n      fill: ',
           ';\n      color: ',
           ';\n      path {\n        fill: ',
@@ -45,7 +51,7 @@ var c,
           ';\n      }\n    }\n  }\n'
         ]
       )),
-    '#0658c2',
+    '#000000',
     '#666',
     '#666',
     '#666',
@@ -72,34 +78,31 @@ var c,
     f ||
       (f = d(
         [
-          '\n  border: dashed 2px ',
+          '\n  border: solid 2px ',
           ';\n  border-radius: 5px;\n  background-color: ',
           ';\n  opacity: 0.5;\n  position: absolute;\n  top: 0;\n  right: 0;\n  left: 0;\n  bottom: 0;\n  & > span {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translateX(-50%) translateY(-50%);\n  }\n'
         ],
         [
-          '\n  border: dashed 2px ',
+          '\n  border: solid 2px ',
           ';\n  border-radius: 5px;\n  background-color: ',
           ';\n  opacity: 0.5;\n  position: absolute;\n  top: 0;\n  right: 0;\n  left: 0;\n  bottom: 0;\n  & > span {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translateX(-50%) translateY(-50%);\n  }\n'
         ]
       )),
-    '#666',
-    '#999'
+    '#000000',
+    '#000000'
   ),
   b = t.div(
     v ||
       (v = d(
         [
-          '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 12px;\n    color: ',
+          '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 20px;\n    color: ',
           ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 100px;\n  }\n'
         ],
         [
-          '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 12px;\n    color: ',
+          '\n  display: flex;\n  justify-content: space-between;\n  flex-grow: 1;\n  & > span {\n    font-size: 20px;\n    color: ',
           ';\n  }\n  .file-types {\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    max-width: 100px;\n  }\n'
         ]
-      )),
-    function(n) {
-      return n.error ? 'red' : '#666';
-    }
+      ))
   ),
   w = t.span(
     h ||
@@ -107,7 +110,7 @@ var c,
         ['\n  font-size: 14px;\n  color: ', ';\n  span {\n    text-decoration: underline;\n  }\n'],
         ['\n  font-size: 14px;\n  color: ', ';\n  span {\n    text-decoration: underline;\n  }\n']
       )),
-    '#666'
+    '#000000'
   ),
   y = function(n) {
     return n / 1e3 / 1e3;
@@ -141,49 +144,7 @@ function L(e) {
   return null;
 }
 function C() {
-  return e(
-    'svg',
-    p(
-      {
-        width: '32',
-        height: '32',
-        viewBox: '0 0 32 32',
-        fill: 'none',
-        xmlns: 'http://www.w3.org/2000/svg'
-      },
-      {
-        children: [
-          n(
-            'path',
-            {
-              d:
-                'M5.33317 6.66667H22.6665V16H25.3332V6.66667C25.3332 5.196 24.1372 4 22.6665 4H5.33317C3.8625 4 2.6665 5.196 2.6665 6.66667V22.6667C2.6665 24.1373 3.8625 25.3333 5.33317 25.3333H15.9998V22.6667H5.33317V6.66667Z',
-              fill: '#0658C2'
-            },
-            void 0
-          ),
-          n(
-            'path',
-            {
-              d: 'M10.6665 14.6667L6.6665 20H21.3332L15.9998 12L11.9998 17.3333L10.6665 14.6667Z',
-              fill: '#0658C2'
-            },
-            void 0
-          ),
-          n(
-            'path',
-            {
-              d:
-                'M25.3332 18.6667H22.6665V22.6667H18.6665V25.3333H22.6665V29.3333H25.3332V25.3333H29.3332V22.6667H25.3332V18.6667Z',
-              fill: '#0658C2'
-            },
-            void 0
-          )
-        ]
-      }
-    ),
-    void 0
-  );
+  return <CloudUploadIcon />;
 }
 var H = 0;
 var k = function(t, o, i, a, l) {
@@ -211,8 +172,8 @@ var k = function(t, o, i, a, l) {
                           }
                         : {
                             children: [
-                              n('span', { children: 'Upload' }, void 0),
-                              ' or drop a file right here'
+                              n('span', { children: '' }, void 0),
+                              'Drag and drop files to upload'
                             ]
                           },
                       void 0
