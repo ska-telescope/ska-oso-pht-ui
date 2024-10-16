@@ -32,11 +32,9 @@ function verifyContent() {
 
 describe('<ValidationResults />', () => {
   for (const theTheme of THEME) {
-
     it(`Theme ${theTheme}: Proposal : Contents`, () => {
       mounting(theTheme, GetMockProposal);
       verifyContent();
     });
   }
 });
-
