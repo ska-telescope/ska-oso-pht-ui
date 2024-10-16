@@ -48,6 +48,7 @@ export function DragDrop({
   status,
   //
   clearLabel = 'Upload',
+  testId = 'fileUpload',
   clearToolTip = 'Clear the selected file',
   clearVariant = ButtonVariantTypes.Contained,
   uploadColor = ButtonColorTypes.Secondary,
