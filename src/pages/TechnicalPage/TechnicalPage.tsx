@@ -86,7 +86,7 @@ export default function TechnicalPage() {
         throw new Error('Technical PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
-      NotifyOK(t('pdfDelete.technical.success'));
+      NotifyOK(t('pdfUpload.technical.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
