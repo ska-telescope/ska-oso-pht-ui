@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -27,7 +27,17 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
-export default function SciencePage() {
+interface SciencePageProps {
+  hideFileName?: boolean;
+  maxFileWidth?: number;
+  testId?: string;
+}
+
+export function SciencePage({
+  hideFileName = false,
+  maxFileWidth = 30,
+  testId = 'fileUpload'
+}: SciencePageProps) {
   const { t } = useTranslation('pht');
   const {
     application,
@@ -159,6 +169,14 @@ export default function SciencePage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
+  const displayName = () =>
+    name?.length > maxFileWidth ? name.substring(0, maxFileWidth) + '...' : name;
+  const showFileName = () => (
+    <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
+      {name?.length ? displayName() : ''}
+    </Typography>
+  );
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -217,8 +235,11 @@ export default function SciencePage() {
               />
             )}
         </Grid>
+        {!hideFileName && <Grid item>{showFileName()}</Grid>}
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
 }
+
+export default SciencePage;

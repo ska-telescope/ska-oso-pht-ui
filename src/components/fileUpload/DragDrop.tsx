@@ -43,12 +43,9 @@ export function DragDrop({
   direction = 'row',
   //
   file,
-  hideFileName = false,
-  maxFileWidth = 20,
   setFile,
   setStatus,
   status,
-  testId = 'fileUpload',
   //
   clearLabel = 'Upload',
   clearToolTip = 'Clear the selected file',
@@ -80,18 +77,9 @@ export function DragDrop({
     }
   };
 
-  const displayName = () =>
-    name?.length > maxFileWidth ? name.substring(0, maxFileWidth) + '...' : name;
-
   const getClearIcon = () => {
     return <ClearIcon />;
   };
-
-  const showFileName = () => (
-    <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
-      {name?.length ? displayName() : ''}
-    </Typography>
-  );
 
   const getUploadIcon = () => {
     const val = status ? status : state;
@@ -190,7 +178,6 @@ export function DragDrop({
         types={fileTypes}
       />
       <Grid p={0} container direction={direction} justifyContent="space-evenly" spacing={1}>
-        {!hideFileName && <Grid item>{showFileName()}</Grid>}
         {theFile && <Grid item>{ClearButton()}</Grid>}
         {theFile && <Grid item>{UploadButton()}</Grid>}
       </Grid>
