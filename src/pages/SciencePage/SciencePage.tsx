@@ -20,7 +20,7 @@ import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
-import DragDrop from '../../components/DragDrop';
+import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 
 const PAGE = 3;
