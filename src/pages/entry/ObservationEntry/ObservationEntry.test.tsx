@@ -131,14 +131,11 @@ function verifyCentralFrequencyContinuumLowBand() {
 }
 
 function verifyFrequencyUnits() {
-  //
-  // Currently not required as there is not a dropdown for frequency units
-  //
-  // cy.get('[data-testid="frequencyUnits"]').contains('GHz');
-  // cy.get('[data-testid="frequencyUnits"]').click();
-  // cy.get('[data-value="2"]').click();
-  // cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  // cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
+  cy.get('[data-testid="frequencyUnits"]').contains('GHz');
+  cy.get('[data-testid="frequencyUnits"]').click();
+  cy.get('[data-value="2"]').click();
+  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
+  cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
 
 function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {

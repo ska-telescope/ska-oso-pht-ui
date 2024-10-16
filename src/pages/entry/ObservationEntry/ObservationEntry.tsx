@@ -702,6 +702,9 @@ export default function ObservationEntry() {
         : '';
         */
     };
+    const validate = (e: React.SetStateAction<number>) => {
+      setContinuumBandwidth(Number(e) < 0 ? 0 : e);
+    };
 
     return (
       <NumberEntry
@@ -712,7 +715,7 @@ export default function ObservationEntry() {
         suffix={BANDWIDTH_TELESCOPE[observingBand]?.units}
         testId="continuumBandwidth"
         value={continuumBandwidth}
-        setValue={setContinuumBandwidth}
+        setValue={validate}
         onFocus={() => helpComponent(t('continuumBandWidth.help'))}
         required
         errorText={errorMessage()}
