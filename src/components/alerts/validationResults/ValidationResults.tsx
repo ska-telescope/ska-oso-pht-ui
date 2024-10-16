@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { DialogContent, Grid, Stack, Typography } from '@mui/material';
+import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -20,6 +20,7 @@ const TITLE_STYLE = 'h5';
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
 const BOLD_CONTENT = false;
+const SIZE = 20;
 
 export default function ValidationResults({
   open,
@@ -67,26 +68,31 @@ export default function ValidationResults({
 
   const resultsContent = (results: string[]) => (
     <Grid item>
-      <Grid container direction="column" justifyContent="center" alignItems="center">
+      <Stack>
         {results?.map(el => (
-          <Grid p={1} key={el} item xs={12}>
-            <Typography
-              id="title"
-              variant={CONTENT_STYLE}
-              style={{ fontWeight: getFont(BOLD_CONTENT) }}
-            >
-              {t(el)}
-            </Typography>
+          <Grid p={1} key={el} container direction="row" justifyContent="left" alignItems="left">
+            <Grid item>
+              <StatusIcon testId="statusId" icon level={1} size={SIZE} />
+            </Grid>
+            <Grid pl={1} item>
+              <Typography
+                id="title"
+                variant={CONTENT_STYLE}
+                style={{ fontWeight: getFont(BOLD_CONTENT) }}
+              >
+                {t(el)}
+              </Typography>
+            </Grid>
           </Grid>
         ))}
-      </Grid>
+      </Stack>
     </Grid>
   );
 
   const footerContent = () => (
     <Grid item>
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item p={1}>
+      <Grid container direction="row" justifyContent="right" alignItems="right">
+        <Grid item pt={1}>
           <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
         </Grid>
       </Grid>
@@ -128,9 +134,9 @@ export default function ValidationResults({
               {sectionTitle()}
               {resultsContent(results)}
               {sectionTitle()}
+              {footerContent()}
             </Grid>
           </DialogContent>
-          <DialogActions>{footerContent()}</DialogActions>
         </>
       )}
     </Dialog>
