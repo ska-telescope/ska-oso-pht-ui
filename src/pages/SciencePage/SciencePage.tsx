@@ -30,12 +30,14 @@ interface SciencePageProps {
   hideFileName?: boolean;
   maxFileWidth?: number;
   testId?: string;
+  file?: File;
 }
 
 export function SciencePage({
   hideFileName = false,
   maxFileWidth = 30,
-  testId = 'fileUpload'
+  testId = 'fileUpload',
+  file
 }: SciencePageProps) {
   const { t } = useTranslation('pht');
   const {
@@ -79,6 +81,13 @@ export function SciencePage({
       setCurrentFile(null);
     }
   };
+
+  React.useEffect(() => {
+    if (file) {
+      setTheFile(file);
+      setName(file.name);
+    }
+  }, []);
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });

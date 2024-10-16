@@ -1,7 +1,7 @@
 import React from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import {
   Button,
   ButtonColorTypes,
