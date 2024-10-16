@@ -11,6 +11,7 @@ Future
 * Utilities
   - Close icon added to Warning/Error notifications, timer removed
   - Close icon added to Success/Info notifications, timer still in place  
+  - Validation failure changed to a modal containing list of all errors
 * Target Page
   - Increased padding around contents
 * Observation page

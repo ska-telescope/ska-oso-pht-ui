@@ -10,6 +10,7 @@ import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
 import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
+import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
@@ -30,7 +31,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
+  const [openValidationResults, setOpenValidationResults] = React.useState(false);
+  const [validationResults, setValidationResults] = React.useState(null);
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -49,10 +52,12 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     const ValidateTheProposal = async () => {
       const response = await PostProposalValidate(getProposal());
       if (response.valid && !response.error) {
+        setValidationResults(null);
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
-        NotifyError(response.error);
+        setValidationResults(response.error);
+        setOpenValidationResults(true);
         setCanSubmit(false);
       }
     };
@@ -77,18 +82,18 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const submitClicked = () => {
-    setOpenDialog(true);
+    setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response.valid);
-      setOpenDialog(false);
+      setOpenProposalDisplay(false);
       navigate(PATH[0]);
     } else {
       NotifyError(response.error);
-      setOpenDialog(false);
+      setOpenProposalDisplay(false);
     }
   };
 
@@ -183,13 +188,21 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row1()}
       {row2()}
       {row3()}
-      {openDialog && (
+      {openProposalDisplay && (
         <ProposalDisplay
           proposal={getProposal()}
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          open={openProposalDisplay}
+          onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
           onConfirmLabel={t('button.confirmSubmit')}
+        />
+      )}
+      {openValidationResults && (
+        <ValidationResults
+          open={openValidationResults}
+          onClose={() => setOpenValidationResults(false)}
+          proposal={getProposal()}
+          results={validationResults}
         />
       )}
     </Box>
