@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -14,31 +14,23 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
+import DownloadButton from '../../components/button/Download/Download';
+import DeleteButton from '../../components/button/Delete/Delete';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
+import { Preview } from '@mui/icons-material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
-interface SciencePageProps {
-  hideFileName?: boolean;
-  maxFileWidth?: number;
-  testId?: string;
-  file?: File;
-}
-
-export function SciencePage({
-  hideFileName = false,
-  maxFileWidth = 30,
-  testId = 'fileUpload',
-  file
-}: SciencePageProps) {
+export default function SciencePage() {
   const { t } = useTranslation('pht');
   const {
     application,
@@ -48,7 +40,6 @@ export function SciencePage({
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
-  const [name, setName] = React.useState('');
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -81,13 +72,6 @@ export function SciencePage({
       setCurrentFile(null);
     }
   };
-
-  React.useEffect(() => {
-    if (file) {
-      setTheFile(file);
-      setName(file.name);
-    }
-  }, []);
 
   const setUploadStatus = (status: FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
@@ -178,14 +162,6 @@ export function SciencePage({
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
-  const displayName = () =>
-    name?.length > maxFileWidth ? name.substring(0, maxFileWidth) + '...' : name;
-  const showFileName = () => (
-    <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
-      {name?.length ? displayName() : ''}
-    </Typography>
-  );
-
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -218,37 +194,25 @@ export function SciencePage({
           status={getProposal().scienceLoadStatus}
         />
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <PictureAsPdfIcon
-                toolTip={t('pdfUpload.science.tooltip.preview')}
-                onClick={previewSignedUrl}
-              />
-            )}
+          <PictureAsPdfIcon
+            toolTip={t('pdfUpload.science.tooltip.preview')}
+            onClick={previewSignedUrl}
+          />
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <DownloadIcon
-                toolTip={t('pdfUpload.science.tooltip.download')}
-                onClick={downloadPDFToSignedUrl}
-              />
-            )}
+          <DownloadIcon
+            toolTip={t('pdfUpload.science.tooltip.download')}
+            onClick={downloadPDFToSignedUrl}
+          />
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <DeleteIcon
-                toolTip={t('pdfUpload.science.tooltip.delete')}
-                onClick={deletePdfUsingSignedUrl}
-              />
-            )}
+          <DeleteIcon
+            toolTip={t('pdfUpload.science.tooltip.delete')}
+            onClick={deletePdfUsingSignedUrl}
+          />
         </Grid>
-        {!hideFileName && <Grid item>{showFileName()}</Grid>}
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );
 }
-
-export default SciencePage;
