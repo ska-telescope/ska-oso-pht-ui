@@ -232,10 +232,10 @@
     "2": "Briggs"
   },
   "importFromFile": {
-    "label": "Import from file."
+    "label": "Import from file"
   },
   "inviteTeamMember": {
-    "label": "Invite Team Member."
+    "label": "Invite Team Member"
   },
   "latex": {
     "toolTip": "LaTex Preview.",
@@ -644,7 +644,7 @@
   },
   "subArrayConfiguration": {
     "label": "Subarray Configuration",
-    "help": "SUBARRAY CONFIGURATION HELP",
+    "help": "Select a subarray configuration from the list of available variations. Selection will allow for manual selection of the number of stations",
     "short": "Subarray",
     "1": "AA0.5",
     "2": "AA1",
@@ -670,7 +670,7 @@
     "help": "Select the unit that is appropriate."
   },
   "suppliedValue": {
-    "help": "",
+    "help": "Enter a value that is appropriate",
     "range": {
       "error": "Value is outside of allowed range"
     }
@@ -722,7 +722,11 @@
   "validationBtn": {
     "label": "Validate",
     "success": "Proposal is Valid.",
-    "tooltip": "Performs enhanced validation upon the proposal"
+    "tooltip": "Performs enhanced validation upon the proposal",
+    "tooltipDisabled": "Disabled until all pages have a status of OK"
+  },
+  "validationResults": {
+    "title": "Validation issues"
   },
   "velocity": {
     "label": "Velocity",

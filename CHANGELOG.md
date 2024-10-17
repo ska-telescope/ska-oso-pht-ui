@@ -11,10 +11,16 @@ Future
 * Utilities
   - Close icon added to Warning/Error notifications, timer removed
   - Close icon added to Success/Info notifications, timer still in place  
+  - Validation failure changed to a modal containing list of all errors
+  - Added presentation utility for the error results returned by the SensCalc API
+* Validation button
+  - Now disabled until all pages have an OK status
+  - When disabled, the tooltip indicates the reasoning why the button is disabled
 * Target Page
   - Increased padding around contents
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
+  - Updated so that previously saved values are not reset to default values upon editing the Observation set
 * Observation Entry
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values
