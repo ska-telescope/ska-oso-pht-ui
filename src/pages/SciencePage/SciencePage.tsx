@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -158,6 +158,12 @@ export default function SciencePage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
+  const showFileName = () => (
+    <Typography pt={1} data-testid="Filename" variant="body1">
+      CHLOE FILENAME ={getProposal()?.sciencePDF?.file.name}
+    </Typography>
+  );
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
@@ -215,6 +221,11 @@ export default function SciencePage() {
                 onClick={deletePdfUsingSignedUrl}
               />
             )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK &&
+            showFileName()}
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
