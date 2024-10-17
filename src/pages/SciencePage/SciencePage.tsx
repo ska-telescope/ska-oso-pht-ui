@@ -62,7 +62,6 @@ export default function SciencePage() {
       };
       setProposal({ ...getProposal(), sciencePDF: file });
       setCurrentFile(theFile);
-      console.log('Chloe 1 ', theFile);
     } else {
       setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
@@ -159,7 +158,8 @@ export default function SciencePage() {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
   const showFileName = (file: any) => (
     <Typography pt={1} data-testid={'fileUploadFilename'} variant="body1">
-      CHLOE FILENAME ={file}
+      Uploaded file:
+      {file}
     </Typography>
   );
 
