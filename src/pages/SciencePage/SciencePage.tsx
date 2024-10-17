@@ -14,17 +14,12 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
-import DownloadButton from '../../components/button/Download/Download';
-import DeleteButton from '../../components/button/Delete/Delete';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
-import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
-import { Preview } from '@mui/icons-material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const PAGE = 3;
@@ -96,20 +91,6 @@ export default function SciencePage() {
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
-    }
-  };
-
-  const downloadPDFToSignedUrl = async () => {
-    try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
-        window.open(signedUrl, '_blank');
-      }
-    } catch (e) {
-      new Error(t('pdfDownload.error'));
     }
   };
 
@@ -197,12 +178,6 @@ export default function SciencePage() {
           <PictureAsPdfIcon
             toolTip={t('pdfUpload.science.tooltip.preview')}
             onClick={previewSignedUrl}
-          />
-        </Grid>
-        <Grid item>
-          <DownloadIcon
-            toolTip={t('pdfUpload.science.tooltip.download')}
-            onClick={downloadPDFToSignedUrl}
           />
         </Grid>
         <Grid item>
