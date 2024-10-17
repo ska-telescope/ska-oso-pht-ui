@@ -223,7 +223,7 @@ export function DragDrop({
         {!hideFileName && <Grid item>{showFileName()}</Grid>}
         {theFile && <Grid item>{ClearButton()}</Grid>}
         {theFile && <Grid item>{UploadButton()}</Grid>}
-        {theFile && <Grid item>{DownloadButton()}</Grid>}
+        {state && <Grid item>{DownloadButton()}</Grid>}
       </Grid>
     </div>
   );

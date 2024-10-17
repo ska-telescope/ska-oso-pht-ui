@@ -181,10 +181,13 @@ export default function SciencePage() {
           />
         </Grid>
         <Grid item>
-          <DeleteIcon
-            toolTip={t('pdfUpload.science.tooltip.delete')}
-            onClick={deletePdfUsingSignedUrl}
-          />
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DeleteIcon
+                toolTip={t('pdfUpload.science.tooltip.delete')}
+                onClick={deletePdfUsingSignedUrl}
+              />
+            )}
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
