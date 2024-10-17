@@ -12,6 +12,10 @@ Future
   - Close icon added to Warning/Error notifications, timer removed
   - Close icon added to Success/Info notifications, timer still in place  
   - Validation failure changed to a modal containing list of all errors
+  - Added presentation utility for the error results returned by the SensCalc API
+* Validation button
+  - Now disabled until all pages have an OK status
+  - When disabled, the tooltip indicates the reasoning why the button is disabled
 * Target Page
   - Increased padding around contents
 * Observation page

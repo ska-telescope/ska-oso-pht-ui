@@ -26,15 +26,15 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
     updateAppContent5(rec);
   }
 
-  React.useEffect(() => {
-    const setClear = () => {
-      Notify('', AlertColorTypes.Info);
-    };
+  const closeFunction = () => {
+    Notify('', AlertColorTypes.Info);
+    setShow(false);
+  };
 
+  React.useEffect(() => {
     const timer = () => {
       setTimeout(() => {
-        setClear();
-        setShow(false);
+        closeFunction();
       }, delay * SECS);
     };
 
@@ -44,6 +44,10 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
     }
   }, []);
   return (
-    <>{show && <StandardAlert color={color} testId={testId} text={text} closeFunc={setShow} />}</>
+    <>
+      {show && (
+        <StandardAlert color={color} testId={testId} text={text} closeFunc={closeFunction} />
+      )}
+    </>
   );
 }

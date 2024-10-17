@@ -15,7 +15,7 @@ interface ValidationResultsProps {
   results: string[];
 }
 
-const MODAL_WIDTH = '75%';
+const MODAL_WIDTH = '40%';
 const TITLE_STYLE = 'h5';
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
