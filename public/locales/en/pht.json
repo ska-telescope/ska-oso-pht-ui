@@ -232,10 +232,10 @@
     "2": "Briggs"
   },
   "importFromFile": {
-    "label": "Import from file."
+    "label": "Import from file"
   },
   "inviteTeamMember": {
-    "label": "Invite Team Member."
+    "label": "Invite Team Member"
   },
   "latex": {
     "toolTip": "LaTex Preview.",
@@ -722,7 +722,8 @@
   "validationBtn": {
     "label": "Validate",
     "success": "Proposal is Valid.",
-    "tooltip": "Performs enhanced validation upon the proposal"
+    "tooltip": "Performs enhanced validation upon the proposal",
+    "tooltipDisabled": "Disabled until all pages have a status of OK"
   },
   "validationResults": {
     "title": "Validation issues"

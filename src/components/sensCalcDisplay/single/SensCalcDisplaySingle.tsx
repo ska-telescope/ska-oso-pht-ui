@@ -4,7 +4,7 @@ import { IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
 import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
-import { presentUnits, presentValue } from '../../../utils/present';
+import { presentSensCalcError, presentUnits, presentValue } from '../../../utils/present';
 
 const SIZE = 20;
 const VALUE = 'value';
@@ -49,7 +49,7 @@ export default function SensCalcDisplaySingle({
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusLoading.' + sensCalc?.statusGUI),
-              error: sensCalc?.error
+              error: t(presentSensCalcError(sensCalc?.error))
             })}
             testId="statusId"
             icon

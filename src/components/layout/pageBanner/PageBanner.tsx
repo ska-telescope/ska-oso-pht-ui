@@ -8,7 +8,7 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS, STATUS_OK } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
@@ -35,6 +35,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState(null);
 
+  const getProposalState = () => application.content1 as number[];
   const getProposal = () => application.content2 as Proposal;
 
   function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
@@ -47,6 +48,20 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   }
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+
+  const validateDisabled = () => {
+    let result = false;
+    getProposalState().forEach(e => {
+      if (e !== STATUS_OK) {
+        result = true;
+      }
+    });
+    return result;
+  };
+
+  const validateTooltip = () => {
+    return validateDisabled() ? 'validationBtn.tooltipDisabled' : 'validationBtn.tooltip';
+  };
 
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
@@ -141,7 +156,15 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       justifyContent="flex-end"
       pr={2}
     >
-      <Grid item>{pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}</Grid>
+      <Grid item>
+        {pageNo < LAST_PAGE && (
+          <ValidateButton
+            action={validateClicked}
+            disabled={validateDisabled()}
+            toolTip={validateTooltip()}
+          />
+        )}
+      </Grid>
       <Grid item>
         {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
       </Grid>
