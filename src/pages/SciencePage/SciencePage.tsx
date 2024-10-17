@@ -66,7 +66,7 @@ export default function SciencePage() {
       setCurrentFile(theFile);
       console.log('Chloe 1 ', theFile);
       console.log('Chloe 2 ', theFile.name);
-      setName(theFile.toString);
+      setName(theFile.name);
     } else {
       setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
@@ -162,9 +162,10 @@ export default function SciencePage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
+  const displayName = () => (name?.length > 20 ? name.substring(0, 20) + '...' : name);
   const showFileName = () => (
     <Typography pt={1} data-testid={'fileUploadFilename'} variant="body1">
-      CHLOE FILENAME ={name}
+      CHLOE FILENAME ={name?.length ? displayName() : ''}
     </Typography>
   );
 
