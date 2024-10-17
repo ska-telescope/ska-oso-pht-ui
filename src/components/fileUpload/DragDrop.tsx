@@ -1,7 +1,7 @@
 import React from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import {
   Button,
   ButtonColorTypes,
@@ -62,13 +62,13 @@ export function DragDrop({
   uploadVariant = ButtonVariantTypes.Contained
 }: DragDropProps) {
   const [theFile, setTheFile] = React.useState<File | null>(null);
-  const [name, setName] = React.useState('');
+  // const [setName] = React.useState('');
   const [state, setState] = React.useState(FileUploadStatus.INITIAL);
 
   React.useEffect(() => {
     if (file) {
       setTheFile(file);
-      setName(file.name);
+      // setName(file.name);
     }
   }, []);
 
@@ -80,18 +80,18 @@ export function DragDrop({
     }
   };
 
-  const displayName = () =>
-    name?.length > maxFileWidth ? name.substring(0, maxFileWidth) + '...' : name;
+  // const displayName = () =>
+  //   name?.length > maxFileWidth ? name.substring(0, maxFileWidth) + '...' : name;
 
   const getClearIcon = () => {
     return <ClearIcon />;
   };
 
-  const showFileName = () => (
-    <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
-      {name?.length ? displayName() : ''}
-    </Typography>
-  );
+  // const showFileName = () => (
+  //   <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
+  //     {name?.length ? displayName() : ''}
+  //   </Typography>
+  // );
 
   const getUploadIcon = () => {
     const val = status ? status : state;
@@ -105,7 +105,7 @@ export function DragDrop({
   const handleFileChange = (e: any) => {
     if (e) {
       setTheFile(e);
-      setName(e.name);
+      // setName(e.name);
       setTheStatus(FileUploadStatus.INITIAL);
       if (setFile) {
         setFile(e.name);
@@ -116,7 +116,7 @@ export function DragDrop({
 
   const handleClear = () => {
     setTheFile(null);
-    setName('');
+    // setName('');
     setTheStatus(FileUploadStatus.INITIAL);
     if (setFile) {
       setFile('');
@@ -190,7 +190,7 @@ export function DragDrop({
         types={fileTypes}
       />
       <Grid p={0} container direction={direction} justifyContent="space-evenly" spacing={1}>
-        {!hideFileName && <Grid item>{showFileName()}</Grid>}
+        {/*{!hideFileName && <Grid item>{showFileName()}</Grid>}*/}
         {theFile && <Grid item>{ClearButton()}</Grid>}
         {theFile && <Grid item>{UploadButton()}</Grid>}
       </Grid>
