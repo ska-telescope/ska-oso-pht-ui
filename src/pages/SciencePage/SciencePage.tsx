@@ -36,6 +36,7 @@ export default function SciencePage() {
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
+  const [name, setName] = React.useState('');
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -63,6 +64,9 @@ export default function SciencePage() {
       };
       setProposal({ ...getProposal(), sciencePDF: file });
       setCurrentFile(theFile);
+      console.log('Chloe 1 ', theFile);
+      console.log('Chloe 2 ', theFile.name);
+      setName(theFile.name);
     } else {
       setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
@@ -158,9 +162,10 @@ export default function SciencePage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
+  const displayName = () => (name?.length > 20 ? name.substring(0, 20) + '...' : name);
   const showFileName = () => (
-    <Typography pt={1} data-testid="Filename" variant="body1">
-      CHLOE FILENAME ={getProposal()?.sciencePDF?.file.name}
+    <Typography pt={1} data-testid={'fileUploadFilename'} variant="body1">
+      CHLOE FILENAME ={name?.length ? displayName() : ''}
     </Typography>
   );
 
