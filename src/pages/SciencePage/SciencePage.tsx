@@ -190,17 +190,11 @@ export default function SciencePage() {
           status={getProposal().scienceLoadStatus}
         />
         <Grid item>
-          <PictureAsPdfIcon
-            toolTip={t('pdfUpload.science.tooltip.preview')}
-            onClick={previewSignedUrl}
-          />
-        </Grid>
-        <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <DeleteIcon
-                toolTip={t('pdfUpload.science.tooltip.delete')}
-                onClick={deletePdfUsingSignedUrl}
+              <PictureAsPdfIcon
+                toolTip={t('pdfUpload.science.tooltip.preview')}
+                onClick={previewSignedUrl}
               />
             )}
         </Grid>
@@ -210,6 +204,15 @@ export default function SciencePage() {
               <DownloadIcon
                 toolTip={t('pdfUpload.science.tooltip.download')}
                 onClick={downloadPDFToSignedUrl}
+              />
+            )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DeleteIcon
+                toolTip={t('pdfUpload.science.tooltip.delete')}
+                onClick={deletePdfUsingSignedUrl}
               />
             )}
         </Grid>
