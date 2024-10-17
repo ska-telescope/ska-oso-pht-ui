@@ -14,7 +14,10 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
+import DownloadButton from '../../components/button/Download/Download';
+import DeleteButton from '../../components/button/Delete/Delete';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import DragDrop from '../../components/fileUpload/DragDrop';
@@ -218,31 +221,22 @@ export function SciencePage({
           status={getProposal().scienceLoadStatus}
         />
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <PictureAsPdfIcon
-                toolTip={t('pdfUpload.science.tooltip.preview')}
-                onClick={previewSignedUrl}
-              />
-            )}
+          <PictureAsPdfIcon
+            toolTip={t('pdfUpload.science.tooltip.preview')}
+            onClick={previewSignedUrl}
+          />
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <DownloadIcon
-                toolTip={t('pdfUpload.science.tooltip.download')}
-                onClick={downloadPDFToSignedUrl}
-              />
-            )}
+          <DownloadIcon
+            toolTip={t('pdfUpload.science.tooltip.download')}
+            onClick={downloadPDFToSignedUrl}
+          />
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
-            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
-              <DeleteIcon
-                toolTip={t('pdfUpload.science.tooltip.delete')}
-                onClick={deletePdfUsingSignedUrl}
-              />
-            )}
+          <DeleteIcon
+            toolTip={t('pdfUpload.science.tooltip.delete')}
+            onClick={deletePdfUsingSignedUrl}
+          />
         </Grid>
         {!hideFileName && <Grid item>{showFileName()}</Grid>}
       </Grid>
