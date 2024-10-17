@@ -21,6 +21,7 @@ import DragDrop from '../../components/fileUpload/DragDrop';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DownloadIcon from '@mui/icons-material/DownloadRounded';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -91,6 +92,20 @@ export default function SciencePage() {
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
+    }
+  };
+
+  const downloadPDFToSignedUrl = async () => {
+    try {
+      const proposal = getProposal();
+      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+        window.open(signedUrl, '_blank');
+      }
+    } catch (e) {
+      new Error(t('pdfDownload.error'));
     }
   };
 
@@ -186,6 +201,15 @@ export default function SciencePage() {
               <DeleteIcon
                 toolTip={t('pdfUpload.science.tooltip.delete')}
                 onClick={deletePdfUsingSignedUrl}
+              />
+            )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DownloadIcon
+                toolTip={t('pdfUpload.science.tooltip.download')}
+                onClick={downloadPDFToSignedUrl}
               />
             )}
         </Grid>

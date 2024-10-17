@@ -11,11 +11,6 @@ import {
   StatusIcon
 } from '@ska-telescope/ska-gui-components';
 import { FileUploader } from './FileUploader';
-import DownloadIcon from '../icon/downloadIcon/downloadIcon';
-import { useTranslation } from 'react-i18next';
-import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import Proposal from '../../utils/types/proposal';
 
 const fileTypes = ['PDF'];
 
@@ -69,10 +64,6 @@ export function DragDrop({
   const [theFile, setTheFile] = React.useState<File | null>(null);
   const [name, setName] = React.useState('');
   const [state, setState] = React.useState(FileUploadStatus.INITIAL);
-  const { t } = useTranslation('pht');
-
-  const { application } = storageObject.useStore();
-  const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
     if (file) {
@@ -158,20 +149,6 @@ export function DragDrop({
     }
   };
 
-  const downloadPDFToSignedUrl = async () => {
-    try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
-
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
-        window.open(signedUrl, '_blank');
-      }
-    } catch (e) {
-      new Error(t('pdfDownload.error'));
-    }
-  };
-
   const ClearButton = () => (
     <Button
       ariaDescription={clearToolTip}
@@ -204,13 +181,6 @@ export function DragDrop({
     />
   );
 
-  const DownloadButton = () => (
-    <DownloadIcon
-      toolTip={t('pdfUpload.science.tooltip.download')}
-      onClick={downloadPDFToSignedUrl}
-    />
-  );
-
   return (
     <div className="App">
       <FileUploader
@@ -223,7 +193,6 @@ export function DragDrop({
         {!hideFileName && <Grid item>{showFileName()}</Grid>}
         {theFile && <Grid item>{ClearButton()}</Grid>}
         {theFile && <Grid item>{UploadButton()}</Grid>}
-        {state && <Grid item>{DownloadButton()}</Grid>}
       </Grid>
     </div>
   );
