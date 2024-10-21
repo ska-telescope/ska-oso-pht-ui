@@ -101,6 +101,7 @@ export default function ObservationEntry() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [calculateToggle, setCalculateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -180,8 +181,10 @@ export default function ObservationEntry() {
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
+    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
+      setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
+    }
     setObservingBand(e);
-    setCentralFrequency(calculateFrequency(e as number, subarrayConfig));
     calculateContinuumBandwidth(e as number, subarrayConfig);
   };
 
@@ -192,8 +195,10 @@ export default function ObservationEntry() {
       setNumOf13mAntennas(record.numOf13mAntennas);
       setNumOfStations(record.numOfStations);
     }
+    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
+      setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
+    }
     setSubarrayConfig(e);
-    setCentralFrequency(calculateFrequency(observingBand, e as number));
     calculateContinuumBandwidth(observingBand, e as number);
   };
 
@@ -203,10 +208,80 @@ export default function ObservationEntry() {
       observationIn(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
-      setCentralFrequency(calculateFrequency(observingBand, subarrayConfig));
+      setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
+    setCalculateToggle(!calculateToggle);
   }, []);
+
+  React.useEffect(() => {
+    const calculateSpectralResolution = () => {
+      const getSpectralResolution = (inLabel: String, inValue: number | string) => {
+        if (isContinuum()) {
+          return lookupArrayValue(OBSERVATION[inLabel], inValue);
+        } else {
+          return OBSERVATION[inLabel].find(
+            e =>
+              e.lookup.toString() === inValue.toString() &&
+              e.bandWidthValue?.toString() === bandwidth?.toString()
+          )?.value;
+        }
+      };
+
+      switch (observingBand) {
+        case BAND_1:
+          return getSpectralResolution(
+            isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
+            centralFrequency
+          );
+        case BAND_2:
+          return getSpectralResolution(
+            isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
+            centralFrequency
+          );
+        case BAND_5A:
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionOb5a[0].value
+            : OBSERVATION.SpectralResolutionOb5aZoom.find(
+                item => item.bandWidthValue.toString() === bandwidth.toString()
+              ).value;
+        case BAND_5B:
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionOb5b[0].value
+            : OBSERVATION.SpectralResolutionOb5bZoom.find(
+                item => item.bandWidthValue.toString() === bandwidth.toString()
+              ).value;
+        default:
+          // LOW
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionObLow[0].value
+            : OBSERVATION.SpectralResolutionObLowZoom.find(
+                item => item.bandWidthValue === bandwidth
+              ).value;
+      }
+    };
+
+    const calculateEffectiveResolution = () => {
+      // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
+      const arr = String(calculateSpectralResolution()).split(' ');
+      if (arr.length > 2) {
+        const resolution = Number(arr[0]);
+        const effectiveResolutionValue = resolution * spectralAveraging;
+        const freqMultiplier = isLow() ? 1000000 : 1000000000;
+        const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
+        const decimal = isContinuum() ? 2 : 1;
+        const multiplier = !isLow() || isContinuum() ? 1000 : 1;
+        const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
+        return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
+      } else {
+        return '';
+      }
+    };
+
+    setSpectralResolution(calculateSpectralResolution());
+    setEffectiveResolution(calculateEffectiveResolution());
+    setValidateToggle(!validateToggle);
+  }, [calculateToggle]);
 
   React.useEffect(() => {
     if (isContinuumOnly()) {
@@ -236,24 +311,7 @@ export default function ObservationEntry() {
     numOfStations
   ]);
 
-  const calculateEffectiveResolution = () => {
-    // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-    const arr = String(calculateSpectralResolution()).split(' ');
-    if (arr.length > 2) {
-      const resolution = Number(arr[0]);
-      const effectiveResolutionValue = resolution * spectralAveraging;
-      const freqMultiplier = isLow() ? 1000000 : 1000000000;
-      const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
-      const decimal = isContinuum() ? 2 : 1;
-      const multiplier = !isLow() || isContinuum() ? 1000 : 1;
-      const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
-      return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
-    } else {
-      return '';
-    }
-  };
-
-  const calculateFrequency = (ob: number, sc: number) => {
+  const calculateCentralFrequency = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
         return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, sc);
@@ -307,66 +365,16 @@ export default function ObservationEntry() {
       }
     };
     calculateSubarray();
-    setSpectralResolution(calculateSpectralResolution());
-    setValidateToggle(!validateToggle);
+    setCalculateToggle(!calculateToggle);
   }, [observingBand]);
 
   React.useEffect(() => {
-    setSpectralResolution(calculateSpectralResolution());
-  }, [bandwidth, observationType]);
-
-  React.useEffect(() => {
-    setEffectiveResolution(calculateEffectiveResolution());
-    setValidateToggle(!validateToggle);
-  }, [spectralResolution, spectralAveraging]);
+    setCalculateToggle(!calculateToggle);
+  }, [bandwidth, centralFrequency, observationType, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
-
-  const calculateSpectralResolution = () => {
-    const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-      if (isContinuum()) {
-        return lookupArrayValue(OBSERVATION[inLabel], inValue);
-      } else {
-        return OBSERVATION[inLabel].find(
-          e =>
-            e.lookup.toString() === inValue.toString() &&
-            e.bandWidthValue?.toString() === bandwidth?.toString()
-        )?.value;
-      }
-    };
-
-    switch (observingBand) {
-      case BAND_1:
-        return getSpectralResolution(
-          isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
-          calculateFrequency(observingBand, subarrayConfig)
-        );
-      case BAND_2:
-        return getSpectralResolution(
-          isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
-          calculateFrequency(observingBand, subarrayConfig)
-        );
-      case BAND_5A:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionOb5a[0].value
-          : OBSERVATION.SpectralResolutionOb5aZoom.find(
-              item => item.bandWidthValue.toString() === bandwidth.toString()
-            ).value;
-      case BAND_5B:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionOb5b[0].value
-          : OBSERVATION.SpectralResolutionOb5bZoom.find(
-              item => item.bandWidthValue.toString() === bandwidth.toString()
-            ).value;
-      default:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionObLow[0].value
-          : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
-              .value;
-    }
-  };
 
   const isContinuumOnly = () =>
     subarrayConfig === OB_SUBARRAY_AA05 ||
@@ -621,7 +629,7 @@ export default function ObservationEntry() {
     );
   };
 
-  const frequencyUnitsField = () => {
+  const centralFrequencyUnitsField = () => {
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
       ?.centralFrequencyAndBandWidthUnits;
     if (FrequencyUnitOptions?.length === 1) {
@@ -658,7 +666,7 @@ export default function ObservationEntry() {
         setValue={setCentralFrequency}
         onFocus={() => helpComponent(t('centralFrequency.help'))}
         required
-        suffix={frequencyUnitsField()}
+        suffix={centralFrequencyUnitsField()}
         errorText={errorMessage()}
       />
     );
@@ -758,6 +766,7 @@ export default function ObservationEntry() {
         testId="effectiveResolution"
         value={effectiveResolution}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
         disabled
       />
     );

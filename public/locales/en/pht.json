@@ -145,7 +145,8 @@
   },
   "effectiveResolution": {
     "help": "This field displays the channel width after applying the spectral averaging.",
-    "label": "Effective Resolution"
+    "label": "Effective Resolution",
+    "error": "Unable to calculate value"
   },
   "elevation": {
     "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 15 degrees) and the target's zenith elevation. An error message is displayed if this is not the case. For long integrations, increasing the minimum elevation will improve the sensitivity at the expense of uv-coverage.",
