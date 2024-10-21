@@ -184,7 +184,7 @@ function verifySpectralResolutionLowZoom() {
   verifySpectralResolution('28.3 Hz (42.4 m/s)');
 }
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (5.8 km/s)');
+  verifySpectralResolution('13.44 kHz (5.1 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
   verifySpectralResolution('13.44 kHz (615.1 m/s)');
@@ -219,7 +219,7 @@ function verifyEffectiveResolution(contents: string) {
     .should('be.disabled');
 }
 function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
-  verifyEffectiveResolution('13.44 kHz (5.8 km/s)');
+  verifyEffectiveResolution('13.44 kHz (5.1 km/s)');
 }
 function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
   verifyEffectiveResolution('13.44 kHz (615.1 m/s)');
@@ -324,8 +324,8 @@ function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
   verifySpectralResolution('0.84 kHz (185.8 m/s)');
   verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
   verifySubArrayConfiguration(5);
-  verifySpectralResolution('0.84 kHz (185.8 m/s)');
-  verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
+  verifySpectralResolution('0.84 kHz (192.2 m/s)');
+  verifyEffectiveResolution('0.8 kHz (192.2 m/s)');
 }
 
 function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
