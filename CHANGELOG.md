@@ -25,6 +25,7 @@ Future
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values
   - User is able to add their own group name
+  - centralFrequency is no longer reset to a default value when the observing band or subarray are altered
 
 ---
 
