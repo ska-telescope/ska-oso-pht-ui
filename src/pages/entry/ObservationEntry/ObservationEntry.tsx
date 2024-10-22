@@ -96,6 +96,7 @@ export default function ObservationEntry() {
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
+  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
@@ -120,6 +121,7 @@ export default function ObservationEntry() {
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(ob?.bandwidth);
     setContinuumBandwidth(ob?.continuumBandwidth);
+    setContinuumBandwidthUnits(ob?.continuumBandwidthUnits);
     setRobust(ob?.robust);
     setSpectralAveraging(ob?.spectralAveraging);
     setTapering(ob?.tapering);
@@ -147,11 +149,7 @@ export default function ObservationEntry() {
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
-      continuumBandwidthUnits: OBSERVATION.array
-        .find(item => item.value === telescope())
-        .centralFrequencyAndBandWidthUnits.find(
-          u => u.label === BANDWIDTH_TELESCOPE[observingBand].units
-        ).value,
+      continuumBandwidthUnits: continuumBandwidthUnits,
       robust,
       spectralAveraging: spectralAveraging,
       tapering: tapering,
@@ -699,6 +697,26 @@ export default function ObservationEntry() {
     );
   };
 
+  const continuumBandwidthUnitsField = () => {
+    // Use the central frequency units for now, as I see this being dropped soon anyway.
+    const options = OBSERVATION.array.find(item => item.value === telescope())
+      ?.centralFrequencyAndBandWidthUnits;
+    if (options?.length === 1) {
+      return options[0].label;
+    } else {
+      return (
+        <DropDown
+          options={options}
+          testId="continuumBandwidthUnits"
+          value={continuumBandwidthUnits}
+          setValue={setContinuumBandwidthUnits}
+          label=""
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
+      );
+    }
+  };
+
   const continuumBandwidthField = () => {
     const errorMessage = () => {
       return '';
@@ -720,7 +738,7 @@ export default function ObservationEntry() {
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH_OPT1}
-        suffix={BANDWIDTH_TELESCOPE[observingBand]?.units}
+        suffix={continuumBandwidthUnitsField()}
         testId="continuumBandwidth"
         value={continuumBandwidth}
         setValue={validate}
