@@ -6,16 +6,15 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Alert,
-  AlertColorTypes,
+  // AlertColorTypes,
   Button,
   ButtonSizeTypes,
   ButtonColorTypes,
   ButtonVariantTypes,
   IconButton,
-  StatusIcon,
-  Status
+  StatusIcon
+  // Status
 } from '@ska-telescope/ska-gui-components';
-import { resourceLimits } from 'worker_threads';
 
 export enum FileUploadStatus {
   OK = 0,

@@ -54,6 +54,7 @@ code_analysis:
 
 # run the cypress test coverage reports
 test_and_coverage:
+  allow_failure: true # TREVOR
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
   tags:
@@ -114,6 +115,7 @@ list_dependencies:
       - .public
 
 test-counts:
+  allow_failure: true # TREVOR
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
   tags:

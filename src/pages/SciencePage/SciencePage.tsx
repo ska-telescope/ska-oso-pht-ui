@@ -1,18 +1,18 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import { Card, Grid, Paper } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
-import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
+// import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 
 import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+// import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
@@ -21,10 +21,10 @@ import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
-import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
-import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
-import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
+// import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+// import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+// import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
+// import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -84,6 +84,7 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
+  /*
   const uploadPdftoSignedUrl = async theFile => {
     setUploadStatus(FileUploadStatus.PENDING);
 
@@ -105,6 +106,7 @@ export default function SciencePage() {
       setUploadStatus(FileUploadStatus.ERROR);
     }
   };
+  */
 
   const downloadPDFToSignedUrl = async () => {
     try {
@@ -184,6 +186,7 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
+  /*
   const suffix = () => {
     return (
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
@@ -216,15 +219,18 @@ export default function SciencePage() {
       </Grid>
     );
   };
+  */
 
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-around" justifyContent="space-around">
         <Grid item>
-          <Card variant="outlined" {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
-          </Card>
+          <Alert testId="testId" {...getRootProps({ className: 'dropzone' })}>
+            <>
+              <input {...getInputProps()} />
+              <p>Drag 'n' drop some files here, or click to select files</p>
+            </>
+          </Alert>
           <aside>
             <h4>Files</h4>
             <ul>{files}</ul>

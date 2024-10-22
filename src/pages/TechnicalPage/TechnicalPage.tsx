@@ -21,8 +21,8 @@ import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
-import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
+// import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+// import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
 import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
 
 const PAGE = 6;
@@ -213,6 +213,7 @@ export default function TechnicalPage() {
     );
   };
 
+  /*
   const suffixOld = () => {
     return (
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
@@ -240,6 +241,7 @@ export default function TechnicalPage() {
       </Grid>
     );
   };
+  */
 
   return (
     <Shell page={PAGE}>
