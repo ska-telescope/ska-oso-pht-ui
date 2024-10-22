@@ -1,9 +1,9 @@
 import React from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Card, Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { FileUpload } from '../../components/FileUpload/FileUpload';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
@@ -54,6 +54,14 @@ export default function SciencePage() {
     }
     updateAppContent1(temp);
   };
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+
+  const files = acceptedFiles.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
 
   const setFile = (theFile: File) => {
     if (theFile) {
@@ -213,24 +221,14 @@ export default function SciencePage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-around" justifyContent="space-around">
         <Grid item>
-          <FileUpload
-            chooseFileTypes=".pdf"
-            chooseLabel={t('pdfUpload.science.label.choose')}
-            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-            clearLabel={t('pdfUpload.science.label.clear')}
-            clearToolTip={t('pdfUpload.science.tooltip.clear')}
-            direction="row"
-            file={getProposal()?.sciencePDF?.file}
-            isMinimal
-            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-            setFile={setFile}
-            setStatus={setUploadStatus}
-            testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
-            uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-            status={getProposal().scienceLoadStatus}
-            suffix={suffix()}
-          />
+          <Card variant="outlined" {...getRootProps({ className: 'dropzone' })}>
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          </Card>
+          <aside>
+            <h4>Files</h4>
+            <ul>{files}</ul>
+          </aside>
         </Grid>
       </Grid>
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">

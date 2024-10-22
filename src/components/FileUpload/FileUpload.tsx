@@ -100,11 +100,7 @@ export function FileUpload({
   const [theFile, setTheFile] = React.useState<File | null>(null);
   const [name, setName] = React.useState('');
   const [state, setState] = React.useState(FileUploadStatus.INITIAL);
-
-  const onDrop = React.useCallback(acceptedFiles => {
-    console.log('TREVOR GETS TO onDrop', acceptedFiles);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone();
 
   React.useEffect(() => {
     if (file) {
@@ -211,15 +207,8 @@ export function FileUpload({
 
   const ChooseButton = () => (
     <label htmlFor={testId}>
-      <input
-        style={{ display: 'none' }}
-        id={testId}
-        name="chooseFileInput"
-        type="file"
-        accept={chooseFileTypes}
-        onChange={handleFileChange}
-        onDrop={handleFileChange}
-      />
+      <input {...getInputProps()} />
+
       <Button
         ariaDescription={chooseToolTip}
         color={getButtonColor()}
@@ -292,7 +281,7 @@ export function FileUpload({
     <>
       {isMinimal && (
         <Alert testId="testId" action={handleFileChange}>
-          <>
+          <div {...getRootProps()}>
             <Grid container direction="row" alignItems="baseline" justifyContent="space-around">
               <Grid item>
                 <label htmlFor={testId}>
@@ -332,11 +321,11 @@ export function FileUpload({
             <Grid container direction="row" alignItems="baseline" justifyContent="space-around">
               <Grid item>
                 <Typography data-testid={testId + 'Filename'} variant="body1">
-                  {isDragActive ? dragPromptActive : dragPromptInactive}
+                  {false ? dragPromptActive : dragPromptInactive}
                 </Typography>
               </Grid>
             </Grid>
-          </>
+          </div>
         </Alert>
       )}
       {!isMinimal && (
@@ -351,7 +340,7 @@ export function FileUpload({
           <Grid container direction="row" alignItems="centre" justifyContent="space-around">
             <Grid item>
               <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
-                {isDragActive ? dragPromptActive : dragPromptInactive}
+                {false ? dragPromptActive : dragPromptInactive}
               </Typography>
             </Grid>
           </Grid>
