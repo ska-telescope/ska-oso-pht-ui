@@ -38,7 +38,6 @@ export default function TechnicalPage() {
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
-  const [currentFile2, setCurrentFile2] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -53,10 +52,6 @@ export default function TechnicalPage() {
       temp.push(PAGE === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
-  };
-
-  const setUploadStatus = (status: FileUploadStatus) => {
-    setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
   const setFile = (theFile: File) => {
@@ -74,6 +69,10 @@ export default function TechnicalPage() {
       setProposal((({ technicalPDF, ...rest }) => rest)(getProposal()));
       setCurrentFile(null);
     }
+  };
+
+  const setUploadStatus = (status: FileUploadStatus) => {
+    setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
   const uploadPdftoSignedUrl = async theFile => {
@@ -183,28 +182,60 @@ export default function TechnicalPage() {
     return (
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
-          {currentFile && (
-            <UploadIcon
-              toolTip="pdfUpload.technical.tooltip.upload"
-              onClick={uploadPdftoSignedUrl}
-            />
-          )}
+          <UploadIcon
+            toolTip={t('pdfUpload.technical.tooltip.upload')}
+            onClick={(e: any) => uploadPdftoSignedUrl(e)}
+            disabled={!currentFile}
+          />
         </Grid>
         <Grid item>
-          {currentFile && (
-            <PreviewPDFIcon
-              toolTip="pdfUpload.technical.tooltip.preview"
-              onClick={previewSignedUrl}
-            />
-          )}
+          <PDFPreviewButton
+            title="pdfUpload.technical.label.preview"
+            toolTip="pdfUpload.technical.tooltip.preview"
+            action={previewSignedUrl}
+          />
         </Grid>
         <Grid item>
-          {currentFile && (
-            <DownloadIcon
-              toolTip="pdfUpload.technical.tooltip.download"
-              onClick={downloadPDFToSignedUrl}
-            />
-          )}
+          <DownloadButton
+            title="pdfUpload.technical.label.download"
+            toolTip="pdfUpload.technical.tooltip.download"
+            action={downloadPDFToSignedUrl}
+          />
+        </Grid>
+        <Grid item>
+          <DeleteButton
+            title={'pdfUpload.technical.label.delete'}
+            toolTip={'pdfDelete.technical.toolTip'}
+            action={deletePdfUsingSignedUrl}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const suffixOld = () => {
+    return (
+      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
+        <Grid item>
+          <UploadIcon
+            toolTip={t('pdfUpload.technical.tooltip.upload')}
+            onClick={(e: any) => uploadPdftoSignedUrl(e)}
+            disabled={!currentFile}
+          />
+        </Grid>
+        <Grid item>
+          <PreviewPDFIcon
+            toolTip={t('pdfUpload.technical.tooltip.preview')}
+            onClick={() => previewSignedUrl()}
+            disabled={!currentFile}
+          />
+        </Grid>
+        <Grid item>
+          <DownloadIcon
+            toolTip={t('pdfUpload.technical.tooltip.download')}
+            onClick={() => downloadPDFToSignedUrl()}
+            disabled={!currentFile}
+          />
         </Grid>
       </Grid>
     );
@@ -224,11 +255,11 @@ export default function TechnicalPage() {
             clearToolTip={t('pdfUpload.technical.tooltip.clear')}
             direction="row"
             file={currentFile}
-            isMinimal
+            // isMinimal
             maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
             setFile={setCurrentFile}
             setStatus={setUploadStatus}
-            testId="fileUpload1"
+            testId="fileUpload"
             uploadFunction={uploadPdftoSignedUrl}
             uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
             status={getProposal().technicalLoadStatus}

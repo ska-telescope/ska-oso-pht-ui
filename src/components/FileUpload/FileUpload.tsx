@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import SearchIcon from '@mui/icons-material/Search';
@@ -15,6 +15,7 @@ import {
   StatusIcon,
   Status
 } from '@ska-telescope/ska-gui-components';
+import { resourceLimits } from 'worker_threads';
 
 export enum FileUploadStatus {
   OK = 0,
@@ -72,7 +73,7 @@ export function FileUpload({
   chooseToolTip = 'Select to choose a file for upload',
   direction = 'row',
   isMinimal = false,
-  chooseVariant = isMinimal ? ButtonVariantTypes.Text : ButtonVariantTypes.Contained,
+  chooseVariant = isMinimal ? ButtonVariantTypes.Outlined : ButtonVariantTypes.Contained,
   //
   file,
   hideFileName = false,
@@ -181,7 +182,14 @@ export function FileUpload({
   };
 
   const statusDisplay = () => (
-    <StatusIcon testId="statusId" icon level={getStatusLevel(status)} size={isMinimal ? 20 : 14} />
+    <Box p={0} pt={5}>
+      <StatusIcon
+        testId="statusId"
+        icon
+        level={getStatusLevel(status)}
+        size={isMinimal ? 20 : 14}
+      />
+    </Box>
   );
 
   const getUploadIcon = () => {
@@ -189,23 +197,23 @@ export function FileUpload({
     return val === FileUploadStatus.INITIAL ? <UploadFileIcon /> : statusDisplay();
   };
 
-  const getAlertColor = () => {
+  const getButtonColor = () => {
     const val = getStatusLevel(status);
     switch (val) {
       case FileUploadStatus.PENDING:
-        return AlertColorTypes.Warning;
+        return ButtonColorTypes.Warning;
       case FileUploadStatus.OK:
-        return AlertColorTypes.Success;
+        return ButtonColorTypes.Success;
       default:
-        return AlertColorTypes.Error;
+        return ButtonColorTypes.Error;
     }
   };
 
   const ChooseButton = () => (
-    <label htmlFor="uploadFile">
+    <label htmlFor={testId}>
       <input
         style={{ display: 'none' }}
-        id="uploadFile"
+        id={testId}
         name="chooseFileInput"
         type="file"
         accept={chooseFileTypes}
@@ -214,21 +222,23 @@ export function FileUpload({
       />
       <Button
         ariaDescription={chooseToolTip}
-        color={isMinimal ? ButtonColorTypes.Inherit : name ? ButtonColorTypes.Inherit : chooseColor}
+        color={getButtonColor()}
         component="span"
         disabled={chooseDisabled}
         icon={<SearchIcon />}
-        label={isMinimal ? '' : chooseLabel}
+        label={isMinimal ? displayName() : chooseLabel}
         size={buttonSize}
         testId={isMinimal ? testId + 'ChooseIcon' : testId + 'ChooseButton'}
         toolTip={chooseToolTip}
         variant={chooseVariant}
       />
+      {theFile && <Grid item>{ClearButton()}</Grid>}
+      {suffix && <Grid item>{suffix}</Grid>}
     </label>
   );
 
   const showFileName = () => (
-    <Typography pt={1} data-testid={testId + 'Filename'} variant="body1">
+    <Typography pt={1} data-testid={testId + 'Filename'} sx={{ width: '350px' }} variant="body1">
       {name?.length ? displayName() : ''}
     </Typography>
   );
@@ -236,7 +246,7 @@ export function FileUpload({
   const UploadButton = () => (
     <Button
       ariaDescription={uploadToolTip}
-      color={state === FileUploadStatus.INITIAL ? uploadColor : ButtonColorTypes.Inherit}
+      color={getButtonColor()}
       component="span"
       disabled={uploadDisabled || uploadURL.length === 0}
       icon={getUploadIcon()}
@@ -257,7 +267,7 @@ export function FileUpload({
           icon={getClearIcon()}
           onClick={handleClear}
           testId={testId + 'ClearIcon'}
-          toolTip={chooseToolTip}
+          toolTip={clearToolTip}
         />
       )}
       {!isMinimal && (
@@ -281,36 +291,62 @@ export function FileUpload({
   return (
     <>
       {isMinimal && (
-        <Alert color={getAlertColor()} testId="testId">
-          <Grid
-            p={0}
-            container
-            direction={direction}
-            alignItems="baseline"
-            justifyContent={'center'}
-          >
-            <Grid pt={1} item>
-              {statusDisplay()}
+        <Alert testId="testId" action={handleFileChange}>
+          <>
+            <Grid container direction="row" alignItems="baseline" justifyContent="space-around">
+              <Grid item>
+                <label htmlFor={testId}>
+                  <input
+                    style={{ display: 'none' }}
+                    id={testId}
+                    name="chooseFileInput"
+                    type="file"
+                    accept={chooseFileTypes}
+                    onChange={handleFileChange}
+                    onDrop={handleFileChange}
+                  />
+                  <Button
+                    ariaDescription={chooseToolTip}
+                    color={getButtonColor()}
+                    component="span"
+                    disabled={chooseDisabled}
+                    icon={<SearchIcon />}
+                    label={isMinimal ? displayName() : chooseLabel}
+                    size={buttonSize}
+                    testId={isMinimal ? testId + 'ChooseIcon' : testId + 'ChooseButton'}
+                    toolTip={chooseToolTip}
+                    variant={chooseVariant}
+                  />
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="baseline"
+                    justifyContent="space-around"
+                  >
+                    {theFile && <Grid item>{ClearButton()}</Grid>}
+                    {suffix && <Grid item>{suffix}</Grid>}
+                  </Grid>
+                </label>
+              </Grid>
             </Grid>
-            <Grid item>{ChooseButton()}</Grid>
-            <Grid item>{showFileName()}</Grid>
-            {theFile && <Grid item>{ClearButton()}</Grid>}
-            {suffix && <Grid item>{suffix}</Grid>}
-            <Grid item xs={12}>
-              {isDragActive ? dragPromptActive : dragPromptInactive}
+            <Grid container direction="row" alignItems="baseline" justifyContent="space-around">
+              <Grid item>
+                <Typography data-testid={testId + 'Filename'} variant="body1">
+                  {isDragActive ? dragPromptActive : dragPromptInactive}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
+          </>
         </Alert>
       )}
       {!isMinimal && (
         <>
           <Grid p={0} container direction={direction} justifyContent="space-evenly" spacing={1}>
-            <Grid item>{statusDisplay()}</Grid>
             <Grid item>{ChooseButton()}</Grid>
-            {!hideFileName && <Grid item>{showFileName()}</Grid>}
-            {theFile && <Grid item>{ClearButton()}</Grid>}
-            {theFile && <Grid item>{UploadButton()}</Grid>}
-            {suffix && <Grid item>{suffix}</Grid>}
+            {false && !hideFileName && <Grid item>{showFileName()}</Grid>}
+            {false && theFile && <Grid item>{ClearButton()}</Grid>}
+            {false && theFile && <Grid item>{UploadButton()}</Grid>}
+            {false && suffix && <Grid item>{suffix}</Grid>}
           </Grid>
           <Grid container direction="row" alignItems="centre" justifyContent="space-around">
             <Grid item>

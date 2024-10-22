@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload } from '../../components/FileUpload/FileUpload';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
@@ -21,6 +22,9 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
+import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -172,30 +176,63 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
+  const suffix = () => {
+    return (
+      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
+        <Grid item>
+          {currentFile && (
+            <UploadIcon
+              toolTip={t('pdfUpload.science.tooltip.upload')}
+              onClick={uploadPdftoSignedUrl}
+            />
+          )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <PreviewPDFIcon
+                toolTip="pdfUpload.science.tooltip.preview"
+                onClick={previewSignedUrl}
+              />
+            )}
+        </Grid>
+        <Grid item>
+          {getProposal().sciencePDF != null &&
+            getProposal().scienceLoadStatus === FileUploadStatus.OK && (
+              <DownloadIcon
+                toolTip="pdfUpload.science.tooltip.download"
+                onClick={downloadPDFToSignedUrl}
+              />
+            )}
+        </Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Shell page={PAGE}>
-      {getProposal().scienceLoadStatus === FileUploadStatus.INITIAL && (
-        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-          <Grid item xs={6}>
-            <FileUpload
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.science.label.choose')}
-              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-              clearLabel={t('pdfUpload.science.label.clear')}
-              clearToolTip={t('pdfUpload.science.tooltip.clear')}
-              direction="row"
-              file={getProposal()?.sciencePDF?.file}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-              status={getProposal().scienceLoadStatus}
-            />
-          </Grid>
+      <Grid container direction="row" alignItems="space-around" justifyContent="space-around">
+        <Grid item>
+          <FileUpload
+            chooseFileTypes=".pdf"
+            chooseLabel={t('pdfUpload.science.label.choose')}
+            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+            clearLabel={t('pdfUpload.science.label.clear')}
+            clearToolTip={t('pdfUpload.science.tooltip.clear')}
+            direction="row"
+            file={getProposal()?.sciencePDF?.file}
+            isMinimal
+            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+            setFile={setFile}
+            setStatus={setUploadStatus}
+            testId="fileUpload"
+            uploadFunction={uploadPdftoSignedUrl}
+            uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+            status={getProposal().scienceLoadStatus}
+            suffix={suffix()}
+          />
         </Grid>
-      )}
+      </Grid>
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().sciencePDF != null &&

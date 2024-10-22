@@ -349,7 +349,7 @@
       },
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
-        "choose": "Choose the science justification PDF",
+        "choose": "Choose a science justification PDF",
         "clear": "Clears the currently selected file",
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
@@ -368,11 +368,11 @@
       },
       "success": "Technical Justification PDF successfully uploaded",
       "tooltip": {
-        "choose": "Choose the technical justification PDF",
+        "choose": "Choose a technical justification PDF",
         "clear": "Clears the currently selected file",
         "delete": "Delete the technical justification PDF",
         "download": "Download the technical justification PDF",
-        "preview": "This is the PDF preview button on the technical page",
+        "preview": "Click to preview the PDF",
         "upload": "Upload the selected PDF for use as the technical justification"
       }
     }
