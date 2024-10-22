@@ -1,18 +1,18 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Card, CardActionArea, CardContent, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Alert, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
-// import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
+import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 
 import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-// import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 
 import { validateSciencePage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
@@ -22,9 +22,9 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 // import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-// import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
-// import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
-// import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
+import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -64,6 +64,7 @@ export default function SciencePage() {
   ));
 
   const setFile = (theFile: File) => {
+    console.log('TREVOR', theFile);
     if (theFile) {
       //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
       const file = {
@@ -84,29 +85,27 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
-  /*
-  const uploadPdftoSignedUrl = async theFile => {
+  const uploadPdftoSignedUrl = async files => {
     setUploadStatus(FileUploadStatus.PENDING);
-
     try {
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
-      const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      const uploadResult = await PutUploadPDF(signedUrl, files);
 
       if (uploadResult.error) {
         throw new Error('Science PDF Not Uploaded');
       }
       setUploadStatus(FileUploadStatus.OK);
+      setFile(files);
       NotifyOK(t('pdfUpload.science.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
     }
   };
-  */
 
   const downloadPDFToSignedUrl = async () => {
     try {
@@ -186,18 +185,30 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
-  /*
+  const getAlertColor = () => {
+    switch (getProposal()?.scienceLoadStatus) {
+      case 9:
+        return 'red';
+      case 0:
+        return 'green';
+      default:
+        return 'orange';
+    }
+  };
+
   const suffix = () => {
     return (
-      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
+      <Grid spacing={1} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
-          {currentFile && (
+          {files?.length > 0 && (
             <UploadIcon
               toolTip={t('pdfUpload.science.tooltip.upload')}
               onClick={uploadPdftoSignedUrl}
             />
           )}
         </Grid>
+        <Grid item>{getProposal().sciencePDF === null ? 'N' : 'Y'}</Grid>
+        <Grid item>{getProposal()?.scienceLoadStatus}</Grid>
         <Grid item>
           {getProposal().sciencePDF != null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
@@ -219,18 +230,20 @@ export default function SciencePage() {
       </Grid>
     );
   };
-  */
 
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-around" justifyContent="space-around">
         <Grid item>
-          <Alert testId="testId" {...getRootProps({ className: 'dropzone' })}>
-            <>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
-            </>
-          </Alert>
+          <Card sx={{ borderColor: getAlertColor() }} variant="outlined" {...getRootProps()}>
+            <CardActionArea>
+              <CardContent>
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+          {suffix()}
           <aside>
             <h4>Files</h4>
             <ul>{files}</ul>
@@ -239,7 +252,7 @@ export default function SciencePage() {
       </Grid>
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
-          {getProposal().sciencePDF != null &&
+          {getProposal().sciencePDF !== null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <PDFPreviewButton
                 title="pdfUpload.science.label.preview"
@@ -249,7 +262,7 @@ export default function SciencePage() {
             )}
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
+          {getProposal().sciencePDF !== null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DownloadButton
                 title="pdfUpload.science.label.download"
@@ -259,7 +272,7 @@ export default function SciencePage() {
             )}
         </Grid>
         <Grid item>
-          {getProposal().sciencePDF != null &&
+          {getProposal().sciencePDF !== null &&
             getProposal().scienceLoadStatus === FileUploadStatus.OK && (
               <DeleteButton
                 title={'pdfUpload.science.label.delete'}
