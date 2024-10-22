@@ -172,18 +172,24 @@
   "fileType": {
     "pdf": ".pdf"
   },
+  "fileUpload": {
+    "inactive": "Drag 'n' drop a file here, or click to select file",
+    "active": "Drop the files here ..."
+  },
   "pdfDelete": {
     "science": {
       "label": "science",
       "toolTip": "Click delete the Science Justification PDF",
       "error": "Not able to delete Science Justification PDF",
-      "success": "Science Justification PDF successfully deleted"
+      "success": "Science Justification PDF successfully uploaded",
+      "deleted": "Science Justification PDF successfully deleted"
     },
     "technical": {
       "label": "technical",
       "toolTip": "Click delete the Technical Justification PDF",
       "error": "Not able to delete Technical Justification PDF",
-      "success": "Technical Justification PDF successfully deleted"
+      "success": "Technical Justification PDF successfully uploaded",
+      "deleted": "Technical Justification PDF successfully deleted"
     }
   },
   "pdfDownload": {
@@ -343,7 +349,7 @@
       },
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
-        "choose": "Choose the science justification PDF for upload",
+        "choose": "Choose the science justification PDF",
         "clear": "Clears the currently selected file",
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
@@ -362,7 +368,7 @@
       },
       "success": "Technical Justification PDF successfully uploaded",
       "tooltip": {
-        "choose": "Choose the technical justification PDF for upload",
+        "choose": "Choose the technical justification PDF",
         "clear": "Clears the currently selected file",
         "delete": "Delete the technical justification PDF",
         "download": "Download the technical justification PDF",

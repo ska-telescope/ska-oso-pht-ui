@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload } from '../../components/FileUpload/FileUpload';
 
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '../../utils/types/proposal';
@@ -20,6 +21,9 @@ import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
+import PreviewPDFIcon from '../../components/icon/previewPDFIcon/previewPDFIcon';
+import UploadIcon from '../../components/icon/uploadIcon/uploadIcon';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -34,6 +38,7 @@ export default function TechnicalPage() {
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
+  const [currentFile2, setCurrentFile2] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -120,7 +125,7 @@ export default function TechnicalPage() {
         throw new Error('Not able to delete Technical PDF');
       }
       setFile(null); //TODO: revisit redux not removed after delete pdf
-      setUploadStatus(FileUploadStatus.INITIAL);
+      setUploadStatus(FileUploadStatus.ERROR);
       NotifyOK(t('pdfDelete.technical.success'));
     } catch (e) {
       new Error(t('pdfDelete.technical.error'));
@@ -162,8 +167,11 @@ export default function TechnicalPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    if (getProposal()?.technicalLoadStatus === null) {
-      setUploadStatus(FileUploadStatus.INITIAL);
+    if (
+      getProposal()?.technicalLoadStatus === null ||
+      getProposal()?.technicalLoadStatus === FileUploadStatus.INITIAL
+    ) {
+      setUploadStatus(FileUploadStatus.ERROR);
     }
   }, [getProposal()]);
 
@@ -171,30 +179,63 @@ export default function TechnicalPage() {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
 
+  const suffix = () => {
+    return (
+      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
+        <Grid item>
+          {currentFile && (
+            <UploadIcon
+              toolTip="pdfUpload.technical.tooltip.upload"
+              onClick={uploadPdftoSignedUrl}
+            />
+          )}
+        </Grid>
+        <Grid item>
+          {currentFile && (
+            <PreviewPDFIcon
+              toolTip="pdfUpload.technical.tooltip.preview"
+              onClick={previewSignedUrl}
+            />
+          )}
+        </Grid>
+        <Grid item>
+          {currentFile && (
+            <DownloadIcon
+              toolTip="pdfUpload.technical.tooltip.download"
+              onClick={downloadPDFToSignedUrl}
+            />
+          )}
+        </Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Shell page={PAGE}>
-      {getProposal().technicalLoadStatus === FileUploadStatus.INITIAL && (
-        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-          <Grid item xs={6}>
-            <FileUpload
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.technical.label.choose')}
-              chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
-              clearLabel={t('pdfUpload.technical.label.clear')}
-              clearToolTip={t('pdfUpload.technical.tooltip.clear')}
-              direction="row"
-              file={getProposal()?.technicalPDF?.file}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-              status={getProposal().technicalLoadStatus}
-            />
-          </Grid>
+      <Grid container direction="row" alignItems="centre" justifyContent="space-around">
+        <Grid item>
+          <FileUpload
+            dragPromptActive={t('fileUpload.active')}
+            dragPromptInactive={t('fileUpload.inactive')}
+            chooseFileTypes=".pdf"
+            chooseLabel={t('pdfUpload.technical.label.choose')}
+            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+            clearLabel={t('pdfUpload.technical.label.clear')}
+            clearToolTip={t('pdfUpload.technical.tooltip.clear')}
+            direction="row"
+            file={currentFile}
+            isMinimal
+            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+            setFile={setCurrentFile}
+            setStatus={setUploadStatus}
+            testId="fileUpload1"
+            uploadFunction={uploadPdftoSignedUrl}
+            uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
+            status={getProposal().technicalLoadStatus}
+            suffix={suffix()}
+          />
         </Grid>
-      )}
+      </Grid>
       <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
         <Grid item>
           {getProposal().technicalPDF != null &&
