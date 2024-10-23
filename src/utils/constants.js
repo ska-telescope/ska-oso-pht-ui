@@ -498,14 +498,18 @@ export const OBSERVATION = {
     }
   ],
   SpectralAveraging: [
-    { label: '1', value: 1, lookup: 0 },
-    { label: '2', value: 2, lookup: 1 },
-    { label: '3', value: 3, lookup: 2 },
-    { label: '4', value: 4, lookup: 3 },
-    { label: '6', value: 6, lookup: 4 },
-    { label: '8', value: 8, lookup: 5 },
-    { label: '12', value: 12, lookup: 6 },
-    { label: '24', value: 24, lookup: 7 }
+    { label: '1', value: 1, lookup: 1 },
+    { label: '2', value: 2, lookup: 2 },
+    { label: '3', value: 3, lookup: 3 },
+    { label: '4', value: 4, lookup: 4 },
+    { label: '6', value: 6, lookup: 6 },
+    { label: '8', value: 8, lookup: 8 },
+    { label: '12', value: 12, lookup: 12 },
+    { label: '16', value: 16, lookup: 16 },
+    { label: '24', value: 24, lookup: 24 },
+    { label: '31', value: 31, lookup: 31 },
+    { label: '32', value: 32, lookup: 32 },
+    { label: '48', value: 48, lookup: 48 }
   ],
   CentralFrequencyOBLow: [{ lookup: 0, value: 200 }],
   CentralFrequencyOB1: [

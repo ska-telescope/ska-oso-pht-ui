@@ -218,23 +218,33 @@ export default function ObservationEntry() {
     //
     // This use effect should be used to calculate the SPECTRAL RESOLUTION for MID/LOW and CONTINUUM/ZOOM
     //
-    // NOTE : Once the field is updated, the effective Resolution is then fired off
-    //
-    const calculateSpectralResolution = () => {
-      const getSpectralResolution = (inSP: number) => {
-        return `${inSP} kHz (${calculateVelocity(inSP * 1000, centralFrequency * 1000000)})`;
-      };
-      const getInValue = () => {
-        if (observingBand === BAND_LOW) {
-          return isContinuum() ? 5.43 : 14.1;
-        } else {
-          return isContinuum() ? 13.44 : 0.21;
-        }
-      };
-      return getSpectralResolution(getInValue());
+
+    const getInValue = () => (observingBand === BAND_LOW ? (isContinuum() ? 5.43 : 14.1) : 13.44);
+    const getUnits1 = () => (observingBand === BAND_LOW ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
+    const getUnits2 = () =>
+      observingBand === BAND_LOW ? (isContinuum() ? 'km/s' : 'm/s') : 'km/s';
+
+    const calculateLOW = () => {
+      const tempZoomFactor = 0; // This is here for completeness of the calculation.
+      const zoomFactor = tempZoomFactor === 0 ? 1 : tempZoomFactor;
+      if (isContinuum()) {
+        return (getInValue() / 1728 / 2 ** zoomFactor).toFixed(1);
+      } else {
+        return (getInValue() / 144).toFixed(1);
+      }
     };
 
-    setSpectralResolution(calculateSpectralResolution());
+    const calculateMID = () => {
+      const tempZoomFactor = 0; // This is here for completeness of the calculation.
+      const averagingFactor = tempZoomFactor === 0 ? spectralAveraging : 1;
+      const zoomFactor = tempZoomFactor === 0 ? 1 : tempZoomFactor;
+      return ((getInValue() / 2 ** zoomFactor) * averagingFactor).toFixed(2);
+    };
+
+    const calculate = () => {
+      return observingBand === BAND_LOW ? calculateLOW() : calculateMID();
+    };
+    setSpectralResolution(`${getInValue()} ${getUnits1()} (${calculate()} ${getUnits2()})`);
   }, [calculateToggle]);
 
   React.useEffect(() => {
