@@ -131,11 +131,13 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   }
 
   const getParamZoomLOW = (): WeightingLowZoomQuery => {
+    console.log('OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()', OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase());
     const params = {
+      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // Not there for zoom but here for line
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
-      freq_centres_mhz: observation.centralFrequency
+      freq_centres_mhz: observation.centralFrequency // Are there cases where it's freq_centres_mhz instead of freq_centre_mhz? YES ZOOM
     };
     if (observation.imageWeighting === IW_BRIGGS) {
       params['robustness'] = getRobustness();
@@ -143,7 +145,17 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return params;
   };
 
+  // TODO
+  /*
+  Handle the difference of request between continuum line (spectral?) and zoom modes
+    - line: add spectral_mode
+    - line: freq_centre_mhz without 's'
+    - url for request different: continuum instead of zoom for mode
+  */
+
+  // HERE
   const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
+    console.log('OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()', OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase());
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),

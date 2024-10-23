@@ -9,8 +9,14 @@ export const presentSensCalcError = (inArr: string, length = 0) => {
   if (!inArr || inArr.length === 0) {
     return '';
   }
-  const arr = inArr.split('\n');
-  return arr[length];
+  if (typeof inArr === 'string') {
+    const arr = inArr.split('\n');
+    return arr[length];
+  }
+  if (typeof inArr === 'object') {
+    return inArr;
+  }
+  return 'Unknown error';
 };
 
 export const presentUnits = (inUnits: string) => {

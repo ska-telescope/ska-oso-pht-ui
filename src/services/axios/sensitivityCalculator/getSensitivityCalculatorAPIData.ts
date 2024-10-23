@@ -80,8 +80,10 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   */
 
   function handleWeighting() {
+    console.log('SPECTRAL MODE', observation.type);
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
+      console.log('SPECTRAL MODE', TYPE_ZOOM);
       promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
     }
     return promisesWeighting;
