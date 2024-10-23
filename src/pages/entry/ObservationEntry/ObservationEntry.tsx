@@ -64,6 +64,8 @@ const LABEL_WIDTH_SELECT = 6;
 const LABEL_WIDTH_OPT1 = 6;
 const FIELD_WIDTH_BUTTON = 2;
 
+const SPEED_OF_LIGHT = 299792458;
+
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -213,55 +215,32 @@ export default function ObservationEntry() {
   }, []);
 
   React.useEffect(() => {
+    //
+    // This use effect should be used to calculate the SPECTRAL RESOLUTION for MID/LOW and CONTINUUM/ZOOM
+    //
+    // NOTE : Once the field is updated, the effective Resolution is then fired off
+    //
     const calculateSpectralResolution = () => {
-      const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-        if (isContinuum()) {
-          return lookupArrayValue(OBSERVATION[inLabel], inValue);
+      const getSpectralResolution = (inSP: number) => {
+        return `${inSP} kHz (${calculateVelocity(inSP * 1000, centralFrequency * 1000000)})`;
+      };
+      const getInValue = () => {
+        if (observingBand === BAND_LOW) {
+          return isContinuum() ? 5.43 : 14.1;
         } else {
-          return OBSERVATION[inLabel].find(
-            e =>
-              e.lookup.toString() === inValue.toString() &&
-              e.bandWidthValue?.toString() === bandwidth?.toString()
-          )?.value;
+          return isContinuum() ? 13.44 : 0.21;
         }
       };
-
-      switch (observingBand) {
-        case BAND_1:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
-            centralFrequency
-          );
-        case BAND_2:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
-            centralFrequency
-          );
-        case BAND_5A:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5a[0].value
-            : OBSERVATION.SpectralResolutionOb5aZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        case BAND_5B:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5b[0].value
-            : OBSERVATION.SpectralResolutionOb5bZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        default:
-          // LOW
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionObLow[0].value
-            : OBSERVATION.SpectralResolutionObLowZoom.find(
-                item => item.bandWidthValue === bandwidth
-              ).value;
-      }
+      return getSpectralResolution(getInValue());
     };
 
+    setSpectralResolution(calculateSpectralResolution());
+  }, [calculateToggle]);
+
+  React.useEffect(() => {
     const calculateEffectiveResolution = () => {
       // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-      const arr = String(calculateSpectralResolution()).split(' ');
+      const arr = String(spectralResolution).split(' ');
       if (arr.length > 2) {
         const resolution = Number(arr[0]);
         const effectiveResolutionValue = resolution * spectralAveraging;
@@ -276,10 +255,9 @@ export default function ObservationEntry() {
       }
     };
 
-    setSpectralResolution(calculateSpectralResolution());
     setEffectiveResolution(calculateEffectiveResolution());
     setValidateToggle(!validateToggle);
-  }, [calculateToggle]);
+  }, [spectralResolution]);
 
   React.useEffect(() => {
     if (isContinuumOnly()) {
@@ -750,8 +728,7 @@ export default function ObservationEntry() {
   };
 
   const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const speedOfLight = 299792458;
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
+    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
     if (velocity < 1000) {
       return velocity.toFixed(precision) + ' m/s';
     } else {
