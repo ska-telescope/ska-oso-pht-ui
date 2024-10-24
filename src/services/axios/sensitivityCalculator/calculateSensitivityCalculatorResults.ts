@@ -21,6 +21,12 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
 // STAR-612 : Note that the actual calculation for this will be done in a separate ticket
 
+/*
+STAR-781 - TODO check spectral surface brightness sensitivity results since change affecting spectral results
+=> returning spectral results with continuum in url, not zoom
+this is correct but returns different values than when set as zoom
+*/
+
 export default function calculateSensitivityCalculatorResults(
   response: any,
   observation: Observation,
@@ -272,7 +278,6 @@ const getSpectralWeightedSensitivityLOW = (
 ) => {
   console.log('::: in getSpectralWeightedSensitivityLOW');
   console.log('response', response);
-  // const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
   const rec = isZoom ? response.weighting[0] : response.weightingLine;
   console.log('isZoom', isZoom);
   console.log('rec', rec);
@@ -281,7 +286,7 @@ const getSpectralWeightedSensitivityLOW = (
 };
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom: boolean) => {
-  const rec = isZoom ? response.weighting[0].beam_size : response.weightingLine[0].beam_size;
+  const rec = isZoom ? response.weighting[0].beam_size : response.weightingLine.beam_size;
   const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec.beam_maj_scaled,
     rec.beam_min_scaled,
@@ -442,5 +447,5 @@ const getSpectralRawConfusionNoise = (
 ): number => {
   return isZoom
     ? response.weighting[0].confusion_noise.value
-    : response.weightingLine[0].confusion_noise.value;
+    : response.weightingLine.confusion_noise.value;
 };
