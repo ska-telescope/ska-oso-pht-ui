@@ -4,6 +4,29 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+0.5.0
+
+---
+
+* Utilities
+  - Close icon added to Warning/Error notifications, timer removed
+  - Close icon added to Success/Info notifications, timer still in place  
+  - Validation failure changed to a modal containing list of all errors
+  - Added presentation utility for the error results returned by the SensCalc API
+* Validation button
+  - Now disabled until all pages have an OK status
+  - When disabled, the tooltip indicates the reasoning why the button is disabled
+* Target Page
+  - Increased padding around contents
+* Observation page
+  - Updated observation button set to primary color if there are no observations on the proposal
+  - Updated so that previously saved values are not reset to default values upon editing the Observation set
+* Observation Entry
+  - Updated the Group Observation field into it's own component
+  - Removed the need for the Add Group Button by hooking it directly to the dropdown values
+  - User is able to add their own group name
+  - centralFrequency is no longer reset to a default value when the observing band or subarray are altered
+
 ---
 
 0.4.2 
@@ -11,7 +34,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ---
 
 * Team Page:
-   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilising /send-email endpoint 
+   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilizing /send-email endpoint 
 * Types:
    - Added new model EmailInviteBackend to support new endpoint /send-email 
 * Sensitivity Calculations
@@ -45,7 +68,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Target Page:
    - Disabled galactic coordinate 
 * Observation page:
-   - Updated senscal results modal and results
+   - Updated sensitivity calculator results modal and results
 * Testing: 
    - Added BDD tests
    
@@ -84,7 +107,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
    - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
-   - Use non rounded value for Low Zoom bandwith in mapping for Sensitivity Calculator endpoints
+   - Use non rounded value for Low Zoom bandwidth in mapping for Sensitivity Calculator endpoints
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename

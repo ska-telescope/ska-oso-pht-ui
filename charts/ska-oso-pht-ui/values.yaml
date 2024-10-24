@@ -20,5 +20,5 @@ enabled: true
 image:
   registry: artefact.skao.int
   image: ska-oso-pht-ui
-  tag: 0.4.1
+  tag: 0.4.2
   pullPolicy: IfNotPresent

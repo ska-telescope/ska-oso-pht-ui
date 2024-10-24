@@ -45,8 +45,8 @@ import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
 import { generateId } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
-import GroupObservation from '../../../utils/types/groupObservation';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
+import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
 import Observation from '../../../utils/types/observation';
 import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
@@ -85,6 +85,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -94,26 +95,22 @@ export default function ObservationEntry() {
   const [suppliedType, setSuppliedType] = React.useState(1);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
+  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(1);
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [calculateToggle, setCalculateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
-  const [groupObservationId, setGroupObservationId] = React.useState(null);
-  const [addGroupObsDisabled, setAddGroupObsDisabled] = React.useState(false);
-  const [newGroupObservationLabel, setGroupObservationLabel] = React.useState('');
   const [myObsId, setMyObsId] = React.useState('');
-  const [selectedGroupObservation, setSelectedGroupObservation] = React.useState(null);
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
-    // TODO : What to do about linked field ?
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
@@ -124,6 +121,8 @@ export default function ObservationEntry() {
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(ob?.bandwidth);
     setContinuumBandwidth(ob?.continuumBandwidth);
+    setContinuumBandwidthUnits(ob?.continuumBandwidthUnits);
+    setRobust(ob?.robust);
     setSpectralAveraging(ob?.spectralAveraging);
     setTapering(ob?.tapering);
     setImageWeighting(ob?.imageWeighting);
@@ -145,16 +144,12 @@ export default function ObservationEntry() {
       type: observationType,
       observingBand,
       weather,
-      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capure info needed for ElevationBackend type and update sens calc mapping
+      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capture info needed for ElevationBackend type and update sens calc mapping
       centralFrequency: Number(centralFrequency),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
-      continuumBandwidthUnits: OBSERVATION.array
-        .find(item => item.value === telescope())
-        .centralFrequencyAndBandWidthUnits.find(
-          u => u.label === BANDWIDTH_TELESCOPE[observingBand].units
-        ).value,
+      continuumBandwidthUnits: continuumBandwidthUnits,
       robust,
       spectralAveraging: spectralAveraging,
       tapering: tapering,
@@ -184,7 +179,25 @@ export default function ObservationEntry() {
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
+    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
+      setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
+    }
     setObservingBand(e);
+    calculateContinuumBandwidth(e as number, subarrayConfig);
+  };
+
+  const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
+    const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
+    if (record && record.value !== OB_SUBARRAY_CUSTOM) {
+      setNumOf15mAntennas(record.numOf15mAntennas);
+      setNumOf13mAntennas(record.numOf13mAntennas);
+      setNumOfStations(record.numOfStations);
+    }
+    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
+      setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
+    }
+    setSubarrayConfig(e);
+    calculateContinuumBandwidth(observingBand, e as number);
   };
 
   React.useEffect(() => {
@@ -193,34 +206,85 @@ export default function ObservationEntry() {
       observationIn(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
+      setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
+      calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
+    setCalculateToggle(!calculateToggle);
   }, []);
 
   React.useEffect(() => {
-    if (!groupObservationId) {
-      setGroupObservationLabel(t('groupObservations.new'));
-    } else {
-      setGroupObservationLabel(groupObservationId);
-      setAddGroupObsDisabled(true);
-    }
-  }, groupObservationId);
+    const calculateSpectralResolution = () => {
+      const getSpectralResolution = (inLabel: String, inValue: number | string) => {
+        if (isContinuum()) {
+          return lookupArrayValue(OBSERVATION[inLabel], inValue);
+        } else {
+          return OBSERVATION[inLabel].find(
+            e =>
+              e.lookup.toString() === inValue.toString() &&
+              e.bandWidthValue?.toString() === bandwidth?.toString()
+          )?.value;
+        }
+      };
+
+      switch (observingBand) {
+        case BAND_1:
+          return getSpectralResolution(
+            isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
+            centralFrequency
+          );
+        case BAND_2:
+          return getSpectralResolution(
+            isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
+            centralFrequency
+          );
+        case BAND_5A:
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionOb5a[0].value
+            : OBSERVATION.SpectralResolutionOb5aZoom.find(
+                item => item.bandWidthValue.toString() === bandwidth.toString()
+              ).value;
+        case BAND_5B:
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionOb5b[0].value
+            : OBSERVATION.SpectralResolutionOb5bZoom.find(
+                item => item.bandWidthValue.toString() === bandwidth.toString()
+              ).value;
+        default:
+          // LOW
+          return isContinuum()
+            ? OBSERVATION.SpectralResolutionObLow[0].value
+            : OBSERVATION.SpectralResolutionObLowZoom.find(
+                item => item.bandWidthValue === bandwidth
+              ).value;
+      }
+    };
+
+    const calculateEffectiveResolution = () => {
+      // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
+      const arr = String(calculateSpectralResolution()).split(' ');
+      if (arr.length > 2) {
+        const resolution = Number(arr[0]);
+        const effectiveResolutionValue = resolution * spectralAveraging;
+        const freqMultiplier = isLow() ? 1000000 : 1000000000;
+        const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
+        const decimal = isContinuum() ? 2 : 1;
+        const multiplier = !isLow() || isContinuum() ? 1000 : 1;
+        const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
+        return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
+      } else {
+        return '';
+      }
+    };
+
+    setSpectralResolution(calculateSpectralResolution());
+    setEffectiveResolution(calculateEffectiveResolution());
+    setValidateToggle(!validateToggle);
+  }, [calculateToggle]);
 
   React.useEffect(() => {
-    if (telescope() > 0) {
-      const record = OBSERVATION.array[telescope() - 1].subarray.find(
-        element => element.value === subarrayConfig
-      );
-      if (record) {
-        setNumOf15mAntennas(record.numOf15mAntennas);
-        setNumOf13mAntennas(record.numOf13mAntennas);
-        setNumOfStations(record.numOfStations);
-      }
-    }
     if (isContinuumOnly()) {
       setObservationType(TYPE_CONTINUUM);
     }
-    setCentralFrequency(calculateFrequency());
-    calculateContinuumBandwidth();
     setValidateToggle(!validateToggle);
   }, [subarrayConfig]);
 
@@ -245,29 +309,12 @@ export default function ObservationEntry() {
     numOfStations
   ]);
 
-  const calculateEffectiveResolution = () => {
-    // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-    const arr = String(calculateSpectralResolution()).split(' ');
-    if (arr.length > 2) {
-      const resolution = Number(arr[0]);
-      const effectiveResolutionValue = resolution * spectralAveraging;
-      const freqMultiplier = isLow() ? 1000000 : 1000000000;
-      const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
-      const decimal = isContinuum() ? 2 : 1;
-      const multiplier = !isLow() || isContinuum() ? 1000 : 1;
-      const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
-      return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
-    } else {
-      return '';
-    }
-  };
-
-  const calculateFrequency = () => {
-    switch (observingBand) {
+  const calculateCentralFrequency = (ob: number, sc: number) => {
+    switch (ob) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, sc);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, sc);
       case BAND_5A:
         return OBSERVATION.CentralFrequencyOB5a[0].value;
       case BAND_5B:
@@ -277,29 +324,25 @@ export default function ObservationEntry() {
     }
   };
 
-  const calculateContinuumBandwidth = () => {
-    switch (observingBand) {
+  const calculateContinuumBandwidth = (ob: number, sc: number) => {
+    switch (ob) {
       case BAND_1:
         if (isContinuum()) {
-          setContinuumBandwidth(
-            lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, subarrayConfig)
-          );
+          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc));
         }
         return;
       case BAND_2:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, subarrayConfig));
+        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc));
         return;
       case BAND_5A:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, subarrayConfig));
+        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc));
         return;
       case BAND_5B:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, subarrayConfig));
+        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc));
         return;
       default:
         if (isContinuum()) {
-          setContinuumBandwidth(
-            lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, subarrayConfig)
-          );
+          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc));
         }
     }
   };
@@ -320,165 +363,21 @@ export default function ObservationEntry() {
       }
     };
     calculateSubarray();
-    setCentralFrequency(calculateFrequency());
-    setSpectralResolution(calculateSpectralResolution());
-    calculateContinuumBandwidth();
-    setValidateToggle(!validateToggle);
+    setCalculateToggle(!calculateToggle);
   }, [observingBand]);
 
   React.useEffect(() => {
-    setCentralFrequency(calculateFrequency());
-    setSpectralResolution(calculateSpectralResolution());
-    calculateContinuumBandwidth();
-    setValidateToggle(!validateToggle);
-  }, [observationType]);
-
-  React.useEffect(() => {
-    setCentralFrequency(calculateFrequency());
-    setSpectralResolution(calculateSpectralResolution());
-    calculateContinuumBandwidth();
-    setValidateToggle(!validateToggle);
-  }, [bandwidth]);
-
-  React.useEffect(() => {
-    setEffectiveResolution(calculateEffectiveResolution());
-  }, [spectralResolution, spectralAveraging]);
+    setCalculateToggle(!calculateToggle);
+  }, [bandwidth, centralFrequency, observationType, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
-  const calculateSpectralResolution = () => {
-    const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-      if (isContinuum()) {
-        return lookupArrayValue(OBSERVATION[inLabel], inValue);
-      } else {
-        return OBSERVATION[inLabel].find(
-          e =>
-            e.lookup.toString() === inValue.toString() &&
-            e.bandWidthValue?.toString() === bandwidth?.toString()
-        )?.value;
-      }
-    };
-
-    switch (observingBand) {
-      case BAND_1:
-        return getSpectralResolution(
-          isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
-          calculateFrequency()
-        );
-      case BAND_2:
-        return getSpectralResolution(
-          isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
-          calculateFrequency()
-        );
-      case BAND_5A:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionOb5a[0].value
-          : OBSERVATION.SpectralResolutionOb5aZoom.find(
-              item => item.bandWidthValue.toString() === bandwidth.toString()
-            ).value;
-      case BAND_5B:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionOb5b[0].value
-          : OBSERVATION.SpectralResolutionOb5bZoom.find(
-              item => item.bandWidthValue.toString() === bandwidth.toString()
-            ).value;
-      default:
-        return isContinuum()
-          ? OBSERVATION.SpectralResolutionObLow[0].value
-          : OBSERVATION.SpectralResolutionObLowZoom.find(item => item.bandWidthValue === bandwidth)
-              .value;
-    }
-  };
-
   const isContinuumOnly = () =>
     subarrayConfig === OB_SUBARRAY_AA05 ||
     subarrayConfig === OB_SUBARRAY_AA1 ||
     (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
-
-  const hasGroupObservations = (): boolean => getProposal()?.groupObservations?.length > 0;
-
-  const buttonGroupObservationsField = () => {
-    const generateGroupId = () => {
-      if (hasGroupObservations()) {
-        // get latest group id and add + 1
-        const groups = getProposal().groupObservations;
-        const lastGroup = groups[groups.length - 1];
-        const lastGroupId: number = parseInt(lastGroup.groupId.match(/-(\d+)/)[1]);
-        return `${t('groupObservations.idPrefix')}${lastGroupId + 1}`;
-      } else {
-        return `${t('groupObservations.idPrefix')}1`;
-      }
-    };
-
-    const buttonClicked = groupObservationValue => {
-      switch (groupObservationValue) {
-        case 0: // null
-          break;
-        case 1: // new group
-          const newGroupObs: GroupObservation = {
-            groupId: generateGroupId(),
-            observationId: myObsId
-          };
-          setGroupObservationId(newGroupObs.groupId); // to display new ID in dropdown
-          setSelectedGroupObservation(newGroupObs);
-          break;
-        default:
-          // existing group
-          const existingGroup: GroupObservation = {
-            groupId: groupObservationValue,
-            observationId: myObsId
-          };
-          setGroupObservationId(groupObservationValue);
-          setSelectedGroupObservation(existingGroup);
-      }
-    };
-
-    return (
-      <Box pl={1} pt={0} pb={3}>
-        <AddButton
-          action={() => buttonClicked(groupObservation)}
-          disabled={addGroupObsDisabled}
-          testId="addGroupButton"
-          toolTip="groupObservations.toolTip"
-        />
-      </Box>
-    );
-  };
-
-  const groupObservationsField = () => {
-    const getOptions = () => {
-      const groups: GroupObservation[] = hasGroupObservations()
-        ? getProposal()?.groupObservations
-        : [];
-
-      // don't display duplicate groupIds
-      const uniqueGroups = groups.reduce((acc, group) => {
-        const existingGroup = acc.find(g => g.groupId === group.groupId);
-        if (!existingGroup) {
-          acc.push(group);
-        }
-        return acc;
-      }, []);
-
-      const formattedGroupObs = [
-        { label: t('groupObservations.none'), value: 0 },
-        { label: newGroupObservationLabel, value: 1 },
-        ...uniqueGroups?.map(group => ({ label: group?.groupId, value: group?.groupId ?? 0 }))
-      ];
-      return formattedGroupObs as any;
-    };
-    return fieldDropdown(
-      groupObservationId,
-      'groupObservations',
-      getOptions(),
-      false,
-      setGroupObservation,
-      buttonGroupObservationsField(),
-      groupObservation
-    );
-  };
 
   const taperingField = () => {
     const frequencyInGHz = () => {
@@ -496,6 +395,20 @@ export default function ObservationEntry() {
 
     return fieldDropdown(false, 'tapering', getOptions(), true, setTapering, null, tapering);
   };
+
+  const groupObservationsField = () => (
+    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+      <Grid pl={0} item xs={12}>
+        <GroupObservationsField
+          labelWidth={LABEL_WIDTH_OPT1}
+          onFocus={() => helpComponent(t('groupObservations.help'))}
+          setValue={setGroupObservation}
+          value={groupObservation}
+          obsId={myObsId}
+        />
+      </Grid>
+    </Grid>
+  );
 
   const imageWeightingField = () => (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
@@ -714,7 +627,7 @@ export default function ObservationEntry() {
     );
   };
 
-  const frequencyUnitsField = () => {
+  const centralFrequencyUnitsField = () => {
     const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
       ?.centralFrequencyAndBandWidthUnits;
     if (FrequencyUnitOptions?.length === 1) {
@@ -751,7 +664,7 @@ export default function ObservationEntry() {
         setValue={setCentralFrequency}
         onFocus={() => helpComponent(t('centralFrequency.help'))}
         required
-        suffix={frequencyUnitsField()}
+        suffix={centralFrequencyUnitsField()}
         errorText={errorMessage()}
       />
     );
@@ -784,6 +697,26 @@ export default function ObservationEntry() {
     );
   };
 
+  const continuumBandwidthUnitsField = () => {
+    // Use the central frequency units for now, as I see this being dropped soon anyway.
+    const options = OBSERVATION.array.find(item => item.value === telescope())
+      ?.centralFrequencyAndBandWidthUnits;
+    if (options?.length === 1) {
+      return options[0].label;
+    } else {
+      return (
+        <DropDown
+          options={options}
+          testId="continuumBandwidthUnits"
+          value={continuumBandwidthUnits}
+          setValue={setContinuumBandwidthUnits}
+          label=""
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
+      );
+    }
+  };
+
   const continuumBandwidthField = () => {
     const errorMessage = () => {
       return '';
@@ -795,6 +728,9 @@ export default function ObservationEntry() {
         : '';
         */
     };
+    const validate = (e: React.SetStateAction<number>) => {
+      setContinuumBandwidth(Number(e) < 0 ? 0 : e);
+    };
 
     return (
       <NumberEntry
@@ -802,10 +738,10 @@ export default function ObservationEntry() {
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH_OPT1}
-        suffix={BANDWIDTH_TELESCOPE[observingBand]?.units}
+        suffix={continuumBandwidthUnitsField()}
         testId="continuumBandwidth"
         value={continuumBandwidth}
-        setValue={setContinuumBandwidth}
+        setValue={validate}
         onFocus={() => helpComponent(t('continuumBandWidth.help'))}
         required
         errorText={errorMessage()}
@@ -848,6 +784,7 @@ export default function ObservationEntry() {
         testId="effectiveResolution"
         value={effectiveResolution}
         onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
         disabled
       />
     );
@@ -878,10 +815,11 @@ export default function ObservationEntry() {
   const NumOf15mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
-      if (
-        num >= Number(t('numOf15mAntennas.range.lower')) &&
-        num <= Number(t('numOf15mAntennas.range.upper'))
-      ) {
+      if (num < Number(t('numOf15mAntennas.range.lower'))) {
+        setNumOf15mAntennas(Number(t('numOf15mAntennas.range.lower')));
+      } else if (num > Number(t('numOf15mAntennas.range.upper'))) {
+        setNumOf15mAntennas(Number(t('numOf15mAntennas.range.upper')));
+      } else {
         setNumOf15mAntennas(num);
       }
     };
@@ -904,10 +842,11 @@ export default function ObservationEntry() {
   const numOf13mAntennasField = () => {
     const validate = (e: number) => {
       const num = Number(Math.abs(e).toFixed(0));
-      if (
-        num >= Number(t('numOf13mAntennas.range.lower')) &&
-        num <= Number(t('numOf13mAntennas.range.upper'))
-      ) {
+      if (num < Number(t('numOf13mAntennas.range.lower'))) {
+        setNumOf13mAntennas(Number(t('numOf13mAntennas.range.lower')));
+      } else if (num > Number(t('numOf13mAntennas.range.upper'))) {
+        setNumOf13mAntennas(Number(t('numOf13mAntennas.range.upper')));
+      } else {
         setNumOf13mAntennas(num);
       }
     };
@@ -937,10 +876,7 @@ export default function ObservationEntry() {
       const newObservation: Observation = observationOut();
       setProposal({
         ...getProposal(),
-        observations: [...getProposal().observations, newObservation],
-        groupObservations: selectedGroupObservation
-          ? [...getProposal().groupObservations, selectedGroupObservation]
-          : getProposal().groupObservations
+        observations: [...getProposal().observations, newObservation]
       });
     };
 
@@ -955,22 +891,6 @@ export default function ObservationEntry() {
         });
       } else {
         newObservations.push(newObservation);
-      }
-
-      const oldGroupObservations = getProposal().groupObservations;
-      const newGroupObservations: GroupObservation[] = selectedGroupObservation
-        ? []
-        : oldGroupObservations;
-      if (selectedGroupObservation) {
-        if (oldGroupObservations.length > 0) {
-          oldGroupObservations.forEach(inValue => {
-            newObservations.push(
-              inValue === selectedGroupObservation.id ? selectedGroupObservation : inValue
-            );
-          });
-        } else {
-          newGroupObservations.push(selectedGroupObservation);
-        }
       }
 
       const updateSensCalcPartial = (ob: Observation) => {
@@ -997,8 +917,7 @@ export default function ObservationEntry() {
       setProposal({
         ...getProposal(),
         observations: newObservations,
-        targetObservation: updateSensCalcPartial(newObservation),
-        groupObservations: newGroupObservations
+        targetObservation: updateSensCalcPartial(newObservation)
       });
 
       /*
@@ -1077,7 +996,7 @@ export default function ObservationEntry() {
                 required
                 telescope={telescope()}
                 value={subarrayConfig}
-                setValue={setSubarrayConfig}
+                setValue={setTheSubarrayConfig}
               />
             </Grid>
             <Grid item xs={XS_TOP}>
@@ -1135,6 +1054,8 @@ export default function ObservationEntry() {
                     isLow={isLow()}
                     value={spectralAveraging}
                     setValue={setSpectralAveraging}
+                    subarray={subarrayConfig}
+                    type={observationType}
                   />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
@@ -1149,6 +1070,7 @@ export default function ObservationEntry() {
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeightingField()}
                 </Grid>
+                <Grid item xs={XS_BOTTOM}></Grid>
                 <Grid item xs={XS_BOTTOM}>
                   {imageWeighting === IW_BRIGGS && robustField()}
                 </Grid>

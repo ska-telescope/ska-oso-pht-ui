@@ -6,7 +6,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
 import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
-import { presentUnits, presentValue } from '../../../../utils/present';
+import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
   open: boolean;
@@ -181,7 +181,7 @@ export default function SensCalcModalMultiple({
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusValue.' + e.row.statusGUI),
-              error: e.row.error
+              error: t(presentSensCalcError(e.row.error))
             })}
             testId="statusId"
             icon

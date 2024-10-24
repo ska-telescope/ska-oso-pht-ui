@@ -479,22 +479,16 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        spacing={1}
-        p={3}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item md={11} lg={5}>
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
                 <AddButton
-                  title="addObservation.button"
                   action={PATH[2]}
+                  primary={!hasObservations()}
                   testId="addObservationButton"
+                  title="addObservation.button"
                 />
               </Grid>
             </Grid>

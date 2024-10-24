@@ -184,7 +184,7 @@ function verifySpectralResolutionLowZoom() {
   verifySpectralResolution('28.3 Hz (42.4 m/s)');
 }
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (5.8 km/s)');
+  verifySpectralResolution('13.44 kHz (5.1 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
   verifySpectralResolution('13.44 kHz (615.1 m/s)');
@@ -219,7 +219,7 @@ function verifyEffectiveResolution(contents: string) {
     .should('be.disabled');
 }
 function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
-  verifyEffectiveResolution('13.44 kHz (5.8 km/s)');
+  verifyEffectiveResolution('13.44 kHz (5.1 km/s)');
 }
 function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
   verifyEffectiveResolution('13.44 kHz (615.1 m/s)');
@@ -282,14 +282,14 @@ function verifyNumOfStations() {
   cy.get('[data-testid="helpPanelId"]').contains('numStations.help');
 }
 
-function verifyGroupObservations() {
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
-  cy.get('[data-testid="groupObservations"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
-  cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
-  cy.get('[data-testid="addGroupButton"]').click();
-}
+// This fails the linting currently. Will look at how to use this as part of the appropriate ticket.
+// function verifyGroupObservations() {
+//   cy.get('[data-testid="groupObservations"]').contains('groupObservations.none');
+//   cy.get('[data-testid="groupObservations"]').click();
+//   cy.get('[data-value="-1"]').click();
+//   // cy.get('[data-testid="groupObservations"]').contains('groupObservations.new');
+//   cy.get('[data-testid="helpPanelId"]').contains('groupObservations.help');
+// }
 
 function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
   verifySpectralResolution('14.1 Hz (21.2 m/s)');
@@ -324,8 +324,8 @@ function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
   verifySpectralResolution('0.84 kHz (185.8 m/s)');
   verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
   verifySubArrayConfiguration(5);
-  verifySpectralResolution('0.84 kHz (185.8 m/s)');
-  verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
+  verifySpectralResolution('0.84 kHz (192.2 m/s)');
+  verifyEffectiveResolution('0.8 kHz (192.2 m/s)');
 }
 
 function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
@@ -372,16 +372,6 @@ describe('<ObservationEntry />', () => {
     }
   }
     */
-
-  it('Verify the observation can be added to a group observation', () => {
-    mount(THEME[1]);
-    verifyGroupObservations();
-    cy.get('[data-testid="addGroupButton"]').should('be.disabled');
-    cy.get('[data-testid="groupObservations"]')
-      .find('input')
-      .should('be.disabled');
-    cy.get('[data-testid="groupObservations"]').contains('groupObservations.idPrefix'); // displays the new group id
-  });
 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
