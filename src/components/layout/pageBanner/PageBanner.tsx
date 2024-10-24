@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -10,15 +10,12 @@ import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
 import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
-import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import useTheme from '@mui/material/styles/useTheme';
 
 interface PageBannerProps {
   pageNo: number;
@@ -26,14 +23,11 @@ interface PageBannerProps {
 }
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
-  const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
-  const [openValidationResults, setOpenValidationResults] = React.useState(false);
-  const [validationResults, setValidationResults] = React.useState(null);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -48,20 +42,14 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
-  const validateTooltip = () => {
-    return 'validationBtn.tooltip';
-  };
-
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
       const response = await PostProposalValidate(getProposal());
       if (response.valid && !response.error) {
-        setValidationResults(null);
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
-        setValidationResults(response.error);
-        setOpenValidationResults(true);
+        NotifyError(response.error);
         setCanSubmit(false);
       }
     };
@@ -86,26 +74,24 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const submitClicked = () => {
-    setOpenProposalDisplay(true);
+    setOpenDialog(true);
   };
 
   const submitConfirmed = async () => {
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response.valid);
-      setOpenProposalDisplay(false);
+      setOpenDialog(false);
       navigate(PATH[0]);
     } else {
       NotifyError(response.error);
-      setOpenProposalDisplay(false);
+      setOpenDialog(false);
     }
   };
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {LG()
-        ? t(`page.${pageNo}.titleShort`).toUpperCase()
-        : t(`page.${pageNo}.title`).toUpperCase()}
+      {t(`page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
@@ -145,11 +131,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       justifyContent="flex-end"
       pr={2}
     >
-      <Grid item>
-        {pageNo < LAST_PAGE && (
-          <ValidateButton action={validateClicked} toolTip={validateTooltip()} />
-        )}
-      </Grid>
+      <Grid item>{pageNo < LAST_PAGE && <ValidateButton action={validateClicked} />}</Grid>
       <Grid item>
         {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
       </Grid>
@@ -192,27 +174,27 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   );
 
   return (
-    <Box p={2}>
-      {row1()}
-      {row2()}
-      {row3()}
-      {openProposalDisplay && (
+    <>
+      <Grid container direction="row" alignItems="center" justifyContent="space-space-be">
+        <Grid item xs={12}>
+          {row1()}
+        </Grid>
+        <Grid item xs={12}>
+          {row2()}
+        </Grid>
+        <Grid item xs={12}>
+          {row3()}
+        </Grid>
+      </Grid>
+      {openDialog && (
         <ProposalDisplay
           proposal={getProposal()}
-          open={openProposalDisplay}
-          onClose={() => setOpenProposalDisplay(false)}
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
           onConfirm={submitConfirmed}
           onConfirmLabel={t('button.confirmSubmit')}
         />
       )}
-      {openValidationResults && (
-        <ValidationResults
-          open={openValidationResults}
-          onClose={() => setOpenValidationResults(false)}
-          proposal={getProposal()}
-          results={validationResults}
-        />
-      )}
-    </Box>
+    </>
   );
 }

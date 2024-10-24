@@ -11,12 +11,9 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateGeneralPage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
-import { fetchCycleData } from '../../utils/storage/cycleData';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
-const LABEL_WIDTH = 2;
-const FIELD_WIDTH = 12 - LABEL_WIDTH;
 
 export default function GeneralPage() {
   const { t } = useTranslation('pht');
@@ -64,13 +61,13 @@ export default function GeneralPage() {
 
   const cycleField = () => (
     <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
-      <Grid item xs={LABEL_WIDTH}>
+      <Grid item xs={4}>
         <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1">
           {t('cycle.label') + ' *'}
         </Typography>
       </Grid>
-      <Grid item xs={FIELD_WIDTH}>
-        <Typography variant="subtitle1">{fetchCycleData().id}</Typography>
+      <Grid item xs={8}>
+        <Typography variant="subtitle1">{GENERAL.Cycle}</Typography>
       </Grid>
     </Grid>
   );
@@ -103,7 +100,6 @@ export default function GeneralPage() {
           label={t('abstract.label')}
           labelBold
           labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
           testId="abstractId"
           rows={numRows}
           value={getProposal().abstract}
@@ -133,7 +129,6 @@ export default function GeneralPage() {
       label={t('scienceCategory.label')}
       labelBold
       labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH}
       onFocus={() => helpComponent(t('scienceCategory.help'))}
     />
   );
@@ -148,12 +143,12 @@ export default function GeneralPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item md={12} lg={8}>
+        <Grid item xs={8}>
           {cycleField()}
           {abstractField()}
           {categoryField()}
         </Grid>
-        <Grid item md={12} lg={3}>
+        <Grid item xs={3}>
           <HelpPanel />
         </Grid>
       </Grid>

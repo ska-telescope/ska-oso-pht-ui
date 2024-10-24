@@ -9,8 +9,7 @@ import {
   STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
-  TYPE_CONTINUUM,
-  SUPPLIED_TYPE_SENSITIVITY
+  TYPE_CONTINUUM
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
@@ -37,7 +36,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   };
 
   try {
-    const output: any = await fetchSensCalc(observation, target);
+    const output = await fetchSensCalc(observation, target);
     if ('error' in output) {
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
@@ -62,73 +61,39 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
-    there are 2, 3, or 4 calls to the API made
+    there are 2 or 3 calls to the API made
 
     Mid Continuum Modes: 
-    - 1 call to getCalculate - supplied integration time or for supplied sensitivity: with Continuum thermal sensitivity
-    - 1 call to getCalculate - for supplied sensitivity: with Spectral thermal sensitivity
+    - 1 call to getCalculate
     - 1 call to GetWeighting - with Continuum parameter
-    - 1 call to GetWeighting - with Spectral parameter (weightingLine)
-
-    Mid Zoom Modes: 
-    - 1 call to getCalculate - with Zoom parameter and with supplied integration time or for supplied sensitivity: with Spectral thermal sensitivity
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
 
-    Low (Continuum Mode): 
-    - 1 call to getCalculate
-    - 1 call to GetWeighting - with Spectral parameter (weightingLine)
+    Mid Zoom Modes: 
+    - 1 call to getCalculate - with Zoom parameter
+    - 1 call to GetWeighting - with Zoom parameter (weightingLine)
 
-    Low (Continuum): 
+    Low (Continuum and Zoom Modes): 
     - 1 call to getCalculate
-    - 1 call to GetWeighting -  with Zoom parameter
+    - 1 call to GetWeighting
   */
 
-  function handleWeighting() {
-    const promisesWeighting = [GetWeighting(observation, target, observation.type)];
-    if (observation.type === TYPE_CONTINUUM) {
-      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
-    }
-    return promisesWeighting;
+  const promises = [
+    GetCalculate(observation, target),
+    GetWeighting(observation, target, observation.type)
+  ];
+
+  if (observation.type === TYPE_CONTINUUM) {
+    promises.push(GetWeighting(observation, target, TYPE_ZOOM));
   }
 
-  function handleCalculate(weightingResponse) {
-    const promisesCalculate = [
-      GetCalculate(observation, target, weightingResponse.weighting, observation.type)
-    ];
-    if (
-      observation.type === TYPE_CONTINUUM &&
-      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY
-    ) {
-      promisesCalculate.push(
-        GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM)
-      );
-    }
-    return promisesCalculate;
-  }
+  const [calculate, weighting, weightingLine] = await Promise.all(promises);
 
-  // weighting responses
-  const promisesWeighting = handleWeighting();
-  const [weighting, weightingLine] = await Promise.all(promisesWeighting);
-  const weightingResponse = {
+  const response = {
+    calculate,
     weighting,
     weightingLine
   };
 
-  // calculate responses
-  const promisesCalculate = handleCalculate(weightingResponse);
-  const [calculate, calculateSpectral] = await Promise.all(promisesCalculate);
-  const calculateResponse = {
-    calculate,
-    calculateSpectral
-  };
-
-  // TODO harmonise responses format before passing to
-  // calculateSensitivityCalculatorResults? (handling[0] for zoom, etc)
-
-  const response = {
-    ...weightingResponse,
-    ...calculateResponse
-  };
   helpers.transform.trimObject(response);
   return response;
 }

@@ -7,7 +7,6 @@ import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/sk
 import Notification from '../../../../utils/types/notification';
 import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import Papa from 'papaparse';
-import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -18,19 +17,10 @@ interface TargetFileImportProps {
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { t } = useTranslation('pht');
 
-  const {
-    application,
-    helpComponent,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
-  React.useEffect(() => {
-    helpComponent(t('targetImport.help'));
-  }, []);
 
   const AddTheTargetGalactic = (id, name, latitude, longitude) => {
     const newTarget = {
@@ -163,30 +153,18 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   return (
-    <Grid
-      p={1}
-      spacing={1}
-      container
-      direction="row"
-      alignItems="flex-start"
-      justifyContent="space-around"
-    >
-      <Grid item xs={7}>
-        <FileUpload
-          chooseLabel={t('uploadCsvBtn.label')}
-          chooseFileTypes=".csv"
-          clearLabel={t('clearBtn.label')}
-          clearToolTip={t('clearBtn.toolTip')}
-          direction="row"
-          maxFileWidth={UPLOAD_MAX_WIDTH_CSV}
-          testId="csvUpload"
-          uploadFunction={validateUploadCsv}
-          status={uploadButtonStatus}
-        />
-      </Grid>
-      <Grid pb={12} item xs={4}>
-        <HelpPanel />
-      </Grid>
+    <Grid p={2}>
+      <FileUpload
+        chooseLabel={t('uploadCsvBtn.label')}
+        chooseFileTypes=".csv"
+        clearLabel={t('clearBtn.label')}
+        clearToolTip={t('clearBtn.toolTip')}
+        direction="row"
+        maxFileWidth={UPLOAD_MAX_WIDTH_CSV}
+        testId="csvUpload"
+        uploadFunction={validateUploadCsv}
+        status={uploadButtonStatus}
+      />
     </Grid>
   );
 }

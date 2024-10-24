@@ -4,8 +4,6 @@ import { Grid, Typography } from '@mui/material';
 import AlertDialog from '../alertDialog/AlertDialog';
 import FieldWrapper from '../../wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../../utils/types/observation';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 
 const LABEL_WIDTH = 6;
 
@@ -55,11 +53,13 @@ export default function DeleteObservationConfirmation({
           </Typography>
         </FieldWrapper>
 
-        <Alert
-          color={AlertColorTypes.Info}
-          text={t('deleteObservation.info')}
-          testId="deleteObservationInfoId"
-        />
+        <Grid pt={3} container direction="row" alignItems="center" justifyContent="space-around">
+          <Grid item>
+            <Typography id="deleteObservationContent" variant="caption">
+              {t('deleteObservation.content1')}
+            </Typography>
+          </Grid>
+        </Grid>
       </Grid>
     );
   };

@@ -102,10 +102,8 @@ export const ELEVATION_DEFAULT = 45;
 export const ELEVATION_MAX = 59.2;
 export const ELEVATION_UNITS = 'deg';
 
-export const FOOTER_HEIGHT = 20;
-
 export const GENERAL = {
-  // REPLACED, BUT KEEP FOR NOW : Cycle: 'SKA_5000_2023',
+  Cycle: 'SKA_5000_2023',
   Abstract:
     'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
 
@@ -118,12 +116,12 @@ export const GENERAL = {
       value: 3
     },
     {
-      label: 'Extragalactic continuum',
+      label: 'Extra Galactic continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 4
     },
     {
-      label: 'Extragalactic Spectral line',
+      label: 'Extra Galactic Spectral line',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: 5
     },
@@ -143,9 +141,7 @@ export const GENERAL = {
   ]
 };
 
-export const HEADER_HEIGHT = 70;
-
-export const HELP_FONT = 16;
+export const HELP_FONT = 18;
 export const HELP_VIEWPORT = '15vh';
 
 export const IW_BRIGGS = 2;
@@ -349,8 +345,8 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_AA4_15,
           map: 'AA4 (15-m antennas only)',
           label: 'AA4 (15-m antennas only)',
-          numOf15mAntennas: 133,
-          numOf13mAntennas: 0,
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 64,
           numOfStations: 0,
           disableForBand5: false
         },
@@ -400,8 +396,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 6,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -410,8 +405,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 18,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -420,18 +414,16 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 64,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
-          map: 'LOW_AA2_core_only',
+          map: 'LOW_AA2_core_all',
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 40,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -440,18 +432,16 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 307,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA_STAR_CORE,
-          map: 'LOW_AAstar_core_only',
+          map: 'LOW_AAstar_core_all',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 199,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA4,
@@ -460,18 +450,16 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 512,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA4_CORE,
-          map: 'LOW_AA4_core_only',
+          map: 'LOW_AA4_core_all',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 224,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_CUSTOM,
@@ -480,8 +468,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          disableForBand5: false
         }
       ],
       bandWidth: [
@@ -741,9 +728,8 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
 ];
+export const SPECTRAL_AVERAGING_MAX = 27624;
 export const SPECTRAL_AVERAGING_MIN = 1;
-
-export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;

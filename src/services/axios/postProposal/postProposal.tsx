@@ -1,8 +1,14 @@
 import axios from 'axios';
 import { helpers } from '../../../utils/helpers';
-import { AXIOS_CONFIG, PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  DEFAULT_PI,
+  GENERAL,
+  PROJECTS,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
@@ -21,8 +27,8 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
     status: status,
     submitted_on: '',
     submitted_by: '',
-    investigator_refs: [],
-    cycle: fetchCycleData().id,
+    investigator_refs: [DEFAULT_PI.id],
+    cycle: GENERAL.Cycle,
     info: {
       title: proposal.title,
       proposal_type: {
@@ -35,7 +41,17 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
       science_category: '',
       targets: [],
       documents: [],
-      investigators: [],
+      investigators: [
+        {
+          investigator_id: DEFAULT_PI.id,
+          given_name: DEFAULT_PI.firstName,
+          family_name: DEFAULT_PI.lastName,
+          email: DEFAULT_PI.email,
+          organization: DEFAULT_PI.affiliation,
+          for_phd: DEFAULT_PI.phdThesis,
+          principal_investigator: DEFAULT_PI.pi
+        }
+      ],
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],

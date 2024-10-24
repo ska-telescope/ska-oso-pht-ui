@@ -4,67 +4,7 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-0.5.1
-
----
-
-* Observation page
-  - Fixed Sensitivity Calculator results for LOW AA05 observations
-* Banner
-  - Removed validation disabled check
-
-0.5.0
-
----
-
-* Utilities
-  - Close icon added to Warning/Error notifications, timer removed
-  - Close icon added to Success/Info notifications, timer still in place  
-  - Validation failure changed to a modal containing list of all errors
-  - Added presentation utility for the error results returned by the SensCalc API
-* Validation button
-  - Now disabled until all pages have an OK status
-  - When disabled, the tooltip indicates the reasoning why the button is disabled
-* Target Page
-  - Increased padding around contents
-* Observation page
-  - Updated observation button set to primary color if there are no observations on the proposal
-  - Updated so that previously saved values are not reset to default values upon editing the Observation set
-* Observation Entry
-  - Updated the Group Observation field into it's own component
-  - Removed the need for the Add Group Button by hooking it directly to the dropdown values
-  - User is able to add their own group name
-  - centralFrequency is no longer reset to a default value when the observing band or subarray are altered
-
----
-
-0.4.2 
-
----
-
-* Team Page:
-   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilizing /send-email endpoint 
-* Types:
-   - Added new model EmailInviteBackend to support new endpoint /send-email 
-* Sensitivity Calculations
-   - Updated mappings
-   - Updated display variations
-   - Send a 2dn get Calculate request for supplied sensitivity case
-   - Use get Weighting results to send thermal sensitivity for integration time calculations
-   - Update mock requests
-   - Update responses types
-   - Correct robustness issue sent in request
-* Observation page:
- - Fix effective resolution not updating on Spectral Averaging changes
- - Fix Spectral Resolution not updating on bandwidth changes for Zoom modes
-* Testing
-   - Renamed all component test files to conform to new standards
-   - Added standard functions to help simplify testing process
-* Responsiveness
-   - Pages are now starting to be enhanced so that tablets can correctly display the application
-* Codebase
-   - Consolidation of folder structure
-   - Code being reviewed and split to better conform to DRY
+Future
 
 ---
 
@@ -77,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Target Page:
    - Disabled galactic coordinate 
 * Observation page:
-   - Updated sensitivity calculator results modal and results
+   - Updated senscal results modal and results
 * Testing: 
    - Added BDD tests
    
@@ -116,7 +56,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
    - Removed units from SensCalc multiple display modal
    - Extended width of SensCalc Multiple display modal
    - Change some parameter names sent to Get Calculate endpoints to match new names used by endpoint
-   - Use non rounded value for Low Zoom bandwidth in mapping for Sensitivity Calculator endpoints
+   - Use non rounded value for Low Zoom bandwith in mapping for Sensitivity Calculator endpoints
 * Science And Technical Page
    - Added Delete PDF button
    - Fix download pdf filename
@@ -150,7 +90,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Target Page:
    - Added the ability to Edit a target
    - Update target list on target page to show Redshift & Velocity
-* Screen Auto-resizing:
+Screen Auto-resizing:
    - Started to check screen resizing ( landing page and page banner so far ).
    - Standard height of the InfoCard
 * Testing:  

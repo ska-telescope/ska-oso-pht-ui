@@ -30,7 +30,7 @@
     "cypress",
     "./cypress.d.ts",
     "./cypress/support/index.d.ts",
-    "public/locales/en/userJourney.test.ts"
+    "public/locales/en/userJourney.cy.ts"
   ],
   "exclude": ["node_modules"],
   "paths": {

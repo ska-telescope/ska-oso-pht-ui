@@ -1,52 +1,108 @@
-import { ValueUnitPair } from './valueUnitPair';
-
-export type CalculateResponseLow = {
-  freq_centre?: ValueUnitPair;
-  continuum_sensitivity?: ValueUnitPair;
-  spectral_sensitivity?: ValueUnitPair;
-  spectropolarimetry_results?: ValueUnitPair;
-  max_faraday_depth_extent?: ValueUnitPair;
-  max_faraday_depth?: ValueUnitPair;
-};
-
-export type CalculateResponseMid = {
-  continuum_sensitivity?: ValueUnitPair;
-  spectral_sensitivity?: ValueUnitPair;
-  continuum_integration_time?: ValueUnitPair;
-  spectral_integration_time?: ValueUnitPair;
-};
-
-export type WeightingResponse = {
-  beam_size: {
-    beam_maj_scaled: number;
-    beam_min_scaled: number;
-    beam_pa: number;
-  };
-  confusion_noise: {
-    value: number;
-    limit_type: string;
-  };
-  sbs_conv_factor: number;
-  weighting_factor: number;
-};
-
 export type SensitivityCalculatorAPIResponseLow = {
   calculate: {
-    data: CalculateResponseLow;
+    data: {
+      continuum_sensitivity?: {
+        value: number;
+        units: string;
+      };
+      spectral_sensitivity?: {
+        value: number;
+        unit: string;
+      };
+      spectropolarimetry_results?: {
+        fwhm_of_the_rmsf: {
+          value: number;
+          unit: string;
+        };
+        max_faraday_depth_extent?: {
+          value: number;
+          unit: string;
+        };
+        max_faraday_depth?: {
+          value: number;
+          unit: string;
+        };
+      };
+    };
   };
-  weighting: WeightingResponse;
-  weightingLine: WeightingResponse;
+  weighting: {
+    beam_size: {
+      beam_maj_scaled: number;
+      beam_min_scaled: number;
+      beam_pa: number;
+    };
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number;
+    weighting_factor: number;
+  };
+  weightingLine: {
+    beam_size: [
+      {
+        beam_maj_scaled: number;
+        beam_min_scaled: number;
+        beam_pa: number;
+      }
+    ];
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number[];
+    weighting_factor: number;
+  };
 };
 
 export type SensitivityCalculatorAPIResponseMid = {
   calculate: {
-    data: CalculateResponseMid;
-    // status: number;
+    data: {
+      continuum_sensitivity: {
+        value: number;
+        unit: string;
+      };
+      spectral_sensitivity: {
+        value: number;
+        unit: string;
+      };
+    };
+    status: number;
   };
-  calculateSpectral?: {
-    data: CalculateResponseMid;
-    // status: number;
+  weighting: {
+    beam_size: [
+      {
+        beam_maj_scaled: number;
+        beam_min_scaled: number;
+        beam_pa: number;
+      }
+    ];
+    confusion_noise: {
+      value: number;
+      limit_type: string;
+    };
+    sbs_conv_factor: number;
+    weighting_factor: number;
   };
-  weighting: WeightingResponse;
-  weightingLine: WeightingResponse;
+  weightingLine: [
+    {
+      beam_size: [
+        {
+          beam_maj_scaled: number;
+          beam_min_scaled: number;
+          beam_pa: number;
+        }
+      ];
+      confusion_noise: {
+        value: number[];
+        limit_type: string[];
+      };
+      freq_centre: {
+        value: number;
+        unit: string;
+      };
+      sbs_conv_factor: number;
+      weighting_factor: number;
+    }
+  ];
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import BaseButton from '../Base/Button';
 import { Box } from '@mui/material';
-import { ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 
 interface ResolveButtonProps {
   title?: string;
@@ -28,7 +27,6 @@ export default function ResolveButton({
         disabled={disabled}
         icon={<MyLocationIcon />}
         primary={primary}
-        size={ButtonSizeTypes.Small}
         testId={testId}
         title={title}
         toolTip={toolTip}

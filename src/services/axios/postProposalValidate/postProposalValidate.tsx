@@ -13,7 +13,7 @@ interface ValidateResponseData {
 }
 
 interface ValidateServiceResponse {
-  error?: string[];
+  error?: string;
   valid?: string;
 }
 
@@ -33,15 +33,15 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
 
     const validateResponseData: ValidateResponseData = result.data;
     if (typeof validateResponseData === 'undefined') {
-      return { error: ['error.API_UNKNOWN_ERROR'] };
+      return { error: 'error.API_UNKNOWN_ERROR' };
     } else if (validateResponseData.result === false) {
-      return { error: validateResponseData.validation_errors };
+      return { error: validateResponseData.validation_errors[0] };
     } else {
       return { valid: 'success' };
     }
   } catch (e) {
     const errorMessage = `${e?.message}: ${e?.response?.data?.title}`;
-    return { error: [errorMessage] };
+    return { error: errorMessage };
   }
 }
 

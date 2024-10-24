@@ -2,8 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -11,7 +9,6 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
@@ -19,8 +16,7 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOT_SPECIFIED,
-  HEADER_HEIGHT
+  NOT_SPECIFIED
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -31,11 +27,8 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate, presentLatex } from '../../utils/present';
+import { presentDate } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
-import PutProposal from '../../services/axios/putProposal/putProposal';
-import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
-import TeamMember from 'utils/types/teamMember';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -46,10 +39,9 @@ export default function LandingPage() {
     clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
+    updateAppContent2,
+    updateAppContent3
   } = storageObject.useStore();
-
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -60,45 +52,33 @@ export default function LandingPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
-  const [cycleData, setCycleData] = React.useState(false);
-  const [fetchList, setFetchList] = React.useState(false);
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const DATA_GRID_HEIGHT = 70;
 
-  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight - HEADER_HEIGHT / 100);
+  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight / 100);
 
   React.useEffect(() => {
+    let isMounted = true;
+
     updateAppContent2(null);
-    setFetchList(!fetchList);
-    setCycleData(!cycleData);
-  }, []);
 
-  React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetProposalList();
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        setProposals(response);
+      if (isMounted) {
+        if (typeof response === 'string') {
+          setAxiosError(response);
+        } else {
+          setProposals(response);
+        }
       }
     };
     fetchData();
-  }, [fetchList]);
-
-  React.useEffect(() => {
-    const cycleData = async () => {
-      const response = await GetCycleData();
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        storeCycleData(response);
-      }
+    return () => {
+      isMounted = false;
     };
-    cycleData();
-  }, [cycleData]);
+  }, []);
 
   const getTheProposal = async (id: string) => {
     helpComponent('');
@@ -108,13 +88,13 @@ export default function LandingPage() {
     if (typeof response === 'string') {
       updateAppContent1(null);
       updateAppContent2(null);
-      storeProposalCopy(null);
+      updateAppContent3(null);
       setAxiosViewError(response);
       return false;
     } else {
       updateAppContent1(validateProposal(response));
       updateAppContent2(response);
-      storeProposalCopy(response);
+      updateAppContent3(response);
       validateProposal(response);
       return true;
     }
@@ -166,120 +146,96 @@ export default function LandingPage() {
     }
   };
 
-  const deleteConfirmed = async () => {
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !response.error) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
+  const deleteConfirmed = () => {
+    // TODO : We need to access a delete endpoint here
+    setOpenDeleteDialog(false);
   };
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
   const canDelete = (e: { row: { status: string } }) =>
     e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
-
+  /*
+  const displayScienceCategory = scienceCategory => {
+    return scienceCategory ? scienceCategory : NOT_SPECIFIED;
+  };
+  */
   const displayProposalType = proposalType => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
-  const getPIs = (arr: TeamMember[]) => {
-    if (!arr || arr.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    const results = [];
-    arr.forEach(e => {
-      if (e.pi) {
-        results.push(e.lastName + ', ' + e.firstName);
-      }
-    });
-    if (results.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const colId = { field: 'id', headerName: t('id.label') };
-  const colType = {
-    field: 'proposalType',
-    headerName: t('proposalType.label'),
-    flex: 2.5,
-    renderCell: (e: { row: any }) =>
-      element(
-        e.row.proposalType > 0
-          ? t('proposalType.title.' + displayProposalType(e.row.proposalType))
-          : NOT_SPECIFIED
+  const COLUMNS = [
+    { field: 'id', headerName: t('id.label') },
+    {
+      field: 'proposalType',
+      headerName: t('proposalType.label'),
+      flex: 1.5,
+      renderCell: (e: { row: any }) =>
+        element(
+          e.row.proposalType > 0
+            ? t('proposalType.code.' + displayProposalType(e.row.proposalType))
+            : NOT_SPECIFIED
+        )
+    },
+    { field: 'cycle', headerName: t('cycle.label'), flex: 1 },
+    {
+      field: 'title',
+      headerName: t('title.label'),
+      flex: 2.5,
+      renderCell: (e: any) => element(e.row.title?.length ? e.row.title : NOT_SPECIFIED)
+    },
+    {
+      field: 'pi',
+      headerName: t('pi.short'),
+      flex: 2.5,
+      renderCell: (e: any) => element(e.row.pi?.length ? e.row.pi : NOT_SPECIFIED)
+    },
+    {
+      field: 'status',
+      headerName: t('status.label'),
+      minWidth: 120,
+      maxWidth: 120,
+      renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+    },
+    {
+      field: 'lastUpdated',
+      headerName: t('updated.label'),
+      minWidth: 120,
+      maxWidth: 120,
+      renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
+    },
+    {
+      field: 'cpi',
+      headerName: ' ',
+      sortable: false,
+      minWidth: 200,
+      maxWidth: 200,
+      disableClickEventBubbling: true,
+      renderCell: (e: { row: any }) => (
+        <>
+          <EditIcon
+            onClick={() => editIconClicked(e.row.id)}
+            disabled={!canEdit(e)}
+            toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          />
+          <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
+          <CloneIcon
+            onClick={() => cloneIconClicked(e.row.id)}
+            disabled={!canClone()}
+            toolTip={t('cloneProposal.toolTip')}
+          />
+          <TrashIcon
+            onClick={() => deleteIconClicked(e.row.id)}
+            disabled={!canDelete(e)}
+            toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
+          />
+        </>
       )
-  };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), flex: 1 };
-  const colTitle = {
-    field: 'title',
-    headerName: t('title.label'),
-    flex: 2.5,
-    renderCell: (e: any) => presentLatex(e.row.title)
-  };
-  const colPI = {
-    field: 'pi',
-    headerName: t('pi.short'),
-    flex: 2.5,
-    renderCell: (e: any) => {
-      return getPIs(e.row.team);
     }
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    minWidth: 120,
-    maxWidth: 120,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
-  const colUpdated = {
-    field: 'lastUpdated',
-    headerName: t('updated.label'),
-    minWidth: 120,
-    maxWidth: 120,
-    renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
-  };
-
-  const colActions = {
-    field: 'actions',
-    type: 'actions',
-    headerName: 'Actions',
-    sortable: false,
-    minWidth: 200,
-    maxWidth: 200,
-    disableClickEventBubbling: true,
-    renderCell: (e: { row: any }) => (
-      <>
-        <EditIcon
-          onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-        />
-        <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
-        <CloneIcon
-          onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone()}
-          toolTip={t('cloneProposal.toolTip')}
-        />
-        <TrashIcon
-          onClick={() => deleteIconClicked(e.row.id)}
-          disabled={!canDelete(e)}
-          toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-        />
-      </>
-    )
-  };
-
-  const stdColumns = [
-    ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
   ];
+  const extendedColumns = [...COLUMNS];
 
   function filterProposals() {
     return proposals.filter(
@@ -298,7 +254,7 @@ export default function LandingPage() {
   };
 
   const pageDescription = () => (
-    <Typography align="center" variant="h6" minHeight="5vh">
+    <Typography variant="h6" minHeight="5vh">
       {t('page.11.desc')}
     </Typography>
   );
@@ -307,7 +263,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title={LG() ? 'addProposal.short' : 'addProposal.label'}
+      title="addProposal.label"
       toolTip="addProposal.toolTip"
     />
   );
@@ -322,10 +278,10 @@ export default function LandingPage() {
     />
   );
 
-  const searchEntryField = (testId: string) => (
+  const searchEntryField = () => (
     <SearchEntry
       label={t('search.label')}
-      testId={testId}
+      testId="searchId"
       value={searchTerm}
       setValue={setSearchTerm}
     />
@@ -368,42 +324,32 @@ export default function LandingPage() {
   );
 
   const row2 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
+    <Grid container p={1} direction="row" justifyContent="space-evenly" alignItems="center">
       <Grid item xs={2}>
         {addProposalButton()}
       </Grid>
-      <Grid item xs={6} lg={2}>
+      <Grid item xs={2}>
         {searchDropdown()}
       </Grid>
-      <Grid item lg={4} mt={-1} display={{ xs: 'none', lg: 'block' }}>
-        {searchEntryField('searchId')}
+      <Grid item xs={4} mt={-1}>
+        {searchEntryField()}
       </Grid>
     </Grid>
   );
 
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={10} display={{ xs: 'block', lg: 'none' }}>
-        {searchEntryField('searchId2')}
-      </Grid>
-    </Grid>
-  );
-
-  const row4 = () => (
-    <Grid pt={1} container direction="row" alignItems="center" justifyContent="space-around">
       <Grid item xs={10}>
         {!axiosViewError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
         )}
         {!axiosViewError && filteredData.length > 0 && (
-          <div style={{ width: '100%' }}>
-            <DataGrid
-              testId="dataGridId"
-              rows={filteredData}
-              columns={stdColumns}
-              height={gridHeight()}
-            />
-          </div>
+          <DataGrid
+            testId="dataGridId"
+            rows={filteredData}
+            columns={extendedColumns}
+            height={gridHeight()}
+          />
         )}
       </Grid>
     </Grid>
@@ -415,7 +361,6 @@ export default function LandingPage() {
         {row1()}
         {row2()}
         {row3()}
-        {row4()}
       </Stack>
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}

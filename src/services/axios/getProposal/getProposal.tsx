@@ -11,6 +11,7 @@ import {
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
+  DEFAULT_PI,
   VEL_TYPES,
   RA_TYPE_EQUATORIAL,
   RA_TYPE_GALACTIC,
@@ -51,6 +52,7 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
       id: inValue[i].investigator_id,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
+      country: DEFAULT_PI.country, // TODO should we remove country as not in backend?
       email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
@@ -79,6 +81,10 @@ const getScienceCategory = (scienceCat: string) => {
     cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
+};
+
+const getPI = (investigators: InvestigatorBackend[]) => {
+  return investigators?.find(item => item.principal_investigator === true).investigator_id;
 };
 
 const extractFileFromURL = (url): Promise<File> => {
@@ -335,37 +341,32 @@ const getObservations = (
 
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
-  isContinuum: boolean,
-  isSensitivity: boolean
+  isContinuum: boolean
 ): SensCalcResults['section1'] => {
   let section1 = [];
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
   if (isContinuum) {
-    if (!isSensitivity) {
-      section1.push({
-        // This is only saved for supplied sensitivity obs in backend
-        // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
-        // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
-        // => see sensitivity calculator
-        // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
-        field: 'continuumSensitivityWeighted',
-        value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
-      } as ResultsSection);
-    }
+    section1.push({
+      // This is only saved for supplied sensitivity obs in backend
+      // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
+      // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
+      // => see sensitivity calculator
+      // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
+      field: 'continuumSensitivityWeighted',
+      value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
+      units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
+    } as ResultsSection);
     section1.push({
       field: 'continuumConfusionNoise',
       value: inResult.continuum_confusion_noise?.value.toString(),
       units: inResult?.continuum_confusion_noise?.unit?.split(' ')?.join('')
     } as ResultsSection);
-    if (!isSensitivity) {
-      section1.push({
-        field: 'continuumTotalSensitivity',
-        value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
+    section1.push({
+      field: 'continuumTotalSensitivity',
+      value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
+      units: inResult?.result_details?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
+    } as ResultsSection);
     section1.push({
       field: 'continuumSynthBeamSize',
       // value: inResult.synthesized_beam_size?.value,
@@ -373,88 +374,66 @@ const getResultsSection1 = (
       value: `${inResult.synthesized_beam_size?.value} x 171.3`,
       units: inResult?.synthesized_beam_size?.unit
     } as ResultsSection);
-    if (isSensitivity) {
-      section1.push({
-        field: 'continuumIntegrationTime',
-        value: '999', // TODO : Need to store and retrieve correct value
-        units: 's' // TODO : Need to store and retrieve correct units
-      } as ResultsSection);
-    } else {
-      section1.push({
-        field: 'continuumSurfaceBrightnessSensitivity',
-        value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
-        units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
+    section1.push({
+      field: 'continuumSurfaceBrightnessSensitivity',
+      value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
+      units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+    } as ResultsSection);
     // for zoom observation
   } else {
-    section1 = getResultsSection2(inResult, isSensitivity);
+    section1 = getResultsSection2(inResult);
   }
   return section1;
 };
 
-const getResultsSection2 = (
-  inResult: SensCalcResultsBackend,
-  isSensitivity: Boolean
-): SensCalcResults['section2'] => {
+const getResultsSection2 = (inResult: SensCalcResultsBackend): SensCalcResults['section2'] => {
   let section2 = [];
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralSensitivityWeighted',
-      value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
+  section2.push({
+    field: 'spectralSensitivityWeighted',
+    value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
+    units: inResult?.result_details?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
+  });
   section2.push({
     field: 'spectralConfusionNoise',
     value: inResult.spectral_confusion_noise?.value.toString(),
     units: inResult?.spectral_confusion_noise?.unit?.split(' ')?.join('')
-  } as ResultsSection);
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralTotalSensitivity',
-      value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
+  });
+  section2.push({
+    field: 'spectralTotalSensitivity',
+    value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
+    units: inResult?.result_details?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
+  });
   section2.push({
     field: 'spectralSynthBeamSize',
-    // TODO : value: inResult.synthesized_beam_size?.value,
-    // TODO : mock beam size value for now as format enforced by backend not correct
+    // value: inResult.synthesized_beam_size?.value,
+    // mock beam size value for now as format enforced by backend not correct
     value: '190.0 x 171.3',
     units: inResult?.synthesized_beam_size?.unit
-  } as ResultsSection);
-  if (isSensitivity) {
-    section2.push({
-      field: 'spectralIntegrationTime',
-      value: '999', // TODO : Need to store and retrieve correct value
-      units: 's' // TODO : Need to store and retrieve correct units
-    } as ResultsSection);
-  } else {
-    section2.push({
-      field: 'spectralSurfaceBrightnessSensitivity',
-      value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
-      units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
+  });
+  section2.push({
+    field: 'spectralSurfaceBrightnessSensitivity',
+    value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
+    units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+  });
   return section2;
 };
 
 const getResultsSection3 = (
   inResultObservationRef: string,
   inObservationSets: ObservationSetBackend[],
-  inResult: SensCalcResultsBackend,
-  isSensitivity: boolean
+  inResult: SensCalcResultsBackend
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
-  const field = isSensitivity
-    ? /*
+  const suppliedType = inResult.result_details.supplied_type;
+  const field =
+    suppliedType === 'sensitivity'
+      ? /*
       ? 'sensitivity'
       : 'integrationTime';
     */
-      'integrationTime'
-    : 'sensitivity';
+        'integrationTime'
+      : 'sensitivity';
   // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
@@ -478,14 +457,13 @@ const getResultObsType = (
 const getTargetObservation = (
   inResults: SensCalcResultsBackend[],
   inObservationSets: ObservationSetBackend[],
-  // inTargets: TargetBackend[],
+  inTargets: TargetBackend[],
   outTargets: Target[]
 ): TargetObservation[] => {
   let targetObsArray = [];
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
-    const isSensitivity = result.result_details.supplied_type === 'integration_time';
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
@@ -495,14 +473,9 @@ const getTargetObservation = (
         title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
-        section1: getResultsSection1(result, isContinuum, isSensitivity),
-        section2: isContinuum ? getResultsSection2(result, isSensitivity) : [], // only used for continuum observation
-        section3: getResultsSection3(
-          result.observation_set_ref,
-          inObservationSets,
-          result,
-          isSensitivity
-        )
+        section1: getResultsSection1(result, isContinuum),
+        section2: isContinuum ? getResultsSection2(result) : [], // only used for continuum observation
+        section3: getResultsSection3(result.observation_set_ref, inObservationSets, result)
       }
     };
     targetObsArray.push(targetObs);
@@ -532,6 +505,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     version: inRec.metadata.version,
     cycle: inRec.cycle,
     team: getTeamMembers(inRec.info.investigators),
+    pi: getPI(inRec.info.investigators),
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
@@ -546,7 +520,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
         ? getTargetObservation(
             inRec.info.results,
             inRec.info.observation_sets,
-            // inRec.info.targets,
+            inRec.info.targets,
             targets
           )
         : [],

@@ -1,13 +1,13 @@
 import React from 'react';
 import Shell from '../../components/layout/Shell/Shell';
-import TitleEntry from '../entry/TitleEntry/TitleEntry';
+import TitleContent from '../../components/titleContent/TitleContent';
 
 const PAGE = 0;
 
 export default function TitlePage() {
   return (
     <Shell page={PAGE}>
-      <TitleEntry page={PAGE} />
+      <TitleContent page={PAGE} />
     </Shell>
   );
 }

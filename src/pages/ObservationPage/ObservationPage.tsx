@@ -21,8 +21,7 @@ import {
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
-  STATUS_PARTIAL,
-  SUPPLIED_TYPE_INTEGRATION
+  STATUS_PARTIAL
 } from '../../utils/constants';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
@@ -63,9 +62,6 @@ export default function ObservationPage() {
     }
     updateAppContent1(temp);
   };
-
-  const isIntegrationTime = (ob: { supplied: { type: number } }) =>
-    ob?.supplied?.type === SUPPLIED_TYPE_INTEGRATION;
 
   const getLevel = (obs: Observation) => {
     let result = STATUS_INITIAL;
@@ -131,7 +127,7 @@ export default function ObservationPage() {
   const popElementO = (rec: Observation) => {
     return {
       id: rec.id,
-      id2: rec.id /* Only here to satisfy syntax of DataGrid headers */,
+      id2: rec.id, // Only here to satisfy syntax of DataGrid headers
       rec: rec,
       telescope: rec.telescope,
       subarray: rec.subarray,
@@ -140,7 +136,7 @@ export default function ObservationPage() {
     };
   };
 
-  /* This type is required for the DataGrid showing the Targets */
+  // This type is required for the DataGrid showing the Targets
   type ElementT = {
     id: number;
     name: string;
@@ -347,7 +343,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
-        type: 'actions',
+        headerName: t('actions.label'),
         sortable: false,
         flex: 1,
         disableClickEventBubbling: true,
@@ -393,60 +389,24 @@ export default function ObservationPage() {
       { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
       { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
       {
-        field: 'actions',
-        type: 'actions',
-        sortable: false,
-        flex: 0.5,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: any }) => {
-          return (
-            <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid(e.row.id)}
-              show={isTargetSelected(e.row.id)}
-              field="icon"
-            />
-          );
-        }
-      },
-      {
         field: 'vel',
         renderHeader: () =>
           currObs ? (
-            <>
-              {t(
-                isIntegrationTime(currObs)
-                  ? 'sensitivityCalculatorResults.weightedSensitivity'
-                  : 'sensitivityCalculatorResults.integrationTime'
-              )}
-            </>
+            <Grid container direction="row" justifyContent="space-between" alignItems="right">
+              <Grid ml={10}>{t('sensitivityCalculatorResults.totalSensitivity')}</Grid>
+              <Grid ml={15}>{t('sensitivityCalculatorResults.beamSize')}</Grid>
+            </Grid>
           ) : (
             <></>
           ),
         sortable: false,
-        flex: 2,
+        flex: 5,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
-              field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'IntegrationTime'}
-            />
-          );
-        }
-      },
-      {
-        field: 'vel2',
-        renderHeader: () => (currObs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>),
-        sortable: false,
-        flex: 2.5,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: any }) => {
-          return (
-            <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid(e.row.id)}
-              show={isTargetSelected(e.row.id)}
-              field="SynthBeamSize"
             />
           );
         }
@@ -479,16 +439,22 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item md={11} lg={5}>
+      <Grid
+        spacing={1}
+        p={3}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <Grid item xs={5}>
           <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid item pb={1}>
                 <AddButton
-                  action={PATH[2]}
-                  primary={!hasObservations()}
-                  testId="addObservationButton"
                   title="addObservation.button"
+                  action={PATH[2]}
+                  testId="addObservationButton"
                 />
               </Grid>
             </Grid>
@@ -514,7 +480,7 @@ export default function ObservationPage() {
             )}
           </Grid>
         </Grid>
-        <Grid item md={11} lg={6}>
+        <Grid item xs={6}>
           <Card variant="outlined">
             <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
               <Grid item>

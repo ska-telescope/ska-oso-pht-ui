@@ -191,42 +191,12 @@ const sensCalHelpers = {
       }
       // For values above 999999 uK, display the value in K
       return { value: Number((value / 1e6).toFixed(precision)), unit: 'K' };
-    },
-    sensitivityOnUnit(unit: string, sensitivity: number, conversion_factor: number): number {
-      return ['K', 'mK', 'uK'].includes(unit) ? sensitivity / conversion_factor : sensitivity;
-    },
-    convertSensitivityToJy(inputSensitivity: number, unit: string): number {
-      if (unit === 'mJy/beam') {
-        return inputSensitivity * 1e-3;
-      }
-      if (unit === 'uJy/beam') {
-        return inputSensitivity * 1e-6;
-      }
-      if (unit === 'nJy/beam') {
-        return inputSensitivity * 1e-9;
-      }
-      if (unit === 'K') {
-        return inputSensitivity * 1;
-      }
-      if (unit === 'mK') {
-        return inputSensitivity / 1000;
-      }
-      if (unit === 'uK') {
-        return inputSensitivity / 1000000;
-      }
-      return inputSensitivity;
     }
   },
   calculate: {
     sqrtOfSumSqs(value1: number, value2: number): number {
       return Math.sqrt(value1 ** 2 + value2 ** 2);
-    },
-    thermalSensitivity: (
-      sensitivity: number,
-      confusion_noise: number,
-      weighting_factor: number
-    ): number =>
-      Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) / weighting_factor
+    }
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {

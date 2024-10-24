@@ -79,6 +79,11 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
+const getPI = (investigators: InvestigatorBackend[]): string => {
+  const principalInvestigator = investigators?.find(p => p.principal_investigator === true);
+  return `${principalInvestigator?.given_name} ${principalInvestigator?.family_name}`;
+};
+
 function mappingList(inRec: ProposalBackend[]): Proposal[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
@@ -99,7 +104,9 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
         : null,
       title: inRec[i].info?.title,
       cycle: inRec[i]?.cycle,
-      team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : []
+      team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : [],
+      pi: inRec[i].info?.investigators ? getPI(inRec[i].info.investigators) : ''
+      // telescope: 'N/A' // TODO is this still needed? -> what to map to? telescopes in observations?
     };
     output.push(rec);
   }

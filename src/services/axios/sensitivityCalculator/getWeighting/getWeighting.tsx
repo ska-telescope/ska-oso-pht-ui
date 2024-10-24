@@ -9,9 +9,7 @@ import {
   OBSERVATION_TYPE_BACKEND,
   TYPE_ZOOM,
   IMAGE_WEIGHTING,
-  ROBUST,
-  IW_BRIGGS,
-  TYPE_CONTINUUM
+  ROBUST
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -19,52 +17,29 @@ import {
 } from './mockResponseMidWeighting';
 import {
   MockResponseLowWeightingContinuum,
-  MockResponseLowWeightingLineZoom,
-  MockResponseLowWeightingLineSpectral
+  MockResponseLowWeightingLine
 } from './mockResponseLowWeighting';
 import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
-import {
-  WeightingLowContinuumQuery,
-  WeightingLowSpectralQuery,
-  WeightingLowZoomQuery,
-  WeightingMidContinuumQuery,
-  WeightingMidZoomQuery
-} from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
 
-async function GetWeighting(
-  observation: Observation,
-  target: Target,
-  inMode: number,
-  inIsSpectral = false
-) {
+async function GetWeighting(observation: Observation, target: Target, inMode: number) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => inMode === TYPE_ZOOM;
-  const isSpectral = () => inIsSpectral;
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
-
-  const getMode = () => {
-    if (isSpectral()) {
-      // spectral uses continuum url but mode is set to zoom
-      return OBSERVATION_TYPE_BACKEND[TYPE_CONTINUUM].toLowerCase() + '/';
-    }
-    return OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
-  };
+  const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
 
   const getWeightingMode = () => {
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
   };
 
-  const getRobustness = () => {
-    return ROBUST.find(item => item.value === observation.robust)?.label;
-  };
+  const getRobustness = () => (observation?.robust ? ROBUST[observation.robust].label : 0);
 
   const getSubArray = () => {
     const array = OBSERVATION.array.find(obj => obj.value === observation.telescope);
@@ -93,45 +68,34 @@ async function GetWeighting(
     const convertFrequency = (value: number | string, units: number | string) =>
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    const getParamZoomMID = (): WeightingMidZoomQuery => {
-      const params = {
-        freq_centres_hz: convertFrequency(
-          observation.centralFrequency,
-          observation.centralFrequencyUnits
-        ),
+    const getParamZoomMID = () => {
+      return {
+        freq_centres_hz: [
+          convertFrequency(observation.centralFrequency, observation.centralFrequencyUnits)
+        ], // MANDATORY
         pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // TODO check how taper is handled in the sens calc as seems off
-        // their value displayed is different than value sent
+        // subband_freq_centrres_hz
       };
-      if (observation.imageWeighting === IW_BRIGGS) {
-        params['robustness'] = getRobustness();
-      }
-      return params;
     };
 
-    const getParamContinuumMID = (): WeightingMidContinuumQuery => {
-      const params = {
-        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+    const getParamContinuumMID = () => {
+      return {
+        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // MANDATORY
         freq_centre_hz: convertFrequency(
           observation.centralFrequency,
           observation.centralFrequencyUnits
-        ),
-        pointing_centre: rightAscension() + ' ' + declination(),
+        ), // MANDATORY
+        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
         weighting_mode: getWeightingMode(),
         robustness: getRobustness(),
         subarray_configuration: getSubArray(),
         taper: observation.tapering
-        // TODO check how taper is handled in the sens calc as seems off
-        // their value displayed is different than value sent
+        // subband_freq_centrres_hz
       };
-      if (observation.imageWeighting === IW_BRIGGS) {
-        params['robustness'] = getRobustness();
-      }
-      return params;
     };
 
     const params = isZoom() ? getParamZoomMID() : getParamContinuumMID();
@@ -146,56 +110,28 @@ async function GetWeighting(
     return rightAscension() + ' ' + declination();
   }
 
-  const getParamZoomLOW = (): WeightingLowZoomQuery => {
-    const params = {
+  const getParamZoomLOW = () => {
+    return {
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centres_mhz: observation.centralFrequency
     };
-    if (observation.imageWeighting === IW_BRIGGS) {
-      params['robustness'] = getRobustness();
-    }
-    return params;
   };
 
-  const getParamSpectralLOW = (): WeightingLowSpectralQuery => {
-    const params = {
+  const getParamContinuumLOW = () => {
+    return {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
+      robustness: getRobustness(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
       freq_centre_mhz: observation.centralFrequency
     };
-    if (observation.imageWeighting === IW_BRIGGS) {
-      params['robustness'] = getRobustness();
-    }
-    return params;
-  };
-
-  const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
-    const params = {
-      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
-      weighting_mode: getWeightingMode(),
-      subarray_configuration: getSubArray(),
-      pointing_centre: pointingCentre(),
-      freq_centre_mhz: observation.centralFrequency
-    };
-    if (observation.imageWeighting === IW_BRIGGS) {
-      params['robustness'] = getRobustness();
-    }
-    return params;
   };
 
   function mapQueryLowWeighting(): URLSearchParams {
-    let params;
-    if (!isZoom()) {
-      params = getParamContinuumLOW();
-    } else if (isSpectral()) {
-      params = getParamSpectralLOW();
-    } else {
-      params = getParamZoomLOW();
-    }
+    const params = isZoom() ? getParamZoomLOW() : getParamContinuumLOW();
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
@@ -212,13 +148,7 @@ async function GetWeighting(
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {
-      if (!isZoom()) {
-        return MockResponseLowWeightingContinuum;
-      } else if (isSpectral()) {
-        return MockResponseLowWeightingLineSpectral;
-      } else {
-        return MockResponseLowWeightingLineZoom;
-      }
+      return observation.type ? MockResponseLowWeightingContinuum : MockResponseLowWeightingLine;
     }
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };

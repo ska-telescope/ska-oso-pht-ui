@@ -2,21 +2,19 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
 import { NOT_SPECIFIED } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
-import Alert from '../../alerts/standardAlert/StandardAlert';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GetPresignedDownloadUrl from '../../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
-import { presentLatex } from '../../../utils/present';
 
 interface ProposalDisplayProps {
   proposal: Proposal;
@@ -66,7 +64,7 @@ export default function ProposalDisplay({
 
       window.open(signedUrl, '_blank');
 
-      //TODO: clarify conditions to open new window
+      //TODO: clarify conditions to oepn new window
       // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
       //   window.open(signedUrl, '_blank');
       // }
@@ -96,9 +94,9 @@ export default function ProposalDisplay({
     return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
-  const title = (inLabel: string, inValue: string) => (
+  const title = (inValue: string) => (
     <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-      {inLabel} {presentLatex(inValue)}
+      {inValue}
     </Typography>
   );
   const label = (inValue: string) => (
@@ -216,7 +214,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid item>{title(t('page.9.title') + ' : ', proposal.title)}</Grid>
+        <Grid item>{title(t('page.9.title') + ' : ' + proposal.title)}</Grid>
         <Grid item>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
             <Grid item>{cycle(t('page.12.short'), proposal.cycle)}</Grid>
@@ -312,11 +310,9 @@ export default function ProposalDisplay({
       }}
     >
       {proposal === null && (
-        <Alert
-          color={AlertColorTypes.Warning}
-          text={t('displayProposal.warning')}
-          testId="helpPanelId"
-        />
+        <Alert testId="timedAlertId" color={AlertColorTypes.Warning}>
+          <Typography>{t('displayProposal.warning')}</Typography>
+        </Alert>
       )}
       {proposal !== null && (
         <DialogContent>

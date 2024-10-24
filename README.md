@@ -21,7 +21,7 @@ Contributions are welcome, please see the SKAO developer portal for guidance. ht
 ## Redux usage
 
 Some of the common variables have been moved into Redux to make them accessible everywhere
-This is as follows:
+This is is as follows:
 
 Application.Content1 => Status of the proposal for each page
 Application.Content2 => Proposal which is being edited
