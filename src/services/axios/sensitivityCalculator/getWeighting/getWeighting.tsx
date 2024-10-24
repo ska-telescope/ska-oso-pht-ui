@@ -34,12 +34,17 @@ import {
 
 const URL_WEIGHTING = `weighting`;
 
-async function GetWeighting(observation: Observation, target: Target, inMode: number, inIsSpectral=false) {
+async function GetWeighting(
+  observation: Observation,
+  target: Target,
+  inMode: number,
+  inIsSpectral = false
+) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => inMode === TYPE_ZOOM;
-  const isSpectral = () => inIsSpectral
+  const isSpectral = () => inIsSpectral;
   console.log('isSpectral', isSpectral());
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
@@ -134,7 +139,10 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   }
 
   const getParamZoomLOW = (): WeightingLowZoomQuery => {
-    console.log('OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()', OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase());
+    console.log(
+      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
+      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
+    );
     const params = {
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
@@ -148,7 +156,10 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   };
 
   const getParamSpectralLOW = (): WeightingLowSpectralQuery => {
-    console.log('OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()', OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase());
+    console.log(
+      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
+      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
+    );
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // Not there for zoom but here for line
       weighting_mode: getWeightingMode(),
@@ -172,7 +183,10 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   // HERE
   const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
-    console.log('OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()', OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase());
+    console.log(
+      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
+      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
+    );
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
@@ -188,7 +202,11 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   function mapQueryLowWeighting(): URLSearchParams {
     // const params = isZoom() ? getParamZoomLOW() : getParamContinuumLOW();
-    const params = !isZoom() ? getParamContinuumLOW() : isSpectral() ? getParamSpectralLOW() : getParamZoomLOW();
+    const params = !isZoom()
+      ? getParamContinuumLOW()
+      : isSpectral()
+      ? getParamSpectralLOW()
+      : getParamZoomLOW();
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
@@ -217,15 +235,15 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   const getModeUrl = () => {
     console.log('getMode(): ', getMode());
     if (!isZoom()) {
-      return getMode() // continuum
+      return getMode(); // continuum
     }
     if (isSpectral()) {
-      return "continuum/"
+      return 'continuum/';
     }
-    if (isZoom()){
-      return getMode() // zoom
+    if (isZoom()) {
+      return getMode(); // zoom
     }
-  }
+  };
 
   try {
     // const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`;
