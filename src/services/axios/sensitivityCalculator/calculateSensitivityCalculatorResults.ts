@@ -300,7 +300,7 @@ const getSpectralSurfaceBrightnessLOW = (
   sense: number,
   isZoom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  const rec = isZoom ? response.weighting[0] : response.weightingLine;
   return rec
     ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor)
     : { value: 0, unit: '' };
