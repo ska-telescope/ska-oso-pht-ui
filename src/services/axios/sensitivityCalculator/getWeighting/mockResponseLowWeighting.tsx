@@ -1,15 +1,24 @@
 export const MockQuerryLowWeightingContinuum = {
+  spectral_mode: 'line',
   weighting_mode: 'uniform',
   subarray_configuration: 'LOW_AA4_all',
   pointing_centre: '00:00:00.0 00:00:00.0',
-  freq_centre: '200'
+  freq_centre_mhz: '200'
 };
 
-export const MockQuerryLowWeightingLine = {
+export const MockQuerryLowWeightingLineZoom = {
   weighting_mode: 'uniform',
   subarray_configuration: 'LOW_AA4_all',
   pointing_centre: '00:00:00.0 00:00:00.0',
-  freq_centre: '200'
+  freq_centres_mhz: '200'
+};
+
+export const MockQuerryLowWeightingLineSpectral = {
+  spectral_mode: 'line',
+  weighting_mode: 'uniform',
+  subarray_configuration: 'LOW_AA4_all',
+  pointing_centre: '00:00:00.0 00:00:00.0',
+  freq_centre_mhz: '200'
 };
 
 /*
@@ -33,7 +42,27 @@ export const MockResponseLowWeightingContinuum = {
   ]
 };
 
-export const MockResponseLowWeightingLine = {
+export const MockResponseLowWeightingLineZoom = [
+  {
+    freq_centre: {
+      value: 200000000.0,
+      unit: 'Hz'
+    },
+    weighting_factor: 12.696037725198487,
+    sbs_conv_factor: 1035304.4396926606,
+    confusion_noise: {
+      value: 3.549738945339684e-6,
+      limit_type: 'value'
+    },
+    beam_size: {
+      beam_maj_scaled: 0.0016339516370391025,
+      beam_min_scaled: 0.0013936114519620306,
+      beam_pa: 17.87816543466122
+    }
+  }
+];
+
+export const MockResponseLowWeightingLineSpectral = {
   weighting_factor: 12.696037725198487,
   sbs_conv_factor: [1035304.4396926606],
   confusion_noise: {

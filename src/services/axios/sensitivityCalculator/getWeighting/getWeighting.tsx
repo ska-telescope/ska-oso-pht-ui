@@ -19,7 +19,8 @@ import {
 } from './mockResponseMidWeighting';
 import {
   MockResponseLowWeightingContinuum,
-  MockResponseLowWeightingLine
+  MockResponseLowWeightingLineZoom,
+  MockResponseLowWeightingLineSpectral
 } from './mockResponseLowWeighting';
 import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
@@ -211,7 +212,13 @@ async function GetWeighting(
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {
-      return observation.type ? MockResponseLowWeightingContinuum : MockResponseLowWeightingLine;
+      if (!isZoom()) {
+        return MockResponseLowWeightingContinuum;
+      } else if (isSpectral()) {
+        return MockResponseLowWeightingLineSpectral;
+      } else {
+        return MockResponseLowWeightingLineZoom;
+      }
     }
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };
