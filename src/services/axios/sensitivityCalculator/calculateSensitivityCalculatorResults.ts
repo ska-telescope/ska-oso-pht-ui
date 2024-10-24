@@ -270,7 +270,12 @@ const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  console.log('::: in getSpectralWeightedSensitivityLOW');
+  console.log('response', response);
+  // const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  const rec = isZoom ? response.weighting[0] : response.weightingLine;
+  console.log('isZoom', isZoom);
+  console.log('rec', rec);
   const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
   return (calc.spectral_sensitivity?.value ?? 0) * rec.weighting_factor;
 };

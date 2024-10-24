@@ -170,7 +170,7 @@ async function GetWeighting(
       OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
     );
     const params = {
-      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(), // Not there for zoom but here for line
+      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
       pointing_centre: pointingCentre(),
