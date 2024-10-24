@@ -46,10 +46,8 @@ async function GetWeighting(
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => inMode === TYPE_ZOOM;
   const isSpectral = () => inIsSpectral;
-  console.log('isSpectral', isSpectral());
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
-  // const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
 
   const getMode = () => {
     if (isSpectral()) {
@@ -148,10 +146,6 @@ async function GetWeighting(
   }
 
   const getParamZoomLOW = (): WeightingLowZoomQuery => {
-    console.log(
-      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
-      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
-    );
     const params = {
       weighting_mode: getWeightingMode(),
       subarray_configuration: getSubArray(),
@@ -165,10 +159,6 @@ async function GetWeighting(
   };
 
   const getParamSpectralLOW = (): WeightingLowSpectralQuery => {
-    console.log(
-      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
-      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
-    );
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
@@ -182,20 +172,7 @@ async function GetWeighting(
     return params;
   };
 
-  // TODO
-  /*
-  Handle the difference of request between continuum line (spectral?) and zoom modes
-    - line: add spectral_mode
-    - line: freq_centre_mhz without 's'
-    - url for request different: continuum instead of zoom for mode
-  */
-
-  // HERE
   const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
-    console.log(
-      'OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()',
-      OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase()
-    );
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
       weighting_mode: getWeightingMode(),
@@ -210,12 +187,14 @@ async function GetWeighting(
   };
 
   function mapQueryLowWeighting(): URLSearchParams {
-    // const params = isZoom() ? getParamZoomLOW() : getParamContinuumLOW();
-    const params = !isZoom()
-      ? getParamContinuumLOW()
-      : isSpectral()
-      ? getParamSpectralLOW()
-      : getParamZoomLOW();
+    let params;
+    if (!isZoom()) {
+      params = getParamContinuumLOW();
+    } else if (isSpectral()) {
+      params = getParamSpectralLOW();
+    } else {
+      params = getParamZoomLOW();
+    }
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
