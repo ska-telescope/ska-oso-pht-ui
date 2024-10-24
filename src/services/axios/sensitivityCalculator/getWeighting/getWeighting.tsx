@@ -31,6 +31,7 @@ import {
   WeightingLowSpectralQuery,
   WeightingLowZoomQuery,
   WeightingMidContinuumQuery,
+  WeightingMidSpectralQuery,
   WeightingMidZoomQuery
 } from '.././../../../utils/types/sensCalcWeightingQuery';
 
@@ -113,6 +114,27 @@ async function GetWeighting(
       return params;
     };
 
+    const getParamSpectralMID = (): WeightingMidSpectralQuery => {
+      const params = {
+        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+        freq_centre_hz: convertFrequency(
+          observation.centralFrequency,
+          observation.centralFrequencyUnits
+        ),
+        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+        weighting_mode: getWeightingMode(),
+        robustness: getRobustness(),
+        subarray_configuration: getSubArray(),
+        taper: observation.tapering
+        // TODO check how taper is handled in the sens calc as seems off
+        // their value displayed is different than value sent
+      };
+      if (observation.imageWeighting === IW_BRIGGS) {
+        params['robustness'] = getRobustness();
+      }
+      return params;
+    };
+
     const getParamContinuumMID = (): WeightingMidContinuumQuery => {
       const params = {
         spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
@@ -134,9 +156,22 @@ async function GetWeighting(
       return params;
     };
 
-    const params = isZoom() ? getParamZoomMID() : getParamContinuumMID();
-    const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
+    const getMidParams = (): URLSearchParams => {
+      let params;
+      if (!isZoom()) {
+        params = getParamContinuumMID();
+      } else if (isSpectral()) {
+        params = getParamSpectralMID();
+      } else {
+        params = getParamZoomMID();
+      }
+      const urlSearchParams = new URLSearchParams();
+      for (let key in params) urlSearchParams.append(key, params[key]);
+
+      return urlSearchParams;
+    }
+
+    const urlSearchParams = getMidParams();
     return urlSearchParams;
   }
 

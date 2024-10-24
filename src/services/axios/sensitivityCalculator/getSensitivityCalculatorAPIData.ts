@@ -74,11 +74,12 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to getCalculate - with Zoom parameter and with supplied integration time or for supplied sensitivity: with Spectral thermal sensitivity
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
 
-    Low (Continuum Mode): 
+    Low Continuum Modes: 
     - 1 call to getCalculate
+    - 1 call to GetWeighting - with Continuum parameter
     - 1 call to GetWeighting - with Spectral parameter (weightingLine)
 
-    Low (Continuum): 
+    Low Zoom Modes: 
     - 1 call to getCalculate
     - 1 call to GetWeighting -  with Zoom parameter
   */

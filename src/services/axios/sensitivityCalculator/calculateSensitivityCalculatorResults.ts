@@ -350,7 +350,7 @@ const getSpectralWeightedSensitivityRawValueMid = (
   isZoom: boolean
 ) => {
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
-  const recWeightLine = isZoom ? response?.weighting[0] : response?.weightingLine[0];
+  const recWeightLine = isZoom ? response?.weighting[0] : response?.weightingLine;
   if (recCalc?.spectral_sensitivity?.value) {
     return recCalc.spectral_sensitivity?.value! * recWeightLine.weighting_factor * 1e6;
   } else {
@@ -387,7 +387,7 @@ const getSpectralWeightedSensitivityMID = (
 };
 
 const getSpectralBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid, isZoom: boolean) => {
-  const rec = isZoom ? response?.weighting[0]?.beam_size : response?.weightingLine[0]?.beam_size;
+  const rec = isZoom ? response?.weighting[0]?.beam_size : response?.weightingLine?.beam_size;
   if (!rec) {
     return null;
   }
@@ -406,7 +406,7 @@ const getSpectralSurfaceBrightnessMID = (
 ) => {
   const conv_factor = isZoom
     ? response?.weighting[0]?.sbs_conv_factor
-    : response?.weightingLine[0]?.sbs_conv_factor;
+    : response?.weightingLine?.sbs_conv_factor;
   return conv_factor
     ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * conv_factor)
     : { value: 0, unit: '' };
