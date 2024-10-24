@@ -4,9 +4,12 @@ description: Helm umbrella chart for Observation Design Tool application
 type: application
 version: 0.4.2
 appVersion: 0.4.2
+version: 0.4.2
+appVersion: 0.4.2
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 dependencies:
 - name: ska-oso-pht-ui
+  version: 0.4.2
   version: 0.4.2
   repository: file://../ska-oso-pht-ui
 
