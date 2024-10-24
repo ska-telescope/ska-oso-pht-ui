@@ -22,9 +22,12 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 // STAR-612 : Note that the actual calculation for this will be done in a separate ticket
 
 /*
-STAR-781 - TODO check spectral surface brightness sensitivity results since change affecting spectral results
+STAR-781 - TODO check results since change affecting spectral results
 => returning spectral results with continuum in url, not zoom
 this is correct but returns different values than when set as zoom
+=> seems to have solved spectral sensitivity results issue for low?
+=> correct results: Low A4, Low AA05
+=> TODO check other results
 */
 
 export default function calculateSensitivityCalculatorResults(
