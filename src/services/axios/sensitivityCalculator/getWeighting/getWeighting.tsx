@@ -10,7 +10,8 @@ import {
   TYPE_ZOOM,
   IMAGE_WEIGHTING,
   ROBUST,
-  IW_BRIGGS
+  IW_BRIGGS,
+  TYPE_CONTINUUM
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -48,7 +49,15 @@ async function GetWeighting(
   console.log('isSpectral', isSpectral());
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
-  const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
+  // const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
+
+  const getMode = () => {
+    if (isSpectral()) {
+      // spectral uses continuum url but mode is set to zoom
+      return OBSERVATION_TYPE_BACKEND[TYPE_CONTINUUM].toLowerCase() + '/';
+    }
+    return OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
+  };
 
   const getWeightingMode = () => {
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
@@ -232,22 +241,8 @@ async function GetWeighting(
     return getMockData();
   }
 
-  const getModeUrl = () => {
-    console.log('getMode(): ', getMode());
-    if (!isZoom()) {
-      return getMode(); // continuum
-    }
-    if (isSpectral()) {
-      return 'continuum/';
-    }
-    if (isZoom()) {
-      return getMode(); // zoom
-    }
-  };
-
   try {
-    // const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`;
-    const path = `${apiUrl}${getTelescope()}/${getModeUrl()}${URL_WEIGHTING}?${getQueryParams()}`;
+    const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`;
     const result = await axios.get(path, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
