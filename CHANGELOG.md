@@ -8,6 +8,12 @@ Future
 
 ---
 
+
+
+0.5.0
+
+---
+
 * Utilities
   - Close icon added to Warning/Error notifications, timer removed
   - Close icon added to Success/Info notifications, timer still in place  
