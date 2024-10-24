@@ -74,9 +74,13 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to getCalculate - with Zoom parameter and with supplied integration time or for supplied sensitivity: with Spectral thermal sensitivity
     - 1 call to GetWeighting - with Zoom parameter (weightingLine)
 
-    Low (Continuum and Zoom Modes): 
+    Low (Continuum Mode): 
     - 1 call to getCalculate
-    - 1 call to GetWeighting
+    - 1 call to GetWeighting - with Spectral parameter (weightingLine)
+
+    Low (Continuum): 
+    - 1 call to getCalculate
+    - 1 call to GetWeighting -  with Zoom parameter
   */
 
   function handleWeighting() {
@@ -84,7 +88,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
       console.log('SPECTRAL MODE', TYPE_ZOOM);
-      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM));
+      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
     }
     return promisesWeighting;
   }
