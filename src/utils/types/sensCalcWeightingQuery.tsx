@@ -42,3 +42,13 @@ export type WeightingMidZoomQuery = {
   taper: number | string;
   robustness?: number | string;
 };
+
+export type WeightingMidSpectralQuery = {
+  spectral_mode: string;
+  freq_centre_hz: number | string;
+  pointing_centre: string;
+  weighting_mode: string;
+  subarray_configuration: string;
+  taper: number | string;
+  robustness?: number | string;
+};
