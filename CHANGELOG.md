@@ -8,7 +8,10 @@ Future
 
 ---
 
-
+* Observation page
+  - Fixed Sensitivity Calculator results for LOW AA05 observations
+* Banner
+  - Removed validation disabled check
 
 0.5.0
 
