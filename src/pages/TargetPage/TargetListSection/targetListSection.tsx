@@ -201,7 +201,7 @@ export default function TargetListSection() {
   const displayRow1 = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-        <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
+        <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
           {displayGrid()}
         </Grid>
         <Grid item md={11} lg={6} order={{ md: 1, lg: 2 }}>

@@ -21,6 +21,15 @@ import { ValueUnitPair } from 'utils/types/valueUnitPair';
 
 // STAR-612 : Note that the actual calculation for this will be done in a separate ticket
 
+/*
+STAR-781 - TODO check results since change affecting spectral results
+=> returning spectral results with continuum in url, not zoom
+this is correct but returns different values than when set as zoom
+=> seems to have solved spectral sensitivity results issue for low?
+=> correct results: Low A4, Low AA05
+=> TODO check other results
+*/
+
 export default function calculateSensitivityCalculatorResults(
   response: any,
   observation: Observation,
@@ -270,13 +279,13 @@ const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   isZoom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  const rec = isZoom ? response.weighting[0] : response.weightingLine;
   const calc = isZoom ? response.calculate.data[0] : response.calculate.data;
   return (calc.spectral_sensitivity?.value ?? 0) * rec.weighting_factor;
 };
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom: boolean) => {
-  const rec = isZoom ? response.weighting[0].beam_size : response.weightingLine[0].beam_size;
+  const rec = isZoom ? response.weighting[0].beam_size : response.weightingLine.beam_size;
   const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
     rec.beam_maj_scaled,
     rec.beam_min_scaled,
@@ -290,7 +299,7 @@ const getSpectralSurfaceBrightnessLOW = (
   sense: number,
   isZoom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine[0];
+  const rec = isZoom ? response.weighting[0] : response.weightingLine;
   return rec
     ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor)
     : { value: 0, unit: '' };
@@ -437,5 +446,5 @@ const getSpectralRawConfusionNoise = (
 ): number => {
   return isZoom
     ? response.weighting[0].confusion_noise.value
-    : response.weightingLine[0].confusion_noise.value;
+    : response.weightingLine.confusion_noise.value;
 };
