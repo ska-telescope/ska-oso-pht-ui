@@ -44,6 +44,7 @@ export default defineConfig({
       new GenerateCtrfReport({
         on
       });
+      return config;
     },
     specPattern: 'cypress/integration/**/*.feature'
   }
