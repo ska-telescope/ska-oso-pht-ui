@@ -169,7 +169,7 @@ async function GetWeighting(
       for (let key in params) urlSearchParams.append(key, params[key]);
 
       return urlSearchParams;
-    }
+    };
 
     const urlSearchParams = getMidParams();
     return urlSearchParams;
