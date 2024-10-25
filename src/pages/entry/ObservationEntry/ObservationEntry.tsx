@@ -737,14 +737,8 @@ export default function ObservationEntry() {
         return t('continuumBandWidth.range.error');
       }
       return '';
-      // TODO : This validation is completely wrong
-      /*
-      const rec = BANDWIDTH_TELESCOPE[observingBand];
-      return continuumBandwidth < rec.lower || continuumBandwidth > rec.upper
-        ? t('continuumBandWidth.range.error')
-        : '';
-        */
-      //const error = continuumBandwidth > continuumBandwidth.upper;
+      // TODO : handle units
+      // TODO : handle zooms
     };
     const validate = (e: React.SetStateAction<number>) => {
       setContinuumBandwidth(Number(e) < 0 ? 0 : e);
