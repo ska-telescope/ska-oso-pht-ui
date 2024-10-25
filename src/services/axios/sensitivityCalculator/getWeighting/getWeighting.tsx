@@ -90,7 +90,6 @@ async function GetWeighting(
 
   /*********************************************************** MID *********************************************************/
 
-  function mapQueryMidWeighting(): URLSearchParams {
     const convertFrequency = (value: number | string, units: number | string) =>
       sensCalHelpers.format.convertBandwidthToHz(value, units);
 
@@ -156,7 +155,7 @@ async function GetWeighting(
       return params;
     };
 
-    const getMidParams = (): URLSearchParams => {
+    function mapQueryMidWeighting(): URLSearchParams {
       let params;
       if (!isZoom()) {
         params = getParamContinuumMID();
@@ -165,13 +164,8 @@ async function GetWeighting(
       } else {
         params = getParamZoomMID();
       }
-      const urlSearchParams = new URLSearchParams();
-      for (let key in params) urlSearchParams.append(key, params[key]);
-
-      return urlSearchParams;
-    };
-
-    const urlSearchParams = getMidParams();
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
     return urlSearchParams;
   }
 
@@ -233,7 +227,6 @@ async function GetWeighting(
     }
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
-
     return urlSearchParams;
   }
 
