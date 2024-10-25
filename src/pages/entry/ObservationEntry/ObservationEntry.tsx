@@ -219,20 +219,25 @@ export default function ObservationEntry() {
     // This use effect should be used to calculate the SPECTRAL RESOLUTION for MID/LOW and CONTINUUM/ZOOM
     //
 
-    const getInValue = () => (observingBand === BAND_LOW ? (isContinuum() ? 5.43 : 14.1) : 13.44);
-    const getUnits1 = () => (observingBand === BAND_LOW ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
-    const getUnits2 = () =>
-      observingBand === BAND_LOW ? (isContinuum() ? 'km/s' : 'm/s') : 'km/s';
-
-    const calculateLOW = () => {
-      const tempZoomFactor = 0; // This is here for completeness of the calculation.
-      const zoomFactor = tempZoomFactor === 0 ? 1 : tempZoomFactor;
-      if (isContinuum()) {
-        return (getInValue() / 1728 / 2 ** zoomFactor).toFixed(1);
-      } else {
-        return (getInValue() / 144).toFixed(1);
-      }
+    const LOWContinuumBase = () => {
+      return 5.43;
     };
+
+    const LOWZoomBase = () => {
+      // The spectral resolutions for the zoom windows are given by (781250.0 * 32/27)/(4096 * 16) multiplied by increasing powers of 2
+      const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
+      // const powersTwo2 = [16, 32, 64, 128];
+      const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
+      const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
+      return results[bandwidth - 1];
+    };
+
+    const getInValue = () =>
+      observingBand === BAND_LOW ? (isContinuum() ? LOWContinuumBase() : LOWZoomBase()) : 13.44;
+    const getUnits1 = () => (observingBand === BAND_LOW ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
+
+    const calculateLOW = () =>
+      calculateVelocity(getInValue(), centralFrequency * (isContinuum() ? 1000 : 1e6));
 
     const calculateMID = () => {
       const tempZoomFactor = 0; // This is here for completeness of the calculation.
@@ -244,7 +249,7 @@ export default function ObservationEntry() {
     const calculate = () => {
       return observingBand === BAND_LOW ? calculateLOW() : calculateMID();
     };
-    setSpectralResolution(`${getInValue()} ${getUnits1()} (${calculate()} ${getUnits2()})`);
+    setSpectralResolution(`${getInValue()} ${getUnits1()} (${calculate()})`);
   }, [calculateToggle]);
 
   React.useEffect(() => {
