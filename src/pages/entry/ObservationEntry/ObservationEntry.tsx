@@ -55,6 +55,7 @@ import ObservationTypeField from '../../../components/fields/observationType/Obs
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import NumStations from '../../../components/fields/numStations/NumStations';
 import { roundSpectralResolution } from '../../../utils/present';
+import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -718,18 +719,53 @@ export default function ObservationEntry() {
   };
 
   const continuumBandwidthField = () => {
-    const findBandwidthLimits = () => {
+    // HERE
+    interface Limits {
+      upper: number;
+      lower: number;
+      units: string;
+    }
+    const findBandwidthLimits = (): Limits => {
       const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
       return {
         upper: bandWidthData.upper,
         lower: bandWidthData.lower,
         units: bandWidthData.units
       };
-    }
+    };
+    const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
+      console.log('::: in convertContinuumBandwidthToLimitUnits');
+      // Low needs MHz
+      // Mid needs GHz
+      const continuumBandwidthUnitsLabel = OBSERVATION.Units.find(u => u.label === limits.units)
+        .label;
+      if (limits.units === continuumBandwidthUnitsLabel) {
+        console.log('no convertion needed');
+        return continuumBandwidth;
+      } else {
+        // TODO
+        // does not pick on unit changes
+        console.log('needs convertion');
+        switch (limits.units) {
+          case 'MHz':
+            return sensCalHelpers.format.convertBandwidthToMHz(
+              continuumBandwidth,
+              continuumBandwidthUnits
+            );
+          case 'GHz':
+            return sensCalHelpers.format.convertBandwidthToGHz(
+              continuumBandwidth,
+              continuumBandwidthUnits
+            );
+          default:
+            return continuumBandwidth;
+        }
+      }
+    };
     const errorMessage = () => {
       const limits = findBandwidthLimits();
-      console.log('limits', limits);
-      console.log('continuumBandwidthUnits', continuumBandwidthUnits);
+      const convertedBandwidth = convertContinuumBandwidthToLimitUnits(limits);
+      console.log('convertedBandwidth', convertedBandwidth);
       if (continuumBandwidth > limits.upper) {
         return t('continuumBandWidth.range.error');
       }

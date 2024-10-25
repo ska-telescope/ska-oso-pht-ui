@@ -174,6 +174,21 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
+    convertBandwidthToGHz(bandwidthValue: number, bandwidthUnits): number {
+      if (typeof bandwidthUnits === 'number') {
+        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+      }
+      const unitMap: { [key: string]: number } = {
+        GHz: 1,
+        MHz: 0.001,
+        KHz: 0.000001,
+        Hz: 0.000000001
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
+    },
     convertConfusionNoiseRawValueInuJy(inConfusionNoise: number): number {
       // Confusion noise is returned from the API in uJy, but the other sensitivities are uJy,
       // so we convert here (and hope some future refactoring makes the unit handling more robust!)
