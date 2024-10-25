@@ -300,6 +300,9 @@ export default function ObservationEntry() {
 
   React.useEffect(() => {
     const calculateSubarray = () => {
+      if (isEdit()) {
+        return;
+      }
       if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
         if (subarrayConfig === OB_SUBARRAY_AA4_15) {
           setSubarrayConfig(OB_SUBARRAY_AA4);
