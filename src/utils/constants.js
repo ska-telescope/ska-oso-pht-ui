@@ -425,7 +425,7 @@ export const OBSERVATION = {
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
-          map: 'LOW_AA2_core_all',
+          map: 'LOW_AA2_core_only',
           label: 'AA2 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
@@ -445,7 +445,7 @@ export const OBSERVATION = {
         },
         {
           value: OB_SUBARRAY_AA_STAR_CORE,
-          map: 'LOW_AAstar_core_all',
+          map: 'LOW_AAstar_core_only',
           label: 'AA* (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
@@ -465,7 +465,7 @@ export const OBSERVATION = {
         },
         {
           value: OB_SUBARRAY_AA4_CORE,
-          map: 'LOW_AA4_core_all',
+          map: 'LOW_AA4_core_only',
           label: 'AA4 (core only)',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,

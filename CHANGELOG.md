@@ -4,7 +4,16 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-Future
+0.5.1
+
+---
+
+* Observation page
+  - Fixed Sensitivity Calculator results for LOW AA05 observations
+* Banner
+  - Removed validation disabled check
+
+0.5.0
 
 ---
 

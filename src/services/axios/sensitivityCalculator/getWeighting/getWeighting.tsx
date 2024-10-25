@@ -10,7 +10,8 @@ import {
   TYPE_ZOOM,
   IMAGE_WEIGHTING,
   ROBUST,
-  IW_BRIGGS
+  IW_BRIGGS,
+  TYPE_CONTINUUM
 } from '../../../../utils/constants';
 import {
   MockResponseMidWeightingContinuum,
@@ -18,7 +19,8 @@ import {
 } from './mockResponseMidWeighting';
 import {
   MockResponseLowWeightingContinuum,
-  MockResponseLowWeightingLine
+  MockResponseLowWeightingLineZoom,
+  MockResponseLowWeightingLineSpectral
 } from './mockResponseLowWeighting';
 import Observation from '../../../../utils/types/observation';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
@@ -26,6 +28,7 @@ import sensCalHelpers from '../sensCalHelpers';
 import Target from '../../../../utils/types/target';
 import {
   WeightingLowContinuumQuery,
+  WeightingLowSpectralQuery,
   WeightingLowZoomQuery,
   WeightingMidContinuumQuery,
   WeightingMidZoomQuery
@@ -33,14 +36,27 @@ import {
 
 const URL_WEIGHTING = `weighting`;
 
-async function GetWeighting(observation: Observation, target: Target, inMode: number) {
+async function GetWeighting(
+  observation: Observation,
+  target: Target,
+  inMode: number,
+  inIsSpectral = false
+) {
   const apiUrl = SKA_SENSITIVITY_CALCULATOR_API_URL;
 
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => inMode === TYPE_ZOOM;
+  const isSpectral = () => inIsSpectral;
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
-  const getMode = () => OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
+
+  const getMode = () => {
+    if (isSpectral()) {
+      // spectral uses continuum url but mode is set to zoom
+      return OBSERVATION_TYPE_BACKEND[TYPE_CONTINUUM].toLowerCase() + '/';
+    }
+    return OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
+  };
 
   const getWeightingMode = () => {
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
@@ -143,6 +159,20 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
     return params;
   };
 
+  const getParamSpectralLOW = (): WeightingLowSpectralQuery => {
+    const params = {
+      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+      weighting_mode: getWeightingMode(),
+      subarray_configuration: getSubArray(),
+      pointing_centre: pointingCentre(),
+      freq_centre_mhz: observation.centralFrequency
+    };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
+  };
+
   const getParamContinuumLOW = (): WeightingLowContinuumQuery => {
     const params = {
       spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
@@ -158,7 +188,14 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
   };
 
   function mapQueryLowWeighting(): URLSearchParams {
-    const params = isZoom() ? getParamZoomLOW() : getParamContinuumLOW();
+    let params;
+    if (!isZoom()) {
+      params = getParamContinuumLOW();
+    } else if (isSpectral()) {
+      params = getParamSpectralLOW();
+    } else {
+      params = getParamZoomLOW();
+    }
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
 
@@ -175,7 +212,13 @@ async function GetWeighting(observation: Observation, target: Target, inMode: nu
 
   const getMockData = () => {
     if (observation.telescope === TELESCOPE_LOW_NUM) {
-      return observation.type ? MockResponseLowWeightingContinuum : MockResponseLowWeightingLine;
+      if (!isZoom()) {
+        return MockResponseLowWeightingContinuum;
+      } else if (isSpectral()) {
+        return MockResponseLowWeightingLineSpectral;
+      } else {
+        return MockResponseLowWeightingLineZoom;
+      }
     }
     return observation.type ? MockResponseMidWeightingContinuum : MockResponseMidWeightingLine;
   };
