@@ -4,6 +4,15 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+Future
+-------
+
+* Observation page
+  - Fixed Sensitivity Calculator results for Mid AA05 observations
+
+---
+
 0.5.1
 
 ---
