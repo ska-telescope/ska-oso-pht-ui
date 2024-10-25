@@ -218,38 +218,48 @@ export default function ObservationEntry() {
     //
     // This use effect should be used to calculate the SPECTRAL RESOLUTION for MID/LOW and CONTINUUM/ZOOM
     //
+    // const BASE_SPECTRAL_RESOLUTION_HZ = (781250 * 32) / 27 / 4096 / 16;
 
-    const LOWContinuumBase = () => {
-      return 5.43;
-    };
-
+    const LOWContinuumBase = () => 5.43;
     const LOWZoomBase = () => {
-      // The spectral resolutions for the zoom windows are given by (781250.0 * 32/27)/(4096 * 16) multiplied by increasing powers of 2
       const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
       // const powersTwo2 = [16, 32, 64, 128];
-      const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
-      const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
+      const results = powersTwo.map(obj => obj * 0.21);
       return results[bandwidth - 1];
     };
 
-    const getInValue = () =>
-      observingBand === BAND_LOW ? (isContinuum() ? LOWContinuumBase() : LOWZoomBase()) : 13.44;
-    const getUnits1 = () => (observingBand === BAND_LOW ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
+    const MIDContinuumBase = () => 13.44;
+    const MIDZoomBase = () => {
+      const results = [0.21, 0.42, 0.84, 1.68, 3.36, 6.72, 13.44];
+      return results[bandwidth - 1];
+    };
+
+    const LOWBase = () => (isContinuum() ? LOWContinuumBase() : LOWZoomBase());
+    const MIDBase = () => (isContinuum() ? MIDContinuumBase() : MIDZoomBase());
+    const getBaseValue = () => (isLow() ? LOWBase() : MIDBase());
+    const getUnits1 = () => (isLow() ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
 
     const calculateLOW = () =>
-      calculateVelocity(getInValue(), centralFrequency * (isContinuum() ? 1000 : 1e6));
+      calculateVelocity(getBaseValue(), centralFrequency * (isContinuum() ? 1000 : 1e6));
 
     const calculateMID = () => {
-      const tempZoomFactor = 0; // This is here for completeness of the calculation.
-      const averagingFactor = tempZoomFactor === 0 ? spectralAveraging : 1;
-      const zoomFactor = tempZoomFactor === 0 ? 1 : tempZoomFactor;
-      return ((getInValue() / 2 ** zoomFactor) * averagingFactor).toFixed(2);
+      if (isContinuum()) {
+        const freq = getScaledValue(centralFrequency, 1000000000, '*');
+        return calculateVelocity(getBaseValue() * 1000, freq);
+      } else {
+        //const velocity = '(' + helpers.calculate.calculateVelocity(resolution * 1000, centralFreq) + ')';
+        //const bandwidthVelocity = '(' + helpers.calculate.calculateVelocity(bandwidth, centralFreq) + ')';
+        //console.log('TREVOR GETS OUT', velocity, bandwidthVelocity);
+        //return displayValue.replace('%s', bandwidthVelocity).replace('%s', velocity);
+        const freq = getScaledValue(centralFrequency, 1000000000, '*');
+        return calculateVelocity(getBaseValue() * 1000, freq);
+      }
     };
 
     const calculate = () => {
-      return observingBand === BAND_LOW ? calculateLOW() : calculateMID();
+      return isLow() ? calculateLOW() : calculateMID();
     };
-    setSpectralResolution(`${getInValue()} ${getUnits1()} (${calculate()})`);
+    setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
   }, [calculateToggle]);
 
   React.useEffect(() => {
