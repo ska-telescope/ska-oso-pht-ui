@@ -718,7 +718,24 @@ export default function ObservationEntry() {
   };
 
   const continuumBandwidthField = () => {
+    const findBandwidthLimits = () => {
+      const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
+      return {
+        upper: bandWidthData.upper,
+        lower: bandWidthData.lower,
+        units: bandWidthData.units
+      };
+    }
     const errorMessage = () => {
+      const limits = findBandwidthLimits();
+      console.log('limits', limits);
+      console.log('continuumBandwidthUnits', continuumBandwidthUnits);
+      if (continuumBandwidth > limits.upper) {
+        return t('continuumBandWidth.range.error');
+      }
+      if (continuumBandwidth < limits.lower) {
+        return t('continuumBandWidth.range.error');
+      }
       return '';
       // TODO : This validation is completely wrong
       /*
@@ -727,6 +744,7 @@ export default function ObservationEntry() {
         ? t('continuumBandWidth.range.error')
         : '';
         */
+      //const error = continuumBandwidth > continuumBandwidth.upper;
     };
     const validate = (e: React.SetStateAction<number>) => {
       setContinuumBandwidth(Number(e) < 0 ? 0 : e);
