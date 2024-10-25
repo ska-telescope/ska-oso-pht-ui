@@ -2,6 +2,7 @@
 /* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
 import { GenerateCtrfReport } from 'cypress-ctrf-json-reporter';
+import { configureXrayPlugin } from 'cypress-xray-plugin';
 const cucumber = require('cypress-cucumber-preprocessor').default;
 
 export default defineConfig({
@@ -29,11 +30,21 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
-    setupNodeEvents(on, config) {
+    async setupNodeEvents(on, config) {
+      await configureXrayPlugin(on, config, {
+        jira: {
+          projectKey: 'XTP', // placeholder value
+          url: 'https://jira.skatelescope.org' // placeholder value
+        },
+        xray: {
+          uploadResults: true
+        }
+      });
       on('file:preprocessor', cucumber());
       new GenerateCtrfReport({
         on
       });
+      return config;
     },
     specPattern: 'cypress/integration/**/*.feature'
   }
