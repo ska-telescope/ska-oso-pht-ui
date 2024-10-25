@@ -32,7 +32,8 @@ import {
   WeightingLowZoomQuery,
   WeightingMidContinuumQuery,
   WeightingMidSpectralQuery,
-  WeightingMidZoomQuery
+  WeightingMidZoomQuery,
+  WeightingQuery
 } from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
@@ -155,20 +156,6 @@ async function GetWeighting(
     return params;
   };
 
-  function mapQueryMidWeighting(): URLSearchParams {
-    let params;
-    if (!isZoom()) {
-      params = getParamContinuumMID();
-    } else if (isSpectral()) {
-      params = getParamSpectralMID();
-    } else {
-      params = getParamZoomMID();
-    }
-    const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
-    return urlSearchParams;
-  }
-
   /*********************************************************** LOW *********************************************************/
 
   function pointingCentre() {
@@ -216,26 +203,23 @@ async function GetWeighting(
     return params;
   };
 
-  function mapQueryLowWeighting(): URLSearchParams {
-    let params;
+  /*************************************************************************************************************************/
+
+  const getParams = (): WeightingQuery => {
     if (!isZoom()) {
-      params = getParamContinuumLOW();
+      return isLow() ? getParamContinuumLOW() : getParamContinuumMID();
     } else if (isSpectral()) {
-      params = getParamSpectralLOW();
+      return isLow() ? getParamSpectralLOW() : getParamSpectralMID();
     } else {
-      params = getParamZoomLOW();
+      return isLow() ? getParamZoomLOW() : getParamZoomMID();
     }
+  };
+
+  const getQueryParams = (): URLSearchParams => {
+    const params = getParams();
     const urlSearchParams = new URLSearchParams();
     for (let key in params) urlSearchParams.append(key, params[key]);
     return urlSearchParams;
-  }
-
-  /*************************************************************************************************************************/
-
-  const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryLowWeighting()
-      : mapQueryMidWeighting();
   };
 
   const getMockData = () => {

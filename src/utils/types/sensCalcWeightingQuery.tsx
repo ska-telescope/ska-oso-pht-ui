@@ -1,3 +1,11 @@
+export type WeightingQuery =
+  | WeightingLowContinuumQuery
+  | WeightingLowZoomQuery
+  | WeightingLowSpectralQuery
+  | WeightingMidContinuumQuery
+  | WeightingMidZoomQuery
+  | WeightingMidSpectralQuery;
+
 export type WeightingLowContinuumQuery = {
   spectral_mode: string;
   weighting_mode: string;
