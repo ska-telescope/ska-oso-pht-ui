@@ -693,6 +693,24 @@ const DATA = [
   }
 ];
 
+function mountDefault() {
+  viewPort();
+  cy.mount(
+    <StoreProvider>
+      <ThemeProvider theme={theme('light')}>
+        <CssBaseline />
+        <SpectralResolutionField
+          bandWidth={1}
+          frequency={1}
+          frequencyUnits={1}
+          observingBand={1}
+          observationType={1}
+        />
+      </ThemeProvider>
+    </StoreProvider>
+  );
+}
+
 function mount(
   observingBand: number,
   observationType: number,
@@ -712,15 +730,40 @@ function mount(
           label={TEST_LABEL}
           observingBand={observingBand}
           observationType={observationType}
+          setValue={cy.stub().as('action')}
         />
       </ThemeProvider>
     </StoreProvider>
   );
 }
 
+const xObservingBand = (inValue: number) => {
+  switch (inValue) {
+    case 2:
+      return 'MID 1';
+    case 3:
+      return 'MID 2';
+    case 4:
+      return 'MID 5a';
+    case 5:
+      return 'MID 5b';
+    default:
+      return 'LOW';
+  }
+};
+
+const xObservingType = (inValue: number) => {
+  return inValue ? 'Zoom' : 'Continuum';
+};
+
 describe('<SpectralResolution />', () => {
+  it(`Mount with defaults`, () => {
+    mountDefault();
+  });
   for (const rec of DATA) {
-    it(`observingBand.${rec.observingBand} | observationType.${rec.observationType} | ${rec.bandWidth} | ${rec.frequency} ${rec.frequencyUnits}`, () => {
+    it(`${xObservingBand(rec.observingBand)} | ${xObservingType(rec.observationType)} | ${
+      rec.bandWidth
+    } | ${rec.frequency} ${rec.frequencyUnits}`, () => {
       mount(
         rec.observingBand,
         rec.observationType,
