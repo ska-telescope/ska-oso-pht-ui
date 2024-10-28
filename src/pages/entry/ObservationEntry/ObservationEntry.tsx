@@ -702,9 +702,9 @@ export default function ObservationEntry() {
     // Use the central frequency units for now, as I see this being dropped soon anyway.
     const options = OBSERVATION.array.find(item => item.value === telescope())
       ?.centralFrequencyAndBandWidthUnits;
-    if (options?.length === 1) {
-      return options[0].label;
-    } else {
+    // if (options?.length === 1) {
+    //   // return options[0].label;
+    // } else {
       return (
         <DropDown
           options={options}
@@ -712,10 +712,11 @@ export default function ObservationEntry() {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
+          disabled={isLow()}
           onFocus={() => helpComponent(t('frequencyUnits.help'))}
         />
       );
-    }
+    //}
   };
 
   const continuumBandwidthField = () => {
@@ -735,32 +736,39 @@ export default function ObservationEntry() {
     };
     const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
       console.log('::: in convertContinuumBandwidthToLimitUnits');
+      console.log('/////////////////////////////////////////////////');
       // Low needs MHz
       // Mid needs GHz
-      const continuumBandwidthUnitsLabel = OBSERVATION.Units.find(u => u.label === limits.units)
-        .label;
+      console.log('limits', limits);
+      console.log('units', continuumBandwidthUnits);
+      console.log('continuumBandwidth', continuumBandwidth);
+      const continuumBandwidthUnitsLabel = OBSERVATION.array.find(item => item.value === telescope())
+      ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
+      console.log('continuumBandwidthUnitsLabel', continuumBandwidthUnitsLabel);
       if (limits.units === continuumBandwidthUnitsLabel) {
         console.log('no convertion needed');
+        console.log('units', continuumBandwidthUnits);
         return continuumBandwidth;
       } else {
         // TODO
         // does not pick on unit changes
         console.log('needs convertion');
-        switch (limits.units) {
-          case 'MHz':
-            return sensCalHelpers.format.convertBandwidthToMHz(
-              continuumBandwidth,
-              continuumBandwidthUnits
-            );
-          case 'GHz':
-            return sensCalHelpers.format.convertBandwidthToGHz(
-              continuumBandwidth,
-              continuumBandwidthUnits
-            );
-          default:
-            return continuumBandwidth;
-        }
+        // switch (limits.units) {
+        //   case 'MHz':
+        //     return sensCalHelpers.format.convertBandwidthToMHz(
+        //       continuumBandwidth,
+        //       continuumBandwidthUnits
+        //     );
+        //   case 'GHz':
+        //     return sensCalHelpers.format.convertBandwidthToGHz(
+        //       continuumBandwidth,
+        //       continuumBandwidthUnits
+        //     );
+        //   default:
+        //     return continuumBandwidth;
+        // }
       }
+      console.log('/////////////////////////////////////////////////');
     };
     const errorMessage = () => {
       const limits = findBandwidthLimits();
