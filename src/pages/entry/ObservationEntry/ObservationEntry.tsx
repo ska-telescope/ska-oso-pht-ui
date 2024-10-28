@@ -702,9 +702,6 @@ export default function ObservationEntry() {
     // Use the central frequency units for now, as I see this being dropped soon anyway.
     const options = OBSERVATION.array.find(item => item.value === telescope())
       ?.centralFrequencyAndBandWidthUnits;
-    // if (options?.length === 1) {
-    //   // return options[0].label;
-    // } else {
     return (
       <DropDown
         options={options}
@@ -716,7 +713,6 @@ export default function ObservationEntry() {
         onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );
-    //}
   };
 
   const continuumBandwidthField = () => {
@@ -740,22 +736,22 @@ export default function ObservationEntry() {
       const continuumBandwidthUnitsLabel = OBSERVATION.array
         .find(item => item.value === telescope())
         ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
-        console.log('continuumBandwidth', continuumBandwidth);
-        console.log('continuumBandwidthUnitsLabel', continuumBandwidthUnitsLabel);
-        switch (limits.units) {
-          case 'MHz':
-            return sensCalHelpers.format.convertBandwidthToMHz(
-              continuumBandwidth,
-              continuumBandwidthUnitsLabel
-            );
-          case 'GHz':
-            return sensCalHelpers.format.convertBandwidthToGHz(
-              continuumBandwidth,
-              continuumBandwidthUnitsLabel
-            );
-          default:
-            return continuumBandwidth;
-        }
+      console.log('continuumBandwidth', continuumBandwidth);
+      console.log('continuumBandwidthUnitsLabel', continuumBandwidthUnitsLabel);
+      switch (limits.units) {
+        case 'MHz':
+          return sensCalHelpers.format.convertBandwidthToMHz(
+            continuumBandwidth,
+            continuumBandwidthUnitsLabel
+          );
+        case 'GHz':
+          return sensCalHelpers.format.convertBandwidthToGHz(
+            continuumBandwidth,
+            continuumBandwidthUnitsLabel
+          );
+        default:
+          return continuumBandwidth;
+      }
     };
     const errorMessage = () => {
       const limits = findBandwidthLimits();
