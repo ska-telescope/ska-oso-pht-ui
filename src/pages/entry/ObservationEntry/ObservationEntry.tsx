@@ -55,7 +55,7 @@ import ObservationTypeField from '../../../components/fields/observationType/Obs
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import NumStations from '../../../components/fields/numStations/NumStations';
 import { roundSpectralResolution } from '../../../utils/present';
-import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
+// import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -705,17 +705,17 @@ export default function ObservationEntry() {
     // if (options?.length === 1) {
     //   // return options[0].label;
     // } else {
-      return (
-        <DropDown
-          options={options}
-          testId="continuumBandwidthUnits"
-          value={continuumBandwidthUnits}
-          setValue={setContinuumBandwidthUnits}
-          label=""
-          disabled={isLow()}
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      );
+    return (
+      <DropDown
+        options={options}
+        testId="continuumBandwidthUnits"
+        value={continuumBandwidthUnits}
+        setValue={setContinuumBandwidthUnits}
+        label=""
+        disabled={isLow()}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
     //}
   };
 
@@ -742,8 +742,9 @@ export default function ObservationEntry() {
       console.log('limits', limits);
       console.log('units', continuumBandwidthUnits);
       console.log('continuumBandwidth', continuumBandwidth);
-      const continuumBandwidthUnitsLabel = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
+      const continuumBandwidthUnitsLabel = OBSERVATION.array
+        .find(item => item.value === telescope())
+        ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
       console.log('continuumBandwidthUnitsLabel', continuumBandwidthUnitsLabel);
       if (limits.units === continuumBandwidthUnitsLabel) {
         console.log('no convertion needed');
