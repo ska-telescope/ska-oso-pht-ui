@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS } from './constants';
+import { SPEED_OF_LIGHT, TEXT_ENTRY_PARAMS } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -18,6 +18,30 @@ export const countWords = (text: string) => {
         .trim()
         .split(/\s+/)
         .filter(Boolean).length;
+};
+
+export const getScaledValue = (value: any, multiplier: number, operator: string) => {
+  let val_scaled = 0;
+  switch (operator) {
+    case '*':
+      val_scaled = value * multiplier;
+      break;
+    case '/':
+      val_scaled = value / multiplier;
+      break;
+    default:
+      val_scaled = value;
+  }
+  return val_scaled;
+};
+
+export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+  const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
+  if (velocity < 1000) {
+    return velocity.toFixed(precision) + ' m/s';
+  } else {
+    return (velocity / 1000).toFixed(precision) + ' km/s';
+  }
 };
 
 export const helpers = {

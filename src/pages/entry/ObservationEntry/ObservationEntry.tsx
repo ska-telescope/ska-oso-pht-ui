@@ -53,8 +53,9 @@ import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
+import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { roundSpectralResolution } from '../../../utils/present';
+import { calculateVelocity, getScaledValue } from '../../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -63,8 +64,6 @@ const BACK_PAGE = 5;
 const LABEL_WIDTH_SELECT = 6;
 const LABEL_WIDTH_OPT1 = 6;
 const FIELD_WIDTH_BUTTON = 2;
-
-const SPEED_OF_LIGHT = 299792458;
 
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
@@ -104,7 +103,6 @@ export default function ObservationEntry() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [calculateToggle, setCalculateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -211,56 +209,7 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
-    setCalculateToggle(!calculateToggle);
   }, []);
-
-  React.useEffect(() => {
-    //
-    // This use effect should be used to calculate the SPECTRAL RESOLUTION for MID/LOW and CONTINUUM/ZOOM
-    //
-    // const BASE_SPECTRAL_RESOLUTION_HZ = (781250 * 32) / 27 / 4096 / 16;
-
-    const LOWContinuumBase = () => 5.43;
-    const LOWZoomBase = () => {
-      const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
-      // const powersTwo2 = [16, 32, 64, 128];
-      const results = powersTwo.map(obj => obj * 0.21);
-      return results[bandwidth - 1];
-    };
-
-    const MIDContinuumBase = () => 13.44;
-    const MIDZoomBase = () => {
-      const results = [0.21, 0.42, 0.84, 1.68, 3.36, 6.72, 13.44];
-      return results[bandwidth - 1];
-    };
-
-    const LOWBase = () => (isContinuum() ? LOWContinuumBase() : LOWZoomBase());
-    const MIDBase = () => (isContinuum() ? MIDContinuumBase() : MIDZoomBase());
-    const getBaseValue = () => (isLow() ? LOWBase() : MIDBase());
-    const getUnits1 = () => (isLow() ? (isContinuum() ? 'KHz' : 'Hz') : 'KHz');
-
-    const calculateLOW = () =>
-      calculateVelocity(getBaseValue(), centralFrequency * (isContinuum() ? 1000 : 1e6));
-
-    const calculateMID = () => {
-      if (isContinuum()) {
-        const freq = getScaledValue(centralFrequency, 1000000000, '*');
-        return calculateVelocity(getBaseValue() * 1000, freq);
-      } else {
-        //const velocity = '(' + helpers.calculate.calculateVelocity(resolution * 1000, centralFreq) + ')';
-        //const bandwidthVelocity = '(' + helpers.calculate.calculateVelocity(bandwidth, centralFreq) + ')';
-        //console.log('TREVOR GETS OUT', velocity, bandwidthVelocity);
-        //return displayValue.replace('%s', bandwidthVelocity).replace('%s', velocity);
-        const freq = getScaledValue(centralFrequency, 1000000000, '*');
-        return calculateVelocity(getBaseValue() * 1000, freq);
-      }
-    };
-
-    const calculate = () => {
-      return isLow() ? calculateLOW() : calculateMID();
-    };
-    setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
-  }, [calculateToggle]);
 
   React.useEffect(() => {
     const calculateEffectiveResolution = () => {
@@ -366,12 +315,7 @@ export default function ObservationEntry() {
       }
     };
     calculateSubarray();
-    setCalculateToggle(!calculateToggle);
   }, [observingBand]);
-
-  React.useEffect(() => {
-    setCalculateToggle(!calculateToggle);
-  }, [bandwidth, centralFrequency, observationType, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
@@ -456,25 +400,6 @@ export default function ObservationEntry() {
 
   const robustField = () => {
     return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
-  };
-
-  const spectralResolutionField = () => {
-    return (
-      <TextEntry
-        testId="spectralResolution"
-        value={
-          !isContinuum() && observingBand === BAND_LOW
-            ? roundSpectralResolution(spectralResolution)
-            : spectralResolution
-        }
-        label={t('spectralResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        onFocus={() => helpComponent(t('spectralResolution.help'))}
-        disabled
-      />
-    );
   };
 
   const fieldDropdown = (
@@ -752,30 +677,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
-    if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
-  };
-
-  const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
-    switch (operator) {
-      case '*':
-        val_scaled = value * multiplier;
-        break;
-      case '/':
-        val_scaled = value / multiplier;
-        break;
-      default:
-        val_scaled = value;
-    }
-    return val_scaled;
-  };
-
   const effectiveResolutionField = () => {
     return (
       <TextEntry
@@ -1049,7 +950,16 @@ export default function ObservationEntry() {
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {spectralResolutionField()}
+                  <SpectralResolutionField
+                    bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
+                    frequency={centralFrequency}
+                    frequencyUnits={centralFrequencyUnits}
+                    label={t('spectralResolution.label')}
+                    observingBand={observingBand}
+                    observationType={observationType}
+                    onFocus={() => helpComponent(t('spectralResolution.help'))}
+                    setValue={setSpectralResolution}
+                  />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   <SpectralAveragingField

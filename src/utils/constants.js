@@ -749,6 +749,8 @@ export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
+export const SPEED_OF_LIGHT = 299792458;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_PARTIAL = 3;
