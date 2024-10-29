@@ -1,3 +1,11 @@
+export type WeightingQuery =
+  | WeightingLowContinuumQuery
+  | WeightingLowZoomQuery
+  | WeightingLowSpectralQuery
+  | WeightingMidContinuumQuery
+  | WeightingMidZoomQuery
+  | WeightingMidSpectralQuery;
+
 export type WeightingLowContinuumQuery = {
   spectral_mode: string;
   weighting_mode: string;
@@ -36,6 +44,16 @@ export type WeightingMidContinuumQuery = {
 
 export type WeightingMidZoomQuery = {
   freq_centres_hz: number | string;
+  pointing_centre: string;
+  weighting_mode: string;
+  subarray_configuration: string;
+  taper: number | string;
+  robustness?: number | string;
+};
+
+export type WeightingMidSpectralQuery = {
+  spectral_mode: string;
+  freq_centre_hz: number | string;
   pointing_centre: string;
   weighting_mode: string;
   subarray_configuration: string;
