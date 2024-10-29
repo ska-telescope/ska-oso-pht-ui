@@ -253,8 +253,8 @@ js-e2e-test:
   rules:
     - exists:
         - cypress/**/*.js
-        - '${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*'
-        - tests/cypress/**/*.cy.*
+        - '${JS_PROJECT_DIR}/cypress/**/*.cy.*'
+        - cypress/**/*.cy.*
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
