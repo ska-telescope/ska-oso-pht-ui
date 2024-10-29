@@ -139,8 +139,10 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: dp.imageSizeValue + ' ' + dp.imageSizeUnits,
-    pixel_size: dp.pixelSizeValue + ' ' + dp.pixelSizeUnits,
+    //image_size: dp.imageSizeValue + ' ' + dp.imageSizeUnits,
+    //pixel_size: dp.pixelSizeValue + ' ' + dp.pixelSizeUnits,
+    image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
+    pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
     weighting: dp.weighting?.toString()
   }));
 };
@@ -227,7 +229,7 @@ const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
 const getSupplied = (inObs: Observation) => {
   const supplied = OBSERVATION.Supplied.find(s => s.value === inObs?.supplied?.type);
   return {
-    type: supplied?.mappingLabel,
+    supplied_type: supplied?.mappingLabel,
     quantity: {
       value: inObs.supplied?.value,
       unit: supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
@@ -459,6 +461,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       investigators: proposal.team.map(teamMember => {
         return {
           investigator_id: teamMember.id?.toString(),
+          status: teamMember.status,
           given_name: teamMember.firstName,
           family_name: teamMember.lastName,
           email: teamMember.email,

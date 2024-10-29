@@ -3,7 +3,6 @@ import {
   AXIOS_CONFIG,
   PROJECTS,
   SKA_PHT_API_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA,
   GENERAL,
   OBSERVATION,
@@ -49,12 +48,12 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   for (let i = 0; i < inValue?.length; i++) {
     members.push({
       id: inValue[i].investigator_id,
+      status: inValue[i].status,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
       email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
       pi: inValue[i].principal_investigator
     });
   }
@@ -171,7 +170,8 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
-const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
+// TODO: remove after testing star-670
+// const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   return inValue?.map((dp, index) => ({
@@ -179,10 +179,14 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    imageSizeValue: Number(getFromArray(dp.image_size, 0)),
-    imageSizeUnits: getFromArray(dp.image_size, 1),
-    pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
-    pixelSizeUnits: getFromArray(dp.pixel_size, 1),
+    // imageSizeValue: Number(getFromArray(dp.image_size, 0)),
+    // imageSizeUnits: getFromArray(dp.image_size, 1),
+    // pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
+    // pixelSizeUnits: getFromArray(dp.pixel_size, 1),
+    imageSizeValue: dp.image_size.value,
+    imageSizeUnits: dp.image_size.unit,
+    pixelSizeValue: dp.pixel_size.value,
+    pixelSizeUnits: dp.pixel_size.unit,
     weighting: Number(dp.weighting)
   }));
 };
@@ -203,7 +207,7 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-  const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+  const typeLabel = inSupplied.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
   const suppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {

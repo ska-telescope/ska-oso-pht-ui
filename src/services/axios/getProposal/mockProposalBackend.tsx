@@ -57,6 +57,7 @@ const MockProposalBackend: ProposalBackend = {
     investigators: [
       {
         investigator_id: 'prp-ska01-202204-01',
+        status: 'pending',
         given_name: 'DefaultUser',
         family_name: 'DefaultUser',
         email: 'ask.lop@map.com',
@@ -66,6 +67,7 @@ const MockProposalBackend: ProposalBackend = {
       },
       {
         investigator_id: '1',
+        status: 'pending',
         given_name: 'Jack',
         family_name: 'Green',
         email: 'jgreen@gmail.com',
@@ -95,7 +97,7 @@ const MockProposalBackend: ProposalBackend = {
             unit: 'MHz'
           },
           supplied: {
-            type: 'integration_time',
+            supplied_type: 'integration_time',
             quantity: {
               value: 600,
               unit: 'm/s'
@@ -104,8 +106,7 @@ const MockProposalBackend: ProposalBackend = {
           spectral_resolution: '5.43 kHz (8.1 km/s)',
           effective_resolution: '5.43 kHz (8.1 km/s)',
           image_weighting: '1'
-        },
-        details: ''
+        }
       }
     ],
     data_product_sdps: [
@@ -113,8 +114,8 @@ const MockProposalBackend: ProposalBackend = {
         data_products_sdp_id: 'SDP-1',
         options: ['Y', 'N', 'Y', 'N'],
         observation_set_refs: ['obs-jtvA2l'],
-        image_size: '10 degrees',
-        pixel_size: '1.667 arcsec2',
+        image_size: { value: 10, unit: 'degrees' },
+        pixel_size: { value: 1.667, unit: 'arcsec2' },
         weighting: '1'
       }
     ],
