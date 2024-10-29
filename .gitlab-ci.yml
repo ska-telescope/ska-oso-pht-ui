@@ -64,7 +64,7 @@ test_and_coverage:
     - rm -rf node_modules
     - mkdir -p build/reports
     - mkdir -p build/.nyc_output
-    - yarn install --frozen-lockfile
+    - yarn install --immutable
   script:
     - yarn test:component:headless
     - yarn test:coverage:report:ci
