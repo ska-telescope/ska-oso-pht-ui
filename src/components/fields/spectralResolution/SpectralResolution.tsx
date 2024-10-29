@@ -36,9 +36,9 @@ export default function SpectralResolutionField({
   const LOWContinuumBase = () => 5.43;
   const LOWZoomBase = () => {
     const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
-    // const powersTwo2 = [16, 32, 64, 128];
-    const results = powersTwo.map(obj => obj * 0.21);
-    return results[bandWidth - 1];
+    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
+    const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
+    return (results[bandWidth - 1].toFixed(2) as unknown) as number;
   };
 
   const MIDContinuumBase = () => 13.44;
@@ -57,8 +57,7 @@ export default function SpectralResolutionField({
 
   const calculateMID = () => {
     if (isContinuum()) {
-      const freq = getScaledValue(frequency, 1000000000, '*');
-      return calculateVelocity(getBaseValue() * 1000, freq);
+      return calculateVelocity(getBaseValue() * 1000, getScaledValue(bandWidth, 1000000000, '*'));
     } else {
       const freq = getScaledValue(frequency, 1000000000, '*');
       return calculateVelocity(getBaseValue() * 1000, freq);
@@ -69,33 +68,20 @@ export default function SpectralResolutionField({
     return isLow() ? calculateLOW() : calculateMID();
   };
 
-  React.useEffect(() => {
+  const getDisplay = () => {
     setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
     if (setValue !== null) {
       setValue(spectralResolution);
     }
+  };
+
+  React.useEffect(() => {
+    getDisplay();
   }, []);
 
   React.useEffect(() => {
-    setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
-    if (setValue !== null) {
-      setValue(spectralResolution);
-    }
+    getDisplay();
   }, [bandWidth, frequency, frequencyUnits, observingBand, observationType]);
-
-  const roundSpectralResolution = (res: string) => {
-    const spaceIndex = res.indexOf(' ');
-    if (spaceIndex >= 0) {
-      const numberStr = res.substring(0, spaceIndex);
-      const number = Number(numberStr);
-      if (!isNaN(number)) {
-        const roundedNumber = number.toFixed(1);
-        const unitStr = res.substring(spaceIndex);
-        return roundedNumber + unitStr;
-      }
-    }
-    return res;
-  };
 
   return (
     <TextEntry
@@ -106,11 +92,7 @@ export default function SpectralResolutionField({
       labelWidth={labelWidth}
       onFocus={onFocus}
       testId="spectralResolution"
-      value={
-        !isContinuum() && observingBand === BAND_LOW
-          ? roundSpectralResolution(spectralResolution)
-          : spectralResolution
-      }
+      value={spectralResolution}
     />
   );
 }

@@ -4,9 +4,7 @@ import theme from '../../../services/theme/theme';
 import SpectralResolutionField from './SpectralResolution';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { viewPort } from '../../../utils/testing/cypress';
-
-// observingBand : [ Low, Mid 1, Mid 2, Mid 5a, Mid 5b ]
-// observationType : [ Zoom, Continuum ]
+import { TYPE_ZOOM } from '../../../utils/constants';
 
 const TEST_LABEL = 'TEST LABEL';
 
@@ -16,240 +14,248 @@ const DATA = [
     observationType: 0,
     bandWidth: 1,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '0.2 Hz (0.3 m/s)'
+    frequencyUnits: 2,
+    result: '14.13 Hz (21.2 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 2,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '0.4 Hz (0.6 m/s)'
+    frequencyUnits: 2,
+    result: '28.26 Hz (42.4 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 3,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '0.8 Hz (1.3 m/s)'
+    frequencyUnits: 2,
+    result: '56.51 Hz (84.7 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 4,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '1.7 Hz (2.5 m/s)'
+    frequencyUnits: 2,
+    result: '113.03 Hz (169.4 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 5,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '3.4 Hz (5.0 m/s)'
+    frequencyUnits: 2,
+    result: '226.06 Hz (338.9 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 6,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '6.7 Hz (10.1 m/s)'
+    frequencyUnits: 2,
+    result: '452.11 Hz (677.7 m/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 7,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '13.4 Hz (20.1 m/s)'
+    frequencyUnits: 2,
+    result: '904.22 Hz (1.4 km/s)'
   },
   {
     observingBand: 0,
     observationType: 0,
     bandWidth: 8,
     frequency: 200,
-    frequencyUnits: 1,
-    result: '26.9 Hz (40.3 m/s)'
+    frequencyUnits: 2,
+    result: '1808.45 Hz (2.7 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 1,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 1,
+    frequencyUnits: 2,
+    result: '5.43 kHz (1627.9 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 2,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 50,
+    frequencyUnits: 2,
+    result: '5.43 kHz (32.6 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 3,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 100,
+    frequencyUnits: 2,
+    result: '5.43 kHz (16.3 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 4,
     frequency: 200,
-    frequencyUnits: 1,
+    frequencyUnits: 2,
     result: '5.43 kHz (8.1 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 5,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 250,
+    frequencyUnits: 2,
+    result: '5.43 kHz (6.5 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 6,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 300,
+    frequencyUnits: 2,
+    result: '5.43 kHz (5.4 km/s)'
   },
   {
     observingBand: 0,
     observationType: 1,
     bandWidth: 7,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '5.43 kHz (8.1 km/s)'
+    frequency: 501,
+    frequencyUnits: 2,
+    result: '5.43 kHz (3.2 km/s)'
+  },
+  {
+    observingBand: 0,
+    observationType: 1,
+    bandWidth: 8,
+    frequency: 800,
+    frequencyUnits: 2,
+    result: '5.43 kHz (2.0 km/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 1,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '0.21 kHz (0.3 m/s)'
+    result: '0.21 kHz (78.9 m/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 2,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '0.42 kHz (0.6 m/s)'
+    result: '0.42 kHz (157.9 m/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 3,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '0.84 kHz (1.3 m/s)'
+    result: '0.84 kHz (315.8 m/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 4,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '1.68 kHz (2.5 m/s)'
+    result: '1.68 kHz (631.5 m/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 5,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '3.36 kHz (5.0 m/s)'
+    result: '3.36 kHz (1.3 km/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 6,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '6.72 kHz (10.1 m/s)'
+    result: '6.72 kHz (2.5 km/s)'
   },
   {
     observingBand: 1,
     observationType: 0,
     bandWidth: 7,
-    frequency: 200,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (5.1 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 1,
-    frequency: 200,
+    bandWidth: 0.35,
+    frequency: 0.435,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (11.5 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 2,
-    frequency: 200,
+    bandWidth: 0.45,
+    frequency: 0.435,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (9.0 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 3,
-    frequency: 200,
+    bandWidth: 0.6,
+    frequency: 0.435,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (6.7 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 4,
-    frequency: 200,
+    bandWidth: 0.9,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (4.5 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 5,
-    frequency: 200,
+    bandWidth: 0.85,
+    frequency: 0.1,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (4.7 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 6,
-    frequency: 200,
-    frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    bandWidth: 0.85,
+    frequency: 0.1,
+    frequencyUnits: 2,
+    result: '13.44 kHz (4.7 km/s)'
   },
   {
     observingBand: 1,
     observationType: 1,
-    bandWidth: 7,
-    frequency: 200,
+    bandWidth: 0.435,
+    frequency: 0.7975,
     frequencyUnits: 1,
-    result: '13.44 kHz (20.1 m/s)'
+    result: '13.44 kHz (9.3 km/s)'
   },
   {
     observingBand: 2,
     observationType: 0,
     bandWidth: 1,
-    frequency: 1.355,
+    frequency: 1.31,
     frequencyUnits: 1,
-    result: '0.21 kHz (46.5 m/s)'
+    result: '0.21 kHz (48.1 m/s)'
   },
   {
     observingBand: 2,
@@ -305,7 +311,7 @@ const DATA = [
     bandWidth: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 2,
@@ -313,7 +319,7 @@ const DATA = [
     bandWidth: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 2,
@@ -321,7 +327,7 @@ const DATA = [
     bandWidth: 3,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 2,
@@ -329,7 +335,7 @@ const DATA = [
     bandWidth: 4,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 2,
@@ -337,7 +343,7 @@ const DATA = [
     bandWidth: 5,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 2,
@@ -345,7 +351,7 @@ const DATA = [
     bandWidth: 6,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 2,
@@ -353,7 +359,7 @@ const DATA = [
     bandWidth: 7,
     frequency: 0.7,
     frequencyUnits: 1,
-    result: '13.44 kHz (5.8 km/s)'
+    result: '13.44 kHz (575.6 m/s)'
   },
   {
     observingBand: 3,
@@ -417,7 +423,7 @@ const DATA = [
     bandWidth: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 3,
@@ -425,7 +431,7 @@ const DATA = [
     bandWidth: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 3,
@@ -433,7 +439,7 @@ const DATA = [
     bandWidth: 3,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 3,
@@ -441,7 +447,7 @@ const DATA = [
     bandWidth: 4,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 3,
@@ -449,7 +455,7 @@ const DATA = [
     bandWidth: 5,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 3,
@@ -457,7 +463,7 @@ const DATA = [
     bandWidth: 6,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 3,
@@ -465,7 +471,7 @@ const DATA = [
     bandWidth: 7,
     frequency: 1.355,
     frequencyUnits: 1,
-    result: '13.44 kHz (3.0 km/s)'
+    result: '13.44 kHz (575.6 m/s)'
   },
   {
     observingBand: 4,
@@ -529,7 +535,7 @@ const DATA = [
     bandWidth: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 4,
@@ -537,7 +543,7 @@ const DATA = [
     bandWidth: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 4,
@@ -545,7 +551,7 @@ const DATA = [
     bandWidth: 3,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 4,
@@ -553,7 +559,7 @@ const DATA = [
     bandWidth: 4,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 4,
@@ -561,7 +567,7 @@ const DATA = [
     bandWidth: 5,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 4,
@@ -569,7 +575,7 @@ const DATA = [
     bandWidth: 6,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
+    result: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 4,
@@ -577,119 +583,7 @@ const DATA = [
     bandWidth: 7,
     frequency: 6.55,
     frequencyUnits: 1,
-    result: '13.44 kHz (615.1 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 1,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '0.21 kHz (5.3 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 2,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '0.42 kHz (10.6 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 3,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '0.84 kHz (21.3 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 4,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '1.68 kHz (42.5 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 5,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '3.36 kHz (85.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 6,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '6.72 kHz (170.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 0,
-    bandWidth: 7,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 1,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 2,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 3,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 4,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 5,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 6,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
-  },
-  {
-    observingBand: 5,
-    observationType: 1,
-    bandWidth: 7,
-    frequency: 11.85,
-    frequencyUnits: 1,
-    result: '13.44 kHz (340.0 m/s)'
+    result: '13.44 kHz (575.6 m/s)'
   }
 ];
 
@@ -737,33 +631,44 @@ function mount(
   );
 }
 
-const xObservingBand = (inValue: number) => {
-  switch (inValue) {
+const BW = (inValue: { bandWidth: number }) => {
+  return inValue.bandWidth + '...';
+};
+
+const Band = (inValue: { observingBand: number }) => {
+  switch (inValue.observingBand) {
+    case 1:
+      return 'MID 1.';
     case 2:
-      return 'MID 1';
+      return 'MID 2.';
     case 3:
-      return 'MID 2';
-    case 4:
       return 'MID 5a';
-    case 5:
+    case 4:
       return 'MID 5b';
     default:
-      return 'LOW';
+      return 'LOW...';
   }
 };
 
-const xObservingType = (inValue: number) => {
-  return inValue ? 'Zoom' : 'Continuum';
+const FQ = (inValue: { frequency: number; frequencyUnits: number; observingBand: number }) => {
+  const arr = ['', 'GHz', 'MHz', 'KHz', 'Hz'];
+  return inValue.frequency + ' ' + arr[inValue.frequencyUnits];
+};
+
+const Type = (inValue: { observationType: number }) => {
+  return inValue.observationType === TYPE_ZOOM ? 'Zoom' : 'Cont';
+};
+
+const Properties = rec => {
+  return `${Band(rec)} | ${Type(rec)} | ${BW(rec)} | ${FQ(rec)}`;
 };
 
 describe('<SpectralResolution />', () => {
-  it(`Mount with defaults`, () => {
+  it(`Band.. | Type. | BW | Frequency => Results`, () => {
     mountDefault();
   });
   for (const rec of DATA) {
-    it(`${xObservingBand(rec.observingBand)} | ${xObservingType(rec.observationType)} | ${
-      rec.bandWidth
-    } | ${rec.frequency} ${rec.frequencyUnits}`, () => {
+    it(`${Properties(rec)} => ${rec.result}`, () => {
       mount(
         rec.observingBand,
         rec.observationType,
@@ -771,7 +676,6 @@ describe('<SpectralResolution />', () => {
         rec.frequency,
         rec.frequencyUnits
       );
-      // TODO cy.get('#spectralResolution').contains('label', TEST_LABEL);
       cy.get('#spectralResolution').should('have.value', rec.result);
     });
   }

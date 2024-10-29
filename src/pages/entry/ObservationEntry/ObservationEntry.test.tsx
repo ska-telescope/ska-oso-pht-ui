@@ -180,17 +180,17 @@ function verifySpectralResolution(contents: string) {
 function verifySpectralResolutionLow() {
   verifySpectralResolution('5.43 kHz (8.1 km/s)');
 }
-// TODO function verifySpectralResolutionLowZoom() {
-// TODO   verifySpectralResolution('28.3 Hz (42.4 m/s)');
-// TODO }
+function verifySpectralResolutionLowZoom() {
+  verifySpectralResolution('28.26 Hz (42.4 m/s)');
+}
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (5.1 km/s)');
+  verifySpectralResolution('13.44 kHz (9.3 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (615.1 m/s)');
+  verifySpectralResolution('13.44 kHz (1.0 km/s)');
 }
 function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (340.0 m/s)');
+  verifySpectralResolution('13.44 kHz (805.8 m/s)');
 }
 function verifySpectralResolutionZoomBandMid() {
   verifySpectralResolution('0.21 kHz (48.1 m/s)');
@@ -362,22 +362,6 @@ describe('<ObservationEntry />', () => {
     });
   }
 
-  /* TREVOR : Please ignore, will update shortly
-
-  for (const theBand of BANDWIDTH_TELESCOPE) {
-    for (const subArray of subArrayOptions(BANDWIDTH_TELESCOPE[theBand.value])) {
-      for (const type of OBSERVATION_TYPE) {
-        it(`${BANDWIDTH_TELESCOPE[theBand.value].label} | ${subArray.label} | ${type}`, () => {
-          mount(THEME[1]);
-          verifyObservingBand(theBand.value);
-          verifySubArrayConfiguration(subArray.value);
-          verifyObservationType(type);
-        });
-      }
-    }
-  }
-    */
-
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyObservingBand(2);
@@ -464,7 +448,7 @@ describe('<ObservationEntry />', () => {
     verifySuppliedTypeValueAndUnitsLow();
     verifyFrequencyUnitsLow();
     verifyBandwidth(2, '48.8 KHz');
-    // TODO verifySpectralResolutionLowZoom();
+    verifySpectralResolutionLowZoom();
     verifySpectralAveragingLow(1);
     // TODO verifyEffectiveResolutionZoomLowBand();
     verifyImageWeighting();

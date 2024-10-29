@@ -28,7 +28,6 @@ import {
   BAND_2,
   BAND_1,
   OB_SUBARRAY_AA1,
-  OB_SUBARRAY_AA2,
   OB_SUBARRAY_AA05,
   OB_SUBARRAY_AA4,
   OB_SUBARRAY_AA4_13,
@@ -322,9 +321,7 @@ export default function ObservationEntry() {
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 ||
-    subarrayConfig === OB_SUBARRAY_AA1 ||
-    (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
+    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
 
   const taperingField = () => {
     const frequencyInGHz = () => {
