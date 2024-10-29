@@ -56,6 +56,7 @@ import SpectralAveragingField from '../../../components/fields/spectralAveraging
 import NumStations from '../../../components/fields/numStations/NumStations';
 import { roundSpectralResolution } from '../../../utils/present';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
+import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -726,6 +727,19 @@ export default function ObservationEntry() {
     );
   };
 
+  const continuumBandwidthField2 = () => (
+    <ContinuumBandwidthField
+      labelWidth={LABEL_WIDTH_OPT1}
+      onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+      setValue={setContinuumBandwidth}
+      value={continuumBandwidth}
+      suffix={continuumBandwidthUnitsField()}
+      telescope={telescope()}
+      observingBand={observingBand}
+      continuumBandwidthUnits={continuumBandwidthUnits}
+    />
+  );
+
   const continuumBandwidthField = () => {
     // HERE
     interface Limits {
@@ -1091,6 +1105,7 @@ export default function ObservationEntry() {
                   {centralFrequencyField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
+                  {continuumBandwidthField2()}
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
