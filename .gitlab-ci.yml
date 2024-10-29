@@ -74,10 +74,9 @@ test_and_coverage:
       coverage_report:
         coverage_format: cobertura
         path: build/reports/cobertura-coverage.xml
+      junit: build/reports/code-coverage.xml
     paths:
       - build/
-    reports:
-      junit: build/reports/code-coverage.xml
 
 stop-integration-test:
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY

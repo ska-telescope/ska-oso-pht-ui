@@ -10,6 +10,8 @@ Future
 
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
+* Utilities
+  - Spectral Resolution separated out into it's own component and extensive tests
 
 ---
 
