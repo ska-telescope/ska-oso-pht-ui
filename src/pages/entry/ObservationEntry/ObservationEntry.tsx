@@ -184,6 +184,7 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
     }
     setObservingBand(e);
+    console.log('calculateContinuumBandwidth 1');
     calculateContinuumBandwidth(e as number, subarrayConfig);
   };
 
@@ -198,6 +199,7 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
     }
     setSubarrayConfig(e);
+    console.log('calculateContinuumBandwidth 2');
     calculateContinuumBandwidth(observingBand, e as number);
   };
 
@@ -208,6 +210,7 @@ export default function ObservationEntry() {
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
+      console.log('calculateContinuumBandwidth 3');
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
     setCalculateToggle(!calculateToggle);
@@ -325,6 +328,7 @@ export default function ObservationEntry() {
     }
   };
 
+  // HERE
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
@@ -336,6 +340,12 @@ export default function ObservationEntry() {
         setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc));
         return;
       case BAND_5A:
+        console.log('BAND_5A');
+        console.log('sc', sc);
+        console.log(
+          'setContinuumBandwidth to',
+          lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc)
+        );
         setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc));
         return;
       case BAND_5B:
@@ -348,6 +358,7 @@ export default function ObservationEntry() {
     }
   };
 
+  // TODO expand on this to fix 5a band default value issue when switching from Low
   React.useEffect(() => {
     const calculateSubarray = () => {
       if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
@@ -731,13 +742,9 @@ export default function ObservationEntry() {
       };
     };
     const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
-      console.log('::: in convertContinuumBandwidthToLimitUnits');
-      console.log('/////////////////////////////////////////////////');
       const continuumBandwidthUnitsLabel = OBSERVATION.array
         .find(item => item.value === telescope())
         ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
-      console.log('continuumBandwidth', continuumBandwidth);
-      console.log('continuumBandwidthUnitsLabel', continuumBandwidthUnitsLabel);
       switch (limits.units) {
         case 'MHz':
           return sensCalHelpers.format.convertBandwidthToMHz(
@@ -764,7 +771,8 @@ export default function ObservationEntry() {
         return t('continuumBandWidth.range.error');
       }
       return '';
-      // TODO : handle band2 NaN cases
+      // TODO find bandwidth limit calculaions in the sens calc
+      // TODO : handle band5a NaN cases
       // TODO : handle zooms
     };
     const validate = (e: React.SetStateAction<number>) => {
