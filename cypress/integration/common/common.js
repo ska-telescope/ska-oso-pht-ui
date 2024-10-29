@@ -74,8 +74,8 @@ export const addTeamMember = () => {
   cy.get('[data-testid="sendInviteButton"]').click();
 };
 
-export const verifyEmailQueuedAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
+export const verifyEmailSentAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
