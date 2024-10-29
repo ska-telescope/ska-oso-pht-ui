@@ -15,6 +15,15 @@ Future
 
 ---
 
+
+Future
+-------
+
+* Observation page
+  - Fixed Sensitivity Calculator results for Mid AA05 observations
+
+---
+
 0.5.1
 
 ---

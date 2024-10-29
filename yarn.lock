@@ -1162,7 +1162,7 @@
     minimatch "^3.0.4"
     node-hook "^1.0.0"
 
-"@badeball/cypress-cucumber-preprocessor@^20.0.7":
+"@badeball/cypress-cucumber-preprocessor@^20.0.7", "@badeball/cypress-cucumber-preprocessor@^20.1.1":
   version "20.1.2"
   resolved "https://registry.yarnpkg.com/@badeball/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-20.1.2.tgz#415e427a2fa5cec4b8b33236f61509bbf3ee5b51"
   integrity sha512-p3l9XQoY8ouhkSq+Rs+ZdRjnfL4opB+BcZKC9kFK4r68+Qyj7uAq0M5JX+xWzxDOPDx+hhyNDV/EgIL7c8IHIA==
@@ -4872,7 +4872,11 @@ axe-core@^4.10.0:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.10.2.tgz#85228e3e1d8b8532a27659b332e39b7fa0e022df"
   integrity sha512-RE3mdQ7P3FRSe7eqCWoeQ/Z9QXrtniSjp1wUjt5nRC3WIpz5rSCve6o3fsZ2aCpJtrZjSZgjwXAoTO5k4tEI0w==
 
+<<<<<<< HEAD
 axios@^1.6.3, axios@^1.7.7:
+=======
+axios@^1.6.3, axios@^1.7.2:
+>>>>>>> star-803-dev
   version "1.7.7"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
   integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
@@ -6754,6 +6758,7 @@ cypress-file-upload@^5.0.8:
   integrity sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g==
 
 cypress-xray-plugin@^7.3.0:
+<<<<<<< HEAD
   version "7.4.0"
   resolved "https://registry.yarnpkg.com/cypress-xray-plugin/-/cypress-xray-plugin-7.4.0.tgz#39cffcb92cc00e8bb69235241697efbaf303325f"
   integrity sha512-ipQS9OGbvHAjj/LpHFnpYafWvD7t7rKXV4m6pZ+CFD/o4eG7ysoX1KrOMZlDciRRwEN0qASXxuP/IQRpCFjxgA==
@@ -6761,11 +6766,24 @@ cypress-xray-plugin@^7.3.0:
     "@cucumber/gherkin" "^28.0.0"
     "@cucumber/messages" "^24.1.0"
     axios "^1.7.7"
+=======
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/cypress-xray-plugin/-/cypress-xray-plugin-7.3.0.tgz#76c19150a6744812f4dccf955f0041a2132b8c7f"
+  integrity sha512-33mB0cR3H/ZdFOxlk6+zblo/2Rcj1pUrXmKiKkDgE9emSkEh9WwWvMiNUkfCLIbJVck7NAs8jrKkh5TsMx/iGw==
+  dependencies:
+    "@cucumber/gherkin" "^28.0.0"
+    "@cucumber/messages" "^24.1.0"
+    axios "^1.7.2"
+>>>>>>> star-803-dev
     chalk "^4.1.2"
     form-data "^4.0.0"
     semver "^7.6.3"
   optionalDependencies:
+<<<<<<< HEAD
     "@badeball/cypress-cucumber-preprocessor" "^21.0.0"
+=======
+    "@badeball/cypress-cucumber-preprocessor" "^20.1.1"
+>>>>>>> star-803-dev
 
 cypress@^13.13.3:
   version "13.15.1"
@@ -14105,7 +14123,11 @@ semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
+<<<<<<< HEAD
 semver@^7.3.2, semver@^7.3.5, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4, semver@^7.6.0, semver@^7.6.3:
+=======
+semver@^7.3.2, semver@^7.3.5, semver@^7.3.7, semver@^7.5.3, semver@^7.5.4, semver@^7.6.3:
+>>>>>>> star-803-dev
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
