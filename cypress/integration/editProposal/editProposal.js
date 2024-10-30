@@ -31,7 +31,7 @@ import {
   addTeamMember,
   clickAddDataProduct,
   addObservatoryDataProduct,
-  verifyEmailQueuedAlertFooter
+  verifyEmailSentAlertFooter
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
@@ -52,7 +52,7 @@ Then(
   () => {
     clickToTeamPage();
     addTeamMember();
-    verifyEmailQueuedAlertFooter();
+    verifyEmailSentAlertFooter();
     clickToGeneralPage();
     addAbstract();
     selectCosmology();
