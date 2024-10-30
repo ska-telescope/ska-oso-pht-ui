@@ -8,6 +8,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+----
+
+0.5.2
+
+----
+
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
 
