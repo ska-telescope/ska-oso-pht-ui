@@ -176,6 +176,7 @@ pages:
 
 xray-publish:
   variables:
+    JIRA_AUTH: cTxVgWTc72V2yKerMXQddlf4EuMI33VTdoTdfY
     XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
   rules:
     - if: '$CI_COMMIT_REF_NAME == "main"'
