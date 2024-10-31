@@ -2,8 +2,7 @@
 /* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
 import { GenerateCtrfReport } from 'cypress-ctrf-json-reporter';
-//TODO: Resolve as part of STAR-223
-// import { configureXrayPlugin } from 'cypress-xray-plugin';
+import { configureXrayPlugin } from 'cypress-xray-plugin';
 const cucumber = require('cypress-cucumber-preprocessor').default;
 
 export default defineConfig({
@@ -30,18 +29,16 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
-    setupNodeEvents(on, config) {
-      //TODO: Resolve as part of STAR-223
-      // async setupNodeEvents(on, config) {
-      // await configureXrayPlugin(on, config, {
-      //   jira: {
-      //     projectKey: 'XTP', // placeholder value
-      //     url: 'https://jira.skatelescope.org' // placeholder value
-      //   },
-      //   xray: {
-      //     uploadResults: true
-      //   }
-      // });
+    async setupNodeEvents(on, config) {
+      await configureXrayPlugin(on, config, {
+        jira: {
+          projectKey: 'XTP', // placeholder value
+          url: 'https://jira.skatelescope.org' // placeholder value
+        },
+        xray: {
+          uploadResults: true
+        }
+      });
       on('file:preprocessor', cucumber());
       new GenerateCtrfReport({
         on
