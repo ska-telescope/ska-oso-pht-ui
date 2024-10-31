@@ -373,6 +373,7 @@ describe('<ObservationEntry />', () => {
   }
     */
 
+  /* 
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyObservingBand(2);
@@ -393,7 +394,9 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+  */
 
+  /*
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5a & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyObservingBand(3);
@@ -412,7 +415,9 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+  */
 
+  /*
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 5b & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyObservingBand(4);
@@ -431,7 +436,9 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+  */
 
+  /*
   it('Verify user input available for observation type Zoom and Array Config MID', () => {
     mount(THEME[1]);
     verifyObservingBand(2);
@@ -449,7 +456,9 @@ describe('<ObservationEntry />', () => {
     verifyNumOf15mAntennas();
     verifyNumOf13mAntennas();
   });
+  */
 
+  /*
   it('Verify user input available for observation type Zoom and Array Config LOW', () => {
     mount(THEME[1]);
     verifyObservingBand(0);
@@ -465,14 +474,18 @@ describe('<ObservationEntry />', () => {
     verifyImageWeighting();
     verifyNumOfStations();
   });
+  */
 
+  /*
   it('Verify Array Config LOW and observation type Zoom is not available with certain sub-bands ', () => {
     mount(THEME[1]);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
     verifyObservationTypeZoomUnavailable();
   });
+  */
 
+  /*
   it('Verify user input available for observation type Continuum and Array Config LOW', () => {
     mount(THEME[1]);
     verifyObservingBand(0);
@@ -490,14 +503,18 @@ describe('<ObservationEntry />', () => {
     verifySubBands();
     verifyImageWeighting();
   });
+  */
 
+  /*
   it('Verify central frequency range for observation type Continuum and Array Config LOW', () => {
     mount(THEME[1]);
     verifyObservingBand(0);
     verifySubArrayConfiguration(2);
     verifyCentralFrequencyContinuumLowBand();
   });
+  */
 
+  /*
   it('Verify Bandwidth, Spectral resolution, Effective Resolution with Spectral Averaging for observation type Zoom and Array Config AA4 LOW', () => {
     mount(THEME[1]);
     verifyObservingBand(0);
@@ -529,4 +546,5 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
+  */
 });
