@@ -40,7 +40,12 @@
     "postcss": "^8.4.31"
   },
   "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true
+    "nonGlobalStepDefinitions": true,
+    "json": {
+      "enabled": true,
+      "formatter": "cucumber-json-formatter.exe",
+      "output": "build/cucumber-report.json"
+    }
   },
   "dependencies": {
     "@babel/preset-env": "^7.21.4",
