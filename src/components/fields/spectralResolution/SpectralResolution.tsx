@@ -1,12 +1,11 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { BAND_LOW, LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '../../../utils/constants';
-import { calculateVelocity, getScaledValue } from '../../../utils/helpers';
-
-// TODO : Currently we pass in the frequency units, but we do not take note of them as part of the calculations.
+import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 
 interface SpectralResolutionFieldProps {
   bandWidth: number;
+  bandWidthUnits: number;
   frequency: number;
   frequencyUnits: number;
   label?: string;
@@ -19,6 +18,7 @@ interface SpectralResolutionFieldProps {
 
 export default function SpectralResolutionField({
   bandWidth,
+  bandWidthUnits,
   frequency,
   frequencyUnits,
   label = '',
@@ -56,12 +56,10 @@ export default function SpectralResolutionField({
     calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
 
   const calculateMID = () => {
-    if (isContinuum()) {
-      return calculateVelocity(getBaseValue() * 1000, getScaledValue(bandWidth, 1000000000, '*'));
-    } else {
-      const freq = getScaledValue(frequency, 1000000000, '*');
-      return calculateVelocity(getBaseValue() * 1000, freq);
-    }
+    const inUnits = isContinuum() ? bandWidthUnits : frequencyUnits;
+    const inValue = isContinuum() ? bandWidth : frequency;
+    const freq = frequencyConversion(inValue, inUnits, 4); // Converting to Hz
+    return calculateVelocity(getBaseValue() * 10000, freq);
   };
 
   const calculate = () => {
@@ -81,7 +79,7 @@ export default function SpectralResolutionField({
 
   React.useEffect(() => {
     getDisplay();
-  }, [bandWidth, frequency, frequencyUnits, observingBand, observationType]);
+  }, [bandWidth, bandWidthUnits, frequency, frequencyUnits, observingBand, observationType]);
 
   return (
     <TextEntry

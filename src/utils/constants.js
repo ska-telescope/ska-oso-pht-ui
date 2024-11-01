@@ -104,6 +104,13 @@ export const ELEVATION_UNITS = 'deg';
 
 export const FOOTER_HEIGHT = 20;
 
+export const FREQUENCY_UNITS = [
+  { label: 'GHz', value: 1, mapping: 'GHz', toHz: 1 },
+  { label: 'MHz', value: 2, mapping: 'MHz', toHz: 1000 },
+  { label: 'KHz', value: 3, mapping: 'kHz', toHz: 10000000 },
+  { label: 'Hz', value: 4, mapping: 'Hz', toHz: 10000000000 }
+];
+
 export const GENERAL = {
   // REPLACED, BUT KEEP FOR NOW : Cycle: 'SKA_5000_2023',
   Abstract:
@@ -381,12 +388,6 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5, mapping: 'MHz' },
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1, mapping: 'GHz' },
-        { label: 'MHz', value: 2, mapping: 'MHz' },
-        { label: 'KHz', value: 3, mapping: 'kHz' },
-        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -493,8 +494,7 @@ export const OBSERVATION = {
         { label: '781.25 KHz', value: 6, mapping: 'kHz' },
         { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
         { label: '3125 KHz', value: 8, mapping: 'kHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
+      ]
     }
   ],
   SpectralAveraging: [

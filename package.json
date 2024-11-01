@@ -16,7 +16,7 @@
     "dev": "npx react-inject-env set -d public/ && webpack serve --mode development --open",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
     "lint:fix": "eslint src/**/*.{js,jsx,ts,tsx} --fix",
-    "merge-component-reports": "jrm build/tests/component/component-tests.xml \"build/tests/*.xml\"",
+    "merge-component-reports": "jrm build/tests/component/component-tests.xml \"build/tests/component/*.xml\"",
     "prettier": "prettier --check \"**/*\"",
     "prettier:fix": "prettier --write \"**/*\"",
     "skao:update": "yarn add @ska-telescope/ska-gui-components@latest",

@@ -69,7 +69,7 @@ test_and_coverage:
   script:
     - yarn test:cypress:component:ci
     - yarn merge-component-reports
-    - cp build/tests/components/unit-tests.xml build/reports/component-tests.xml
+    - cp build/tests/components/component-tests.xml build/reports/component-tests.xml
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
   artifacts:
@@ -77,7 +77,7 @@ test_and_coverage:
       coverage_report:
         coverage_format: cobertura
         path: build/reports/cobertura-coverage.xml
-      junit: build/reports/component-tests.xml
+      junit: build/reports/component-tests.xml, build/reports/code-coverage.xml
     paths:
       - build/
 

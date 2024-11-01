@@ -193,7 +193,7 @@ function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
   verifySpectralResolution('13.44 kHz (805.8 m/s)');
 }
 function verifySpectralResolutionZoomBandMid() {
-  verifySpectralResolution('0.21 kHz (48.1 m/s)');
+  verifySpectralResolution('0.21 kHz (48.1 km/s)');
 }
 
 function verifySpectralAveragingLow(contents: number) {

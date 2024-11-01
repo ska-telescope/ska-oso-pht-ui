@@ -1,4 +1,4 @@
-import { OBSERVATION } from '../../../utils/constants';
+import { FREQUENCY_UNITS, OBSERVATION } from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
@@ -230,10 +230,7 @@ const sensCalHelpers = {
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
-      const array = OBSERVATION.array.find(item => item.value === telescope);
-      let units = array.centralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
-        ?.label;
-      return units;
+      return FREQUENCY_UNITS.find(item => item.value === unitsField)?.label;
     }
   }
 };

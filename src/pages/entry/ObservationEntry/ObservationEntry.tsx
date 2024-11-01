@@ -38,7 +38,8 @@ import {
   ROBUST,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
-  SUPPLIED_VALUE_DEFAULT_LOW
+  SUPPLIED_VALUE_DEFAULT_LOW,
+  FREQUENCY_UNITS
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -556,14 +557,14 @@ export default function ObservationEntry() {
   };
 
   const centralFrequencyUnitsField = () => {
-    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
-    if (FrequencyUnitOptions?.length === 1) {
-      return FrequencyUnitOptions[0].label;
+    // Only have MHz for Low
+    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    if (options?.length === 1) {
+      return options[0].label;
     } else {
       return (
         <DropDown
-          options={FrequencyUnitOptions}
+          options={options}
           testId="frequencyUnits"
           value={centralFrequencyUnits}
           setValue={setCentralFrequencyUnits}
@@ -626,9 +627,8 @@ export default function ObservationEntry() {
   };
 
   const continuumBandwidthUnitsField = () => {
-    // Use the central frequency units for now, as I see this being dropped soon anyway.
-    const options = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
+    // Only have MHz for Low
+    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
     if (options?.length === 1) {
       return options[0].label;
     } else {
@@ -952,6 +952,7 @@ export default function ObservationEntry() {
                 <Grid item xs={XS_BOTTOM}>
                   <SpectralResolutionField
                     bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
+                    bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
                     frequency={centralFrequency}
                     frequencyUnits={centralFrequencyUnits}
                     label={t('spectralResolution.label')}
