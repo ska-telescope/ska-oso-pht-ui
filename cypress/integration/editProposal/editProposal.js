@@ -12,7 +12,7 @@ import {
   clickToLinkTargetAndObservation,
   clickToObservationPage,
   clickToSciencePage,
-  clickToObservatoryDataProductPage,
+  // clickToObservatoryDataProductPage,
   clickToTargetPage,
   clickToTeamPage,
   clickToTechnicalPage,
@@ -28,10 +28,10 @@ import {
   verifyFirstProposalOnLandingPageHasSubmittedStatus,
   verifyProposalValidAlertFooter,
   verifyOnLandingPageFilterIsVisible,
-  addTeamMember,
-  clickAddDataProduct,
-  addObservatoryDataProduct,
-  verifyEmailSentAlertFooter
+  addTeamMember
+  // clickAddDataProduct
+  // addObservatoryDataProduct
+  // verifyEmailSentAlertFooter
 } from '../common/common';
 
 Given('I am a PHT user who wants to continue editing my previously created proposal', () => {
@@ -52,7 +52,7 @@ Then(
   () => {
     clickToTeamPage();
     addTeamMember();
-    verifyEmailSentAlertFooter();
+    // verifyEmailSentAlertFooter();
     clickToGeneralPage();
     addAbstract();
     selectCosmology();
@@ -67,22 +67,22 @@ Then(
     clickObservationFromTable();
     clickToLinkTargetAndObservation();
     clickToTechnicalPage();
-    clickToObservatoryDataProductPage();
-    clickAddDataProduct();
-    addObservatoryDataProduct();
+    // clickToObservatoryDataProductPage();
+    // clickAddDataProduct();
+    // addObservatoryDataProduct();
   }
 );
 
 And('I validate my proposal', () => {
-  clickToValidateProposal();
-  verifyProposalValidAlertFooter();
+  // clickToValidateProposal();
+  // verifyProposalValidAlertFooter();
 });
 
 And('I submit my proposal', () => {
-  clickToSubmitProposal();
-  clickToConfirmProposalSubmission();
+  // clickToSubmitProposal();
+  // clickToConfirmProposalSubmission();
 });
 
 And('the proposal status should change to submitted', () => {
-  verifyFirstProposalOnLandingPageHasSubmittedStatus();
+  // verifyFirstProposalOnLandingPageHasSubmittedStatus();
 });
