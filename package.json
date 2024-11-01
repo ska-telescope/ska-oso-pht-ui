@@ -16,7 +16,7 @@
     "dev": "npx react-inject-env set -d public/ && webpack serve --mode development --open",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
     "lint:fix": "eslint src/**/*.{js,jsx,ts,tsx} --fix",
-    "merge-reports": "jrm build/reports/unit-tests.xml \"build/tests/*.xml\"",
+    "merge-component-reports": "jrm build/tests/component/component-tests.xml \"build/tests/*.xml\"",
     "prettier": "prettier --check \"**/*\"",
     "prettier:fix": "prettier --write \"**/*\"",
     "skao:update": "yarn add @ska-telescope/ska-gui-components@latest",
@@ -25,9 +25,8 @@
     "test:coverage:report:ci": "npx nyc report --report-dir=build/reports --reporter=cobertura",
     "test:coverage:summary": "npx nyc report --reporter=text-summary",
     "test:headless": "yarn cypress:run",
-    "test:component:headless": "cypress run --component --headless --config video=false",
+    "test:cypress:component:ci": "cypress run --component --headless --config video=false --reporter junit --reporter-options mochaFile=build/tests/component/unit-tests[hash].xml",
     "test:cypress:e2e:ci": "cypress run --e2e --headless --reporter junit --config video=false --reporter-options mochaFile=build/tests/unit-tests[hash].xml",
-    "test:cypress:component:ci": "cypress run --component --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:e2e:headless": "cypress run --e2e --headless --config video=false"
   },
   "resolutions": {
