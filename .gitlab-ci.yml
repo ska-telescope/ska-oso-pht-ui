@@ -257,9 +257,9 @@ include:
     file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
 
 js-e2e-test:
-   allow_failure: true
-   variables:
-     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+  allow_failure: true
+  variables:
+    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
   rules:
     - exists:
         - cypress/**/*.js
