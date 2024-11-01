@@ -20,7 +20,7 @@ export const countWords = (text: string) => {
         .filter(Boolean).length;
 };
 
-export const frequencyConversion = (inValue: any, from: number, to: number) => {
+export const frequencyConversion = (inValue: any, from: number, to: number = 4) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
 

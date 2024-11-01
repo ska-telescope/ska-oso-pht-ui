@@ -936,14 +936,14 @@ export default function ObservationEntry() {
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   <EffectiveResolutionField
-                    label={t('spectralResolution.label')}
+                    label={t('effectiveResolution.label')}
                     frequency={centralFrequency}
                     frequencyUnits={centralFrequencyUnits}
                     spectralAveraging={spectralAveraging}
                     spectralResolution={spectralResolution}
                     observingBand={observingBand}
                     observationType={observationType}
-                    onFocus={() => helpComponent(t('spectralResolution.help'))}
+                    onFocus={() => helpComponent(t('effectiveResolution.help'))}
                     setValue={setEffectiveResolution}
                   />
                 </Grid>

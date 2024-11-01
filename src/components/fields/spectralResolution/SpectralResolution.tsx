@@ -1,6 +1,12 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { BAND_LOW, LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '../../../utils/constants';
+import {
+  BAND_LOW,
+  FREQUENCY_UNITS,
+  LAB_IS_BOLD,
+  LAB_POSITION,
+  TYPE_CONTINUUM
+} from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 
 interface SpectralResolutionFieldProps {
@@ -50,7 +56,12 @@ export default function SpectralResolutionField({
   const LOWBase = () => (isContinuum() ? LOWContinuumBase() : LOWZoomBase());
   const MIDBase = () => (isContinuum() ? MIDContinuumBase() : MIDZoomBase());
   const getBaseValue = () => (isLow() ? LOWBase() : MIDBase());
-  const getUnits1 = () => (isLow() ? (isContinuum() ? 'kHz' : 'Hz') : 'kHz');
+  const getUnits1 = () =>
+    isLow()
+      ? isContinuum()
+        ? FREQUENCY_UNITS[2].label
+        : FREQUENCY_UNITS[3].label
+      : FREQUENCY_UNITS[2].label;
 
   const calculateLOW = () =>
     calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
@@ -58,7 +69,7 @@ export default function SpectralResolutionField({
   const calculateMID = () => {
     const inUnits = isContinuum() ? bandWidthUnits : frequencyUnits;
     const inValue = isContinuum() ? bandWidth : frequency;
-    const freq = frequencyConversion(inValue, inUnits, 4); // Converting to Hz
+    const freq = frequencyConversion(inValue, inUnits);
     return calculateVelocity(getBaseValue() * 10000, freq);
   };
 
