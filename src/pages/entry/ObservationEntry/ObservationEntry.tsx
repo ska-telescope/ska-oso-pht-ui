@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, NumberEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
@@ -52,10 +52,11 @@ import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
+import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { calculateVelocity, getScaledValue } from '../../../utils/helpers';
+import { getScaledValue } from '../../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -210,28 +211,6 @@ export default function ObservationEntry() {
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
   }, []);
-
-  React.useEffect(() => {
-    const calculateEffectiveResolution = () => {
-      // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-      const arr = String(spectralResolution).split(' ');
-      if (arr.length > 2) {
-        const resolution = Number(arr[0]);
-        const effectiveResolutionValue = resolution * spectralAveraging;
-        const freqMultiplier = isLow() ? 1000000 : 1000000000;
-        const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
-        const decimal = isContinuum() ? 2 : 1;
-        const multiplier = !isLow() || isContinuum() ? 1000 : 1;
-        const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
-        return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
-      } else {
-        return '';
-      }
-    };
-
-    setEffectiveResolution(calculateEffectiveResolution());
-    setValidateToggle(!validateToggle);
-  }, [spectralResolution]);
 
   React.useEffect(() => {
     if (isContinuumOnly()) {
@@ -677,22 +656,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const effectiveResolutionField = () => {
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="effectiveResolution"
-        value={effectiveResolution}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
-        disabled
-      />
-    );
-  };
-
   const AntennasFields = () => {
     return (
       <Grid pb={0} pt={1} container direction="row">
@@ -972,7 +935,17 @@ export default function ObservationEntry() {
                   />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {effectiveResolutionField()}
+                  <EffectiveResolutionField
+                    label={t('spectralResolution.label')}
+                    frequency={centralFrequency}
+                    frequencyUnits={centralFrequencyUnits}
+                    spectralAveraging={spectralAveraging}
+                    spectralResolution={spectralResolution}
+                    observingBand={observingBand}
+                    observationType={observationType}
+                    onFocus={() => helpComponent(t('spectralResolution.help'))}
+                    setValue={setEffectiveResolution}
+                  />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   {!isLow() && taperingField()}
