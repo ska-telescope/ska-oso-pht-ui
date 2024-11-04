@@ -1,4 +1,4 @@
-import { TEXT_ENTRY_PARAMS } from './constants';
+import { FREQUENCY_UNITS, SPEED_OF_LIGHT, TEXT_ENTRY_PARAMS, VELOCITY_UNITS } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -18,6 +18,33 @@ export const countWords = (text: string) => {
         .trim()
         .split(/\s+/)
         .filter(Boolean).length;
+};
+
+export const frequencyConversion = (inValue: any, from: number, to: number = 4) => {
+  return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
+};
+
+export const getScaledValue = (value: any, multiplier: number, operator: string) => {
+  let val_scaled = 0;
+  switch (operator) {
+    case '*':
+      val_scaled = value * multiplier;
+      break;
+    case '/':
+      val_scaled = value / multiplier;
+      break;
+    default:
+      val_scaled = value;
+  }
+  return val_scaled;
+};
+
+export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
+  const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
+  const occ = velocity < 1000 ? 0 : 1;
+  return (
+    (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
+  );
 };
 
 export const helpers = {

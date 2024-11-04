@@ -181,13 +181,15 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   );
 
   const row3 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={2} display={{ xs: 'none', lg: 'block' }}>
+    <Grid container direction="row" alignItems="center" justifyContent="space-around">
+      <Grid item></Grid>
+      <Grid item display={{ xs: 'none', lg: 'block' }}>
         {pageTitle()}
       </Grid>
       <Grid item xs={8} display={{ xs: 'none', lg: 'block' }}>
         {pageDesc()}
       </Grid>
+      <Grid item></Grid>
     </Grid>
   );
 

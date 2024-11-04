@@ -27,7 +27,7 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
   }
 
   const closeFunction = () => {
-    Notify('', AlertColorTypes.Info);
+    Notify('');
     setShow(false);
   };
 

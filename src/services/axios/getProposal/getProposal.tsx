@@ -19,7 +19,8 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   IMAGE_WEIGHTING,
   BAND_LOW,
-  BAND_1
+  BAND_1,
+  FREQUENCY_UNITS
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -219,14 +220,11 @@ const getFrequencyAndBandwidthUnits = (
   telescope: number,
   observingBand: number
 ): number => {
-  const array = OBSERVATION.array?.find(item => item?.value === telescope);
-  let units = array.centralFrequencyAndBandWidthUnits?.find(
-    item => item.mapping.toLowerCase() === inUnits?.toLowerCase()
-  )?.value;
-  // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
+  let units = FREQUENCY_UNITS.find(item => item.mapping.toLowerCase() === inUnits?.toLowerCase())
+    ?.value;
   return units
     ? units
-    : array.centralFrequencyAndBandWidthUnits?.find(
+    : FREQUENCY_UNITS.find(
         item =>
           item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
       )?.value;
