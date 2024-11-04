@@ -15,10 +15,10 @@ interface continuumBandwidthFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
-  suffix: any; // TODO figure out sufix type
-  telescope: number;
-  observingBand: number;
-  continuumBandwidthUnits: number;
+  suffix?: any; // TODO figure out sufix type
+  telescope?: number;
+  observingBand?: number;
+  continuumBandwidthUnits?: number;
 }
 
 interface Limits {
@@ -38,7 +38,12 @@ export default function ContinuumBandwidthField({
   continuumBandwidthUnits
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
-  const FIELD = 'continuumBandwidth';
+  const FIELD = 'continuumBandwidth2';
+
+  console.log('telescope', telescope);
+  console.log('observingBand', observingBand);
+  console.log('continuumBandwidthUnits', continuumBandwidthUnits);
+  console.log('suffix', suffix);
 
   const findBandwidthLimits = (): Limits => {
     const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
