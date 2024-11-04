@@ -98,7 +98,7 @@ export default function ObservationEntry() {
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
-  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(1);
+  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(2);
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);

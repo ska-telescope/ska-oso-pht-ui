@@ -178,22 +178,22 @@ function verifySpectralResolution(contents: string) {
     .should('be.disabled');
 }
 function verifySpectralResolutionLow() {
-  verifySpectralResolution('5.43 KHz (8.1 km/s)');
+  verifySpectralResolution('5.43 kHz (8.1 km/s)');
 }
 function verifySpectralResolutionLowZoom() {
   verifySpectralResolution('28.26 Hz (42.4 m/s)');
 }
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 KHz (9.3 km/s)');
+  verifySpectralResolution('13.44 kHz (9.3 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
-  verifySpectralResolution('13.44 KHz (1.0 km/s)');
+  verifySpectralResolution('13.44 kHz (1.0 km/s)');
 }
 function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
-  verifySpectralResolution('13.44 KHz (805.8 m/s)');
+  verifySpectralResolution('13.44 kHz (805.8 m/s)');
 }
 function verifySpectralResolutionZoomBandMid() {
-  verifySpectralResolution('0.21 KHz (48.1 km/s)');
+  verifySpectralResolution('0.21 kHz (48.1 km/s)');
 }
 
 function verifySpectralAveragingLow(contents: number) {
@@ -220,19 +220,19 @@ function verifyEffectiveResolution(contents: string) {
     .should('be.disabled');
 }
 function verifyEffectiveResolutionContinuumOb1SubArrayValue20() {
-  verifyEffectiveResolution('13.44 KHz (5052.3 km/s)');
+  verifyEffectiveResolution('13.44 kHz (5052.3 km/s)');
 }
 function verifyEffectiveResolutionContinuumOb5aSubArrayValue20() {
-  verifyEffectiveResolution('13.44 KHz (615.1 km/s)');
+  verifyEffectiveResolution('13.44 kHz (615.1 km/s)');
 }
 function verifyEffectiveResolutionContinuumOb5bSubArrayValue20() {
-  verifyEffectiveResolution('13.44 KHz (340.0 km/s)');
+  verifyEffectiveResolution('13.44 kHz (340.0 km/s)');
 }
 function verifyEffectiveResolutionZoomMidBand2() {
-  verifyEffectiveResolution('0.21 KHz (48.1 km/s)');
+  verifyEffectiveResolution('0.21 kHz (48.1 km/s)');
 }
 function verifyEffectiveResolutionContinuumLowBand() {
-  verifyEffectiveResolution('5.43 KHz (8.1 m/s)');
+  verifyEffectiveResolution('5.43 kHz (8.1 m/s)');
 }
 function verifyEffectiveResolutionZoomLowBand() {
   verifyEffectiveResolution('14.13 Hz (0.0 m/s)');
@@ -297,14 +297,14 @@ function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
   verifySpectralResolution('14.1 Hz (21.2 m/s)');
   verifySpectralAveragingLow(1);
   verifyEffectiveResolution('14.1 Hz (21.2 m/s)');
-  verifyBandwidth(3, '97.7 KHz');
+  verifyBandwidth(3, '97.7 kHz');
   verifySpectralResolution('56.5 Hz (84.7 m/s)');
   verifyEffectiveResolution('56.5 Hz (84.7 m/s)');
   enterSpectralAveragingLow(3);
   verifyEffectiveResolution('169.5 Hz (254.1 m/s)');
   enterSpectralAveragingLow(5);
   verifyEffectiveResolution('282.6 Hz (423.6 m/s)');
-  verifyBandwidth(7, '1562.5 KHz');
+  verifyBandwidth(7, '1562.5 kHz');
   verifySpectralResolution('904.2 Hz (1.4 km/s)');
   verifyEffectiveResolution('4521.1 Hz (6.8 km/s)');
 }
@@ -312,47 +312,47 @@ function verifyLowZoomBandwidthSpectralEffectiveResolutionA4() {
 
 /* TODO 
 function verifyMidBand2ZoomBandwidthSpectralEffectiveResolution() {
-  verifySpectralResolution('0.21 KHz (46.5 m/s)');
+  verifySpectralResolution('0.21 kHz (46.5 m/s)');
   verifySpectralAveragingMid(1);
-  verifyEffectiveResolution('0.2 KHz (46.5 m/s)');
+  verifyEffectiveResolution('0.2 kHz (46.5 m/s)');
   verifyBandwidth(2, '6.25 MHz');
-  verifySpectralResolution('0.42 KHz (92.9 m/s)');
-  verifyEffectiveResolution('0.4 KHz (92.9 m/s)');
+  verifySpectralResolution('0.42 kHz (92.9 m/s)');
+  verifyEffectiveResolution('0.4 kHz (92.9 m/s)');
   enterSpectralAveragingMid(8);
-  verifySpectralResolution('0.42 KHz (92.9 m/s)');
-  verifyEffectiveResolution('3.4 KHz (743.4 m/s)');
+  verifySpectralResolution('0.42 kHz (92.9 m/s)');
+  verifyEffectiveResolution('3.4 kHz (743.4 m/s)');
   verifyBandwidth(3, '12.5 MHz');
-  verifySpectralResolution('0.84 KHz (185.8 m/s)');
-  verifyEffectiveResolution('6.7 KHz (1.5 km/s)');
+  verifySpectralResolution('0.84 kHz (185.8 m/s)');
+  verifyEffectiveResolution('6.7 kHz (1.5 km/s)');
   enterSpectralAveragingMid(1);
-  verifySpectralResolution('0.84 KHz (185.8 m/s)');
-  verifyEffectiveResolution('0.8 KHz (185.8 m/s)');
+  verifySpectralResolution('0.84 kHz (185.8 m/s)');
+  verifyEffectiveResolution('0.8 kHz (185.8 m/s)');
   verifySubArrayConfiguration(5);
-  verifySpectralResolution('0.84 KHz (192.2 m/s)');
-  verifyEffectiveResolution('0.8 KHz (192.2 m/s)');
+  verifySpectralResolution('0.84 kHz (192.2 m/s)');
+  verifyEffectiveResolution('0.8 kHz (192.2 m/s)');
 }
 */
 
 // TODO function verifyMidBand5aZoomBandwidthSpectralEffectiveResolution() {
-// TODO   verifySpectralResolution('0.21 KHz (9.6 m/s)');
-// TODO   verifyEffectiveResolution('0.2 KHz (9.6 m/s)');
+// TODO   verifySpectralResolution('0.21 kHz (9.6 m/s)');
+// TODO   verifyEffectiveResolution('0.2 kHz (9.6 m/s)');
 // TODO   verifyBandwidth(2, '6.25 MHz');
 // TODO   verifySubArrayConfiguration(9);
-// TODO   verifySpectralResolution('0.42 KHz (19.2 m/s)');
-// TODO   verifyEffectiveResolution('0.4 KHz (19.2 m/s)');
+// TODO   verifySpectralResolution('0.42 kHz (19.2 m/s)');
+// TODO   verifyEffectiveResolution('0.4 kHz (19.2 m/s)');
 // TODO }
 
 // TODO function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
-// TODO   verifySpectralResolution('0.21 KHz (5.3 m/s)');
-// TODO   verifyEffectiveResolution('0.2 KHz (5.3 m/s)');
+// TODO   verifySpectralResolution('0.21 kHz (5.3 m/s)');
+// TODO   verifyEffectiveResolution('0.2 kHz (5.3 m/s)');
 // TODO   enterSpectralAveragingMid(24);
-// TODO   verifySpectralResolution('0.21 KHz (5.3 m/s)');
-// TODO   verifyEffectiveResolution('5.0 KHz (127.5 m/s)');
+// TODO   verifySpectralResolution('0.21 kHz (5.3 m/s)');
+// TODO   verifyEffectiveResolution('5.0 kHz (127.5 m/s)');
 // TODO   verifyBandwidth(4, '25 MHz');
-// TODO   verifySpectralResolution('1.68 KHz (42.5 m/s)');
-// TODO   verifyEffectiveResolution('40.3 KHz (1.0 km/s)');
+// TODO   verifySpectralResolution('1.68 kHz (42.5 m/s)');
+// TODO   verifyEffectiveResolution('40.3 kHz (1.0 km/s)');
 // TODO   enterSpectralAveragingMid(1);
-// TODO   verifyEffectiveResolution('1.7 KHz (42.5 m/s)');
+// TODO   verifyEffectiveResolution('1.7 kHz (42.5 m/s)');
 // TODO }
 
 describe('<ObservationEntry />', () => {
@@ -447,7 +447,7 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifySuppliedTypeValueAndUnitsLow();
     verifyFrequencyUnitsLow();
-    verifyBandwidth(2, '48.8 KHz');
+    verifyBandwidth(2, '48.8 kHz');
     verifySpectralResolutionLowZoom();
     verifySpectralAveragingLow(1);
     verifyEffectiveResolutionZoomLowBand();

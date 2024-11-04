@@ -90,7 +90,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (1627.9 km/s)'
+    spectralResolution: '5.43 kHz (1627.9 km/s)'
   },
   {
     observingBand: 0,
@@ -99,7 +99,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 50,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (32.6 km/s)'
+    spectralResolution: '5.43 kHz (32.6 km/s)'
   },
   {
     observingBand: 0,
@@ -108,7 +108,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 100,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (16.3 km/s)'
+    spectralResolution: '5.43 kHz (16.3 km/s)'
   },
   {
     observingBand: 0,
@@ -117,7 +117,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 200,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (8.1 km/s)'
+    spectralResolution: '5.43 kHz (8.1 km/s)'
   },
   {
     observingBand: 0,
@@ -126,7 +126,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 250,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (6.5 km/s)'
+    spectralResolution: '5.43 kHz (6.5 km/s)'
   },
   {
     observingBand: 0,
@@ -135,7 +135,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 300,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (5.4 km/s)'
+    spectralResolution: '5.43 kHz (5.4 km/s)'
   },
   {
     observingBand: 0,
@@ -144,7 +144,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 501,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (3.2 km/s)'
+    spectralResolution: '5.43 kHz (3.2 km/s)'
   },
   {
     observingBand: 0,
@@ -153,7 +153,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 800,
     frequencyUnits: 2,
-    spectralResolution: '5.43 KHz (2.0 km/s)'
+    spectralResolution: '5.43 kHz (2.0 km/s)'
   },
   {
     observingBand: 1,
@@ -162,7 +162,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '0.21 KHz (78.9 m/s)'
+    spectralResolution: '0.21 kHz (78.9 m/s)'
   },
   {
     observingBand: 1,
@@ -171,7 +171,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '0.42 KHz (157.9 m/s)'
+    spectralResolution: '0.42 kHz (157.9 m/s)'
   },
   {
     observingBand: 1,
@@ -180,7 +180,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '0.84 KHz (315.8 m/s)'
+    spectralResolution: '0.84 kHz (315.8 m/s)'
   },
   {
     observingBand: 1,
@@ -189,7 +189,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '1.68 KHz (631.5 m/s)'
+    spectralResolution: '1.68 kHz (631.5 m/s)'
   },
   {
     observingBand: 1,
@@ -198,7 +198,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '3.36 KHz (1.3 km/s)'
+    spectralResolution: '3.36 kHz (1.3 km/s)'
   },
   {
     observingBand: 1,
@@ -207,7 +207,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '6.72 KHz (2.5 km/s)'
+    spectralResolution: '6.72 kHz (2.5 km/s)'
   },
   {
     observingBand: 1,
@@ -216,7 +216,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (5.1 km/s)'
+    spectralResolution: '13.44 kHz (5.1 km/s)'
   },
   {
     observingBand: 1,
@@ -225,7 +225,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.435,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (11.5 km/s)'
+    spectralResolution: '13.44 kHz (11.5 km/s)'
   },
   {
     observingBand: 1,
@@ -234,7 +234,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.435,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (9.0 km/s)'
+    spectralResolution: '13.44 kHz (9.0 km/s)'
   },
   {
     observingBand: 1,
@@ -243,7 +243,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.435,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (6.7 km/s)'
+    spectralResolution: '13.44 kHz (6.7 km/s)'
   },
   {
     observingBand: 1,
@@ -252,7 +252,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (4.5 km/s)'
+    spectralResolution: '13.44 kHz (4.5 km/s)'
   },
   {
     observingBand: 1,
@@ -261,7 +261,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.1,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (4.7 km/s)'
+    spectralResolution: '13.44 kHz (4.7 km/s)'
   },
   {
     observingBand: 1,
@@ -270,7 +270,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.1,
     frequencyUnits: 2,
-    spectralResolution: '13.44 KHz (4.7 km/s)'
+    spectralResolution: '13.44 kHz (4.7 km/s)'
   },
   {
     observingBand: 1,
@@ -279,7 +279,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7975,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (9.3 km/s)'
+    spectralResolution: '13.44 kHz (9.3 km/s)'
   },
   {
     observingBand: 2,
@@ -288,7 +288,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.31,
     frequencyUnits: 1,
-    spectralResolution: '0.21 KHz (48.1 m/s)'
+    spectralResolution: '0.21 kHz (48.1 m/s)'
   },
   {
     observingBand: 2,
@@ -297,7 +297,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '0.42 KHz (179.9 m/s)'
+    spectralResolution: '0.42 kHz (179.9 m/s)'
   },
   {
     observingBand: 2,
@@ -306,7 +306,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '0.84 KHz (359.8 m/s)'
+    spectralResolution: '0.84 kHz (359.8 m/s)'
   },
   {
     observingBand: 2,
@@ -315,7 +315,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '1.68 KHz (719.5 m/s)'
+    spectralResolution: '1.68 kHz (719.5 m/s)'
   },
   {
     observingBand: 2,
@@ -324,7 +324,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '3.36 KHz (1.4 km/s)'
+    spectralResolution: '3.36 kHz (1.4 km/s)'
   },
   {
     observingBand: 2,
@@ -333,7 +333,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '6.72 KHz (2.9 km/s)'
+    spectralResolution: '6.72 kHz (2.9 km/s)'
   },
   {
     observingBand: 2,
@@ -342,7 +342,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (5.8 km/s)'
+    spectralResolution: '13.44 kHz (5.8 km/s)'
   },
   {
     observingBand: 2,
@@ -351,7 +351,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (4.0 km/s)'
+    spectralResolution: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 2,
@@ -360,7 +360,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (2.0 km/s)'
+    spectralResolution: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 2,
@@ -369,7 +369,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.3 km/s)'
+    spectralResolution: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 2,
@@ -378,7 +378,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.0 km/s)'
+    spectralResolution: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 2,
@@ -387,7 +387,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (805.8 m/s)'
+    spectralResolution: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 2,
@@ -396,7 +396,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (671.5 m/s)'
+    spectralResolution: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 2,
@@ -405,7 +405,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 0.7,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (575.6 m/s)'
+    spectralResolution: '13.44 kHz (575.6 m/s)'
   },
   {
     observingBand: 3,
@@ -414,7 +414,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '0.21 KHz (46.5 m/s)'
+    spectralResolution: '0.21 kHz (46.5 m/s)'
   },
   {
     observingBand: 3,
@@ -423,7 +423,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '0.42 KHz (92.9 m/s)'
+    spectralResolution: '0.42 kHz (92.9 m/s)'
   },
   {
     observingBand: 3,
@@ -432,7 +432,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '0.84 KHz (185.8 m/s)'
+    spectralResolution: '0.84 kHz (185.8 m/s)'
   },
   {
     observingBand: 3,
@@ -441,7 +441,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '1.68 KHz (371.7 m/s)'
+    spectralResolution: '1.68 kHz (371.7 m/s)'
   },
   {
     observingBand: 3,
@@ -450,7 +450,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '3.36 KHz (743.4 m/s)'
+    spectralResolution: '3.36 kHz (743.4 m/s)'
   },
   {
     observingBand: 3,
@@ -459,7 +459,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '6.72 KHz (1.5 km/s)'
+    spectralResolution: '6.72 kHz (1.5 km/s)'
   },
   {
     observingBand: 3,
@@ -468,7 +468,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (3.0 km/s)'
+    spectralResolution: '13.44 kHz (3.0 km/s)'
   },
   {
     observingBand: 3,
@@ -477,7 +477,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (4.0 km/s)'
+    spectralResolution: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 3,
@@ -486,7 +486,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (2.0 km/s)'
+    spectralResolution: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 3,
@@ -495,7 +495,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.3 km/s)'
+    spectralResolution: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 3,
@@ -504,7 +504,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.0 km/s)'
+    spectralResolution: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 3,
@@ -513,7 +513,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (805.8 m/s)'
+    spectralResolution: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 3,
@@ -522,7 +522,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (671.5 m/s)'
+    spectralResolution: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 3,
@@ -531,7 +531,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 1.355,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (575.6 m/s)'
+    spectralResolution: '13.44 kHz (575.6 m/s)'
   },
   {
     observingBand: 4,
@@ -540,7 +540,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '0.21 KHz (9.6 m/s)'
+    spectralResolution: '0.21 kHz (9.6 m/s)'
   },
   {
     observingBand: 4,
@@ -549,7 +549,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '0.42 KHz (19.2 m/s)'
+    spectralResolution: '0.42 kHz (19.2 m/s)'
   },
   {
     observingBand: 4,
@@ -558,7 +558,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '0.84 KHz (38.4 m/s)'
+    spectralResolution: '0.84 kHz (38.4 m/s)'
   },
   {
     observingBand: 4,
@@ -567,7 +567,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '1.68 KHz (76.9 m/s)'
+    spectralResolution: '1.68 kHz (76.9 m/s)'
   },
   {
     observingBand: 4,
@@ -576,7 +576,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '3.36 KHz (153.8 m/s)'
+    spectralResolution: '3.36 kHz (153.8 m/s)'
   },
   {
     observingBand: 4,
@@ -585,7 +585,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '6.72 KHz (307.6 m/s)'
+    spectralResolution: '6.72 kHz (307.6 m/s)'
   },
   {
     observingBand: 4,
@@ -594,7 +594,7 @@ const DATA = [
     bandWidthUnits: 2,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (615.1 m/s)'
+    spectralResolution: '13.44 kHz (615.1 m/s)'
   },
   {
     observingBand: 4,
@@ -603,7 +603,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (4.0 km/s)'
+    spectralResolution: '13.44 kHz (4.0 km/s)'
   },
   {
     observingBand: 4,
@@ -612,7 +612,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (2.0 km/s)'
+    spectralResolution: '13.44 kHz (2.0 km/s)'
   },
   {
     observingBand: 4,
@@ -621,7 +621,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.3 km/s)'
+    spectralResolution: '13.44 kHz (1.3 km/s)'
   },
   {
     observingBand: 4,
@@ -630,7 +630,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (1.0 km/s)'
+    spectralResolution: '13.44 kHz (1.0 km/s)'
   },
   {
     observingBand: 4,
@@ -639,7 +639,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (805.8 m/s)'
+    spectralResolution: '13.44 kHz (805.8 m/s)'
   },
   {
     observingBand: 4,
@@ -648,7 +648,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (671.5 m/s)'
+    spectralResolution: '13.44 kHz (671.5 m/s)'
   },
   {
     observingBand: 4,
@@ -657,7 +657,7 @@ const DATA = [
     bandWidthUnits: 1,
     frequency: 6.55,
     frequencyUnits: 1,
-    spectralResolution: '13.44 KHz (575.6 m/s)'
+    spectralResolution: '13.44 kHz (575.6 m/s)'
   }
 ];
 
@@ -728,7 +728,7 @@ const Band = (inValue: { observingBand: number }) => {
 };
 
 const FQ = (inValue: { frequency: number; frequencyUnits: number; observingBand: number }) => {
-  const arr = ['', 'GHz', 'MHz', 'KHz', 'Hz'];
+  const arr = ['', 'GHz', 'MHz', 'kHz', 'Hz'];
   return inValue.frequency + ' ' + arr[inValue.frequencyUnits];
 };
 

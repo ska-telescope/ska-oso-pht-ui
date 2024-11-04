@@ -104,8 +104,7 @@ const MockProposalBackend: ProposalBackend = {
           spectral_resolution: '5.43 kHz (8.1 km/s)',
           effective_resolution: '5.43 kHz (8.1 km/s)',
           image_weighting: '1'
-        },
-        details: ''
+        }
       }
     ],
     data_product_sdps: [

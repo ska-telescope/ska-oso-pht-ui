@@ -107,7 +107,7 @@ export const FOOTER_HEIGHT = 20;
 export const FREQUENCY_UNITS = [
   { label: 'GHz', value: 1, mapping: 'GHz', toHz: 1 },
   { label: 'MHz', value: 2, mapping: 'MHz', toHz: 1000 },
-  { label: 'KHz', value: 3, mapping: 'kHz', toHz: 10000000 },
+  { label: 'kHz', value: 3, mapping: 'kHz', toHz: 10000000 },
   { label: 'Hz', value: 4, mapping: 'Hz', toHz: 10000000000 }
 ];
 
@@ -267,7 +267,7 @@ export const TYPE_CONTINUUM = 1;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
-  { label: 'KHz', toHz: 1000 },
+  { label: 'kHz', toHz: 1000 },
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
@@ -486,14 +486,14 @@ export const OBSERVATION = {
         }
       ],
       bandWidth: [
-        { label: '24.4140625 KHz', value: 1, mapping: 'kHz' },
-        { label: '48.828125 KHz', value: 2, mapping: 'kHz' },
-        { label: '97.65625 KHz', value: 3, mapping: 'kHz' },
-        { label: '195.3125 KHz', value: 4, mapping: 'kHz' },
-        { label: '390.625 KHz', value: 5, mapping: 'kHz' },
-        { label: '781.25 KHz', value: 6, mapping: 'kHz' },
-        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
-        { label: '3125 KHz', value: 8, mapping: 'kHz' }
+        { label: '24.4140625 kHz', value: 1, mapping: 'kHz' },
+        { label: '48.828125 kHz', value: 2, mapping: 'kHz' },
+        { label: '97.65625 kHz', value: 3, mapping: 'kHz' },
+        { label: '195.3125 kHz', value: 4, mapping: 'kHz' },
+        { label: '390.625 kHz', value: 5, mapping: 'kHz' },
+        { label: '781.25 kHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 kHz', value: 7, mapping: 'kHz' },
+        { label: '3125 kHz', value: 8, mapping: 'kHz' }
       ]
     }
   ],
@@ -694,7 +694,7 @@ export const OBSERVATION = {
   Units: [
     { label: 'GHz', value: 1 },
     { label: 'MHz', value: 2 },
-    { label: 'KHz', value: 3 },
+    { label: 'kHz', value: 3 },
     { label: 'Hz', value: 4 }
   ]
 };

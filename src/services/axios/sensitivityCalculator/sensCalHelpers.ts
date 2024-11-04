@@ -123,18 +123,6 @@ const sensCalHelpers = {
         precision
       )}`;
     },
-    convertFrequencyToHz(frequencyValue, frequencyUnits): number {
-      const unitMap: { [key: string]: number } = {
-        GHz: 1000000000,
-        MHz: 1000000,
-        KHz: 1000,
-        Hz: 1
-      };
-      if (!unitMap[frequencyUnits]) {
-        throw new Error('Invalid frequency unit');
-      }
-      return frequencyValue * unitMap[frequencyUnits];
-    },
     convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
