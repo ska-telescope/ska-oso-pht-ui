@@ -736,6 +736,8 @@ export default function ObservationEntry() {
       telescope={telescope()}
       observingBand={observingBand}
       continuumBandwidthUnits={continuumBandwidthUnits}
+      centralFrequency={centralFrequency}
+      centralFrequencyUnits={centralFrequencyUnits}
     />
   );
 

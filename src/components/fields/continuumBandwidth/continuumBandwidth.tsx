@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import {
-  BANDWIDTH_TELESCOPE,
+  //BANDWIDTH_TELESCOPE,
   LAB_IS_BOLD,
   LAB_POSITION,
   OBSERVATION
@@ -19,13 +19,17 @@ interface continuumBandwidthFieldProps {
   telescope?: number;
   observingBand?: number;
   continuumBandwidthUnits?: number;
+  centralFrequency?: number;
+  centralFrequencyUnits?: number;
 }
 
+/*
 interface Limits {
   upper: number;
   lower: number;
   units: string;
 }
+  */
 
 export default function ContinuumBandwidthField({
   labelWidth = 5,
@@ -35,7 +39,9 @@ export default function ContinuumBandwidthField({
   suffix,
   telescope,
   observingBand,
-  continuumBandwidthUnits
+  continuumBandwidthUnits,
+  centralFrequency,
+  centralFrequencyUnits
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
@@ -45,6 +51,14 @@ export default function ContinuumBandwidthField({
   console.log('continuumBandwidthUnits', continuumBandwidthUnits);
   console.log('suffix', suffix);
 
+  const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
+    const frequencyUnitsLabel = OBSERVATION.array
+      .find(item => item.value === telescope)
+      ?.centralFrequencyAndBandWidthUnits.find(u => u.value === incUnits)?.label;
+    return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
+  };
+
+  /*
   const findBandwidthLimits = (): Limits => {
     const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
     return {
@@ -53,6 +67,7 @@ export default function ContinuumBandwidthField({
       units: bandWidthData.units
     };
   };
+
   const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
     const continuumBandwidthUnitsLabel = OBSERVATION.array
       .find(item => item.value === telescope)
@@ -66,7 +81,18 @@ export default function ContinuumBandwidthField({
         return value;
     }
   };
+  */
+
   const errorMessage = () => {
+    // scale bandwidth and frequency
+    // Mid continuum bandwidth scaled to HZ (check it's the case for other bands, zoom and low)
+    const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
+    console.log('scaledBandwidth', scaledBandwidth);
+    // Mid continuum frequency scaled to HZ (check it's the case for other bands, zoom and low)
+    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+    console.log('scaledFrequency', scaledFrequency);
+
+    /*
     const limits = findBandwidthLimits();
     const convertedBandwidth = convertContinuumBandwidthToLimitUnits(limits);
     console.log('convertedBandwidth', convertedBandwidth);
@@ -76,16 +102,12 @@ export default function ContinuumBandwidthField({
     if (convertedBandwidth < limits.lower) {
       return t('continuumBandWidth.range.error');
     }
+    */
     return '';
     // TODO find bandwidth limit calculaions in the sens calc
     // TODO : handle band5a NaN cases
     // TODO : handle zooms
   };
-  /*
-      const validate = (e: React.SetStateAction<number>) => {
-        setContinuumBandwidth(Number(e) < 0 ? 0 : e);
-      };
-      */
 
   return (
     <NumberEntry
