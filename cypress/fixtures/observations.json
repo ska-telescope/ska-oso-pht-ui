@@ -260,7 +260,7 @@
     "frequency": 0.435,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (11.5 km/s)",
+    "spectralResolution": "13.44 kHz (9.3 km/s)",
     "effectiveResolution": "13.44 kHz (9.3 km/s)"
   },
   {
@@ -271,7 +271,7 @@
     "frequency": 0.435,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (9.0 km/s)",
+    "spectralResolution": "13.44 kHz (9.3 km/s)",
     "effectiveResolution": "13.44 kHz (9.3 km/s)"
   },
   {
@@ -282,7 +282,7 @@
     "frequency": 0.435,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (6.7 km/s)",
+    "spectralResolution": "13.44 kHz (9.3 km/s)",
     "effectiveResolution": "13.44 kHz (9.3 km/s)"
   },
   {
@@ -293,7 +293,7 @@
     "frequency": 0.7975,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.5 km/s)",
+    "spectralResolution": "13.44 kHz (5.1 km/s)",
     "effectiveResolution": "13.44 kHz (5.1 km/s)"
   },
   {
@@ -304,7 +304,7 @@
     "frequency": 0.1,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.7 km/s)",
+    "spectralResolution": "13.44 kHz (40.3 km/s)",
     "effectiveResolution": "13.44 kHz (40.3 km/s)"
   },
   {
@@ -315,7 +315,7 @@
     "frequency": 0.1,
     "frequencyUnits": 2,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.7 km/s)",
+    "spectralResolution": "13.44 kHz (40292.1 km/s)",
     "effectiveResolution": "13.44 kHz (40292.1 km/s)"
   },
   {
@@ -326,7 +326,7 @@
     "frequency": 0.7975,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (9.3 km/s)",
+    "spectralResolution": "13.44 kHz (5.1 km/s)",
     "effectiveResolution": "13.44 kHz (5.1 km/s)"
   },
   {
@@ -414,7 +414,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.0 km/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -425,7 +425,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (2.0 km/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -436,7 +436,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.3 km/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -447,7 +447,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.0 km/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -458,7 +458,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (805.8 m/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -469,7 +469,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (671.5 m/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -480,7 +480,7 @@
     "frequency": 0.7,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (575.6 m/s)",
+    "spectralResolution": "13.44 kHz (5.8 km/s)",
     "effectiveResolution": "13.44 kHz (5.8 km/s)"
   },
   {
@@ -568,7 +568,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.0 km/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -579,7 +579,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (2.0 km/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -590,7 +590,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.3 km/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -601,7 +601,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.0 km/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -612,7 +612,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (805.8 m/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -623,7 +623,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (671.5 m/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -634,7 +634,7 @@
     "frequency": 1.355,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (575.6 m/s)",
+    "spectralResolution": "13.44 kHz (3.0 km/s)",
     "effectiveResolution": "13.44 kHz (3.0 km/s)"
   },
   {
@@ -722,7 +722,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (4.0 km/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -733,7 +733,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (2.0 km/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -744,7 +744,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.3 km/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -755,7 +755,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (1.0 km/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -766,7 +766,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (805.8 m/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -777,7 +777,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (671.5 m/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   },
   {
@@ -788,7 +788,7 @@
     "frequency": 6.55,
     "frequencyUnits": 1,
     "spectralAveraging": 1,
-    "spectralResolution": "13.44 kHz (575.6 m/s)",
+    "spectralResolution": "13.44 kHz (615.1 m/s)",
     "effectiveResolution": "13.44 kHz (615.1 m/s)"
   }
 ]

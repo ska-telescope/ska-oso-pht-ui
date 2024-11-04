@@ -184,13 +184,13 @@ function verifySpectralResolutionLowZoom() {
   verifySpectralResolution('28.26 Hz (42.4 m/s)');
 }
 function verifySpectralResolutionContinuumOb1SubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (9262.6 km/s)');
+  verifySpectralResolution('13.44 kHz (5052.3 km/s)');
 }
 function verifySpectralResolutionContinuumOb5aSubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (1033.1 km/s)');
+  verifySpectralResolution('13.44 kHz (615.1 km/s)');
 }
 function verifySpectralResolutionContinuumOb5bSubArrayValue20() {
-  verifySpectralResolution('13.44 kHz (805.8 km/s)');
+  verifySpectralResolution('13.44 kHz (340.0 km/s)');
 }
 function verifySpectralResolutionZoomBandMid() {
   verifySpectralResolution('0.21 kHz (48.1 km/s)');

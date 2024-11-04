@@ -67,9 +67,7 @@ export default function SpectralResolutionField({
     calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
 
   const calculateMID = () => {
-    const inUnits = isContinuum() ? bandWidthUnits : frequencyUnits;
-    const inValue = isContinuum() ? bandWidth : frequency;
-    const freq = frequencyConversion(inValue, inUnits);
+    const freq = frequencyConversion(frequency, frequencyUnits);
     return calculateVelocity(getBaseValue() * 10000, freq);
   };
 
