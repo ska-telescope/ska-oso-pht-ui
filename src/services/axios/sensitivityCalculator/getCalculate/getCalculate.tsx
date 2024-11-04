@@ -81,7 +81,7 @@ async function GetCalculate(
     }
   };
 
-  /*********************************************** MID *********************************************************/
+  /*********************************************************** MID *********************************************************/
 
   const convertFrequency = (value: number | string, units: number | string) => {
     return sensCalHelpers.format.convertBandwidthToHz(value, units);
