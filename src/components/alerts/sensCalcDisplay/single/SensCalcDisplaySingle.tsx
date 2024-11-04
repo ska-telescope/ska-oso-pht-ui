@@ -2,9 +2,9 @@ import React from 'react';
 import { t } from 'i18next';
 import { IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
-import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
-import { presentSensCalcError, presentUnits, presentValue } from '../../../utils/present';
+import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
+import { OBS_TYPES, STATUS_OK } from '../../../../utils/constants';
+import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 const SIZE = 20;
 const VALUE = 'value';

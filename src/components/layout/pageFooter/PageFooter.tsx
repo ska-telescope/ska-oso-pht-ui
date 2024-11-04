@@ -52,9 +52,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
       setProposal({ ...getProposal(), id: response });
-      setTimeout(() => {
-        navigate(NAV[1]);
-      }, 5000);
+      navigate(NAV[1]);
     } else {
       NotifyError(response.error);
     }

@@ -23,7 +23,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter your abstract information. This field allows latex syntax.",
+    "helper": "Please enter your abstract information. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
@@ -445,6 +445,7 @@
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
+    "short": "Type",
     "title": {
       "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
@@ -600,7 +601,6 @@
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
-    "cntWord": "Word count",
     "numWord": "Exceeded expected word count",
     "email": "Please enter a valid email address."
   },
@@ -704,7 +704,7 @@
     "maxChar": "939",
     "maxWord": "50",
     "help": "",
-    "helper": "Please enter your title information. This field supports latex syntax."
+    "helper": "Please enter your title information. This field supports latex syntax. - Word count {{current}} / {{max}}"
   },
   "updated": {
     "label": "Last Updated"
