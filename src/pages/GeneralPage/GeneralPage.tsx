@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
@@ -16,7 +16,6 @@ import { fetchCycleData } from '../../utils/storage/cycleData';
 const PAGE = 2;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 2;
-const FIELD_WIDTH = 12 - LABEL_WIDTH;
 
 export default function GeneralPage() {
   const { t } = useTranslation('pht');

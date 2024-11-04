@@ -291,7 +291,12 @@
   },
   "observingBand": {
     "help": "Select the observing band to use for observation. Note that the array will be automatically populated based on the selected band. The available bands are 50 MHz - 350 MHz for SKA-LOW and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for SKA-MID.",
-    "label": "Observing Band"
+    "label": "Observing Band",
+    "0": "Low (50 - 350 MHz)",
+    "1": "Mid Band 1 (0.35 - 1.05 GHz)",
+    "2": "Mid Band 2 (0.95 - 1.76 GHz)",
+    "3": "Mid Band 5a (4.6 - 8.5 GHz)",
+    "4": "Mid Band 5b (8.3 - 15.4 GHz)"
   },
   "observations": {
     "label": "Observations",
