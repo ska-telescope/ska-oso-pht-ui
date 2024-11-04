@@ -12,7 +12,6 @@ export default function HelpPanel() {
     <InfoCard
       color={InfoCardColorTypes.Info}
       fontSize={HELP_FONT}
-      maxHeight={HELP_VIEWPORT}
       minHeight={HELP_VIEWPORT}
       message={getHelp()}
       testId="helpPanelId"
