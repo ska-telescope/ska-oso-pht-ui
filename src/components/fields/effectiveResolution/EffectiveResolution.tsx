@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { FREQUENCY_UNITS, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { BAND_LOW, FREQUENCY_UNITS, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 
 interface EffectiveResolutionFieldProps {
@@ -30,17 +30,20 @@ export default function EffectiveResolutionField({
 }: EffectiveResolutionFieldProps) {
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
 
+  const isLow = () => observingBand === BAND_LOW;
+
   const calculateEffectiveResolution = () => {
     const arr = String(spectralResolution).split(' ');
     if (arr.length > 2) {
       const resolution = Number(arr[0]);
-      const effectiveResolutionValue = resolution * spectralAveraging;
-      const srUnits = FREQUENCY_UNITS.find(e => e.label === arr[1]).value;
-      const eff = frequencyConversion(effectiveResolutionValue, srUnits);
+      const resolutionUnits = FREQUENCY_UNITS.find(e => e.label === arr[1]).value;
       const freq = frequencyConversion(frequency, frequencyUnits);
-      const multiplier = 10;
-      const velocity = calculateVelocity(eff * multiplier, freq);
-      return `${effectiveResolutionValue.toFixed(2)} ${arr[1]} (${velocity})`;
+      const ave = resolution * spectralAveraging;
+      const velocity = calculateVelocity(
+        frequencyConversion(ave, resolutionUnits) * (isLow() ? 10000 : 10),
+        freq
+      );
+      return `${ave.toFixed(2)} ${arr[1]} (${velocity})`;
     } else {
       return '';
     }

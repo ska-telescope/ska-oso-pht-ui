@@ -79,9 +79,7 @@ export default function SpectralResolutionField({
 
   const getDisplay = () => {
     setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
-    if (setValue !== null) {
-      setValue(spectralResolution);
-    }
+    setValue(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
   };
 
   React.useEffect(() => {

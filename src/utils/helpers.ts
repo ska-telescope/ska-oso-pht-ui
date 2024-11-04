@@ -1,4 +1,4 @@
-import { FREQUENCY_UNITS, SPEED_OF_LIGHT, TEXT_ENTRY_PARAMS } from './constants';
+import { FREQUENCY_UNITS, SPEED_OF_LIGHT, TEXT_ENTRY_PARAMS, VELOCITY_UNITS } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -41,11 +41,10 @@ export const getScaledValue = (value: any, multiplier: number, operator: string)
 
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
-  if (velocity < 1000) {
-    return velocity.toFixed(precision) + ' m/s';
-  } else {
-    return (velocity / 1000).toFixed(precision) + ' km/s';
-  }
+  const occ = velocity < 1000 ? 0 : 1;
+  return (
+    (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
+  );
 };
 
 export const helpers = {
