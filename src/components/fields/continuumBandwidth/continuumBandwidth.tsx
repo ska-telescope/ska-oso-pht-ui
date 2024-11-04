@@ -38,7 +38,7 @@ export default function ContinuumBandwidthField({
   continuumBandwidthUnits
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
-  const FIELD = 'continuumBandwidth2';
+  const FIELD = 'continuumBandwidth';
 
   console.log('telescope', telescope);
   console.log('observingBand', observingBand);

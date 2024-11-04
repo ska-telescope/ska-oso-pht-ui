@@ -55,7 +55,6 @@ import ObservationTypeField from '../../../components/fields/observationType/Obs
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import NumStations from '../../../components/fields/numStations/NumStations';
 import { roundSpectralResolution } from '../../../utils/present';
-import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
 
 const XS_TOP = 5;
@@ -727,7 +726,7 @@ export default function ObservationEntry() {
     );
   };
 
-  const continuumBandwidthField2 = () => (
+  const continuumBandwidthField = () => (
     <ContinuumBandwidthField
       labelWidth={LABEL_WIDTH_OPT1}
       onFocus={() => helpComponent(t('continuumBandWidth.help'))}
@@ -739,76 +738,6 @@ export default function ObservationEntry() {
       continuumBandwidthUnits={continuumBandwidthUnits}
     />
   );
-
-  const continuumBandwidthField = () => {
-    // HERE
-    interface Limits {
-      upper: number;
-      lower: number;
-      units: string;
-    }
-    const findBandwidthLimits = (): Limits => {
-      const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
-      return {
-        upper: bandWidthData.upper,
-        lower: bandWidthData.lower,
-        units: bandWidthData.units
-      };
-    };
-    const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
-      const continuumBandwidthUnitsLabel = OBSERVATION.array
-        .find(item => item.value === telescope())
-        ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
-      switch (limits.units) {
-        case 'MHz':
-          return sensCalHelpers.format.convertBandwidthToMHz(
-            continuumBandwidth,
-            continuumBandwidthUnitsLabel
-          );
-        case 'GHz':
-          return sensCalHelpers.format.convertBandwidthToGHz(
-            continuumBandwidth,
-            continuumBandwidthUnitsLabel
-          );
-        default:
-          return continuumBandwidth;
-      }
-    };
-    const errorMessage = () => {
-      const limits = findBandwidthLimits();
-      const convertedBandwidth = convertContinuumBandwidthToLimitUnits(limits);
-      console.log('convertedBandwidth', convertedBandwidth);
-      if (convertedBandwidth > limits.upper) {
-        return t('continuumBandWidth.range.error');
-      }
-      if (convertedBandwidth < limits.lower) {
-        return t('continuumBandWidth.range.error');
-      }
-      return '';
-      // TODO find bandwidth limit calculaions in the sens calc
-      // TODO : handle band5a NaN cases
-      // TODO : handle zooms
-    };
-    const validate = (e: React.SetStateAction<number>) => {
-      setContinuumBandwidth(Number(e) < 0 ? 0 : e);
-    };
-
-    return (
-      <NumberEntry
-        label={t('continuumBandWidth.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        suffix={continuumBandwidthUnitsField()}
-        testId="continuumBandwidth"
-        value={continuumBandwidth}
-        setValue={validate}
-        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-        required
-        errorText={errorMessage()}
-      />
-    );
-  };
 
   const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
     const speedOfLight = 299792458;
@@ -1105,7 +1034,6 @@ export default function ObservationEntry() {
                   {centralFrequencyField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {continuumBandwidthField2()}
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
