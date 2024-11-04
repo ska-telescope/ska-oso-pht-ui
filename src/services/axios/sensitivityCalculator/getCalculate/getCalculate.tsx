@@ -56,14 +56,12 @@ async function GetCalculate(
   function rightAscension() {
     return target.ra
       .replace('+', '')
-      .replace('-', '')
       .replace(' ', '');
   }
 
   function declination() {
     return target.dec
       .replace('+', '')
-      .replace('-', '')
       .replace(' ', '');
   }
 

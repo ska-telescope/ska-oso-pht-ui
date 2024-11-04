@@ -396,7 +396,7 @@ export default function ObservationPage() {
       {
         field: 'actions',
         type: 'actions',
-        headerName: 'status',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
