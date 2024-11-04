@@ -327,7 +327,7 @@ export default function ObservationPage() {
       },
       {
         field: 'weather',
-        headerName: '',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
@@ -347,6 +347,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
+        headerName: 'Actions',
         type: 'actions',
         sortable: false,
         flex: 1,
