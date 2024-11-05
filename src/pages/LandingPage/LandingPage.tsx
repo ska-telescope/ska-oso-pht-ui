@@ -211,14 +211,14 @@ export default function LandingPage() {
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.short'),
-    flex: 1.0,
+    width: 60,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
       </Tooltip>
     )
   };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), flex: 1 };
+  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
@@ -228,7 +228,7 @@ export default function LandingPage() {
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    flex: 0.5,
+    width: 60,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -237,14 +237,14 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    flex: 1.0,
+    width: 140,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
   const colUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    flex: 1.0,
+    width: 140,
     renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
   };
 
@@ -253,7 +253,7 @@ export default function LandingPage() {
     type: 'actions',
     headerName: 'Actions',
     sortable: false,
-    flex: 2.5,
+    width: 150,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
