@@ -87,7 +87,7 @@
     "label": "Continuum Bandwidth",
     "range": {
       "error": "Value is outside of allowed range.",
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width (13.44 kHz)",
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width",
       "channelWidthDisplayUnits": "kHz"
     }
   },

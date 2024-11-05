@@ -65,7 +65,7 @@ export default function ContinuumBandwidthField({
     isLow() ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
   const displayMinimumChannelWidthInKHz = (minimumChannelWidthHz: number): string =>
-    `${sensCalHelpers.format.convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')} ${t(
+    `${sensCalHelpers.format.convertBandwidthToKHz(minimumChannelWidthHz, 'Hz').toFixed(2)} ${t(
       'continuumBandWidth.range.channelWidthDisplayUnits'
     )}`;
 
