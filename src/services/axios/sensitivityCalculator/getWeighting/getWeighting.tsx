@@ -31,7 +31,9 @@ import {
   WeightingLowSpectralQuery,
   WeightingLowZoomQuery,
   WeightingMidContinuumQuery,
-  WeightingMidZoomQuery
+  WeightingMidSpectralQuery,
+  WeightingMidZoomQuery,
+  WeightingQuery
 } from '.././../../../utils/types/sensCalcWeightingQuery';
 
 const URL_WEIGHTING = `weighting`;
@@ -89,56 +91,70 @@ async function GetWeighting(
 
   /*********************************************************** MID *********************************************************/
 
-  function mapQueryMidWeighting(): URLSearchParams {
-    const convertFrequency = (value: number | string, units: number | string) =>
-      sensCalHelpers.format.convertBandwidthToHz(value, units);
+  const convertFrequency = (value: number | string, units: number | string) =>
+    sensCalHelpers.format.convertBandwidthToHz(value, units);
 
-    const getParamZoomMID = (): WeightingMidZoomQuery => {
-      const params = {
-        freq_centres_hz: convertFrequency(
-          observation.centralFrequency,
-          observation.centralFrequencyUnits
-        ),
-        pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
-        weighting_mode: getWeightingMode(),
-        robustness: getRobustness(),
-        subarray_configuration: getSubArray(),
-        taper: observation.tapering
-        // TODO check how taper is handled in the sens calc as seems off
-        // their value displayed is different than value sent
-      };
-      if (observation.imageWeighting === IW_BRIGGS) {
-        params['robustness'] = getRobustness();
-      }
-      return params;
+  const getParamZoomMID = (): WeightingMidZoomQuery => {
+    const params = {
+      freq_centres_hz: convertFrequency(
+        observation.centralFrequency,
+        observation.centralFrequencyUnits
+      ),
+      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+      weighting_mode: getWeightingMode(),
+      robustness: getRobustness(),
+      subarray_configuration: getSubArray(),
+      taper: observation.tapering
+      // TODO check how taper is handled in the sens calc as seems off
+      // their value displayed is different than value sent
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
+  };
 
-    const getParamContinuumMID = (): WeightingMidContinuumQuery => {
-      const params = {
-        spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
-        freq_centre_hz: convertFrequency(
-          observation.centralFrequency,
-          observation.centralFrequencyUnits
-        ),
-        pointing_centre: rightAscension() + ' ' + declination(),
-        weighting_mode: getWeightingMode(),
-        robustness: getRobustness(),
-        subarray_configuration: getSubArray(),
-        taper: observation.tapering
-        // TODO check how taper is handled in the sens calc as seems off
-        // their value displayed is different than value sent
-      };
-      if (observation.imageWeighting === IW_BRIGGS) {
-        params['robustness'] = getRobustness();
-      }
-      return params;
+  const getParamSpectralMID = (): WeightingMidSpectralQuery => {
+    const params = {
+      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+      freq_centre_hz: convertFrequency(
+        observation.centralFrequency,
+        observation.centralFrequencyUnits
+      ),
+      pointing_centre: rightAscension() + ' ' + declination(), // MANDATORY
+      weighting_mode: getWeightingMode(),
+      robustness: getRobustness(),
+      subarray_configuration: getSubArray(),
+      taper: observation.tapering
+      // TODO check how taper is handled in the sens calc as seems off
+      // their value displayed is different than value sent
     };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
+  };
 
-    const params = isZoom() ? getParamZoomMID() : getParamContinuumMID();
-    const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
-    return urlSearchParams;
-  }
+  const getParamContinuumMID = (): WeightingMidContinuumQuery => {
+    const params = {
+      spectral_mode: OBSERVATION_TYPE_SENSCALC[inMode].toLowerCase(),
+      freq_centre_hz: convertFrequency(
+        observation.centralFrequency,
+        observation.centralFrequencyUnits
+      ),
+      pointing_centre: rightAscension() + ' ' + declination(),
+      weighting_mode: getWeightingMode(),
+      robustness: getRobustness(),
+      subarray_configuration: getSubArray(),
+      taper: observation.tapering
+      // TODO check how taper is handled in the sens calc as seems off
+      // their value displayed is different than value sent
+    };
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
+    return params;
+  };
 
   /*********************************************************** LOW *********************************************************/
 
@@ -187,27 +203,23 @@ async function GetWeighting(
     return params;
   };
 
-  function mapQueryLowWeighting(): URLSearchParams {
-    let params;
-    if (!isZoom()) {
-      params = getParamContinuumLOW();
-    } else if (isSpectral()) {
-      params = getParamSpectralLOW();
-    } else {
-      params = getParamZoomLOW();
-    }
-    const urlSearchParams = new URLSearchParams();
-    for (let key in params) urlSearchParams.append(key, params[key]);
-
-    return urlSearchParams;
-  }
-
   /*************************************************************************************************************************/
 
-  const getQueryParams = () => {
-    return observation.telescope === TELESCOPE_LOW_NUM
-      ? mapQueryLowWeighting()
-      : mapQueryMidWeighting();
+  const getParams = (): WeightingQuery => {
+    if (!isZoom()) {
+      return isLow() ? getParamContinuumLOW() : getParamContinuumMID();
+    } else if (isSpectral()) {
+      return isLow() ? getParamSpectralLOW() : getParamSpectralMID();
+    } else {
+      return isLow() ? getParamZoomLOW() : getParamZoomMID();
+    }
+  };
+
+  const getQueryParams = (): URLSearchParams => {
+    const params = getParams();
+    const urlSearchParams = new URLSearchParams();
+    for (let key in params) urlSearchParams.append(key, params[key]);
+    return urlSearchParams;
   };
 
   const getMockData = () => {

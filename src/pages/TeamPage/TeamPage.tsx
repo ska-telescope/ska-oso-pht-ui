@@ -141,7 +141,7 @@ export default function TeamPage() {
           alignItems="space-evenly"
           justifyContent="space-around"
         >
-          <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
+          <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
               actionClicked={deleteIconClicked}

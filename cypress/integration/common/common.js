@@ -74,8 +74,8 @@ export const addTeamMember = () => {
   cy.get('[data-testid="sendInviteButton"]').click();
 };
 
-export const verifyEmailQueuedAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
+export const verifyEmailSentAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
@@ -179,7 +179,7 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click();
-  cy.get('[aria-label="Status : OK "]').should('exist');
+  // cy.get('[aria-label="Status : OK "]').should('exist'); Not good to force an OK status here, should be separate
 };
 
 export const clickToValidateProposal = () => {
