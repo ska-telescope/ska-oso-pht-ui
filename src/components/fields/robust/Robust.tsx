@@ -1,5 +1,4 @@
 import React from 'react';
-import { t } from 'i18next';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { LAB_IS_BOLD, LAB_POSITION, ROBUST } from '../../../utils/constants';

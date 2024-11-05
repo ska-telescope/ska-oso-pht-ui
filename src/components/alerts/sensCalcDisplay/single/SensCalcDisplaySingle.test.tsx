@@ -1,15 +1,15 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
-import SensCalcDisplaySingle from '../../alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
+import theme from '../../../../services/theme/theme';
+import SensCalcDisplaySingle from '../../sensCalcDisplay/single/SensCalcDisplaySingle';
+import { THEME, viewPort } from '../../../../utils/testing/cypress';
 
-function mountingBasic(theTheme: any, show: boolean) {
+function mounting(theTheme: any, sensCalc: any, show: boolean, field: string) {
   viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <SensCalcDisplaySingle row={null} show={show} />
+      <SensCalcDisplaySingle sensCalc={sensCalc} show={show} field={field} />
     </ThemeProvider>
   );
 }
@@ -17,7 +17,7 @@ function mountingBasic(theTheme: any, show: boolean) {
 describe('<SensCalcDisplaySingle />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (basic)`, () => {
-      mountingBasic(theTheme, false);
+      mounting(theTheme, 123, false, 'icon');
     });
   }
 });

@@ -149,10 +149,10 @@
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 15 degrees) and the target's zenith elevation. An error message is displayed if this is not the case. For long integrations, increasing the minimum elevation will improve the sensitivity at the expense of uv-coverage.",
+    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 20 degrees for LOW and 15 degrees for MID) and the target's zenith elevation. An error message is displayed if this is not the case. For long integrations, increasing the minimum elevation will improve the sensitivity at the expense of uv-coverage.",
     "label": "Minimum Elevation",
     "range": {
-      "error": "Value is outside of allowed range."
+      "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
     }
   },
   "email": {

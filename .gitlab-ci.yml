@@ -266,8 +266,8 @@ js-e2e-test:
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
-  artifacts:
-    paths: [gl-code-quality-report.json]
+  # artifacts:
+  #  paths: [gl-code-quality-report.json]
   # disable dind service as it's not needed for ska-default runners
   services: []
   tags:
