@@ -56,7 +56,6 @@ import EffectiveResolutionField from '../../../components/fields/effectiveResolu
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { getScaledValue } from '../../../utils/helpers';
 import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
 
 const XS_TOP = 5;
@@ -630,24 +629,11 @@ export default function ObservationEntry() {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
+          disabled={isLow()}
           onFocus={() => helpComponent(t('frequencyUnits.help'))}
         />
       );
     }
-    // Use the central frequency units for now, as I see this being dropped soon anyway.
-    const options = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
-    return (
-      <DropDown
-        options={options}
-        testId="continuumBandwidthUnits"
-        value={continuumBandwidthUnits}
-        setValue={setContinuumBandwidthUnits}
-        label=""
-        disabled={isLow()}
-        onFocus={() => helpComponent(t('frequencyUnits.help'))}
-      />
-    );
   };
 
   const continuumBandwidthField = () => (
@@ -665,16 +651,6 @@ export default function ObservationEntry() {
     />
   );
 
-  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const speedOfLight = 299792458;
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
-    if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
-  };
-
   const getScaledValue = (value: any, multiplier: number, operator: string) => {
     let val_scaled = 0;
     switch (operator) {
@@ -688,22 +664,6 @@ export default function ObservationEntry() {
         val_scaled = value;
     }
     return val_scaled;
-  };
-
-  const effectiveResolutionField = () => {
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="effectiveResolution"
-        value={effectiveResolution}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
-        disabled
-      />
-    );
   };
 
   const AntennasFields = () => {

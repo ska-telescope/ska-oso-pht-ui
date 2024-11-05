@@ -5,10 +5,10 @@ import {
   //BANDWIDTH_TELESCOPE,
   LAB_IS_BOLD,
   LAB_POSITION,
-  OBSERVATION,
   MID_MIN_CHANNEL_WIDTH_HZ,
   LOW_MIN_CHANNEL_WIDTH_HZ,
-  BAND_LOW
+  BAND_LOW,
+  FREQUENCY_UNITS
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
@@ -56,14 +56,18 @@ export default function ContinuumBandwidthField({
   console.log('suffix', suffix);
 
   const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
-    const frequencyUnitsLabel = OBSERVATION.array
-      .find(item => item.value === telescope)
-      ?.centralFrequencyAndBandWidthUnits.find(u => u.value === incUnits)?.label;
+    const frequencyUnitsLabel = FREQUENCY_UNITS.find(item => item.value === incUnits)?.label;
+    console.log('frequencyUnitsLabel', frequencyUnitsLabel);
     return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
   };
 
   const getMinimumChannelWidth = (): number =>
     isLow() ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
+
+  const displayMinimumChannelWidthInKHz = (minimumChannelWidthHz: number): string =>
+    `${sensCalHelpers.format.convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')} ${t(
+      'continuumBandWidth.range.channelWidthDisplayUnits'
+    )}`;
 
   /*
   const findBandwidthLimits = (): Limits => {
@@ -97,14 +101,15 @@ export default function ContinuumBandwidthField({
     // Mid continuum bandwidth scaled to HZ (check it's the case for other bands, zoom and low)
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
     // Mid continuum frequency scaled to HZ (check it's the case for other bands, zoom and low)
-    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+    // const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // CHECK 2
     // minimum channel width check
     const minimumChannelWidthHz = getMinimumChannelWidth();
     if (scaledBandwidth < minimumChannelWidthHz) {
-      return t('continuumBandWidth.range.minimumChannelWidthError');
-      // minimumChannelWidthError
+      return `${t(
+        'continuumBandWidth.range.minimumChannelWidthError'
+      )} (${displayMinimumChannelWidthInKHz(minimumChannelWidthHz)})`;
     }
 
     /*
