@@ -97,10 +97,8 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
-export const ELEVATION_MIN = 15;
+
 export const ELEVATION_DEFAULT = 45;
-export const ELEVATION_MAX = 59.2;
-export const ELEVATION_UNITS = 'deg';
 
 export const FOOTER_HEIGHT = 20;
 

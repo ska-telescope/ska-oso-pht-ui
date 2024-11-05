@@ -10,9 +10,6 @@ import {
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
   ELEVATION_DEFAULT,
-  ELEVATION_MAX,
-  ELEVATION_MIN,
-  ELEVATION_UNITS,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -35,7 +32,6 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -53,6 +49,8 @@ import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
+import ElevationField from '../../../components/fields/elevation/Elevation';
+import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
@@ -378,10 +376,6 @@ export default function ObservationEntry() {
     );
   };
 
-  const robustField = () => {
-    return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
-  };
-
   const fieldDropdown = (
     disabled: boolean,
     field: string,
@@ -484,31 +478,6 @@ export default function ObservationEntry() {
       </Grid>
     </Grid>
   );
-
-  const elevationUnitsField = () => ELEVATION_UNITS;
-
-  const elevationField = () => {
-    const errorMessage = () => {
-      return elevation < ELEVATION_MIN || elevation > ELEVATION_MAX
-        ? t('elevation.range.error')
-        : '';
-    };
-
-    return (
-      <NumberEntry
-        errorText={errorMessage()}
-        label={t('elevation.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="elevation"
-        value={elevation}
-        setValue={setElevation}
-        onFocus={() => helpComponent(t('elevation.help'))}
-        suffix={elevationUnitsField()}
-      />
-    );
-  };
 
   const weatherUnitsField = () => t('weather.units');
 
@@ -879,7 +848,14 @@ export default function ObservationEntry() {
               )}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {elevationField()}
+              <ElevationField
+                isLow={isLow()}
+                label={t('elevation.label')}
+                onFocus={() => helpComponent(t('elevation.help'))}
+                setValue={setElevation}
+                testId="elevation"
+                value={elevation}
+              />
             </Grid>
             <Grid item xs={XS_TOP}>
               {!isLow() && weatherField()}
@@ -958,7 +934,16 @@ export default function ObservationEntry() {
                 </Grid>
                 <Grid item xs={XS_BOTTOM}></Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {imageWeighting === IW_BRIGGS && robustField()}
+                  {imageWeighting === IW_BRIGGS && (
+                    <RobustField
+                      label={t('robust.label')}
+                      setValue={setRobust}
+                      testId="robust"
+                      value={robust}
+                      widthButton={FIELD_WIDTH_BUTTON}
+                      widthLabel={LABEL_WIDTH_OPT1}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </CardContent>
