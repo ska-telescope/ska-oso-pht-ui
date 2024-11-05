@@ -97,7 +97,7 @@ export default function ContinuumBandwidthField({
     // Mid continuum bandwidth scaled to HZ (check it's the case for other bands, zoom and low)
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
     // Mid continuum frequency scaled to HZ (check it's the case for other bands, zoom and low)
-    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+    // const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // CHECK 2
     // minimum channel width check

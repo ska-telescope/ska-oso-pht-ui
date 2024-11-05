@@ -56,8 +56,8 @@ import EffectiveResolutionField from '../../../components/fields/effectiveResolu
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { getScaledValue } from '../../../utils/helpers';
 import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidth/bandwidth';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -362,33 +362,17 @@ export default function ObservationEntry() {
     </Grid>
   );
 
-  const bandwidthField = () => {
-    interface BandwidthOptions {
-      label: string;
-      value: number;
-      mapping: string;
-    }
-    const getOptions = (): BandwidthOptions[] => {
-      return OBSERVATION.array[telescope() - 1].bandWidth;
-    };
-    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
-      options.map(obj => {
-        return {
-          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
-          value: obj.value,
-          mapping: obj.mapping
-        };
-      });
-    return fieldDropdown(
-      false,
-      'bandwidth',
-      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
-      true,
-      setBandwidth,
-      null,
-      bandwidth
-    );
-  };
+  const bandwidthField = () => (
+    <BandwidthField
+      onFocus={() => helpComponent(t('bandWidth.help'))}
+      required
+      setValue={setBandwidth}
+      testId="bandwidth"
+      value={bandwidth}
+      telescope={telescope()}
+      widthLabel={LABEL_WIDTH_OPT1}
+    />
+  );
 
   const robustField = () => {
     return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
@@ -635,6 +619,7 @@ export default function ObservationEntry() {
       );
     }
     // Use the central frequency units for now, as I see this being dropped soon anyway.
+    /*
     const options = OBSERVATION.array.find(item => item.value === telescope())
       ?.centralFrequencyAndBandWidthUnits;
     return (
@@ -648,6 +633,7 @@ export default function ObservationEntry() {
         onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );
+    */
   };
 
   const continuumBandwidthField = () => (
@@ -665,16 +651,6 @@ export default function ObservationEntry() {
     />
   );
 
-  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const speedOfLight = 299792458;
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
-    if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
-  };
-
   const getScaledValue = (value: any, multiplier: number, operator: string) => {
     let val_scaled = 0;
     switch (operator) {
@@ -688,22 +664,6 @@ export default function ObservationEntry() {
         val_scaled = value;
     }
     return val_scaled;
-  };
-
-  const effectiveResolutionField = () => {
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="effectiveResolution"
-        value={effectiveResolution}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
-        disabled
-      />
-    );
   };
 
   const AntennasFields = () => {
