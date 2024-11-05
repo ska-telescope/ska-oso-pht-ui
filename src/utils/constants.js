@@ -75,6 +75,9 @@ export const BANDWIDTH_TELESCOPE = [
   } // Band 5b
 ];
 
+export const MID_MIN_CHANNEL_WIDTH_HZ = 13.44e3; // This is the fundamental limit of the bandwidth provided by SKA MID
+export const LOW_MIN_CHANNEL_WIDTH_HZ = (24 * 781.25e3) / 3456; // This is the fundamental limit of the bandwidth provided by SKA LOW
+
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 

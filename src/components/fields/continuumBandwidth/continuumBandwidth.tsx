@@ -5,7 +5,10 @@ import {
   //BANDWIDTH_TELESCOPE,
   LAB_IS_BOLD,
   LAB_POSITION,
-  OBSERVATION
+  OBSERVATION,
+  MID_MIN_CHANNEL_WIDTH_HZ,
+  LOW_MIN_CHANNEL_WIDTH_HZ,
+  BAND_LOW
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
@@ -45,6 +48,7 @@ export default function ContinuumBandwidthField({
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
+  const isLow = () => observingBand === BAND_LOW;
 
   console.log('telescope', telescope);
   console.log('observingBand', observingBand);
@@ -57,6 +61,9 @@ export default function ContinuumBandwidthField({
       ?.centralFrequencyAndBandWidthUnits.find(u => u.value === incUnits)?.label;
     return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
   };
+
+  const getMinimumChannelWidth = (): number =>
+    isLow() ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
   /*
   const findBandwidthLimits = (): Limits => {
@@ -84,13 +91,21 @@ export default function ContinuumBandwidthField({
   */
 
   const errorMessage = () => {
+    // CHECK 1
+    // check num values not needed
     // scale bandwidth and frequency
     // Mid continuum bandwidth scaled to HZ (check it's the case for other bands, zoom and low)
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
-    console.log('scaledBandwidth', scaledBandwidth);
     // Mid continuum frequency scaled to HZ (check it's the case for other bands, zoom and low)
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
-    console.log('scaledFrequency', scaledFrequency);
+
+    // CHECK 2
+    // minimum channel width check
+    const minimumChannelWidthHz = getMinimumChannelWidth();
+    if (scaledBandwidth < minimumChannelWidthHz) {
+      return t('continuumBandWidth.range.minimumChannelWidthError');
+      // minimumChannelWidthError
+    }
 
     /*
     const limits = findBandwidthLimits();
