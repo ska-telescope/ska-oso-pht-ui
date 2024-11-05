@@ -35,7 +35,6 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -53,6 +52,7 @@ import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
+import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
@@ -376,10 +376,6 @@ export default function ObservationEntry() {
       null,
       bandwidth
     );
-  };
-
-  const robustField = () => {
-    return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
   };
 
   const fieldDropdown = (
@@ -958,7 +954,16 @@ export default function ObservationEntry() {
                 </Grid>
                 <Grid item xs={XS_BOTTOM}></Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {imageWeighting === IW_BRIGGS && robustField()}
+                  {imageWeighting === IW_BRIGGS && (
+                    <RobustField
+                      label={t('robust.label')}
+                      setValue={setRobust}
+                      testId="robust"
+                      value={robust}
+                      widthButton={FIELD_WIDTH_BUTTON}
+                      widthLabel={LABEL_WIDTH_OPT1}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </CardContent>
