@@ -211,7 +211,7 @@ export default function LandingPage() {
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.short'),
-    width: 60,
+    width: 120,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
@@ -228,7 +228,7 @@ export default function LandingPage() {
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    width: 60,
+    width: 100,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -244,7 +244,7 @@ export default function LandingPage() {
   const colUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    width: 140,
+    width: 180,
     renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
   };
 
