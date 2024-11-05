@@ -62,6 +62,7 @@
     "axios": "^1.6.3",
     "babel-core": "6",
     "bundle-loader": "^0.5.6",
+    "cypress-xray-junit-reporter": "^1.1.8",
     "cypress-xray-plugin": "^7.3.0",
     "dotenv": "^16.4.1",
     "dotenv-webpack": "^8.0.1",
