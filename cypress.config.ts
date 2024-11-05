@@ -36,6 +36,10 @@ export default defineConfig({
           url: 'https://jira.skatelescope.org' // placeholder value
         },
         xray: {
+          serverUrl: "https://jira.skatelescope.org",
+          testPlan: "XTP-59737",
+          testExecution: "XTP-59739", // Optional, leave blank to create new execution
+          token: "cTxVgWTc72V2yKerMXQddlf4EuMI33VTdoTdfY",
           uploadResults: true
         }
       });
