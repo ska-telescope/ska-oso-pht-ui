@@ -648,6 +648,7 @@ export default function ObservationEntry() {
       continuumBandwidthUnits={continuumBandwidthUnits}
       centralFrequency={centralFrequency}
       centralFrequencyUnits={centralFrequencyUnits}
+      subarrayConfig={subarrayConfig}
     />
   );
 

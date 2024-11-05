@@ -8,7 +8,8 @@ import {
   MID_MIN_CHANNEL_WIDTH_HZ,
   LOW_MIN_CHANNEL_WIDTH_HZ,
   BAND_LOW,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  OBSERVATION
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
@@ -24,6 +25,7 @@ interface continuumBandwidthFieldProps {
   continuumBandwidthUnits?: number;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
+  subarrayConfig?: number;
 }
 
 /*
@@ -44,7 +46,8 @@ export default function ContinuumBandwidthField({
   observingBand,
   continuumBandwidthUnits,
   centralFrequency,
-  centralFrequencyUnits
+  centralFrequencyUnits,
+  subarrayConfig
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
@@ -68,6 +71,11 @@ export default function ContinuumBandwidthField({
     `${sensCalHelpers.format.convertBandwidthToKHz(minimumChannelWidthHz, 'Hz').toFixed(2)} ${t(
       'continuumBandWidth.range.channelWidthDisplayUnits'
     )}`;
+
+  const getMaxContBandwidthHz = (): any =>
+    OBSERVATION.array
+      .find(item => item.value === telescope)
+      ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
 
   /*
   const findBandwidthLimits = (): Limits => {
@@ -111,6 +119,11 @@ export default function ContinuumBandwidthField({
         'continuumBandWidth.range.minimumChannelWidthError'
       )} (${displayMinimumChannelWidthInKHz(minimumChannelWidthHz)})`;
     }
+
+    // CHECK3
+    // check maxContBandwidthHz if exists for the array
+    const maxContBandwidthHz = getMaxContBandwidthHz();
+    console.log('maxContBandwidthHz', maxContBandwidthHz);
 
     /*
     const limits = findBandwidthLimits();
