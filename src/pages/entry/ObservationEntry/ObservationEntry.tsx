@@ -57,6 +57,7 @@ import SpectralAveragingField from '../../../components/fields/spectralAveraging
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidth/bandwidth';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -361,33 +362,17 @@ export default function ObservationEntry() {
     </Grid>
   );
 
-  const bandwidthField = () => {
-    interface BandwidthOptions {
-      label: string;
-      value: number;
-      mapping: string;
-    }
-    const getOptions = (): BandwidthOptions[] => {
-      return OBSERVATION.array[telescope() - 1].bandWidth;
-    };
-    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
-      options.map(obj => {
-        return {
-          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
-          value: obj.value,
-          mapping: obj.mapping
-        };
-      });
-    return fieldDropdown(
-      false,
-      'bandwidth',
-      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
-      true,
-      setBandwidth,
-      null,
-      bandwidth
-    );
-  };
+  const bandwidthField = () => (
+    <BandwidthField
+      onFocus={() => helpComponent(t('bandWidth.help'))}
+      required
+      setValue={setBandwidth}
+      testId="bandwidth"
+      value={bandwidth}
+      telescope={telescope()}
+      widthLabel={LABEL_WIDTH_OPT1}
+    />
+  );
 
   const robustField = () => {
     return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
@@ -629,11 +614,26 @@ export default function ObservationEntry() {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
-          disabled={isLow()}
           onFocus={() => helpComponent(t('frequencyUnits.help'))}
         />
       );
     }
+    // Use the central frequency units for now, as I see this being dropped soon anyway.
+    /*
+    const options = OBSERVATION.array.find(item => item.value === telescope())
+      ?.centralFrequencyAndBandWidthUnits;
+    return (
+      <DropDown
+        options={options}
+        testId="continuumBandwidthUnits"
+        value={continuumBandwidthUnits}
+        setValue={setContinuumBandwidthUnits}
+        label=""
+        disabled={isLow()}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
+    */
   };
 
   const continuumBandwidthField = () => (
