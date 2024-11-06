@@ -101,7 +101,7 @@ export default function TargetPage() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid item xs={11}>
+          <Grid item xs={12}>
             {getProposal().targetOption === 1 && <TargetListSection />}
           </Grid>
           <Grid item>{getProposal().targetOption === 2 && <TargetMosaicSection />}</Grid>

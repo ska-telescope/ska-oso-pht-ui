@@ -76,7 +76,14 @@ export default function TargetListSection() {
     const LABEL_WIDTH = 6;
     const rec = getProposal().targets.find(p => p.id === rowTarget.id);
     return (
-      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
+      <Grid
+        p={2}
+        pb={0}
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="space-around"
+      >
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec.name}</Typography>
         </FieldWrapper>
@@ -201,10 +208,10 @@ export default function TargetListSection() {
   const displayRow1 = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-        <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
+        <Grid item md={12} lg={5} order={{ md: 2, lg: 1 }}>
           {displayGrid()}
         </Grid>
-        <Grid item md={11} lg={6} order={{ md: 1, lg: 2 }}>
+        <Grid item md={12} lg={6} order={{ md: 1, lg: 2 }}>
           <Box sx={{ width: '100%', border: '1px solid grey' }}>
             <Box>
               <Tabs

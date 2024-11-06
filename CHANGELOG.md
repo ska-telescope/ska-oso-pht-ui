@@ -10,8 +10,11 @@ Future
 
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
-
----
+  - Fields moved into a self-contained component
+      - Effective Resolution
+      - Elevation   ( minimum for LOW changed to 20 degrees )
+      - Spectral Resolution 
+      - Robust
 
 0.5.1
 

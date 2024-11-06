@@ -341,7 +341,7 @@ export default function ProposalDisplay({
           </Grid>
         </DialogContent>
       )}
-      {proposal !== null && <DialogActions>{pageFooter()}</DialogActions>}
+      {proposal !== null && <DialogActions sx={{ padding: 5 }}>{pageFooter()}</DialogActions>}
     </Dialog>
   );
 }

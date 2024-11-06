@@ -3,16 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, NumberEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
   ELEVATION_DEFAULT,
-  ELEVATION_MAX,
-  ELEVATION_MIN,
-  ELEVATION_UNITS,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -28,7 +25,6 @@ import {
   BAND_2,
   BAND_1,
   OB_SUBARRAY_AA1,
-  OB_SUBARRAY_AA2,
   OB_SUBARRAY_AA05,
   OB_SUBARRAY_AA4,
   OB_SUBARRAY_AA4_13,
@@ -36,10 +32,10 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
-  SUPPLIED_VALUE_DEFAULT_LOW
+  SUPPLIED_VALUE_DEFAULT_LOW,
+  FREQUENCY_UNITS
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -52,9 +48,13 @@ import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
+import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
+import ElevationField from '../../../components/fields/elevation/Elevation';
+import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
+import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { roundSpectralResolution } from '../../../utils/present';
+import { getScaledValue } from '../../../utils/helpers';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -96,13 +96,12 @@ export default function ObservationEntry() {
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
-  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(1);
+  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(2);
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [calculateToggle, setCalculateToggle] = React.useState(false);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -209,77 +208,7 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
-    setCalculateToggle(!calculateToggle);
   }, []);
-
-  React.useEffect(() => {
-    const calculateSpectralResolution = () => {
-      const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-        if (isContinuum()) {
-          return lookupArrayValue(OBSERVATION[inLabel], inValue);
-        } else {
-          return OBSERVATION[inLabel].find(
-            e =>
-              e.lookup.toString() === inValue.toString() &&
-              e.bandWidthValue?.toString() === bandwidth?.toString()
-          )?.value;
-        }
-      };
-
-      switch (observingBand) {
-        case BAND_1:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
-            centralFrequency
-          );
-        case BAND_2:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
-            centralFrequency
-          );
-        case BAND_5A:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5a[0].value
-            : OBSERVATION.SpectralResolutionOb5aZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        case BAND_5B:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5b[0].value
-            : OBSERVATION.SpectralResolutionOb5bZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        default:
-          // LOW
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionObLow[0].value
-            : OBSERVATION.SpectralResolutionObLowZoom.find(
-                item => item.bandWidthValue === bandwidth
-              ).value;
-      }
-    };
-
-    const calculateEffectiveResolution = () => {
-      // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-      const arr = String(calculateSpectralResolution()).split(' ');
-      if (arr.length > 2) {
-        const resolution = Number(arr[0]);
-        const effectiveResolutionValue = resolution * spectralAveraging;
-        const freqMultiplier = isLow() ? 1000000 : 1000000000;
-        const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
-        const decimal = isContinuum() ? 2 : 1;
-        const multiplier = !isLow() || isContinuum() ? 1000 : 1;
-        const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
-        return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
-      } else {
-        return '';
-      }
-    };
-
-    setSpectralResolution(calculateSpectralResolution());
-    setEffectiveResolution(calculateEffectiveResolution());
-    setValidateToggle(!validateToggle);
-  }, [calculateToggle]);
 
   React.useEffect(() => {
     if (isContinuumOnly()) {
@@ -366,21 +295,14 @@ export default function ObservationEntry() {
       }
     };
     calculateSubarray();
-    setCalculateToggle(!calculateToggle);
   }, [observingBand]);
-
-  React.useEffect(() => {
-    setCalculateToggle(!calculateToggle);
-  }, [bandwidth, centralFrequency, observationType, spectralAveraging]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 ||
-    subarrayConfig === OB_SUBARRAY_AA1 ||
-    (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
+    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
 
   const taperingField = () => {
     const frequencyInGHz = () => {
@@ -451,29 +373,6 @@ export default function ObservationEntry() {
       setBandwidth,
       null,
       bandwidth
-    );
-  };
-
-  const robustField = () => {
-    return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
-  };
-
-  const spectralResolutionField = () => {
-    return (
-      <TextEntry
-        testId="spectralResolution"
-        value={
-          !isContinuum() && observingBand === BAND_LOW
-            ? roundSpectralResolution(spectralResolution)
-            : spectralResolution
-        }
-        label={t('spectralResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        onFocus={() => helpComponent(t('spectralResolution.help'))}
-        disabled
-      />
     );
   };
 
@@ -580,31 +479,6 @@ export default function ObservationEntry() {
     </Grid>
   );
 
-  const elevationUnitsField = () => ELEVATION_UNITS;
-
-  const elevationField = () => {
-    const errorMessage = () => {
-      return elevation < ELEVATION_MIN || elevation > ELEVATION_MAX
-        ? t('elevation.range.error')
-        : '';
-    };
-
-    return (
-      <NumberEntry
-        errorText={errorMessage()}
-        label={t('elevation.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="elevation"
-        value={elevation}
-        setValue={setElevation}
-        onFocus={() => helpComponent(t('elevation.help'))}
-        suffix={elevationUnitsField()}
-      />
-    );
-  };
-
   const weatherUnitsField = () => t('weather.units');
 
   const weatherField = () => {
@@ -631,14 +505,14 @@ export default function ObservationEntry() {
   };
 
   const centralFrequencyUnitsField = () => {
-    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
-    if (FrequencyUnitOptions?.length === 1) {
-      return FrequencyUnitOptions[0].label;
+    // Only have MHz for Low
+    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    if (options?.length === 1) {
+      return options[0].label;
     } else {
       return (
         <DropDown
-          options={FrequencyUnitOptions}
+          options={options}
           testId="frequencyUnits"
           value={centralFrequencyUnits}
           setValue={setCentralFrequencyUnits}
@@ -701,9 +575,8 @@ export default function ObservationEntry() {
   };
 
   const continuumBandwidthUnitsField = () => {
-    // Use the central frequency units for now, as I see this being dropped soon anyway.
-    const options = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
+    // Only have MHz for Low
+    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
     if (options?.length === 1) {
       return options[0].label;
     } else {
@@ -748,47 +621,6 @@ export default function ObservationEntry() {
         onFocus={() => helpComponent(t('continuumBandWidth.help'))}
         required
         errorText={errorMessage()}
-      />
-    );
-  };
-
-  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const speedOfLight = 299792458;
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
-    if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
-  };
-
-  const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
-    switch (operator) {
-      case '*':
-        val_scaled = value * multiplier;
-        break;
-      case '/':
-        val_scaled = value / multiplier;
-        break;
-      default:
-        val_scaled = value;
-    }
-    return val_scaled;
-  };
-
-  const effectiveResolutionField = () => {
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="effectiveResolution"
-        value={effectiveResolution}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
-        disabled
       />
     );
   };
@@ -1016,7 +848,14 @@ export default function ObservationEntry() {
               )}
             </Grid>
             <Grid item xs={XS_TOP}>
-              {elevationField()}
+              <ElevationField
+                isLow={isLow()}
+                label={t('elevation.label')}
+                onFocus={() => helpComponent(t('elevation.help'))}
+                setValue={setElevation}
+                testId="elevation"
+                value={elevation}
+              />
             </Grid>
             <Grid item xs={XS_TOP}>
               {!isLow() && weatherField()}
@@ -1050,7 +889,17 @@ export default function ObservationEntry() {
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {spectralResolutionField()}
+                  <SpectralResolutionField
+                    bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
+                    bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
+                    frequency={centralFrequency}
+                    frequencyUnits={centralFrequencyUnits}
+                    label={t('spectralResolution.label')}
+                    observingBand={observingBand}
+                    observationType={observationType}
+                    onFocus={() => helpComponent(t('spectralResolution.help'))}
+                    setValue={setSpectralResolution}
+                  />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   <SpectralAveragingField
@@ -1062,7 +911,17 @@ export default function ObservationEntry() {
                   />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {effectiveResolutionField()}
+                  <EffectiveResolutionField
+                    label={t('effectiveResolution.label')}
+                    frequency={centralFrequency}
+                    frequencyUnits={centralFrequencyUnits}
+                    spectralAveraging={spectralAveraging}
+                    spectralResolution={spectralResolution}
+                    observingBand={observingBand}
+                    observationType={observationType}
+                    onFocus={() => helpComponent(t('effectiveResolution.help'))}
+                    setValue={setEffectiveResolution}
+                  />
                 </Grid>
                 <Grid item xs={XS_BOTTOM}>
                   {!isLow() && taperingField()}
@@ -1075,7 +934,16 @@ export default function ObservationEntry() {
                 </Grid>
                 <Grid item xs={XS_BOTTOM}></Grid>
                 <Grid item xs={XS_BOTTOM}>
-                  {imageWeighting === IW_BRIGGS && robustField()}
+                  {imageWeighting === IW_BRIGGS && (
+                    <RobustField
+                      label={t('robust.label')}
+                      setValue={setRobust}
+                      testId="robust"
+                      value={robust}
+                      widthButton={FIELD_WIDTH_BUTTON}
+                      widthLabel={LABEL_WIDTH_OPT1}
+                    />
+                  )}
                 </Grid>
               </Grid>
             </CardContent>
