@@ -12,6 +12,7 @@ import {
   OBSERVATION
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
+import * as ObsModeData from './fieldObservingMode.json';
 
 interface continuumBandwidthFieldProps {
   disabled?: boolean;
@@ -85,9 +86,65 @@ export default function ContinuumBandwidthField({
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
     const maxContBandwidthMHzMessage = `${t(
-      'continuumBandWidth.range.contBandwidthMaximumExceededMessage'
+      'continuumBandWidth.range.contBandwidthMaximumExceededError'
     )}`;
     return maxContBandwidthMHzMessage.replace('%s', maxContBandwidthMHz);
+  };
+
+  const getObsBandLabel = () => {
+    switch (observingBand) {
+      case 0:
+        return '';
+      case 1:
+        return 'Band 1';
+      case 2:
+        return 'Band 2';
+      case 3:
+        return 'Band 5a';
+      case 4:
+        return 'Band 5b';
+      default:
+        return '';
+    }
+  };
+
+  const getSubArrayAntennas = () => {
+    const array = OBSERVATION.array
+      .find(arr => arr.value === telescope)
+      ?.subarray.find(sub => sub.value === subarrayConfig);
+    console.log('array', array);
+    return {
+      nSKA: array.numOf15mAntennas,
+      nMeerkat: array.numOf13mAntennas
+    };
+  };
+
+  const getMidBandLimits = () => {
+    console.log('::: in getMidBandLimits');
+    const ObservingMode = ObsModeData;
+    console.log('ObservingMode', ObservingMode);
+    if (!ObservingMode) {
+      return [];
+    }
+    const observingBandLabel = getObsBandLabel(); // temp fix
+    const bandLimits = ObservingMode.defaultValue.find((e: any) => e.mode === observingBandLabel)
+      ?.bandLimits;
+
+    const subArrayAntennas = getSubArrayAntennas();
+    const hasSKA = subArrayAntennas.nSKA > 0;
+    const hasMeerkat = subArrayAntennas.nMeerkat > 0;
+
+    let key: string;
+    if (hasMeerkat && !hasSKA) {
+      key = 'meerkat';
+    } else if (hasSKA && !hasMeerkat) {
+      key = 'ska';
+    } else {
+      key = 'mixed';
+    }
+
+    const limits = bandLimits.find(e => e.type === key).limits;
+    return limits;
   };
 
   /*
@@ -122,7 +179,7 @@ export default function ContinuumBandwidthField({
     // Mid continuum bandwidth scaled to HZ (check it's the case for other bands, zoom and low)
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
     // Mid continuum frequency scaled to HZ (check it's the case for other bands, zoom and low)
-    // const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // CHECK 2
     // minimum channel width check
@@ -137,6 +194,17 @@ export default function ContinuumBandwidthField({
     console.log('maxContBandwidthHz', maxContBandwidthHz);
     if (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz) {
       return displaymMaxContBandwidthErrorMessage(maxContBandwidthHz);
+    }
+
+    // CHECK4
+    // check bandwidth's lower and upper bounds are within band limits
+    const halfBandwidth = Number(scaledBandwidth) / 2.0;
+    const lowerBound: number = Number(scaledFrequency) - halfBandwidth;
+    const upperBound: number = Number(scaledFrequency) + halfBandwidth;
+    const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
+
+    if (lowerBound < bandLimits[0] || upperBound > bandLimits[1]) {
+      return t('continuumBandWidth.range.bandwidthRangeError');
     }
 
     /*
