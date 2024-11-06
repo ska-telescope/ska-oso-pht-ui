@@ -474,7 +474,7 @@
   },
   "referenceFrame": {
     "label": "Reference Frame",
-    "help": "REFERENCE FRAME HELP",
+    "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.",
     "0": "Heliocentric",
     "1": "Kinematic Local Standard of Rest"
   },

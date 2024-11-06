@@ -8,11 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Target page
+  - Target Grid moved into it's own component
+  - Fixed issue where navigation thru the target entry would cause the entire page to re-render
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
       - Effective Resolution
-      - Elevation   ( minimum for LOW changed to 20 degrees )
+      - Elevation ( minimum for LOW changed to 20 degrees )
       - Spectral Resolution 
       - Robust
 

@@ -79,33 +79,30 @@ export default function TargetPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="column" justifyContent="space-around">
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-evenly"
-          alignItems="baseline"
-          spacing={2}
-        >
-          {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
-          {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
-          {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
-        </Grid>
-
-        <Grid
-          mt={1}
-          pl={3}
-          pr={3}
-          container
-          direction="column"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Grid item xs={12}>
-            {getProposal().targetOption === 1 && <TargetListSection />}
-          </Grid>
-          <Grid item>{getProposal().targetOption === 2 && <TargetMosaicSection />}</Grid>
-          <Grid item>{getProposal().targetOption === 3 && <TargetNoSpecificSection />}</Grid>
+      <Grid
+        container
+        direction="row"
+        justifyContent="space-evenly"
+        alignItems="baseline"
+        spacing={2}
+      >
+        {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
+        {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
+        {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
+      </Grid>
+      <Grid
+        mt={1}
+        pl={3}
+        pr={3}
+        container
+        direction="column"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+          {getProposal().targetOption === 1 && <TargetListSection />}
+          {getProposal().targetOption === 2 && <TargetMosaicSection />}
+          {getProposal().targetOption === 3 && <TargetNoSpecificSection />}
         </Grid>
       </Grid>
     </Shell>
