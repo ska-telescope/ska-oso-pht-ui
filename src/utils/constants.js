@@ -147,7 +147,7 @@ export const GENERAL = {
 export const HEADER_HEIGHT = 70;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '15vh';
+export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;

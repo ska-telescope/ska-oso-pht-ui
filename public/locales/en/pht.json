@@ -23,7 +23,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter your abstract information. This field allows latex syntax. - Word count {{current}} / {{max}}",
+    "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
@@ -200,7 +200,7 @@
   },
   "firstName": {
     "label": "First Name",
-    "help": "Requires the first name of the investigator."
+    "help": "First name of the principal investigator or co-investigator."
   },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
