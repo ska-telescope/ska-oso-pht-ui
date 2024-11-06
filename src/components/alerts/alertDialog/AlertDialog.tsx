@@ -59,7 +59,7 @@ export default function AlertDialog({
     >
       <DialogTitle>{alertTitle()}</DialogTitle>
       <DialogContent>{children}</DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: 5 }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid item>
             <CancelButton action={handleCancel} testId="cancelButtonTestId" />

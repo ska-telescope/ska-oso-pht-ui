@@ -9,7 +9,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
+import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
@@ -483,37 +483,43 @@ export default function ObservationPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item md={11} lg={5}>
-          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-              <Grid item pb={1}>
-                <AddButton
-                  action={PATH[2]}
-                  primary={!hasObservations()}
-                  testId="addObservationButton"
-                  title="addObservation.button"
-                />
-              </Grid>
+          <Grid
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="space-around"
+            spacing={1}
+          >
+            <Grid item>
+              <AddButton
+                action={PATH[2]}
+                primary={!hasObservations()}
+                testId="addObservationButton"
+                title="addObservation.button"
+              />
             </Grid>
-            {hasObservations() && (
-              <DataGrid
-                rows={elementsO}
-                columns={extendedColumnsObservations}
-                height={DATA_GRID_OBSERVATION}
-                onRowClick={e => setCurrObs(e.row.rec)}
-                onRowSelectionModelChange={newRowSelectionModel => {
-                  setRowSelectionModel(newRowSelectionModel);
-                }}
-                rowSelectionModel={rowSelectionModel}
-                testId="observationDetails"
-              />
-            )}
-            {!hasObservations() && (
-              <Alert
-                color={AlertColorTypes.Error}
-                text={t('error.noObservations')}
-                testId="noObservationsNotification"
-              />
-            )}
+            <Grid item>
+              {hasObservations() && (
+                <DataGrid
+                  rows={elementsO}
+                  columns={extendedColumnsObservations}
+                  height={DATA_GRID_OBSERVATION}
+                  onRowClick={e => setCurrObs(e.row.rec)}
+                  onRowSelectionModelChange={newRowSelectionModel => {
+                    setRowSelectionModel(newRowSelectionModel);
+                  }}
+                  rowSelectionModel={rowSelectionModel}
+                  testId="observationDetails"
+                />
+              )}
+              {!hasObservations() && (
+                <Alert
+                  color={AlertColorTypes.Error}
+                  text={t('error.noObservations')}
+                  testId="noObservationsNotification"
+                />
+              )}
+            </Grid>
           </Grid>
         </Grid>
         <Grid item md={11} lg={6}>

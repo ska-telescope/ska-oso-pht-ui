@@ -97,18 +97,19 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
-export const ELEVATION_MIN = 15;
+
 export const ELEVATION_DEFAULT = 45;
-export const ELEVATION_MAX = 59.2;
-export const ELEVATION_UNITS = 'deg';
 
 export const FOOTER_HEIGHT = 20;
 
-export const GENERAL = {
-  // REPLACED, BUT KEEP FOR NOW : Cycle: 'SKA_5000_2023',
-  Abstract:
-    'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
+export const FREQUENCY_UNITS = [
+  { label: 'GHz', value: 1, mapping: 'GHz', toHz: 1 },
+  { label: 'MHz', value: 2, mapping: 'MHz', toHz: 1000 },
+  { label: 'kHz', value: 3, mapping: 'kHz', toHz: 10000000 },
+  { label: 'Hz', value: 4, mapping: 'Hz', toHz: 10000000000 }
+];
 
+export const GENERAL = {
   ScienceCategory: [
     { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
     { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
@@ -260,7 +261,7 @@ export const TYPE_CONTINUUM = 1;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
-  { label: 'KHz', toHz: 1000 },
+  { label: 'kHz', toHz: 1000 },
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
@@ -381,12 +382,6 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5, mapping: 'MHz' },
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1, mapping: 'GHz' },
-        { label: 'MHz', value: 2, mapping: 'MHz' },
-        { label: 'KHz', value: 3, mapping: 'kHz' },
-        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -485,27 +480,30 @@ export const OBSERVATION = {
         }
       ],
       bandWidth: [
-        { label: '24.4140625 KHz', value: 1, mapping: 'kHz' },
-        { label: '48.828125 KHz', value: 2, mapping: 'kHz' },
-        { label: '97.65625 KHz', value: 3, mapping: 'kHz' },
-        { label: '195.3125 KHz', value: 4, mapping: 'kHz' },
-        { label: '390.625 KHz', value: 5, mapping: 'kHz' },
-        { label: '781.25 KHz', value: 6, mapping: 'kHz' },
-        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
-        { label: '3125 KHz', value: 8, mapping: 'kHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
+        { label: '24.4140625 kHz', value: 1, mapping: 'kHz' },
+        { label: '48.828125 kHz', value: 2, mapping: 'kHz' },
+        { label: '97.65625 kHz', value: 3, mapping: 'kHz' },
+        { label: '195.3125 kHz', value: 4, mapping: 'kHz' },
+        { label: '390.625 kHz', value: 5, mapping: 'kHz' },
+        { label: '781.25 kHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 kHz', value: 7, mapping: 'kHz' },
+        { label: '3125 kHz', value: 8, mapping: 'kHz' }
+      ]
     }
   ],
   SpectralAveraging: [
-    { label: '1', value: 1, lookup: 0 },
-    { label: '2', value: 2, lookup: 1 },
-    { label: '3', value: 3, lookup: 2 },
-    { label: '4', value: 4, lookup: 3 },
-    { label: '6', value: 6, lookup: 4 },
-    { label: '8', value: 8, lookup: 5 },
-    { label: '12', value: 12, lookup: 6 },
-    { label: '24', value: 24, lookup: 7 }
+    { label: '1', value: 1, lookup: 1 },
+    { label: '2', value: 2, lookup: 2 },
+    { label: '3', value: 3, lookup: 3 },
+    { label: '4', value: 4, lookup: 4 },
+    { label: '6', value: 6, lookup: 6 },
+    { label: '8', value: 8, lookup: 8 },
+    { label: '12', value: 12, lookup: 12 },
+    { label: '16', value: 16, lookup: 16 },
+    { label: '24', value: 24, lookup: 24 },
+    { label: '31', value: 31, lookup: 31 },
+    { label: '32', value: 32, lookup: 32 },
+    { label: '48', value: 48, lookup: 48 }
   ],
   CentralFrequencyOBLow: [{ lookup: 0, value: 200 }],
   CentralFrequencyOB1: [
@@ -690,7 +688,7 @@ export const OBSERVATION = {
   Units: [
     { label: 'GHz', value: 1 },
     { label: 'MHz', value: 2 },
-    { label: 'KHz', value: 3 },
+    { label: 'kHz', value: 3 },
     { label: 'Hz', value: 4 }
   ]
 };
@@ -744,6 +742,8 @@ export const SEARCH_TYPE_OPTIONS = [
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
+
+export const SPEED_OF_LIGHT = 299792458; // m/s
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
@@ -811,6 +811,11 @@ export const VELOCITY_TYPE = {
   VELOCITY: 0,
   REDSHIFT: 1
 };
+
+export const VELOCITY_UNITS = [
+  { label: 'm/s', value: 0, convert: 1 },
+  { label: 'km/s', value: 1, convert: 1000 }
+];
 
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;

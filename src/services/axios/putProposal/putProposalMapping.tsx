@@ -1,5 +1,6 @@
 import {
   BANDWIDTH_TELESCOPE,
+  FREQUENCY_UNITS,
   GENERAL,
   IMAGE_WEIGHTING,
   OBSERVATION,
@@ -190,18 +191,14 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
   }
 };
 
-const getFrequencyAndBandwidthUnits = (incTelescope: number, incUnitValue: number): string => {
-  const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incTelescope);
-  const unit = obsTelescopeArray.centralFrequencyAndBandWidthUnits.find(
-    u => u.value === incUnitValue
-  )?.mapping;
-  return unit;
+const getFrequencyAndBandwidthUnits = (incUnitValue: number): string => {
+  return FREQUENCY_UNITS.find(u => u.value === incUnitValue)?.mapping;
 };
 
 const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
   return {
     value: incObs.continuumBandwidth,
-    unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.continuumBandwidthUnits)
+    unit: getFrequencyAndBandwidthUnits(incObs.continuumBandwidthUnits)
   };
 };
 const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
@@ -220,7 +217,7 @@ const getBandwidth = (ob: Observation): ValueUnitPair =>
 const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
   return {
     value: incObs.centralFrequency,
-    unit: getFrequencyAndBandwidthUnits(incObs.telescope, incObs.centralFrequencyUnits)
+    unit: getFrequencyAndBandwidthUnits(incObs.centralFrequencyUnits)
   };
 };
 
