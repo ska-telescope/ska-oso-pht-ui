@@ -41,7 +41,21 @@ export const BANDWIDTH_TELESCOPE = [
     lower: 0.35,
     upper: 1.05,
     units: 'GHz',
-    mapping: 'mid_band_1'
+    mapping: 'mid_band_1',
+    bandLimits: [
+      {
+        type: "ska",
+        limits: [0.35e9, 1.05e9]
+      },
+      {
+        type: "meerkat",
+        limits: [0.58e9, 1.015e9]
+      },
+      {
+        type: "mixed",
+        limits: [0.58e9, 1.015e9]
+      }
+    ],
   },
   {
     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
@@ -51,7 +65,21 @@ export const BANDWIDTH_TELESCOPE = [
     lower: 0.95,
     upper: 1.76,
     units: 'GHz',
-    mapping: 'mid_band_2'
+    mapping: 'mid_band_2',
+    bandLimits: [
+      {
+        type: "ska",
+        limits: [0.95e9, 1.76e9]
+      },
+      {
+        type: "meerkat",
+        limits: [0.95e9, 1.67e9]
+      },
+      {
+        type: "mixed",
+        limits: [0.95e9, 1.67e9]
+      }
+    ]
   },
   {
     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
@@ -61,7 +89,13 @@ export const BANDWIDTH_TELESCOPE = [
     lower: 4.6,
     upper: 8.5,
     units: 'GHz',
-    mapping: 'mid_band_3'
+    mapping: 'mid_band_3',
+    bandLimits: [
+      {
+        type: "ska",
+        limits: [4.6e9, 8.5e9]
+      }
+    ]
   }, // Band 5a
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
@@ -71,7 +105,13 @@ export const BANDWIDTH_TELESCOPE = [
     lower: 8.3,
     upper: 15.4,
     units: 'GHz',
-    mapping: 'mid_band_4'
+    mapping: 'mid_band_4',
+    bandLimits: [
+      {
+        type: "ska",
+        limits: [8.3e9, 15.4e9]
+      }
+    ]
   } // Band 5b
 ];
 

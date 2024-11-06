@@ -2,17 +2,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import {
-  //BANDWIDTH_TELESCOPE,
   LAB_IS_BOLD,
   LAB_POSITION,
   MID_MIN_CHANNEL_WIDTH_HZ,
   LOW_MIN_CHANNEL_WIDTH_HZ,
   BAND_LOW,
   FREQUENCY_UNITS,
-  OBSERVATION
+  OBSERVATION,
+  BANDWIDTH_TELESCOPE
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
-import * as ObsModeData from './fieldObservingMode.json';
 
 interface continuumBandwidthFieldProps {
   disabled?: boolean;
@@ -91,23 +90,6 @@ export default function ContinuumBandwidthField({
     return maxContBandwidthMHzMessage.replace('%s', maxContBandwidthMHz);
   };
 
-  const getObsBandLabel = () => {
-    switch (observingBand) {
-      case 0:
-        return '';
-      case 1:
-        return 'Band 1';
-      case 2:
-        return 'Band 2';
-      case 3:
-        return 'Band 5a';
-      case 4:
-        return 'Band 5b';
-      default:
-        return '';
-    }
-  };
-
   const getSubArrayAntennas = () => {
     const array = OBSERVATION.array
       .find(arr => arr.value === telescope)
@@ -121,14 +103,11 @@ export default function ContinuumBandwidthField({
 
   const getMidBandLimits = () => {
     console.log('::: in getMidBandLimits');
-    const ObservingMode = ObsModeData;
-    console.log('ObservingMode', ObservingMode);
-    if (!ObservingMode) {
+
+    const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
+    if (!bandLimits) {
       return [];
     }
-    const observingBandLabel = getObsBandLabel(); // temp fix
-    const bandLimits = ObservingMode.defaultValue.find((e: any) => e.mode === observingBandLabel)
-      ?.bandLimits;
 
     const subArrayAntennas = getSubArrayAntennas();
     const hasSKA = subArrayAntennas.nSKA > 0;
@@ -143,7 +122,8 @@ export default function ContinuumBandwidthField({
       key = 'mixed';
     }
 
-    const limits = bandLimits.find(e => e.type === key).limits;
+    const limits = bandLimits.find(e => e.type === key)?.limits;
+    console.log('limits', limits);
     return limits;
   };
 
@@ -198,9 +178,9 @@ export default function ContinuumBandwidthField({
 
     // CHECK4
     // check bandwidth's lower and upper bounds are within band limits
-    const halfBandwidth = Number(scaledBandwidth) / 2.0;
-    const lowerBound: number = Number(scaledFrequency) - halfBandwidth;
-    const upperBound: number = Number(scaledFrequency) + halfBandwidth;
+    const halfBandwidth = scaledBandwidth / 2.0;
+    const lowerBound: number = scaledFrequency - halfBandwidth;
+    const upperBound: number = scaledFrequency + halfBandwidth;
     const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
 
     if (lowerBound < bandLimits[0] || upperBound > bandLimits[1]) {
