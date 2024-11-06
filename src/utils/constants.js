@@ -28,8 +28,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 2,
     value: BAND_LOW,
     isBand5: false,
-    lower: 50,
-    upper: 350,
     units: 'MHz',
     mapping: 'low_band'
   },
@@ -38,8 +36,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 1,
     value: BAND_1,
     isBand5: false,
-    lower: 0.35,
-    upper: 1.05,
     units: 'GHz',
     mapping: 'mid_band_1',
     bandLimits: [
@@ -62,8 +58,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 1,
     value: BAND_2,
     isBand5: false,
-    lower: 0.95,
-    upper: 1.76,
     units: 'GHz',
     mapping: 'mid_band_2',
     bandLimits: [
@@ -86,8 +80,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 1,
     value: BAND_5A,
     isBand5: true,
-    lower: 4.6,
-    upper: 8.5,
     units: 'GHz',
     mapping: 'mid_band_3',
     bandLimits: [
@@ -102,8 +94,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
-    lower: 8.3,
-    upper: 15.4,
     units: 'GHz',
     mapping: 'mid_band_4',
     bandLimits: [

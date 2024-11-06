@@ -28,14 +28,6 @@ interface continuumBandwidthFieldProps {
   subarrayConfig?: number;
 }
 
-/*
-interface Limits {
-  upper: number;
-  lower: number;
-  units: string;
-}
-  */
-
 export default function ContinuumBandwidthField({
   labelWidth = 5,
   onFocus,
@@ -105,11 +97,13 @@ export default function ContinuumBandwidthField({
     console.log('::: in getMidBandLimits');
 
     const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
+    console.log('/// bandLimits', bandLimits);
     if (!bandLimits) {
       return [];
     }
 
     const subArrayAntennas = getSubArrayAntennas();
+    console.log('/// subArrayAntennas', subArrayAntennas);
     const hasSKA = subArrayAntennas.nSKA > 0;
     const hasMeerkat = subArrayAntennas.nMeerkat > 0;
 
@@ -126,31 +120,6 @@ export default function ContinuumBandwidthField({
     console.log('limits', limits);
     return limits;
   };
-
-  /*
-  const findBandwidthLimits = (): Limits => {
-    const bandWidthData = BANDWIDTH_TELESCOPE.find(item => item.value === observingBand);
-    return {
-      upper: bandWidthData.upper,
-      lower: bandWidthData.lower,
-      units: bandWidthData.units
-    };
-  };
-
-  const convertContinuumBandwidthToLimitUnits = (limits: Limits): number => {
-    const continuumBandwidthUnitsLabel = OBSERVATION.array
-      .find(item => item.value === telescope)
-      ?.centralFrequencyAndBandWidthUnits.find(u => u.value === continuumBandwidthUnits)?.label;
-    switch (limits.units) {
-      case 'MHz':
-        return sensCalHelpers.format.convertBandwidthToMHz(value, continuumBandwidthUnitsLabel);
-      case 'GHz':
-        return sensCalHelpers.format.convertBandwidthToGHz(value, continuumBandwidthUnitsLabel);
-      default:
-        return value;
-    }
-  };
-  */
 
   const errorMessage = () => {
     // CHECK 1
@@ -183,23 +152,13 @@ export default function ContinuumBandwidthField({
     const upperBound: number = scaledFrequency + halfBandwidth;
     const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
 
-    if (lowerBound < bandLimits[0] || upperBound > bandLimits[1]) {
+    console.log('bandLimits', bandLimits);
+    if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.bandwidthRangeError');
     }
 
-    /*
-    const limits = findBandwidthLimits();
-    const convertedBandwidth = convertContinuumBandwidthToLimitUnits(limits);
-    console.log('convertedBandwidth', convertedBandwidth);
-    if (convertedBandwidth > limits.upper) {
-      return t('continuumBandWidth.range.error');
-    }
-    if (convertedBandwidth < limits.lower) {
-      return t('continuumBandWidth.range.error');
-    }
-    */
     return '';
-    // TODO find bandwidth limit calculaions in the sens calc
+    // TODO handle low bandLimits
     // TODO : handle band5a NaN cases
     // TODO : handle zooms
   };
