@@ -87,8 +87,8 @@
     "label": "Continuum Bandwidth",
     "range": {
       "error": "Value is outside of allowed range.",
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width",
-      "channelWidthDisplayUnits": "kHz"
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width (%s kHz)",
+      "contBandwidthMaximumExceededMessage": "Maximum bandwidth for this array assembly (%s MHz) exceeded"
     }
   },
   "continuumUnits": {

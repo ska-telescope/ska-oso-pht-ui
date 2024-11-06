@@ -67,15 +67,28 @@ export default function ContinuumBandwidthField({
   const getMinimumChannelWidth = (): number =>
     isLow() ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
-  const displayMinimumChannelWidthInKHz = (minimumChannelWidthHz: number): string =>
-    `${sensCalHelpers.format.convertBandwidthToKHz(minimumChannelWidthHz, 'Hz').toFixed(2)} ${t(
-      'continuumBandWidth.range.channelWidthDisplayUnits'
-    )}`;
+  const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
+    const minimumChannelWidthKHz = sensCalHelpers.format
+      .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
+      .toFixed(2);
+    const minimumChannelWidthMessage = `${t('continuumBandWidth.range.minimumChannelWidthError')}`;
+    return minimumChannelWidthMessage.replace('%s', minimumChannelWidthKHz);
+  };
 
   const getMaxContBandwidthHz = (): any =>
     OBSERVATION.array
       .find(item => item.value === telescope)
       ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
+
+  const displaymMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+    const maxContBandwidthMHz = sensCalHelpers.format
+      .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
+      .toFixed(2);
+    const maxContBandwidthMHzMessage = `${t(
+      'continuumBandWidth.range.contBandwidthMaximumExceededMessage'
+    )}`;
+    return maxContBandwidthMHzMessage.replace('%s', maxContBandwidthMHz);
+  };
 
   /*
   const findBandwidthLimits = (): Limits => {
@@ -115,15 +128,16 @@ export default function ContinuumBandwidthField({
     // minimum channel width check
     const minimumChannelWidthHz = getMinimumChannelWidth();
     if (scaledBandwidth < minimumChannelWidthHz) {
-      return `${t(
-        'continuumBandWidth.range.minimumChannelWidthError'
-      )} (${displayMinimumChannelWidthInKHz(minimumChannelWidthHz)})`;
+      return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
     // CHECK3
     // check maxContBandwidthHz if exists for the array
     const maxContBandwidthHz = getMaxContBandwidthHz();
     console.log('maxContBandwidthHz', maxContBandwidthHz);
+    if (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz) {
+      return displaymMaxContBandwidthErrorMessage(maxContBandwidthHz);
+    }
 
     /*
     const limits = findBandwidthLimits();
