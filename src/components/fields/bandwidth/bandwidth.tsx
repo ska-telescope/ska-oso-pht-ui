@@ -11,7 +11,6 @@ import {
 
 interface BandwidthFieldProps {
   disabled?: boolean;
-  label?: string;
   onFocus?: Function;
   required?: boolean;
   setValue?: Function;
@@ -25,8 +24,7 @@ interface BandwidthFieldProps {
 
 export default function BandwidthField({
   disabled = false,
-  label = '',
-  onFocus = null,
+  onFocus,
   required = false,
   setValue = null,
   suffix = null,
@@ -38,15 +36,12 @@ export default function BandwidthField({
 }: BandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
-  label = t('bandwidth.label');
 
   const getOptions = () => {
     return OBSERVATION.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = options =>
     options.map(obj => {
-      const roundedLabel = `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`;
-      console.log(`Label: ${roundedLabel}, Value: ${obj.value}, Mapping: ${obj.mapping}`);
       return {
         label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
         value: obj.value,
@@ -63,7 +58,7 @@ export default function BandwidthField({
           testId={testId}
           value={value}
           setValue={setValue}
-          label={label}
+          label={t('bandwidth.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}

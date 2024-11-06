@@ -364,7 +364,7 @@ export default function ObservationEntry() {
 
   const bandwidthField = () => (
     <BandwidthField
-      onFocus={() => helpComponent(t('bandWidth.help'))}
+      onFocus={() => helpComponent(t('bandwidth.help'))}
       required
       setValue={setBandwidth}
       testId="bandwidth"
