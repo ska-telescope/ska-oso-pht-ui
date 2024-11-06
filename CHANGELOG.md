@@ -11,6 +11,7 @@ Future
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
+  - Added spacing to the Target/Observation header
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
@@ -18,6 +19,8 @@ Future
       - Elevation ( minimum for LOW changed to 20 degrees )
       - Spectral Resolution 
       - Robust
+* Utilities
+  - Change the notifications so that the icons stay to the left of any text
 
 0.5.1
 

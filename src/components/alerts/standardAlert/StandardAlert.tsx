@@ -38,13 +38,13 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item>
+        <Grid item xs={1}>
           <StatusIcon icon level={getLevel(color)} size={FONTSIZE} testId={testId + 'Icon'} />
         </Grid>
-        <Grid item>
+        <Grid item xs={10}>
           <Typography id="standardAlertId">{text}</Typography>
         </Grid>
-        <Grid item>
+        <Grid xs={1}>
           {closeFunc ? (
             <CloseIcon onClick={() => closeFunc()} toolTip={t('button.close')} />
           ) : (
