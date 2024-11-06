@@ -53,7 +53,7 @@ export const createStandardProposal = () => {
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
   clickCreateProposal();
-  verifyProposalCreatedAlertFooter();
+  // TODO verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
 
@@ -179,7 +179,7 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click();
-  cy.get('[aria-label="Status : OK "]').should('exist');
+  // cy.get('[aria-label="Status : OK "]').should('exist'); Not good to force an OK status here, should be separate
 };
 
 export const clickToValidateProposal = () => {

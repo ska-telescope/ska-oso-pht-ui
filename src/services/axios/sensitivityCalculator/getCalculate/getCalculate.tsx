@@ -8,7 +8,8 @@ import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM,
-  SUPPLIED_TYPE_SENSITIVITY
+  SUPPLIED_TYPE_SENSITIVITY,
+  FREQUENCY_UNITS
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -89,7 +90,8 @@ async function GetCalculate(
     return sensCalHelpers.format.convertBandwidthToHz(value, units);
   };
   const getSpectralResolution = () => {
-    const spectralResValue = observation.spectralResolution.includes('kHz')
+    const units = FREQUENCY_UNITS[2].label;
+    const spectralResValue = observation.spectralResolution.includes(units)
       ? Number(observation.spectralResolution.split(' ')[0]) * 1000
       : Number(observation.spectralResolution.split(' ')[0]);
     return spectralResValue?.toString();
@@ -244,7 +246,7 @@ async function GetCalculate(
       total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
-      ) // low zoom bandwidth should be sent in KHz
+      ) // low zoom bandwidth should be sent in kHz
     };
   };
 
