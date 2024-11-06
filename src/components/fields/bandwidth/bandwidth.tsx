@@ -1,7 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, OBSERVATION } from '../../../utils/constants';
+import {
+  LAB_IS_BOLD,
+  LAB_POSITION,
+  OBSERVATION,
+  TELESCOPE_LOW_NUM
+} from '../../../utils/constants';
 
 interface BandwidthFieldProps {
   disabled?: boolean;
@@ -30,13 +36,17 @@ export default function BandwidthField({
   widthButton,
   widthLabel = 5
 }: BandwidthFieldProps) {
-  const isLow = () => telescope === 1;
+  const { t } = useTranslation('pht');
+  const isLow = () => telescope === TELESCOPE_LOW_NUM;
+  label = t('bandwidth.label');
 
   const getOptions = () => {
     return OBSERVATION.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = options =>
     options.map(obj => {
+      const roundedLabel = `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`;
+      console.log(`Label: ${roundedLabel}, Value: ${obj.value}, Mapping: ${obj.mapping}`);
       return {
         label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
         value: obj.value,
