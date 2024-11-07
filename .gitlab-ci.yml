@@ -131,7 +131,7 @@ list_dependencies:
   #    - node_modules/
   #  policy: pull
   script:
-    #- yarn install --immutable
+    - yarn install --immutable
     #- yarn list --depth=0 --json >> npm_deps.json
     #- yarn list --depth=0  >> npm_deps.txt
     #- mkdir .public
