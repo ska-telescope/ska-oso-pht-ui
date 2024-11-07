@@ -111,22 +111,34 @@ export default function AddDataProduct() {
 
   const observationsField = () => {
     return (
-      <>
-        {baseObservations && (
-          <DropDown
-            options={baseObservations}
-            testId="observations"
-            value={observationId}
-            setValue={setObservationId}
-            label={t('observations.single')}
-            labelBold
-            labelPosition={LAB_POSITION}
-            labelWidth={LABEL_WIDTH}
-            onFocus={() => helpComponent(t('observations.dp.help'))}
-            required
-          />
-        )}
-      </>
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-between"
+        justifyContent="center"
+        spacing={1}
+      >
+        <Grid item xs={12} lg={6}>
+          <>
+            {baseObservations && (
+              <DropDown
+                options={baseObservations}
+                testId="observations"
+                value={observationId}
+                setValue={setObservationId}
+                label={t('observations.single')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
+                onFocus={() => helpComponent(t('observations.dp.help'))}
+                required
+              />
+            )}
+          </>
+        </Grid>
+        <Grid item xs={12} lg={6}></Grid>
+      </Grid>
     );
   };
 
