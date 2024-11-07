@@ -29,7 +29,7 @@ const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
 const FOOTER_HEIGHT = 40;
 const FIELD_OBS = 'observatoryDataProduct.options';
-const LABEL_WIDTH = 5;
+const LABEL_WIDTH = 2;
 const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
