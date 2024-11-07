@@ -294,14 +294,14 @@ export default function MemberInvite() {
         alignItems="space-evenly"
         justifyContent="space-between"
       >
-        <Grid item xs={6}>
+        <Grid item xs={7}>
           {firstNameField()}
           {lastNameField()}
           {emailField()}
           {piField()}
           {phdThesisField()}
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <HelpPanel />
         </Grid>
       </Grid>
