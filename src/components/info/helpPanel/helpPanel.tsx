@@ -7,7 +7,7 @@ interface HelpPanelProps {
   maxHeight?: string;
 }
 
-export default function HelpPanel({ maxHeight=HELP_VIEWPORT }: HelpPanelProps) {
+export default function HelpPanel({ maxHeight = HELP_VIEWPORT }: HelpPanelProps) {
   const { help } = storageObject.useStore();
 
   const getHelp = () => help.component as string;
