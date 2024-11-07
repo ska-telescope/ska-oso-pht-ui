@@ -196,7 +196,7 @@ export default function MemberInvite() {
 
   const firstNameField = () => {
     return (
-      <Box p={1} pt={3}>
+      <Box p={1}>
         <TextEntry
           label={t('firstName.label')}
           labelBold
