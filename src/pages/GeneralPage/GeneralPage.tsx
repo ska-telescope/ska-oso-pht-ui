@@ -16,6 +16,7 @@ import { fetchCycleData } from '../../utils/storage/cycleData';
 const PAGE = 2;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 2;
+const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
   const { t } = useTranslation('pht');
@@ -151,20 +152,24 @@ export default function GeneralPage() {
       >
         <Grid item md={12} lg={8}>
           <Grid container direction="row">
-            <Grid item md={12} lg={6} pt={2}>
-              {cycleField()}
+            <Grid item md={12} lg={12} pt={2}>
+              <Grid item md={12} lg={6}>
+                {cycleField()}
+              </Grid>
+            </Grid>
+            <Grid item md={12} lg={12} pt={2}>
+              <Grid item md={12} lg={6}>
+                {categoryField()}
+              </Grid>
             </Grid>
             <Grid item md={12}>
               {abstractField()}
-            </Grid>
-            <Grid item md={12} lg={6} pt={2}>
-              {categoryField()}
             </Grid>
           </Grid>
           <Grid item md={6}></Grid>
         </Grid>
         <Grid item md={12} lg={3}>
-          <HelpPanel />
+          <HelpPanel maxHeight={HELP_VIEWPORT} />
         </Grid>
       </Grid>
     </Shell>

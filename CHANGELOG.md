@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* General Page
+   - Changed height of help component on the page
+   - Changed order of Science Category and Abstract fields
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
