@@ -185,7 +185,6 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
     }
     setObservingBand(e);
-    console.log('calculateContinuumBandwidth 1');
     calculateContinuumBandwidth(e as number, subarrayConfig);
   };
 
@@ -200,7 +199,6 @@ export default function ObservationEntry() {
       setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
     }
     setSubarrayConfig(e);
-    console.log('calculateContinuumBandwidth 2');
     calculateContinuumBandwidth(observingBand, e as number);
   };
 
@@ -211,7 +209,6 @@ export default function ObservationEntry() {
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
-      console.log('calculateContinuumBandwidth 3');
       calculateContinuumBandwidth(observingBand, subarrayConfig);
     }
   }, []);
@@ -271,12 +268,6 @@ export default function ObservationEntry() {
         setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc));
         return;
       case BAND_5A:
-        console.log('BAND_5A');
-        console.log('sc', sc);
-        console.log(
-          'setContinuumBandwidth to',
-          lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc)
-        );
         setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc));
         return;
       case BAND_5B:
