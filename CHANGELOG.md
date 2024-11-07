@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Landing page
+  - Time added to last update column
+  - Tidy up of the Proposal display modal
+  - Delete icon disabled whilst the API is fixed
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
