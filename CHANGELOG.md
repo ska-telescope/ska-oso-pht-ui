@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Team Page
+  - Added checking that member will not be added if email is not sent successfully 
+  - Updated team member field width and field name styles
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render

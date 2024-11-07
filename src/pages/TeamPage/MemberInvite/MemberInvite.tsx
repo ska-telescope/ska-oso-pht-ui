@@ -288,7 +288,7 @@ export default function MemberInvite() {
   return (
     <>
       <Grid
-        p={1}
+        p={2}
         container
         direction="row"
         alignItems="space-evenly"
@@ -306,7 +306,7 @@ export default function MemberInvite() {
         </Grid>
       </Grid>
 
-      <Box p={1}>
+      <Box p={2}>
         <TeamInviteButton
           action={clickFunction}
           disabled={formInvalid}
