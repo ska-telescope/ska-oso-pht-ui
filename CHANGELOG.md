@@ -9,7 +9,6 @@ Future
 -------
 
 * Title page
-   - Added close button on title view modal
    - Changed some elements width/height
 * Target page
   - Target Grid moved into it's own component
