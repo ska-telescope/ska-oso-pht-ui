@@ -217,18 +217,30 @@ export default function AddDataProduct() {
 
   const pixelSizeField = () => {
     return (
-      <NumberEntry
-        label={t('pixelSize.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="pixelSize"
-        value={pixelSizeValue}
-        setValue={setPixelSizeValue}
-        required
-        disabled
-        suffix={presentUnits(pixelSizeUnits)}
-      />
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-between"
+        justifyContent="center"
+        spacing={1}
+      >
+        <Grid item xs={12} lg={6}>
+          <NumberEntry
+            label={t('pixelSize.label')}
+            labelBold
+            labelPosition={LAB_POSITION}
+            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
+            testId="pixelSize"
+            value={pixelSizeValue}
+            setValue={setPixelSizeValue}
+            required
+            disabled
+            suffix={presentUnits(pixelSizeUnits)}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}></Grid>
+      </Grid>
     );
   };
 
