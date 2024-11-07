@@ -167,13 +167,15 @@ export default function MemberInvite() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
-  async function sendEmailInvite(email: string, prsl_id: string) {
+  async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
     const emailInvite = { email, prsl_id };
     const response = await PostSendEmailInvite(emailInvite);
     if (response && !response.error) {
       NotifyOK(t('email.success'));
+      return true;
     } else {
       NotifyError(t('email.error'));
+      return false;
     }
   }
 
@@ -185,15 +187,16 @@ export default function MemberInvite() {
     formValues.phdThesis.setValue(false);
   }
 
-  const clickFunction = () => {
-    AddTeamMember();
-    sendEmailInvite(formValues.email.value, getProposal().id);
-    clearForm();
+  const clickFunction = async () => {
+    if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
+      AddTeamMember();
+      clearForm();
+    }
   };
 
   const firstNameField = () => {
     return (
-      <Box p={1}>
+      <Box p={1} pt={3}>
         <TextEntry
           label={t('firstName.label')}
           labelBold
@@ -250,7 +253,7 @@ export default function MemberInvite() {
 
   const piField = () => {
     return (
-      <Box pl={1}>
+      <Box pl={1} pt={1}>
         <TickBox
           label={t('pi.label')}
           labelBold

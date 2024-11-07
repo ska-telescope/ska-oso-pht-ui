@@ -163,7 +163,7 @@
       "body": "You have been invited to contribute to proposal {{id}}"
     },
     "success": "Email invite has been sent.",
-    "error": "Email invite was unsuccessful - please check email address and re-send."
+    "error": "Email invite was unsuccessful and member is not added"
   },
   "fileName": {
     "label": "File name"
@@ -524,7 +524,7 @@
     "1": "Not specified"
   },
   "searchForMember": {
-    "label": "Search for a member."
+    "label": "Search for a member"
   },
   "skyDirection": {
     "help": {
