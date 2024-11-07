@@ -363,18 +363,18 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid item xs={11}>
+      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
+        <Grid item xs={12}>
           {pageDescription()}
         </Grid>
         <Grid item>{addProposalButton()}</Grid>
         <Grid item xs={6} lg={2}>
           {searchDropdown()}
         </Grid>
-        <Grid item xs={11} lg={4} mt={-1}>
+        <Grid item xs={12} lg={4} mt={-1}>
           {searchEntryField('searchId')}
         </Grid>
-        <Grid item xs={11} pt={1}>
+        <Grid item xs={12} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}

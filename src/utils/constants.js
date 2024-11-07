@@ -873,3 +873,19 @@ export const DEFAULT_PI = {
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
 };
+
+export const DEFAULT_TARGETS = {
+  dec: '123',
+  decUnit: '1',
+  id: 1,
+  latitude: '123',
+  longitude: '123',
+  name: 'DUMMY',
+  ra: '123',
+  raUnit: '1',
+  redshift: '123',
+  referenceFrame: 0,
+  vel: '123',
+  velType: 0,
+  velUnit: 0
+};

@@ -1,11 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DropDown, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
+import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 interface ReferenceFrameFieldProps {
-  labelBold: boolean;
-  labelPosition: LABEL_POSITION;
   labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
@@ -13,8 +12,6 @@ interface ReferenceFrameFieldProps {
 }
 
 export default function ReferenceFrameField({
-  labelBold,
-  labelPosition,
   labelWidth = 5,
   onFocus,
   setValue,
@@ -37,8 +34,8 @@ export default function ReferenceFrameField({
         value={value}
         setValue={setValue}
         label={t(FIELD + '.label')}
-        labelBold={labelBold}
-        labelPosition={labelPosition}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
         labelWidth={labelWidth}
         onFocus={onFocus}
       />

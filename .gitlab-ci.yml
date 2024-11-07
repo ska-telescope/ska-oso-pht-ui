@@ -17,7 +17,6 @@ stages:
   - accessibility
   - publish
 
-#Install basic dependencies using yarn
 install_dependencies:
   image: node:20.2.0-alpine3.18
   stage: dependencies
@@ -27,12 +26,19 @@ install_dependencies:
     - rm -rf node_modules
   script:
     - yarn install --immutable
+    - yarn list --depth=0 --json >> npm_deps.json
+    - yarn list --depth=0  >> npm_deps.txt
+    - mkdir .public
+    - cp npm_deps.txt .public/
+    - cp npm_deps.json .public/
+  artifacts:
+    paths:
+      - .public
   cache:
     paths:
       - node_modules/
     policy: push
 
-#Run the static code analysis
 code_analysis:
   image: node:20.2.0-alpine3.18
   stage: lint
@@ -43,8 +49,25 @@ code_analysis:
       - node_modules/
     policy: pull
   before_script:
-    - mkdir -p build/reports
+    # - mkdir -p build/reports
   script:
+    - yarn install --immutable
+    # - yarn code-analysis
+    # - mv linting.xml build/reports/linting.xml
+  artifacts:
+    paths:
+      - build/
+    reports:
+      # junit: build/reports/linting.xml
+
+js-lint:
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - mkdir -p build/reports
+  after_script:
     - yarn install --immutable
     - yarn code-analysis
     - mv linting.xml build/reports/linting.xml
@@ -54,7 +77,6 @@ code_analysis:
     reports:
       junit: build/reports/linting.xml
 
-# run the cypress test coverage reports
 test_and_coverage:
   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
   stage: test
@@ -69,15 +91,15 @@ test_and_coverage:
   script:
     - yarn test:cypress:component:ci
     - yarn merge-component-reports
-    - cp build/tests/component/component-tests.xml build/reports/component-tests.xml
+    - cp build/tests/component/component-tests.xml build/tests/component-tests.xml
     - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+    - cp build/reports/cobertura-coverage.xml build/tests/e2e-coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: build/reports/cobertura-coverage.xml
-      junit: build/reports/component-tests.xml, build/reports/code-coverage.xml
+        path: build/tests/e2e-coverage.xml
+      junit: build/tests/component-tests.xml, build/tests/e2e-coverage.xml
     paths:
       - build/
 
@@ -104,39 +126,20 @@ list_dependencies:
   tags:
     - ska-default
   allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
+  #cache:
+  #  paths:
+  #    - node_modules/
+  #  policy: pull
   script:
     - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-    paths:
-      - .public
-
-# test-counts:
-#   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
-#   stage: test
-#   tags:
-#    - ska-default
-#   before_script:
-#     - rm -rf node_modules
-#     - mkdir -p build/tests
-#     - yarn install --immutable
-#   script:
-#     - yarn test:cypress:component:ci
-#     - yarn merge-component-reports
-#     - cp build/tests/components/unit-tests.xml build/reports/component-tests.xml
-#   artifacts:
-#     paths:
-#       - build/
-#     reports:
-#       junit: build/reports/component-tests.xml
+    #- yarn list --depth=0 --json >> npm_deps.json
+    #- yarn list --depth=0  >> npm_deps.txt
+    #- mkdir .public
+    #- cp npm_deps.txt .public/
+    #- cp npm_deps.json .public/
+  #artifacts:
+    #paths:
+    #  - .public
 
 # Build the application
 build:
@@ -161,7 +164,7 @@ pages:
     # - test-counts
     - test_and_coverage
     - js-e2e-test
-    - list_dependencies
+    # - list_dependencies
     - code_quality
   script:
     - mv public/* .
