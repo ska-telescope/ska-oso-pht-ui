@@ -340,10 +340,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
             </Grid>
-            <Grid item xs={6 - LABEL_WIDTH}>
+            <Grid item xs={8 - LABEL_WIDTH}>
               {titleField()}
             </Grid>
-            <Grid item md={6}></Grid>
+            <Grid item md={4}></Grid>
           </Grid>
         </Grid>
       </Grid>
