@@ -1,7 +1,7 @@
 import React from 'react';
-import { Dialog, DialogContent, Grid, DialogTitle, DialogActions } from '@mui/material';
+import { Dialog, DialogContent, Grid, DialogTitle } from '@mui/material';
 import { presentLatex } from '../../../utils/present';
-import CancelButton from '../../button/Cancel/Cancel';
+// import CancelButton from '../../button/Cancel/Cancel';
 interface LatexPreviewProps {
   value: string;
   open: boolean;
@@ -16,13 +16,10 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
     onClose();
   };
 
-  const pageFooter = () => (
-    <Grid container direction="row" justifyContent="space-between" alignItems="center">
-      <Grid item>
-        <CancelButton action={handleClose} title="button.close" testId="cancelButtonTestId" />
-      </Grid>
-    </Grid>
-  );
+  // const pageFooter = () => (
+  //   <Grid container direction="row" justifyContent="space-between" alignItems="center">
+  //   </Grid>
+  // );
 
   return (
     <Dialog
@@ -47,10 +44,12 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
           alignItems="space-evenly"
           justifyContent="space-around"
         >
-          {presentLatex(value)}
+          <Grid xs={12}>{presentLatex(value)}</Grid>
+          {/* <Grid item>
+            <CancelButton action={handleClose} title="button.close" testId="cancelButtonTestId" />
+          </Grid> */}
         </Grid>
       </DialogContent>
-      <DialogActions sx={{ padding: 5 }}>{pageFooter()}</DialogActions>
     </Dialog>
   );
 }
