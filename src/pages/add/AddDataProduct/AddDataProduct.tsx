@@ -30,6 +30,7 @@ const PAGE_PREFIX = 'SDP';
 const FOOTER_HEIGHT = 40;
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 2;
+const LABEL_MULTIPLIER = 2;
 const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
@@ -186,19 +187,31 @@ export default function AddDataProduct() {
       setImageSizeValue(num.toString());
     };
     return (
-      <NumberEntry
-        label={t('imageSize.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="imageSize"
-        value={imageSizeValue}
-        setValue={(e: number) => setTheNumber(e)}
-        onFocus={() => helpComponent(t('imageSize.help'))}
-        required
-        suffix={imageSizeUnitsField()}
-        errorText={errorText()}
-      />
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-between"
+        justifyContent="center"
+        spacing={1}
+      >
+        <Grid item xs={12} lg={6}>
+          <NumberEntry
+            label={t('imageSize.label')}
+            labelBold
+            labelPosition={LAB_POSITION}
+            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
+            testId="imageSize"
+            value={imageSizeValue}
+            setValue={(e: number) => setTheNumber(e)}
+            onFocus={() => helpComponent(t('imageSize.help'))}
+            required
+            suffix={imageSizeUnitsField()}
+            errorText={errorText()}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}></Grid>
+      </Grid>
     );
   };
 
@@ -309,7 +322,7 @@ export default function AddDataProduct() {
         justifyContent="center"
         spacing={1}
       >
-        <Grid item md={12} lg={9}>
+        <Grid item md={12} lg={6}>
           <Grid
             container
             direction="column"
