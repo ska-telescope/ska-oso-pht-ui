@@ -322,7 +322,7 @@
     "1": "Continuum"
   },
   "observatoryDataProduct": {
-    "label": "Observatory Data Product",
+    "label": "Observatory Data Product *",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Image Products 1 : Image Cubes",
