@@ -31,7 +31,7 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate, presentLatex } from '../../utils/present';
+import { presentDate, presentLatex, presentTime } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
@@ -178,8 +178,8 @@ export default function LandingPage() {
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
-  const canDelete = (e: { row: { status: string } }) =>
-    e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  // TODO const canDelete = (e: { row: { status: string } }) =>
+  // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const displayProposalType = proposalType => {
     return proposalType ? proposalType : NOT_SPECIFIED;
@@ -205,7 +205,7 @@ export default function LandingPage() {
 
   const colId = {
     field: 'id',
-    headerName: t('id.label'),
+    headerName: t('proposalId.label'),
     flex: 1.5
   };
   const colType = {
@@ -245,7 +245,8 @@ export default function LandingPage() {
     field: 'lastUpdated',
     headerName: t('updated.label'),
     width: 180,
-    renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
+    renderCell: (e: { row: any }) =>
+      presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
   };
 
   const colActions = {
@@ -270,8 +271,8 @@ export default function LandingPage() {
         />
         <TrashIcon
           onClick={() => deleteIconClicked(e.row.id)}
-          disabled={!canDelete(e)}
-          toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
+          disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
+          toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
         />
       </>
     )
