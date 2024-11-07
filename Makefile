@@ -11,6 +11,8 @@ JS_E2E_COVERAGE_COMMAND_ENABLED = false
 JS_ESLINT_CONFIG ?= .eslintrc
 JS_E2E_TESTS_DIR ?= cypress
 
+$(info $(JS_E2E_TEST_BASE_URL))
+
 JS_COMMAND_RUNNER ?= yarn
 JS_TEST_COMMAND ?= cypress
 JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
