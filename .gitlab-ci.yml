@@ -71,13 +71,13 @@ test_and_coverage:
     - yarn merge-component-reports
     - cp build/tests/component/component-tests.xml build/reports/component-tests.xml
     - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: build/reports/cobertura-coverage.xml
-      junit: build/reports/component-tests.xml, build/reports/code-coverage.xml
+        path: build/reports/e2e-coverage.xml
+      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
     paths:
       - build/
 
