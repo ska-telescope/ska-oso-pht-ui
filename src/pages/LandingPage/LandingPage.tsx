@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper, Stack, Typography } from '@mui/material';
+import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -203,19 +203,22 @@ export default function LandingPage() {
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
-  const colId = { field: 'id', headerName: t('id.label') };
+  const colId = {
+    field: 'id',
+    headerName: t('id.label'),
+    flex: 1.5
+  };
   const colType = {
     field: 'proposalType',
-    headerName: t('proposalType.label'),
-    flex: 2.5,
-    renderCell: (e: { row: any }) =>
-      element(
-        e.row.proposalType > 0
-          ? t('proposalType.title.' + displayProposalType(e.row.proposalType))
-          : NOT_SPECIFIED
-      )
+    headerName: t('proposalType.short'),
+    width: 120,
+    renderCell: (e: { row: any }) => (
+      <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
+        {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
+      </Tooltip>
+    )
   };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), flex: 1 };
+  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
@@ -225,7 +228,7 @@ export default function LandingPage() {
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    flex: 2.5,
+    width: 100,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -234,16 +237,14 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    minWidth: 120,
-    maxWidth: 120,
+    width: 140,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
   const colUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    minWidth: 120,
-    maxWidth: 120,
+    width: 180,
     renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
   };
 
@@ -252,8 +253,7 @@ export default function LandingPage() {
     type: 'actions',
     headerName: 'Actions',
     sortable: false,
-    minWidth: 200,
-    maxWidth: 200,
+    width: 150,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
@@ -361,62 +361,35 @@ export default function LandingPage() {
     />
   );
 
-  const row1 = () => (
-    <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item>{pageDescription()}</Grid>
-    </Grid>
-  );
-
-  const row2 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={2}>
-        {addProposalButton()}
-      </Grid>
-      <Grid item xs={6} lg={2}>
-        {searchDropdown()}
-      </Grid>
-      <Grid item lg={4} mt={-1} display={{ xs: 'none', lg: 'block' }}>
-        {searchEntryField('searchId')}
-      </Grid>
-    </Grid>
-  );
-
-  const row3 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={10} display={{ xs: 'block', lg: 'none' }}>
-        {searchEntryField('searchId2')}
-      </Grid>
-    </Grid>
-  );
-
-  const row4 = () => (
-    <Grid pt={1} container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={10}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
-        )}
-        {!axiosViewError && filteredData.length > 0 && (
-          <div style={{ width: '100%' }}>
-            <DataGrid
-              testId="dataGridId"
-              rows={filteredData}
-              columns={stdColumns}
-              height={gridHeight()}
-            />
-          </div>
-        )}
-      </Grid>
-    </Grid>
-  );
-
   return (
     <>
-      <Stack direction="column">
-        {row1()}
-        {row2()}
-        {row3()}
-        {row4()}
-      </Stack>
+      <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
+        <Grid item xs={11}>
+          {pageDescription()}
+        </Grid>
+        <Grid item>{addProposalButton()}</Grid>
+        <Grid item xs={6} lg={2}>
+          {searchDropdown()}
+        </Grid>
+        <Grid item xs={11} lg={4} mt={-1}>
+          {searchEntryField('searchId')}
+        </Grid>
+        <Grid item xs={11} pt={1}>
+          {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+          )}
+          {!axiosViewError && filteredData.length > 0 && (
+            <div style={{ width: '100%' }}>
+              <DataGrid
+                testId="dataGridId"
+                rows={filteredData}
+                columns={stdColumns}
+                height={gridHeight()}
+              />
+            </div>
+          )}
+        </Grid>
+      </Grid>
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

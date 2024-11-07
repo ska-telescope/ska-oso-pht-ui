@@ -130,10 +130,8 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
-export const ELEVATION_MIN = 15;
+
 export const ELEVATION_DEFAULT = 45;
-export const ELEVATION_MAX = 59.2;
-export const ELEVATION_UNITS = 'deg';
 
 export const FOOTER_HEIGHT = 20;
 
@@ -182,7 +180,7 @@ export const GENERAL = {
 export const HEADER_HEIGHT = 70;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '15vh';
+export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;

@@ -9,7 +9,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
+import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
@@ -327,7 +327,7 @@ export default function ObservationPage() {
       },
       {
         field: 'weather',
-        headerName: '',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
@@ -347,6 +347,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
+        headerName: 'Actions',
         type: 'actions',
         sortable: false,
         flex: 1,
@@ -395,6 +396,7 @@ export default function ObservationPage() {
       {
         field: 'actions',
         type: 'actions',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,

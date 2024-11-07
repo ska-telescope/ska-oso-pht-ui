@@ -55,17 +55,11 @@ async function GetCalculate(
 
   // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
   function rightAscension() {
-    return target.ra
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.ra.replace('+', '').replace(' ', '');
   }
 
   function declination() {
-    return target.dec
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.dec.replace('+', '').replace(' ', '');
   }
 
   function getZoomBandwidthValueUnit() {
