@@ -7,7 +7,7 @@ interface HelpPanelProps {
   maxHeight?: string;
 }
 
-export default function HelpPanel({ maxHeight }: HelpPanelProps) {
+export default function HelpPanel({ maxHeight=HELP_VIEWPORT }: HelpPanelProps) {
   const { help } = storageObject.useStore();
 
   const getHelp = () => help.component as string;
@@ -16,7 +16,7 @@ export default function HelpPanel({ maxHeight }: HelpPanelProps) {
     <InfoCard
       color={InfoCardColorTypes.Info}
       fontSize={HELP_FONT}
-      maxHeight={maxHeight ?? HELP_VIEWPORT}
+      maxHeight={maxHeight}
       minHeight={HELP_VIEWPORT}
       message={getHelp()}
       testId="helpPanelId"
