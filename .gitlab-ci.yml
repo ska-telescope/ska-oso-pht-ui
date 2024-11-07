@@ -138,8 +138,8 @@ list_dependencies:
     #- cp npm_deps.txt .public/
     #- cp npm_deps.json .public/
   #artifacts:
-    #paths:
-    #  - .public
+  #paths:
+  #  - .public
 
 # Build the application
 build:
