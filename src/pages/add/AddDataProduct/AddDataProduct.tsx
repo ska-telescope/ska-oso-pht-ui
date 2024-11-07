@@ -246,12 +246,24 @@ export default function AddDataProduct() {
 
   const imageWeightingField = () => {
     return (
-      <ImageWeightingField
-        disabled
-        labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('imageWeighting.help'))}
-        value={weighting}
-      />
+      <Grid
+        p={1}
+        container
+        direction="row"
+        alignItems="space-between"
+        justifyContent="center"
+        spacing={1}
+      >
+        <Grid item xs={12} lg={6}>
+          <ImageWeightingField
+            disabled
+            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
+            onFocus={() => helpComponent(t('imageWeighting.help'))}
+            value={weighting}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}></Grid>
+      </Grid>
     );
   };
 
