@@ -51,7 +51,7 @@ code_analysis:
   before_script:
     # - mkdir -p build/reports
   script:
-    # - yarn install --immutable
+    - yarn install --immutable
     # - yarn code-analysis
     # - mv linting.xml build/reports/linting.xml
   artifacts:
