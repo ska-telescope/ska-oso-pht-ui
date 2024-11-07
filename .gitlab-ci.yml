@@ -69,15 +69,15 @@ test_and_coverage:
   script:
     - yarn test:cypress:component:ci
     - yarn merge-component-reports
-    - cp build/tests/component/component-tests.xml build/reports/component-tests.xml
+    - cp build/tests/component/component-tests.xml build/tests/component-tests.xml
     - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+    - cp build/tests/cobertura-coverage.xml build/tests/e2e-coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: build/reports/e2e-coverage.xml
-      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
+        path: build/tests/e2e-coverage.xml
+      junit: build/tests/component-tests.xml, build/tests/e2e-coverage.xml
     paths:
       - build/
 
@@ -118,25 +118,6 @@ list_dependencies:
   artifacts:
     paths:
       - .public
-
-# test-counts:
-#   image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
-#   stage: test
-#   tags:
-#    - ska-default
-#   before_script:
-#     - rm -rf node_modules
-#     - mkdir -p build/tests
-#     - yarn install --immutable
-#   script:
-#     - yarn test:cypress:component:ci
-#     - yarn merge-component-reports
-#     - cp build/tests/components/unit-tests.xml build/reports/component-tests.xml
-#   artifacts:
-#     paths:
-#       - build/
-#     reports:
-#       junit: build/reports/component-tests.xml
 
 # Build the application
 build:
