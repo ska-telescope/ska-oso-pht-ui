@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Title page
+   - Added close button on title view modal
+   - Changed some elements width/height
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
