@@ -432,6 +432,10 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
+
+  // TODO: STAR-670 remove after debugging
+  console.log('MappingPutProposal proposal', proposal) 
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
