@@ -26,6 +26,7 @@ interface continuumBandwidthFieldProps {
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
+  nSubBands?: number;
 }
 
 export default function ContinuumBandwidthField({
@@ -39,7 +40,8 @@ export default function ContinuumBandwidthField({
   continuumBandwidthUnits,
   centralFrequency,
   centralFrequencyUnits,
-  subarrayConfig
+  subarrayConfig,
+  nSubBands
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
@@ -114,25 +116,35 @@ export default function ContinuumBandwidthField({
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
-    // minimum channel width check
+    // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
     const minimumChannelWidthHz = getMinimumChannelWidth();
     if (scaledBandwidth < minimumChannelWidthHz) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    // maxContBandwidthHz check if exists for the array
+    // The bandwidth should be smaller than the maximum bandwidth defined for the subarray
+    // For the subarrays that don't have one set, the full bandwidth is allowed
     const maxContBandwidthHz = getMaxContBandwidthHz();
     if (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz) {
       return displaymMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
 
-    // check bandwidth's lower and upper bounds are within band limits
+    // The bandwidth's lower and upper bounds should be within band limits
+    // Lower and upper bounds are set as frequency -/+ half bandwidth
+    // The band limits for each antennas (ska/meerkat/mixed) are set for each band
+    // The antennas depend on the subarray selected
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
     const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.bandwidthRangeError');
+    }
+
+    // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
+    // sub-bands should be greater than the minimum allowed bandwidth
+    if (nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
+      return t('continuumBandWidth.range.subBandBandwidthError');
     }
 
     return '';
