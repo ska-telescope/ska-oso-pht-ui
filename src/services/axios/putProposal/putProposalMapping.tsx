@@ -31,10 +31,12 @@ import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
-import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
-const isContinuum = (type: number) => type === TYPE_CONTINUUM;
+const isContinuum = (type: number) => {
+  console.log('isContinuum type === TYPE_CONTINUUM', type === TYPE_CONTINUUM)
+  return type === TYPE_CONTINUUM;}
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 
@@ -112,7 +114,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   return outTargets;
 };
 
-// STAR-670: write new getDocuments function 
+// STAR-670: write new getDocuments function
 const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
   const documents = [];
   if (sciencePDF?.link) {
@@ -384,15 +386,6 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
-  const beamSize = incSensCalcResultsSpectralSection?.find(o => o.field === 'spectralSynthBeamSize')
-    ?.value;
-  const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
-  return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // TODO : fallback
-  // As PDM only accepts a number, we only save the 1st part of the beam size for now
-  // TODO send the whole beam size as a string once PDM updated to accept a string
-};
-
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
   for (let tarObs of incTargetObservations) {
@@ -402,9 +395,9 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const obsType = getObsType(tarObs, incObs); // spectral or continuum
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
-    // STAR-670: 
-    // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-    tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
+      // STAR-670:
+      // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
     // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
     // TODO un-swap sensitivity and integration time as above once PDM updated
     // => we want supplied integration time fields for supplied sensitivity
@@ -433,11 +426,10 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           : ''
       },
       synthesized_beam_size: {
-        value: getBeamSizeFirstSection(tarObs.sensCalc[spectralSection]), // TODO : Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')?.value,
+        continuum: isContinuum(obsType)? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value : 'test',
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
-        // TODO use commented synthBeamSize value once backends accepts the format
-        // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
       },
       spectral_confusion_noise: {
         value: Number(
@@ -449,14 +441,14 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     };
     resultsArr.push(result);
   }
+  console.log('resultsArr', resultsArr)
   return resultsArr;
 };
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-
   // TODO: STAR-670 remove after debugging
-  console.log('MappingPutProposal proposal', proposal) 
+  console.log('MappingPutProposal proposal', proposal);
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,

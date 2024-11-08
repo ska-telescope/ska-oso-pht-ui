@@ -90,7 +90,7 @@ const extractFileFromURL = (url): Promise<File> => {
     });
 };
 
-// STAR-670: TODO: revisit pdf logic in 
+// STAR-670: TODO: revisit pdf logic in
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
@@ -518,7 +518,7 @@ const getTargetObservation = (
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
-  
+
   // STAR-670: remove file in sciencePDF - adding uploadPDF boolean
   sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
   technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
@@ -528,7 +528,9 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     id: inRec.prsl_id,
     title: inRec.info.title,
     proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.attributes ? getAttributes(inRec.info.proposal_type) : [],
+    proposalSubType: inRec.info.proposal_type.attributes
+      ? getAttributes(inRec.info.proposal_type)
+      : [],
     status: inRec.status,
     lastUpdated: inRec.metadata.last_modified_on,
     lastUpdatedBy: inRec.metadata.last_modified_by,
