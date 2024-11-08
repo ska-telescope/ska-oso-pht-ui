@@ -66,10 +66,10 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
+const getAttributes = (proposalType: { main_type: string; attributes: string[] }): any => {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.sub_type?.map(subType =>
-    project.subProjects?.find(({ mapping }) => mapping === subType)
+  const subProjects = proposalType.attributes?.map(attributes =>
+    project.subProjects?.find(({ mapping }) => mapping === attributes)
   );
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
@@ -90,6 +90,7 @@ const extractFileFromURL = (url): Promise<File> => {
     });
 };
 
+// STAR-670: TODO: revisit pdf logic in 
 const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
   const pdf = documents?.find(doc => doc.type === docType);
   if (!pdf || !pdf.link) {
@@ -352,8 +353,8 @@ const getResultsSection1 = (
         // => see sensitivity calculator
         // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
         field: 'continuumSensitivityWeighted',
-        value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
+        value: inResult.result.weighted_continuum_sensitivity?.value.toString(),
+        units: inResult?.result?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
       } as ResultsSection);
     }
     section1.push({
@@ -364,8 +365,8 @@ const getResultsSection1 = (
     if (!isSensitivity) {
       section1.push({
         field: 'continuumTotalSensitivity',
-        value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
+        value: inResult.result.total_continuum_sensitivity?.value.toString(),
+        units: inResult?.result?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
       } as ResultsSection);
     }
     section1.push({
@@ -384,8 +385,8 @@ const getResultsSection1 = (
     } else {
       section1.push({
         field: 'continuumSurfaceBrightnessSensitivity',
-        value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
-        units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+        value: inResult.result?.surface_brightness_sensitivity?.continuum?.toString(),
+        units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
       } as ResultsSection);
     }
     // for zoom observation
@@ -403,8 +404,8 @@ const getResultsSection2 = (
   if (!isSensitivity) {
     section2.push({
       field: 'spectralSensitivityWeighted',
-      value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result.weighted_spectral_sensitivity?.value.toString(),
+      units: inResult?.result?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   section2.push({
@@ -415,8 +416,8 @@ const getResultsSection2 = (
   if (!isSensitivity) {
     section2.push({
       field: 'spectralTotalSensitivity',
-      value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result.total_spectral_sensitivity?.value.toString(),
+      units: inResult?.result?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   section2.push({
@@ -435,8 +436,8 @@ const getResultsSection2 = (
   } else {
     section2.push({
       field: 'spectralSurfaceBrightnessSensitivity',
-      value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
-      units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result?.surface_brightness_sensitivity?.spectral?.toString(),
+      units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   return section2;
@@ -487,7 +488,7 @@ const getTargetObservation = (
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
-    const isSensitivity = result.result_details.supplied_type === 'integration_time';
+    const isSensitivity = result.result.supplied_type === 'integration_time';
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
@@ -517,6 +518,8 @@ const getTargetObservation = (
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
+  
+  // STAR-670: remove file in sciencePDF - adding uploadPDF boolean
   sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
   technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
   const targets = getTargets(inRec.info.targets);
@@ -525,7 +528,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     id: inRec.prsl_id,
     title: inRec.info.title,
     proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
+    proposalSubType: inRec.info.proposal_type.attributes ? getAttributes(inRec.info.proposal_type) : [],
     status: inRec.status,
     lastUpdated: inRec.metadata.last_modified_on,
     lastUpdatedBy: inRec.metadata.last_modified_by,
@@ -541,12 +544,12 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info.observation_sets, inRec.info.results),
+    observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
-      inRec?.info?.results?.length > 0
+      inRec?.info?.result_details?.length > 0
         ? getTargetObservation(
-            inRec.info.results,
+            inRec.info.result_details,
             inRec.info.observation_sets,
             // inRec.info.targets,
             targets

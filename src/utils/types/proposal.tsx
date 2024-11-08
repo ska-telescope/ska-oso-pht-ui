@@ -29,7 +29,7 @@ export type ProposalBackend = {
     title: string;
     proposal_type: {
       main_type: string;
-      sub_type: string[];
+      attributes: string[];
     };
     abstract: string;
     science_category: string;
@@ -39,7 +39,7 @@ export type ProposalBackend = {
     observation_sets: ObservationSetBackend[];
     data_product_sdps: DataProductSDPsBackend[];
     data_product_src_nets: DataProductSRCNetBackend[];
-    results: SensCalcResultsBackend[];
+    result_details: SensCalcResultsBackend[];
   };
 };
 

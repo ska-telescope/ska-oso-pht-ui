@@ -112,6 +112,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   return outTargets;
 };
 
+// STAR-670: write new getDocuments function 
 const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
   const documents = [];
   if (sciencePDF?.link) {
@@ -130,6 +131,23 @@ const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): Docum
   }
   return documents;
 };
+
+// const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
+//   const documents = [];
+//   if (sciencePDF) {
+//     documents.push({
+//       document_id: sciencePDF.documentId,
+//       uploadPdf: sciencePDF.uploadPdf
+//     });
+//   }
+//   if (technicalPDF) {
+//     documents.push({
+//       document_id: technicalPDF?.documentId,
+//       uploadPdf: technicalPDF.uploadPdf
+//     });
+//   }
+//   return documents;
+// };
 
 const SDPOptions = (inArray: Boolean[]) => {
   return inArray.map(element => (element ? 'Y' : 'N'));
@@ -396,7 +414,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     let result: SensCalcResultsBackend = {
       observation_set_ref: tarObs.observationId,
       target_ref: tarObs.sensCalc?.title,
-      result_details: {
+      result: {
         supplied_type: suppliedType,
         ...suppliedRelatedFields
       },
@@ -449,7 +467,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       title: proposal.title,
       proposal_type: {
         main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
-        sub_type: proposal.proposalSubType
+        attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
@@ -476,7 +494,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
       data_product_src_nets:
         proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-      results: getResults(proposal.targetObservation, proposal.observations)
+      result_details: getResults(proposal.targetObservation, proposal.observations)
     }
   };
   helpers.transform.trimObject(transformedProposal);

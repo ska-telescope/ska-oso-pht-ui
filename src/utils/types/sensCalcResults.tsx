@@ -3,7 +3,7 @@ import { ValueUnitPair } from './valueUnitPair';
 export type SensCalcResultsBackend = {
   observation_set_ref?: string;
   target_ref?: string;
-  result_details?: {
+  result?: {
     supplied_type: string;
     // only for Supplied Sensitivity
     // TODO check if it's the other way around
