@@ -48,7 +48,13 @@ export default function ContinuumBandwidthField({
   const isLow = () => observingBand === BAND_LOW;
 
   const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
+    console.log('::: /////////////////////////////////////////////////////');
+    // TODO change frequency and continuum bandwidth units to disabled dropdown field so that the unit can be picked correctly
+    console.log('::: in scaleBandwidthOrFrequency');
+    console.log('::: incValue', incValue);
+    console.log('::: incUnits', incUnits);
     const frequencyUnitsLabel = FREQUENCY_UNITS.find(item => item.value === incUnits)?.label;
+    console.log('::: frequencyUnitsLabel', frequencyUnitsLabel);
     return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
   };
 
@@ -111,6 +117,19 @@ export default function ContinuumBandwidthField({
     return limits;
   };
 
+  const getLowBandLimits = () => {
+    const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
+    if (!bandLimits) {
+      return [];
+    }
+    const key = 'low';
+    const limits = bandLimits.find(e => e.type === key)?.limits;
+    console.log('LOW bandLimits', limits);
+    const limitsInHz = limits.map(e => e * 1e6);
+    console.log('LOW limitsInHz', limitsInHz);
+    return limitsInHz;
+  };
+
   const errorMessage = () => {
     // scale bandwidth and frequency
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
@@ -136,7 +155,9 @@ export default function ContinuumBandwidthField({
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
-    const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
+    console.log('lowerBound', lowerBound);
+    console.log('upperBound', upperBound);
+    const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits(); // TODO get band limits for Low
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.bandwidthRangeError');
     }

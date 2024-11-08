@@ -29,7 +29,13 @@ export const BANDWIDTH_TELESCOPE = [
     value: BAND_LOW,
     isBand5: false,
     units: 'MHz',
-    mapping: 'low_band'
+    mapping: 'low_band',
+    bandLimits: [
+      {
+        type: 'low',
+        limits: [50.0, 350.0]
+      }
+    ]
   },
   {
     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
