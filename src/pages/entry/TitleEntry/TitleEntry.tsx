@@ -135,7 +135,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
               backgroundColor: setCardBG(getProposal().proposalType, id),
 
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              minHeight: '90px'
             }}
             className={setCardClassName(getProposal().proposalType, id)}
             onClick={() => clickProposal(id)}
@@ -178,7 +179,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           <Card
             style={{
               color: setCardFG2(getProposal().proposalSubType, id),
-              backgroundColor: setCardBG2(getProposal().proposalSubType, id)
+              backgroundColor: setCardBG2(getProposal().proposalSubType, id),
+              display: 'flex',
+              justifyContent: 'center',
+              minHeight: '90px'
             }}
             className={setCardClassName2(getProposal().proposalSubType, id)}
             onClick={() => clickSubProposal(id)}
@@ -340,10 +344,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
             </Grid>
-            <Grid item xs={6 - LABEL_WIDTH}>
+            <Grid item xs={8 - LABEL_WIDTH}>
               {titleField()}
             </Grid>
-            <Grid item md={6}></Grid>
+            <Grid item md={4}></Grid>
           </Grid>
         </Grid>
       </Grid>
