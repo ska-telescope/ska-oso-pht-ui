@@ -5,7 +5,7 @@ export type SensCalcResultsBackend = {
   target_ref?: string;
   result?: {
     supplied_type: string;
-    // only for Supplied Sensitivity
+    // only for Supplied Integration Time - suggested in STAR-670
     // TODO check if it's the other way around
     // ********************************** //
     weighted_continuum_sensitivity?: ValueUnitPair;
@@ -18,7 +18,7 @@ export type SensCalcResultsBackend = {
       unit: string;
     };
     // ********************************** //
-    // only for Supplied Integration Time
+    // only for Supplied Sensitivity- suggested in STAR-670
     // ********************************** //
     continuum?: ValueUnitPair;
     spectral?: ValueUnitPair;
