@@ -2,6 +2,7 @@ import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { BAND_LOW, FREQUENCY_UNITS, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
+import { Box } from '@mui/system';
 
 interface EffectiveResolutionFieldProps {
   frequency: number;
@@ -72,15 +73,17 @@ export default function EffectiveResolutionField({
   ]);
 
   return (
-    <TextEntry
-      disabled
-      label={label}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
-      onFocus={onFocus}
-      testId="effectiveResolution"
-      value={effectiveResolution}
-    />
+    <Box pt={1}>
+      <TextEntry
+        disabled
+        label={label}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={labelWidth}
+        onFocus={onFocus}
+        testId="effectiveResolution"
+        value={effectiveResolution}
+      />
+    </Box>
   );
 }
