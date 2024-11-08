@@ -16,11 +16,6 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
     onClose();
   };
 
-  // const pageFooter = () => (
-  //   <Grid container direction="row" justifyContent="space-between" alignItems="center">
-  //   </Grid>
-  // );
-
   return (
     <Dialog
       open={open}
