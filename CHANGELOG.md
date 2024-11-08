@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* General Page
+   - Changed height of help component on the page
+   - Changed order of Science Category and Abstract fields
 * Title page
    - Changed some elements width/height
 * Target page
