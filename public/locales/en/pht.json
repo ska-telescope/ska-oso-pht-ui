@@ -166,7 +166,7 @@
       "body": "You have been invited to contribute to proposal {{id}}"
     },
     "success": "Email invite has been sent.",
-    "error": "Email invite was unsuccessful - please check email address and re-send."
+    "error": "Email invite was unsuccessful and member is not added"
   },
   "fileName": {
     "label": "File name"
@@ -322,7 +322,7 @@
     "1": "Continuum"
   },
   "observatoryDataProduct": {
-    "label": "Observatory Data Product",
+    "label": "Observatory Data Product *",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Image Products 1 : Image Cubes",
@@ -527,7 +527,7 @@
     "1": "Not specified"
   },
   "searchForMember": {
-    "label": "Search for a member."
+    "label": "Search for a member"
   },
   "skyDirection": {
     "help": {

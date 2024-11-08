@@ -12,6 +12,14 @@ Future
   - Time added to last update column
   - Tidy up of the Proposal display modal
   - Delete icon disabled whilst the API is fixed
+* Title page
+  - Changed some elements width/height
+* Team Page
+  - Added checking that member will not be added if email is not sent successfully 
+  - Updated team member field width and field name styles
+* General Page
+   - Changed height of help component on the page
+   - Changed order of Science Category and Abstract fields
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
