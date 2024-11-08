@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Team Page
+  - Added checking that member will not be added if email is not sent successfully 
+  - Updated team member field width and field name styles
 * General Page
    - Changed height of help component on the page
    - Changed order of Science Category and Abstract fields
