@@ -29,12 +29,8 @@ The PHT supports both light and dark modes and can be accessed at the top left c
    :alt: Failed validation status
 
 
-Common Elements Overview:
-=========================
-Common elements are recurring components found across multiple pages in the tool. They provide consistency and familiarity as they navigate through different sections. Below is an overview of the common elements that you will encounter throughout the PPT. 
 
-.. _statnav:
-
+.. _statnavtest:
 .. figure:: /images/statusnav.png
    :width: 95%
    :align: center
@@ -42,12 +38,18 @@ Common elements are recurring components found across multiple pages in the tool
 
    Status, Navigation and Validation.
 
+
+Common Elements Overview:
+=========================
+Common elements are recurring components found across multiple pages in the tool. They provide consistency and familiarity as they navigate through different sections. Below is an overview of the common elements that you will encounter throughout the PPT. 
+
+
 .. csv-table:: Common elements and description
    :header: "Element", "Description"
 
    
-   "Status Indicators",	"Displayed at the top of the page. It shows the validation status as seen in :numref:`Figure %s <statnav>`  on each page in the flow. 
-   Additionally, :numref:`Figure %s <statnav>` provides navigation and status of each page. |icostatus2| represents a complete and validated page. |icostatus3| represents an incomplete page. |icostatus4| represents a page that is not started (Only visible during the creation of a new proposal). |icostatus5| a page that has one or more failed field validations." 
+   "Status Indicators",	"Displayed at the top of the page. It shows the validation status as seen in :numref:`Figure %s <statnavtest>`  on each page in the flow. 
+   Additionally, :numref:`Figure %s <statnavtest>` provides navigation and status of each page. |icostatus2| represents a complete and validated page. |icostatus3| represents an incomplete page. |icostatus4| represents a page that is not started (Only visible during the creation of a new proposal). |icostatus5| a page that has one or more failed field validations." 
    "Home Button", "Positioned at the top left corner, enabling you to return to the Landing Page."
    "Save Button",	"Located at the top left corner, next to the home button, allowing you to save your progress on each page."
    "Validate Button",	"Positioned at the top right. This allows your proposal to the validated against the capabilities of a current cycle."

@@ -37,14 +37,7 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'ska_ser_sphinx_theme'
-numfig = True
 
-numfig_format={
-    'figure': 'Figure %s :',
-    'table': 'Table %s',
-    'code-block': 'Listing %s'
-}
 
 html_context = {}
 
@@ -96,3 +89,11 @@ intersphinx_mapping = {}
 
 todo_include_todos = True
 
+html_theme = 'ska_ser_sphinx_theme'
+numfig = True
+
+numfig_format={
+    'figure': 'Figure %s :',
+    'table': 'Table %s',
+    'code-block': 'Listing %s'
+}
