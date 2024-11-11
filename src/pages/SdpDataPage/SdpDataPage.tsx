@@ -131,6 +131,7 @@ export default function SdpDataPage() {
 
   const colActions = {
     field: 'actions',
+    headerName: t('actions.label'),
     type: 'actions',
     sortable: false,
     flex: 0.5,

@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import { Box } from '@mui/system';
 
 interface ElevationFieldProps {
   disabled?: boolean;
@@ -45,19 +46,21 @@ export default function ElevationField({
   };
 
   return (
-    <NumberEntry
-      disabled={disabled}
-      errorText={errorMessage()}
-      label={label}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={widthLabel}
-      required={required}
-      testId={testId}
-      value={value}
-      setValue={setValue}
-      onFocus={onFocus}
-      suffix={ELEVATION_UNITS}
-    />
+    <Box pt={1}>
+      <NumberEntry
+        disabled={disabled}
+        errorText={errorMessage()}
+        label={label}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={widthLabel}
+        required={required}
+        testId={testId}
+        value={value}
+        setValue={setValue}
+        onFocus={onFocus}
+        suffix={ELEVATION_UNITS}
+      />
+    </Box>
   );
 }

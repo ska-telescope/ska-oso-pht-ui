@@ -23,7 +23,7 @@
   "abstract": {
     "label": "Abstract",
     "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter your abstract information. This field allows latex syntax. - Word count {{current}} / {{max}}",
+    "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
     "minDisplayRows": "5",
@@ -86,7 +86,10 @@
     "help": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations.",
     "label": "Continuum Bandwidth",
     "range": {
-      "error": "Value is outside of allowed range."
+      "error": "Value is outside of allowed range.",
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width (%s kHz)",
+      "contBandwidthMaximumExceededError": "Maximum bandwidth for this array assembly (%s MHz) exceeded",
+      "bandwidthRangeError": "Bandwidth must be fully contained within the band"
     }
   },
   "continuumUnits": {
@@ -163,7 +166,7 @@
       "body": "You have been invited to contribute to proposal {{id}}"
     },
     "success": "Email invite has been sent.",
-    "error": "Email invite was unsuccessful - please check email address and re-send."
+    "error": "Email invite was unsuccessful and member is not added"
   },
   "fileName": {
     "label": "File name"
@@ -200,7 +203,7 @@
   },
   "firstName": {
     "label": "First Name",
-    "help": "Requires the first name of the investigator."
+    "help": "First name of the principal investigator or co-investigator."
   },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
@@ -319,7 +322,7 @@
     "1": "Continuum"
   },
   "observatoryDataProduct": {
-    "label": "Observatory Data Product",
+    "label": "Observatory Data Product *",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Image Products 1 : Image Cubes",
@@ -474,7 +477,7 @@
   },
   "referenceFrame": {
     "label": "Reference Frame",
-    "help": "REFERENCE FRAME HELP",
+    "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.",
     "0": "Heliocentric",
     "1": "Kinematic Local Standard of Rest"
   },
@@ -524,7 +527,7 @@
     "1": "Not specified"
   },
   "searchForMember": {
-    "label": "Search for a member."
+    "label": "Search for a member"
   },
   "skyDirection": {
     "help": {

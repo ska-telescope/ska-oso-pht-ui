@@ -26,11 +26,14 @@ function clickOutside() {
   cy.get('body').click(0, 0);
 }
 
+function clickCloseButton() {}
+
 describe('<LatexPreviewModal />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders (basic)`, () => {
       mountingBasic(theTheme);
       clickOutside();
+      clickCloseButton();
     });
   }
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box, Tooltip } from '@mui/material';
-import { LAB_POSITION } from '../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 // TODO : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
 
@@ -33,13 +33,13 @@ export default function ReferenceCoordinatesField({
       <Tooltip title={t(FIELD + '.tooltip')}>
         <Box pt={1}>
           <DropDown
-            disabled // TODO : Need to implement Galactic
+            disabled={OPTIONS.length < 2}
             options={getOptions()}
             testId={FIELD + 'Type'}
             value={value}
             setValue={setValue}
             label={t(FIELD + '.label')}
-            labelBold
+            labelBold={LAB_IS_BOLD}
             labelPosition={LAB_POSITION}
             labelWidth={labelWidth}
             onFocus={valueFocus}
