@@ -5,9 +5,13 @@ import { HELP_FONT, HELP_VIEWPORT } from '../../../utils/constants';
 
 interface HelpPanelProps {
   maxHeight?: string;
+  minHeight?: string;
 }
 
-export default function HelpPanel({ maxHeight = HELP_VIEWPORT }: HelpPanelProps) {
+export default function HelpPanel({
+  maxHeight = HELP_VIEWPORT,
+  minHeight = HELP_VIEWPORT
+}: HelpPanelProps) {
   const { help } = storageObject.useStore();
 
   const getHelp = () => help.component as string;
@@ -17,7 +21,7 @@ export default function HelpPanel({ maxHeight = HELP_VIEWPORT }: HelpPanelProps)
       color={InfoCardColorTypes.Info}
       fontSize={HELP_FONT}
       maxHeight={maxHeight}
-      minHeight={HELP_VIEWPORT}
+      minHeight={minHeight}
       message={getHelp()}
       testId="helpPanelId"
     />
