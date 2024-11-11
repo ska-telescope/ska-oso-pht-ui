@@ -58,6 +58,9 @@ export type TargetBackend = {
  *   '1' : "m/s"
  ***********************************************************************************/
 
+// NOT USED : Note that the fields marked as NOT USED should be removed until such time as they are actually needed
+
+// NOT USED
 export type PointingPatternParams = {
   kind: string;
   offsetXArcsec: number;
@@ -75,16 +78,17 @@ type Target = {
   raUnit: string;
   redshift: string;
   referenceFrame: number;
-  rcReferenceFrame?: string;
-  raReferenceFrame?: string;
-  raDefinition?: string;
+  rcReferenceFrame?: string; // NOT USED
+  raReferenceFrame?: string; // NOT USED
+  raDefinition?: string; // NOT USED
   velType: number;
   vel: string;
   velUnit: number;
   pointingPattern?: {
-    active: string;
-    parameters: PointingPatternParams[];
-  };
+    // NOT USED
+    active: string; // NOT USED
+    parameters: PointingPatternParams[]; // NOT USED
+  }; // NOT USED
 };
 
 // NOTE : This ensures that we can initialize to a known point.
@@ -99,9 +103,13 @@ export const NEW_TARGET: Target = {
   raUnit: '',
   redshift: '',
   referenceFrame: 0,
+  rcReferenceFrame: '',
+  raReferenceFrame: '',
+  raDefinition: '',
   vel: '',
   velType: 0,
-  velUnit: 0
+  velUnit: 0,
+  pointingPattern: null
 };
 
 export default Target;

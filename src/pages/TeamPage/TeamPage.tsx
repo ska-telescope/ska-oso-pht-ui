@@ -108,7 +108,7 @@ export default function TeamPage() {
         <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec.phdThesis ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('pi.short')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
       </Grid>
@@ -154,6 +154,7 @@ export default function TeamPage() {
             <Box sx={{ width: '100%', border: '1px solid grey' }}>
               <Box>
                 <Tabs
+                  variant="fullWidth"
                   textColor="secondary"
                   indicatorColor="secondary"
                   value={theValue}

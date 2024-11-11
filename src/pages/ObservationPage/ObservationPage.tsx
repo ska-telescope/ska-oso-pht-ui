@@ -327,7 +327,7 @@ export default function ObservationPage() {
       },
       {
         field: 'weather',
-        headerName: '',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
@@ -347,6 +347,7 @@ export default function ObservationPage() {
       },
       {
         field: 'actions',
+        headerName: 'Actions',
         type: 'actions',
         sortable: false,
         flex: 1,
@@ -395,6 +396,7 @@ export default function ObservationPage() {
       {
         field: 'actions',
         type: 'actions',
+        headerName: 'Status',
         sortable: false,
         flex: 0.5,
         disableClickEventBubbling: true,
@@ -522,32 +524,37 @@ export default function ObservationPage() {
         </Grid>
         <Grid item md={11} lg={6}>
           <Card variant="outlined">
-            <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
-              <Grid item>
-                <Typography id="targetObservationLabel" pt={1} variant="h6">
-                  {t('targetObservation.label')}
-                </Typography>
+            <CardContent>
+              <Grid container alignItems="space-evenly" justifyContent="space-around">
+                <Grid item>
+                  <Typography id="targetObservationLabel" pt={1} variant="h6">
+                    {t('targetObservation.label')}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Grid container alignItems="space-evenly" justifyContent="space-around">
+                    <Grid item>
+                      <TickBox
+                        disabled={!currObs}
+                        label={t('selected.label')}
+                        testId="selectedTickBox"
+                        checked={selected}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TickBox
+                        disabled={!currObs}
+                        label={t('notSelected.label')}
+                        testId="notSelectedTickBox"
+                        checked={notSelected}
+                        onChange={() => setNotSelected(!notSelected)}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={1}></Grid>
-              <Grid item xs={2}>
-                <TickBox
-                  disabled={!currObs}
-                  label={t('selected.label')}
-                  testId="selectedTickBox"
-                  checked={selected}
-                  onChange={() => setSelected(!selected)}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TickBox
-                  disabled={!currObs}
-                  label={t('notSelected.label')}
-                  testId="notSelectedTickBox"
-                  checked={notSelected}
-                  onChange={() => setNotSelected(!notSelected)}
-                />
-              </Grid>
-            </Grid>
+            </CardContent>
             <CardContent>
               {hasTargets() && (
                 <DataGrid

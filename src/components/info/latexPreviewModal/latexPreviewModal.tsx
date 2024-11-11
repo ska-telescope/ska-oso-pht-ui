@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, Grid, DialogTitle } from '@mui/material';
 import { presentLatex } from '../../../utils/present';
-
+// import CancelButton from '../../button/Cancel/Cancel';
 interface LatexPreviewProps {
   value: string;
   open: boolean;
@@ -39,7 +39,10 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
           alignItems="space-evenly"
           justifyContent="space-around"
         >
-          {presentLatex(value)}
+          <Grid xs={12}>{presentLatex(value)}</Grid>
+          {/* <Grid item>
+            <CancelButton action={handleClose} title="button.close" testId="cancelButtonTestId" />
+          </Grid> */}
         </Grid>
       </DialogContent>
     </Dialog>

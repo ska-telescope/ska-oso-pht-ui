@@ -28,8 +28,6 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 2,
     value: BAND_LOW,
     isBand5: false,
-    lower: 50,
-    upper: 350,
     units: 'MHz',
     mapping: 'low_band'
   },
@@ -38,42 +36,77 @@ export const BANDWIDTH_TELESCOPE = [
     telescope: 1,
     value: BAND_1,
     isBand5: false,
-    lower: 0.35,
-    upper: 1.05,
     units: 'GHz',
-    mapping: 'mid_band_1'
+    mapping: 'mid_band_1',
+    bandLimits: [
+      {
+        type: 'ska',
+        limits: [0.35e9, 1.05e9]
+      },
+      {
+        type: 'meerkat',
+        limits: [0.58e9, 1.015e9]
+      },
+      {
+        type: 'mixed',
+        limits: [0.58e9, 1.015e9]
+      }
+    ]
   },
   {
     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
     value: BAND_2,
     isBand5: false,
-    lower: 0.95,
-    upper: 1.76,
     units: 'GHz',
-    mapping: 'mid_band_2'
+    mapping: 'mid_band_2',
+    bandLimits: [
+      {
+        type: 'ska',
+        limits: [0.95e9, 1.76e9]
+      },
+      {
+        type: 'meerkat',
+        limits: [0.95e9, 1.67e9]
+      },
+      {
+        type: 'mixed',
+        limits: [0.95e9, 1.67e9]
+      }
+    ]
   },
   {
     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
     value: BAND_5A,
     isBand5: true,
-    lower: 4.6,
-    upper: 8.5,
     units: 'GHz',
-    mapping: 'mid_band_3'
+    mapping: 'mid_band_3',
+    bandLimits: [
+      {
+        type: 'ska',
+        limits: [4.6e9, 8.5e9]
+      }
+    ]
   }, // Band 5a
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
-    lower: 8.3,
-    upper: 15.4,
     units: 'GHz',
-    mapping: 'mid_band_4'
+    mapping: 'mid_band_4',
+    bandLimits: [
+      {
+        type: 'ska',
+        limits: [8.3e9, 15.4e9]
+      }
+    ]
   } // Band 5b
 ];
+
+export const MID_MIN_CHANNEL_WIDTH_HZ = 13.44e3; // This is the fundamental limit of the bandwidth provided by SKA MID
+export const LOW_MIN_CHANNEL_WIDTH_HZ = (24 * 781.25e3) / 3456; // This is the fundamental limit of the bandwidth provided by SKA LOW
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
@@ -147,7 +180,7 @@ export const GENERAL = {
 export const HEADER_HEIGHT = 70;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '15vh';
+export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
@@ -299,7 +332,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -308,7 +342,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -317,7 +352,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -396,7 +432,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 6,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          continuumSpectralAveragingMax: 6906,
+          maxContBandwidthHz: 75e6
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -406,7 +443,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 18,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          continuumSpectralAveragingMax: 6906,
+          maxContBandwidthHz: 75e6
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -416,7 +454,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 64,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          continuumSpectralAveragingMax: 13812,
+          maxContBandwidthHz: 150e6
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
@@ -426,7 +465,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 40,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          continuumSpectralAveragingMax: 13812,
+          maxContBandwidthHz: 150e6
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -832,4 +872,20 @@ export const DEFAULT_PI = {
   phdThesis: false,
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
+};
+
+export const DEFAULT_TARGETS = {
+  dec: '123',
+  decUnit: '1',
+  id: 1,
+  latitude: '123',
+  longitude: '123',
+  name: 'DUMMY',
+  ra: '123',
+  raUnit: '1',
+  redshift: '123',
+  referenceFrame: 0,
+  vel: '123',
+  velType: 0,
+  velUnit: 0
 };

@@ -54,7 +54,8 @@ import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { getScaledValue } from '../../../utils/helpers';
+import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidth/bandwidth';
 
 const XS_TOP = 5;
 const XS_BOTTOM = 5;
@@ -253,6 +254,7 @@ export default function ObservationEntry() {
     }
   };
 
+  // HERE
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
@@ -276,6 +278,7 @@ export default function ObservationEntry() {
     }
   };
 
+  // TODO expand on this to fix 5a band default value issue when switching from Low
   React.useEffect(() => {
     const calculateSubarray = () => {
       if (isEdit()) {
@@ -348,33 +351,17 @@ export default function ObservationEntry() {
     </Grid>
   );
 
-  const bandwidthField = () => {
-    interface BandwidthOptions {
-      label: string;
-      value: number;
-      mapping: string;
-    }
-    const getOptions = (): BandwidthOptions[] => {
-      return OBSERVATION.array[telescope() - 1].bandWidth;
-    };
-    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
-      options.map(obj => {
-        return {
-          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
-          value: obj.value,
-          mapping: obj.mapping
-        };
-      });
-    return fieldDropdown(
-      false,
-      'bandwidth',
-      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
-      true,
-      setBandwidth,
-      null,
-      bandwidth
-    );
-  };
+  const bandwidthField = () => (
+    <BandwidthField
+      onFocus={() => helpComponent(t('bandwidth.help'))}
+      required
+      setValue={setBandwidth}
+      testId="bandwidth"
+      value={bandwidth}
+      telescope={telescope()}
+      widthLabel={LABEL_WIDTH_OPT1}
+    />
+  );
 
   const fieldDropdown = (
     disabled: boolean,
@@ -591,38 +578,53 @@ export default function ObservationEntry() {
         />
       );
     }
-  };
-
-  const continuumBandwidthField = () => {
-    const errorMessage = () => {
-      return '';
-      // TODO : This validation is completely wrong
-      /*
-      const rec = BANDWIDTH_TELESCOPE[observingBand];
-      return continuumBandwidth < rec.lower || continuumBandwidth > rec.upper
-        ? t('continuumBandWidth.range.error')
-        : '';
-        */
-    };
-    const validate = (e: React.SetStateAction<number>) => {
-      setContinuumBandwidth(Number(e) < 0 ? 0 : e);
-    };
-
+    // Use the central frequency units for now, as I see this being dropped soon anyway.
+    /*
+    const options = OBSERVATION.array.find(item => item.value === telescope())
+      ?.centralFrequencyAndBandWidthUnits;
     return (
-      <NumberEntry
-        label={t('continuumBandWidth.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        suffix={continuumBandwidthUnitsField()}
-        testId="continuumBandwidth"
-        value={continuumBandwidth}
-        setValue={validate}
-        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-        required
-        errorText={errorMessage()}
+      <DropDown
+        options={options}
+        testId="continuumBandwidthUnits"
+        value={continuumBandwidthUnits}
+        setValue={setContinuumBandwidthUnits}
+        label=""
+        disabled={isLow()}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );
+    */
+  };
+
+  const continuumBandwidthField = () => (
+    <ContinuumBandwidthField
+      labelWidth={LABEL_WIDTH_OPT1}
+      onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+      setValue={setContinuumBandwidth}
+      value={continuumBandwidth}
+      suffix={continuumBandwidthUnitsField()}
+      telescope={telescope()}
+      observingBand={observingBand}
+      continuumBandwidthUnits={continuumBandwidthUnits}
+      centralFrequency={centralFrequency}
+      centralFrequencyUnits={centralFrequencyUnits}
+      subarrayConfig={subarrayConfig}
+    />
+  );
+
+  const getScaledValue = (value: any, multiplier: number, operator: string) => {
+    let val_scaled = 0;
+    switch (operator) {
+      case '*':
+        val_scaled = value * multiplier;
+        break;
+      case '/':
+        val_scaled = value / multiplier;
+        break;
+      default:
+        val_scaled = value;
+    }
+    return val_scaled;
   };
 
   const AntennasFields = () => {
