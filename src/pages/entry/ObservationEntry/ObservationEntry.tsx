@@ -644,7 +644,6 @@ export default function ObservationEntry() {
       Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
         ? t('centralFrequency.range.error')
         : '';
-    console.log('centralFrequencyUnits', centralFrequencyUnits);
     return (
       <Grid item>
         {fieldWrapper(

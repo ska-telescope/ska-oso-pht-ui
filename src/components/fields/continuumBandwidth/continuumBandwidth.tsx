@@ -48,17 +48,8 @@ export default function ContinuumBandwidthField({
   const FIELD = 'continuumBandwidth';
   const isLow = () => observingBand === BAND_LOW;
 
-  console.log('centralFrequencyUnits', centralFrequencyUnits);
-  console.log('continuumBandwidthUnits', continuumBandwidthUnits);
-
   const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
-    console.log('::: /////////////////////////////////////////////////////');
-    // TODO change frequency and continuum bandwidth units to disabled dropdown field so that the unit can be picked correctly
-    console.log('::: in scaleBandwidthOrFrequency');
-    console.log('::: incValue', incValue);
-    console.log('::: incUnits', incUnits);
     const frequencyUnitsLabel = FREQUENCY_UNITS.find(item => item.value === incUnits)?.label;
-    console.log('::: frequencyUnitsLabel', frequencyUnitsLabel);
     return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
   };
 
@@ -128,17 +119,13 @@ export default function ContinuumBandwidthField({
     }
     const key = 'low';
     const limits = bandLimits.find(e => e.type === key)?.limits;
-    console.log('LOW bandLimits', limits);
     const limitsInHz = limits.map(e => e * 1e6);
-    console.log('LOW limitsInHz', limitsInHz);
     return limitsInHz;
   };
 
   const errorMessage = () => {
     // scale bandwidth and frequency
-    console.log('SCALE BANDWIDTH');
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
-    console.log('SCALE CENTRAL FREQUENCY');
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
@@ -156,13 +143,11 @@ export default function ContinuumBandwidthField({
 
     // The bandwidth's lower and upper bounds should be within band limits
     // Lower and upper bounds are set as frequency -/+ half bandwidth
-    // The band limits for each antennas (ska/meerkat/mixed) are set for each band
+    // The band limits for each antennas (ska/meerkat/mixed) are set for each band (Mid)
     // The antennas depend on the subarray selected
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
-    console.log('lowerBound', lowerBound);
-    console.log('upperBound', upperBound);
     const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits(); // TODO get band limits for Low
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.bandwidthRangeError');
@@ -170,12 +155,12 @@ export default function ContinuumBandwidthField({
 
     // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
     // sub-bands should be greater than the minimum allowed bandwidth
-    if (nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
+    // Mid only
+    if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
       return t('continuumBandWidth.range.subBandBandwidthError');
     }
 
     return '';
-    // TODO handle low bandLimits
     // TODO : handle band5a NaN cases?
     // TODO : handle zooms
   };
