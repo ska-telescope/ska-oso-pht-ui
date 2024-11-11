@@ -39,14 +39,6 @@
     "nth-check": "^2.0.1",
     "postcss": "^8.4.31"
   },
-  "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true,
-    "json": {
-      "enabled": true,
-      "formatter": "cucumber-json-formatter.exe",
-      "output": "build/cucumber-report.json"
-    }
-  },
   "dependencies": {
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",

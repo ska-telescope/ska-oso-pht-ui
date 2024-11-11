@@ -21,6 +21,5 @@ describe('Creating Proposal', () => {
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
     verifyFirstProposalOnLandingPageIsVisible();
-  })
-
-})
+  });
+});

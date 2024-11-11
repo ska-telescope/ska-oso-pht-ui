@@ -1,4 +1,4 @@
-import 'cypress-xray-junit-reporter/support'
+import 'cypress-xray-junit-reporter/support';
 import '@cypress/code-coverage/support';
 import './commands';
 import 'cypress-file-upload';
