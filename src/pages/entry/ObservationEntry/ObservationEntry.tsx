@@ -86,7 +86,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(2);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -491,23 +491,21 @@ export default function ObservationEntry() {
     );
   };
 
+  // SARAH
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-    if (options?.length === 1) {
-      return options[0].label;
-    } else {
-      return (
-        <DropDown
-          options={options}
-          testId="frequencyUnits"
-          value={centralFrequencyUnits}
-          setValue={setCentralFrequencyUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      );
-    }
+    return (
+      <DropDown
+        options={options}
+        testId="frequencyUnits"
+        value={centralFrequencyUnits}
+        setValue={setCentralFrequencyUnits}
+        label=""
+        disabled={isLow()}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
   };
 
   const centralFrequencyField = () => {
@@ -516,7 +514,7 @@ export default function ObservationEntry() {
       Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
         ? t('centralFrequency.range.error')
         : '';
-
+    console.log('centralFrequencyUnits', centralFrequencyUnits);
     return (
       <NumberEntry
         label={t('centralFrequency.label')}
@@ -561,27 +559,11 @@ export default function ObservationEntry() {
     );
   };
 
+  // SARAH
   const continuumBandwidthUnitsField = () => {
+    // Use the central frequency units for now, as I see this being dropped soon anyway.
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-    if (options?.length === 1) {
-      return options[0].label;
-    } else {
-      return (
-        <DropDown
-          options={options}
-          testId="continuumBandwidthUnits"
-          value={continuumBandwidthUnits}
-          setValue={setContinuumBandwidthUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      );
-    }
-    // Use the central frequency units for now, as I see this being dropped soon anyway.
-    /*
-    const options = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
     return (
       <DropDown
         options={options}
@@ -593,7 +575,6 @@ export default function ObservationEntry() {
         onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );
-    */
   };
 
   const continuumBandwidthField = () => (

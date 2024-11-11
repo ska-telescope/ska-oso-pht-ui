@@ -47,6 +47,9 @@ export default function ContinuumBandwidthField({
   const FIELD = 'continuumBandwidth';
   const isLow = () => observingBand === BAND_LOW;
 
+  console.log('centralFrequencyUnits', centralFrequencyUnits);
+  console.log('continuumBandwidthUnits', continuumBandwidthUnits);
+
   const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
     console.log('::: /////////////////////////////////////////////////////');
     // TODO change frequency and continuum bandwidth units to disabled dropdown field so that the unit can be picked correctly
@@ -132,7 +135,9 @@ export default function ContinuumBandwidthField({
 
   const errorMessage = () => {
     // scale bandwidth and frequency
+    console.log('SCALE BANDWIDTH');
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
+    console.log('SCALE CENTRAL FREQUENCY');
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
