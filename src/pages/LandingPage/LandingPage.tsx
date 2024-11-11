@@ -66,9 +66,7 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const DATA_GRID_HEIGHT = 70;
-
-  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight - HEADER_HEIGHT / 100);
+  const DATA_GRID_HEIGHT = '90vh';
 
   React.useEffect(() => {
     updateAppContent2(null);
@@ -385,7 +383,7 @@ export default function LandingPage() {
                 testId="dataGridId"
                 rows={filteredData}
                 columns={stdColumns}
-                height={gridHeight()}
+                height={DATA_GRID_HEIGHT}
               />
             </div>
           )}

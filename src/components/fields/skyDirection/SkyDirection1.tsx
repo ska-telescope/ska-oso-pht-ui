@@ -54,7 +54,7 @@ export default function SkyDirection1Field({
   );
 
   return (
-    <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       {skyUnits.toString() === '0' && SkyDirectionValueText()}
       {skyUnits.toString() === '1' && SkyDirectionValueNumber()}
     </Box>

@@ -25,6 +25,9 @@ interface TargetEntryProps {
 export default function TargetEntry({ id = 0, raType, setTarget, target }: TargetEntryProps) {
   const { t } = useTranslation('pht');
   const LAB_WIDTH = 5;
+  const WRAPPER_HEIGHT = '80px';
+  const WRAPPER_WIDTH = '450px';
+  const HELP_MAX_HEIGHT = '40vh';
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -111,16 +114,14 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
 
     return (
       <Grid item xs={12}>
-        <Box p={1}>
-          <AddButton
-            action={addButtonAction}
-            disabled={disabled()}
-            primary
-            testId={'addTargetButton'}
-            title="addTarget.label"
-            toolTip="addTarget.toolTip"
-          />
-        </Box>
+        <AddButton
+          action={addButtonAction}
+          disabled={disabled()}
+          primary
+          testId={'addTargetButton'}
+          title="addTarget.label"
+          toolTip="addTarget.toolTip"
+        />
       </Grid>
     );
   };
@@ -129,12 +130,17 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
     const processCoordinatesResults = response => {
       if (response && !response.error) {
         const values = response.split(' ');
-        const redshift = values?.length > 2 && values[2] !== 'null' ? values[2] : '';
+        const redshift =
+          values?.length > 2 && values[2] !== 'null'
+            ? Number(values[2])
+                .toExponential(2)
+                .toString()
+            : '';
         const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
         setTarget({ ...target, dec: values[0], ra: values[1], redshift: redshift, vel: vel });
         setNameFieldError('');
       } else {
-        setNameFieldError(t(response.error));
+        setNameFieldError(t('resolve.error.' + response.error));
       }
     };
 
@@ -144,93 +150,137 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
     };
 
     return (
-      <ResolveButton action={() => getCoordinates(target?.name, raType)} testId={'resolveButton'} />
+      <ResolveButton
+        action={() => getCoordinates(target?.name, raType)}
+        disabled={!target.name}
+        testId={'resolveButton'}
+      />
     );
   };
 
-  const nameField = () => (
-    <Grid item p={1} xs={12}>
-      <TextEntry
-        required
-        label={t('name.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LAB_WIDTH}
-        testId={'name'}
-        value={target?.name}
-        setValue={setName}
-        suffix={resolveButton()}
-        onFocus={() => helpComponent(t('name.help'))}
-        errorText={nameFieldError}
-      />
-    </Grid>
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
   );
 
+  const velocityWrapper = (children: React.JSX.Element) => (
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
+
+  const nameField = () => {
+    return (
+      <Grid item>
+        {fieldWrapper(
+          <Box pt={1}>
+            <TextEntry
+              required
+              label={t('name.label')}
+              labelBold
+              labelPosition={LAB_POSITION}
+              labelWidth={LAB_WIDTH}
+              testId={'name'}
+              value={target?.name}
+              setValue={setName}
+              suffix={resolveButton()}
+              onFocus={() => helpComponent(t('name.help'))}
+              errorText={nameFieldError}
+            />
+          </Box>
+        )}
+      </Grid>
+    );
+  };
+
   const skyDirection1Field = () => (
-    <Grid item xs={12}>
-      <SkyDirection1
-        labelWidth={LAB_WIDTH}
-        setValue={setRA}
-        skyUnits={raType}
-        value={target?.ra}
-        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
-      />
+    <Grid item>
+      {fieldWrapper(
+        <Box pt={1}>
+          <SkyDirection1
+            labelWidth={LAB_WIDTH}
+            setValue={setRA}
+            skyUnits={raType}
+            value={target?.ra}
+            valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+          />
+        </Box>
+      )}
     </Grid>
   );
 
   const skyDirection2Field = () => (
-    <Grid item xs={12}>
-      <SkyDirection2
-        labelWidth={LAB_WIDTH}
-        setValue={setDec}
-        skyUnits={raType}
-        value={target?.dec}
-        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
-      />
+    <Grid item>
+      {fieldWrapper(
+        <Box pt={1}>
+          <SkyDirection2
+            labelWidth={LAB_WIDTH}
+            setValue={setDec}
+            skyUnits={raType}
+            value={target?.dec}
+            valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+          />
+        </Box>
+      )}
     </Grid>
   );
 
   const velocityField = () => (
-    <Grid item xs={12}>
-      <VelocityField
-        labelWidth={LAB_WIDTH}
-        setRedshift={setRedshift}
-        setVel={setVel}
-        setVelType={setVelType}
-        setVelUnit={setVelUnit}
-        redshift={target?.redshift}
-        vel={target?.vel}
-        velType={target?.velType}
-        velUnit={target?.velUnit}
-        velFocus={() => helpComponent(t('velocity.help'))}
-        velTypeFocus={() => helpComponent(t('velocity.help'))}
-        velUnitFocus={() => helpComponent(t('velocity.help'))}
-      />
+    <Grid item>
+      {velocityWrapper(
+        <Box>
+          <VelocityField
+            labelWidth={LAB_WIDTH}
+            setRedshift={setRedshift}
+            setVel={setVel}
+            setVelType={setVelType}
+            setVelUnit={setVelUnit}
+            redshift={target?.redshift}
+            vel={target?.vel}
+            velType={target?.velType}
+            velUnit={target?.velUnit}
+            velFocus={() => helpComponent(t('velocity.help' + target?.velType))}
+            // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
+            velUnitFocus={() => helpComponent(t('velocity.help' + target?.velType))}
+          />
+        </Box>
+      )}
     </Grid>
   );
 
   const referenceFrameField = () => (
-    <Grid item xs={12}>
-      <ReferenceFrameField
-        labelWidth={LAB_WIDTH}
-        onFocus={() => helpComponent(t('referenceFrame.help'))}
-        setValue={setReferenceFrame}
-        value={target?.referenceFrame}
-      />
+    <Grid item>
+      {fieldWrapper(
+        <Box pt={1}>
+          <ReferenceFrameField
+            labelWidth={LAB_WIDTH}
+            onFocus={() => helpComponent(t('referenceFrame.help'))}
+            setValue={setReferenceFrame}
+            value={target?.referenceFrame}
+          />
+        </Box>
+      )}
     </Grid>
   );
 
   return (
     <Grid
-      p={1}
-      spacing={1}
+      p={5}
       container
       direction="row"
-      alignItems="flex-start"
-      justifyContent="space-around"
+      alignItems="space-evenly"
+      justifyContent="space-between"
+      spacing={1}
     >
       <Grid item xs={7}>
-        <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
+        <Grid
+          container
+          direction="column"
+          alignItems="stretch"
+          justifyContent="flex-start"
+          spacing={1}
+        >
           {nameField()}
           {skyDirection1Field()}
           {skyDirection2Field()}
@@ -240,7 +290,7 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
         </Grid>
       </Grid>
       <Grid item xs={4}>
-        <HelpPanel />
+        <HelpPanel maxHeight={HELP_MAX_HEIGHT} />
       </Grid>
     </Grid>
   );

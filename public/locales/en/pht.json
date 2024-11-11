@@ -486,7 +486,8 @@
     "toolTip": "Query SIMBAD and NED",
     "error": {
       "mapping": "Unable to map results from API.",
-      "name": "Unable to resolve provided name"
+      "name": "Unable to resolve provided name",
+      "Request failed with status code 500": "Unable to resolve provided name"
     }
   },
   "rightAscension": {
@@ -556,6 +557,16 @@
       "2": {
         "0": "00:00:00.000",
         "1": ""
+      }
+    },
+    "short": {
+      "1": {
+        "0": "RA",
+        "1": "Long."
+      },
+      "2": {
+        "0": "Dec.",
+        "1": "Lat."
       }
     },
     "units": {
@@ -672,6 +683,9 @@
     "label": "Submit",
     "tooltip": "Progress the proposal to the submitted state"
   },
+  "velocityType": {
+    "help": "Select either Velocity or Redshift as required."
+  },
   "suppliedType": {
     "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
   },
@@ -704,7 +718,7 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "THERE IS NO TARGET ASSOCIATED WITH THIS PROPOSAL"
+    "empty": "There are no targets associated with this proposal"
   },
   "title": {
     "label": "Proposal Title",
@@ -737,15 +751,25 @@
   "validationResults": {
     "title": "Validation issues"
   },
+  "velRed": {
+    "0": "Velocity",
+    "1": "Redshift"
+  },
   "velocity": {
     "label": "Velocity",
-    "help": "Optionally specify the radial velocity.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
+    "helpType": "Specify either velocity or redshift",
+    "help0": "Specify the radial velocity.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
+    "help1": "Specify the redshift value.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
+    "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
       "1": "m/s"
     },
     "0": "Velocity",
     "1": "Redshift"
+  },
+  "velocityRedshift": {
+    "label": "Vel/Redshift"
   },
   "viewProposal": {
     "toolTip": "View proposal"

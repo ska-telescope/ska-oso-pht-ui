@@ -1,7 +1,7 @@
 import React from 'react';
 import { t } from 'i18next';
 import { IconButton } from '@mui/material';
-import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { OBS_TYPES, STATUS_OK } from '../../../../utils/constants';
 import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
@@ -46,13 +46,16 @@ export default function SensCalcDisplaySingle({
           style={{ cursor: 'hand' }}
           onClick={sensCalc?.statusGUI === STATUS_OK ? IconClicked : null}
         >
-          <StatusIcon
+          <StatusIconDisplay
+            ariaDescription={t('sensitivityCalculatorResults.status', {
+              status: t('statusLoading.' + sensCalc?.statusGUI),
+              error: t(presentSensCalcError(sensCalc?.error))
+            })}
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusLoading.' + sensCalc?.statusGUI),
               error: t(presentSensCalcError(sensCalc?.error))
             })}
             testId="statusId"
-            icon
             level={sensCalc?.statusGUI}
             size={SIZE}
           />
