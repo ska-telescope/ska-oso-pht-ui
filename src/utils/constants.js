@@ -141,11 +141,16 @@ export const ELEVATION_DEFAULT = 45;
 
 export const FOOTER_HEIGHT = 20;
 
+export const FREQUENCY_GHZ = 1;
+export const FREQUENCY_MHZ = 2;
+export const FREQUENCY_KHZ = 3;
+export const FREQUENCY_HZ = 4;
+
 export const FREQUENCY_UNITS = [
-  { label: 'GHz', value: 1, mapping: 'GHz', toHz: 1 },
-  { label: 'MHz', value: 2, mapping: 'MHz', toHz: 1000 },
-  { label: 'kHz', value: 3, mapping: 'kHz', toHz: 10000000 },
-  { label: 'Hz', value: 4, mapping: 'Hz', toHz: 10000000000 }
+  { label: 'GHz', value: FREQUENCY_GHZ, mapping: 'GHz', toHz: 1 },
+  { label: 'MHz', value: FREQUENCY_MHZ, mapping: 'MHz', toHz: 1000 },
+  { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
+  { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
 ];
 
 export const GENERAL = {

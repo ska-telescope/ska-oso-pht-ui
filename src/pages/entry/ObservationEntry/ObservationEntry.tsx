@@ -13,7 +13,6 @@ import {
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
-  MULTIPLIER_HZ_GHZ,
   NAV,
   BAND_LOW,
   OBSERVATION,
@@ -35,11 +34,14 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  FREQUENCY_KHZ,
+  FREQUENCY_MHZ,
+  FREQUENCY_GHZ
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
-import { generateId } from '../../../utils/helpers';
+import { frequencyConversion, generateId } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -89,7 +91,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(2);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -285,6 +287,11 @@ export default function ObservationEntry() {
       if (isEdit()) {
         return;
       }
+      if (observingBand === BAND_LOW) {
+        setCentralFrequencyUnits(FREQUENCY_MHZ);
+      } else {
+        setCentralFrequencyUnits(FREQUENCY_GHZ);
+      }
       if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
         if (subarrayConfig === OB_SUBARRAY_AA4_15) {
           setSubarrayConfig(OB_SUBARRAY_AA4);
@@ -328,7 +335,7 @@ export default function ObservationEntry() {
 
   const taperingField = () => {
     const frequencyInGHz = () => {
-      return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
+      return frequencyConversion(centralFrequency, centralFrequencyUnits, FREQUENCY_GHZ);
     };
 
     const getOptions = () => {
@@ -725,7 +732,9 @@ export default function ObservationEntry() {
       {fieldWrapper(
         <SpectralResolutionField
           bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
-          bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
+          bandWidthUnits={
+            isContinuum() ? continuumBandwidthUnits : isLow() ? FREQUENCY_KHZ : FREQUENCY_MHZ
+          }
           frequency={centralFrequency}
           frequencyUnits={centralFrequencyUnits}
           label={t('spectralResolution.label')}
@@ -882,21 +891,6 @@ export default function ObservationEntry() {
         )}
       </Grid>
     );
-  };
-
-  const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
-    switch (operator) {
-      case '*':
-        val_scaled = value * multiplier;
-        break;
-      case '/':
-        val_scaled = value / multiplier;
-        break;
-      default:
-        val_scaled = value;
-    }
-    return val_scaled;
   };
 
   const addButtonDisabled = () => {
