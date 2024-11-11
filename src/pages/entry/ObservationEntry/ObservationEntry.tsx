@@ -91,7 +91,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_GHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -287,11 +287,6 @@ export default function ObservationEntry() {
       if (isEdit()) {
         return;
       }
-      if (observingBand === BAND_LOW) {
-        setCentralFrequencyUnits(FREQUENCY_MHZ);
-      } else {
-        setCentralFrequencyUnits(FREQUENCY_GHZ);
-      }
       if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
         if (subarrayConfig === OB_SUBARRAY_AA4_15) {
           setSubarrayConfig(OB_SUBARRAY_AA4);
@@ -306,6 +301,17 @@ export default function ObservationEntry() {
       }
     };
     calculateSubarray();
+  }, [observingBand]);
+
+  React.useEffect(() => {
+    const setFrequencyUnits = () => {
+      if (observingBand === BAND_LOW) {
+        setCentralFrequencyUnits(FREQUENCY_MHZ);
+      } else {
+        setCentralFrequencyUnits(FREQUENCY_GHZ);
+      }
+    };
+    setFrequencyUnits();
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
