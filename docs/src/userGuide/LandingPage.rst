@@ -53,18 +53,12 @@ investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>`
    * - Clone
      - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
    * - Delete
-     - Click the trash icon to delete a proposal. Note: Delete option is disabled for proposals that are "Accepted " or "Submitted". Selected proposal is removed from the application after confirmation.
+     - Functionality is currently not available.
 
 
 
 Key Information and Actions
 ===========================
-
-- You can search for specific proposals, filter by title, cycle, PI, and view details of each proposal in the table.
-- The table is sortable by clicking on the column headers
-
-
-**Navigation**
 
 .. |ico1| image:: /images/addProposalBtn.png
    :height: 4ex
@@ -81,6 +75,7 @@ Key Information and Actions
 -  Click |ico1| Button to create a new proposal. 
 -  Use the drop down |ico2| to filter proposals by status.
 - The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
+- The table is sortable by clicking on the column headers
 
 
 

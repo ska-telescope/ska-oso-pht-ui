@@ -5,7 +5,8 @@ The general page (see :numref:`Figure %s <figure6>`), allows you to provide the 
 .. _figure6:
 
 .. figure:: /images/generalPage.png
-   :width: 100%
+   :width: 90%
+   :align: center
    :alt: Image of the general page.
    
    Image of the general page.
@@ -16,8 +17,8 @@ Layout and Navigation
 The General Page has a clear structure:
 
 - Top section: Displays the cycle of the current proposal  (auto-populated).
+- - Science Category: A drop-down to select the relevant science category  ( see :ref:`Science Category Table <sciencecat>` for typical Options).
 - Abstract area: A text box to write your proposal abstract (maximum 250 words). It accepts latex syntax - which can be previewed by clicking the "eye" icon next to the abstract field.
-- Science Category: A drop-down to select the relevant science category  ( see :ref:`Science Category Table <sciencecat>` for typical Options).
 
 .. _sciencecat:
 
