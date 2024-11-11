@@ -386,6 +386,17 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
+const getSynthesizedBeamSizeContinuum = (obsType, tarObs) =>{
+  if (isContinuum(obsType)) {
+    console.log('getSynthesizedBeamSizeContinuum true')  
+   return tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+  } else {
+  console.log('getSynthesizedBeamSizeContinuum false')  
+    return ''
+  
+  }
+}
+
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
   for (let tarObs of incTargetObservations) {
@@ -427,7 +438,8 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
       },
       synthesized_beam_size: {
         spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')?.value,
-        continuum: isContinuum(obsType)? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value : 'test',
+        continuum: isContinuum(obsType)? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value : "dummy", // TODO: investigate typescript not taking empty string
+        //continuum: getSynthesizedBeamSizeContinuum(obsType, tarObs),
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
       },
@@ -439,6 +451,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           ?.units
       }
     };
+    console.log('result inside resultsArr', resultsArr)
     resultsArr.push(result);
   }
   console.log('resultsArr', resultsArr)
