@@ -8,7 +8,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "14.13 Hz (21.2 m/s)",
-    "effectiveResolution": "14.13 Hz (21.2 km/s)"
+    "effectiveResolution": "14.13 Hz (21.2 m/s)"
   },
   {
     "observingBand": 0,
@@ -19,7 +19,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "28.26 Hz (42.4 m/s)",
-    "effectiveResolution": "28.26 Hz (42.4 km/s)"
+    "effectiveResolution": "28.26 Hz (42.4 m/s)"
   },
   {
     "observingBand": 0,
@@ -30,7 +30,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "56.51 Hz (84.7 m/s)",
-    "effectiveResolution": "56.51 Hz (84.7 km/s)"
+    "effectiveResolution": "56.51 Hz (84.7 m/s)"
   },
   {
     "observingBand": 0,
@@ -41,7 +41,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "113.03 Hz (169.4 m/s)",
-    "effectiveResolution": "113.03 Hz (169.4 km/s)"
+    "effectiveResolution": "113.03 Hz (169.4 m/s)"
   },
   {
     "observingBand": 0,
@@ -52,7 +52,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "226.06 Hz (338.9 m/s)",
-    "effectiveResolution": "226.06 Hz (338.9 km/s)"
+    "effectiveResolution": "226.06 Hz (338.9 m/s)"
   },
   {
     "observingBand": 0,
@@ -63,7 +63,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "452.11 Hz (677.7 m/s)",
-    "effectiveResolution": "452.11 Hz (677.7 km/s)"
+    "effectiveResolution": "452.11 Hz (677.7 m/s)"
   },
   {
     "observingBand": 0,
@@ -74,7 +74,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "904.22 Hz (1.4 km/s)",
-    "effectiveResolution": "904.22 Hz (1355.4 km/s)"
+    "effectiveResolution": "904.22 Hz (1.4 km/s)"
   },
   {
     "observingBand": 0,
@@ -85,7 +85,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "1808.45 Hz (2.7 km/s)",
-    "effectiveResolution": "1808.45 Hz (2710.8 km/s)"
+    "effectiveResolution": "1808.45 Hz (2.7 km/s)"
   },
   {
     "observingBand": 0,
@@ -96,7 +96,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (1627.9 km/s)",
-    "effectiveResolution": "5.43 kHz (1627873.0 km/s)"
+    "effectiveResolution": "5.43 kHz (1627.9 km/s)"
   },
   {
     "observingBand": 0,
@@ -107,7 +107,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (32.6 km/s)",
-    "effectiveResolution": "5.43 kHz (32557.5 km/s)"
+    "effectiveResolution": "5.43 kHz (32.6 km/s)"
   },
   {
     "observingBand": 0,
@@ -118,7 +118,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (16.3 km/s)",
-    "effectiveResolution": "5.43 kHz (16278.7 km/s)"
+    "effectiveResolution": "5.43 kHz (16.3 km/s)"
   },
   {
     "observingBand": 0,
@@ -129,7 +129,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (8.1 km/s)",
-    "effectiveResolution": "5.43 kHz (8139.4 km/s)"
+    "effectiveResolution": "5.43 kHz (8.1 km/s)"
   },
   {
     "observingBand": 0,
@@ -140,7 +140,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (6.5 km/s)",
-    "effectiveResolution": "5.43 kHz (6511.5 km/s)"
+    "effectiveResolution": "5.43 kHz (6.5 km/s)"
   },
   {
     "observingBand": 0,
@@ -151,7 +151,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (5.4 km/s)",
-    "effectiveResolution": "5.43 kHz (5426.2 km/s)"
+    "effectiveResolution": "5.43 kHz (5.4 km/s)"
   },
   {
     "observingBand": 0,
@@ -162,7 +162,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (3.2 km/s)",
-    "effectiveResolution": "5.43 kHz (3249.2 km/s)"
+    "effectiveResolution": "5.43 kHz (3.2 km/s)"
   },
   {
     "observingBand": 0,
@@ -173,7 +173,7 @@
     "frequencyUnits": 2,
     "spectralAveraging": 1,
     "spectralResolution": "5.43 kHz (2.0 km/s)",
-    "effectiveResolution": "5.43 kHz (2034.8 km/s)"
+    "effectiveResolution": "5.43 kHz (2.0 km/s)"
   },
   {
     "observingBand": 1,
