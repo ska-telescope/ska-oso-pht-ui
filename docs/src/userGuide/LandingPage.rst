@@ -8,6 +8,21 @@ You do not need an account to start a proposal but you will need to be signed in
    :width: 20%
    :alt: Landing page icons
 
+Additional Notes
+================
+
+- You need to be logged in to access the landing page in :numref:`Figure %s <landpage>`  and its features.
+
+
+.. _landpage:
+
+.. figure:: /images/landingPage.png
+   :width: 90%
+   :align: center
+   :alt: Image of the Landing page.
+
+   Landing page.
+
 
 Landing Page
 ============
