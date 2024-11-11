@@ -38,14 +38,12 @@ export default function GridMembers({
   };
 
   const headerDisplay = (inValue: string) => (
-    <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
-      {t(inValue)}
-    </Typography>
+    <Typography variant="subtitle1">{t(inValue)}</Typography>
   );
 
   const basicColumns = [
-    { field: 'lastName', renderHeader: () => headerDisplay('lastName.label'), flex: 1 },
-    { field: 'firstName', renderHeader: () => headerDisplay('firstName.label'), flex: 1 },
+    { field: 'lastName', renderHeader: () => headerDisplay('lastName.label'), flex: 2 },
+    { field: 'firstName', renderHeader: () => headerDisplay('firstName.label'), flex: 2 },
     { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1 },
     {
       field: 'phdThesis',

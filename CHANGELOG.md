@@ -8,6 +8,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Landing page
+  - Time added to last update column
+  - Tidy up of the Proposal display modal
+  - Delete icon disabled whilst the API is fixed
+* Title page
+  - Changed some elements width/height
+* Team Page
+  - Added checking that member will not be added if email is not sent successfully 
+  - Updated team member field width and field name styles
 * General Page
    - Changed height of help component on the page
    - Changed order of Science Category and Abstract fields
@@ -16,12 +25,15 @@ Future
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
   - Added spacing to the Target/Observation header
 * Observation page
+  - Added Continuum Bandwidth validation for Mid and Low
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
       - Effective Resolution
       - Elevation ( minimum for LOW changed to 20 degrees )
       - Spectral Resolution 
       - Robust
+      - Continuum Bandwidth
+      - Bandwidth
 * Utilities
   - Change the notifications so that the icons stay to the left of any text
 

@@ -12,6 +12,7 @@ import {
   BANDWIDTH_TELESCOPE
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
+import { Box } from '@mui/system';
 
 interface continuumBandwidthFieldProps {
   disabled?: boolean;
@@ -180,18 +181,20 @@ export default function ContinuumBandwidthField({
   };
 
   return (
-    <NumberEntry
-      label={t('continuumBandWidth.label')}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
-      suffix={suffix}
-      testId={FIELD}
-      value={value}
-      setValue={setValue}
-      onFocus={onFocus}
-      required
-      errorText={errorMessage()}
-    />
+    <Box pt={1}>
+      <NumberEntry
+        label={t('continuumBandWidth.label')}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={labelWidth}
+        suffix={suffix}
+        testId={FIELD}
+        value={value}
+        setValue={setValue}
+        onFocus={onFocus}
+        required
+        errorText={errorMessage()}
+      />
+    </Box>
   );
 }
