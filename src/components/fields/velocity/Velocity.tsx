@@ -63,7 +63,7 @@ export default function VelocityField({
       <Box pt={1}>
         <DropDown
           options={getOptions()}
-          testId="suppliedType"
+          testId="velocityType"
           value={velType}
           setValue={setVelType}
           disabled={getOptions().length < 2}

@@ -158,110 +158,76 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
     );
   };
 
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
-      {children}
+  const nameField = () => (
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      <TextEntry
+        required
+        label={t('name.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LAB_WIDTH}
+        testId={'name'}
+        value={target?.name}
+        setValue={setName}
+        suffix={resolveButton()}
+        onFocus={() => helpComponent(t('name.help'))}
+        errorText={nameFieldError}
+      />
     </Box>
   );
-
-  const velocityWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
-      {children}
-    </Box>
-  );
-
-  const nameField = () => {
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Box pt={1}>
-            <TextEntry
-              required
-              label={t('name.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={LAB_WIDTH}
-              testId={'name'}
-              value={target?.name}
-              setValue={setName}
-              suffix={resolveButton()}
-              onFocus={() => helpComponent(t('name.help'))}
-              errorText={nameFieldError}
-            />
-          </Box>
-        )}
-      </Grid>
-    );
-  };
 
   const skyDirection1Field = () => (
-    <Grid item>
-      {fieldWrapper(
-        <Box pt={1}>
-          <SkyDirection1
-            labelWidth={LAB_WIDTH}
-            setValue={setRA}
-            skyUnits={raType}
-            value={target?.ra}
-            valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
-          />
-        </Box>
-      )}
-    </Grid>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      <SkyDirection1
+        labelWidth={LAB_WIDTH}
+        setValue={setRA}
+        skyUnits={raType}
+        value={target?.ra}
+        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+      />
+    </Box>
   );
 
   const skyDirection2Field = () => (
-    <Grid item>
-      {fieldWrapper(
-        <Box pt={1}>
-          <SkyDirection2
-            labelWidth={LAB_WIDTH}
-            setValue={setDec}
-            skyUnits={raType}
-            value={target?.dec}
-            valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
-          />
-        </Box>
-      )}
-    </Grid>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      <SkyDirection2
+        labelWidth={LAB_WIDTH}
+        setValue={setDec}
+        skyUnits={raType}
+        value={target?.dec}
+        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+      />
+    </Box>
   );
 
   const velocityField = () => (
-    <Grid item>
-      {velocityWrapper(
-        <Box>
-          <VelocityField
-            labelWidth={LAB_WIDTH}
-            setRedshift={setRedshift}
-            setVel={setVel}
-            setVelType={setVelType}
-            setVelUnit={setVelUnit}
-            redshift={target?.redshift}
-            vel={target?.vel}
-            velType={target?.velType}
-            velUnit={target?.velUnit}
-            velFocus={() => helpComponent(t('velocity.help' + target?.velType))}
-            // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
-            velUnitFocus={() => helpComponent(t('velocity.help' + target?.velType))}
-          />
-        </Box>
-      )}
-    </Grid>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      <VelocityField
+        labelWidth={LAB_WIDTH}
+        setRedshift={setRedshift}
+        setVel={setVel}
+        setVelType={setVelType}
+        setVelUnit={setVelUnit}
+        redshift={target?.redshift}
+        vel={target?.vel}
+        velType={target?.velType}
+        velUnit={target?.velUnit}
+        velFocus={() => helpComponent(t('velocity.help' + target?.velType))}
+        // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
+        velUnitFocus={() => helpComponent(t('velocity.help' + target?.velType))}
+      />
+    </Box>
   );
 
   const referenceFrameField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <Box pt={1}>
-          <ReferenceFrameField
-            labelWidth={LAB_WIDTH}
-            onFocus={() => helpComponent(t('referenceFrame.help'))}
-            setValue={setReferenceFrame}
-            value={target?.referenceFrame}
-          />
-        </Box>
-      )}
-    </Grid>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      <ReferenceFrameField
+        labelWidth={LAB_WIDTH}
+        onFocus={() => helpComponent(t('referenceFrame.help'))}
+        setValue={setReferenceFrame}
+        value={target?.referenceFrame}
+      />
+    </Box>
   );
 
   return (
@@ -281,12 +247,12 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
           justifyContent="flex-start"
           spacing={1}
         >
-          {nameField()}
-          {skyDirection1Field()}
-          {skyDirection2Field()}
-          {velocityField()}
-          {referenceFrameField()}
-          {!id && addButton()}
+          <Grid item>{nameField()}</Grid>
+          <Grid item>{skyDirection1Field()}</Grid>
+          <Grid item>{skyDirection2Field()}</Grid>
+          <Grid item>{velocityField()}</Grid>
+          <Grid item>{referenceFrameField()}</Grid>
+          <Grid item>{!id && addButton()}</Grid>
         </Grid>
       </Grid>
       <Grid item xs={4}>
