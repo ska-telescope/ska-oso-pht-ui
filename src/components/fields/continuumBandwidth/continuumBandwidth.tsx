@@ -60,7 +60,9 @@ export default function ContinuumBandwidthField({
     const minimumChannelWidthKHz = sensCalHelpers.format
       .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
       .toFixed(2);
-    return t('continuumBandWidth.range.minimumChannelWidthError', { value: minimumChannelWidthKHz });
+    return t('continuumBandWidth.range.minimumChannelWidthError', {
+      value: minimumChannelWidthKHz
+    });
   };
 
   const getMaxContBandwidthHz = (): any =>
@@ -72,7 +74,7 @@ export default function ContinuumBandwidthField({
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
-    return t('continuumBandWidth.range.contMaximumExceededError', {value: maxContBandwidthMHz});
+    return t('continuumBandWidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
   const getSubArrayAntennas = () => {
