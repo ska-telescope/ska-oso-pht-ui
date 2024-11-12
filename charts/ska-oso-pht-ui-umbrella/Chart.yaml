@@ -12,7 +12,7 @@ dependencies:
 
 # PHT services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load SBD, save SBD, etc.)
-- name: ska-oso-pht-services-umbrella
+- name: ska-oso-pht-services
   version: 2.4.0
   repository: https://artefact.skao.int/repository/helm-internal
 
@@ -21,11 +21,10 @@ dependencies:
   version: 10.1.0
   repository: https://artefact.skao.int/repository/helm-internal
 
-#TODO: remove if services-umbrella works ok
-# # ODA is a dependency of PHT Services. Include it for data persistence
-# # The ODA umbrella chart includes ODA API, PostgreSQL database and SKUID
-# - name: ska-db-oda-umbrella
-#   version: 5.2.0
-#   repository: https://artefact.skao.int/repository/helm-internal
-#   condition: ska-db-oda.enabled
+# ODA is a dependency of PHT Services. Include it for data persistence
+# The ODA umbrella chart includes ODA API, PostgreSQL database and SKUID
+- name: ska-db-oda-umbrella
+  version: 5.2.0
+  repository: https://artefact.skao.int/repository/helm-internal
+  condition: ska-db-oda.enabled
 
