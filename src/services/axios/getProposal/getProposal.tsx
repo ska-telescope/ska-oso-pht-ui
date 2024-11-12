@@ -339,9 +339,13 @@ const getObservations = (
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
   isContinuum: boolean,
-  isSensitivity: boolean
+  isSensitivity: boolean,
+  inObservationSets: ObservationSetBackend[],
+  inResultObservationRef: string
 ): SensCalcResults['section1'] => {
   let section1 = [];
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+  
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
   if (isContinuum) {
@@ -371,16 +375,19 @@ const getResultsSection1 = (
     }
     section1.push({
       field: 'continuumSynthBeamSize',
-      // value: inResult.synthesized_beam_size?.value,
-      // mock beam size value for now as format enforced by backend not correct
-      value: `${inResult.synthesized_beam_size?.value} x 171.3`,
+      value: inResult.synthesized_beam_size?.continuum,
       units: inResult?.synthesized_beam_size?.unit
     } as ResultsSection);
     if (isSensitivity) {
       section1.push({
         field: 'continuumIntegrationTime',
-        value: '999', // TODO : Need to store and retrieve correct value
-        units: 's' // TODO : Need to store and retrieve correct units
+        // // STAR-670 clarified to search from observation_type_details
+        // value: '999', // TODO : Need to store and retrieve correct value
+        // units: 's' // TODO : Need to store and retrieve correct units
+
+        // STAR-670 clarified to search from observation_type_details and the checking is already there
+        value: obs.observation_type_details.supplied?.quantity?.value.toString(),
+        units: obs.observation_type_details.supplied?.quantity?.unit,
       } as ResultsSection);
     } else {
       section1.push({
@@ -391,16 +398,20 @@ const getResultsSection1 = (
     }
     // for zoom observation
   } else {
-    section1 = getResultsSection2(inResult, isSensitivity);
+    section1 = getResultsSection2(inResult, isSensitivity, inObservationSets, inResultObservationRef);
   }
   return section1;
 };
 
 const getResultsSection2 = (
   inResult: SensCalcResultsBackend,
-  isSensitivity: Boolean
+  isSensitivity: Boolean,
+  inObservationSets: ObservationSetBackend[],
+  inResultObservationRef: string
 ): SensCalcResults['section2'] => {
   let section2 = [];
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+  
   if (!isSensitivity) {
     section2.push({
       field: 'spectralSensitivityWeighted',
@@ -422,16 +433,18 @@ const getResultsSection2 = (
   }
   section2.push({
     field: 'spectralSynthBeamSize',
-    // TODO : value: inResult.synthesized_beam_size?.value,
-    // TODO : mock beam size value for now as format enforced by backend not correct
-    value: '190.0 x 171.3',
-    units: inResult?.synthesized_beam_size?.unit
+    value: inResult.synthesized_beam_size?.spectral,
+    units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
   } as ResultsSection);
   if (isSensitivity) {
     section2.push({
       field: 'spectralIntegrationTime',
-      value: '999', // TODO : Need to store and retrieve correct value
-      units: 's' // TODO : Need to store and retrieve correct units
+      //STAR-670 get from observation detail
+      // value: '999', // TODO : Need to store and retrieve correct value
+      // units: 's' // TODO : Need to store and retrieve correct units
+
+      value: obs.observation_type_details.supplied?.quantity?.value.toString(),
+      units: obs.observation_type_details.supplied?.quantity?.unit,
     } as ResultsSection);
   } else {
     section2.push({
@@ -488,7 +501,9 @@ const getTargetObservation = (
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
-    const isSensitivity = result.result.supplied_type === 'integration_time';
+    // const isSensitivity = result.result.supplied_type === 'integration_time';
+    const isSensitivity = result.result.supplied_type === 'sensitivity';
+    
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
@@ -498,8 +513,8 @@ const getTargetObservation = (
         title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
-        section1: getResultsSection1(result, isContinuum, isSensitivity),
-        section2: isContinuum ? getResultsSection2(result, isSensitivity) : [], // only used for continuum observation
+        section1: getResultsSection1(result, isContinuum, isSensitivity, inObservationSets, result.observation_set_ref),
+        section2: isContinuum ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref) : [], // only used for continuum observation
         section3: getResultsSection3(
           result.observation_set_ref,
           inObservationSets,
@@ -516,6 +531,8 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
+  console.log('getProposal mapping inRec', inRec)
+
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
@@ -563,6 +580,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+  console.log('getProposal mapping convertedProposal', convertedProposal)
   return convertedProposal;
 }
 
