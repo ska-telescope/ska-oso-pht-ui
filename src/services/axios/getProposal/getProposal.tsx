@@ -345,7 +345,7 @@ const getResultsSection1 = (
 ): SensCalcResults['section1'] => {
   let section1 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
-  
+
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
   if (isContinuum) {
@@ -387,7 +387,7 @@ const getResultsSection1 = (
 
         // STAR-670 clarified to search from observation_type_details and the checking is already there
         value: obs.observation_type_details.supplied?.quantity?.value.toString(),
-        units: obs.observation_type_details.supplied?.quantity?.unit,
+        units: obs.observation_type_details.supplied?.quantity?.unit
       } as ResultsSection);
     } else {
       section1.push({
@@ -398,7 +398,12 @@ const getResultsSection1 = (
     }
     // for zoom observation
   } else {
-    section1 = getResultsSection2(inResult, isSensitivity, inObservationSets, inResultObservationRef);
+    section1 = getResultsSection2(
+      inResult,
+      isSensitivity,
+      inObservationSets,
+      inResultObservationRef
+    );
   }
   return section1;
 };
@@ -411,7 +416,7 @@ const getResultsSection2 = (
 ): SensCalcResults['section2'] => {
   let section2 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
-  
+
   if (!isSensitivity) {
     section2.push({
       field: 'spectralSensitivityWeighted',
@@ -444,7 +449,7 @@ const getResultsSection2 = (
       // units: 's' // TODO : Need to store and retrieve correct units
 
       value: obs.observation_type_details.supplied?.quantity?.value.toString(),
-      units: obs.observation_type_details.supplied?.quantity?.unit,
+      units: obs.observation_type_details.supplied?.quantity?.unit
     } as ResultsSection);
   } else {
     section2.push({
@@ -503,7 +508,7 @@ const getTargetObservation = (
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
     // const isSensitivity = result.result.supplied_type === 'integration_time';
     const isSensitivity = result.result.supplied_type === 'sensitivity';
-    
+
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
@@ -513,8 +518,16 @@ const getTargetObservation = (
         title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
-        section1: getResultsSection1(result, isContinuum, isSensitivity, inObservationSets, result.observation_set_ref),
-        section2: isContinuum ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref) : [], // only used for continuum observation
+        section1: getResultsSection1(
+          result,
+          isContinuum,
+          isSensitivity,
+          inObservationSets,
+          result.observation_set_ref
+        ),
+        section2: isContinuum
+          ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref)
+          : [], // only used for continuum observation
         section3: getResultsSection3(
           result.observation_set_ref,
           inObservationSets,
@@ -531,7 +544,7 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 async function mapping(inRec: ProposalBackend): Promise<Proposal> {
-  console.log('getProposal mapping inRec', inRec)
+  console.log('getProposal mapping inRec', inRec);
 
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
@@ -580,7 +593,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('getProposal mapping convertedProposal', convertedProposal)
+  console.log('getProposal mapping convertedProposal', convertedProposal);
   return convertedProposal;
 }
 

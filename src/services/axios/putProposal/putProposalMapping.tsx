@@ -35,8 +35,9 @@ import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const isContinuum = (type: number) => {
-  console.log('isContinuum type === TYPE_CONTINUUM', type === TYPE_CONTINUUM)
-  return type === TYPE_CONTINUUM;}
+  console.log('isContinuum type === TYPE_CONTINUUM', type === TYPE_CONTINUUM);
+  return type === TYPE_CONTINUUM;
+};
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 
@@ -386,16 +387,15 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getSynthesizedBeamSizeContinuum = (obsType, tarObs) =>{
-  if (isContinuum(obsType)) {
-    console.log('getSynthesizedBeamSizeContinuum true')  
-   return tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
-  } else {
-  console.log('getSynthesizedBeamSizeContinuum false')  
-    return ''
-  
-  }
-}
+// const getSynthesizedBeamSizeContinuum = (obsType, tarObs) => {
+//   if (isContinuum(obsType)) {
+//     console.log('getSynthesizedBeamSizeContinuum true');
+//     return tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value;
+//   } else {
+//     console.log('getSynthesizedBeamSizeContinuum false');
+//     return '';
+//   }
+// };
 
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
@@ -409,7 +409,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
       // STAR-670:
       // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
       // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
-    tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
     // TODO un-swap sensitivity and integration time as above once PDM updated
     // => we want supplied integration time fields for supplied sensitivity
     // and supplied sensitivity fields for supplied integration time for RESULTS
@@ -437,8 +437,11 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           : ''
       },
       synthesized_beam_size: {
-        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')?.value,
-        continuum: isContinuum(obsType)? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value : "dummy", // TODO: investigate typescript not taking empty string
+        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+          ?.value,
+        continuum: isContinuum(obsType)
+          ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+          : 'dummy', // TODO: investigate typescript not taking empty string
         //continuum: getSynthesizedBeamSizeContinuum(obsType, tarObs),
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
@@ -451,10 +454,10 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           ?.units
       }
     };
-    console.log('result inside resultsArr', resultsArr)
+    console.log('result inside resultsArr', resultsArr);
     resultsArr.push(result);
   }
-  console.log('resultsArr', resultsArr)
+  console.log('resultsArr', resultsArr);
   return resultsArr;
 };
 /*************************************************************************************************************************/
