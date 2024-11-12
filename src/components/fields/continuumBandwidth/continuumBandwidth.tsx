@@ -74,7 +74,7 @@ export default function ContinuumBandwidthField({
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
     const maxContBandwidthMHzMessage = `${t(
-      'continuumBandWidth.range.contBandwidthMaximumExceededError'
+      'continuumBandWidth.range.contMaximumExceededError'
     )}`;
     return maxContBandwidthMHzMessage.replace('%s', maxContBandwidthMHz);
   };
@@ -150,14 +150,14 @@ export default function ContinuumBandwidthField({
     const upperBound: number = scaledFrequency + halfBandwidth;
     const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits();
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
-      return t('continuumBandWidth.range.bandwidthRangeError');
+      return t('continuumBandWidth.range.rangeError');
     }
 
     // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
     // sub-bands should be greater than the minimum allowed bandwidth
     // Mid only
     if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
-      return t('continuumBandWidth.range.subBandBandwidthError');
+      return t('continuumBandWidth.range.subBandError');
     }
 
     return '';

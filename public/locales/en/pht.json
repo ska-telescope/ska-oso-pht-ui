@@ -87,9 +87,9 @@
     "label": "Continuum Bandwidth",
     "range": {
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width (%s kHz)",
-      "contBandwidthMaximumExceededError": "Maximum bandwidth for this array assembly (%s MHz) exceeded",
-      "bandwidthRangeError": "Bandwidth must be fully contained within the band",
-      "subBandBandwidthError": "Sub-band bandwidth is too low - reduce number of sub-bands"
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly (%s MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "subBandError": "Sub-band bandwidth is too low - reduce number of sub-bands"
     }
   },
   "continuumUnits": {
