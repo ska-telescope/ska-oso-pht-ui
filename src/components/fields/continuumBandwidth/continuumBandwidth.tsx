@@ -149,7 +149,6 @@ export default function ContinuumBandwidthField({
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
     const bandLimits = getBandLimits();
-    console.log('bandLimits', bandLimits);
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.rangeError');
     }
