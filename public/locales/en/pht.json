@@ -562,11 +562,11 @@
     "short": {
       "1": {
         "0": "RA",
-        "1": "Long."
+        "1": "Long"
       },
       "2": {
-        "0": "Dec.",
-        "1": "Lat."
+        "0": "Dec",
+        "1": "Lat"
       }
     },
     "units": {
@@ -621,7 +621,7 @@
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
     "numWord": "Exceeded expected word count",
-    "email": "Please enter a valid email address."
+    "email": "Please enter a valid email address"
   },
   "spectralAveraging": {
     "help": "The factor by which the intrinsic spectral resolution should be averaged. The Effective resolution field displays the channel width after applying the spectral averaging.",
@@ -654,7 +654,7 @@
     "5": "Not indicated"
   },
   "subBands": {
-    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1. If the number of sub-bands is greater than 1, the minimum and maximum weighted sensitivity per sub-band, confusion noise per sub-band, total sensitivity per sub-band, synthesised beam size per sub-band and surface-brightness sensitivity per sub-band, are reported.",
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1. If the number of sub-bands is greater than 1, the minimum and maximum weighted sensitivity per sub-band, confusion noise per sub-band, total sensitivity per sub-band, synthesized beam size per sub-band and surface-brightness sensitivity per sub-band, are reported.",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
@@ -684,13 +684,13 @@
     "tooltip": "Progress the proposal to the submitted state"
   },
   "velocityType": {
-    "help": "Select either Velocity or Redshift as required."
+    "help": "Select either Velocity or Redshift as required"
   },
   "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time."
+    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time"
   },
   "suppliedUnits": {
-    "help": "Select the unit that is appropriate."
+    "help": "Select the unit that is appropriate"
   },
   "suppliedValue": {
     "help": "Enter a value that is appropriate",
@@ -733,7 +733,7 @@
   },
   "uploadCsvBtn": {
     "label": "Upload CSV File",
-    "uploadSuccessMsg": "All targets in file have been uploaded into the proposal.",
+    "uploadSuccessMsg": "All targets in file have been uploaded into the proposal",
     "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
     "uploadErrorEquatorialNotValidMsg": "Equatorial schema not valid",
     "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
@@ -744,7 +744,7 @@
   },
   "validationBtn": {
     "label": "Validate",
-    "success": "Proposal is Valid.",
+    "success": "Proposal is Valid",
     "tooltip": "Performs enhanced validation upon the proposal",
     "tooltipDisabled": "Disabled until all pages have a status of OK"
   },
@@ -758,8 +758,8 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "Specify the radial velocity.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
-    "help1": "Specify the redshift value.  This field will be populated by the Resolve functionality if the the value is in SIMBAD.",
+    "help0": "Specify the radial velocity.  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
+    "help1": "Specify the redshift value.  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
@@ -797,7 +797,7 @@
       "status": "Title",
       "title": "Title",
       "titleShort": "Title",
-      "desc": "This page allows users to provide the title and proposal category."
+      "desc": "This page allows users to provide the title and proposal category"
     },
     "1": {
       "status": "Team",
