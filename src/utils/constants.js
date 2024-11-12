@@ -22,6 +22,11 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+export const ANTENNA_LOW = 'low'; // TODO can we find a better name for the Low Antenna?
+export const ANTENNA_13M = '13m';
+export const ANTENNA_15M = '15m';
+export const ANTENNA_MIXED = 'mixed';
+
 export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Low (50 - 350 MHz)',
@@ -31,7 +36,7 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'MHz',
     mapping: 'low_band',
     bandLimits: {
-      low: [50.0, 350.0] // TODO can we find a better name for the Low Antenna?
+      [ANTENNA_LOW]: [50.0, 350.0]
     }
   },
   {
@@ -42,9 +47,9 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'GHz',
     mapping: 'mid_band_1',
     bandLimits: {
-      '15m': [0.35e9, 1.05e9],
-      '13m': [0.58e9, 1.015e9],
-      mixed: [0.58e9, 1.015e9]
+      [ANTENNA_15M]: [0.35e9, 1.05e9],
+      [ANTENNA_13M]: [0.58e9, 1.015e9],
+      [ANTENNA_MIXED]: [0.58e9, 1.015e9]
     }
   },
   {
@@ -55,9 +60,9 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'GHz',
     mapping: 'mid_band_2',
     bandLimits: {
-      '15m': [0.95e9, 1.76e9],
-      '13m': [0.95e9, 1.67e9],
-      mixed: [0.95e9, 1.67e9]
+      [ANTENNA_15M]: [0.95e9, 1.76e9],
+      [ANTENNA_13M]: [0.95e9, 1.67e9],
+      [ANTENNA_MIXED]: [0.95e9, 1.67e9]
     }
   },
   {
@@ -68,7 +73,7 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'GHz',
     mapping: 'mid_band_3',
     bandLimits: {
-      '15m': [4.6e9, 8.5e9]
+      [ANTENNA_15M]: [4.6e9, 8.5e9]
     }
   }, // Band 5a
   {
@@ -79,7 +84,7 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'GHz',
     mapping: 'mid_band_4',
     bandLimits: {
-      '15m': [8.3e9, 15.4e9]
+      [ANTENNA_15M]: [8.3e9, 15.4e9]
     }
   } // Band 5b
 ];

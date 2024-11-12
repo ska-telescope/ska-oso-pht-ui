@@ -9,7 +9,11 @@ import {
   BAND_LOW,
   FREQUENCY_UNITS,
   OBSERVATION,
-  BANDWIDTH_TELESCOPE
+  BANDWIDTH_TELESCOPE,
+  ANTENNA_LOW,
+  ANTENNA_MIXED,
+  ANTENNA_13M,
+  ANTENNA_15M
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import { Box } from '@mui/system';
@@ -91,13 +95,13 @@ export default function ContinuumBandwidthField({
 
     switch (true) {
       case n13mAntennas > 0 && !n15mAntennas:
-        limits = bandLimits['13m'];
+        limits = bandLimits[ANTENNA_13M];
         break;
       case n15mAntennas > 0 && !n13mAntennas:
-        limits = bandLimits['15m'];
+        limits = bandLimits[ANTENNA_15M];
         break;
       default:
-        limits = bandLimits['mixed'];
+        limits = bandLimits[ANTENNA_MIXED];
         break;
     }
 
@@ -111,9 +115,9 @@ export default function ContinuumBandwidthField({
     }
 
     if (isLow()) {
-      return bandLimits.low?.map(e => e * 1e6) || [];
+      return bandLimits[ANTENNA_LOW]?.map(e => e * 1e6) || [];
     }
-    
+
     const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts();
     const limits = getBandLimitsForAntennaCounts(bandLimits, n15mAntennas, n13mAntennas);
     return limits || [];
