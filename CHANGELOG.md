@@ -60,6 +60,7 @@ Future
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
   - Updated so that previously saved values are not reset to default values upon editing the Observation set
+  - Ability to override the initial ID provided to a new Observation Set
 * Observation Entry
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values
