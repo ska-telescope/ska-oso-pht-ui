@@ -691,7 +691,7 @@ export default function ObservationEntry() {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
-          disabled={isLow()}
+          disabled={options.length === 1}
           onFocus={() => helpComponent(t('frequencyUnits.help'))}
         />
       );
@@ -860,7 +860,7 @@ export default function ObservationEntry() {
         value={centralFrequencyUnits}
         setValue={setCentralFrequencyUnits}
         label=""
-        disabled={isLow()}
+        disabled={options.length === 1}
         onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );

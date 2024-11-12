@@ -69,7 +69,7 @@ export default function ContinuumBandwidthField({
       .find(item => item.value === telescope)
       ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
 
-  const displaymMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
@@ -138,7 +138,7 @@ export default function ContinuumBandwidthField({
     // For the subarrays that don't have one set, the full bandwidth is allowed
     const maxContBandwidthHz = getMaxContBandwidthHz();
     if (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz) {
-      return displaymMaxContBandwidthErrorMessage(maxContBandwidthHz);
+      return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
 
     // The bandwidth's lower and upper bounds should be within band limits
@@ -148,7 +148,7 @@ export default function ContinuumBandwidthField({
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
-    const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits(); // TODO get band limits for Low
+    const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits();
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.bandwidthRangeError');
     }
