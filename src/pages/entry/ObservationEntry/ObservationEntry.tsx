@@ -307,8 +307,6 @@ export default function ObservationEntry() {
     const setFrequencyUnits = () => {
       if (observingBand === BAND_LOW) {
         setCentralFrequencyUnits(FREQUENCY_MHZ);
-      } else {
-        setCentralFrequencyUnits(FREQUENCY_GHZ);
       }
     };
     setFrequencyUnits();

@@ -31,7 +31,7 @@ export const BANDWIDTH_TELESCOPE = [
     units: 'MHz',
     mapping: 'low_band',
     bandLimits: {
-      low: [50.0, 350.0]
+      low: [50.0, 350.0] // TODO can we find a better name for the Low Antenna?
     }
   },
   {
