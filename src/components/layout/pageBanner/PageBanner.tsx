@@ -8,7 +8,7 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS, STATUS_OK } from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
@@ -54,13 +54,20 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
+      setValidationResults(null);
+      let results = [];
+
+      for (let key in application.content1) {
+        if (application.content1[key] !== STATUS_OK) {
+          results.push(t('page.' + key + '.pageError'));
+        }
+      }
       const response = await PostProposalValidate(getProposal());
-      if (response.valid && !response.error) {
-        setValidationResults(null);
+      if (response.valid && !response.error && results.length === 0) {
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
-        setValidationResults(response.error);
+        setValidationResults(results.concat(response.error));
         setOpenValidationResults(true);
         setCanSubmit(false);
       }

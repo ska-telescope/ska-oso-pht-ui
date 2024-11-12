@@ -31,8 +31,11 @@ Future
       - Elevation ( minimum for LOW changed to 20 degrees )
       - Spectral Resolution 
       - Robust
+* Data Products
+  - Rebalanced the page and also the Add Data Products page to have standard field sizing
 * Utilities
   - Change the notifications so that the icons stay to the left of any text
+  - Validation also checks and reports the status of each page.
 
 0.5.1
 
