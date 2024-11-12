@@ -26,6 +26,7 @@ Future
   - Added spacing to the Target/Observation header
 * Observation page
   - Added Continuum Bandwidth validation for Mid and Low
+  - Changed Continuum Bandwidth units and frequency units to a disabled dropdown for Low
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
       - Effective Resolution
