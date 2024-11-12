@@ -46,11 +46,11 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_1',
     bandLimits: [
       {
-        type: 'ska',
+        type: '15m',
         limits: [0.35e9, 1.05e9]
       },
       {
-        type: 'meerkat',
+        type: '13m',
         limits: [0.58e9, 1.015e9]
       },
       {
@@ -68,11 +68,11 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_2',
     bandLimits: [
       {
-        type: 'ska',
+        type: '15m',
         limits: [0.95e9, 1.76e9]
       },
       {
-        type: 'meerkat',
+        type: '13m',
         limits: [0.95e9, 1.67e9]
       },
       {
@@ -90,7 +90,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_3',
     bandLimits: [
       {
-        type: 'ska',
+        type: '15m',
         limits: [4.6e9, 8.5e9]
       }
     ]
@@ -104,7 +104,7 @@ export const BANDWIDTH_TELESCOPE = [
     mapping: 'mid_band_4',
     bandLimits: [
       {
-        type: 'ska',
+        type: '15m',
         limits: [8.3e9, 15.4e9]
       }
     ]

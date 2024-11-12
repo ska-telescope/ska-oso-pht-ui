@@ -84,8 +84,8 @@ export default function ContinuumBandwidthField({
       .find(arr => arr.value === telescope)
       ?.subarray.find(sub => sub.value === subarrayConfig);
     return {
-      nSKA: array.numOf15mAntennas,
-      nMeerkat: array.numOf13mAntennas
+      n15mAntennas: array.numOf15mAntennas,
+      n13mAntennas: array.numOf13mAntennas
     };
   };
 
@@ -96,14 +96,14 @@ export default function ContinuumBandwidthField({
     }
 
     const subArrayAntennas = getSubArrayAntennas();
-    const hasSKA = subArrayAntennas.nSKA > 0;
-    const hasMeerkat = subArrayAntennas.nMeerkat > 0;
+    const has15mAntennas = subArrayAntennas.n15mAntennas > 0;
+    const has13mAntennas = subArrayAntennas.n13mAntennas > 0;
 
     let key: string;
-    if (hasMeerkat && !hasSKA) {
-      key = 'meerkat';
-    } else if (hasSKA && !hasMeerkat) {
-      key = 'ska';
+    if (has13mAntennas && !has15mAntennas) {
+      key = '13m';
+    } else if (has15mAntennas && !has13mAntennas) {
+      key = '15m';
     } else {
       key = 'mixed';
     }
