@@ -77,44 +77,46 @@ export default function ContinuumBandwidthField({
     return t('continuumBandWidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
-  const getSubArrayAntennas = () => {
-    const array = OBSERVATION.array
-      .find(arr => arr.value === telescope)
-      ?.subarray.find(sub => sub.value === subarrayConfig);
+  const getSubArrayAntennasCounts = () => {
+    const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
+    const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
     return {
-      n15mAntennas: array.numOf15mAntennas,
-      n13mAntennas: array.numOf13mAntennas
+      n15mAntennas: subArray?.numOf15mAntennas || 0,
+      n13mAntennas: subArray?.numOf13mAntennas || 0
     };
   };
 
-  const getMidBandLimits = () => {
-    const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
-    if (!bandLimits) {
-      return [];
+  const getBandLimitsForAntennaCounts = (bandLimits, n15mAntennas, n13mAntennas) => {
+    let limits = [];
+
+    switch (true) {
+      case n13mAntennas > 0 && !n15mAntennas:
+        limits = bandLimits['13m'];
+        break;
+      case n15mAntennas > 0 && !n13mAntennas:
+        limits = bandLimits['15m'];
+        break;
+      default:
+        limits = bandLimits['mixed'];
+        break;
     }
 
-    const subArrayAntennas = getSubArrayAntennas();
-    const has15mAntennas = subArrayAntennas.n15mAntennas > 0;
-    const has13mAntennas = subArrayAntennas.n13mAntennas > 0;
-
-    if (has13mAntennas && !has15mAntennas) {
-      return bandLimits['13m'];
-    } else if (has15mAntennas && !has13mAntennas) {
-      return bandLimits['15m'];
-    } else {
-      return bandLimits['mixed'];
-    }
+    return limits;
   };
 
-  const getLowBandLimits = () => {
+  const getBandLimits = () => {
     const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
     if (!bandLimits) {
       return [];
     }
-    const limits = bandLimits['low'];
-    const limitsInHz = limits.map(e => e * 1e6);
-    console.log('limitsInHz', limitsInHz);
-    return limitsInHz;
+
+    if (isLow()) {
+      return bandLimits.low?.map(e => e * 1e6) || [];
+    }
+    
+    const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts();
+    const limits = getBandLimitsForAntennaCounts(bandLimits, n15mAntennas, n13mAntennas);
+    return limits || [];
   };
 
   const errorMessage = () => {
@@ -142,7 +144,7 @@ export default function ContinuumBandwidthField({
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
-    const bandLimits = !isLow() ? getMidBandLimits() : getLowBandLimits();
+    const bandLimits = getBandLimits();
     console.log('bandLimits', bandLimits);
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
       return t('continuumBandWidth.range.rangeError');
