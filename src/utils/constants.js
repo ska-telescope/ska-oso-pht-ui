@@ -30,12 +30,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     units: 'MHz',
     mapping: 'low_band',
-    bandLimits: [
-      {
-        type: 'low',
-        limits: [50.0, 350.0]
-      }
-    ]
+    bandLimits: {
+      low: [50.0, 350.0]
+    }
   },
   {
     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
@@ -44,20 +41,11 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     units: 'GHz',
     mapping: 'mid_band_1',
-    bandLimits: [
-      {
-        type: '15m',
-        limits: [0.35e9, 1.05e9]
-      },
-      {
-        type: '13m',
-        limits: [0.58e9, 1.015e9]
-      },
-      {
-        type: 'mixed',
-        limits: [0.58e9, 1.015e9]
-      }
-    ]
+    bandLimits: {
+      '15m': [0.35e9, 1.05e9],
+      '13m': [0.58e9, 1.015e9],
+      mixed: [0.58e9, 1.015e9]
+    }
   },
   {
     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
@@ -66,20 +54,11 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     units: 'GHz',
     mapping: 'mid_band_2',
-    bandLimits: [
-      {
-        type: '15m',
-        limits: [0.95e9, 1.76e9]
-      },
-      {
-        type: '13m',
-        limits: [0.95e9, 1.67e9]
-      },
-      {
-        type: 'mixed',
-        limits: [0.95e9, 1.67e9]
-      }
-    ]
+    bandLimits: {
+      '15m': [0.95e9, 1.76e9],
+      '13m': [0.95e9, 1.67e9],
+      mixed: [0.95e9, 1.67e9]
+    }
   },
   {
     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
@@ -88,12 +67,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     units: 'GHz',
     mapping: 'mid_band_3',
-    bandLimits: [
-      {
-        type: '15m',
-        limits: [4.6e9, 8.5e9]
-      }
-    ]
+    bandLimits: {
+      '15m': [4.6e9, 8.5e9]
+    }
   }, // Band 5a
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
@@ -102,12 +78,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     units: 'GHz',
     mapping: 'mid_band_4',
-    bandLimits: [
-      {
-        type: '15m',
-        limits: [8.3e9, 15.4e9]
-      }
-    ]
+    bandLimits: {
+      '15m': [8.3e9, 15.4e9]
+    }
   } // Band 5b
 ];
 
