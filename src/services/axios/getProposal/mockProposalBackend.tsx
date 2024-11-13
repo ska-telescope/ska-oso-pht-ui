@@ -10,6 +10,7 @@ const MockProposalBackend: ProposalBackend = {
     version: 1,
     last_modified_by: 'DefaultUser',
     last_modified_on: 'Thu Aug 15 2024',
+    pdm_version: '16.0.1',
     created_by: 'DefaultUser',
     created_on: 'Thu Aug 14 2024'
   },
@@ -18,7 +19,7 @@ const MockProposalBackend: ProposalBackend = {
     title: 'My Proposal',
     proposal_type: {
       main_type: 'standard_proposal',
-      sub_type: ['joint_proposal']
+      attributes: ['joint_proposal']
     },
     abstract: 'This is an abstract',
     science_category: 'Pulsars',
@@ -120,11 +121,11 @@ const MockProposalBackend: ProposalBackend = {
       }
     ],
     data_product_src_nets: [],
-    results: [
+    result_details: [
       {
         observation_set_ref: 'obs-jtvA2l',
         target_ref: '1',
-        result_details: {
+        result: {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
             value: 194.8435007170185,
@@ -153,7 +154,8 @@ const MockProposalBackend: ProposalBackend = {
           unit: 'uJy/beam'
         },
         synthesized_beam_size: {
-          value: 590,
+          continuum: '0.615 x 0.322',
+          spectral: '0.854 x 0.512',
           unit: 'arcsec2'
         },
         spectral_confusion_noise: {
