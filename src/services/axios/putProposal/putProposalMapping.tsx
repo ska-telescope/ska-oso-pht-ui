@@ -115,38 +115,18 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   return outTargets;
 };
 
-// STAR-670: write new getDocuments function
-// const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
-//   const documents = [];
-//   if (sciencePDF?.link) {
-//     documents.push({
-//       document_id: sciencePDF.documentId,
-//       link: sciencePDF?.link,
-//       type: 'proposal_science'
-//     });
-//   }
-//   if (technicalPDF?.link) {
-//     documents.push({
-//       document_id: technicalPDF?.documentId,
-//       link: technicalPDF?.link,
-//       type: 'proposal_technical'
-//     });
-//   }
-//   return documents;
-// };
-
 const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
   const documents = [];
   if (sciencePDF) {
     documents.push({
       document_id: sciencePDF.documentId,
-      uploadPdf: sciencePDF.isUploadedPdf
+      uploaded_pdf: sciencePDF.isUploadedPdf
     });
   }
   if (technicalPDF) {
     documents.push({
       document_id: technicalPDF.documentId,
-      uploadPdf: technicalPDF.isUploadedPdf
+      uploaded_pdf: technicalPDF.isUploadedPdf
     });
   }
   return documents;
@@ -510,5 +490,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   helpers.transform.trimObject(transformedProposal);
+  console.log('MappingPutProposal transformedProposal', transformedProposal);
+
   return transformedProposal;
 }
