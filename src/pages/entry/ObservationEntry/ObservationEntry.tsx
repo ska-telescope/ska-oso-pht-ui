@@ -320,7 +320,7 @@ export default function ObservationEntry() {
     </Box>
   );
 
-  const emptyField = () => fieldWrapper();
+  const emptyField = () => <></>;
 
   /******************************************************/
 
@@ -956,7 +956,7 @@ export default function ObservationEntry() {
               {groupObservationsField()}
             </Grid>
             <Grid item md={12} lg={6}>
-              {isLow() ? weatherField() : emptyField()}
+              {isLow() ? emptyField() : weatherField()}
             </Grid>
             <Grid item md={12} lg={6}>
               {observationsBandField()}
