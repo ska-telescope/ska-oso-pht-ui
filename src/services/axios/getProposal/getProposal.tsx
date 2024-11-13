@@ -421,10 +421,6 @@ const getResultsSection2 = (
   if (isSensitivity) {
     section2.push({
       field: 'spectralIntegrationTime',
-      //STAR-670 get from observation detail
-      // value: '999', // TODO : Need to store and retrieve correct value
-      // units: 's' // TODO : Need to store and retrieve correct units
-
       value: obs.observation_type_details.supplied?.quantity?.value.toString(),
       units: obs.observation_type_details.supplied?.quantity?.unit
     } as ResultsSection);
@@ -446,13 +442,7 @@ const getResultsSection3 = (
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
-  const field = isSensitivity
-    ? /*
-      ? 'sensitivity'
-      : 'integrationTime';
-    */
-      'integrationTime'
-    : 'sensitivity';
+  const field = isSensitivity ? 'integrationTime' : 'sensitivity';
   // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
@@ -521,8 +511,6 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 function mapping(inRec: ProposalBackend): Proposal {
-  console.log('getProposal mapping inRec', inRec);
-
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
@@ -570,7 +558,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-  console.log('getProposal mapping convertedProposal', convertedProposal);
+
   return convertedProposal;
 }
 

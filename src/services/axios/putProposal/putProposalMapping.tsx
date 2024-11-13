@@ -34,10 +34,7 @@ import TargetObservation from 'utils/types/targetObservation';
 import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
-const isContinuum = (type: number) => {
-  console.log('isContinuum type === TYPE_CONTINUUM', type === TYPE_CONTINUUM);
-  return type === TYPE_CONTINUUM;
-};
+const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 
@@ -367,16 +364,6 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-// const getSynthesizedBeamSizeContinuum = (obsType, tarObs) => {
-//   if (isContinuum(obsType)) {
-//     console.log('getSynthesizedBeamSizeContinuum true');
-//     return tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value;
-//   } else {
-//     console.log('getSynthesizedBeamSizeContinuum false');
-//     return '';
-//   }
-// };
-
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
   for (let tarObs of incTargetObservations) {
@@ -430,18 +417,13 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           ?.units
       }
     };
-    console.log('result inside resultsArr', resultsArr);
     resultsArr.push(result);
   }
-  console.log('resultsArr', resultsArr);
   return resultsArr;
 };
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-  // TODO: STAR-670 remove after debugging
-  console.log('MappingPutProposal proposal', proposal);
-
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -486,7 +468,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   helpers.transform.trimObject(transformedProposal);
-  console.log('MappingPutProposal transformedProposal', transformedProposal);
 
   return transformedProposal;
 }

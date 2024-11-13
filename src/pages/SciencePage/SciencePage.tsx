@@ -83,8 +83,6 @@ export default function SciencePage() {
         isUploadedPdf: true
       };
 
-      console.log('sciencePDFUploaded', sciencePDFUploaded);
-
       setProposal({
         ...getProposal(),
         sciencePDF: sciencePDFUploaded,
