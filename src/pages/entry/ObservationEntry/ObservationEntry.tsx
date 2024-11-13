@@ -726,6 +726,10 @@ export default function ObservationEntry() {
           value={bandwidth}
           telescope={telescope()}
           widthLabel={BOTTOM_LABEL_WIDTH}
+          observingBand={observingBand}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
         />
       )}
     </Grid>
