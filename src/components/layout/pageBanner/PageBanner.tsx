@@ -67,7 +67,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
-        setValidationResults(results.concat(response.error));
+        setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);
         setCanSubmit(false);
       }
