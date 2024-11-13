@@ -25,6 +25,8 @@ Future
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
   - Added spacing to the Target/Observation header
 * Observation page
+  - Set frequency and continuum bandwidth units to default when switching band if unmodified
+  - Fixed default continuum bandwidth values missing for band5a and band5b
   - Added Continuum Bandwidth validation for Mid and Low
   - Changed Continuum Bandwidth units and frequency units to a disabled dropdown for Low
   - Fixed Sensitivity Calculator results for Mid AA05 observations
