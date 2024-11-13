@@ -161,8 +161,6 @@ export default function ContinuumBandwidthField({
     }
 
     return '';
-    // TODO : handle band5a NaN cases?
-    // TODO : handle zooms
   };
 
   return (
