@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, NumberEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
@@ -172,6 +172,9 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
+  const validateId = () =>
+    getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
+
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
@@ -204,7 +207,7 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
-    helpComponent(t('observingBand.help'));
+    helpComponent(t('observationId.help'));
     if (isEdit()) {
       observationIn(locationProperties.state);
     } else {
@@ -351,6 +354,30 @@ export default function ObservationEntry() {
           setTapering,
           null,
           tapering
+        )}
+      </Grid>
+    );
+  };
+
+  const idField = () => {
+    return (
+      <Grid item>
+        {fieldWrapper(
+          <Box pt={1}>
+            <TextEntry
+              disabled={isEdit()}
+              errorText={isEdit() ? '' : validateId()}
+              label={t('observationId.label')}
+              labelBold={LAB_IS_BOLD}
+              labelPosition={LAB_POSITION}
+              labelWidth={TOP_LABEL_WIDTH}
+              onFocus={() => helpComponent(t('observationId.help'))}
+              required
+              testId="observationId"
+              value={myObsId}
+              setValue={setMyObsId}
+            />
+          </Box>
         )}
       </Grid>
     );
@@ -907,8 +934,7 @@ export default function ObservationEntry() {
   };
 
   const addButtonDisabled = () => {
-    // TODO : We need to ensure we are able to progress.
-    return false;
+    return validateId() ? true : false;
   };
 
   const pageFooter = () => {
@@ -1022,6 +1048,8 @@ export default function ObservationEntry() {
             spacing={1}
             justifyContent="space-between"
           >
+            {idField()}
+            {emptyField()}
             {groupObservationsField()}
             {weatherField()}
             {observationsBandField()}
