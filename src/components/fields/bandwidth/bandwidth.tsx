@@ -77,14 +77,19 @@ export default function BandwidthField({
     return Number(lookupBandwidth(value)?.label.split(" ")[0]);
   }
 
+  const getFrequencyhUnitsLabel = (): string => {
+    return FREQUENCY_UNITS.find(item => item.value === centralFrequencyUnits)?.label;
+  }
+
   const errorMessage = () => {
+    // scale bandwidth and frequency
     const bandwidthUnitsLabel = getBandwidthUnitsLabel();
     const bandwidthValue = getBandwidthValue();
-
-    // scale bandwidth and frequency
+    const frequencyUnitsLabel = getFrequencyhUnitsLabel();
     const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
     console.log('scaledBandwidth', scaledBandwidth);
-    //const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel);
+    console.log('scaledFrequency', scaledFrequency);
 
     // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
     /* const minimumChannelWidthHz = getMinimumChannelWidth();
