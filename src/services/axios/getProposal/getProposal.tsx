@@ -66,7 +66,7 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const getAttributes = (proposalType: { main_type: string; attributes: string[] }): any => {
+const getAttributes = (proposalType: { main_type: string; attributes?: string[] }): any => {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.attributes?.map(attributes =>
     project.subProjects?.find(({ mapping }) => mapping === attributes)
@@ -82,6 +82,8 @@ const getScienceCategory = (scienceCat: string) => {
 };
 
 const getPDF = (documents: DocumentBackend[], documentId: string): DocumentPDF => {
+  if (!documents) return null;
+
   const documentById = documents.find(document => document.document_id === documentId);
 
   if (!documentById) return null;
@@ -159,19 +161,12 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
-// TODO: remove after testing star-670
-// const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
-
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    // imageSizeValue: Number(getFromArray(dp.image_size, 0)),
-    // imageSizeUnits: getFromArray(dp.image_size, 1),
-    // pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
-    // pixelSizeUnits: getFromArray(dp.pixel_size, 1),
     imageSizeValue: dp.image_size.value,
     imageSizeUnits: dp.image_size.unit,
     pixelSizeValue: dp.pixel_size.value,
@@ -368,11 +363,6 @@ const getResultsSection1 = (
     if (isSensitivity) {
       section1.push({
         field: 'continuumIntegrationTime',
-        // // STAR-670 clarified to search from observation_type_details
-        // value: '999', // TODO : Need to store and retrieve correct value
-        // units: 's' // TODO : Need to store and retrieve correct units
-
-        // STAR-670 clarified to search from observation_type_details and the checking is already there
         value: obs.observation_type_details.supplied?.quantity?.value.toString(),
         units: obs.observation_type_details.supplied?.quantity?.unit
       } as ResultsSection);

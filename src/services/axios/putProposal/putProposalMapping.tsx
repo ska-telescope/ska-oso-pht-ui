@@ -386,15 +386,11 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const obsType = getObsType(tarObs, incObs); // spectral or continuum
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
-      // STAR-670:
-      // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-      // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
       tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
     // TODO un-swap sensitivity and integration time as above once PDM updated
     // => we want supplied integration time fields for supplied sensitivity
     // and supplied sensitivity fields for supplied integration time for RESULTS
 
-    // STAR-670: swapped to fix
     const suppliedRelatedFields =
       suppliedType === 'sensitivity'
         ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)

@@ -85,7 +85,6 @@ export default function SciencePage() {
 
       console.log('sciencePDFUploaded', sciencePDFUploaded);
 
-      // STAR-670: combine to one proposal update
       setProposal({
         ...getProposal(),
         sciencePDF: sciencePDFUploaded,

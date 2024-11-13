@@ -29,7 +29,7 @@ export type ProposalBackend = {
     title: string;
     proposal_type: {
       main_type: string;
-      attributes: string[];
+      attributes?: string[];
     };
     abstract: string;
     science_category: string;
