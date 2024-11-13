@@ -116,41 +116,41 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
 };
 
 // STAR-670: write new getDocuments function
-const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
-  const documents = [];
-  if (sciencePDF?.link) {
-    documents.push({
-      document_id: sciencePDF.documentId,
-      link: sciencePDF?.link,
-      type: 'proposal_science'
-    });
-  }
-  if (technicalPDF?.link) {
-    documents.push({
-      document_id: technicalPDF?.documentId,
-      link: technicalPDF?.link,
-      type: 'proposal_technical'
-    });
-  }
-  return documents;
-};
-
 // const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
 //   const documents = [];
-//   if (sciencePDF) {
+//   if (sciencePDF?.link) {
 //     documents.push({
 //       document_id: sciencePDF.documentId,
-//       uploadPdf: sciencePDF.uploadPdf
+//       link: sciencePDF?.link,
+//       type: 'proposal_science'
 //     });
 //   }
-//   if (technicalPDF) {
+//   if (technicalPDF?.link) {
 //     documents.push({
 //       document_id: technicalPDF?.documentId,
-//       uploadPdf: technicalPDF.uploadPdf
+//       link: technicalPDF?.link,
+//       type: 'proposal_technical'
 //     });
 //   }
 //   return documents;
 // };
+
+const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
+  const documents = [];
+  if (sciencePDF) {
+    documents.push({
+      document_id: sciencePDF.documentId,
+      uploadPdf: sciencePDF.isUploadedPdf
+    });
+  }
+  if (technicalPDF) {
+    documents.push({
+      document_id: technicalPDF.documentId,
+      uploadPdf: technicalPDF.isUploadedPdf
+    });
+  }
+  return documents;
+};
 
 const SDPOptions = (inArray: Boolean[]) => {
   return inArray.map(element => (element ? 'Y' : 'N'));

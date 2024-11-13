@@ -21,6 +21,7 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+//import { DocumentBackend, DocumentPDF } from 'utils/types/document';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -53,14 +54,22 @@ export default function SciencePage() {
 
   const setFile = (theFile: File) => {
     if (theFile) {
+      console.log('theFile true');
       //TODO: to decide when to set sciencePDF when adding the link in PUT endpoint
-      const file = {
-        documentId: `science-doc-${getProposal().id}`,
-        // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
-        link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
-        file: theFile
-      };
-      setProposal({ ...getProposal(), sciencePDF: file });
+      // const file = {
+      //   documentId: `science-doc-${getProposal().id}`,
+      //   // link: (theFile as unknown) as string, TODO: remove dummy url STAR-658
+      //   link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
+      //   file: theFile
+      // };
+
+      // const sciencePDF = {
+      //   documentId: `science-doc-${getProposal().id}`,
+      //   isUploadedPdf : true
+      // }
+
+      // //star-670: TODO move this to after upload successfully and update the boolean
+      // setProposal({ ...getProposal(), sciencePDF: file });
       setCurrentFile(theFile);
     } else {
       setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
@@ -86,7 +95,21 @@ export default function SciencePage() {
       if (uploadResult.error) {
         throw new Error('Science PDF Not Uploaded');
       }
-      setUploadStatus(FileUploadStatus.OK);
+      const sciencePDFUploaded = {
+        documentId: `science-doc-${proposal.id}`,
+        isUploadedPdf: true
+      };
+
+      console.log('sciencePDFUploaded', sciencePDFUploaded);
+
+      // STAR-670: combine to one proposal update
+      setProposal({
+        ...getProposal(),
+        sciencePDF: sciencePDFUploaded,
+        scienceLoadStatus: FileUploadStatus.OK
+      });
+      // setSciencePDF(sciencePDFUploaded)
+      // setUploadStatus(FileUploadStatus.OK);
       NotifyOK(t('pdfUpload.science.success'));
     } catch (e) {
       setFile(null);
@@ -120,7 +143,15 @@ export default function SciencePage() {
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
       }
-      setFile(null); //TODO: revisit redux not removed after delete pdf
+      //STAR-670 do we still need to setfile after deleted - need to update boolean instead
+      // setFile(null); //TODO: revisit redux not removed after delete pdf
+
+      //STAR-670: update isUploadedPdf : false
+      const sciencePDFDeleted = {
+        documentId: `science-doc-${proposal.id}`,
+        isUploadedPdf: false
+      };
+      setProposal({ ...getProposal(), sciencePDF: sciencePDFDeleted });
       setUploadStatus(FileUploadStatus.INITIAL);
       NotifyOK(t('pdfDelete.science.success'));
     } catch (e) {
@@ -172,6 +203,15 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
+  // STAR-670: check proposal after upload
+  // React.useEffect(()=>{
+  //   console.log('useEffect uploadPdftoSignedUrl getProposal()', getProposal())
+  // },[uploadPdftoSignedUrl])
+
+  React.useEffect(() => {
+    console.log('useEffect getProposal())', getProposal());
+  }, [getProposal()]);
+
   return (
     <Shell page={PAGE}>
       {getProposal().scienceLoadStatus === FileUploadStatus.INITIAL && (
@@ -184,7 +224,8 @@ export default function SciencePage() {
               clearLabel={t('pdfUpload.science.label.clear')}
               clearToolTip={t('pdfUpload.science.tooltip.clear')}
               direction="row"
-              file={getProposal()?.sciencePDF?.file}
+              //file={getProposal()?.sciencePDF?.file}
+              file={currentFile}
               maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
               setFile={setFile}
               setStatus={setUploadStatus}
