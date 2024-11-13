@@ -219,7 +219,7 @@ export default function ProposalDisplay({
           {skaoIcon({ useSymbol: true })}
         </Grid>
         <Grid item xs={7}>
-          {title(t('page.9.title') + ' : ', proposal.title)}
+          {title(t('page.9.title') + '  ', proposal.title)}
         </Grid>
         <Grid item xs={4}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
