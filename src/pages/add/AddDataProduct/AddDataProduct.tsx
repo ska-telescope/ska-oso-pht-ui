@@ -336,7 +336,7 @@ export default function AddDataProduct() {
         justifyContent="space-around"
         spacing={1}
       >
-        <Grid item md={11} lg={3}>
+        <Grid item md={11} lg={4}>
           <Stack spacing={1}>
             {fieldWrapper(observationsField())}
             {dataProductsFieldOld()}
