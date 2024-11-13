@@ -61,23 +61,29 @@ export default function BandwidthField({
       };
     });
 
-  const scaleBandwidthOrFrequency = (incValue: number, incUnits: number): number => {
-    const frequencyUnitsLabel = FREQUENCY_UNITS.find(item => item.value === incUnits)?.label;
-    return sensCalHelpers.format.convertBandwidthToHz(incValue, frequencyUnitsLabel);
+  const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): number => {
+    // const frequencyUnitsLabel = FREQUENCY_UNITS.find(item => item.value === incUnits)?.label;
+    return sensCalHelpers.format.convertBandwidthToHz(incValue, incUnits);
   };
 
-  const getBandwidthUnits = () => {
-    // OBSERVATION.array[telescope - 1].bandWidth
-    return OBSERVATION.array[telescope - 1].bandWidth.find(bw => bw.value === value)?.mapping;
+  const lookupBandwidth = (inValue: number): any =>
+    OBSERVATION.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue)
+
+  const getBandwidthUnitsLabel = (): string => {
+    return lookupBandwidth(value)?.mapping;
+  }
+
+  const getBandwidthValue = (): number => {
+    return Number(lookupBandwidth(value)?.label.split(" ")[0]);
   }
 
   const errorMessage = () => {
-    const bandwidthUnits = getBandwidthUnits(); // TODO extract bandwidth units from field
-    console.log('bandwidthUnits', bandwidthUnits);
-    console.log('bandwidth', value);
+    const bandwidthUnitsLabel = getBandwidthUnitsLabel();
+    const bandwidthValue = getBandwidthValue();
 
     // scale bandwidth and frequency
-    //const scaledBandwidth = scaleBandwidthOrFrequency(value, bandwidthUnits);
+    const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
+    console.log('scaledBandwidth', scaledBandwidth);
     //const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
