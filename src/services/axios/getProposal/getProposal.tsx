@@ -81,28 +81,15 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
-const extractFileFromURL = (url): Promise<File> => {
-  return fetch(url, { mode: 'no-cors' })
-    .then(response => response.blob())
-    .then(blob => {
-      const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
-      return file;
-    });
-};
+const getPDF = (documents: DocumentBackend[], documentId: string): DocumentPDF => {
+  const documentById = documents.find(document => document.document_id === documentId);
 
-// STAR-670: TODO: revisit pdf logic in
-const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
-  const pdf = documents?.find(doc => doc.type === docType);
-  if (!pdf || !pdf.link) {
-    return null;
-  }
-  const file = (await extractFileFromURL(pdf.link)) as File;
-  const pdfDoc: DocumentPDF = {
-    documentId: pdf?.document_id,
-    link: pdf?.link,
-    file: file ? file : null
+  if (!documentById) return null;
+
+  return {
+    documentId: documentById.document_id,
+    isUploadedPdf: documentById.uploaded_pdf
   };
-  return pdfDoc as DocumentPDF;
 };
 
 const getVelType = (InDefinition: string) => {
@@ -543,15 +530,15 @@ const getTargetObservation = (
 
 /*************************************************************************************************************************/
 
-async function mapping(inRec: ProposalBackend): Promise<Proposal> {
+function mapping(inRec: ProposalBackend): Proposal {
   console.log('getProposal mapping inRec', inRec);
 
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
-  // STAR-670: remove file in sciencePDF - adding uploadPDF boolean
-  sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
-  technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
+  sciencePDF = getPDF(inRec?.info?.documents, 'science-doc-' + inRec.prsl_id);
+  technicalPDF = getPDF(inRec?.info?.documents, 'technical-doc-' + inRec.prsl_id);
+
   const targets = getTargets(inRec.info.targets);
 
   const convertedProposal = {
@@ -573,7 +560,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
+    scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
     observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
