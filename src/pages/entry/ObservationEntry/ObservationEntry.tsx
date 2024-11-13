@@ -366,7 +366,7 @@ export default function ObservationEntry() {
           <Box pt={1}>
             <TextEntry
               disabled={isEdit()}
-              errorText={validateId()}
+              errorText={isEdit() ? '' : validateId()}
               label={t('observationId.label')}
               labelBold={LAB_IS_BOLD}
               labelPosition={LAB_POSITION}
