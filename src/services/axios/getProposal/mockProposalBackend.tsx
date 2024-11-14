@@ -10,6 +10,7 @@ const MockProposalBackend: ProposalBackend = {
     version: 1,
     last_modified_by: 'DefaultUser',
     last_modified_on: 'Thu Aug 15 2024',
+    pdm_version: '16.0.1',
     created_by: 'DefaultUser',
     created_on: 'Thu Aug 14 2024'
   },
@@ -18,7 +19,7 @@ const MockProposalBackend: ProposalBackend = {
     title: 'My Proposal',
     proposal_type: {
       main_type: 'standard_proposal',
-      sub_type: ['joint_proposal']
+      attributes: ['joint_proposal']
     },
     abstract: 'This is an abstract',
     science_category: 'Pulsars',
@@ -57,6 +58,7 @@ const MockProposalBackend: ProposalBackend = {
     investigators: [
       {
         investigator_id: 'prp-ska01-202204-01',
+        status: 'pending',
         given_name: 'DefaultUser',
         family_name: 'DefaultUser',
         email: 'ask.lop@map.com',
@@ -66,6 +68,7 @@ const MockProposalBackend: ProposalBackend = {
       },
       {
         investigator_id: '1',
+        status: 'pending',
         given_name: 'Jack',
         family_name: 'Green',
         email: 'jgreen@gmail.com',
@@ -95,7 +98,7 @@ const MockProposalBackend: ProposalBackend = {
             unit: 'MHz'
           },
           supplied: {
-            type: 'integration_time',
+            supplied_type: 'integration_time',
             quantity: {
               value: 600,
               unit: 'm/s'
@@ -112,17 +115,17 @@ const MockProposalBackend: ProposalBackend = {
         data_products_sdp_id: 'SDP-1',
         options: ['Y', 'N', 'Y', 'N'],
         observation_set_refs: ['obs-jtvA2l'],
-        image_size: '10 degrees',
-        pixel_size: '1.667 arcsec2',
+        image_size: { value: 10, unit: 'degrees' },
+        pixel_size: { value: 1.667, unit: 'arcsec2' },
         weighting: '1'
       }
     ],
     data_product_src_nets: [],
-    results: [
+    result_details: [
       {
         observation_set_ref: 'obs-jtvA2l',
         target_ref: '1',
-        result_details: {
+        result: {
           supplied_type: 'sensitivity',
           weighted_continuum_sensitivity: {
             value: 194.8435007170185,
@@ -151,7 +154,8 @@ const MockProposalBackend: ProposalBackend = {
           unit: 'uJy/beam'
         },
         synthesized_beam_size: {
-          value: 590,
+          continuum: '0.615 x 0.322',
+          spectral: '0.854 x 0.512',
           unit: 'arcsec2'
         },
         spectral_confusion_noise: {

@@ -181,9 +181,9 @@ export const IMAGE_WEIGHTING = [
 ];
 
 export const IMAGE_SIZE_UNITS = {
-  ARCSECS: 'arcseconds',
-  ARCMINS: 'arcmins',
-  DEGREES: 'degrees'
+  ARCSECS: 'arcsec',
+  ARCMINS: 'arcmin',
+  DEGREES: 'degree'
 };
 
 export const LAB_IS_BOLD = true;
