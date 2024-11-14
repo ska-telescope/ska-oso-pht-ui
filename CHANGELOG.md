@@ -7,7 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Future
 -------
-
+* API mappings:
+   - Updated PHT services version 2.4.0 to use ODA 6.2.1 to use PDM 16.0.1
+   - Updated mappings accordingly for PDM changes
 * Landing page
   - Time added to last update column
   - Tidy up of the Proposal display modal
@@ -17,6 +19,7 @@ Future
 * Team Page
   - Added checking that member will not be added if email is not sent successfully 
   - Updated team member field width and field name styles
+  - Updated team member status to retrieve values from backend instead of mocked value
 * General Page
    - Changed height of help component on the page
    - Changed order of Science Category and Abstract fields
@@ -25,6 +28,7 @@ Future
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
   - Added spacing to the Target/Observation header
 * Observation page
+  - Updated `continuumIntegrationTime` , `continuumSynthBeamSize`, `spectralIntegrationTime`, `spectralSynthBeamSize` to retrieve values from backend instead of mocked value
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
       - Effective Resolution
