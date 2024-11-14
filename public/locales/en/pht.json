@@ -301,6 +301,12 @@
     "3": "Mid Band 5a (4.6 - 8.5 GHz)",
     "4": "Mid Band 5b (8.3 - 15.4 GHz)"
   },
+  "observationId": {
+    "label": "Observation Id",
+    "help": "A default identifier for the observation has been provided, however this can be overridden.  Note that this is a unique identifier so cannot be changed ast a later date",
+    "short": "Id",
+    "notUnique": "Another observation with this unique identifier exists"
+  },
   "observations": {
     "label": "Observations",
     "single": "Observation",
@@ -322,7 +328,7 @@
     "1": "Continuum"
   },
   "observatoryDataProduct": {
-    "label": "Observatory Data Product *",
+    "label": "Observatory Data Product",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Image Products 1 : Image Cubes",
@@ -749,7 +755,8 @@
     "tooltipDisabled": "Disabled until all pages have a status of OK"
   },
   "validationResults": {
-    "title": "Validation issues"
+    "title": "Validation issues",
+    "pageError": "{{page}} page has not been completed"
   },
   "velRed": {
     "0": "Velocity",
@@ -797,46 +804,53 @@
       "status": "Title",
       "title": "Title",
       "titleShort": "Title",
-      "desc": "This page allows users to provide the title and proposal category"
+      "desc": "This page allows users to provide the title and proposal category",
+      "pageError": "The TITLE page is not complete"
     },
     "1": {
       "status": "Team",
       "title": "Team",
       "titleShort": "Team",
-      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal."
+      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
+      "pageError": "The TEAM page is not complete"
     },
     "2": {
       "status": "General",
       "title": "General",
       "titleShort": "General",
-      "desc": "This page allows the user to provide general information about the proposal."
+      "desc": "This page allows the user to provide general information about the proposal.",
+      "pageError": "The GENERAL page is not complete"
     },
     "3": {
       "status": "Science",
       "title": "Science",
       "titleShort": "Science",
       "label": "Science justification",
-      "desc": "Upload a Science justification for this proposal in a portable document format (pdf)."
+      "desc": "Upload a Science justification for this proposal in a portable document format (pdf).",
+      "pageError": "The SCIENCE JUSTIFICATION page is not complete"
     },
     "4": {
       "status": "Target",
       "title": "Target",
       "titleShort": "Target",
       "label": "Target(s)",
-      "desc": "Select a category to associate target(s) with this proposal."
+      "desc": "Select a category to associate target(s) with this proposal.",
+      "pageError": "The TARGET page is not complete"
     },
     "5": {
       "status": "Observation",
       "title": "Observation",
       "titleShort": "Observation",
-      "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results."
+      "desc": "Add one or more continuum or zoom observation setup(s) and select relevant targets to request sensitivity/integration time results.",
+      "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
       "label": "Technical justification",
-      "desc": "Upload a Technical justification for this proposal in a portable document format (pdf)."
+      "desc": "Upload a Technical justification for this proposal in a portable document format (pdf).",
+      "pageError": "The TECHNICAL JUSTIFICATION page is not complete"
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
@@ -845,13 +859,15 @@
       "plural": "Data Products",
       "title": "Observatory Data Product",
       "titleShort": "Data Product",
-      "desc": "This page allows you to request and define observatory data products for observation set(s)."
+      "desc": "This page allows you to request and define observatory data products for observation set(s).",
+      "pageError": "The DATA PRODUCTS page is not complete"
     },
     "8": {
       "status": "SrcNet",
       "title": "SrcNet Resources",
       "titleShort": "SrcNet",
-      "desc": "This page allows you to request and define SRC Net data products."
+      "desc": "This page allows you to request and define SRC Net data products.",
+      "pageError": "The SRC NET page is not complete"
     },
     "9": {
       "title": "Title",
