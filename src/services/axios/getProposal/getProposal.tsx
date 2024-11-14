@@ -473,7 +473,6 @@ const getTargetObservation = (
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
-    // const isSensitivity = result.result.supplied_type === 'integration_time';
     const isSensitivity = result.result.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {

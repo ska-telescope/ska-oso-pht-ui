@@ -138,8 +138,6 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    //image_size: dp.imageSizeValue + ' ' + dp.imageSizeUnits,
-    //pixel_size: dp.pixelSizeValue + ' ' + dp.pixelSizeUnits,
     image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
     pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
     weighting: dp.weighting?.toString()
@@ -405,7 +403,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
         continuum: isContinuum(obsType)
           ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
           : 'dummy', // TODO: investigate typescript not taking empty string
-        //continuum: getSynthesizedBeamSizeContinuum(obsType, tarObs),
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
       },
