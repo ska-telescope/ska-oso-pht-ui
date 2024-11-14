@@ -37,7 +37,11 @@ export default function GridTargets({
       disableClickEventBubbling: true,
       renderCell: (e: { row: Target }) => {
         const showVelocity = row =>
-          t('velocity.0')[0] + ': ' + row.vel + ' ' + t('velocity.units.' + row.velUnit);
+          t('velocity.0')[0] +
+          ': ' +
+          row.vel +
+          ' ' +
+          (row.vel ? t('velocity.units.' + row.velUnit) : '');
         const showRedshift = row => t('velocity.1')[0] + ': ' + row.redshift;
         return e.row.velType === VELOCITY_TYPE.VELOCITY ? showVelocity(e.row) : showRedshift(e.row);
       }

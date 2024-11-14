@@ -43,7 +43,7 @@ export default function VelocityField({
     return (
       <TextEntry
         label=""
-        testId={'redshiftValue'}
+        testId="redshiftValue"
         value={redshift}
         setValue={setRedshift}
         onFocus={velFocus}
@@ -79,7 +79,7 @@ export default function VelocityField({
     return (
       <TextEntry
         label=""
-        testId={'velocityValue'}
+        testId="velocityValue"
         value={vel}
         setValue={setVel}
         suffix={VelocityUnitField()}
@@ -98,7 +98,7 @@ export default function VelocityField({
     return (
       <DropDown
         options={getOptions()}
-        testId={'velocityUnits'}
+        testId="velocityUnits"
         value={velUnit}
         setValue={setVelUnit}
         label=""

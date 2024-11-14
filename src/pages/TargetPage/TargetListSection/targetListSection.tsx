@@ -25,17 +25,8 @@ export default function TargetListSection() {
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [newTarget, setNewTarget] = React.useState(NEW_TARGET);
   const [rowTarget, setRowTarget] = React.useState(null);
   // const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
-
-  React.useEffect(() => {
-    initTarget();
-  }, []);
-
-  const initTarget = () => {
-    setNewTarget(NEW_TARGET);
-  };
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -117,17 +108,6 @@ export default function TargetListSection() {
     );
   };
 
-  const alertEditContent = () => {
-    return (
-      <TargetEntry
-        id={rowTarget.id}
-        raType={RA_TYPE_EQUATORIAL}
-        setTarget={setRowTarget}
-        target={rowTarget}
-      />
-    );
-  };
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -206,13 +186,7 @@ export default function TargetListSection() {
                 sx={{ border: '1px solid grey', width: '100%' }}
               />
             </Tabs>
-            {value === 0 && (
-              <TargetEntry
-                raType={RA_TYPE_EQUATORIAL}
-                setTarget={setNewTarget}
-                target={newTarget}
-              />
-            )}
+            {value === 0 && <TargetEntry raType={RA_TYPE_EQUATORIAL} />}
             {value === 1 && <TargetFileImport raType={RA_TYPE_EQUATORIAL} />}
             {value === 2 && <SpatialImaging />}
           </Box>
@@ -243,7 +217,7 @@ export default function TargetListSection() {
           onDialogResponse={editConfirmed}
           title="editTarget.label"
         >
-          {alertEditContent()}
+          <TargetEntry raType={RA_TYPE_EQUATORIAL} setTarget={setRowTarget} target={rowTarget} />
         </AlertDialog>
       )}
     </Grid>
