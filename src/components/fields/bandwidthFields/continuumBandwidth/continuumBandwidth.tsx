@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, BAND_LOW, FREQUENCY_UNITS } from '../../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION, BAND_LOW, FREQUENCY_UNITS, TYPE_CONTINUUM } from '../../../../utils/constants';
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -61,7 +61,7 @@ export default function ContinuumBandwidthField({
     const minimumChannelWidthKHz = sensCalHelpers.format
       .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
       .toFixed(2);
-    return t('continuumBandWidth.range.minimumChannelWidthError', {
+    return t('bandwidth.range.minimumChannelWidthError', {
       value: minimumChannelWidthKHz
     });
   };
@@ -70,7 +70,7 @@ export default function ContinuumBandwidthField({
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
-    return t('continuumBandWidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
+    return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
   const errorMessage = () => {
@@ -99,14 +99,14 @@ export default function ContinuumBandwidthField({
     if (
       !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
     ) {
-      return t('continuumBandWidth.range.rangeError');
+      return t('bandwidth.range.rangeError');
     }
 
     // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
     // sub-bands should be greater than the minimum allowed bandwidth
     // Mid only
     if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
-      return t('continuumBandWidth.range.subBandError');
+      return t('bandwidth.range.subBandError');
     }
 
     return '';
@@ -115,7 +115,7 @@ export default function ContinuumBandwidthField({
   return (
     <Box pt={1}>
       <NumberEntry
-        label={t('continuumBandWidth.label')}
+        label={t(`bandwidth.label.${TYPE_CONTINUUM}`)}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}

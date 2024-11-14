@@ -7,7 +7,8 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   OBSERVATION,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  TYPE_ZOOM
 } from '../../../../utils/constants';
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
@@ -130,7 +131,7 @@ export default function BandwidthField({
     if (
       !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
     ) {
-      return t('continuumBandWidth.range.rangeError');
+      return t('bandwidth.range.rangeError');
     }
 
     return '';
@@ -145,7 +146,7 @@ export default function BandwidthField({
           testId={testId}
           value={value}
           setValue={setValue}
-          label={t('bandwidth.label')}
+          label={t(`bandwidth.label.${TYPE_ZOOM}`)}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}

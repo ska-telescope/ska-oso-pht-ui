@@ -36,7 +36,8 @@ import {
   SUPPLIED_VALUE_DEFAULT_LOW,
   FREQUENCY_UNITS,
   FREQUENCY_MHZ,
-  FREQUENCY_GHZ
+  FREQUENCY_GHZ,
+  TYPE_ZOOM
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -699,7 +700,7 @@ export default function ObservationEntry() {
     return fieldWrapper(
       <ContinuumBandwidthField
         labelWidth={BOTTOM_LABEL_WIDTH}
-        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+        onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -717,7 +718,7 @@ export default function ObservationEntry() {
     <Grid item>
       {fieldWrapper(
         <BandwidthField
-          onFocus={() => helpComponent(t('bandwidth.help'))}
+          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
           required
           setValue={setBandwidth}
           testId="bandwidth"
