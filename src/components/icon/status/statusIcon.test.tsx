@@ -10,7 +10,13 @@ function mounting(theTheme: any) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <StatusIconDisplay error="" level={STATUS_OK} onClick={cy.stub().as('onClick')} />
+      <StatusIconDisplay
+        ariaDescription=""
+        ariaTitle=""
+        level={STATUS_OK}
+        onClick={cy.stub().as('onClick')}
+        testId="statusId"
+      />
     </ThemeProvider>
   );
 }

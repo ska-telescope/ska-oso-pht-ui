@@ -16,15 +16,18 @@ import Target from '../../../utils/types/target';
 import { LAB_POSITION, VELOCITY_TYPE } from '../../../utils/constants';
 
 interface TargetEntryProps {
-  id?: number;
   raType: number;
-  setTarget: Function;
-  target: Target;
+  setTarget?: Function;
+  target?: Target;
 }
 
-export default function TargetEntry({ id = 0, raType, setTarget, target }: TargetEntryProps) {
+export default function TargetEntry({ raType, setTarget = null, target = null }: TargetEntryProps) {
   const { t } = useTranslation('pht');
+
   const LAB_WIDTH = 5;
+  const WRAPPER_HEIGHT = '80px';
+  const WRAPPER_WIDTH = '450px';
+  const HELP_MAX_HEIGHT = '40vh';
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
@@ -32,44 +35,90 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const [id, setId] = React.useState(0);
+  const [name, setName] = React.useState('');
+  const [ra, setRA] = React.useState('');
+  const [dec, setDec] = React.useState('');
+  const [velType, setVelType] = React.useState(0);
+  const [vel, setVel] = React.useState('');
+  const [velUnit, setVelUnit] = React.useState(0);
+  const [redshift, setRedshift] = React.useState('');
+  const [referenceFrame, setReferenceFrame] = React.useState(0);
+
+  const setTheName = (inValue: string) => {
+    setName(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, name: inValue });
+    }
+  };
+
+  const setTheDec = (inValue: string) => {
+    setDec(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, dec: inValue });
+    }
+  };
+
+  const setTheRA = (inValue: string) => {
+    setRA(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, ra: inValue });
+    }
+  };
+
+  const setTheRedshift = (inValue: string) => {
+    setRedshift(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, redshift: inValue });
+    }
+  };
+
+  const setTheReferenceFrame = (inValue: number) => {
+    setReferenceFrame(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, referenceFrame: inValue });
+    }
+  };
+
+  const setTheVel = (inValue: string) => {
+    setVel(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, vel: inValue });
+    }
+  };
+
+  const setTheVelType = (inValue: number) => {
+    setVelType(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, velType: inValue });
+    }
+  };
+
+  const setTheVelUnit = (inValue: number) => {
+    setVelUnit(inValue);
+    if (setTarget !== null) {
+      setTarget({ ...target, velUnit: inValue });
+    }
+  };
+
+  const targetIn = (target: Target) => {
+    setId(target?.id);
+    setName(target?.name);
+    setRA(target?.ra);
+    setDec(target?.dec);
+    setVelType(target?.velType);
+    setVel(target?.vel);
+    setVelUnit(target?.velUnit);
+    setRedshift(target?.redshift);
+    setReferenceFrame(target?.referenceFrame);
+  };
+
   React.useEffect(() => {
     helpComponent(t('name.help'));
-    if (id) {
-      setTarget(getProposal().targets.find(p => p.id === id));
+    if (target) {
+      targetIn(target);
     }
   }, []);
-
-  const setDec = (inValue: string) => {
-    setTarget({ ...target, dec: inValue });
-  };
-
-  const setName = (inValue: string) => {
-    setTarget({ ...target, name: inValue });
-  };
-
-  const setRA = (inValue: string) => {
-    setTarget({ ...target, ra: inValue });
-  };
-
-  const setRedshift = (inValue: string) => {
-    setTarget({ ...target, redshift: inValue });
-  };
-
-  const setReferenceFrame = (inValue: number) => {
-    setTarget({ ...target, referenceFrame: inValue });
-  };
-
-  const setVel = (inValue: string) => {
-    setTarget({ ...target, vel: inValue });
-  };
-
-  const setVelType = (inValue: number) => {
-    setTarget({ ...target, velType: inValue });
-  };
-
-  const setVelUnit = (inValue: number) => {
-    setTarget({ ...target, velUnit: inValue });
-  };
 
   const addButton = () => {
     const addButtonAction = () => {
@@ -86,41 +135,43 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
       const highestId = highest ? highest.id : 0;
 
       const newTarget: Target = {
-        dec: target.dec,
+        dec: dec,
         decUnit: raType.toString(),
         id: highestId + 1,
-        name: target.name,
+        name: name,
         latitude: null,
         longitude: null,
-        ra: target.ra,
+        ra: ra,
         raUnit: raType.toString(),
-        redshift: target.velType === VELOCITY_TYPE.REDSHIFT ? target?.redshift : '',
-        referenceFrame: target.referenceFrame,
-        vel: target.velType === VELOCITY_TYPE.VELOCITY ? target?.vel : '',
-        velType: target.velType,
-        velUnit: target.velUnit
+        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
+        referenceFrame: referenceFrame,
+        vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
+        velType: velType,
+        velUnit: velUnit
       };
       setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
     };
 
     const clearForm = () => {
-      setTarget({ ...target, name: '', ra: '', dec: '', redshift: '', vel: '' });
+      setName('');
+      setRA('');
+      setDec('');
+      setVel('');
+      setRedshift('');
     };
 
-    const disabled = () => !(target?.name?.length && target?.ra?.length && target?.dec?.length);
+    const disabled = () => !(name?.length && ra?.length && dec?.length);
 
     return (
       <Grid item xs={12}>
-        <Box p={1}>
-          <AddButton
-            action={addButtonAction}
-            disabled={disabled()}
-            primary
-            testId={'addTargetButton'}
-            title="addTarget.label"
-            toolTip="addTarget.toolTip"
-          />
-        </Box>
+        <AddButton
+          action={addButtonAction}
+          disabled={disabled()}
+          primary
+          testId={'addTargetButton'}
+          title="addTarget.label"
+          toolTip="addTarget.toolTip"
+        />
       </Grid>
     );
   };
@@ -129,27 +180,35 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
     const processCoordinatesResults = response => {
       if (response && !response.error) {
         const values = response.split(' ');
-        const redshift = values?.length > 2 && values[2] !== 'null' ? values[2] : '';
+        const redshift =
+          values?.length > 2 && values[2] !== 'null'
+            ? Number(values[2])
+                .toExponential(2)
+                .toString()
+            : '';
         const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
-        setTarget({ ...target, dec: values[0], ra: values[1], redshift: redshift, vel: vel });
+        setDec(values[0]);
+        setRA(values[1]);
+        setRedshift(redshift);
+        setVel(vel);
         setNameFieldError('');
       } else {
-        setNameFieldError(t(response.error));
+        setNameFieldError(t('resolve.error.' + response.error));
       }
     };
 
-    const getCoordinates = async (targetName: string, skyUnits: number) => {
-      const response = await GetCoordinates(targetName, skyUnits);
+    const getCoordinates = async () => {
+      const response = await GetCoordinates(name, raType);
       processCoordinatesResults(response);
     };
 
     return (
-      <ResolveButton action={() => getCoordinates(target?.name, raType)} testId={'resolveButton'} />
+      <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
     );
   };
 
   const nameField = () => (
-    <Grid item p={1} xs={12}>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
       <TextEntry
         required
         label={t('name.label')}
@@ -157,90 +216,96 @@ export default function TargetEntry({ id = 0, raType, setTarget, target }: Targe
         labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
         testId={'name'}
-        value={target?.name}
-        setValue={setName}
+        value={name}
+        setValue={setTheName}
         suffix={resolveButton()}
         onFocus={() => helpComponent(t('name.help'))}
         errorText={nameFieldError}
       />
-    </Grid>
+    </Box>
   );
 
   const skyDirection1Field = () => (
-    <Grid item xs={12}>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
       <SkyDirection1
         labelWidth={LAB_WIDTH}
-        setValue={setRA}
+        setValue={setTheRA}
         skyUnits={raType}
-        value={target?.ra}
+        value={ra}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
       />
-    </Grid>
+    </Box>
   );
 
   const skyDirection2Field = () => (
-    <Grid item xs={12}>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
       <SkyDirection2
         labelWidth={LAB_WIDTH}
-        setValue={setDec}
+        setValue={setTheDec}
         skyUnits={raType}
-        value={target?.dec}
+        value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
       />
-    </Grid>
+    </Box>
   );
 
   const velocityField = () => (
-    <Grid item xs={12}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
       <VelocityField
         labelWidth={LAB_WIDTH}
-        setRedshift={setRedshift}
-        setVel={setVel}
-        setVelType={setVelType}
-        setVelUnit={setVelUnit}
-        redshift={target?.redshift}
-        vel={target?.vel}
-        velType={target?.velType}
-        velUnit={target?.velUnit}
-        velFocus={() => helpComponent(t('velocity.help'))}
-        velTypeFocus={() => helpComponent(t('velocity.help'))}
-        velUnitFocus={() => helpComponent(t('velocity.help'))}
+        setRedshift={setTheRedshift}
+        setVel={setTheVel}
+        setVelType={setTheVelType}
+        setVelUnit={setTheVelUnit}
+        redshift={redshift}
+        vel={vel}
+        velType={velType}
+        velUnit={velUnit}
+        velFocus={() => helpComponent(t('velocity.help' + velType))}
+        // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
+        velUnitFocus={() => helpComponent(t('velocity.help' + velType))}
       />
-    </Grid>
+    </Box>
   );
 
   const referenceFrameField = () => (
-    <Grid item xs={12}>
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
       <ReferenceFrameField
         labelWidth={LAB_WIDTH}
         onFocus={() => helpComponent(t('referenceFrame.help'))}
-        setValue={setReferenceFrame}
-        value={target?.referenceFrame}
+        setValue={setTheReferenceFrame}
+        value={referenceFrame}
       />
-    </Grid>
+    </Box>
   );
 
   return (
     <Grid
-      p={1}
-      spacing={1}
+      p={5}
       container
       direction="row"
-      alignItems="flex-start"
-      justifyContent="space-around"
+      alignItems="space-evenly"
+      justifyContent="space-between"
+      spacing={1}
     >
       <Grid item xs={7}>
-        <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
-          {nameField()}
-          {skyDirection1Field()}
-          {skyDirection2Field()}
-          {velocityField()}
-          {referenceFrameField()}
-          {!id && addButton()}
+        <Grid
+          container
+          direction="column"
+          alignItems="stretch"
+          justifyContent="flex-start"
+          spacing={1}
+        >
+          <Grid item>{nameField()}</Grid>
+          <Grid item>{skyDirection1Field()}</Grid>
+          <Grid item>{skyDirection2Field()}</Grid>
+          <Grid item>{velocityField()}</Grid>
+          <Grid item>{referenceFrameField()}</Grid>
+          <Grid item>{!id && addButton()}</Grid>
         </Grid>
       </Grid>
       <Grid item xs={4}>
-        <HelpPanel />
+        <HelpPanel maxHeight={HELP_MAX_HEIGHT} />
       </Grid>
     </Grid>
   );

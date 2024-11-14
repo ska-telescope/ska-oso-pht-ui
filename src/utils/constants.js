@@ -22,6 +22,11 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+export const ANTENNA_LOW = 'low'; // TODO can we find a better name for the Low Antenna?
+export const ANTENNA_13M = '13m';
+export const ANTENNA_15M = '15m';
+export const ANTENNA_MIXED = 'mixed';
+
 export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Low (50 - 350 MHz)',
@@ -29,7 +34,10 @@ export const BANDWIDTH_TELESCOPE = [
     value: BAND_LOW,
     isBand5: false,
     units: 'MHz',
-    mapping: 'low_band'
+    mapping: 'low_band',
+    bandLimits: {
+      [ANTENNA_LOW]: [50.0, 350.0]
+    }
   },
   {
     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
@@ -38,20 +46,11 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     units: 'GHz',
     mapping: 'mid_band_1',
-    bandLimits: [
-      {
-        type: 'ska',
-        limits: [0.35e9, 1.05e9]
-      },
-      {
-        type: 'meerkat',
-        limits: [0.58e9, 1.015e9]
-      },
-      {
-        type: 'mixed',
-        limits: [0.58e9, 1.015e9]
-      }
-    ]
+    bandLimits: {
+      [ANTENNA_15M]: [0.35e9, 1.05e9],
+      [ANTENNA_13M]: [0.58e9, 1.015e9],
+      [ANTENNA_MIXED]: [0.58e9, 1.015e9]
+    }
   },
   {
     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
@@ -60,20 +59,11 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: false,
     units: 'GHz',
     mapping: 'mid_band_2',
-    bandLimits: [
-      {
-        type: 'ska',
-        limits: [0.95e9, 1.76e9]
-      },
-      {
-        type: 'meerkat',
-        limits: [0.95e9, 1.67e9]
-      },
-      {
-        type: 'mixed',
-        limits: [0.95e9, 1.67e9]
-      }
-    ]
+    bandLimits: {
+      [ANTENNA_15M]: [0.95e9, 1.76e9],
+      [ANTENNA_13M]: [0.95e9, 1.67e9],
+      [ANTENNA_MIXED]: [0.95e9, 1.67e9]
+    }
   },
   {
     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
@@ -82,12 +72,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     units: 'GHz',
     mapping: 'mid_band_3',
-    bandLimits: [
-      {
-        type: 'ska',
-        limits: [4.6e9, 8.5e9]
-      }
-    ]
+    bandLimits: {
+      [ANTENNA_15M]: [4.6e9, 8.5e9]
+    }
   }, // Band 5a
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
@@ -96,12 +83,9 @@ export const BANDWIDTH_TELESCOPE = [
     isBand5: true,
     units: 'GHz',
     mapping: 'mid_band_4',
-    bandLimits: [
-      {
-        type: 'ska',
-        limits: [8.3e9, 15.4e9]
-      }
-    ]
+    bandLimits: {
+      [ANTENNA_15M]: [8.3e9, 15.4e9]
+    }
   } // Band 5b
 ];
 
@@ -135,11 +119,16 @@ export const ELEVATION_DEFAULT = 45;
 
 export const FOOTER_HEIGHT = 20;
 
+export const FREQUENCY_GHZ = 1;
+export const FREQUENCY_MHZ = 2;
+export const FREQUENCY_KHZ = 3;
+export const FREQUENCY_HZ = 4;
+
 export const FREQUENCY_UNITS = [
-  { label: 'GHz', value: 1, mapping: 'GHz', toHz: 1 },
-  { label: 'MHz', value: 2, mapping: 'MHz', toHz: 1000 },
-  { label: 'kHz', value: 3, mapping: 'kHz', toHz: 10000000 },
-  { label: 'Hz', value: 4, mapping: 'Hz', toHz: 10000000000 }
+  { label: 'GHz', value: FREQUENCY_GHZ, mapping: 'GHz', toHz: 1 },
+  { label: 'MHz', value: FREQUENCY_MHZ, mapping: 'MHz', toHz: 1000 },
+  { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
+  { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
 ];
 
 export const GENERAL = {
@@ -787,6 +776,7 @@ export const SPEED_OF_LIGHT = 299792458; // m/s
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
+export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 export const STATUS = {

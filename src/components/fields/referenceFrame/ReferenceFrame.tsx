@@ -27,7 +27,7 @@ export default function ReferenceFrameField({
   };
 
   return (
-    <Box p={1} sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <DropDown
         options={getOptions()}
         testId={FIELD}

@@ -91,25 +91,4 @@ type Target = {
   }; // NOT USED
 };
 
-// NOTE : This ensures that we can initialize to a known point.
-export const NEW_TARGET: Target = {
-  dec: '',
-  decUnit: '',
-  id: 0,
-  latitude: '',
-  longitude: '',
-  name: '',
-  ra: '',
-  raUnit: '',
-  redshift: '',
-  referenceFrame: 0,
-  rcReferenceFrame: '',
-  raReferenceFrame: '',
-  raDefinition: '',
-  vel: '',
-  velType: 0,
-  velUnit: 0,
-  pointingPattern: null
-};
-
 export default Target;

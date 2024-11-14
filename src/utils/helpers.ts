@@ -1,4 +1,10 @@
-import { FREQUENCY_UNITS, SPEED_OF_LIGHT, TEXT_ENTRY_PARAMS, VELOCITY_UNITS } from './constants';
+import {
+  FREQUENCY_HZ,
+  FREQUENCY_UNITS,
+  SPEED_OF_LIGHT,
+  TEXT_ENTRY_PARAMS,
+  VELOCITY_UNITS
+} from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -20,7 +26,7 @@ export const countWords = (text: string) => {
         .filter(Boolean).length;
 };
 
-export const frequencyConversion = (inValue: any, from: number, to: number = 4) => {
+export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
 
