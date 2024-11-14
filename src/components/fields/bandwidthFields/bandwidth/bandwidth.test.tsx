@@ -5,7 +5,7 @@ import BandwidthField from './bandwidth';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { viewPort } from '../../../../utils/testing/cypress';
 
-const value = 2;
+const value = 1;
 
 function mountDefault() {
   viewPort();
@@ -13,7 +13,15 @@ function mountDefault() {
     <StoreProvider>
       <ThemeProvider theme={theme('light')}>
         <CssBaseline />
-        <BandwidthField telescope={1} testId="bandwidth" value={value} />
+        <BandwidthField
+          telescope={1}
+          testId="bandwidth"
+          value={value}
+          observingBand={0}
+          centralFrequency={200}
+          centralFrequencyUnits={1}
+          subarrayConfig={8}
+        />
       </ThemeProvider>
     </StoreProvider>
   );
