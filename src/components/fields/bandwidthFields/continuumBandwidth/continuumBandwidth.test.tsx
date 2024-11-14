@@ -13,7 +13,15 @@ function mountDefault() {
     <StoreProvider>
       <ThemeProvider theme={theme('light')}>
         <CssBaseline />
-        <ContinuumBandwidthField telescope={1} value={value} />
+        <ContinuumBandwidthField
+          telescope={1}
+          value={value}
+          centralFrequency={1}
+          centralFrequencyUnits={1}
+          observingBand={1}
+          continuumBandwidthUnits={2}
+          subarrayConfig={8}
+        />
       </ThemeProvider>
     </StoreProvider>
   );

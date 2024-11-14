@@ -5,7 +5,7 @@ import BandwidthField from './bandwidth';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { viewPort } from '../../../../utils/testing/cypress';
 
-const value = 20;
+const value = 2;
 
 function mountDefault() {
   viewPort();
