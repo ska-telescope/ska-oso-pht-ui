@@ -459,7 +459,7 @@
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
-    "short": "Type",
+    "short": "Proposal Type",
     "title": {
       "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
