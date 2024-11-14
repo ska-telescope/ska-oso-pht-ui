@@ -1,21 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper } from '@mui/material';
+import { Card, CardContent, Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  AlertColorTypes,
   DropDown,
+  InfoCard,
+  InfoCardColorTypes,
   LABEL_POSITION,
   NumberEntry,
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
-import { IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../../utils/constants';
-import Alert from '../../../components/alerts/standardAlert/StandardAlert';
+import { HELP_FONT, IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
-import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import { DataProductSDP } from '../../../utils/types/dataProduct';
@@ -23,14 +22,14 @@ import Observation from '../../../utils/types/observation';
 import AddButton from '../../../components/button/Add/Add';
 import { LAB_POSITION } from '../../../utils/constants';
 import { presentUnits } from '../../../utils/present';
+import { Box } from '@mui/system';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
 const FOOTER_HEIGHT = 40;
 const FIELD_OBS = 'observatoryDataProduct.options';
-const LABEL_WIDTH = 2;
-const LABEL_MULTIPLIER = 2;
+const LABEL_WIDTH = 5;
 const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
@@ -111,64 +110,75 @@ export default function AddDataProduct() {
 
   const observationsField = () => {
     return (
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-between"
-        justifyContent="center"
-        spacing={1}
-      >
-        <Grid item xs={12} lg={6}>
-          <>
-            {baseObservations && (
-              <DropDown
-                options={baseObservations}
-                testId="observations"
-                value={observationId}
-                setValue={setObservationId}
-                label={t('observations.single')}
-                labelBold
-                labelPosition={LAB_POSITION}
-                labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
-                onFocus={() => helpComponent(t('observations.dp.help'))}
-                required
-              />
-            )}
-          </>
-        </Grid>
-        <Grid item xs={12} lg={6}></Grid>
-      </Grid>
+      <Box pt={1}>
+        {baseObservations && (
+          <DropDown
+            options={baseObservations}
+            testId="observations"
+            value={observationId}
+            setValue={setObservationId}
+            label={t('observations.single')}
+            labelBold
+            labelPosition={LAB_POSITION}
+            labelWidth={LABEL_WIDTH}
+            onFocus={() => helpComponent(t('observations.dp.help'))}
+            required
+          />
+        )}
+      </Box>
     );
   };
 
+  const WRAPPER_HEIGHT = '80px';
+
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+      {children}
+    </Box>
+  );
+
   const tickElement = (key: number, value: boolean, setter: Function) => (
-    <FieldWrapper
-      label={key === 1 ? t('observatoryDataProduct.label') : ''}
-      labelWidth={LABEL_WIDTH}
-    >
-      <TickBox
-        key={key}
-        label={t(FIELD_OBS + '.' + key)}
-        labelBold
-        labelPosition={LABEL_POSITION.END}
-        labelWidth={LABEL_WIDTH_TICK}
-        testId={'observatoryDataProduct' + key}
-        checked={value}
-        onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
-        onChange={() => setter(!value)}
-      />
-    </FieldWrapper>
+    <TickBox
+      key={key}
+      label={t(FIELD_OBS + '.' + key)}
+      labelPosition={LABEL_POSITION.END}
+      labelWidth={LABEL_WIDTH_TICK}
+      testId={'observatoryDataProduct' + key}
+      checked={value}
+      onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
+      onChange={() => setter(!value)}
+    />
   );
 
   const dataProductsField = () => {
     return (
-      <>
-        {tickElement(1, dp1, setDP1)}
-        {tickElement(2, dp2, setDP2)}
-        {tickElement(3, dp3, setDP3)}
-        {tickElement(4, dp4, setDP4)}
-      </>
+      <Card>
+        <Typography p={1} variant="h6">
+          {t('observatoryDataProduct.label') + ' *'}
+        </Typography>
+        <CardContent>
+          {tickElement(1, dp1, setDP1)}
+          {tickElement(2, dp2, setDP2)}
+          {tickElement(3, dp3, setDP3)}
+          {tickElement(4, dp4, setDP4)}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const dataProductsFieldOld = () => {
+    return (
+      <Grid container direction="row" alignItems="space-between" justifyContent="space-between">
+        <Grid item xs={LABEL_WIDTH}>
+          <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
+        </Grid>
+        <Grid item xs={12 - LABEL_WIDTH}>
+          {tickElement(1, dp1, setDP1)}
+          {tickElement(2, dp2, setDP2)}
+          {tickElement(3, dp3, setDP3)}
+          {tickElement(4, dp4, setDP4)}
+        </Grid>
+      </Grid>
     );
   };
 
@@ -199,83 +209,51 @@ export default function AddDataProduct() {
       setImageSizeValue(num.toString());
     };
     return (
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-between"
-        justifyContent="center"
-        spacing={1}
-      >
-        <Grid item xs={12} lg={6}>
-          <NumberEntry
-            label={t('imageSize.label')}
-            labelBold
-            labelPosition={LAB_POSITION}
-            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
-            testId="imageSize"
-            value={imageSizeValue}
-            setValue={(e: number) => setTheNumber(e)}
-            onFocus={() => helpComponent(t('imageSize.help'))}
-            required
-            suffix={imageSizeUnitsField()}
-            errorText={errorText()}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}></Grid>
-      </Grid>
+      <Box pt={1}>
+        <NumberEntry
+          label={t('imageSize.label')}
+          labelBold
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="imageSize"
+          value={imageSizeValue}
+          setValue={(e: number) => setTheNumber(e)}
+          onFocus={() => helpComponent(t('imageSize.help'))}
+          required
+          suffix={imageSizeUnitsField()}
+          errorText={errorText()}
+        />
+      </Box>
     );
   };
 
   const pixelSizeField = () => {
     return (
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-between"
-        justifyContent="center"
-        spacing={1}
-      >
-        <Grid item xs={12} lg={6}>
-          <NumberEntry
-            label={t('pixelSize.label')}
-            labelBold
-            labelPosition={LAB_POSITION}
-            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
-            testId="pixelSize"
-            value={pixelSizeValue}
-            setValue={setPixelSizeValue}
-            required
-            disabled
-            suffix={presentUnits(pixelSizeUnits)}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}></Grid>
-      </Grid>
+      <Box pt={1}>
+        <NumberEntry
+          label={t('pixelSize.label')}
+          labelBold
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="pixelSize"
+          value={pixelSizeValue}
+          setValue={setPixelSizeValue}
+          required
+          disabled
+          suffix={presentUnits(pixelSizeUnits)}
+        />
+      </Box>
     );
   };
 
   const imageWeightingField = () => {
     return (
-      <Grid
-        p={1}
-        container
-        direction="row"
-        alignItems="space-between"
-        justifyContent="center"
-        spacing={1}
-      >
-        <Grid item xs={12} lg={6}>
-          <ImageWeightingField
-            disabled
-            labelWidth={LABEL_WIDTH * LABEL_MULTIPLIER}
-            onFocus={() => helpComponent(t('imageWeighting.help'))}
-            value={weighting}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}></Grid>
-      </Grid>
+      <ImageWeightingField
+        disabled
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        value={weighting}
+      />
     );
   };
 
@@ -347,43 +325,44 @@ export default function AddDataProduct() {
   };
 
   return (
-    <Box p={2}>
+    <>
       <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
 
       <Grid
-        p={1}
+        p={2}
         container
         direction="row"
-        alignItems="space-between"
-        justifyContent="center"
+        alignItems="space-around"
+        justifyContent="space-around"
         spacing={1}
       >
-        <Grid item md={12} lg={6}>
-          <Grid
-            container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="center"
-            p={2}
-            spacing={2}
-          >
-            <Grid item>{observationsField()}</Grid>
-            <Grid item>{dataProductsField()}</Grid>
-            <Grid item>{imageSizeField()}</Grid>
-            <Grid item>{pixelSizeField()}</Grid>
-            <Grid item>{imageWeightingField()}</Grid>
-          </Grid>
+        <Grid item md={11} lg={4}>
+          <Stack spacing={1}>
+            {fieldWrapper(observationsField())}
+            {dataProductsFieldOld()}
+            {fieldWrapper(imageSizeField())}
+            {fieldWrapper(pixelSizeField())}
+            {fieldWrapper(imageWeightingField())}
+          </Stack>
         </Grid>
-        <Grid item md={12} lg={3}>
-          <HelpPanel />
-          <Alert
-            color={AlertColorTypes.Info}
-            text="The associated input options of these observatory data products are under development and subject to change."
-            testId="developmentPanelId"
-          />
+        {false && ( // TODO : Retain for now as this is likely to be implemented soon
+          <Grid item md={11} lg={3}>
+            {dataProductsField()}
+          </Grid>
+        )}
+        <Grid item md={11} lg={3}>
+          <Stack spacing={1}>
+            <HelpPanel />
+            <InfoCard
+              color={InfoCardColorTypes.Warning}
+              fontSize={HELP_FONT}
+              message="The associated input options of these observatory data products are under development and subject to change."
+              testId="developmentPanelId"
+            />
+          </Stack>
         </Grid>
       </Grid>
       {pageFooter()}
-    </Box>
+    </>
   );
 }

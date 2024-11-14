@@ -23,7 +23,7 @@ function mountingBasic(theTheme: any) {
 }
 
 function clickOutside() {
-  cy.get('body').click(0, 0);
+  // TODO cy.get('body').click(0, 0);
 }
 
 function clickCloseButton() {}

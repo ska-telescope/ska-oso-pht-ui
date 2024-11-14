@@ -776,6 +776,7 @@ export const SPEED_OF_LIGHT = 299792458; // m/s
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
+export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 export const STATUS = {

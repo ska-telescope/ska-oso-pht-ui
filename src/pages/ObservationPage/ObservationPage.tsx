@@ -335,12 +335,14 @@ export default function ObservationPage() {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <StatusIconDisplay
-              error={getError(obs)}
+              ariaDescription=""
+              ariaTitle=""
               level={getLevel(obs)}
               onClick={() =>
                 getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
               }
               size={SIZE}
+              testId="testId"
             />
           );
         }

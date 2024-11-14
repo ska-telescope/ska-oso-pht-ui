@@ -1,8 +1,7 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
-import StatusIconDisplay from './statusIcon';
-import { STATUS_OK } from '../../../utils/constants';
+import GridDataProducts from './GridDataProducts';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mounting(theTheme: any) {
@@ -10,26 +9,15 @@ function mounting(theTheme: any) {
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <StatusIconDisplay
-        ariaDescription=""
-        ariaTitle=""
-        level={STATUS_OK}
-        onClick={cy.stub().as('onClick')}
-        testId="statusId"
-      />
+      <GridDataProducts baseObservations={null} />
     </ThemeProvider>
   );
 }
 
-function validateClick() {
-  cy.get('[data-testid="statusId"]').click();
-}
-
-describe('<Icon />', () => {
+describe('<GridDataProducts />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);
-      validateClick();
     });
   }
 });

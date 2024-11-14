@@ -24,6 +24,8 @@ Future
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
   - Added spacing to the Target/Observation header
+  - Standardized field sizes
+  - Various visual updates and tweaks
 * Observation page
   - Set frequency and continuum bandwidth units to default when switching band if unmodified
   - Fixed default continuum bandwidth values missing for band5a and band5b
@@ -37,8 +39,12 @@ Future
       - Robust
       - Continuum Bandwidth
       - Bandwidth
+* Data Products
+  - Rebalanced the page and also the Add Data Products page to have standard field sizing
 * Utilities
   - Change the notifications so that the icons stay to the left of any text
+  - Changed the Error status to show an exclamation mark as opposed to a cross.
+  - Validation also checks and reports the status of each page.
 
 0.5.1
 
@@ -66,6 +72,7 @@ Future
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
   - Updated so that previously saved values are not reset to default values upon editing the Observation set
+  - Ability to override the initial ID provided to a new Observation Set
 * Observation Entry
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values

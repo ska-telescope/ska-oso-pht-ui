@@ -1,20 +1,24 @@
 import React from 'react';
 import { IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { t } from 'i18next';
+import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 
 interface StatusIconDisplayProps {
-  error: string;
+  ariaDescription: string;
+  ariaTitle: string;
   level: number;
   onClick?: Function;
   size?: number;
+  testId: string;
 }
 
 export default function StatusIconDisplay({
-  error,
+  ariaDescription,
+  ariaTitle,
   level,
   onClick = null,
-  size = 25
+  size = 25,
+  testId
 }: StatusIconDisplayProps) {
   const action = () => {
     if (onClick !== null) {
@@ -25,12 +29,11 @@ export default function StatusIconDisplay({
   return (
     <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={() => action()}>
       <StatusIcon
-        ariaTitle={t('sensitivityCalculatorResults.status', {
-          status: t('statusLoading.' + level),
-          error: error
-        })}
-        testId="statusId"
-        icon
+        ariaDescription={ariaDescription}
+        ariaTitle={ariaTitle}
+        testId={testId}
+        text={level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
+        icon={level !== STATUS_ERROR}
         level={level}
         size={size}
       />
