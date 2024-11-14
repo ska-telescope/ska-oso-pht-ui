@@ -5,7 +5,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
 import ObservationEntry from './ObservationEntry';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { BANDWIDTH_TELESCOPE } from '../../../utils/constants';
+import { BANDWIDTH_TELESCOPE, TYPE_CONTINUUM, TYPE_ZOOM } from '../../../utils/constants';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mount(theTheme: any) {
@@ -147,25 +147,25 @@ function verifyFrequencyUnits() {
 function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 0.435);
   cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
 
 function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 3.9);
   cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
 
 function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 5);
   cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
 
 function verifyContinuumBandwidthContinuumLowBand() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 300);
   cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains('continuumBandWidth.help');
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
 function verifyFrequencyUnitsLow() {
   cy.get('[data-testid="centralFrequency"]').contains('MHz');
@@ -175,7 +175,7 @@ function verifyBandwidth(value: number, contents: string) {
   cy.get('[data-testid="bandwidth"]').click();
   cy.get('[data-value="' + value + '"]').click();
   cy.get('[data-testid="bandwidth"]').contains(contents);
-  cy.get('[data-testid="helpPanelId"]').contains('bandwidth.help');
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_ZOOM}`);
 }
 
 function verifySpectralResolution(contents: string) {
