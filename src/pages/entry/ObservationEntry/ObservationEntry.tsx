@@ -13,7 +13,6 @@ import {
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
-  MULTIPLIER_HZ_GHZ,
   NAV,
   BAND_LOW,
   OBSERVATION,
@@ -35,11 +34,13 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  FREQUENCY_MHZ,
+  FREQUENCY_GHZ
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
-import { generateId } from '../../../utils/helpers';
+import { frequencyConversion, generateId } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -89,7 +90,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_GHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -172,6 +173,49 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
+  const getDefaultSubArrayConfig = (inBand: number, inSubArray: number) => {
+    if (inBand !== BAND_5A && inBand !== BAND_5B) {
+      if (inSubArray === OB_SUBARRAY_AA4_15) {
+        return OB_SUBARRAY_AA4;
+      }
+    } else {
+      if (inSubArray === OB_SUBARRAY_AA_STAR) {
+        return OB_SUBARRAY_AA_STAR_15;
+      }
+      if (inSubArray === OB_SUBARRAY_AA4 || inSubArray === OB_SUBARRAY_AA4_13) {
+        return OB_SUBARRAY_AA4_15;
+      }
+    }
+    return inSubArray;
+  };
+
+  // Change the central frequency & units only if they are currently the same as the existing defaults
+  const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+    if (
+      Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
+      centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
+    ) {
+      setCentralFrequency(
+        calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
+      );
+      setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    }
+  };
+
+  // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
+  const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
+    if (
+      isContinuum() &&
+      Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
+      continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
+    ) {
+      setContinuumBandwidth(
+        calculateContinuumBandwidth(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
+      );
+      setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    }
+  };
+
   const validateId = () =>
     getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
 
@@ -185,11 +229,10 @@ export default function ObservationEntry() {
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
-    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
-      setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
-    }
+
+    setDefaultCentralFrequency(e as number, subarrayConfig);
+    setDefaultContinuumBandwidth(e as number, subarrayConfig);
     setObservingBand(e);
-    calculateContinuumBandwidth(e as number, subarrayConfig);
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
@@ -199,11 +242,10 @@ export default function ObservationEntry() {
       setNumOf13mAntennas(record.numOf13mAntennas);
       setNumOfStations(record.numOfStations);
     }
-    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
-      setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
-    }
+
+    setDefaultCentralFrequency(observingBand, e as number);
+    setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);
-    calculateContinuumBandwidth(observingBand, e as number);
   };
 
   React.useEffect(() => {
@@ -213,7 +255,9 @@ export default function ObservationEntry() {
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
-      calculateContinuumBandwidth(observingBand, subarrayConfig);
+      setCentralFrequencyUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setContinuumBandwidth(calculateContinuumBandwidth(observingBand, subarrayConfig));
+      setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   }, []);
 
@@ -262,23 +306,15 @@ export default function ObservationEntry() {
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        if (isContinuum()) {
-          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc));
-        }
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc);
       default:
-        if (isContinuum()) {
-          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc));
-        }
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc);
     }
   };
 
@@ -288,20 +324,17 @@ export default function ObservationEntry() {
       if (isEdit()) {
         return;
       }
-      if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
-        if (subarrayConfig === OB_SUBARRAY_AA4_15) {
-          setSubarrayConfig(OB_SUBARRAY_AA4);
-        }
-      } else {
-        if (subarrayConfig === OB_SUBARRAY_AA_STAR) {
-          setSubarrayConfig(OB_SUBARRAY_AA_STAR_15);
-        }
-        if (subarrayConfig === OB_SUBARRAY_AA4 || subarrayConfig === OB_SUBARRAY_AA4_13) {
-          setSubarrayConfig(OB_SUBARRAY_AA4_15);
-        }
+      setSubarrayConfig(getDefaultSubArrayConfig(observingBand, subarrayConfig));
+    };
+
+    const setFrequencyUnits = () => {
+      if (isLow()) {
+        setCentralFrequencyUnits(FREQUENCY_MHZ);
       }
     };
+
     calculateSubarray();
+    setFrequencyUnits();
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
@@ -329,7 +362,7 @@ export default function ObservationEntry() {
 
   const taperingField = () => {
     const frequencyInGHz = () => {
-      return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
+      return frequencyConversion(centralFrequency, centralFrequencyUnits, FREQUENCY_GHZ);
     };
 
     const getOptions = () => {
@@ -651,20 +684,17 @@ export default function ObservationEntry() {
     const continuumBandwidthUnitsField = () => {
       // Only have MHz for Low
       const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-      if (options?.length === 1) {
-        return options[0].label;
-      } else {
-        return (
-          <DropDown
-            options={options}
-            testId="continuumBandwidthUnits"
-            value={continuumBandwidthUnits}
-            setValue={setContinuumBandwidthUnits}
-            label=""
-            onFocus={() => helpComponent(t('frequencyUnits.help'))}
-          />
-        );
-      }
+      return (
+        <DropDown
+          options={options}
+          testId="continuumBandwidthUnits"
+          value={continuumBandwidthUnits}
+          setValue={setContinuumBandwidthUnits}
+          label=""
+          disabled={options.length === 1}
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
+      );
     };
     return fieldWrapper(
       <ContinuumBandwidthField
@@ -799,20 +829,17 @@ export default function ObservationEntry() {
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-    if (options?.length === 1) {
-      return options[0].label;
-    } else {
-      return (
-        <DropDown
-          options={options}
-          testId="frequencyUnits"
-          value={centralFrequencyUnits}
-          setValue={setCentralFrequencyUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
-      );
-    }
+    return (
+      <DropDown
+        options={options}
+        testId="frequencyUnits"
+        value={centralFrequencyUnits}
+        setValue={setCentralFrequencyUnits}
+        label=""
+        disabled={options.length === 1}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
   };
 
   const SubBandsField = () => {
@@ -842,21 +869,6 @@ export default function ObservationEntry() {
         />
       </Box>
     );
-  };
-
-  const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
-    switch (operator) {
-      case '*':
-        val_scaled = value * multiplier;
-        break;
-      case '/':
-        val_scaled = value / multiplier;
-        break;
-      default:
-        val_scaled = value;
-    }
-    return val_scaled;
   };
 
   const addButtonDisabled = () => {

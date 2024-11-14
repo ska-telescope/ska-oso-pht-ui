@@ -9,7 +9,11 @@ import {
   BAND_LOW,
   FREQUENCY_UNITS,
   OBSERVATION,
-  BANDWIDTH_TELESCOPE
+  BANDWIDTH_TELESCOPE,
+  ANTENNA_LOW,
+  ANTENNA_MIXED,
+  ANTENNA_13M,
+  ANTENNA_15M
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import { Box } from '@mui/system';
@@ -27,6 +31,7 @@ interface continuumBandwidthFieldProps {
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
+  nSubBands?: number;
 }
 
 export default function ContinuumBandwidthField({
@@ -40,7 +45,8 @@ export default function ContinuumBandwidthField({
   continuumBandwidthUnits,
   centralFrequency,
   centralFrequencyUnits,
-  subarrayConfig
+  subarrayConfig,
+  nSubBands
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
@@ -58,8 +64,9 @@ export default function ContinuumBandwidthField({
     const minimumChannelWidthKHz = sensCalHelpers.format
       .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
       .toFixed(2);
-    const minimumChannelWidthMessage = `${t('continuumBandWidth.range.minimumChannelWidthError')}`;
-    return minimumChannelWidthMessage.replace('%s', minimumChannelWidthKHz);
+    return t('continuumBandWidth.range.minimumChannelWidthError', {
+      value: minimumChannelWidthKHz
+    });
   };
 
   const getMaxContBandwidthHz = (): any =>
@@ -67,47 +74,53 @@ export default function ContinuumBandwidthField({
       .find(item => item.value === telescope)
       ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
 
-  const displaymMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
-    const maxContBandwidthMHzMessage = `${t(
-      'continuumBandWidth.range.contBandwidthMaximumExceededError'
-    )}`;
-    return maxContBandwidthMHzMessage.replace('%s', maxContBandwidthMHz);
+    return t('continuumBandWidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
-  const getSubArrayAntennas = () => {
-    const array = OBSERVATION.array
-      .find(arr => arr.value === telescope)
-      ?.subarray.find(sub => sub.value === subarrayConfig);
+  const getSubArrayAntennasCounts = () => {
+    const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
+    const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
     return {
-      nSKA: array.numOf15mAntennas,
-      nMeerkat: array.numOf13mAntennas
+      n15mAntennas: subArray?.numOf15mAntennas || 0,
+      n13mAntennas: subArray?.numOf13mAntennas || 0
     };
   };
 
-  const getMidBandLimits = () => {
+  const getBandLimitsForAntennaCounts = (bandLimits, n15mAntennas, n13mAntennas) => {
+    let limits = [];
+
+    switch (true) {
+      case n13mAntennas > 0 && !n15mAntennas:
+        limits = bandLimits[ANTENNA_13M];
+        break;
+      case n15mAntennas > 0 && !n13mAntennas:
+        limits = bandLimits[ANTENNA_15M];
+        break;
+      default:
+        limits = bandLimits[ANTENNA_MIXED];
+        break;
+    }
+
+    return limits;
+  };
+
+  const getBandLimits = () => {
     const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
     if (!bandLimits) {
       return [];
     }
 
-    const subArrayAntennas = getSubArrayAntennas();
-    const hasSKA = subArrayAntennas.nSKA > 0;
-    const hasMeerkat = subArrayAntennas.nMeerkat > 0;
-
-    let key: string;
-    if (hasMeerkat && !hasSKA) {
-      key = 'meerkat';
-    } else if (hasSKA && !hasMeerkat) {
-      key = 'ska';
-    } else {
-      key = 'mixed';
+    if (isLow()) {
+      return bandLimits[ANTENNA_LOW]?.map(e => e * 1e6) || [];
     }
 
-    const limits = bandLimits.find(e => e.type === key)?.limits;
-    return limits;
+    const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts();
+    const limits = getBandLimitsForAntennaCounts(bandLimits, n15mAntennas, n13mAntennas);
+    return limits || [];
   };
 
   const errorMessage = () => {
@@ -115,31 +128,39 @@ export default function ContinuumBandwidthField({
     const scaledBandwidth = scaleBandwidthOrFrequency(value, continuumBandwidthUnits);
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
-    // minimum channel width check
+    // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
     const minimumChannelWidthHz = getMinimumChannelWidth();
     if (scaledBandwidth < minimumChannelWidthHz) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    // maxContBandwidthHz check if exists for the array
+    // The bandwidth should be smaller than the maximum bandwidth defined for the subarray
+    // For the subarrays that don't have one set, the full bandwidth is allowed
     const maxContBandwidthHz = getMaxContBandwidthHz();
     if (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz) {
-      return displaymMaxContBandwidthErrorMessage(maxContBandwidthHz);
+      return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
 
-    // check bandwidth's lower and upper bounds are within band limits
+    // The bandwidth's lower and upper bounds should be within band limits
+    // Lower and upper bounds are set as frequency -/+ half bandwidth
+    // The band limits for each antennas (ska/meerkat/mixed) are set for each band (Mid)
+    // The antennas depend on the subarray selected
     const halfBandwidth = scaledBandwidth / 2.0;
     const lowerBound: number = scaledFrequency - halfBandwidth;
     const upperBound: number = scaledFrequency + halfBandwidth;
-    const bandLimits = !isLow() ? getMidBandLimits() : 0; // TODO get band limits for Low
+    const bandLimits = getBandLimits();
     if ((bandLimits && lowerBound < bandLimits[0]) || (bandLimits && upperBound > bandLimits[1])) {
-      return t('continuumBandWidth.range.bandwidthRangeError');
+      return t('continuumBandWidth.range.rangeError');
+    }
+
+    // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
+    // sub-bands should be greater than the minimum allowed bandwidth
+    // Mid only
+    if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
+      return t('continuumBandWidth.range.subBandError');
     }
 
     return '';
-    // TODO handle low bandLimits
-    // TODO : handle band5a NaN cases?
-    // TODO : handle zooms
   };
 
   return (
