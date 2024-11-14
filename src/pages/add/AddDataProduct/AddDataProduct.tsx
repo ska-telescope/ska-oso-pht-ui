@@ -166,6 +166,22 @@ export default function AddDataProduct() {
     );
   };
 
+  const dataProductsFieldOld = () => {
+    return (
+      <Grid container direction="row" alignItems="space-between" justifyContent="space-between">
+        <Grid item xs={LABEL_WIDTH}>
+          <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
+        </Grid>
+        <Grid item xs={12 - LABEL_WIDTH}>
+          {tickElement(1, dp1, setDP1)}
+          {tickElement(2, dp2, setDP2)}
+          {tickElement(3, dp3, setDP3)}
+          {tickElement(4, dp4, setDP4)}
+        </Grid>
+      </Grid>
+    );
+  };
+
   const imageSizeUnitsField = () => {
     const options = [
       { label: IMAGE_SIZE_UNITS.ARCSECS, value: IMAGE_SIZE_UNITS.ARCSECS },
@@ -320,17 +336,20 @@ export default function AddDataProduct() {
         justifyContent="space-around"
         spacing={1}
       >
-        <Grid item md={11} lg={3}>
+        <Grid item md={11} lg={4}>
           <Stack spacing={1}>
             {fieldWrapper(observationsField())}
+            {dataProductsFieldOld()}
             {fieldWrapper(imageSizeField())}
             {fieldWrapper(pixelSizeField())}
             {fieldWrapper(imageWeightingField())}
           </Stack>
         </Grid>
-        <Grid item md={11} lg={3}>
-          {dataProductsField()}
-        </Grid>
+        {false && ( // TODO : Retain for now as this is likely to be implemented soon
+          <Grid item md={11} lg={3}>
+            {dataProductsField()}
+          </Grid>
+        )}
         <Grid item md={11} lg={3}>
           <Stack spacing={1}>
             <HelpPanel />
