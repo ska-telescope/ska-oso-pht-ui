@@ -1,11 +1,23 @@
 Title Page
 ~~~~~~~~~~
-:numref:`Figure %s <titlepage>` shows the look of the title page. A proposal needs to be created using this page before you can proceed.
+A proposal needs to be created using the title page (:numref:`Figure %s <titlepage>`) before you can proceed to other pages.
 
-Page Details
-============
+
+.. _titlepage:
+
+.. figure:: /images/titlePage.png
+   :width: 90%
+   :align: center
+   :alt: Image of the Title page
+
+   The Title page.
+
+   
+Key Information and Actions
+===========================
+
 .. |icocreate| image:: /images/create.png
-   :width: 20%
+   :width: 10%
    :alt: Page filter
 
 
@@ -21,16 +33,9 @@ Page Details
   
    Optional:
 
-   - When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. However, you can choose multiple sub-categories by clicking multiple options
+   - When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can choose multiple sub-categories by clicking multiple options
 
-.. _titlepage:
 
-.. figure:: /images/titlePage.png
-   :width: 100%
-   :alt: Image of the Title page
-
-   The Title page.
- 
 
 
 .. _proposaltypes: 

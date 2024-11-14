@@ -156,13 +156,13 @@ async function GetCalculate(
   };
 
   const getConfusionNoise = () => {
-    return inMode === TYPE_CONTINUUM
+    return observation.type === TYPE_CONTINUUM
       ? weightingResponse?.confusion_noise.value
       : weightingResponse[0]?.confusion_noise.value;
   };
 
   const getWeightingFactor = () => {
-    return inMode === TYPE_CONTINUUM
+    return observation.type === TYPE_CONTINUUM
       ? weightingResponse.weighting_factor
       : weightingResponse[0]?.weighting_factor;
   };

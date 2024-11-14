@@ -43,7 +43,7 @@ export default function VelocityField({
     return (
       <TextEntry
         label=""
-        testId={'redshiftValue'}
+        testId="redshiftValue"
         value={redshift}
         setValue={setRedshift}
         onFocus={velFocus}
@@ -60,14 +60,16 @@ export default function VelocityField({
     };
 
     return (
-      <Box pt={1} pr={1}>
+      <Box pt={1}>
         <DropDown
           options={getOptions()}
-          testId={'velocityType'}
+          testId="velocityType"
           value={velType}
           setValue={setVelType}
+          disabled={getOptions().length < 2}
           label=""
           onFocus={velTypeFocus}
+          required
         />
       </Box>
     );
@@ -77,7 +79,7 @@ export default function VelocityField({
     return (
       <TextEntry
         label=""
-        testId={'velocityValue'}
+        testId="velocityValue"
         value={vel}
         setValue={setVel}
         suffix={VelocityUnitField()}
@@ -96,7 +98,7 @@ export default function VelocityField({
     return (
       <DropDown
         options={getOptions()}
-        testId={'velocityUnits'}
+        testId="velocityUnits"
         value={velUnit}
         setValue={setVelUnit}
         label=""
@@ -106,8 +108,9 @@ export default function VelocityField({
   };
 
   return (
-    <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <Grid
+        pb={1}
         spacing={0}
         container
         direction="row"
