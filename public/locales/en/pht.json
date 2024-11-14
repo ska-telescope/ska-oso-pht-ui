@@ -65,7 +65,6 @@
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
       "rangeError": "Bandwidth must be fully contained within the band",
-      "subBandError": "Sub-band bandwidth is too low - reduce number of sub-bands"
     }
   },
   "centralFrequency": {
