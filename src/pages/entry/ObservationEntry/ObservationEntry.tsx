@@ -218,7 +218,7 @@ export default function ObservationEntry() {
   };
 
   const validateId = () =>
-    getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : ''
+    getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
