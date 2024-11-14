@@ -12,7 +12,7 @@ import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
-import Target, { NEW_TARGET } from '../../../utils/types/target';
+import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 
 const DATA_GRID_HEIGHT = '90vh';
