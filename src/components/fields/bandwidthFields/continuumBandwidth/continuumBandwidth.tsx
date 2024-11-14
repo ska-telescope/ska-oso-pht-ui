@@ -1,7 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, BAND_LOW, FREQUENCY_UNITS, TYPE_CONTINUUM } from '../../../../utils/constants';
+import {
+  LAB_IS_BOLD,
+  LAB_POSITION,
+  BAND_LOW,
+  FREQUENCY_UNITS,
+  TYPE_CONTINUUM
+} from '../../../../utils/constants';
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
