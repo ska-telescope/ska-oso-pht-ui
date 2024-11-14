@@ -140,7 +140,7 @@ function verifyAddDataProductButton(isDisabled: boolean) {
 
 function verifyDataGridDataProducts(isEmpty: boolean) {
   if (isEmpty) {
-    cy.get('[data-testId="noDataProductsNotification"]');
+    cy.get('[data-testId="helpPanelId"]');
   }
 }
 

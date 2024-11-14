@@ -8,14 +8,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 Future
 -------
 
+* Landing page
+  - Time added to last update column
+  - Tidy up of the Proposal display modal
+  - Delete icon disabled whilst the API is fixed
+* Title page
+  - Changed some elements width/height
 * Team Page
   - Added checking that member will not be added if email is not sent successfully 
   - Updated team member field width and field name styles
 * General Page
    - Changed height of help component on the page
    - Changed order of Science Category and Abstract fields
-* Title page
-   - Changed some elements width/height
 * Target page
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
@@ -27,8 +31,11 @@ Future
       - Elevation ( minimum for LOW changed to 20 degrees )
       - Spectral Resolution 
       - Robust
+* Data Products
+  - Rebalanced the page and also the Add Data Products page to have standard field sizing
 * Utilities
   - Change the notifications so that the icons stay to the left of any text
+  - Validation also checks and reports the status of each page.
 
 0.5.1
 
@@ -56,6 +63,7 @@ Future
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
   - Updated so that previously saved values are not reset to default values upon editing the Observation set
+  - Ability to override the initial ID provided to a new Observation Set
 * Observation Entry
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values

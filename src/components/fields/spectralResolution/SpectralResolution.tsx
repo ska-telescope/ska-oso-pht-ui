@@ -8,6 +8,7 @@ import {
   TYPE_CONTINUUM
 } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
+import { Box } from '@mui/system';
 
 interface SpectralResolutionFieldProps {
   bandWidth: number;
@@ -89,15 +90,17 @@ export default function SpectralResolutionField({
   }, [bandWidth, bandWidthUnits, frequency, frequencyUnits, observingBand, observationType]);
 
   return (
-    <TextEntry
-      disabled
-      label={label}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
-      onFocus={onFocus}
-      testId="spectralResolution"
-      value={spectralResolution}
-    />
+    <Box pt={1}>
+      <TextEntry
+        disabled
+        label={label}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={labelWidth}
+        onFocus={onFocus}
+        testId="spectralResolution"
+        value={spectralResolution}
+      />
+    </Box>
   );
 }

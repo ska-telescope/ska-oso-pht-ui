@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
@@ -28,7 +28,10 @@ export default function GridObservationSummary({
     </Typography>
   );
 
-  const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
+  const display = inValue => <Box pt={1}>{inValue}</Box>;
+
+  const element = (inValue: number | string) =>
+    inValue === NOT_SPECIFIED ? emptyCell() : display(inValue);
 
   const elementArray = (inArr: Array<string>) => {
     return (
@@ -90,7 +93,8 @@ export default function GridObservationSummary({
     {
       field: 'id',
       renderHeader: () => headerDisplay('observations.id'),
-      disableClickEventBubbling: true
+      disableClickEventBubbling: true,
+      renderCell: e => element(e.row.id)
     },
     {
       field: 'elevation',
