@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
@@ -12,27 +12,21 @@ import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
-import Target, { NEW_TARGET } from '../../../utils/types/target';
+import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 
-const DATA_GRID_HEIGHT = 400;
+const DATA_GRID_HEIGHT = '90vh';
+const WRAPPER_HEIGHT = '80px';
+const WRAPPER_WIDTH = '500px';
+const FOOTER_SPACER = 130;
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [newTarget, setNewTarget] = React.useState(NEW_TARGET);
   const [rowTarget, setRowTarget] = React.useState(null);
   // const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
-
-  React.useEffect(() => {
-    initTarget();
-  }, []);
-
-  const initTarget = () => {
-    setNewTarget(NEW_TARGET);
-  };
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -114,17 +108,6 @@ export default function TargetListSection() {
     );
   };
 
-  const alertEditContent = () => {
-    return (
-      <TargetEntry
-        id={rowTarget.id}
-        raType={RA_TYPE_EQUATORIAL}
-        setTarget={setRowTarget}
-        target={rowTarget}
-      />
-    );
-  };
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -141,21 +124,25 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const RefOptions = () => {
-    const GRID_OFFSET = 2;
-    const LAB_WIDTH = 7;
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
+
+  const emptyField = () => {
+    return <Grid item>{fieldWrapper()}</Grid>;
+  };
+
+  const referenceCoordinatesField = () => {
     return (
-      <>
-        <Grid item md={GRID_OFFSET} xs={0}></Grid>
-        <Grid item md={5} lg={3}>
-          <ReferenceCoordinatesField
-            labelWidth={LAB_WIDTH}
-            setValue={null}
-            value={RA_TYPE_EQUATORIAL}
-          />
-        </Grid>
-        <Grid item md={GRID_OFFSET} xs={0}></Grid>
-      </>
+      <Grid item>
+        {fieldWrapper(
+          <Box pt={1}>
+            <ReferenceCoordinatesField labelWidth={6} setValue={null} value={RA_TYPE_EQUATORIAL} />
+          </Box>
+        )}
+      </Grid>
     );
   };
 
@@ -163,6 +150,7 @@ export default function TargetListSection() {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
         <Grid item md={12} lg={5} order={{ md: 2, lg: 1 }}>
+          {emptyField()}
           <GridTargets
             deleteClicked={deleteIconClicked}
             editClicked={editIconClicked}
@@ -172,40 +160,33 @@ export default function TargetListSection() {
           />
         </Grid>
         <Grid item md={12} lg={6} order={{ md: 1, lg: 2 }}>
+          {referenceCoordinatesField()}
           <Box sx={{ width: '100%', border: '1px solid grey' }}>
-            <Box>
-              <Tabs
-                textColor="secondary"
-                indicatorColor="secondary"
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab
-                  label={t('addTarget.label')}
-                  {...a11yProps(0)}
-                  sx={{ border: '1px solid grey' }}
-                />
-                <Tab
-                  label={t('importFromFile.label')}
-                  {...a11yProps(1)}
-                  sx={{ border: '1px solid grey' }}
-                />
-                <Tab
-                  label={t('spatialImaging.label')}
-                  {...a11yProps(2)}
-                  sx={{ border: '1px solid grey' }}
-                  disabled
-                />
-              </Tabs>
-            </Box>
-            {value === 0 && (
-              <TargetEntry
-                raType={RA_TYPE_EQUATORIAL}
-                setTarget={setNewTarget}
-                target={newTarget}
+            <Tabs
+              textColor="secondary"
+              indicatorColor="secondary"
+              value={value}
+              variant="fullWidth"
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab
+                label={t('addTarget.label')}
+                {...a11yProps(0)}
+                sx={{ border: '1px solid grey', width: '100%' }}
               />
-            )}
+              <Tab
+                label={t('importFromFile.label')}
+                {...a11yProps(1)}
+                sx={{ border: '1px solid grey', width: '100%' }}
+              />
+              <Tab
+                label={t('spatialImaging.label')}
+                {...a11yProps(2)}
+                sx={{ border: '1px solid grey', width: '100%' }}
+              />
+            </Tabs>
+            {value === 0 && <TargetEntry raType={RA_TYPE_EQUATORIAL} />}
             {value === 1 && <TargetFileImport raType={RA_TYPE_EQUATORIAL} />}
             {value === 2 && <SpatialImaging />}
           </Box>
@@ -216,8 +197,8 @@ export default function TargetListSection() {
 
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-      {RefOptions()}
       {displayRow1()}
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
         <AlertDialog
           open={openDeleteDialog}
@@ -236,7 +217,7 @@ export default function TargetListSection() {
           onDialogResponse={editConfirmed}
           title="editTarget.label"
         >
-          {alertEditContent()}
+          <TargetEntry raType={RA_TYPE_EQUATORIAL} setTarget={setRowTarget} target={rowTarget} />
         </AlertDialog>
       )}
     </Grid>

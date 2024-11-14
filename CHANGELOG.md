@@ -24,6 +24,8 @@ Future
   - Target Grid moved into it's own component
   - Fixed issue where navigation thru the target entry would cause the entire page to re-render
   - Added spacing to the Target/Observation header
+  - Standardized field sizes
+  - Various visual updates and tweaks
 * Observation page
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
@@ -35,6 +37,7 @@ Future
   - Rebalanced the page and also the Add Data Products page to have standard field sizing
 * Utilities
   - Change the notifications so that the icons stay to the left of any text
+  - Changed the Error status to show an exclamation mark as opposed to a cross.
   - Validation also checks and reports the status of each page.
 
 0.5.1
