@@ -41,9 +41,6 @@ export const presentValue = (inValue: string | number, eLabel?, fractionLength =
     }
   }
   const result = Number(inValue);
-  if (eLabel === 'continuumIntegrationTime' || eLabel === 'spectralIntegrationTime') {
-    return result;
-  }
   return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 
