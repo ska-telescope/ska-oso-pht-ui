@@ -56,8 +56,12 @@ import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
+/*
 import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
 import BandwidthField from '../../../components/fields/bandwidth/bandwidth';
+*/
+import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;

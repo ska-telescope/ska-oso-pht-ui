@@ -60,7 +60,13 @@
   },
   "bandwidth": {
     "help": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-    "label": "Bandwidth"
+    "label": "Bandwidth",
+    "range": {
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "subBandError": "Sub-band bandwidth is too low - reduce number of sub-bands"
+    }
   },
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
