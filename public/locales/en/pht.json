@@ -301,6 +301,12 @@
     "3": "Mid Band 5a (4.6 - 8.5 GHz)",
     "4": "Mid Band 5b (8.3 - 15.4 GHz)"
   },
+  "observationId": {
+    "label": "Observation Id",
+    "help": "A default identifier for the observation has been provided, however this can be overridden.  Note that this is a unique identifier so cannot be changed ast a later date",
+    "short": "Id",
+    "notUnique": "Another observation with this unique identifier exists"
+  },
   "observations": {
     "label": "Observations",
     "single": "Observation",
