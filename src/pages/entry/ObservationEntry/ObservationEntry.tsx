@@ -35,7 +35,6 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
   FREQUENCY_UNITS,
-  FREQUENCY_KHZ,
   FREQUENCY_MHZ,
   FREQUENCY_GHZ
 } from '../../../utils/constants';
@@ -357,9 +356,7 @@ export default function ObservationEntry() {
     </Box>
   );
 
-  const emptyField = () => {
-    return <Grid item>{fieldWrapper()}</Grid>;
-  };
+  const emptyField = () => <></>;
 
   /******************************************************/
 
@@ -377,102 +374,82 @@ export default function ObservationEntry() {
       return results;
     };
 
-    return (
-      <Grid item>
-        {fieldDropdown(
-          false,
-          'tapering',
-          BOTTOM_LABEL_WIDTH,
-          getOptions(),
-          true,
-          setTapering,
-          null,
-          tapering
-        )}
-      </Grid>
+    return fieldDropdown(
+      false,
+      'tapering',
+      BOTTOM_LABEL_WIDTH,
+      getOptions(),
+      true,
+      setTapering,
+      null,
+      tapering
     );
   };
 
   const idField = () => {
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Box pt={1}>
-            <TextEntry
-              disabled={isEdit()}
-              errorText={isEdit() ? '' : validateId()}
-              label={t('observationId.label')}
-              labelBold={LAB_IS_BOLD}
-              labelPosition={LAB_POSITION}
-              labelWidth={TOP_LABEL_WIDTH}
-              onFocus={() => helpComponent(t('observationId.help'))}
-              required
-              testId="observationId"
-              value={myObsId}
-              setValue={setMyObsId}
-            />
-          </Box>
-        )}
-      </Grid>
+    return fieldWrapper(
+      <Box pt={1}>
+        <TextEntry
+          disabled={isEdit()}
+          errorText={isEdit() ? '' : validateId()}
+          label={t('observationId.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={TOP_LABEL_WIDTH}
+          onFocus={() => helpComponent(t('observationId.help'))}
+          required
+          testId="observationId"
+          value={myObsId}
+          setValue={setMyObsId}
+        />
+      </Box>
     );
   };
 
-  const groupObservationsField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <GroupObservationsField
-          labelWidth={TOP_LABEL_WIDTH}
-          onFocus={() => helpComponent(t('groupObservations.help'))}
-          setValue={setGroupObservation}
-          value={groupObservation}
-          obsId={myObsId}
-        />
-      )}
-    </Grid>
-  );
+  const groupObservationsField = () =>
+    fieldWrapper(
+      <GroupObservationsField
+        labelWidth={TOP_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('groupObservations.help'))}
+        setValue={setGroupObservation}
+        value={groupObservation}
+        obsId={myObsId}
+      />
+    );
 
-  const observationsBandField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <ObservingBandField
-          widthLabel={TOP_LABEL_WIDTH}
-          required
-          value={observingBand}
-          setValue={setTheObservingBand}
-        />
-      )}
-    </Grid>
-  );
+  const observationsBandField = () =>
+    fieldWrapper(
+      <ObservingBandField
+        widthLabel={TOP_LABEL_WIDTH}
+        required
+        value={observingBand}
+        setValue={setTheObservingBand}
+      />
+    );
 
-  const subArrayField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <SubArrayField
-          observingBand={observingBand}
-          required
-          widthLabel={TOP_LABEL_WIDTH}
-          telescope={telescope()}
-          value={subarrayConfig}
-          setValue={setTheSubarrayConfig}
-        />
-      )}
-    </Grid>
-  );
+  const subArrayField = () =>
+    fieldWrapper(
+      <SubArrayField
+        observingBand={observingBand}
+        required
+        widthLabel={TOP_LABEL_WIDTH}
+        telescope={telescope()}
+        value={subarrayConfig}
+        setValue={setTheSubarrayConfig}
+      />
+    );
 
-  const numStationsField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <NumStations
-          disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
-          widthLabel={TOP_LABEL_WIDTH}
-          setValue={setNumOfStations}
-          value={numOfStations}
-          rangeLower={Number(t('numStations.range.lower'))}
-          rangeUpper={Number(t('numStations.range.upper'))}
-        />
-      )}
-    </Grid>
-  );
+  const numStationsField = () =>
+    fieldWrapper(
+      <NumStations
+        disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
+        widthLabel={TOP_LABEL_WIDTH}
+        setValue={setNumOfStations}
+        value={numOfStations}
+        rangeLower={Number(t('numStations.range.lower'))}
+        rangeUpper={Number(t('numStations.range.upper'))}
+      />
+    );
 
   const antennasFields = () => {
     const NumOf15mAntennasField = () => {
@@ -533,50 +510,39 @@ export default function ObservationEntry() {
       );
     };
 
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Grid container direction="row">
-            <Grid pt={1} item xs={TOP_LABEL_WIDTH}>
-              <InputLabel
-                disabled={subarrayConfig !== 20}
-                shrink={false}
-                htmlFor="numOf15mAntennas"
-              >
-                <Typography
-                  sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
-                >
-                  {t('numOfAntennas.label')}
-                </Typography>
-              </InputLabel>
-            </Grid>
-            <Grid item xs={3}>
-              {NumOf15mAntennasField()}
-            </Grid>
-            <Grid item xs={3}>
-              {numOf13mAntennasField()}
-            </Grid>
-          </Grid>
-        )}
+    return fieldWrapper(
+      <Grid container direction="row">
+        <Grid pt={1} item xs={TOP_LABEL_WIDTH}>
+          <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
+            <Typography
+              sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
+            >
+              {t('numOfAntennas.label')}
+            </Typography>
+          </InputLabel>
+        </Grid>
+        <Grid item xs={3}>
+          {NumOf15mAntennasField()}
+        </Grid>
+        <Grid item xs={3}>
+          {numOf13mAntennasField()}
+        </Grid>
       </Grid>
     );
   };
 
-  const elevationField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <ElevationField
-          isLow={isLow()}
-          label={t('elevation.label')}
-          widthLabel={TOP_LABEL_WIDTH}
-          onFocus={() => helpComponent(t('elevation.help'))}
-          setValue={setElevation}
-          testId="elevation"
-          value={elevation}
-        />
-      )}
-    </Grid>
-  );
+  const elevationField = () =>
+    fieldWrapper(
+      <ElevationField
+        isLow={isLow()}
+        label={t('elevation.label')}
+        widthLabel={TOP_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('elevation.help'))}
+        setValue={setElevation}
+        testId="elevation"
+        value={elevation}
+      />
+    );
 
   const weatherField = () => {
     const errorMessage = () => {
@@ -587,45 +553,38 @@ export default function ObservationEntry() {
 
     const weatherUnitsField = () => t('weather.units');
 
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Box pt={1}>
-            <NumberEntry
-              disabled={isLow()}
-              errorText={errorMessage()}
-              label={t('weather.label')}
-              labelBold={LAB_IS_BOLD}
-              labelPosition={LAB_POSITION}
-              labelWidth={TOP_LABEL_WIDTH}
-              testId="weather"
-              value={weather}
-              setValue={setWeather}
-              onFocus={() => helpComponent(t('weather.help'))}
-              suffix={weatherUnitsField()}
-            />
-          </Box>
-        )}
-      </Grid>
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          disabled={isLow()}
+          errorText={errorMessage()}
+          label={t('weather.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={TOP_LABEL_WIDTH}
+          testId="weather"
+          value={weather}
+          setValue={setWeather}
+          onFocus={() => helpComponent(t('weather.help'))}
+          suffix={weatherUnitsField()}
+        />
+      </Box>
     );
   };
 
   /**************************************************************/
 
-  const observationTypeField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <ObservationTypeField
-          disabled={isContinuumOnly()}
-          isContinuumOnly={isContinuumOnly()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
-          required
-          value={observationType}
-          setValue={setObservationType}
-        />
-      )}
-    </Grid>
-  );
+  const observationTypeField = () =>
+    fieldWrapper(
+      <ObservationTypeField
+        disabled={isContinuumOnly()}
+        isContinuumOnly={isContinuumOnly()}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+        required
+        value={observationType}
+        setValue={setObservationType}
+      />
+    );
 
   const suppliedField = () => {
     const suppliedTypeField = () => {
@@ -683,18 +642,14 @@ export default function ObservationEntry() {
       );
     };
 
-    return (
-      <Grid item>
-        {suppliedWrapper(
-          <Grid pt={0} m={0} container>
-            <Grid item pt={1} pr={1} md={BOTTOM_LABEL_WIDTH}>
-              {suppliedTypeField()}
-            </Grid>
-            <Grid item pt={0} md={12 - BOTTOM_LABEL_WIDTH}>
-              {suppliedValueField()}
-            </Grid>
-          </Grid>
-        )}
+    return suppliedWrapper(
+      <Grid pt={0} m={0} container>
+        <Grid item pt={1} pr={1} md={BOTTOM_LABEL_WIDTH}>
+          {suppliedTypeField()}
+        </Grid>
+        <Grid item pt={0} md={12 - BOTTOM_LABEL_WIDTH}>
+          {suppliedValueField()}
+        </Grid>
       </Grid>
     );
   };
@@ -705,26 +660,23 @@ export default function ObservationEntry() {
       Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
         ? t('centralFrequency.range.error')
         : '';
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Box pt={1}>
-            <NumberEntry
-              label={t('centralFrequency.label')}
-              labelBold={LAB_IS_BOLD}
-              labelPosition={LAB_POSITION}
-              labelWidth={BOTTOM_LABEL_WIDTH}
-              testId="centralFrequency"
-              value={centralFrequency}
-              setValue={setCentralFrequency}
-              onFocus={() => helpComponent(t('centralFrequency.help'))}
-              required
-              suffix={centralFrequencyUnitsField()}
-              errorText={errorMessage()}
-            />
-          </Box>
-        )}
-      </Grid>
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('centralFrequency.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="centralFrequency"
+          value={centralFrequency}
+          setValue={setCentralFrequency}
+          onFocus={() => helpComponent(t('centralFrequency.help'))}
+          required
+          suffix={centralFrequencyUnitsField()}
+          errorText={errorMessage()}
+        />
+      </Box>
     );
   };
 
@@ -744,125 +696,101 @@ export default function ObservationEntry() {
         />
       );
     };
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <ContinuumBandwidthField
-            labelWidth={BOTTOM_LABEL_WIDTH}
-            onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-            setValue={setContinuumBandwidth}
-            value={continuumBandwidth}
-            suffix={continuumBandwidthUnitsField()}
-            telescope={telescope()}
-            observingBand={observingBand}
-            continuumBandwidthUnits={continuumBandwidthUnits}
-            centralFrequency={centralFrequency}
-            centralFrequencyUnits={centralFrequencyUnits}
-            subarrayConfig={subarrayConfig}
-          />
-        )}
-      </Grid>
+    return fieldWrapper(
+      <ContinuumBandwidthField
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+        setValue={setContinuumBandwidth}
+        value={continuumBandwidth}
+        suffix={continuumBandwidthUnitsField()}
+        telescope={telescope()}
+        observingBand={observingBand}
+        continuumBandwidthUnits={continuumBandwidthUnits}
+        centralFrequency={centralFrequency}
+        centralFrequencyUnits={centralFrequencyUnits}
+        subarrayConfig={subarrayConfig}
+      />
     );
   };
 
-  const bandwidthField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <BandwidthField
-          onFocus={() => helpComponent(t('bandwidth.help'))}
-          required
-          setValue={setBandwidth}
-          testId="bandwidth"
-          value={bandwidth}
-          telescope={telescope()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
-        />
-      )}
-    </Grid>
-  );
+  const bandwidthField = () =>
+    fieldWrapper(
+      <BandwidthField
+        onFocus={() => helpComponent(t('bandwidth.help'))}
+        required
+        setValue={setBandwidth}
+        testId="bandwidth"
+        value={bandwidth}
+        telescope={telescope()}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+      />
+    );
 
-  const spectralResolutionField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <SpectralResolutionField
-          bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
-          bandWidthUnits={
-            isContinuum() ? continuumBandwidthUnits : isLow() ? FREQUENCY_KHZ : FREQUENCY_MHZ
-          }
-          frequency={centralFrequency}
-          frequencyUnits={centralFrequencyUnits}
-          label={t('spectralResolution.label')}
-          labelWidth={BOTTOM_LABEL_WIDTH}
-          observingBand={observingBand}
-          observationType={observationType}
-          onFocus={() => helpComponent(t('spectralResolution.help'))}
-          setValue={setSpectralResolution}
-        />
-      )}
-    </Grid>
-  );
+  const spectralResolutionField = () =>
+    fieldWrapper(
+      <SpectralResolutionField
+        bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
+        bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
+        frequency={centralFrequency}
+        frequencyUnits={centralFrequencyUnits}
+        label={t('spectralResolution.label')}
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        observingBand={observingBand}
+        observationType={observationType}
+        onFocus={() => helpComponent(t('spectralResolution.help'))}
+        setValue={setSpectralResolution}
+      />
+    );
 
-  const spectralAveragingField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <SpectralAveragingField
-          isLow={isLow()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
-          value={spectralAveraging}
-          setValue={setSpectralAveraging}
-          subarray={subarrayConfig}
-          type={observationType}
-        />
-      )}
-    </Grid>
-  );
+  const spectralAveragingField = () =>
+    fieldWrapper(
+      <SpectralAveragingField
+        isLow={isLow()}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+        value={spectralAveraging}
+        setValue={setSpectralAveraging}
+        subarray={subarrayConfig}
+        type={observationType}
+      />
+    );
 
-  const effectiveResolutionField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <EffectiveResolutionField
-          label={t('effectiveResolution.label')}
-          labelWidth={BOTTOM_LABEL_WIDTH}
-          frequency={centralFrequency}
-          frequencyUnits={centralFrequencyUnits}
-          spectralAveraging={spectralAveraging}
-          spectralResolution={spectralResolution}
-          observingBand={observingBand}
-          observationType={observationType}
-          onFocus={() => helpComponent(t('effectiveResolution.help'))}
-          setValue={setEffectiveResolution}
-        />
-      )}
-    </Grid>
-  );
+  const effectiveResolutionField = () =>
+    fieldWrapper(
+      <EffectiveResolutionField
+        label={t('effectiveResolution.label')}
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        frequency={centralFrequency}
+        frequencyUnits={centralFrequencyUnits}
+        spectralAveraging={spectralAveraging}
+        spectralResolution={spectralResolution}
+        observingBand={observingBand}
+        observationType={observationType}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        setValue={setEffectiveResolution}
+      />
+    );
 
-  const imageWeightingField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <ImageWeightingField
-          labelWidth={BOTTOM_LABEL_WIDTH}
-          onFocus={() => helpComponent(t('imageWeighting.help'))}
-          setValue={setImageWeighting}
-          value={imageWeighting}
-        />
-      )}
-    </Grid>
-  );
+  const imageWeightingField = () =>
+    fieldWrapper(
+      <ImageWeightingField
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        setValue={setImageWeighting}
+        value={imageWeighting}
+      />
+    );
 
-  const robustField = () => (
-    <Grid item>
-      {fieldWrapper(
-        <RobustField
-          label={t('robust.label')}
-          setValue={setRobust}
-          testId="robust"
-          value={robust}
-          widthButton={WRAPPER_WIDTH_BUTTON}
-          widthLabel={BOTTOM_LABEL_WIDTH}
-        />
-      )}
-    </Grid>
-  );
+  const robustField = () =>
+    fieldWrapper(
+      <RobustField
+        label={t('robust.label')}
+        setValue={setRobust}
+        testId="robust"
+        value={robust}
+        widthButton={WRAPPER_WIDTH_BUTTON}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+      />
+    );
 
   const fieldDropdown = (
     disabled: boolean,
@@ -925,25 +853,21 @@ export default function ObservationEntry() {
       setSubBands(Number(Math.abs(e).toFixed(0)));
     };
 
-    return (
-      <Grid item>
-        {fieldWrapper(
-          <Box pt={1}>
-            <NumberEntry
-              errorText={errorMessage()}
-              label={t('subBands.label')}
-              labelBold={LAB_IS_BOLD}
-              labelPosition={LAB_POSITION}
-              labelWidth={BOTTOM_LABEL_WIDTH}
-              testId="subBands"
-              value={subBands}
-              setValue={validate}
-              onFocus={() => helpComponent(t('subBands.help'))}
-              required
-            />
-          </Box>
-        )}
-      </Grid>
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          errorText={errorMessage()}
+          label={t('subBands.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="subBands"
+          value={subBands}
+          setValue={validate}
+          onFocus={() => helpComponent(t('subBands.help'))}
+          required
+        />
+      </Box>
     );
   };
 
@@ -1062,26 +986,63 @@ export default function ObservationEntry() {
             spacing={1}
             justifyContent="space-between"
           >
-            {idField()}
-            {emptyField()}
-            {groupObservationsField()}
-            {weatherField()}
-            {observationsBandField()}
-            {elevationField()}
-            {subArrayField()}
-            {isLow() ? numStationsField() : antennasFields()}
+            <Grid item md={12} lg={6}>
+              {idField()}
+            </Grid>
+            <Grid item lg={6}></Grid>
+            <Grid item md={12} lg={6}>
+              {groupObservationsField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {isLow() ? emptyField() : weatherField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {observationsBandField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {elevationField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {subArrayField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {isLow() ? numStationsField() : antennasFields()}
+            </Grid>
 
-            {observationTypeField()}
-            {suppliedField()}
-            {centralFrequencyField()}
-            {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-            {spectralResolutionField()}
-            {spectralAveragingField()}
-            {effectiveResolutionField()}
-            {isContinuum() ? SubBandsField() : emptyField()}
-            {imageWeightingField()}
-            {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
-            {isLow() ? emptyField() : taperingField()}
+            <Grid item md={12} lg={6}>
+              {observationTypeField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {suppliedField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {' '}
+              {centralFrequencyField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {spectralResolutionField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {spectralAveragingField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {effectiveResolutionField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {isContinuum() ? SubBandsField() : emptyField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {imageWeightingField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
+            </Grid>
+            <Grid item md={12} lg={6}>
+              {isLow() ? emptyField() : taperingField()}
+            </Grid>
           </Grid>
         </Grid>
         <Grid item md={12} lg={3}>
