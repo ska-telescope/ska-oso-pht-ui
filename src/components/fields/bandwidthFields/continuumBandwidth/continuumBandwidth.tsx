@@ -111,7 +111,13 @@ export default function ContinuumBandwidthField({
     // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
     // sub-bands should be greater than the minimum allowed bandwidth
     // Mid only
+    console.log('scaledBandwidth / nSubBands', scaledBandwidth / nSubBands);
+    console.log('scaledBandwidth', scaledBandwidth);
+    console.log('nSubBands', nSubBands);
+    console.log('smaller than ', minimumChannelWidthHz);
     if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
+      console.log('scaledBandwidth / nSubBands', scaledBandwidth / nSubBands);
+      console.log('smaller than ', minimumChannelWidthHz);
       return t('bandwidth.range.subBandError');
     }
 

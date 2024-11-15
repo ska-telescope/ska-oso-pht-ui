@@ -710,6 +710,7 @@ export default function ObservationEntry() {
         centralFrequency={centralFrequency}
         centralFrequencyUnits={centralFrequencyUnits}
         subarrayConfig={subarrayConfig}
+        nSubBands={subBands}
       />
     );
   };

@@ -321,8 +321,8 @@ function verifyImageWeighting() {
   cy.get('[data-testid="helpPanelId"]').contains('imageWeighting.help');
 }
 
-function verifySubBands() {
-  cy.get('[id="subBands"]').should('have.value', 1);
+function verifySubBands(value:number) {
+  cy.get('[id="subBands"]').should('have.value', value);
   cy.get('[id="subBands"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('subBands.help');
 }
@@ -488,6 +488,23 @@ function verifyContinuumBandwidthRangeErrorMidAA4() {
   cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'frequencyUnits');
   verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('0.435');
+  verifyContinuumBandwidthValue('0.435');
+}
+
+function verifyContinuumBandwidthSubBandErrorMidAA4() {
+  verifyContinuumBandwidthValue('0.435');
+  verifyNoContinuumBandwidthErrors();
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'continuumBandwidthUnits');
+  verifySubBands(1);
+  cy.get('[id="subBands"]').clear().click()
+  .type('{home}33');;
+  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.subBandError');
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="subBands"]').clear().click()
+  .type('{home}1');
 }
 
 function verifyZoomBandwidthRangeErrorLowAA4() {
@@ -589,7 +606,7 @@ describe('<ObservationEntry />', () => {
     enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb1SubArrayValue20();
     verifyTapering(0, 'tapering.0');
-    verifySubBands();
+    verifySubBands(1);
     verifyImageWeighting();
   });
 
@@ -610,7 +627,7 @@ describe('<ObservationEntry />', () => {
     enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb5aSubArrayValue20();
     verifyTapering(0, 'tapering.0');
-    verifySubBands();
+    verifySubBands(1);
     verifyImageWeighting();
   });
 
@@ -631,7 +648,7 @@ describe('<ObservationEntry />', () => {
     enterSpectralAveragingMid(1);
     verifyEffectiveResolutionContinuumOb5bSubArrayValue20();
     verifyTapering(0, 'tapering.0');
-    verifySubBands();
+    verifySubBands(1);
     verifyImageWeighting();
   });
 
@@ -694,7 +711,7 @@ describe('<ObservationEntry />', () => {
     verifySpectralResolutionLow();
     verifySpectralAveragingLow(1);
     verifyEffectiveResolutionContinuumLowBand();
-    verifySubBands();
+    verifySubBands(1);
     verifyImageWeighting();
   });
 
@@ -789,6 +806,7 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(OB_SUBARRAY_AA4);
     verifyContinuumBandwidthMinimumChannelWidthMidAA4();
     verifyContinuumBandwidthRangeErrorMidAA4();
+    verifyContinuumBandwidthSubBandErrorMidAA4();
   });
 
   it('Verify Bandwidth cont Max Exceeded for observation type continuum and Array Config Mid 2 AA1', () => {
@@ -808,6 +826,5 @@ describe('<ObservationEntry />', () => {
     verifyContinuumBandwidthValue('0.8');
     verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2();
   });
-
 
 });
