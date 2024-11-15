@@ -48,8 +48,6 @@ export default function LandingPage() {
     updateAppContent2
   } = storageObject.useStore();
 
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
-
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [proposals, setProposals] = React.useState([]);
@@ -203,7 +201,8 @@ export default function LandingPage() {
   const colId = {
     field: 'id',
     headerName: t('proposalId.label'),
-    flex: 1.5
+    flex: 1,
+    minWidth: 200
   };
   const colType = {
     field: 'proposalType',
@@ -220,12 +219,13 @@ export default function LandingPage() {
     field: 'title',
     headerName: t('title.label'),
     flex: 2.5,
+    minWidth: 400,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    width: 100,
+    width: 250,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -305,7 +305,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title={LG() ? 'addProposal.short' : 'addProposal.label'}
+      title={'addProposal.label'}
       toolTip="addProposal.toolTip"
     />
   );
