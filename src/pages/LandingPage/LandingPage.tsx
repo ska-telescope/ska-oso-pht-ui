@@ -2,8 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -365,11 +363,13 @@ export default function LandingPage() {
         <Grid item xs={12}>
           {pageDescription()}
         </Grid>
-        <Grid item>{addProposalButton()}</Grid>
-        <Grid item xs={6} lg={2}>
+        <Grid item p={2} sm={4} md={3} lg={2}>
+          {addProposalButton()}
+        </Grid>
+        <Grid item p={2} sm={4} md={4} lg={4}>
           {searchDropdown()}
         </Grid>
-        <Grid item xs={12} lg={4} mt={-1}>
+        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
           {searchEntryField('searchId')}
         </Grid>
         <Grid item xs={12} pt={1}>
