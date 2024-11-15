@@ -7,12 +7,15 @@ import ObservationEntry from './ObservationEntry';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import {
   BAND_1,
+  BAND_2,
+  BAND_5B,
   BAND_LOW,
   BANDWIDTH_TELESCOPE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
   OB_SUBARRAY_AA05,
+  OB_SUBARRAY_AA1,
   OB_SUBARRAY_AA2,
   OB_SUBARRAY_AA4,
   TYPE_CONTINUUM,
@@ -470,7 +473,6 @@ function verifyContinuumBandwidthRangeErrorLowAA4() {
   verifyNoContinuumBandwidthErrors();
 }
 
-// HERE
 function verifyContinuumBandwidthRangeErrorMidAA4() {
   verifyContinuumBandwidthValue('0.435');
   verifyNoContinuumBandwidthErrors();
@@ -532,6 +534,32 @@ function verifyContinuumBandwidthcontMaximumExceededLowAA2() {
   );
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('150');
+  verifyNoContinuumBandwidthErrors();
+}
+
+function verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2() {
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('1');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains(
+    'bandwidth.range.contMaximumExceededError'
+  );
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('0.5');
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('0.435');
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('10');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains(
+    'bandwidth.range.contMaximumExceededError'
+  );
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'continuumBandwidthUnits');
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('0.435');
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
   verifyNoContinuumBandwidthErrors();
 }
 
@@ -762,5 +790,24 @@ describe('<ObservationEntry />', () => {
     verifyContinuumBandwidthMinimumChannelWidthMidAA4();
     verifyContinuumBandwidthRangeErrorMidAA4();
   });
+
+  it('Verify Bandwidth cont Max Exceeded for observation type continuum and Array Config Mid 2 AA1', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(BAND_2);
+    verifySubArrayConfiguration(OB_SUBARRAY_AA1);
+    verifyContinuumBandwidthValue('0.8');
+    verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2();
+  });
+
+  it('Verify Bandwidth cont Max Exceeded for observation type continuum and Array Config Mid 5b AA2', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(BAND_5B);
+    verifySubArrayConfiguration(OB_SUBARRAY_AA2);
+    verifyContinuumBandwidthValue('0.8');
+    verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2();
+  });
+
 
 });
