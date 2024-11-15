@@ -29,7 +29,7 @@ Future
 * Observation page
   - Set frequency and continuum bandwidth units to default when switching band if unmodified
   - Fixed default continuum bandwidth values missing for band5a and band5b
-  - Added Continuum Bandwidth validation for Mid and Low
+  - Added Continuum and Zoom Bandwidth validation for Mid and Low
   - Changed Continuum Bandwidth units and frequency units to a disabled dropdown for Low
   - Fixed Sensitivity Calculator results for Mid AA05 observations
   - Fields moved into a self-contained component
