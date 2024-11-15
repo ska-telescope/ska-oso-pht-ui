@@ -13,7 +13,7 @@ import VelocityField from '../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
-import { LAB_POSITION, VELOCITY_TYPE } from '../../../utils/constants';
+import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
 
 interface TargetEntryProps {
   raType: number;
@@ -25,7 +25,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const { t } = useTranslation('pht');
 
   const LAB_WIDTH = 5;
-  const WRAPPER_HEIGHT = '80px';
   const WRAPPER_WIDTH = '450px';
   const HELP_MAX_HEIGHT = '40vh';
 
@@ -289,13 +288,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       spacing={1}
     >
       <Grid item xs={7}>
-        <Grid
-          container
-          direction="column"
-          alignItems="stretch"
-          justifyContent="flex-start"
-          spacing={1}
-        >
+        <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
           <Grid item>{nameField()}</Grid>
           <Grid item>{skyDirection1Field()}</Grid>
           <Grid item>{skyDirection2Field()}</Grid>
