@@ -168,52 +168,16 @@ function verifyContinuumBandwidthOrFrequencyUnits(unitsLabel: string, unitsField
   cy.get(`[data-testid="${unitsField}"]`).contains(unitsLabel);
 }
 
-function verifySwitchFrequencyUnitsFromMHzToGHz() {
-  cy.get('[data-testid="frequencyUnits"]').contains('MHz');
-  cy.get('[data-testid="frequencyUnits"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="frequencyUnits"]').contains('GHz');
-  cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
-}
-function verifySwitchContinuumBandwidthUnitsFromGHzToHz() {
-  cy.get('[data-testid="continuumBandwidthUnits"]').contains('GHz');
-  cy.get('[data-testid="continuumBandwidthUnits"]').click();
-  cy.get('[data-value="4"]').click();
-  cy.get('[data-testid="continuumBandwidthUnits"]').contains('Hz');
-  cy.get('[data-testid="helpPanelId"]').contains('continuumBandwidthUnits.help');
-}
-
-function verifySwitchBandwidthOrFrequencyUnits(unitsValue:number, unitsLabel:string, field:string) {
+function verifySwitchBandwidthOrFrequencyUnits(
+  unitsValue: number,
+  unitsLabel: string,
+  field: string
+) {
   cy.get(`[data-testid="${field}"]`).click();
   cy.get(`[data-value="${unitsValue}"]`).click();
   cy.get(`[data-testid="${field}"]`).contains(unitsLabel);
   cy.get('[data-testid="helpPanelId"]').contains('frequencyUnits.help');
 }
-
-
-/*
-function verifyContinuumBandwidthContinuumOb1SubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 0.435);
-  cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
-}
-*/
-
-/*
-function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 3.9);
-  cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
-}
-*/
-
-/*
-function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
-  cy.get('[id="continuumBandwidth"]').should('have.value', 5);
-  cy.get('[id="continuumBandwidth"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
-}
-  */
 
 function verifyContinuumBandwidthValue(content) {
   cy.get('[id="continuumBandwidth"]').should('have.value', content);
@@ -221,11 +185,8 @@ function verifyContinuumBandwidthValue(content) {
   cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
 
-function verifyBandwidthZoomLowBand() {
-  cy.get('[id="bandwidth"]').contains('24.4 kHz');
-  cy.get('[id="bandwidth"]').click();
-  cy.get('[data-value="1"]').click();
-  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_ZOOM}`);
+function verifyBandwidthZoom(contentLabel: string) {
+  cy.get('[id="bandwidth"]').contains(contentLabel);
 }
 
 function verifyFrequencyUnitsLow() {
@@ -321,7 +282,7 @@ function verifyImageWeighting() {
   cy.get('[data-testid="helpPanelId"]').contains('imageWeighting.help');
 }
 
-function verifySubBands(value:number) {
+function verifySubBands(value: number) {
   cy.get('[id="subBands"]').should('have.value', value);
   cy.get('[id="subBands"]').click();
   cy.get('[data-testid="helpPanelId"]').contains('subBands.help');
@@ -412,82 +373,76 @@ function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
   verifyEffectiveResolution('1.68 kHz (42.5 m/s)');
 }
 
-function verifyNoContinuumBandwidthErrors() {
-  cy.get('[id="continuumBandwidth-helper-text"]').should('not.exist');
+function verifyBandwidthNoErrors(field: string) {
+  cy.get(`[id="${field}-helper-text"]`).should('not.exist');
 }
 
-function verifyNoZoomBandwidthErrors() {
-  cy.get('[id="bandWidth-helper-text"]').should('not.exist');
+function verifyBandwidthError(field: string, error: string) {
+  cy.get(`[id="${field}-helper-text"]`).contains(`bandwidth.range.${error}`);
 }
 
 function verifyContinuumBandwidthMinimumChannelWidthLowAA4() {
   verifyContinuumBandwidthValue('300');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.001');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.minimumChannelWidthError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'minimumChannelWidthError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('300');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 function verifyContinuumBandwidthMinimumChannelWidthMidAA4() {
   verifyContinuumBandwidthValue('0.435');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.000005');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.minimumChannelWidthError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'minimumChannelWidthError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.3');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.435');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_HZ, 'Hz', 'continuumBandwidthUnits');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.minimumChannelWidthError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'minimumChannelWidthError');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 function verifyContinuumBandwidthRangeErrorLowAA4() {
   verifyContinuumBandwidthValue('300');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('3000');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('continuumBandwidth', 'rangeError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('300');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   verifyCentralFrequencyContinuumLowBand();
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('360');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('continuumBandwidth', 'rangeError');
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('200');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 function verifyContinuumBandwidthRangeErrorMidAA4() {
   verifyContinuumBandwidthValue('0.435');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('2');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('continuumBandwidth', 'rangeError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.09');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   verifyCentralFrequencyValue('0.7975');
   verifyContinuumBandwidthOrFrequencyUnits('GHz', 'frequencyUnits');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'frequencyUnits');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('continuumBandwidth', 'rangeError');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'frequencyUnits');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.435');
   verifyContinuumBandwidthValue('0.435');
@@ -495,89 +450,98 @@ function verifyContinuumBandwidthRangeErrorMidAA4() {
 
 function verifyContinuumBandwidthSubBandErrorMidAA4() {
   verifyContinuumBandwidthValue('0.435');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'continuumBandwidthUnits');
   verifySubBands(1);
-  cy.get('[id="subBands"]').clear().click()
-  .type('{home}33');;
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.subBandError');
+  cy.get('[id="subBands"]').clear();
+  cy.get('[id="subBands"]').click();
+  cy.get('[id="subBands"]').type('{home}33');
+  verifyBandwidthError('continuumBandwidth', 'subBandError');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
-  verifyNoContinuumBandwidthErrors();
-  cy.get('[id="subBands"]').clear().click()
-  .type('{home}1');
+  verifyBandwidthNoErrors('continuumBandwidth');
+  cy.get('[id="subBands"]').clear();
+  cy.get('[id="subBands"]').click();
+  cy.get('[id="subBands"]').type('{home}1');
 }
 
 function verifyZoomBandwidthRangeErrorLowAA4() {
-  verifyNoZoomBandwidthErrors();
+  verifyBandwidthNoErrors('bandwidth');
   cy.get('[id="centralFrequency"]').click();
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('360');
-  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('bandwidth', 'rangeError');
   cy.get('[id="centralFrequency-helper-text"]').contains('centralFrequency.range.error');
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('100');
-  verifyNoZoomBandwidthErrors();
+  verifyBandwidthNoErrors('bandwidth');
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('45');
-  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('bandwidth', 'rangeError');
   cy.get('[id="centralFrequency-helper-text"]').contains('centralFrequency.range.error');
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('51');
-  verifyNoZoomBandwidthErrors();
+  verifyBandwidthNoErrors('bandwidth');
   verifyBandwidth(8, '3125.0 kHz');
-  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidthError('bandwidth', 'rangeError');
   verifyBandwidth(7, '1562.5 kHz');
-  verifyNoZoomBandwidthErrors();
+  verifyBandwidthNoErrors('bandwidth');
+}
+
+function verifyZoomBandwidthRangeErrorMid2AA4() {
+  verifyBandwidthNoErrors('bandwidth');
+  cy.get('[id="centralFrequency"]').click();
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('5');
+  verifyBandwidthError('bandwidth', 'rangeError');
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('1.31');
+  verifyBandwidthNoErrors('bandwidth');
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'frequencyUnits');
+  verifyBandwidthError('bandwidth', 'rangeError');
+  verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'frequencyUnits');
+  verifyBandwidthNoErrors('bandwidth');
 }
 
 function verifyContinuumBandwidthcontMaximumExceededLowAA05() {
   verifyContinuumBandwidthValue('75');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('76');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.contMaximumExceededError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'contMaximumExceededError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('75');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 function verifyContinuumBandwidthcontMaximumExceededLowAA2() {
   verifyContinuumBandwidthValue('150');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('151');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.contMaximumExceededError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'contMaximumExceededError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('150');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 function verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2() {
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('1');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.contMaximumExceededError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'contMaximumExceededError');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.5');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.435');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('10');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains(
-    'bandwidth.range.contMaximumExceededError'
-  );
+  verifyBandwidthError('continuumBandwidth', 'contMaximumExceededError');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'continuumBandwidthUnits');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
   cy.get('[id="continuumBandwidth"]').clear();
   cy.get('[id="continuumBandwidth"]').type('0.435');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
-  verifyNoContinuumBandwidthErrors();
+  verifyBandwidthNoErrors('continuumBandwidth');
 }
 
 describe('<ObservationEntry />', () => {
@@ -794,7 +758,7 @@ describe('<ObservationEntry />', () => {
     verifyObservingBand(BAND_LOW);
     verifyObservationTypeZoom();
     verifySubArrayConfiguration(OB_SUBARRAY_AA4);
-    verifyBandwidthZoomLowBand();
+    verifyBandwidthZoom('24.4 kHz');
     verifyZoomBandwidthRangeErrorLowAA4();
   });
 
@@ -827,4 +791,13 @@ describe('<ObservationEntry />', () => {
     verifyContinuumBandwidthcontMaximumExceededMidAA1AndAA2();
   });
 
+  it('Verify Bandwidth limits for observation type zoom and Array Config Mid 2 AA4', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(BAND_2);
+    verifyObservationTypeZoom();
+    verifySubArrayConfiguration(OB_SUBARRAY_AA4);
+    verifyBandwidthZoom('3.125 MHz');
+    verifyZoomBandwidthRangeErrorMid2AA4();
+  });
 });
