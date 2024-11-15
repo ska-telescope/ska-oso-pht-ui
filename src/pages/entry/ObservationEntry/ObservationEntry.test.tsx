@@ -186,6 +186,14 @@ function verifyContinuumBandwidthContinuumLowBand() {
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
+
+function verifyBandwidthZoomLowBand() {
+  cy.get('[id="bandwidth"]').contains('24.4 kHz');
+  cy.get('[id="bandwidth"]').click();
+  cy.get('[data-value="1"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_ZOOM}`);
+}
+
 function verifyFrequencyUnitsLow() {
   cy.get('[data-testid="centralFrequency"]').contains('MHz');
 }
@@ -374,6 +382,10 @@ function verifyNoContinuumBandwidthErrors() {
   cy.get('[id="continuumBandwidth-helper-text"]').should('not.exist');
 }
 
+function verifyNoZoomBandwidthErrors() {
+  cy.get('[id="bandWidth-helper-text"]').should('not.exist');
+}
+
 function verifyContinuumBandwidthMinimumChannelWidthLowAA4() {
   verifyContinuumBandwidthContinuumLowBand();
   verifyNoContinuumBandwidthErrors();
@@ -406,21 +418,26 @@ function verifyContinuumBandwidthRangeErrorLowAA4() {
 }
 
 function verifyZoomBandwidthRangeErrorLowAA4() {
-  verifyContinuumBandwidthContinuumLowBand();
-  verifyNoContinuumBandwidthErrors();
-  cy.get('[id="continuumBandwidth"]').clear();
-  cy.get('[id="continuumBandwidth"]').type('3000');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
-  cy.get('[id="continuumBandwidth"]').clear();
-  cy.get('[id="continuumBandwidth"]').type('300');
-  verifyNoContinuumBandwidthErrors();
-  verifyCentralFrequencyContinuumLowBand();
+  verifyNoZoomBandwidthErrors();
+  cy.get('[id="centralFrequency"]').click();
   cy.get('[id="centralFrequency"]').clear();
   cy.get('[id="centralFrequency"]').type('360');
-  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="centralFrequency-helper-text"]').contains('centralFrequency.range.error');
   cy.get('[id="centralFrequency"]').clear();
-  cy.get('[id="centralFrequency"]').type('200');
-  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="centralFrequency"]').type('100');
+  verifyNoZoomBandwidthErrors();
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('45');
+  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="centralFrequency-helper-text"]').contains('centralFrequency.range.error');
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('51');
+  verifyNoZoomBandwidthErrors();
+  verifyBandwidth(8, '3125.0 kHz');
+  cy.get('[id="bandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  verifyBandwidth(7, '1562.5 kHz');
+  verifyNoZoomBandwidthErrors();
 }
 
 function verifyContinuumBandwidthcontMaximumExceededLowAA05() {
@@ -454,7 +471,6 @@ describe('<ObservationEntry />', () => {
     });
   }
 
-  /*
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyId();
@@ -623,7 +639,6 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
-  */
 
   it('Verify Bandwidth limits for observation type continuum and Array Config lOW', () => {
     mount(THEME[1]);
@@ -658,10 +673,9 @@ describe('<ObservationEntry />', () => {
     mount(THEME[1]);
     verifyId();
     verifyObservingBand(0);
-    verifyObservationTypeZoom()
-    verifyContinuumBandwidthContinuumLowBand();
+    verifyObservationTypeZoom();
     verifySubArrayConfiguration(OB_SUBARRAY_AA4);
-    // verifyZoomBandwidthRangeErrorLowAA4();
+    verifyBandwidthZoomLowBand();
+    verifyZoomBandwidthRangeErrorLowAA4();
   });
-
 });
