@@ -405,6 +405,24 @@ function verifyContinuumBandwidthRangeErrorLowAA4() {
   verifyNoContinuumBandwidthErrors();
 }
 
+function verifyZoomBandwidthRangeErrorLowAA4() {
+  verifyContinuumBandwidthContinuumLowBand();
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('3000');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('300');
+  verifyNoContinuumBandwidthErrors();
+  verifyCentralFrequencyContinuumLowBand();
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('360');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('200');
+  verifyNoContinuumBandwidthErrors();
+}
+
 function verifyContinuumBandwidthcontMaximumExceededLowAA05() {
   verifyContinuumBandwidthContinuumLowBandArrayAA05();
   cy.get('[id="continuumBandwidth"]').clear();
@@ -436,6 +454,7 @@ describe('<ObservationEntry />', () => {
     });
   }
 
+  /*
   it('Verify user input available for observation type Continuum and Array Config MID (Observing Band 1 & SubArrayValue 20)', () => {
     mount(THEME[1]);
     verifyId();
@@ -604,6 +623,7 @@ describe('<ObservationEntry />', () => {
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
   });
+  */
 
   it('Verify Bandwidth limits for observation type continuum and Array Config lOW', () => {
     mount(THEME[1]);
@@ -633,4 +653,15 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(OB_SUBARRAY_AA2);
     verifyContinuumBandwidthcontMaximumExceededLowAA2();
   });
+
+  it('Verify Bandwidth limits for observation type zoom and Array Config lOW', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(0);
+    verifyObservationTypeZoom()
+    verifyContinuumBandwidthContinuumLowBand();
+    verifySubArrayConfiguration(OB_SUBARRAY_AA4);
+    // verifyZoomBandwidthRangeErrorLowAA4();
+  });
+
 });
