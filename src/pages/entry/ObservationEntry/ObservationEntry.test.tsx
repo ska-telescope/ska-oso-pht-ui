@@ -5,7 +5,14 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
 import ObservationEntry from './ObservationEntry';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { BANDWIDTH_TELESCOPE, TYPE_CONTINUUM, TYPE_ZOOM } from '../../../utils/constants';
+import {
+  BANDWIDTH_TELESCOPE,
+  OB_SUBARRAY_AA05,
+  OB_SUBARRAY_AA2,
+  OB_SUBARRAY_AA4,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
+} from '../../../utils/constants';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 function mount(theTheme: any) {
@@ -158,6 +165,18 @@ function verifyContinuumBandwidthContinuumOb5aSubArrayValue20() {
 
 function verifyContinuumBandwidthContinuumOb5bSubArrayValue20() {
   cy.get('[id="continuumBandwidth"]').should('have.value', 5);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
+}
+
+function verifyContinuumBandwidthContinuumLowBandArrayAA05() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 75);
+  cy.get('[id="continuumBandwidth"]').click();
+  cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
+}
+
+function verifyContinuumBandwidthContinuumLowBandArrayAA2() {
+  cy.get('[id="continuumBandwidth"]').should('have.value', 150);
   cy.get('[id="continuumBandwidth"]').click();
   cy.get('[data-testid="helpPanelId"]').contains(`bandwidth.help.${TYPE_CONTINUUM}`);
 }
@@ -351,6 +370,65 @@ function verifyMidBand5bZoomBandwidthSpectralEffectiveResolution() {
   verifyEffectiveResolution('1.68 kHz (42.5 m/s)');
 }
 
+function verifyNoContinuumBandwidthErrors() {
+  cy.get('[id="continuumBandwidth-helper-text"]').should('not.exist');
+}
+
+function verifyContinuumBandwidthMinimumChannelWidthLowAA4() {
+  verifyContinuumBandwidthContinuumLowBand();
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('0.001');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains(
+    'bandwidth.range.minimumChannelWidthError'
+  );
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('300');
+  verifyNoContinuumBandwidthErrors();
+}
+
+function verifyContinuumBandwidthRangeErrorLowAA4() {
+  verifyContinuumBandwidthContinuumLowBand();
+  verifyNoContinuumBandwidthErrors();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('3000');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('300');
+  verifyNoContinuumBandwidthErrors();
+  verifyCentralFrequencyContinuumLowBand();
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('360');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains('bandwidth.range.rangeError');
+  cy.get('[id="centralFrequency"]').clear();
+  cy.get('[id="centralFrequency"]').type('200');
+  verifyNoContinuumBandwidthErrors();
+}
+
+function verifyContinuumBandwidthcontMaximumExceededLowAA05() {
+  verifyContinuumBandwidthContinuumLowBandArrayAA05();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('76');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains(
+    'bandwidth.range.contMaximumExceededError'
+  );
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('75');
+  verifyNoContinuumBandwidthErrors();
+}
+
+function verifyContinuumBandwidthcontMaximumExceededLowAA2() {
+  verifyContinuumBandwidthContinuumLowBandArrayAA2();
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('151');
+  cy.get('[id="continuumBandwidth-helper-text"]').contains(
+    'bandwidth.range.contMaximumExceededError'
+  );
+  cy.get('[id="continuumBandwidth"]').clear();
+  cy.get('[id="continuumBandwidth"]').type('150');
+  verifyNoContinuumBandwidthErrors();
+}
+
 describe('<ObservationEntry />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
@@ -525,5 +603,34 @@ describe('<ObservationEntry />', () => {
     verifySubArrayConfiguration(9);
     verifyObservationTypeZoom();
     verifyMidBand5bZoomBandwidthSpectralEffectiveResolution();
+  });
+
+  it('Verify Bandwidth limits for observation type continuum and Array Config lOW', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(0);
+    verifyObservationTypeContinuum();
+    verifyContinuumBandwidthContinuumLowBand();
+    verifySubArrayConfiguration(OB_SUBARRAY_AA4);
+    verifyContinuumBandwidthMinimumChannelWidthLowAA4();
+    verifyContinuumBandwidthRangeErrorLowAA4();
+  });
+
+  it('Verify Bandwidth limits for observation type continuum and Array Config lOW AA05', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(0);
+    verifyContinuumBandwidthContinuumLowBand();
+    verifySubArrayConfiguration(OB_SUBARRAY_AA05);
+    verifyContinuumBandwidthcontMaximumExceededLowAA05();
+  });
+
+  it('Verify Bandwidth cont Max Exceeded for observation type continuum and Array Config lOW AA2', () => {
+    mount(THEME[1]);
+    verifyId();
+    verifyObservingBand(0);
+    verifyContinuumBandwidthContinuumLowBand();
+    verifySubArrayConfiguration(OB_SUBARRAY_AA2);
+    verifyContinuumBandwidthcontMaximumExceededLowAA2();
   });
 });
