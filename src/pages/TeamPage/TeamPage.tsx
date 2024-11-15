@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -14,6 +15,7 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
+import { FOOTER_SPACER } from '../../utils/constants';
 
 const PAGE = 1;
 
@@ -138,10 +140,11 @@ export default function TeamPage() {
           p={1}
           container
           direction="row"
-          alignItems="space-evenly"
+          alignItems="space-around"
           justifyContent="space-around"
+          spacing={1}
         >
-          <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
+          <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
               actionClicked={deleteIconClicked}
@@ -197,6 +200,7 @@ export default function TeamPage() {
           {alertContent()}
         </AlertDialog>
       )}
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
   );
 }

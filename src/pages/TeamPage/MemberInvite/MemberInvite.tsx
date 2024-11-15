@@ -7,7 +7,7 @@ import { AlertColorTypes, TextEntry, TickBox } from '@ska-telescope/ska-gui-comp
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
+import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
@@ -15,7 +15,7 @@ import Notification from '../../../utils/types/notification';
 
 export default function MemberInvite() {
   const { t } = useTranslation('pht');
-  const LABEL_WIDTH = 6;
+  const LABEL_WIDTH = 5;
   const {
     application,
     helpComponent,
@@ -40,6 +40,13 @@ export default function MemberInvite() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
+  const WRAPPER_WIDTH = '500px';
+
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
 
   function formValidation() {
     let count = 0;
@@ -195,93 +202,83 @@ export default function MemberInvite() {
   };
 
   const firstNameField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('firstName.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="firstName"
-          value={firstName}
-          setValue={setFirstName}
-          onFocus={() => helpComponent(t('firstName.help'))}
-          errorText={errorTextFirstName}
-          required
-        />
-      </Box>
+    return fieldWrapper(
+      <TextEntry
+        label={t('firstName.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="firstName"
+        value={firstName}
+        setValue={setFirstName}
+        onFocus={() => helpComponent(t('firstName.help'))}
+        errorText={errorTextFirstName}
+        required
+      />
     );
   };
 
   const lastNameField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('lastName.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="lastName"
-          value={lastName}
-          setValue={setLastName}
-          onFocus={() => helpComponent(t('lastName.help'))}
-          errorText={errorTextLastName}
-          required
-        />
-      </Box>
+    return fieldWrapper(
+      <TextEntry
+        label={t('lastName.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="lastName"
+        value={lastName}
+        setValue={setLastName}
+        onFocus={() => helpComponent(t('lastName.help'))}
+        errorText={errorTextLastName}
+        required
+      />
     );
   };
 
   const emailField = () => {
-    return (
-      <Box p={1}>
-        <TextEntry
-          label={t('email.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="email"
-          value={email}
-          setValue={setEmail}
-          errorText={errorTextEmail ? t(errorTextEmail) : ''}
-          onFocus={() => helpComponent(t('email.help'))}
-          required
-        />
-      </Box>
+    return fieldWrapper(
+      <TextEntry
+        label={t('email.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="email"
+        value={email}
+        setValue={setEmail}
+        errorText={errorTextEmail ? t(errorTextEmail) : ''}
+        onFocus={() => helpComponent(t('email.help'))}
+        required
+      />
     );
   };
 
   const piField = () => {
-    return (
-      <Box pl={1} pt={1}>
-        <TickBox
-          label={t('pi.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="piCheckbox"
-          checked={pi}
-          onChange={handleCheckboxChangePI}
-          onFocus={() => helpComponent(t('pi.help'))}
-        />
-      </Box>
+    return fieldWrapper(
+      <TickBox
+        label={t('pi.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="piCheckbox"
+        checked={pi}
+        onChange={handleCheckboxChangePI}
+        onFocus={() => helpComponent(t('pi.help'))}
+      />
     );
   };
 
   const phdThesisField = () => {
-    return (
-      <Box pl={1}>
-        <TickBox
-          label={t('phdThesis.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="PhDCheckbox"
-          checked={phdThesis}
-          onChange={handleCheckboxChangePhD}
-          onFocus={() => helpComponent(t('phdThesis.help'))}
-        />
-      </Box>
+    return fieldWrapper(
+      <TickBox
+        label={t('phdThesis.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="PhDCheckbox"
+        checked={phdThesis}
+        onChange={handleCheckboxChangePhD}
+        onFocus={() => helpComponent(t('phdThesis.help'))}
+      />
     );
   };
 
@@ -293,6 +290,7 @@ export default function MemberInvite() {
         direction="row"
         alignItems="space-evenly"
         justifyContent="space-between"
+        spacing={0}
       >
         <Grid item xs={7}>
           {firstNameField()}

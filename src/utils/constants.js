@@ -206,6 +206,8 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 
+export const PAGE_SRC_NET = 8;
+
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
   {
