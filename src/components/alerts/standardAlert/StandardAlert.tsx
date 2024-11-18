@@ -34,7 +34,7 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
     <Alert color={color} testId={testId}>
       <Grid
         container
-        spacing={2}
+        spacing={1}
         direction="row"
         justifyContent="space-between"
         alignItems="center"

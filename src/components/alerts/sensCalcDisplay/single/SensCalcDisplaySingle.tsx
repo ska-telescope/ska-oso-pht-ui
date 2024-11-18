@@ -27,6 +27,12 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
+  const ariaStatusMessage = sensCalc => {
+    const status = sensCalc?.statusGUI?.length ? t('statusLoading.' + sensCalc?.statusGUI) : '';
+    const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
+    return t('sensitivityCalculatorResults.status', { status: status, error: error });
+  };
+
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
       sensCalc?.section2?.length > 0 ? OBS_TYPES[1] : OBS_TYPES[0];
@@ -47,14 +53,8 @@ export default function SensCalcDisplaySingle({
           onClick={sensCalc?.statusGUI === STATUS_OK ? IconClicked : null}
         >
           <StatusIconDisplay
-            ariaDescription={t('sensitivityCalculatorResults.status', {
-              status: t('statusLoading.' + sensCalc?.statusGUI),
-              error: t(presentSensCalcError(sensCalc?.error))
-            })}
-            ariaTitle={t('sensitivityCalculatorResults.status', {
-              status: t('statusLoading.' + sensCalc?.statusGUI),
-              error: t(presentSensCalcError(sensCalc?.error))
-            })}
+            ariaDescription={ariaStatusMessage(sensCalc)}
+            ariaTitle={ariaStatusMessage(sensCalc)}
             testId="statusId"
             level={sensCalc?.statusGUI}
             size={SIZE}
