@@ -1,17 +1,12 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
-import { GenerateCtrfReport } from 'cypress-ctrf-json-reporter';
-//TODO: Resolve as part of STAR-223
-// import { configureXrayPlugin } from 'cypress-xray-plugin';
-const cucumber = require('cypress-cucumber-preprocessor').default;
 
 export default defineConfig({
   projectId: 'ssiwb9',
   fixturesFolder: 'cypress/fixtures',
   screenshotsFolder: 'cypress/screenshots',
   downloadsFolder: 'cypress/downloads',
-
   component: {
     supportFile: 'cypress/support/component.js',
     specPattern: '**/*.test.{js,jsx,ts,tsx}',
@@ -30,24 +25,20 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
+    deleteVideoOnPassed: true,
+    betterRetries: true,
+    reporter: 'cypress-xray-junit-reporter',
+    reporterOptions: {
+      mochaFile: './report/[suiteName].xml',
+      useFullSuiteTitle: false,
+      jenkinsMode: true,
+      xrayMode: true, // if JiraKey are set correctly inside the test the XML report will contain the JiraKey value
+      attachScreenshot: true // if a test fails, the screenshot will be attached to the XML report and imported into xray
+    },
     setupNodeEvents(on, config) {
-      //TODO: Resolve as part of STAR-223
-      // async setupNodeEvents(on, config) {
-      // await configureXrayPlugin(on, config, {
-      //   jira: {
-      //     projectKey: 'XTP', // placeholder value
-      //     url: 'https://jira.skatelescope.org' // placeholder value
-      //   },
-      //   xray: {
-      //     uploadResults: true
-      //   }
-      // });
-      on('file:preprocessor', cucumber());
-      new GenerateCtrfReport({
-        on
-      });
+      require('cypress-xray-junit-reporter/plugin')(on, config, {}); // also needed
       return config;
     },
-    specPattern: 'cypress/integration/**/*.feature'
+    specPattern: 'cypress/integration/**/*.test.js'
   }
 });

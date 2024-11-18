@@ -715,6 +715,7 @@
     "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
   },
   "targetObservation": {
+    "filters": "Filters",
     "label": "Target / Observation relationship"
   },
   "targetSelection": {

@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  DropDown,
+  NumberEntry,
+  Spacer,
+  SPACER_VERTICAL,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
@@ -37,6 +43,8 @@ import {
   FREQUENCY_UNITS,
   FREQUENCY_MHZ,
   FREQUENCY_GHZ,
+  FOOTER_SPACER,
+  WRAPPER_HEIGHT,
   TYPE_ZOOM
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
@@ -66,8 +74,6 @@ const BACK_PAGE = 5;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 const HELP_PANEL_HEIGHT = '50vh';
-
-const WRAPPER_HEIGHT = '80px';
 const WRAPPER_WIDTH = '500px';
 
 export default function ObservationEntry() {
@@ -881,7 +887,8 @@ export default function ObservationEntry() {
   };
 
   const addButtonDisabled = () => {
-    return validateId() ? true : false;
+    // TODO : We need to make this a bit cleverer, but this will do for a short time
+    return isEdit() ? false : validateId() ? true : false;
   };
 
   const pageFooter = () => {
@@ -989,70 +996,83 @@ export default function ObservationEntry() {
         <Grid item md={12} lg={9}>
           <Grid
             p={0}
+            pl={2}
             container
             direction="row"
             alignItems="center"
             spacing={1}
-            justifyContent="space-between"
+            justifyContent="space-around"
           >
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {idField()}
             </Grid>
-            <Grid item lg={6}></Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item lg={5}></Grid>
+            <Grid item md={12} lg={5}>
               {groupObservationsField()}
             </Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {isLow() ? emptyField() : weatherField()}
             </Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {observationsBandField()}
             </Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {elevationField()}
             </Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {subArrayField()}
             </Grid>
-            <Grid item md={12} lg={6}>
+            <Grid item md={12} lg={5}>
               {isLow() ? numStationsField() : antennasFields()}
             </Grid>
-
-            <Grid item md={12} lg={6}>
-              {observationTypeField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {suppliedField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {' '}
-              {centralFrequencyField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {spectralResolutionField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {spectralAveragingField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {effectiveResolutionField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {isContinuum() ? SubBandsField() : emptyField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {imageWeightingField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
-            </Grid>
-            <Grid item md={12} lg={6}>
-              {isLow() ? emptyField() : taperingField()}
-            </Grid>
           </Grid>
+          <Card variant="outlined">
+            <CardContent>
+              <Grid
+                p={0}
+                container
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                justifyContent="space-around"
+              >
+                <Grid item md={12} lg={5}>
+                  {observationTypeField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {suppliedField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {' '}
+                  {centralFrequencyField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {spectralResolutionField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {spectralAveragingField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {effectiveResolutionField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {isContinuum() ? SubBandsField() : emptyField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {imageWeightingField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {isLow() ? emptyField() : taperingField()}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item md={12} lg={3}>
           <Box pl={4}>
@@ -1060,6 +1080,7 @@ export default function ObservationEntry() {
           </Box>
         </Grid>
       </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {pageFooter()}
     </>
   );

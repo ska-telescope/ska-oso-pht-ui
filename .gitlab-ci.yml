@@ -91,7 +91,6 @@ test_and_coverage:
   script:
     - yarn test:cypress:component:ci
     - yarn merge-component-reports
-    - cp build/tests/component/component-tests.xml build/tests/component-tests.xml
     - yarn test:coverage:report:ci
     - cp build/reports/cobertura-coverage.xml build/tests/e2e-coverage.xml
   artifacts:

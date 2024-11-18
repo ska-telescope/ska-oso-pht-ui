@@ -7,9 +7,7 @@ type Supplied = {
 };
 
 export type SuppliedBackend = {
-  type: string;
-  // value: number;
-  // unit: string;
+  supplied_type: string;
   quantity: ValueUnitPair;
 };
 

@@ -31,7 +31,7 @@ import GroupObservation from 'utils/types/groupObservation';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
-import { ResultsSection, SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
@@ -114,18 +114,16 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
 
 const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
   const documents = [];
-  if (sciencePDF?.link) {
+  if (sciencePDF) {
     documents.push({
       document_id: sciencePDF.documentId,
-      link: sciencePDF?.link,
-      type: 'proposal_science'
+      uploaded_pdf: sciencePDF.isUploadedPdf
     });
   }
-  if (technicalPDF?.link) {
+  if (technicalPDF) {
     documents.push({
-      document_id: technicalPDF?.documentId,
-      link: technicalPDF?.link,
-      type: 'proposal_technical'
+      document_id: technicalPDF.documentId,
+      uploaded_pdf: technicalPDF.isUploadedPdf
     });
   }
   return documents;
@@ -140,8 +138,8 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: dp.imageSizeValue + ' ' + dp.imageSizeUnits,
-    pixel_size: dp.pixelSizeValue + ' ' + dp.pixelSizeUnits,
+    image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
+    pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
     weighting: dp.weighting?.toString()
   }));
 };
@@ -224,7 +222,7 @@ const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
 const getSupplied = (inObs: Observation) => {
   const supplied = OBSERVATION.Supplied.find(s => s.value === inObs?.supplied?.type);
   return {
-    type: supplied?.mappingLabel,
+    supplied_type: supplied?.mappingLabel,
     quantity: {
       value: inObs.supplied?.value,
       unit: supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
@@ -364,15 +362,6 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getBeamSizeFirstSection = (incSensCalcResultsSpectralSection: ResultsSection[]) => {
-  const beamSize = incSensCalcResultsSpectralSection?.find(o => o.field === 'spectralSynthBeamSize')
-    ?.value;
-  const beamSizeFirstSection = Number(beamSize.split('x')[0]?.trim());
-  return beamSizeFirstSection ? beamSizeFirstSection * 100 : 170.1; // TODO : fallback
-  // As PDM only accepts a number, we only save the 1st part of the beam size for now
-  // TODO send the whole beam size as a string once PDM updated to accept a string
-};
-
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
   for (let tarObs of incTargetObservations) {
@@ -382,19 +371,19 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const obsType = getObsType(tarObs, incObs); // spectral or continuum
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
-      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'integration_time' : 'sensitivity';
-    // tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
     // TODO un-swap sensitivity and integration time as above once PDM updated
     // => we want supplied integration time fields for supplied sensitivity
     // and supplied sensitivity fields for supplied integration time for RESULTS
+
     const suppliedRelatedFields =
       suppliedType === 'sensitivity'
-        ? getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection)
-        : getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs);
+        ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+        : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
     let result: SensCalcResultsBackend = {
       observation_set_ref: tarObs.observationId,
       target_ref: tarObs.sensCalc?.title,
-      result_details: {
+      result: {
         supplied_type: suppliedType,
         ...suppliedRelatedFields
       },
@@ -409,11 +398,13 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           : ''
       },
       synthesized_beam_size: {
-        value: getBeamSizeFirstSection(tarObs.sensCalc[spectralSection]), // TODO : Number(tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize').value) // this should be a string such as "190.0 x 171.3" -> currently rejected by backend
+        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+          ?.value,
+        continuum: isContinuum(obsType)
+          ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+          : 'dummy', // TODO: investigate typescript not taking empty string
         unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
           ?.units
-        // TODO use commented synthBeamSize value once backends accepts the format
-        // TODO check: UI save spectralSynthBeamSize & continuumSynthBeamSize while Services only uses synthBeamSize => are they always the same?
       },
       spectral_confusion_noise: {
         value: Number(
@@ -443,7 +434,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       title: proposal.title,
       proposal_type: {
         main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
-        sub_type: proposal.proposalSubType
+        attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
@@ -456,6 +447,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       investigators: proposal.team.map(teamMember => {
         return {
           investigator_id: teamMember.id?.toString(),
+          status: teamMember.status,
           given_name: teamMember.firstName,
           family_name: teamMember.lastName,
           email: teamMember.email,
@@ -469,9 +461,10 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
       data_product_src_nets:
         proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-      results: getResults(proposal.targetObservation, proposal.observations)
+      result_details: getResults(proposal.targetObservation, proposal.observations)
     }
   };
   helpers.transform.trimObject(transformedProposal);
+
   return transformedProposal;
 }
