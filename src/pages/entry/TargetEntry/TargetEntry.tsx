@@ -25,7 +25,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const { t } = useTranslation('pht');
 
   const LAB_WIDTH = 5;
-  const WRAPPER_WIDTH = '450px';
   const HELP_MAX_HEIGHT = '40vh';
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -212,7 +211,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       pt={2}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       <TextEntry
@@ -237,7 +235,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       pt={2}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       <SkyDirection1
@@ -256,7 +253,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       pt={2}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       <SkyDirection2
@@ -275,7 +271,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       pt={1}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       <VelocityField
@@ -301,7 +296,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       pt={2}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       <ReferenceFrameField

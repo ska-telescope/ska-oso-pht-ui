@@ -40,7 +40,6 @@ export default function MemberEntry() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
-  const WRAPPER_WIDTH = '500px';
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -48,7 +47,6 @@ export default function MemberEntry() {
       pt={1}
       sx={{
         height: WRAPPER_HEIGHT
-        //, width: WRAPPER_WIDTH
       }}
     >
       {children}
