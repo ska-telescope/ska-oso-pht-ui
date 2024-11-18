@@ -127,7 +127,16 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   }, []);
 
   function formValidation() {
-    return false;
+    if (getProposal().targets.length === 0) {
+      return true;
+    } else if (getProposal().targets.length > 0) {
+      getProposal().targets?.forEach(rec => {
+        console.log('Chloe received name', rec.name);
+        console.log('Chloe existing name', name);
+        console.log('Verify', rec.name !== name);
+        return rec.name !== name;
+      });
+    }
   }
 
   const addButton = () => {
@@ -205,7 +214,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
 
   const resolveButton = () => {
     const processCoordinatesResults = response => {
-      //add co-ord validation
       if (response && !response.error) {
         const values = response.split(' ');
         const redshift =
@@ -226,12 +234,9 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     };
 
     const getCoordinates = async () => {
-      //at this point, name is not stored, only the two coordinates
       const response = await GetCoordinates(name, raType);
       processCoordinatesResults(response);
     };
-
-    console.log('TARGET NAME? ... ', name);
     return (
       <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
     );
