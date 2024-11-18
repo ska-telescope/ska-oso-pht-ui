@@ -75,6 +75,10 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   return limits || [];
 };
 
+// The bandwidth's lower and upper bounds should be within band limits
+// Lower and upper bounds are set as frequency -/+ half bandwidth
+// The band limits for each antennas (ska/meerkat/mixed) are set for each band (Mid)
+// The antennas depend on the subarray selected
 export const checkBandLimits = (
   scaledBandwidth: number,
   scaledFrequency: number,

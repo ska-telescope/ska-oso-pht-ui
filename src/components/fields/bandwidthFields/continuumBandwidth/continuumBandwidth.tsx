@@ -59,7 +59,6 @@ export default function ContinuumBandwidthField({
 
   const getScaledBandwidthorFrequency = (incValue: number, inUnits: number) => {
     const unitsLabel = getBandwidtOrFrequencyhUnitsLabel(inUnits);
-    console.log('unitsLabel', unitsLabel);
     return scaleBandwidthOrFrequency(incValue, unitsLabel);
   };
 
@@ -81,9 +80,7 @@ export default function ContinuumBandwidthField({
 
   const errorMessage = () => {
     const scaledBandwidth = getScaledBandwidthorFrequency(value, continuumBandwidthUnits);
-    console.log('scaledBandwidth', scaledBandwidth);
     const scaledFrequency = getScaledBandwidthorFrequency(centralFrequency, centralFrequencyUnits);
-    console.log('scaledFrequency', scaledFrequency);
 
     // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
     const minimumChannelWidthHz = getMinimumChannelWidth(telescope);
@@ -111,13 +108,8 @@ export default function ContinuumBandwidthField({
     // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
     // sub-bands should be greater than the minimum allowed bandwidth
     // Mid only
-    console.log('scaledBandwidth / nSubBands', scaledBandwidth / nSubBands);
-    console.log('scaledBandwidth', scaledBandwidth);
-    console.log('nSubBands', nSubBands);
-    console.log('smaller than ', minimumChannelWidthHz);
+    // TODO move this check into subbands field so it can be displayed underneath
     if (!isLow() && nSubBands && scaledBandwidth / nSubBands < minimumChannelWidthHz) {
-      console.log('scaledBandwidth / nSubBands', scaledBandwidth / nSubBands);
-      console.log('smaller than ', minimumChannelWidthHz);
       return t('bandwidth.range.subBandError');
     }
 
