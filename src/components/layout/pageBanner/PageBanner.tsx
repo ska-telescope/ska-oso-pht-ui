@@ -25,7 +25,7 @@ interface PageBannerProps {
   backPage?: number;
 }
 
-const widthWrapStatusArray = '1500px'
+const widthWrapStatusArray = '1500px';
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
