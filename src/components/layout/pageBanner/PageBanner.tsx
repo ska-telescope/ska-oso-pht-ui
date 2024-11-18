@@ -25,9 +25,11 @@ interface PageBannerProps {
   backPage?: number;
 }
 
+const widthWrapStatusArray = '1500px'
+
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
-  const wrapStatusArray = useMediaQuery('(max-width:1500px)'); // revisit override breakpoint
+  const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
@@ -223,7 +225,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row2()}
       {row3()}
 
-      {/* TODO: revisit override breakpoint and use grid */}
+      {/* TODO: revisit to implement override breakpoint and use grid */}
       {/* <Grid container spacing={1} alignItems="center">
         <Grid item xs={6} md={6} lg={2}>
           {buttonsLeft()}
