@@ -206,6 +206,8 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 
+export const PAGE_SRC_NET = 8;
+
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
   {
@@ -848,7 +850,7 @@ export const VELOCITY_UNITS = [
   { label: 'km/s', value: 1, convert: 1000 }
 ];
 
-export const WRAPPER_HEIGHT = '80px';
+export const WRAPPER_HEIGHT = '75px';
 
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;

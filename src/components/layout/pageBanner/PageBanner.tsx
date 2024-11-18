@@ -8,7 +8,16 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS, STATUS_OK } from '../../../utils/constants';
+import {
+  LAST_PAGE,
+  NAV,
+  PAGE_SRC_NET,
+  PATH,
+  PROPOSAL_STATUS,
+  STATUS_ERROR,
+  STATUS_INITIAL,
+  STATUS_PARTIAL
+} from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
@@ -61,7 +70,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       let results = [];
 
       for (let key in application.content1) {
-        if (application.content1[key] !== STATUS_OK) {
+        if (
+          application.content1[key] === STATUS_ERROR ||
+          application.content1[key] === STATUS_PARTIAL ||
+          (application.content1[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+        ) {
           results.push(t('page.' + key + '.pageError'));
         }
       }
