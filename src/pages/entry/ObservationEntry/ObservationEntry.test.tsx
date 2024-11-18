@@ -450,15 +450,15 @@ function verifyContinuumBandwidthRangeErrorMidAA4() {
 
 function verifyContinuumBandwidthSubBandErrorMidAA4() {
   verifyContinuumBandwidthValue('0.435');
-  verifyBandwidthNoErrors('continuumBandwidth');
+  verifyBandwidthNoErrors('subBands');
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_MHZ, 'MHz', 'continuumBandwidthUnits');
   verifySubBands(1);
   cy.get('[id="subBands"]').clear();
   cy.get('[id="subBands"]').click();
   cy.get('[id="subBands"]').type('{home}33');
-  verifyBandwidthError('continuumBandwidth', 'subBandError');
+  cy.get(`[id="subBands-helper-text"]`).contains(`subBands.range.bandwidthSubBand`);
   verifySwitchBandwidthOrFrequencyUnits(FREQUENCY_GHZ, 'GHz', 'continuumBandwidthUnits');
-  verifyBandwidthNoErrors('continuumBandwidth');
+  verifyBandwidthNoErrors('subBands');
   cy.get('[id="subBands"]').clear();
   cy.get('[id="subBands"]').click();
   cy.get('[id="subBands"]').type('{home}1');

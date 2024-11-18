@@ -20,16 +20,20 @@ export const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): n
 export const getMinimumChannelWidth = (telescope: number): number =>
   isLow(telescope) ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
+// The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
 export const checkMinimumChannelWidth = (
   minimumChannelWidthHz: number,
   scaledBandwidth: number
 ): boolean => (scaledBandwidth < minimumChannelWidthHz ? false : true);
 
+// get maximum bandwidth bandwidth defined for the subarray
 export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any =>
   OBSERVATION.array
     .find(item => item.value === telescope)
     ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
 
+// The bandwidth should be smaller than the maximum bandwidth defined for the subarray
+// For the subarrays that don't have one set, the full bandwidth is allowed
 export const checkMaxContBandwidthHz = (
   maxContBandwidthHz: number | undefined,
   scaledBandwidth: number

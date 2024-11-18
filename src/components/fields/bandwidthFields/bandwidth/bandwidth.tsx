@@ -13,7 +13,6 @@ import {
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
-  getMinimumChannelWidth,
   getMaxContBandwidthHz,
   checkMinimumChannelWidth,
   checkMaxContBandwidthHz,
@@ -35,6 +34,8 @@ interface BandwidthFieldProps {
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
+  setScaledBandwidth?: Function;
+  minimumChannelWidthHz?: number;
 }
 
 export default function BandwidthField({
@@ -51,7 +52,9 @@ export default function BandwidthField({
   observingBand,
   centralFrequency,
   centralFrequencyUnits,
-  subarrayConfig
+  subarrayConfig,
+  setScaledBandwidth,
+  minimumChannelWidthHz
 }: BandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
@@ -100,34 +103,22 @@ export default function BandwidthField({
   };
 
   const errorMessage = () => {
-    // scale bandwidth and frequency
     const bandwidthUnitsLabel = getBandwidthUnitsLabel();
     const bandwidthValue = getBandwidthValue();
     const frequencyUnitsLabel = getFrequencyhUnitsLabel();
     const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
+    setScaledBandwidth(scaledBandwidth);
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel);
 
-    // TODO
-    // keep same error messages for bandwith? duplication?
-    // check extra test for zoom? mid zoom resolution check?
-
-    // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
-    const minimumChannelWidthHz = getMinimumChannelWidth(telescope);
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    // The bandwidth should be smaller than the maximum bandwidth defined for the subarray
-    // For the subarrays that don't have one set, the full bandwidth is allowed
     const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
 
-    // The bandwidth's lower and upper bounds should be within band limits
-    // Lower and upper bounds are set as frequency -/+ half bandwidth
-    // The band limits for each antennas (ska/meerkat/mixed) are set for each band (Mid)
-    // The antennas depend on the subarray selected
     if (
       !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
     ) {

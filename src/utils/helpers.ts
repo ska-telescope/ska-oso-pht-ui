@@ -1,6 +1,8 @@
 import {
   FREQUENCY_HZ,
   FREQUENCY_UNITS,
+  LOW_MIN_CHANNEL_WIDTH_HZ,
+  MID_MIN_CHANNEL_WIDTH_HZ,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNITS
@@ -53,6 +55,10 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
     (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
   );
 };
+
+// fundamental limit of the bandwidth provided by SKA MID or LOW
+export const getMinimumChannelWidth = (isLow: boolean): number =>
+  isLow ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
 export const helpers = {
   validate: {
