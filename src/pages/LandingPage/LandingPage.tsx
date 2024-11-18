@@ -65,7 +65,7 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const DATA_GRID_HEIGHT = '90vh';
+  const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
     updateAppContent2(null);
@@ -203,8 +203,9 @@ export default function LandingPage() {
   const colId = {
     field: 'id',
     headerName: t('proposalId.label'),
-    flex: 1.5
+    width: 250
   };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.short'),
@@ -216,10 +217,11 @@ export default function LandingPage() {
     )
   };
   const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
+
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 2.5,
+    minWidth: 500,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
@@ -377,7 +379,7 @@ export default function LandingPage() {
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {!axiosViewError && filteredData.length > 0 && (
-            <div style={{ width: '100%' }}>
+            <div>
               <DataGrid
                 testId="dataGridId"
                 rows={filteredData}
