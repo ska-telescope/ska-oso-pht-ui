@@ -168,8 +168,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const row1 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item>{buttonsLeft()}</Grid>
-      {/* {<Typography>{wrapStatusArray ? 'true' : 'false'}</Typography>} */}
-
       {wrapStatusArray ? (
         <Grid item xs={7} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
@@ -205,9 +203,6 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
-      {/* <Grid item xs={12} display={{ xs: 'block', lg: 'none' }}>
-        {pageNo < LAST_PAGE && <StatusArray />}
-      </Grid> */}
     </Grid>
   );
 
@@ -227,6 +222,8 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row1()}
       {row2()}
       {row3()}
+
+      {/* TODO: revisit override breakpoint and use grid */}
       {/* <Grid container spacing={1} alignItems="center">
         <Grid item xs={6} md={6} lg={2}>
           {buttonsLeft()}
