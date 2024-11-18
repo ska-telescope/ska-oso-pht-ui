@@ -564,7 +564,6 @@ describe('<ObservationEntry />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequencyContinuumOb1SubArrayValue20();
     verifyFrequencyUnits();
-    // verifyContinuumBandwidthContinuumOb1SubArrayValue20();
     verifyContinuumBandwidthValue('0.435');
     verifySpectralResolutionContinuumOb1SubArrayValue20();
     enterSpectralAveragingMid(1);
@@ -585,7 +584,6 @@ describe('<ObservationEntry />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequencyContinuumOb5aSubArrayValue20();
     verifyFrequencyUnits();
-    // verifyContinuumBandwidthContinuumOb5aSubArrayValue20();
     verifyContinuumBandwidthValue('3.9');
     verifySpectralResolutionContinuumOb5aSubArrayValue20();
     enterSpectralAveragingMid(1);
@@ -606,7 +604,6 @@ describe('<ObservationEntry />', () => {
     verifySuppliedTypeValueAndUnits();
     verifyCentralFrequencyContinuumOb5bSubArrayValue20();
     verifyFrequencyUnits();
-    // verifyContinuumBandwidthContinuumOb5bSubArrayValue20();
     verifyContinuumBandwidthValue('5');
     verifySpectralResolutionContinuumOb5bSubArrayValue20();
     enterSpectralAveragingMid(1);
