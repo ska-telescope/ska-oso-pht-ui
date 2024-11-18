@@ -27,6 +27,7 @@ interface PageBannerProps {
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
+  const wrapStatusArray = useMediaQuery('(max-width:1500px)'); // revisit override breakpoint
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
@@ -150,6 +151,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       direction="row"
       alignItems="center"
       justifyContent="flex-end"
+      wrap="nowrap"
       pr={2}
     >
       <Grid item>
@@ -166,14 +168,27 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const row1 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item>{buttonsLeft()}</Grid>
+      {/* {<Typography>{wrapStatusArray ? 'true' : 'false'}</Typography>} */}
 
-      <Grid item xs={7} display={{ xs: 'none', lg: 'block' }}>
-        {pageNo < LAST_PAGE && <StatusArray />}
-      </Grid>
+      {wrapStatusArray ? (
+        <Grid item xs={7} display={'none'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      ) : (
+        <Grid item xs={7} display={'block'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      )}
 
-      <Grid item display={{ xs: 'block', lg: 'none' }}>
-        {pageTitle()}
-      </Grid>
+      {wrapStatusArray ? (
+        <Grid item display={'block'}>
+          {pageTitle()}
+        </Grid>
+      ) : (
+        <Grid item display={'none'}>
+          {pageTitle()}
+        </Grid>
+      )}
 
       <Grid item>{buttonsRight()}</Grid>
     </Grid>
@@ -181,9 +196,18 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const row2 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={12} display={{ xs: 'block', lg: 'none' }}>
+      {wrapStatusArray ? (
+        <Grid item xs={12} display={'block'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      ) : (
+        <Grid item xs={12} display={'none'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      )}
+      {/* <Grid item xs={12} display={{ xs: 'block', lg: 'none' }}>
         {pageNo < LAST_PAGE && <StatusArray />}
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 
@@ -203,6 +227,20 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row1()}
       {row2()}
       {row3()}
+      {/* <Grid container spacing={1} alignItems="center">
+        <Grid item xs={6} md={6} lg={2}>
+          {buttonsLeft()}
+        </Grid>
+        <Grid item xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
+          <Grid item justifyContent="space-evenly">
+            {pageNo < LAST_PAGE && <StatusArray />}
+          </Grid>
+        </Grid>
+        <Grid item xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
+          {buttonsRight()}
+        </Grid>
+      </Grid> */}
+
       {openProposalDisplay && (
         <ProposalDisplay
           proposal={getProposal()}
