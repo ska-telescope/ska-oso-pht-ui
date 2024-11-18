@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import MemberInvite from './MemberInvite';
+import MemberEntry from './MemberEntry';
 import { TEXT_ENTRY_PARAMS } from '../../../utils/constants';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
@@ -15,7 +15,7 @@ function mounting(theTheme: any) {
       <ThemeProvider theme={theme(theTheme)}>
         <CssBaseline />
         <BrowserRouter>
-          <MemberInvite />
+          <MemberEntry />
         </BrowserRouter>
       </ThemeProvider>
     </StoreProvider>
@@ -52,7 +52,7 @@ function inviteButton(enabled: boolean = false, click: boolean = false) {
   }
 }
 
-describe('<MemberInvite />', () => {
+describe('<MemberEntry />', () => {
   for (const theTheme of THEME) {
     it(`Theme ${theTheme}: Renders`, () => {
       mounting(theTheme);

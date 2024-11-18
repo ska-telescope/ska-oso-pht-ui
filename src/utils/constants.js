@@ -850,7 +850,7 @@ export const VELOCITY_UNITS = [
   { label: 'km/s', value: 1, convert: 1000 }
 ];
 
-export const WRAPPER_HEIGHT = '80px';
+export const WRAPPER_HEIGHT = '75px';
 
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;

@@ -8,7 +8,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import MemberInvite from './MemberInvite/MemberInvite';
+import MemberEntry from '../entry/MemberEntry/MemberEntry';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -140,11 +140,11 @@ export default function TeamPage() {
           p={1}
           container
           direction="row"
-          alignItems="space-around"
+          alignItems="space-evenly"
           justifyContent="space-around"
           spacing={1}
         >
-          <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
+          <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
               actionClicked={deleteIconClicked}
@@ -183,7 +183,7 @@ export default function TeamPage() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <MemberInvite />}
+              {theValue === 0 && <MemberEntry />}
               {theValue === 1 && <TeamFileImport />}
               {theValue === 2 && <MemberSearch />}
             </Box>

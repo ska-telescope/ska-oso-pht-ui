@@ -7,13 +7,13 @@ import { AlertColorTypes, TextEntry, TickBox } from '@ska-telescope/ska-gui-comp
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS } from '../../../utils/constants';
+import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import Notification from '../../../utils/types/notification';
 
-export default function MemberInvite() {
+export default function MemberEntry() {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
   const {
@@ -40,8 +40,13 @@ export default function MemberInvite() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
+  const WRAPPER_WIDTH = '500px';
 
-  const fieldWrapper = (children?: React.JSX.Element) => <>{children}</>;
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
 
   function formValidation() {
     let count = 0;
@@ -278,34 +283,27 @@ export default function MemberInvite() {
   };
 
   return (
-    <>
-      <Grid
-        p={2}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-      >
-        <Grid item xs={7}>
+    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+      <Grid item xs={7}>
+        <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {firstNameField()}
           {lastNameField()}
           {emailField()}
           {piField()}
           {phdThesisField()}
-        </Grid>
-        <Grid item xs={4}>
-          <HelpPanel />
+          <Box p={2}>
+            <TeamInviteButton
+              action={clickFunction}
+              disabled={formInvalid}
+              primary
+              testId="sendInviteButton"
+            />
+          </Box>
         </Grid>
       </Grid>
-
-      <Box p={2}>
-        <TeamInviteButton
-          action={clickFunction}
-          disabled={formInvalid}
-          primary
-          testId="sendInviteButton"
-        />
-      </Box>
-    </>
+      <Grid item xs={4}>
+        <HelpPanel />
+      </Grid>
+    </Grid>
   );
 }
