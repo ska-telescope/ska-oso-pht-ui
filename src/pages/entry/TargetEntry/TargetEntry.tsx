@@ -126,10 +126,18 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     }
   }, []);
 
+  function formValidation() {
+    return false;
+  }
+
   const addButton = () => {
     const addButtonAction = () => {
-      AddTheTarget();
-      clearForm();
+      if (formValidation() === true) {
+        AddTheTarget();
+        clearForm();
+      } else {
+        NotifyError(t('addTarget.error'));
+      }
     };
 
     const AddTheTarget = () => {
@@ -193,6 +201,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     updateAppContent5(rec);
   }
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
   const resolveButton = () => {
     const processCoordinatesResults = response => {
