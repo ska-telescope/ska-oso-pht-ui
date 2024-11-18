@@ -334,8 +334,8 @@ export default function ObservationPage() {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <StatusIconDisplay
-              ariaDescription=""
-              ariaTitle=""
+              ariaDescription=" "
+              ariaTitle={t('sensCalc.' + getLevel(obs))}
               level={getLevel(obs)}
               onClick={() =>
                 getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
