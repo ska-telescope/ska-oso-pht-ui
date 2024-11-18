@@ -43,7 +43,14 @@ export default function MemberEntry() {
   const WRAPPER_WIDTH = '500px';
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={1}
+      sx={{
+        height: WRAPPER_HEIGHT
+        //, width: WRAPPER_WIDTH
+      }}
+    >
       {children}
     </Box>
   );
@@ -283,7 +290,14 @@ export default function MemberEntry() {
   };
 
   return (
-    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+    <Grid
+      p={2}
+      pb={5}
+      container
+      direction="row"
+      alignItems="space-evenly"
+      justifyContent="space-between"
+    >
       <Grid item xs={7}>
         <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {firstNameField()}

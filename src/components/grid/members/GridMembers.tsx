@@ -42,9 +42,19 @@ export default function GridMembers({
   );
 
   const basicColumns = [
-    { field: 'lastName', renderHeader: () => headerDisplay('lastName.label'), flex: 2 },
-    { field: 'firstName', renderHeader: () => headerDisplay('firstName.label'), flex: 2 },
-    { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1 },
+    {
+      field: 'lastName',
+      renderHeader: () => headerDisplay('lastName.label'),
+      flex: 2,
+      minWidth: 150
+    },
+    {
+      field: 'firstName',
+      renderHeader: () => headerDisplay('firstName.label'),
+      flex: 2,
+      minWidth: 150
+    },
+    { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1, minWidth: 100 },
     {
       field: 'phdThesis',
       headerName: t('phdThesis.label'),
