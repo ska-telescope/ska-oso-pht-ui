@@ -284,13 +284,6 @@ export const PROPOSAL_STATUS = {
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 
-export const OSCILLATION_UNITS = [
-  { label: 'Hz', toHz: 1 },
-  { label: 'kHz', toHz: 1000 },
-  { label: 'MHz', toHz: 10000000 },
-  { label: 'GHz', toHz: 10000000000 }
-];
-
 export const OB_SUBARRAY_AA05 = 1;
 export const OB_SUBARRAY_AA1 = 2;
 export const OB_SUBARRAY_AA2 = 3;
