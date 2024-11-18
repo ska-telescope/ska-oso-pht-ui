@@ -121,10 +121,11 @@ export default function ObservationEntry() {
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
+    console.log('observationIn ob', ob);
+    setObservingBand(ob?.observingBand);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
-    setObservingBand(ob?.observingBand);
     setWeather(ob?.weather);
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
@@ -143,8 +144,10 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas);
     setNumOf13mAntennas(ob?.num13mAntennas);
     setNumOfStations(ob?.numStations);
+    console.log('observationIn ob?.centralFrequencyUnits', ob?.centralFrequencyUnits);
   };
 
+  // SARAH
   const observationOut = () => {
     const newObservation: Observation = {
       id: myObsId,
@@ -176,6 +179,8 @@ export default function ObservationEntry() {
       num13mAntennas: numOf13mAntennas,
       numStations: numOfStations
     };
+    // Wrong centralFrequencyUnits coming out
+    console.log('observationOut centralFrequencyUnits', centralFrequencyUnits);
     return newObservation;
   };
 
@@ -195,16 +200,22 @@ export default function ObservationEntry() {
     return inSubArray;
   };
 
+  // SARAH
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+    console.log('::: centralFrequencyUnits', centralFrequencyUnits);
     if (
       Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
+      console.log('centralFrequencyUnits', centralFrequencyUnits);
       setCentralFrequency(
         calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
       );
       setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      console.log('inBand === BAND_LOW', inBand === BAND_LOW, inBand, BAND_LOW);
+      console.log('centralFrequencyUnits', centralFrequencyUnits);
+      console.log('FREQUENCY_GHZ', FREQUENCY_GHZ);
     }
   };
 
