@@ -149,7 +149,7 @@ const sensCalHelpers = {
     },
     convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
       if (typeof bandwidthUnits === 'number') {
-        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+        bandwidthUnits = FREQUENCY_UNITS.find(item => item.value === bandwidthUnits)?.mapping;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
@@ -164,7 +164,7 @@ const sensCalHelpers = {
     },
     convertBandwidthToGHz(bandwidthValue: number, bandwidthUnits): number {
       if (typeof bandwidthUnits === 'number') {
-        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+        bandwidthUnits = FREQUENCY_UNITS.find(item => item.value === bandwidthUnits)?.mapping;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1,
@@ -233,7 +233,7 @@ const sensCalHelpers = {
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
-      return FREQUENCY_UNITS.find(item => item.value === unitsField)?.label;
+      return FREQUENCY_UNITS.find(item => item.value === unitsField)?.mapping;
     }
   }
 };

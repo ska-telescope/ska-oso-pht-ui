@@ -709,12 +709,6 @@ export const OBSERVATION = {
         { label: 'uK', value: 7 }
       ]
     }
-  ],
-  Units: [
-    { label: 'GHz', value: 1 },
-    { label: 'MHz', value: 2 },
-    { label: 'kHz', value: 3 },
-    { label: 'Hz', value: 4 }
   ]
 };
 
