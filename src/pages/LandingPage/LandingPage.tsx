@@ -2,8 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -47,8 +45,6 @@ export default function LandingPage() {
     updateAppContent1,
     updateAppContent2
   } = storageObject.useStore();
-
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -203,13 +199,13 @@ export default function LandingPage() {
   const colId = {
     field: 'id',
     headerName: t('proposalId.label'),
-    width: 250
+    width: 200
   };
 
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.short'),
-    width: 120,
+    width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
@@ -221,7 +217,8 @@ export default function LandingPage() {
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    minWidth: 500,
+    flex: 3,
+    minWidth: 250,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
@@ -236,7 +233,7 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    width: 140,
+    width: 120,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
@@ -307,7 +304,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title={LG() ? 'addProposal.short' : 'addProposal.label'}
+      title={'addProposal.label'}
       toolTip="addProposal.toolTip"
     />
   );
@@ -367,11 +364,13 @@ export default function LandingPage() {
         <Grid item xs={12}>
           {pageDescription()}
         </Grid>
-        <Grid item>{addProposalButton()}</Grid>
-        <Grid item xs={6} lg={2}>
+        <Grid item p={2} sm={4} md={3} lg={2}>
+          {addProposalButton()}
+        </Grid>
+        <Grid item p={2} sm={4} md={4} lg={4}>
           {searchDropdown()}
         </Grid>
-        <Grid item xs={12} lg={4} mt={-1}>
+        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
           {searchEntryField('searchId')}
         </Grid>
         <Grid item xs={12} pt={1}>
