@@ -6,7 +6,6 @@ import {
   BANDWIDTH_TELESCOPE,
   OBSERVATION,
   TELESCOPE_LOW_NUM,
-  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
