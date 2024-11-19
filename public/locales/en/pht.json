@@ -59,8 +59,19 @@
     "2": "SKA-LOW"
   },
   "bandwidth": {
-    "help": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-    "label": "Bandwidth"
+    "help": {
+      "0": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
+      "1": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations."
+    },
+    "label": {
+      "0": "Bandwidth",
+      "1": "Continuum Bandwidth"
+    },
+    "range": {
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band"
+    }
   },
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
@@ -81,16 +92,6 @@
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
-  },
-  "continuumBandWidth": {
-    "help": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations.",
-    "label": "Continuum Bandwidth",
-    "range": {
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
-      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
-      "rangeError": "Bandwidth must be fully contained within the band",
-      "subBandError": "Sub-band bandwidth is too low - reduce number of sub-bands"
-    }
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
@@ -674,7 +675,8 @@
     "range": {
       "lower": 0,
       "upper": 32,
-      "error": "Value is outside of allowed range"
+      "error": "Value is outside of allowed range",
+      "bandwidthSubBand": "Sub-band bandwidth is too low - reduce number of sub-bands"
     }
   },
   "subArrayConfiguration": {
