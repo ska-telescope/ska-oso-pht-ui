@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="6.483" tests="1" failures="0">
-  <testsuite name="Root Suite" timestamp="2024-11-19T19:48:04" tests="0" file="createProposal.test.js" time="0.000" failures="0">
+<testsuites name="Mocha Tests" time="6.300" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2024-11-19T20:12:19" tests="0" file="createProposal.test.js" time="0.000" failures="0">
   </testsuite>
-  <testsuite name="Creating Proposal" timestamp="2024-11-19T19:48:05" tests="1" time="6.437" failures="0">
-    <testcase name="Create a basic proposal" time="6.439" classname="Creating Proposal">
+  <testsuite name="Creating Proposal" timestamp="2024-11-19T20:12:19" tests="1" time="6.264" failures="0">
+    <testcase name="Create a basic proposal" time="6.251" classname="Creating Proposal">
       <properties>
         <property name="test_key" value="XTP-59739"/>
       </properties>
