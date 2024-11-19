@@ -37,8 +37,8 @@ import DeleteObservationConfirmation from '../../components/alerts/deleteObserva
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 
-const DATA_GRID_TARGET = '50vh';
-const DATA_GRID_OBSERVATION = '60vh';
+const DATA_GRID_TARGET = '40vh';
+const DATA_GRID_OBSERVATION = '50vh';
 const PAGE = 5;
 const SIZE = 20;
 
@@ -191,7 +191,7 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = elementsO.filter(e => e.id !== currObs.id);
+    const obs1 = getProposal().observations.filter(e => e.id !== currObs.id);
     const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs.id);
     const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs.id);
     setProposal({
@@ -200,14 +200,7 @@ export default function ObservationPage() {
       targetObservation: obs2,
       groupObservations: obs3
     });
-
-    const temp = [];
-    elementsO?.forEach(rec => {
-      if (rec.id !== currObs.id) {
-        temp.push(rec);
-      }
-    });
-    setElementsO(temp);
+    setElementsO(elementsO.filter(e => e.id !== currObs.id));
     setCurrObs(null);
     closeDeleteDialog();
   };
@@ -327,7 +320,7 @@ export default function ObservationPage() {
       {
         field: 'type',
         headerName: t('observationType.short'),
-        flex: 0.75,
+        width: 140,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
       },
@@ -335,14 +328,14 @@ export default function ObservationPage() {
         field: 'weather',
         headerName: 'Status',
         sortable: false,
-        flex: 0.5,
+        width: 80,
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <StatusIconDisplay
-              ariaDescription=""
-              ariaTitle=""
+              ariaDescription=" "
+              ariaTitle={t('sensCalc.' + getLevel(obs))}
               level={getLevel(obs)}
               onClick={() =>
                 getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
@@ -358,7 +351,7 @@ export default function ObservationPage() {
         headerName: 'Actions',
         type: 'actions',
         sortable: false,
-        flex: 1,
+        width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           return (

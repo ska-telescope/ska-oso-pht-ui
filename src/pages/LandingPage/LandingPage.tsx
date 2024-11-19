@@ -2,8 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -48,8 +46,6 @@ export default function LandingPage() {
     updateAppContent2
   } = storageObject.useStore();
 
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
-
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [proposals, setProposals] = React.useState([]);
@@ -65,7 +61,7 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const DATA_GRID_HEIGHT = '90vh';
+  const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
     updateAppContent2(null);
@@ -203,8 +199,10 @@ export default function LandingPage() {
   const colId = {
     field: 'id',
     headerName: t('proposalId.label'),
-    flex: 1.5
+    flex: 1,
+    minWidth: 200
   };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.short'),
@@ -216,16 +214,18 @@ export default function LandingPage() {
     )
   };
   const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
+
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
     flex: 2.5,
+    minWidth: 400,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    width: 100,
+    width: 250,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -305,7 +305,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title={LG() ? 'addProposal.short' : 'addProposal.label'}
+      title={'addProposal.label'}
       toolTip="addProposal.toolTip"
     />
   );
@@ -365,11 +365,13 @@ export default function LandingPage() {
         <Grid item xs={12}>
           {pageDescription()}
         </Grid>
-        <Grid item>{addProposalButton()}</Grid>
-        <Grid item xs={6} lg={2}>
+        <Grid item p={2} sm={4} md={3} lg={2}>
+          {addProposalButton()}
+        </Grid>
+        <Grid item p={2} sm={4} md={4} lg={4}>
           {searchDropdown()}
         </Grid>
-        <Grid item xs={12} lg={4} mt={-1}>
+        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
           {searchEntryField('searchId')}
         </Grid>
         <Grid item xs={12} pt={1}>
@@ -377,7 +379,7 @@ export default function LandingPage() {
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {!axiosViewError && filteredData.length > 0 && (
-            <div style={{ width: '100%' }}>
+            <div>
               <DataGrid
                 testId="dataGridId"
                 rows={filteredData}
