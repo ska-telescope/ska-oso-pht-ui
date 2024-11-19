@@ -66,7 +66,9 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   }
 
   if (isLow(telescope)) {
-    return bandLimits[ANTENNA_LOW]?.map(e => e * 1e6) || [];
+    return (
+      bandLimits[ANTENNA_LOW]?.map(e => sensCalHelpers.format.convertBandwidthToHz(e, 'MHz')) || []
+    );
   }
 
   const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(telescope, subarrayConfig);
