@@ -389,7 +389,7 @@
     "grid": "PhD",
     "title": "PhD Thesis",
     "label": "For PhD Thesis",
-    "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
+    "help": "Check to indicate that part of the data from this proposal will be used towards a PhD thesis."
   },
   "pht": {
     "short": "PHT",
@@ -497,7 +497,7 @@
     }
   },
   "rightAscension": {
-    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit.",
+    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
     "label": "Right ascension"
   },
   "robust": {
@@ -539,10 +539,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "Right Ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit."
+        "value": "This field takes the declination of a target in a string format 'HH:MM:SS.S'."
       },
       "2": {
-        "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degrees."
+        "value": "This field takes the declination of a target in a string format 'DD:MM:SS.S'."
       }
     },
     "label": {
@@ -577,8 +577,8 @@
     },
     "units": {
       "1": {
-        "0": "hh:mm:ss",
-        "1": "deg"
+        "0": "hh:mm:ss.s",
+        "1": "dd:mm:ss.s"
       },
       "2": {
         "0": "deg",
