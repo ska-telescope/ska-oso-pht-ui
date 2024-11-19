@@ -127,17 +127,14 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   }, []);
 
   function formValidation() {
-    let result = false;
-    if (getProposal().targets.length === 0) {
-      return true;
-    }
-
-    if (getProposal().targets.length > 0) {
-      getProposal().targets?.forEach(rec => {
-        result = rec.name !== name;
-      });
-      return result;
-    }
+    let valid = true;
+    const targets = getProposal()?.targets;
+    targets.forEach(rec => {
+      if (rec.name === name || (rec.ra === ra && rec.dec === dec)) {
+        valid = false;
+      }
+    });
+    return valid;
   }
 
   const addButton = () => {
