@@ -37,7 +37,7 @@ interface PageBannerProps {
 const widthWrapStatusArray = '1500px';
 
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
+  const LG = useMediaQuery(useTheme().breakpoints.down('lg'));
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -126,9 +126,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {LG()
-        ? t(`page.${pageNo}.titleShort`).toUpperCase()
-        : t(`page.${pageNo}.title`).toUpperCase()}
+      {LG ? t(`page.${pageNo}.titleShort`).toUpperCase() : t(`page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
@@ -223,12 +221,23 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item display={{ xs: 'none', lg: 'block' }}>
-        {pageTitle()}
-      </Grid>
-      <Grid item xs={8}>
-        {pageDesc()}
-      </Grid>
+      {wrapStatusArray && (
+        <Grid container justifyContent="center" lg={12}>
+          {pageDesc()}
+        </Grid>
+      )}
+
+      {!wrapStatusArray && (
+        <Grid item lg={4}>
+          {pageTitle()}
+        </Grid>
+      )}
+
+      {!wrapStatusArray && (
+        <Grid item lg={8}>
+          {pageDesc()}
+        </Grid>
+      )}
     </Grid>
   );
 
