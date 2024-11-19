@@ -127,25 +127,26 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   }, []);
 
   function formValidation() {
+    let result = false;
     if (getProposal().targets.length === 0) {
       return true;
-    } else if (getProposal().targets.length > 0) {
+    }
+
+    if (getProposal().targets.length > 0) {
       getProposal().targets?.forEach(rec => {
-        console.log('Chloe received name', rec.name);
-        console.log('Chloe existing name', name);
-        console.log('Verify', rec.name !== name);
-        return rec.name !== name;
+        result = rec.name !== name;
       });
+      return result;
     }
   }
 
   const addButton = () => {
     const addButtonAction = () => {
-      if (formValidation() === true) {
+      if (!formValidation()) {
+        NotifyError(t('addTarget.error'));
+      } else {
         AddTheTarget();
         clearForm();
-      } else {
-        NotifyError(t('addTarget.error'));
       }
     };
 
