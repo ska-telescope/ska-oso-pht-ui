@@ -341,9 +341,8 @@ export default function ObservationEntry() {
       }
     };
 
-    const calculateMinimumChannelWidthHz = () => {
-      setMinimumChannelWidthHz(getMinimumChannelWidth(isLow()));
-    };
+    const calculateMinimumChannelWidthHz = () =>
+      setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
 
     calculateSubarray();
     setFrequencyUnits();

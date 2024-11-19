@@ -4,10 +4,9 @@ import {
   ANTENNA_LOW,
   ANTENNA_MIXED,
   BANDWIDTH_TELESCOPE,
-  LOW_MIN_CHANNEL_WIDTH_HZ,
-  MID_MIN_CHANNEL_WIDTH_HZ,
   OBSERVATION,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
@@ -16,9 +15,6 @@ const isLow = telescope => telescope === TELESCOPE_LOW_NUM;
 export const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): number => {
   return sensCalHelpers.format.convertBandwidthToHz(incValue, incUnits);
 };
-
-export const getMinimumChannelWidth = (telescope: number): number =>
-  isLow(telescope) ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
 
 // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
 export const checkMinimumChannelWidth = (

@@ -1,11 +1,10 @@
 import {
   FREQUENCY_HZ,
   FREQUENCY_UNITS,
-  LOW_MIN_CHANNEL_WIDTH_HZ,
-  MID_MIN_CHANNEL_WIDTH_HZ,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
-  VELOCITY_UNITS
+  VELOCITY_UNITS,
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
 } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
@@ -57,8 +56,8 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
 };
 
 // fundamental limit of the bandwidth provided by SKA MID or LOW
-export const getMinimumChannelWidth = (isLow: boolean): number =>
-  isLow ? LOW_MIN_CHANNEL_WIDTH_HZ : MID_MIN_CHANNEL_WIDTH_HZ;
+export const getMinimumChannelWidth = (telescope: number): number =>
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope];
 
 export const helpers = {
   validate: {
