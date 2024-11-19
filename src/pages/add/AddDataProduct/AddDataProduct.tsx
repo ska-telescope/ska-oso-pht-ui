@@ -12,7 +12,13 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
-import { HELP_FONT, IMAGE_SIZE_UNITS, NAV, STATUS_OK } from '../../../utils/constants';
+import {
+  HELP_FONT,
+  IMAGE_SIZE_UNITS,
+  NAV,
+  STATUS_OK,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
@@ -128,8 +134,6 @@ export default function AddDataProduct() {
       </Box>
     );
   };
-
-  const WRAPPER_HEIGHT = '80px';
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -337,7 +341,7 @@ export default function AddDataProduct() {
         spacing={1}
       >
         <Grid item md={11} lg={4}>
-          <Stack spacing={1}>
+          <Stack>
             {fieldWrapper(observationsField())}
             {dataProductsFieldOld()}
             {fieldWrapper(imageSizeField())}

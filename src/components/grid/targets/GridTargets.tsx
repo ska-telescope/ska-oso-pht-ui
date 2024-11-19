@@ -5,7 +5,6 @@ import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
-import { VELOCITY_TYPE } from '../../../utils/constants';
 
 interface GridTargetsProps {
   deleteClicked?: Function;
@@ -32,19 +31,22 @@ export default function GridTargets({
     { field: 'dec', headerName: t('skyDirection.short.2.' + raType), width: 120 },
     {
       field: 'vel',
-      headerName: t('velocityRedshift.label'),
+      headerName: t('velocity.0'),
       width: 160,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Target }) => {
-        const showVelocity = row =>
-          t('velocity.0')[0] +
-          ': ' +
-          row.vel +
-          ' ' +
-          (row.vel ? t('velocity.units.' + row.velUnit) : '');
-        const showRedshift = row => t('velocity.1')[0] + ': ' + row.redshift;
-        return e.row.velType === VELOCITY_TYPE.VELOCITY ? showVelocity(e.row) : showRedshift(e.row);
+        if (e.row.vel === null || e.row.vel === '') {
+          return null;
+        }
+        const units = e.row.velUnit === 1 ? 1 : 0;
+        return e.row.vel + ' ' + t('velocity.units.' + units);
       }
+    },
+    {
+      field: 'redshift',
+      headerName: t('velocity.1'),
+      width: 160,
+      disableClickEventBubbling: true
     }
   ];
 

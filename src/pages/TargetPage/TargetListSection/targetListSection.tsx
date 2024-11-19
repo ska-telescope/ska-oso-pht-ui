@@ -11,14 +11,17 @@ import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
-import { RA_TYPE_EQUATORIAL, VELOCITY_TYPE } from '../../../utils/constants';
+import {
+  FOOTER_SPACER,
+  RA_TYPE_EQUATORIAL,
+  VELOCITY_TYPE,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 
-const DATA_GRID_HEIGHT = '90vh';
-const WRAPPER_HEIGHT = '80px';
+const DATA_GRID_HEIGHT = '50vh';
 const WRAPPER_WIDTH = '500px';
-const FOOTER_SPACER = 130;
 
 export default function TargetListSection() {
   const { t } = useTranslation('pht');

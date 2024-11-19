@@ -118,6 +118,7 @@ export const ENTRY_HEIGHT = 40;
 export const ELEVATION_DEFAULT = 45;
 
 export const FOOTER_HEIGHT = 20;
+export const FOOTER_SPACER = 130;
 
 export const FREQUENCY_GHZ = 1;
 export const FREQUENCY_MHZ = 2;
@@ -204,6 +205,8 @@ export const NAV = [
   '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
+
+export const PAGE_SRC_NET = 8;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
@@ -846,6 +849,8 @@ export const VELOCITY_UNITS = [
   { label: 'm/s', value: 0, convert: 1 },
   { label: 'km/s', value: 1, convert: 1000 }
 ];
+
+export const WRAPPER_HEIGHT = '75px';
 
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;
