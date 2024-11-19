@@ -130,8 +130,9 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     let valid = true;
     const targets = getProposal()?.targets;
     targets.forEach(rec => {
-      if (rec.name.toLowerCase() === name.toLowerCase() || (rec.ra === ra && rec.dec === dec)) {
+      if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
+        setNameFieldError(t('addTarget.error'));
       }
     });
     return valid;
@@ -140,7 +141,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const addButton = () => {
     const addButtonAction = () => {
       if (!formValidation()) {
-        NotifyError(t('addTarget.error'));
       } else {
         AddTheTarget();
         clearForm();
@@ -208,8 +208,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     updateAppContent5(rec);
   }
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-
   const resolveButton = () => {
     const processCoordinatesResults = response => {
       if (response && !response.error) {
