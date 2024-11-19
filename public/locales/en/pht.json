@@ -59,8 +59,19 @@
     "2": "SKA-LOW"
   },
   "bandwidth": {
-    "help": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-    "label": "Bandwidth"
+    "help": {
+      "0": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
+      "1": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations."
+    },
+    "label": {
+      "0": "Bandwidth",
+      "1": "Continuum Bandwidth"
+    },
+    "range": {
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band"
+    }
   },
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
@@ -81,16 +92,6 @@
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
-  },
-  "continuumBandWidth": {
-    "help": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations.",
-    "label": "Continuum Bandwidth",
-    "range": {
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
-      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
-      "rangeError": "Bandwidth must be fully contained within the band",
-      "subBandError": "Sub-band bandwidth is too low - reduce number of sub-bands"
-    }
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
@@ -167,6 +168,9 @@
     },
     "success": "Email invite has been sent.",
     "error": "Email invite was unsuccessful and member is not added"
+  },
+  "empty": {
+    "cell": "There are no contents for this cell"
   },
   "fileName": {
     "label": "File name"
@@ -483,7 +487,7 @@
   },
   "referenceFrame": {
     "label": "Reference Frame",
-    "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.",
+    "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.  The Heliocentric measures spatial positions relative to the center of the sun. The local standard of rest (LSR), is a point in space that moves in a circular orbit around the Galactic Center at the Sun's position. ",
     "0": "Heliocentric",
     "1": "Kinematic Local Standard of Rest"
   },
@@ -542,7 +546,7 @@
         "value": "Right Ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit."
       },
       "2": {
-        "value": "DECLINATION: This field takes the declination of a target in a string format 'DD:MM:SS.S' or in degrees."
+        "value": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
       }
     },
     "label": {
@@ -597,6 +601,12 @@
   },
   "selected": {
     "label": "Selected"
+  },
+  "sensCalc": {
+    "0": "All sensitivity calculations for this observation are valid",
+    "1": "One or more sensitivity calculations for this observation are invalid",
+    "3": "Sensitivity calculations for this observation are in progress",
+    "5": "No Sensitivity calculations"
   },
   "sensitivityCalculatorResults": {
     "beamSize": "Beam Size",
@@ -665,7 +675,8 @@
     "range": {
       "lower": 0,
       "upper": 32,
-      "error": "Value is outside of allowed range"
+      "error": "Value is outside of allowed range",
+      "bandwidthSubBand": "Sub-band bandwidth is too low - reduce number of sub-bands"
     }
   },
   "subArrayConfiguration": {
@@ -766,8 +777,8 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "Specify the radial velocity.  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
-    "help1": "Specify the redshift value.  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
+    "help0": "Specify the radial velocity.  Radial velocity is the speed of an object along the line of sight from an observer to the object. It's also known as the line-of-sight velocity.  (also known as the line-of-sight velocity).  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
+    "help1": "Specify the redshift value.  Redshift is the displacement of the spectrum of an astronomical object toward longer (red) wavelengths. This field will be populated by the Resolve functionality if the value is in SIMBAD.",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",

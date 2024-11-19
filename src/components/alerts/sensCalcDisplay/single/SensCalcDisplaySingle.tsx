@@ -28,7 +28,7 @@ export default function SensCalcDisplaySingle({
   };
 
   const ariaStatusMessage = sensCalc => {
-    const status = sensCalc?.statusGUI?.length ? t('statusLoading.' + sensCalc?.statusGUI) : '';
+    const status = t('statusLoading.' + sensCalc?.statusGUI);
     const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });
   };

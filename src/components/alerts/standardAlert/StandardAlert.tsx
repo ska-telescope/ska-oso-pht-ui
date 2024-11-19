@@ -41,8 +41,8 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
       >
         <Grid item>
           <StatusIconDisplay
-            ariaDescription=""
-            ariaTitle=""
+            ariaDescription=" "
+            ariaTitle=" "
             level={getLevel(color)}
             size={FONTSIZE}
             testId={testId + 'Icon'}

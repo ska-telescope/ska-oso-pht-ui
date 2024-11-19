@@ -3,7 +3,8 @@ import {
   FREQUENCY_UNITS,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
-  VELOCITY_UNITS
+  VELOCITY_UNITS,
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
 } from './constants';
 
 // TODO : Ensure that we remove all hard-coded values
@@ -26,6 +27,7 @@ export const countWords = (text: string) => {
         .filter(Boolean).length;
 };
 
+// TODO double-check function and/or multipliers
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
@@ -52,6 +54,10 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
     (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
   );
 };
+
+// fundamental limit of the bandwidth provided by SKA MID or LOW
+export const getMinimumChannelWidth = (telescope: number): number =>
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope];
 
 export const helpers = {
   validate: {

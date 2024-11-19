@@ -89,51 +89,63 @@ export default function GridObservationSummary({
     }
   };
 
+  const colObservationId = {
+    field: 'id',
+    renderHeader: () => headerDisplay('observations.id'),
+    disableClickEventBubbling: true,
+    renderCell: e => element(e.row.id)
+  };
+
+  const colElevation = {
+    field: 'elevation',
+    renderHeader: () => headerDisplay('page.4.label'),
+    flex: 0.75,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { type: number } }) => elementArray(getObservationTargets(e.row))
+  };
+
+  const colObservingBand = {
+    field: 'telescope',
+    renderHeader: () => headerDisplay('observingBand.label'),
+    flex: 1,
+    disableClickEventBubbling: true,
+    renderCell: e => element(BANDWIDTH_TELESCOPE[e.row.observingBand]?.label)
+  };
+
+  const colObservingType = {
+    field: 'type',
+    renderHeader: () => headerDisplay('observationType.short'),
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { type: number } }) => element(t(`observationType.${e.row.type}`))
+  };
+
+  const colSensCalcStatus = {
+    field: 'weather',
+    renderHeader: () =>
+      headerDisplay(
+        'sensitivityCalculatorResults.sensitivity',
+        'sensitivityCalculatorResults.integrationTime'
+      ),
+    flex: 1.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { type: number } }) => element(sensitivityIntegrationTime(e.row))
+  };
+
+  const colSensCalcBandwidth = {
+    field: 'bandwidth',
+    renderHeader: () => headerDisplay('page.7.plural'),
+    flex: 1.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))
+  };
+
   const basicColumns = [
-    {
-      field: 'id',
-      renderHeader: () => headerDisplay('observations.id'),
-      disableClickEventBubbling: true,
-      renderCell: e => element(e.row.id)
-    },
-    {
-      field: 'elevation',
-      renderHeader: () => headerDisplay('page.4.label'),
-      flex: 0.75,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => elementArray(getObservationTargets(e.row))
-    },
-    {
-      field: 'telescope',
-      renderHeader: () => headerDisplay('observingBand.label'),
-      flex: 1,
-      disableClickEventBubbling: true,
-      renderCell: e => element(BANDWIDTH_TELESCOPE[e.row.observingBand]?.label)
-    },
-    {
-      field: 'type',
-      renderHeader: () => headerDisplay('observationType.short'),
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => element(t(`observationType.${e.row.type}`))
-    },
-    {
-      field: 'weather',
-      renderHeader: () =>
-        headerDisplay(
-          'sensitivityCalculatorResults.sensitivity',
-          'sensitivityCalculatorResults.integrationTime'
-        ),
-      flex: 1.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => element(sensitivityIntegrationTime(e.row))
-    },
-    {
-      field: 'bandwidth',
-      renderHeader: () => headerDisplay('page.7.plural'),
-      flex: 1.5,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))
-    }
+    colObservationId,
+    colElevation,
+    colObservingBand,
+    colObservingType,
+    colSensCalcStatus,
+    colSensCalcBandwidth
   ];
 
   const getColumns = () => [...basicColumns];
