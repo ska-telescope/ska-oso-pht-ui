@@ -179,7 +179,7 @@ export default function ObservationEntry() {
       num13mAntennas: numOf13mAntennas,
       numStations: numOfStations
     };
-    // Wrong centralFrequencyUnits coming out
+    // correct centralFrequencyUnits coming out
     console.log('observationOut centralFrequencyUnits', centralFrequencyUnits);
     return newObservation;
   };
@@ -204,6 +204,8 @@ export default function ObservationEntry() {
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
     console.log('::: centralFrequencyUnits', centralFrequencyUnits);
+    // shows uncorrect units but saves correct ones
+    // => Setter not fast enough to set the values before this code is run?
     if (
       Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
@@ -265,10 +267,13 @@ export default function ObservationEntry() {
     setSubarrayConfig(e);
   };
 
+  // SARAH
   React.useEffect(() => {
     helpComponent(t('observationId.help'));
     if (isEdit()) {
       observationIn(locationProperties.state);
+      console.log('locationProperties.state', locationProperties.state);
+      // setTheObservingBand(locationProperties?.state?.observingBand);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
@@ -346,7 +351,10 @@ export default function ObservationEntry() {
 
     const setFrequencyUnits = () => {
       if (isLow()) {
+        console.log('HAPPENING HERE? ');
+        console.log('centralFrequencyUnits', centralFrequencyUnits);
         setCentralFrequencyUnits(FREQUENCY_MHZ);
+        console.log('centralFrequencyUnits', centralFrequencyUnits);
       }
     };
 
@@ -472,6 +480,7 @@ export default function ObservationEntry() {
     const NumOf15mAntennasField = () => {
       const validate = (e: number) => {
         const num = Number(Math.abs(e).toFixed(0));
+        // TODO numOf15mAntennas.range.lower should be in constants not in translation
         if (num < Number(t('numOf15mAntennas.range.lower'))) {
           setNumOf15mAntennas(Number(t('numOf15mAntennas.range.lower')));
         } else if (num > Number(t('numOf15mAntennas.range.upper'))) {
@@ -843,9 +852,23 @@ export default function ObservationEntry() {
     );
   };
 
+  React.useEffect(() => {
+    console.log('////////// centralFrequencyUnits changed:', centralFrequencyUnits);
+  }, [centralFrequencyUnits]);
+
+  const getCentralFRequencyOptions = () => {
+    return isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+  }
+
+  React.useEffect(() => {
+    getCentralFRequencyOptions();
+  }, [observingBand, observationIn]);
+
+  // SARAH
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
-    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    const options = getCentralFRequencyOptions();
+    console.log('centralFrequencyUnits in centralFrequencyUnitsField', centralFrequencyUnits);
     return (
       <DropDown
         options={options}
