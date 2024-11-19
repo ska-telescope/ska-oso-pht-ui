@@ -5,7 +5,7 @@ import {
   ANTENNA_MIXED,
   BANDWIDTH_TELESCOPE,
   OBSERVATION,
-  TELESCOPE_LOW_NUM,
+  TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
