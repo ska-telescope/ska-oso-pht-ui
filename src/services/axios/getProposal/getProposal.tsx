@@ -294,10 +294,10 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
           : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
-      robust: 0, // TODO
+      robust: 0, // TODO map once PDM updated
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      spectralAveraging: Number(inValue[i].array_details?.spectral_averaging),
+      spectralAveraging: 1, // Number(inValue[i].array_details?.spectral_averaging) // TODO map once PDM updated
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,

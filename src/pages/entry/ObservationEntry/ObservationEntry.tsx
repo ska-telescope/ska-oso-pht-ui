@@ -125,6 +125,7 @@ export default function ObservationEntry() {
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
+    console.log('observationIn', ob);
     setOb(ob);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
@@ -181,6 +182,7 @@ export default function ObservationEntry() {
       num13mAntennas: numOf13mAntennas,
       numStations: numOfStations
     };
+    console.log('observationOut', newObservation);
     return newObservation;
   };
 
