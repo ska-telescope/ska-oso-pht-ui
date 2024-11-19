@@ -130,7 +130,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     let valid = true;
     const targets = getProposal()?.targets;
     targets.forEach(rec => {
-      if (rec.name === name || (rec.ra === ra && rec.dec === dec)) {
+      if (rec.name.toLowerCase() === name.toLowerCase() || (rec.ra === ra && rec.dec === dec)) {
         valid = false;
       }
     });
