@@ -17,16 +17,13 @@ ska-oso-pht-services:
     #   url: ~ # Use the default value in the chart, which is the ODA service address
 
 ska-db-oda-umbrella:
+  enabled: true
   ska-db-oda:
     enabled: true
-    logLevel: info
-    rest:
+    secretProvider:
       enabled: true
-      ingress:
-        enabled: true
-      backend:
-        postgres:
-          host:
+    rest:
+      enabled: true 
   postgresql:
     enabled: true
   pgadmin4:
@@ -34,3 +31,5 @@ ska-db-oda-umbrella:
   ska-ser-skuid:
     skuid:
       enabled: true
+
+
