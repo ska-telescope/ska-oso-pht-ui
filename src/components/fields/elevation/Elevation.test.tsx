@@ -1,12 +1,11 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
-import Elevation from './Elevation';
+import Elevation, { ELEVATION_DEFAULT } from './Elevation';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
-import { ELEVATION_DEFAULT } from '../../../utils/constants';
 
-const value = ELEVATION_DEFAULT;
+const value = ELEVATION_DEFAULT[0];
 
 function mountBasic(theTheme: any) {
   viewPort();
