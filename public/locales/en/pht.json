@@ -395,7 +395,7 @@
     "grid": "PhD",
     "title": "PhD Thesis",
     "label": "For PhD Thesis",
-    "help": "Check to indicate that participation in the proposal will contribute to a PhD Thesis."
+    "help": "Check to indicate that part of the data from this proposal will be used towards a PhD thesis."
   },
   "pht": {
     "short": "PHT",
@@ -484,14 +484,14 @@
     "help": "Only Galactic and Equatorial reference systems are available.",
     "label": "Reference System",
     "tooltip": "This feature is currently disabled",
-    "0": "Equatorial",
+    "0": "ICRS",
     "1": "Galactic"
   },
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.  The Heliocentric measures spatial positions relative to the center of the sun. The local standard of rest (LSR), is a point in space that moves in a circular orbit around the Galactic Center at the Sun's position. ",
     "0": "Heliocentric",
-    "1": "Kinematic Local Standard of Rest"
+    "1": "Local Standard of Rest"
   },
   "resolve": {
     "label": "Resolve",
@@ -503,7 +503,7 @@
     }
   },
   "rightAscension": {
-    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit.",
+    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
     "label": "Right ascension"
   },
   "robust": {
@@ -545,10 +545,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "Right Ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.  Right ascension can also be in degrees in which case you have to select the appropriate unit."
+        "value": "This field takes the right ascension of a target in a string format 'HH:MM:SS.S'."
       },
       "2": {
-        "value": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
+        "value": "This field takes the declination of a target in a string format 'DD:MM:SS.S'."
       }
     },
     "label": {
@@ -583,11 +583,11 @@
     },
     "units": {
       "1": {
-        "0": "hh:mm:ss",
-        "1": "deg"
+        "0": "hh:mm:ss.s",
+        "1": "dd:mm:ss.s"
       },
       "2": {
-        "0": "deg",
+        "0": "dd:mm:ss.s",
         "1": "deg"
       }
     }
