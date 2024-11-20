@@ -45,7 +45,9 @@
   },
   "addTarget": {
     "label": "Add Target",
-    "toolTip": "Will add the target to the list associated with this proposal."
+    "toolTip": "Will add the target to the list associated with this proposal.",
+    "success": "Target is successfully added",
+    "error": "Failed to add target - check for duplicate"
   },
   "apiVersion": {
     "label": "API Version"
