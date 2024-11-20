@@ -235,8 +235,8 @@
     "help": "Select natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Image Weighting",
     "0": "Natural",
-    "1": "Uniform"
-   
+    "1": "Uniform",
+    "2": "Briggs"
   },
   "importFromFile": {
     "label": "Import from file"
@@ -462,7 +462,7 @@
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
     "label": "Proposal Type",
     "plural": "Proposal Types",
-    "short": "Proposal Type",
+    "short": "Type",
     "title": {
       "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
