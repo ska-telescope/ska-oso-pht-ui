@@ -18,7 +18,8 @@ interface ElevationFieldProps {
   widthLabel?: number;
 }
 
-export const ELEVATION_MIN = [20, 15];
+export const ELEVATION_DEFAULT = [45, 20];
+export const ELEVATION_MIN = [15, 15];
 export const ELEVATION_MAX = [59.2, 59.2];
 export const ELEVATION_UNITS = 'deg';
 

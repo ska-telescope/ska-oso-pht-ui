@@ -15,7 +15,6 @@ import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
-  ELEVATION_DEFAULT,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -45,7 +44,9 @@ import {
   FREQUENCY_GHZ,
   FOOTER_SPACER,
   WRAPPER_HEIGHT,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -59,7 +60,7 @@ import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
-import ElevationField from '../../../components/fields/elevation/Elevation';
+import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
 import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
@@ -94,7 +95,7 @@ export default function ObservationEntry() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
-  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
+  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
@@ -159,7 +160,7 @@ export default function ObservationEntry() {
       type: observationType,
       observingBand,
       weather,
-      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capture info needed for ElevationBackend type and update sens calc mapping
+      elevation: elevation,
       centralFrequency: Number(centralFrequency),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
@@ -227,16 +228,24 @@ export default function ObservationEntry() {
     }
   };
 
+  const setDefaultElevation = (inBand: number) => {
+    if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
+      setElevation(ELEVATION_DEFAULT[telescope(inBand) - 1]);
+    }
+  };
+
   const validateId = () =>
     getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
+      setDefaultElevation(e as number);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (!isLow() && e === 0) {
-      setSuppliedType(1);
+      setDefaultElevation(e);
+      setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
@@ -358,7 +367,7 @@ export default function ObservationEntry() {
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
-  const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
+  const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
     subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
@@ -1101,7 +1110,7 @@ export default function ObservationEntry() {
                   {isLow() ? emptyField() : taperingField()}
                 </Grid>
                 <Grid item lg={5}>
-                  {emptyField()}
+                  {isLow() ? <></> : emptyField()}
                 </Grid>
               </Grid>
             </CardContent>
