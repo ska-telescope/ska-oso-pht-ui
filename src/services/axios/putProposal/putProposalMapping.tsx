@@ -464,9 +464,5 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   helpers.transform.trimObject(transformedProposal);
-
-  console.log('PUT Proposal before, ', proposal);
-  console.log('PUT Proposal transformed, ', transformedProposal);
-
   return transformedProposal;
 }
