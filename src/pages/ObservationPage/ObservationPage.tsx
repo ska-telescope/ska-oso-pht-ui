@@ -288,12 +288,14 @@ export default function ObservationPage() {
         field: 'id',
         headerName: t('observations.id'),
         flex: 0.75,
+        minWidth: 150,
         disableClickEventBubbling: true
       },
       {
         field: 'id2',
         headerName: t('observations.group'),
         flex: 0.75,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { id: number } }) => {
           return observationGroupIds((e.row.id as unknown) as string);
@@ -303,6 +305,7 @@ export default function ObservationPage() {
         field: 'telescope',
         headerName: t('observingBand.label'),
         flex: 1.5,
+        minWidth: 250,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
           BANDWIDTH_TELESCOPE[e.row.rec.observingBand]?.label
@@ -311,6 +314,7 @@ export default function ObservationPage() {
         field: 'subarray',
         headerName: t('subArrayConfiguration.short'),
         flex: 1,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { telescope: number; subarray: number } }) => {
           if (e.row.telescope) {
@@ -330,7 +334,7 @@ export default function ObservationPage() {
         field: 'weather',
         headerName: 'Status',
         sortable: false,
-        width: 80,
+        width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
@@ -486,43 +490,37 @@ export default function ObservationPage() {
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid item md={11} lg={5}>
-          <Grid
-            container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="space-around"
-            spacing={1}
-          >
-            <Grid item>
-              <AddButton
-                action={PATH[2]}
-                primary={!hasObservations()}
-                testId="addObservationButton"
-                title="addObservation.button"
+          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
+            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Grid item pb={1}>
+                <AddButton
+                  action={PATH[2]}
+                  primary={!hasObservations()}
+                  testId="addObservationButton"
+                  title="addObservation.button"
+                />
+              </Grid>
+            </Grid>
+            {hasObservations() && (
+              <DataGrid
+                rows={elementsO}
+                columns={extendedColumnsObservations}
+                height={DATA_GRID_OBSERVATION}
+                onRowClick={e => setCurrObs(e.row.rec)}
+                onRowSelectionModelChange={newRowSelectionModel => {
+                  setRowSelectionModel(newRowSelectionModel);
+                }}
+                rowSelectionModel={rowSelectionModel}
+                testId="observationDetails"
               />
-            </Grid>
-            <Grid item>
-              {hasObservations() && (
-                <DataGrid
-                  rows={elementsO}
-                  columns={extendedColumnsObservations}
-                  height={DATA_GRID_OBSERVATION}
-                  onRowClick={e => setCurrObs(e.row.rec)}
-                  onRowSelectionModelChange={newRowSelectionModel => {
-                    setRowSelectionModel(newRowSelectionModel);
-                  }}
-                  rowSelectionModel={rowSelectionModel}
-                  testId="observationDetails"
-                />
-              )}
-              {!hasObservations() && (
-                <Alert
-                  color={AlertColorTypes.Error}
-                  text={t('error.noObservations')}
-                  testId="noObservationsNotification"
-                />
-              )}
-            </Grid>
+            )}
+            {!hasObservations() && (
+              <Alert
+                color={AlertColorTypes.Error}
+                text={t('error.noObservations')}
+                testId="noObservationsNotification"
+              />
+            )}
           </Grid>
         </Grid>
         <Grid item md={11} lg={6}>
@@ -537,31 +535,47 @@ export default function ObservationPage() {
                 <Grid item lg={6}>
                   <Card variant="outlined">
                     <CardContent>
-                      <Grid container alignItems="space-evenly" justifyContent="space-between">
+                      <Grid
+                        container
+                        flexDirection={'row'}
+                        flexWrap={'wrap'}
+                        alignItems="space-evenly"
+                        justifyContent="space-between"
+                      >
                         <Grid item>
                           <Typography id="targetObservationLabel" pt={1} variant="h6">
                             {t('targetObservation.filters')}
                           </Typography>
                         </Grid>
+
                         <Grid item>
-                          <TickBox
-                            disabled={!currObs}
-                            label={t('selected.label')}
-                            labelPosition={LABEL_POSITION.END}
-                            testId="selectedTickBox"
-                            checked={selected}
-                            onChange={() => setSelected(!selected)}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <TickBox
-                            disabled={!currObs}
-                            label={t('notSelected.label')}
-                            labelPosition={LABEL_POSITION.END}
-                            testId="notSelectedTickBox"
-                            checked={notSelected}
-                            onChange={() => setNotSelected(!notSelected)}
-                          />
+                          <Grid
+                            container
+                            flexDirection={'row'}
+                            flexWrap={'wrap'}
+                            justifyContent={'flex-start'}
+                          >
+                            <Grid item>
+                              <TickBox
+                                disabled={!currObs}
+                                label={t('selected.label')}
+                                labelPosition={LABEL_POSITION.END}
+                                testId="selectedTickBox"
+                                checked={selected}
+                                onChange={() => setSelected(!selected)}
+                              />
+                            </Grid>
+                            <Grid item>
+                              <TickBox
+                                disabled={!currObs}
+                                label={t('notSelected.label')}
+                                labelPosition={LABEL_POSITION.END}
+                                testId="notSelectedTickBox"
+                                checked={notSelected}
+                                onChange={() => setNotSelected(!notSelected)}
+                              />
+                            </Grid>
+                          </Grid>
                         </Grid>
                       </Grid>
                     </CardContent>
