@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="11.476" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2024-11-20T11:02:27" tests="0" file="createProposal.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Creating Proposal" timestamp="2024-11-20T11:02:27" tests="1" time="11.418" failures="0">
+    <testcase name="Create a basic proposal" time="11.413" classname="Creating Proposal">
+      <properties>
+        <property name="test_key" value="XTP-59739"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

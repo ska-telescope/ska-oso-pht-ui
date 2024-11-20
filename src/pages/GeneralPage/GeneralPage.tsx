@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import HelpPanel from '../../components/info/helpPanel/helpPanel';
@@ -16,7 +16,7 @@ import { fetchCycleData } from '../../utils/storage/cycleData';
 const PAGE = 2;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 2;
-const FIELD_WIDTH = 12 - LABEL_WIDTH;
+const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
   const { t } = useTranslation('pht');
@@ -63,16 +63,17 @@ export default function GeneralPage() {
   };
 
   const cycleField = () => (
-    <Grid container mb={1} direction="row" justifyContent="center" alignItems="center" spacing={2}>
-      <Grid item xs={LABEL_WIDTH}>
-        <Typography sx={{ fontWeight: 'bold' }} variant="subtitle1">
-          {t('cycle.label') + ' *'}
-        </Typography>
-      </Grid>
-      <Grid item xs={FIELD_WIDTH}>
-        <Typography variant="subtitle1">{fetchCycleData().id}</Typography>
-      </Grid>
-    </Grid>
+    <TextEntry
+      label={t('cycle.label')}
+      labelBold
+      labelPosition={LAB_POSITION}
+      labelWidth={LABEL_WIDTH * 2}
+      testId="cycleId"
+      value={fetchCycleData().id}
+      onFocus={() => helpComponent(t('abstract.help'))}
+      required
+      disabled
+    />
   );
 
   const abstractField = () => {
@@ -85,9 +86,10 @@ export default function GeneralPage() {
     };
 
     const helperFunction = (title: string) =>
-      `${t('abstract.helper')} - ${t('specialCharacters.cntWord')} ${countWords(
-        title
-      )} / ${MAX_WORD}`;
+      t('abstract.helper', {
+        current: countWords(title),
+        max: MAX_WORD
+      });
 
     function validateWordCount(title: string) {
       if (countWords(title) > MAX_WORD) {
@@ -133,7 +135,7 @@ export default function GeneralPage() {
       label={t('scienceCategory.label')}
       labelBold
       labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH}
+      labelWidth={LABEL_WIDTH * 2}
       onFocus={() => helpComponent(t('scienceCategory.help'))}
     />
   );
@@ -149,12 +151,25 @@ export default function GeneralPage() {
         justifyContent="space-around"
       >
         <Grid item md={12} lg={8}>
-          {cycleField()}
-          {abstractField()}
-          {categoryField()}
+          <Grid container direction="row">
+            <Grid item md={12} lg={12} pt={2}>
+              <Grid item md={12} lg={6}>
+                {cycleField()}
+              </Grid>
+            </Grid>
+            <Grid item md={12} lg={12} pt={2}>
+              <Grid item md={12} lg={6}>
+                {categoryField()}
+              </Grid>
+            </Grid>
+            <Grid item md={12}>
+              {abstractField()}
+            </Grid>
+          </Grid>
+          <Grid item md={6}></Grid>
         </Grid>
         <Grid item md={12} lg={3}>
-          <HelpPanel />
+          <HelpPanel maxHeight={HELP_VIEWPORT} />
         </Grid>
       </Grid>
     </Shell>

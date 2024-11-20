@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
-import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import StatusIconDisplay from '../../icon/status/statusIcon';
 import { NAV } from '../../../utils/constants';
 
 interface StatusWrapperProps {
@@ -27,7 +27,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   return (
     <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
       <Grid container direction="column" alignItems="center" justifyContent="center">
-        <StatusIcon
+        <StatusIconDisplay
           ariaTitle={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
             status: t('statusValue.' + getLevel())
@@ -37,7 +37,6 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
             status: t('statusValue.' + getLevel())
           })}
           testId={'statusId' + page}
-          icon
           level={getLevel()}
           size={SIZE}
         />

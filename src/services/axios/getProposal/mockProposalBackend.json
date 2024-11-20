@@ -8,6 +8,7 @@
     "version": 1,
     "created_by": "TestUser",
     "created_on": "2022-09-23T15: 43: 53.971548Z",
+    "pdm_version": "16.0.1",
     "last_modified_by": "TestUser",
     "last_modified_on": "2022-09-23T15: 43: 53.971548Z"
   },
@@ -16,7 +17,7 @@
     "title": "In a galaxy far, far away",
     "proposal_type": {
       "main_type": "standard_proposal",
-      "sub_type": ["coordinated_proposal"]
+      "attributes": ["coordinated_proposal"]
     },
     "abstract": "Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering",
     "science_category": "Science Category",
@@ -77,7 +78,7 @@
             "unit": "mHz"
           },
           "supplied": {
-            "type": "integration_time",
+            "supplied_type": "integration_time",
             "value": 0.0,
             "unit": "",
             "quantity": {
@@ -88,8 +89,7 @@
           "spectral_resolution": "DUMMY",
           "effective_resolution": "DUMMY",
           "image_weighting": "DUMMY"
-        },
-        "details": "MID + Continuum"
+        }
       }
     ]
   }

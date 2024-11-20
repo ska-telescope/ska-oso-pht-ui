@@ -1,10 +1,10 @@
 import React from 'react';
 import { t } from 'i18next';
 import { IconButton } from '@mui/material';
-import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import SensCalcModalSingle from '../../alerts/sensCalcModal/single/SensCalcModalSingle';
-import { OBS_TYPES, STATUS_OK } from '../../../utils/constants';
-import { presentSensCalcError, presentUnits, presentValue } from '../../../utils/present';
+import StatusIconDisplay from '../../../icon/status/statusIcon';
+import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
+import { OBS_TYPES, STATUS_OK } from '../../../../utils/constants';
+import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 const SIZE = 20;
 const VALUE = 'value';
@@ -27,6 +27,12 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
+  const ariaStatusMessage = sensCalc => {
+    const status = t('statusLoading.' + sensCalc?.statusGUI);
+    const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
+    return t('sensitivityCalculatorResults.status', { status: status, error: error });
+  };
+
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
       sensCalc?.section2?.length > 0 ? OBS_TYPES[1] : OBS_TYPES[0];
@@ -46,13 +52,10 @@ export default function SensCalcDisplaySingle({
           style={{ cursor: 'hand' }}
           onClick={sensCalc?.statusGUI === STATUS_OK ? IconClicked : null}
         >
-          <StatusIcon
-            ariaTitle={t('sensitivityCalculatorResults.status', {
-              status: t('statusLoading.' + sensCalc?.statusGUI),
-              error: t(presentSensCalcError(sensCalc?.error))
-            })}
+          <StatusIconDisplay
+            ariaDescription={ariaStatusMessage(sensCalc)}
+            ariaTitle={ariaStatusMessage(sensCalc)}
             testId="statusId"
-            icon
             level={sensCalc?.statusGUI}
             size={SIZE}
           />

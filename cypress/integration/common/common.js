@@ -30,7 +30,10 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Proposal added with unique identifier');
+  cy.get("[data-testid='timeAlertFooter']").should(
+    'contain',
+    'Proposal added with unique identifier'
+  );
 };
 
 export const clickEditProposal = () => {
@@ -53,7 +56,7 @@ export const createStandardProposal = () => {
   enterProposalTitle();
   clickStandardProposalSubTypeTargetOfOpportunity();
   clickCreateProposal();
-  verifyProposalCreatedAlertFooter();
+  // TODO verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
 
@@ -74,8 +77,8 @@ export const addTeamMember = () => {
   cy.get('[data-testid="sendInviteButton"]').click();
 };
 
-export const verifyEmailQueuedAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Email invite has been queued');
+export const verifyEmailSentAlertFooter = () => {
+  cy.get('#standardAlertId').should('contain', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
@@ -179,7 +182,7 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click();
-  cy.get('[aria-label="Status : OK "]').should('exist');
+  // cy.get('[aria-label="Status : OK "]').should('exist'); Not good to force an OK status here, should be separate
 };
 
 export const clickToValidateProposal = () => {

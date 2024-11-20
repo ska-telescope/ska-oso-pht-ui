@@ -1,7 +1,7 @@
 Starting a new Proposal
 ########################
 
-You do not need an account to start a proposal but you will need to be signed int to submit your proposal. When you get into the proposal preparation tool (PPT), you will arrive on the landing page.
+You do not need an account to start a proposal but you will need to sign in to submit a proposal or access the landing page (:numref:`Figure %s <figure3>`).
 
 
 .. |ico4| image:: /images/landingPageIcons.png
@@ -12,16 +12,16 @@ You do not need an account to start a proposal but you will need to be signed in
 Landing Page
 ============
 On the landing page is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
-investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`. The table in :numref:`Figure %s <figure3>` lists your proposals with the following information:
+investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>` lists proposals with the following information:
 
 - Proposal ID : Unique identifier for each proposal.
-- Science Category : The main category of the proposal. 
-- Cycle : SKAO observing cycle associated with the proposals.
-- Proposal Title : The title of the proposal
+- Proposal Type : The type of proposal. 
+- Cycle : SKAO observing cycle associated with the proposal.
+- Proposal Title : The title of the proposal.
 - PI : Principal Investigator of the proposal.
 - Status : Current status of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
 - Last Updated : Date and time the proposal was last modified.
-- Allowed actions |ico4| on each proposal. See  :numref:`Table %s <mytest>`.
+- Allowed actions (|ico4|) on each proposal. See  :numref:`Table %s <mytest>`.
 
 
 .. _figure3:
@@ -39,7 +39,7 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
 .. _mytest:
 
 
-.. list-table:: Table:  Icons and Functions
+.. list-table:: : Icons and Functions
    :widths: 25 50
    :header-rows: 1
 
@@ -53,18 +53,12 @@ investigator or as a Co-Investigator as shown in  :numref:`Figure %s <figure3>`.
    * - Clone
      - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
    * - Delete
-     - Click the trash icon to delete a proposal. Note: Delete option is disabled for proposals that are "Accepted " or "Submitted". Selected proposal is removed from the application after confirmation.
+     - Functionality is currently not available.
 
 
 
 Key Information and Actions
 ===========================
-
-- You can search for specific proposals, filter by title, cycle, PI, and view details of each proposal in the table.
-- The table is sortable by clicking on the column headers
-
-
-**Navigation**
 
 .. |ico1| image:: /images/addProposalBtn.png
    :height: 4ex
@@ -78,9 +72,10 @@ Key Information and Actions
    :width: 35%
    :alt: Page search filter
 
--  Click |ico1| Button to create a new proposal. This takes you to the title page.
+-  Click |ico1| Button to create a new proposal. 
 -  Use the drop down |ico2| to filter proposals by status.
 - The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
+- The table is sortable by clicking on the column headers
 
 
 

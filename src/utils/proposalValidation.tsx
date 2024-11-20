@@ -1,4 +1,3 @@
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from './constants';
 import Proposal from './types/proposal';
 
@@ -36,7 +35,7 @@ export const validateGeneralPage = (proposal: Proposal) => {
 export const validateSciencePage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = proposal?.sciencePDF && typeof proposal?.sciencePDF === 'object' ? 1 : 0;
-  count += count && proposal?.scienceLoadStatus === FileUploadStatus.OK ? 1 : 0;
+  count += count && proposal?.sciencePDF?.isUploadedPdf ? 1 : 0;
   return result[count];
 };
 
@@ -57,7 +56,7 @@ export const validateObservationPage = (proposal: Proposal) => {
 export const validateTechnicalPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = proposal?.technicalPDF && typeof proposal?.technicalPDF === 'object' ? 1 : 0;
-  count += count > 0 && proposal?.technicalLoadStatus === FileUploadStatus.OK ? 1 : 0;
+  count += count && proposal?.technicalPDF?.isUploadedPdf ? 1 : 0;
   return result[count];
 };
 

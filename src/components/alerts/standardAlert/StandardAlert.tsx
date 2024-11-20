@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
-import { Alert, AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
+import StatusIconDisplay from '../../../components/icon/status/statusIcon';
 
 interface StandardAlertProps {
   color: AlertColorTypes;
@@ -33,13 +34,19 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
     <Alert color={color} testId={testId}>
       <Grid
         container
-        spacing={2}
+        spacing={1}
         direction="row"
         justifyContent="space-between"
         alignItems="center"
       >
         <Grid item>
-          <StatusIcon icon level={getLevel(color)} size={FONTSIZE} testId={testId + 'Icon'} />
+          <StatusIconDisplay
+            ariaDescription=" "
+            ariaTitle=" "
+            level={getLevel(color)}
+            size={FONTSIZE}
+            testId={testId + 'Icon'}
+          />
         </Grid>
         <Grid item>
           <Typography id="standardAlertId">{text}</Typography>

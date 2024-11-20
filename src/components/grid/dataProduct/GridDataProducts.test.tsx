@@ -1,23 +1,23 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from '../../../services/theme/theme';
-import SensCalcDisplaySingle from './SensCalcDisplaySingle';
+import GridDataProducts from './GridDataProducts';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
-function mountingBasic(theTheme: any, show: boolean) {
+function mounting(theTheme: any) {
   viewPort();
   cy.mount(
     <ThemeProvider theme={theme(theTheme)}>
       <CssBaseline />
-      <SensCalcDisplaySingle row={null} show={show} />
+      <GridDataProducts baseObservations={null} />
     </ThemeProvider>
   );
 }
 
-describe('<SensCalcDisplaySingle />', () => {
+describe('<GridDataProducts />', () => {
   for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders (basic)`, () => {
-      mountingBasic(theTheme, false);
+    it(`Theme ${theTheme}: Renders`, () => {
+      mounting(theTheme);
     });
   }
 });

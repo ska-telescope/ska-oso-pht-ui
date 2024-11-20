@@ -4,16 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import MemberInvite from './MemberInvite/MemberInvite';
+import MemberEntry from '../entry/MemberEntry/MemberEntry';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberSearch from './MemberSearch/MemberSearch';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
+import { FOOTER_SPACER } from '../../utils/constants';
 
 const PAGE = 1;
 
@@ -108,7 +110,7 @@ export default function TeamPage() {
         <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec.phdThesis ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('pi.short')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
       </Grid>
@@ -140,8 +142,9 @@ export default function TeamPage() {
           direction="row"
           alignItems="space-evenly"
           justifyContent="space-around"
+          spacing={1}
         >
-          <Grid item md={11} lg={6} order={{ md: 2, lg: 1 }}>
+          <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
               actionClicked={deleteIconClicked}
@@ -154,6 +157,7 @@ export default function TeamPage() {
             <Box sx={{ width: '100%', border: '1px solid grey' }}>
               <Box>
                 <Tabs
+                  variant="fullWidth"
                   textColor="secondary"
                   indicatorColor="secondary"
                   value={theValue}
@@ -179,7 +183,7 @@ export default function TeamPage() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <MemberInvite />}
+              {theValue === 0 && <MemberEntry />}
               {theValue === 1 && <TeamFileImport />}
               {theValue === 2 && <MemberSearch />}
             </Box>
@@ -196,6 +200,7 @@ export default function TeamPage() {
           {alertContent()}
         </AlertDialog>
       )}
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
   );
 }

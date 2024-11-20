@@ -3,20 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  DropDown,
+  NumberEntry,
+  Spacer,
+  SPACER_VERTICAL,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
-  ELEVATION_DEFAULT,
-  ELEVATION_MAX,
-  ELEVATION_MIN,
-  ELEVATION_UNITS,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
-  MULTIPLIER_HZ_GHZ,
   NAV,
   BAND_LOW,
   OBSERVATION,
@@ -28,7 +29,6 @@ import {
   BAND_2,
   BAND_1,
   OB_SUBARRAY_AA1,
-  OB_SUBARRAY_AA2,
   OB_SUBARRAY_AA05,
   OB_SUBARRAY_AA4,
   OB_SUBARRAY_AA4_13,
@@ -36,14 +36,21 @@ import {
   OB_SUBARRAY_AA_STAR,
   OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
-  ROBUST,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
-  SUPPLIED_VALUE_DEFAULT_LOW
+  SUPPLIED_VALUE_DEFAULT_LOW,
+  FREQUENCY_UNITS,
+  FREQUENCY_MHZ,
+  FREQUENCY_GHZ,
+  FOOTER_SPACER,
+  WRAPPER_HEIGHT,
+  TYPE_ZOOM,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
-import { generateId } from '../../../utils/helpers';
+import { frequencyConversion, generateId, getMinimumChannelWidth } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -52,17 +59,23 @@ import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
+import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
+import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
+import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
+import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import { roundSpectralResolution } from '../../../utils/present';
+import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 
-const XS_TOP = 5;
-const XS_BOTTOM = 5;
+const TOP_LABEL_WIDTH = 6;
+const BOTTOM_LABEL_WIDTH = 6;
+
 const BACK_PAGE = 5;
+const WRAPPER_WIDTH_BUTTON = 2;
 
-const LABEL_WIDTH_SELECT = 6;
-const LABEL_WIDTH_OPT1 = 6;
-const FIELD_WIDTH_BUTTON = 2;
+const HELP_PANEL_HEIGHT = '50vh';
+const WRAPPER_WIDTH = '500px';
 
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
@@ -82,10 +95,10 @@ export default function ObservationEntry() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
-  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
+  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(1);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_GHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -96,13 +109,14 @@ export default function ObservationEntry() {
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
-  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(1);
+  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(2);
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [calculateToggle, setCalculateToggle] = React.useState(false);
+  const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
+  const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -144,7 +158,7 @@ export default function ObservationEntry() {
       type: observationType,
       observingBand,
       weather,
-      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capture info needed for ElevationBackend type and update sens calc mapping
+      elevation: elevation,
       centralFrequency: Number(centralFrequency),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
@@ -169,21 +183,74 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
+  const getDefaultSubArrayConfig = (inBand: number, inSubArray: number) => {
+    if (inBand !== BAND_5A && inBand !== BAND_5B) {
+      if (inSubArray === OB_SUBARRAY_AA4_15) {
+        return OB_SUBARRAY_AA4;
+      }
+    } else {
+      if (inSubArray === OB_SUBARRAY_AA_STAR) {
+        return OB_SUBARRAY_AA_STAR_15;
+      }
+      if (inSubArray === OB_SUBARRAY_AA4 || inSubArray === OB_SUBARRAY_AA4_13) {
+        return OB_SUBARRAY_AA4_15;
+      }
+    }
+    return inSubArray;
+  };
+
+  // Change the central frequency & units only if they are currently the same as the existing defaults
+  const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+    if (
+      Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
+      centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
+    ) {
+      setCentralFrequency(
+        calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
+      );
+      setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    }
+  };
+
+  // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
+  const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
+    if (
+      isContinuum() &&
+      Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
+      continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
+    ) {
+      setContinuumBandwidth(
+        calculateContinuumBandwidth(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
+      );
+      setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    }
+  };
+
+  const setDefaultElevation = (inBand: number) => {
+    if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
+      setElevation(ELEVATION_DEFAULT[telescope(inBand) - 1]);
+    }
+  };
+
+  const validateId = () =>
+    getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
+
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
+      setDefaultElevation(e as number);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (!isLow() && e === 0) {
-      setSuppliedType(1);
+      setDefaultElevation(e);
+      setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
-    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
-      setCentralFrequency(calculateCentralFrequency(e as number, subarrayConfig));
-    }
+
+    setDefaultCentralFrequency(e as number, subarrayConfig);
+    setDefaultContinuumBandwidth(e as number, subarrayConfig);
     setObservingBand(e);
-    calculateContinuumBandwidth(e as number, subarrayConfig);
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
@@ -193,93 +260,24 @@ export default function ObservationEntry() {
       setNumOf13mAntennas(record.numOf13mAntennas);
       setNumOfStations(record.numOfStations);
     }
-    if (centralFrequency === calculateCentralFrequency(observingBand, subarrayConfig)) {
-      setCentralFrequency(calculateCentralFrequency(observingBand, e as number));
-    }
+
+    setDefaultCentralFrequency(observingBand, e as number);
+    setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);
-    calculateContinuumBandwidth(observingBand, e as number);
   };
 
   React.useEffect(() => {
-    helpComponent(t('observingBand.help'));
+    helpComponent(t('observationId.help'));
     if (isEdit()) {
       observationIn(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
-      calculateContinuumBandwidth(observingBand, subarrayConfig);
+      setCentralFrequencyUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setContinuumBandwidth(calculateContinuumBandwidth(observingBand, subarrayConfig));
+      setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
-    setCalculateToggle(!calculateToggle);
   }, []);
-
-  React.useEffect(() => {
-    const calculateSpectralResolution = () => {
-      const getSpectralResolution = (inLabel: String, inValue: number | string) => {
-        if (isContinuum()) {
-          return lookupArrayValue(OBSERVATION[inLabel], inValue);
-        } else {
-          return OBSERVATION[inLabel].find(
-            e =>
-              e.lookup.toString() === inValue.toString() &&
-              e.bandWidthValue?.toString() === bandwidth?.toString()
-          )?.value;
-        }
-      };
-
-      switch (observingBand) {
-        case BAND_1:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb1' : 'SpectralResolutionOb1Zoom',
-            centralFrequency
-          );
-        case BAND_2:
-          return getSpectralResolution(
-            isContinuum() ? 'SpectralResolutionOb2' : 'SpectralResolutionOb2Zoom',
-            centralFrequency
-          );
-        case BAND_5A:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5a[0].value
-            : OBSERVATION.SpectralResolutionOb5aZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        case BAND_5B:
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionOb5b[0].value
-            : OBSERVATION.SpectralResolutionOb5bZoom.find(
-                item => item.bandWidthValue.toString() === bandwidth.toString()
-              ).value;
-        default:
-          // LOW
-          return isContinuum()
-            ? OBSERVATION.SpectralResolutionObLow[0].value
-            : OBSERVATION.SpectralResolutionObLowZoom.find(
-                item => item.bandWidthValue === bandwidth
-              ).value;
-      }
-    };
-
-    const calculateEffectiveResolution = () => {
-      // TODO : Replace multipliers with appropriate constants to clarify code  (e.g. What is the purpose of 100000 ? )
-      const arr = String(calculateSpectralResolution()).split(' ');
-      if (arr.length > 2) {
-        const resolution = Number(arr[0]);
-        const effectiveResolutionValue = resolution * spectralAveraging;
-        const freqMultiplier = isLow() ? 1000000 : 1000000000;
-        const freq = getScaledValue(centralFrequency, freqMultiplier, '*');
-        const decimal = isContinuum() ? 2 : 1;
-        const multiplier = !isLow() || isContinuum() ? 1000 : 1;
-        const velocity = calculateVelocity(effectiveResolutionValue * multiplier, freq);
-        return `${(resolution * spectralAveraging).toFixed(decimal)} ${arr[1]} (${velocity})`;
-      } else {
-        return '';
-      }
-    };
-
-    setSpectralResolution(calculateSpectralResolution());
-    setEffectiveResolution(calculateEffectiveResolution());
-    setValidateToggle(!validateToggle);
-  }, [calculateToggle]);
 
   React.useEffect(() => {
     if (isContinuumOnly()) {
@@ -288,7 +286,6 @@ export default function ObservationEntry() {
     setValidateToggle(!validateToggle);
   }, [subarrayConfig]);
 
-  // TODO : Dirty fix
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, [
@@ -327,61 +324,66 @@ export default function ObservationEntry() {
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        if (isContinuum()) {
-          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc));
-        }
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc));
-        return;
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc);
       default:
-        if (isContinuum()) {
-          setContinuumBandwidth(lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc));
-        }
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc);
     }
   };
 
   React.useEffect(() => {
     const calculateSubarray = () => {
-      if (observingBand !== BAND_5A && observingBand !== BAND_5B) {
-        if (subarrayConfig === OB_SUBARRAY_AA4_15) {
-          setSubarrayConfig(OB_SUBARRAY_AA4);
-        }
-      } else {
-        if (subarrayConfig === OB_SUBARRAY_AA_STAR) {
-          setSubarrayConfig(OB_SUBARRAY_AA_STAR_15);
-        }
-        if (subarrayConfig === OB_SUBARRAY_AA4 || subarrayConfig === OB_SUBARRAY_AA4_13) {
-          setSubarrayConfig(OB_SUBARRAY_AA4_15);
-        }
+      if (isEdit()) {
+        return;
+      }
+      setSubarrayConfig(getDefaultSubArrayConfig(observingBand, subarrayConfig));
+    };
+
+    const setFrequencyUnits = () => {
+      if (isLow()) {
+        setCentralFrequencyUnits(FREQUENCY_MHZ);
       }
     };
-    calculateSubarray();
-    setCalculateToggle(!calculateToggle);
-  }, [observingBand]);
 
-  React.useEffect(() => {
-    setCalculateToggle(!calculateToggle);
-  }, [bandwidth, centralFrequency, observationType, spectralAveraging]);
+    const calculateMinimumChannelWidthHz = () =>
+      setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
+
+    calculateSubarray();
+    setFrequencyUnits();
+    calculateMinimumChannelWidthHz();
+  }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
-  const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
+  const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 ||
-    subarrayConfig === OB_SUBARRAY_AA1 ||
-    (isLow() && subarrayConfig === OB_SUBARRAY_AA2);
+    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
+
+  const fieldWrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
+
+  const suppliedWrapper = (children: React.JSX.Element) => (
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+      {children}
+    </Box>
+  );
+
+  const emptyField = () => <></>;
+
+  /******************************************************/
 
   const taperingField = () => {
     const frequencyInGHz = () => {
-      return getScaledValue(centralFrequency, MULTIPLIER_HZ_GHZ[centralFrequencyUnits], '*');
+      return frequencyConversion(centralFrequency, centralFrequencyUnits, FREQUENCY_GHZ);
     };
 
     const getOptions = () => {
@@ -393,407 +395,145 @@ export default function ObservationEntry() {
       return results;
     };
 
-    return fieldDropdown(false, 'tapering', getOptions(), true, setTapering, null, tapering);
-  };
-
-  const groupObservationsField = () => (
-    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid pl={0} item xs={12}>
-        <GroupObservationsField
-          labelWidth={LABEL_WIDTH_OPT1}
-          onFocus={() => helpComponent(t('groupObservations.help'))}
-          setValue={setGroupObservation}
-          value={groupObservation}
-          obsId={myObsId}
-        />
-      </Grid>
-    </Grid>
-  );
-
-  const imageWeightingField = () => (
-    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid pl={0} item xs={12}>
-        <ImageWeightingField
-          labelWidth={LABEL_WIDTH_OPT1}
-          onFocus={() => helpComponent(t('imageWeighting.help'))}
-          setValue={setImageWeighting}
-          value={imageWeighting}
-        />
-      </Grid>
-    </Grid>
-  );
-
-  const bandwidthField = () => {
-    interface BandwidthOptions {
-      label: string;
-      value: number;
-      mapping: string;
-    }
-    const getOptions = (): BandwidthOptions[] => {
-      return OBSERVATION.array[telescope() - 1].bandWidth;
-    };
-    const roundBandwidthValue = (options: BandwidthOptions[]): BandwidthOptions[] =>
-      options.map(obj => {
-        return {
-          label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
-          value: obj.value,
-          mapping: obj.mapping
-        };
-      });
     return fieldDropdown(
       false,
-      'bandwidth',
-      isLow() ? roundBandwidthValue(getOptions()) : getOptions(),
+      'tapering',
+      BOTTOM_LABEL_WIDTH,
+      getOptions(),
       true,
-      setBandwidth,
+      setTapering,
       null,
-      bandwidth
+      tapering
     );
   };
 
-  const robustField = () => {
-    return fieldDropdown(false, 'robust', ROBUST, true, setRobust, null, robust);
+  const idField = () => {
+    return fieldWrapper(
+      <Box pt={1}>
+        <TextEntry
+          disabled={isEdit()}
+          errorText={isEdit() ? '' : validateId()}
+          label={t('observationId.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={TOP_LABEL_WIDTH}
+          onFocus={() => helpComponent(t('observationId.help'))}
+          required
+          testId="observationId"
+          value={myObsId}
+          setValue={setMyObsId}
+        />
+      </Box>
+    );
   };
 
-  const spectralResolutionField = () => {
-    return (
-      <TextEntry
-        testId="spectralResolution"
-        value={
-          !isContinuum() && observingBand === BAND_LOW
-            ? roundSpectralResolution(spectralResolution)
-            : spectralResolution
-        }
-        label={t('spectralResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        onFocus={() => helpComponent(t('spectralResolution.help'))}
-        disabled
+  const groupObservationsField = () =>
+    fieldWrapper(
+      <GroupObservationsField
+        labelWidth={TOP_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('groupObservations.help'))}
+        setValue={setGroupObservation}
+        value={groupObservation}
+        obsId={myObsId}
       />
     );
-  };
 
-  const fieldDropdown = (
-    disabled: boolean,
-    field: string,
-    options: { label: string; value: string | number }[],
-    required: boolean,
-    setValue: Function,
-    suffix,
-    value: string | number
-  ) => {
-    return (
-      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-        <Grid pl={suffix ? 1 : 0} item xs={suffix ? 12 - FIELD_WIDTH_BUTTON : 12}>
-          <DropDown
-            disabled={disabled}
-            options={options}
-            testId={field}
-            value={value}
-            setValue={setValue}
-            label={t(field + '.label')}
+  const observationsBandField = () =>
+    fieldWrapper(
+      <ObservingBandField
+        widthLabel={TOP_LABEL_WIDTH}
+        required
+        value={observingBand}
+        setValue={setTheObservingBand}
+      />
+    );
+
+  const subArrayField = () =>
+    fieldWrapper(
+      <SubArrayField
+        observingBand={observingBand}
+        required
+        widthLabel={TOP_LABEL_WIDTH}
+        telescope={telescope()}
+        value={subarrayConfig}
+        setValue={setTheSubarrayConfig}
+      />
+    );
+
+  const numStationsField = () =>
+    fieldWrapper(
+      <NumStations
+        disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
+        widthLabel={TOP_LABEL_WIDTH}
+        setValue={setNumOfStations}
+        value={numOfStations}
+        rangeLower={Number(t('numStations.range.lower'))}
+        rangeUpper={Number(t('numStations.range.upper'))}
+      />
+    );
+
+  const antennasFields = () => {
+    const NumOf15mAntennasField = () => {
+      const validate = (e: number) => {
+        const num = Number(Math.abs(e).toFixed(0));
+        if (num < Number(t('numOf15mAntennas.range.lower'))) {
+          setNumOf15mAntennas(Number(t('numOf15mAntennas.range.lower')));
+        } else if (num > Number(t('numOf15mAntennas.range.upper'))) {
+          setNumOf15mAntennas(Number(t('numOf15mAntennas.range.upper')));
+        } else {
+          setNumOf15mAntennas(num);
+        }
+      };
+
+      return (
+        <Box pt={1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf15mAntennas.short')}
             labelBold={LAB_IS_BOLD}
             labelPosition={LAB_POSITION}
-            labelWidth={suffix ? LABEL_WIDTH_OPT1 + 1 : LABEL_WIDTH_OPT1}
-            onFocus={() => helpComponent(t(field + '.help'))}
-            required={required}
+            labelWidth={BOTTOM_LABEL_WIDTH}
+            testId="numOf15mAntennas"
+            value={numOf15mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
           />
-        </Grid>
-        <Grid item xs={suffix ? FIELD_WIDTH_BUTTON : 0}>
-          {suffix}
-        </Grid>
-      </Grid>
-    );
-  };
-
-  const suppliedTypeField = () => {
-    const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
-
-    return (
-      <Box pb={2}>
-        <DropDown
-          options={getOptions()}
-          testId="suppliedType"
-          value={suppliedType}
-          setValue={setSuppliedType}
-          disabled={getOptions().length < 2}
-          label=""
-          onFocus={() => helpComponent(t('suppliedType.help'))}
-          required
-        />
-      </Box>
-    );
-  };
-
-  const suppliedUnitsField = () => {
-    const getOptions = () => {
-      return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
-    };
-
-    return (
-      <Box>
-        <DropDown
-          options={getOptions()}
-          testId="suppliedUnits"
-          value={suppliedUnits}
-          disabled={isLow()}
-          setValue={setSuppliedUnits}
-          label=""
-          onFocus={() => helpComponent(t('suppliedUnits.help'))}
-        />
-      </Box>
-    );
-  };
-
-  const suppliedValueField = () => {
-    const errorMessage = () => {
-      return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
-    };
-    return (
-      <Box sx={{ height: '5rem' }}>
-        <NumberEntry
-          errorText={errorMessage()}
-          label=""
-          testId="suppliedValue"
-          value={suppliedValue}
-          setValue={setSuppliedValue}
-          onFocus={() => helpComponent(t('suppliedValue.help'))}
-          suffix={suppliedUnitsField()}
-          required
-        />
-      </Box>
-    );
-  };
-
-  const suppliedField = () => (
-    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={LABEL_WIDTH_SELECT}>
-        {suppliedTypeField()}
-      </Grid>
-      <Grid item xs={12 - LABEL_WIDTH_SELECT}>
-        {suppliedValueField()}
-      </Grid>
-    </Grid>
-  );
-
-  const elevationUnitsField = () => ELEVATION_UNITS;
-
-  const elevationField = () => {
-    const errorMessage = () => {
-      return elevation < ELEVATION_MIN || elevation > ELEVATION_MAX
-        ? t('elevation.range.error')
-        : '';
-    };
-
-    return (
-      <NumberEntry
-        errorText={errorMessage()}
-        label={t('elevation.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="elevation"
-        value={elevation}
-        setValue={setElevation}
-        onFocus={() => helpComponent(t('elevation.help'))}
-        suffix={elevationUnitsField()}
-      />
-    );
-  };
-
-  const weatherUnitsField = () => t('weather.units');
-
-  const weatherField = () => {
-    const errorMessage = () => {
-      const min = Number(t('weather.range.lower'));
-      const max = Number(t('weather.range.upper'));
-      return weather < min || weather > max ? t('weather.range.error') : '';
-    };
-
-    return (
-      <NumberEntry
-        errorText={errorMessage()}
-        label={t('weather.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_SELECT}
-        testId="weather"
-        value={weather}
-        setValue={setWeather}
-        onFocus={() => helpComponent(t('weather.help'))}
-        suffix={weatherUnitsField()}
-      />
-    );
-  };
-
-  const centralFrequencyUnitsField = () => {
-    const FrequencyUnitOptions = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
-    if (FrequencyUnitOptions?.length === 1) {
-      return FrequencyUnitOptions[0].label;
-    } else {
-      return (
-        <DropDown
-          options={FrequencyUnitOptions}
-          testId="frequencyUnits"
-          value={centralFrequencyUnits}
-          setValue={setCentralFrequencyUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
+        </Box>
       );
-    }
-  };
-
-  const centralFrequencyField = () => {
-    const errorMessage = () =>
-      Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
-      Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
-        ? t('centralFrequency.range.error')
-        : '';
-
-    return (
-      <NumberEntry
-        label={t('centralFrequency.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="centralFrequency"
-        value={centralFrequency}
-        setValue={setCentralFrequency}
-        onFocus={() => helpComponent(t('centralFrequency.help'))}
-        required
-        suffix={centralFrequencyUnitsField()}
-        errorText={errorMessage()}
-      />
-    );
-  };
-
-  const SubBandsField = () => {
-    const errorMessage = () => {
-      const min = Number(t('subBands.range.lower'));
-      const max = Number(t('subBands.range.upper'));
-      return subBands < min || subBands > max ? t('subBands.range.error') : '';
     };
 
-    const validate = (e: number) => {
-      setSubBands(Number(Math.abs(e).toFixed(0)));
-    };
+    const numOf13mAntennasField = () => {
+      const validate = (e: number) => {
+        const num = Number(Math.abs(e).toFixed(0));
+        if (num < Number(t('numOf13mAntennas.range.lower'))) {
+          setNumOf13mAntennas(Number(t('numOf13mAntennas.range.lower')));
+        } else if (num > Number(t('numOf13mAntennas.range.upper'))) {
+          setNumOf13mAntennas(Number(t('numOf13mAntennas.range.upper')));
+        } else {
+          setNumOf13mAntennas(num);
+        }
+      };
 
-    return (
-      <NumberEntry
-        errorText={errorMessage()}
-        label={t('subBands.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="subBands"
-        value={subBands}
-        setValue={validate}
-        onFocus={() => helpComponent(t('subBands.help'))}
-        required
-      />
-    );
-  };
-
-  const continuumBandwidthUnitsField = () => {
-    // Use the central frequency units for now, as I see this being dropped soon anyway.
-    const options = OBSERVATION.array.find(item => item.value === telescope())
-      ?.centralFrequencyAndBandWidthUnits;
-    if (options?.length === 1) {
-      return options[0].label;
-    } else {
       return (
-        <DropDown
-          options={options}
-          testId="continuumBandwidthUnits"
-          value={continuumBandwidthUnits}
-          setValue={setContinuumBandwidthUnits}
-          label=""
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
-        />
+        <Box pt={1}>
+          <NumberEntry
+            disabled={subarrayConfig !== 20}
+            label={t('numOf13mAntennas.short')}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
+            labelWidth={BOTTOM_LABEL_WIDTH}
+            testId="numOf13mAntennas"
+            value={numOf13mAntennas}
+            setValue={validate}
+            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+          />
+        </Box>
       );
-    }
-  };
-
-  const continuumBandwidthField = () => {
-    const errorMessage = () => {
-      return '';
-      // TODO : This validation is completely wrong
-      /*
-      const rec = BANDWIDTH_TELESCOPE[observingBand];
-      return continuumBandwidth < rec.lower || continuumBandwidth > rec.upper
-        ? t('continuumBandWidth.range.error')
-        : '';
-        */
-    };
-    const validate = (e: React.SetStateAction<number>) => {
-      setContinuumBandwidth(Number(e) < 0 ? 0 : e);
     };
 
-    return (
-      <NumberEntry
-        label={t('continuumBandWidth.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        suffix={continuumBandwidthUnitsField()}
-        testId="continuumBandwidth"
-        value={continuumBandwidth}
-        setValue={validate}
-        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
-        required
-        errorText={errorMessage()}
-      />
-    );
-  };
-
-  const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-    const speedOfLight = 299792458;
-    const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * speedOfLight : 0;
-    if (velocity < 1000) {
-      return velocity.toFixed(precision) + ' m/s';
-    } else {
-      return (velocity / 1000).toFixed(precision) + ' km/s';
-    }
-  };
-
-  const getScaledValue = (value: any, multiplier: number, operator: string) => {
-    let val_scaled = 0;
-    switch (operator) {
-      case '*':
-        val_scaled = value * multiplier;
-        break;
-      case '/':
-        val_scaled = value / multiplier;
-        break;
-      default:
-        val_scaled = value;
-    }
-    return val_scaled;
-  };
-
-  const effectiveResolutionField = () => {
-    return (
-      <TextEntry
-        label={t('effectiveResolution.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="effectiveResolution"
-        value={effectiveResolution}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
-        errorText={effectiveResolution === '' ? t('effectiveResolution.error') : ''}
-        disabled
-      />
-    );
-  };
-
-  const AntennasFields = () => {
-    return (
-      <Grid pb={0} pt={1} container direction="row">
-        <Grid item pt={1} xs={6}>
+    return fieldWrapper(
+      <Grid container direction="row">
+        <Grid pt={1} item xs={TOP_LABEL_WIDTH}>
           <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
             <Typography
               sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
@@ -812,63 +552,375 @@ export default function ObservationEntry() {
     );
   };
 
-  const NumOf15mAntennasField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num < Number(t('numOf15mAntennas.range.lower'))) {
-        setNumOf15mAntennas(Number(t('numOf15mAntennas.range.lower')));
-      } else if (num > Number(t('numOf15mAntennas.range.upper'))) {
-        setNumOf15mAntennas(Number(t('numOf15mAntennas.range.upper')));
-      } else {
-        setNumOf15mAntennas(num);
-      }
+  const elevationField = () =>
+    fieldWrapper(
+      <ElevationField
+        isLow={isLow()}
+        label={t('elevation.label')}
+        widthLabel={TOP_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('elevation.help'))}
+        setValue={setElevation}
+        testId="elevation"
+        value={elevation}
+      />
+    );
+
+  const weatherField = () => {
+    const errorMessage = () => {
+      const min = Number(t('weather.range.lower'));
+      const max = Number(t('weather.range.upper'));
+      return weather < min || weather > max ? t('weather.range.error') : '';
     };
 
-    return (
-      <NumberEntry
-        disabled={subarrayConfig !== 20}
-        label={t('numOf15mAntennas.short')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="numOf15mAntennas"
-        value={numOf15mAntennas}
-        setValue={validate}
-        onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
+    const weatherUnitsField = () => t('weather.units');
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          disabled={isLow()}
+          errorText={errorMessage()}
+          label={t('weather.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={TOP_LABEL_WIDTH}
+          testId="weather"
+          value={weather}
+          setValue={setWeather}
+          onFocus={() => helpComponent(t('weather.help'))}
+          suffix={weatherUnitsField()}
+        />
+      </Box>
+    );
+  };
+
+  /**************************************************************/
+
+  const observationTypeField = () =>
+    fieldWrapper(
+      <ObservationTypeField
+        disabled={isContinuumOnly()}
+        isContinuumOnly={isContinuumOnly()}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+        required
+        value={observationType}
+        setValue={setObservationType}
+      />
+    );
+
+  const suppliedField = () => {
+    const suppliedTypeField = () => {
+      const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
+
+      return (
+        <Box pt={1}>
+          <DropDown
+            options={getOptions()}
+            testId="suppliedType"
+            value={suppliedType}
+            setValue={setSuppliedType}
+            disabled={getOptions().length < 2}
+            label=""
+            onFocus={() => helpComponent(t('suppliedType.help'))}
+            required
+          />
+        </Box>
+      );
+    };
+
+    const suppliedUnitsField = () => {
+      const getOptions = () => {
+        return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+      };
+
+      return (
+        <DropDown
+          options={getOptions()}
+          testId="suppliedUnits"
+          value={suppliedUnits}
+          disabled={isLow()}
+          setValue={setSuppliedUnits}
+          label=""
+          onFocus={() => helpComponent(t('suppliedUnits.help'))}
+        />
+      );
+    };
+
+    const suppliedValueField = () => {
+      const errorMessage = () => {
+        return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
+      };
+      return (
+        <NumberEntry
+          errorText={errorMessage()}
+          label=""
+          testId="suppliedValue"
+          value={suppliedValue}
+          setValue={setSuppliedValue}
+          onFocus={() => helpComponent(t('suppliedValue.help'))}
+          suffix={suppliedUnitsField()}
+          required
+        />
+      );
+    };
+
+    return suppliedWrapper(
+      <Grid pt={0} m={0} container>
+        <Grid item pt={1} pr={1} md={BOTTOM_LABEL_WIDTH}>
+          {suppliedTypeField()}
+        </Grid>
+        <Grid item pt={0} md={12 - BOTTOM_LABEL_WIDTH}>
+          {suppliedValueField()}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const centralFrequencyField = () => {
+    const errorMessage = () =>
+      Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
+      Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
+        ? t('centralFrequency.range.error')
+        : '';
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('centralFrequency.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="centralFrequency"
+          value={centralFrequency}
+          setValue={setCentralFrequency}
+          onFocus={() => helpComponent(t('centralFrequency.help'))}
+          required
+          suffix={centralFrequencyUnitsField()}
+          errorText={errorMessage()}
+        />
+      </Box>
+    );
+  };
+
+  const continuumBandwidthField = () => {
+    const continuumBandwidthUnitsField = () => {
+      // Only have MHz for Low
+      const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+      return (
+        <DropDown
+          options={options}
+          testId="continuumBandwidthUnits"
+          value={continuumBandwidthUnits}
+          setValue={setContinuumBandwidthUnits}
+          label=""
+          disabled={options.length === 1}
+          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        />
+      );
+    };
+    return fieldWrapper(
+      <ContinuumBandwidthField
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
+        setValue={setContinuumBandwidth}
+        value={continuumBandwidth}
+        suffix={continuumBandwidthUnitsField()}
+        telescope={telescope()}
+        observingBand={observingBand}
+        continuumBandwidthUnits={continuumBandwidthUnits}
+        centralFrequency={centralFrequency}
+        centralFrequencyUnits={centralFrequencyUnits}
+        subarrayConfig={subarrayConfig}
+        setScaledBandwidth={setScaledBandwidth}
+        minimumChannelWidthHz={minimumChannelWidthHz}
       />
     );
   };
 
-  const numOf13mAntennasField = () => {
-    const validate = (e: number) => {
-      const num = Number(Math.abs(e).toFixed(0));
-      if (num < Number(t('numOf13mAntennas.range.lower'))) {
-        setNumOf13mAntennas(Number(t('numOf13mAntennas.range.lower')));
-      } else if (num > Number(t('numOf13mAntennas.range.upper'))) {
-        setNumOf13mAntennas(Number(t('numOf13mAntennas.range.upper')));
-      } else {
-        setNumOf13mAntennas(num);
+  const bandwidthField = () => (
+    <Grid item>
+      {fieldWrapper(
+        <BandwidthField
+          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
+          required
+          setValue={setBandwidth}
+          testId="bandwidth"
+          value={bandwidth}
+          telescope={telescope()}
+          widthLabel={BOTTOM_LABEL_WIDTH}
+          observingBand={observingBand}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          setScaledBandwidth={setScaledBandwidth}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      )}
+    </Grid>
+  );
+
+  const spectralResolutionField = () =>
+    fieldWrapper(
+      <SpectralResolutionField
+        bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
+        bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
+        frequency={centralFrequency}
+        frequencyUnits={centralFrequencyUnits}
+        label={t('spectralResolution.label')}
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        observingBand={observingBand}
+        observationType={observationType}
+        onFocus={() => helpComponent(t('spectralResolution.help'))}
+        setValue={setSpectralResolution}
+      />
+    );
+
+  const spectralAveragingField = () =>
+    fieldWrapper(
+      <SpectralAveragingField
+        isLow={isLow()}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+        value={spectralAveraging}
+        setValue={setSpectralAveraging}
+        subarray={subarrayConfig}
+        type={observationType}
+      />
+    );
+
+  const effectiveResolutionField = () =>
+    fieldWrapper(
+      <EffectiveResolutionField
+        label={t('effectiveResolution.label')}
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        frequency={centralFrequency}
+        frequencyUnits={centralFrequencyUnits}
+        spectralAveraging={spectralAveraging}
+        spectralResolution={spectralResolution}
+        observingBand={observingBand}
+        observationType={observationType}
+        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        setValue={setEffectiveResolution}
+      />
+    );
+
+  const imageWeightingField = () =>
+    fieldWrapper(
+      <ImageWeightingField
+        labelWidth={BOTTOM_LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        setValue={setImageWeighting}
+        value={imageWeighting}
+      />
+    );
+
+  const robustField = () =>
+    fieldWrapper(
+      <RobustField
+        label={t('robust.label')}
+        setValue={setRobust}
+        testId="robust"
+        value={robust}
+        widthButton={WRAPPER_WIDTH_BUTTON}
+        widthLabel={BOTTOM_LABEL_WIDTH}
+      />
+    );
+
+  const fieldDropdown = (
+    disabled: boolean,
+    field: string,
+    labelWidth: number,
+    options: { label: string; value: string | number }[],
+    required: boolean,
+    setValue: Function,
+    suffix,
+    value: string | number
+  ) => {
+    return fieldWrapper(
+      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+        <Grid pl={suffix ? 1 : 0} item xs={suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12}>
+          <DropDown
+            disabled={disabled}
+            options={options}
+            testId={field}
+            value={value}
+            setValue={setValue}
+            label={t(field + '.label')}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
+            labelWidth={suffix ? labelWidth + 1 : labelWidth}
+            onFocus={() => helpComponent(t(field + '.help'))}
+            required={required}
+          />
+        </Grid>
+        <Grid item xs={suffix ? WRAPPER_WIDTH_BUTTON : 0}>
+          {suffix}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const centralFrequencyUnitsField = () => {
+    // Only have MHz for Low
+    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    return (
+      <DropDown
+        options={options}
+        testId="frequencyUnits"
+        value={centralFrequencyUnits}
+        setValue={setCentralFrequencyUnits}
+        label=""
+        disabled={options.length === 1}
+        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+      />
+    );
+  };
+
+  // SARAH
+  const SubBandsField = () => {
+    const errorMessage = () => {
+      const min = Number(t('subBands.range.lower'));
+      const max = Number(t('subBands.range.upper'));
+      if (subBands < min || subBands > max) {
+        return t('subBands.range.error');
       }
+      // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
+      // sub-bands should be greater than the minimum allowed bandwidth
+      if (!isLow() && isContinuum()) {
+        if (
+          scaledBandwidth !== 0 &&
+          subBands &&
+          scaledBandwidth / subBands < minimumChannelWidthHz
+        ) {
+          return t('subBands.range.bandwidthSubBand');
+        }
+      }
+      return '';
     };
 
-    return (
-      <NumberEntry
-        disabled={subarrayConfig !== 20}
-        label={t('numOf13mAntennas.short')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH_OPT1}
-        testId="numOf13mAntennas"
-        value={numOf13mAntennas}
-        setValue={validate}
-        onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
-      />
+    const validate = (e: number) => {
+      setSubBands(Number(Math.abs(e).toFixed(0)));
+    };
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          errorText={errorMessage()}
+          label={t('subBands.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="subBands"
+          value={subBands}
+          setValue={validate}
+          onFocus={() => helpComponent(t('subBands.help'))}
+          required
+        />
+      </Box>
     );
   };
 
   const addButtonDisabled = () => {
-    // TODO : We need to ensure we are able to progress.
-    return false;
+    // TODO : We need to make this a bit cleverer, but this will do for a short time
+    return isEdit() ? false : validateId() ? true : false;
   };
 
   const pageFooter = () => {
@@ -962,127 +1014,109 @@ export default function ObservationEntry() {
   };
 
   return (
-    <Box pt={2}>
+    <>
       <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
       <Grid
-        p={1}
+        pl={4}
+        pr={4}
         container
         direction="row"
         alignItems="space-evenly"
-        justifyContent="space-around"
+        justifyContent="space-between"
         spacing={1}
       >
         <Grid item md={12} lg={9}>
           <Grid
+            p={0}
+            pl={2}
             container
             direction="row"
             alignItems="center"
-            gap={1}
             spacing={1}
-            pb={3}
-            justifyContent="space-evenly"
+            justifyContent="space-around"
           >
-            <Grid item xs={XS_TOP}>
+            <Grid item md={12} lg={5}>
+              {idField()}
+            </Grid>
+            <Grid item lg={5}></Grid>
+            <Grid item md={12} lg={5}>
               {groupObservationsField()}
             </Grid>
-            <Grid item xs={XS_TOP}></Grid>
-            <Grid item xs={XS_TOP}>
-              <ObservingBandField required value={observingBand} setValue={setTheObservingBand} />
+            <Grid item md={12} lg={5}>
+              {isLow() ? emptyField() : weatherField()}
             </Grid>
-            <Grid item xs={XS_TOP}></Grid>
-            <Grid item xs={XS_TOP}>
-              <SubArrayField
-                observingBand={observingBand}
-                required
-                telescope={telescope()}
-                value={subarrayConfig}
-                setValue={setTheSubarrayConfig}
-              />
+            <Grid item md={12} lg={5}>
+              {observationsBandField()}
             </Grid>
-            <Grid item xs={XS_TOP}>
-              {isLow() ? (
-                <NumStations
-                  disabled={subarrayConfig !== 20}
-                  setValue={setNumOfStations}
-                  value={numOfStations}
-                  rangeLower={Number(t('numStations.range.lower'))}
-                  rangeUpper={Number(t('numStations.range.upper'))}
-                />
-              ) : (
-                AntennasFields()
-              )}
-            </Grid>
-            <Grid item xs={XS_TOP}>
+            <Grid item md={12} lg={5}>
               {elevationField()}
             </Grid>
-            <Grid item xs={XS_TOP}>
-              {!isLow() && weatherField()}
+            <Grid item md={12} lg={5}>
+              {subArrayField()}
+            </Grid>
+            <Grid item md={12} lg={5}>
+              {isLow() ? numStationsField() : antennasFields()}
             </Grid>
           </Grid>
           <Card variant="outlined">
             <CardContent>
               <Grid
+                p={0}
                 container
                 direction="row"
                 alignItems="center"
-                gap={1}
-                justifyContent="space-evenly"
+                spacing={1}
+                justifyContent="space-around"
               >
-                <Grid item xs={XS_BOTTOM}>
-                  <ObservationTypeField
-                    disabled={isContinuumOnly()}
-                    isContinuumOnly={isContinuumOnly()}
-                    required
-                    value={observationType}
-                    setValue={setObservationType}
-                  />
+                <Grid item md={12} lg={5}>
+                  {observationTypeField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
                   {suppliedField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
+                  {' '}
                   {centralFrequencyField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
                   {spectralResolutionField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  <SpectralAveragingField
-                    isLow={isLow()}
-                    value={spectralAveraging}
-                    setValue={setSpectralAveraging}
-                    subarray={subarrayConfig}
-                    type={observationType}
-                  />
+                <Grid item md={12} lg={5}>
+                  {spectralAveragingField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
                   {effectiveResolutionField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {!isLow() && taperingField()}
+                <Grid item md={12} lg={5}>
+                  {isContinuum() ? SubBandsField() : emptyField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {isContinuum() && SubBandsField()}
-                </Grid>
-                <Grid item xs={XS_BOTTOM}>
+                <Grid item md={12} lg={5}>
                   {imageWeightingField()}
                 </Grid>
-                <Grid item xs={XS_BOTTOM}></Grid>
-                <Grid item xs={XS_BOTTOM}>
-                  {imageWeighting === IW_BRIGGS && robustField()}
+                <Grid item md={12} lg={5}>
+                  {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
+                </Grid>
+                <Grid item md={12} lg={5}>
+                  {isLow() ? emptyField() : taperingField()}
+                </Grid>
+                <Grid item lg={5}>
+                  {isLow() ? <></> : emptyField()}
                 </Grid>
               </Grid>
             </CardContent>
           </Card>
         </Grid>
         <Grid item md={12} lg={3}>
-          <HelpPanel />
+          <Box pl={4}>
+            <HelpPanel minHeight={HELP_PANEL_HEIGHT} maxHeight={HELP_PANEL_HEIGHT} />
+          </Box>
         </Grid>
       </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {pageFooter()}
-    </Box>
+    </>
   );
 }
