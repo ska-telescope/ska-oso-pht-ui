@@ -212,7 +212,6 @@ export default function MemberEntry() {
         label={t('firstName.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        //labelWidth={4}
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
@@ -229,7 +228,6 @@ export default function MemberEntry() {
         label={t('lastName.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        //labelWidth={LABEL_WIDTH}
         testId="lastName"
         value={lastName}
         setValue={setLastName}
@@ -246,7 +244,6 @@ export default function MemberEntry() {
         label={t('email.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        //labelWidth={LABEL_WIDTH}
         testId="email"
         value={email}
         setValue={setEmail}
