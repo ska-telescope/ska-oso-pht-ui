@@ -199,14 +199,13 @@ export default function LandingPage() {
   const colId = {
     field: 'id',
     headerName: t('proposalId.label'),
-    flex: 1,
-    minWidth: 200
+    width: 200
   };
 
   const colType = {
     field: 'proposalType',
-    headerName: t('proposalType.label'),
-    width: 120,
+    headerName: t('proposalType.short'),
+    width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
@@ -218,14 +217,14 @@ export default function LandingPage() {
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 2.5,
-    minWidth: 400,
+    flex: 3,
+    minWidth: 250,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    width: 250,
+    width: 100,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -234,7 +233,7 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    width: 140,
+    width: 120,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 

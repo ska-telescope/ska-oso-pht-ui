@@ -26,7 +26,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const { t } = useTranslation('pht');
 
   const LAB_WIDTH = 5;
-  const WRAPPER_WIDTH = '450px';
   const HELP_MAX_HEIGHT = '40vh';
   const {
     application,
@@ -239,7 +238,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   };
 
   const nameField = () => (
-    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={2}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       <TextEntry
         required
         label={t('name.label')}
@@ -257,7 +262,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   );
 
   const skyDirection1Field = () => (
-    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={2}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       <SkyDirection1
         labelWidth={LAB_WIDTH}
         setValue={setTheRA}
@@ -269,7 +280,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   );
 
   const skyDirection2Field = () => (
-    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={2}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       <SkyDirection2
         labelWidth={LAB_WIDTH}
         setValue={setTheDec}
@@ -281,7 +298,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   );
 
   const velocityField = () => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={1}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       <VelocityField
         labelWidth={LAB_WIDTH}
         setRedshift={setTheRedshift}
@@ -300,7 +323,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   );
 
   const referenceFrameField = () => (
-    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={2}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       <ReferenceFrameField
         labelWidth={LAB_WIDTH}
         onFocus={() => helpComponent(t('referenceFrame.help'))}

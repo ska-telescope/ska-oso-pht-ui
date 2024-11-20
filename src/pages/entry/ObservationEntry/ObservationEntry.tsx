@@ -75,7 +75,6 @@ const BACK_PAGE = 5;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 const HELP_PANEL_HEIGHT = '50vh';
-const WRAPPER_WIDTH = '500px';
 
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
@@ -373,13 +372,13 @@ export default function ObservationEntry() {
     subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
