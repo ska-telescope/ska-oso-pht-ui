@@ -83,6 +83,7 @@ export default function GridMembers({
       headerName: t('actions.label'),
       sortable: false,
       flex: 1,
+      minWidth: 120,
       disableClickEventBubbling: true,
       renderCell: () => <TrashIcon onClick={actionClicked} toolTip="Delete team member" />
     }
