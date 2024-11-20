@@ -112,8 +112,6 @@ export const DEFAULT_HELP = ['', ' ', ''];
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
 
-export const ELEVATION_DEFAULT = 45;
-
 export const FOOTER_HEIGHT = 20;
 export const FOOTER_SPACER = 130;
 
