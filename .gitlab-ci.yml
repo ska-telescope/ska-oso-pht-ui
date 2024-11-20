@@ -261,7 +261,7 @@ include:
 js-e2e-test:
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
-    JS_E2E_TEST_DEFAULT_SWITCHES: '--e2e --headless --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --config baseUrl=http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int/ci-ska-oso-pht-ui-18cb2726/pht/'
+    JS_E2E_TEST_DEFAULT_SWITCHES: '--e2e --headless  --reporter junit --reporter-options mochaFile=/report/Creating Proposal.xml --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e --config baseUrl=http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int/ci-ska-oso-pht-ui-18cb2726/pht/'
   rules:
     - exists:
         - cypress/**/*.js
