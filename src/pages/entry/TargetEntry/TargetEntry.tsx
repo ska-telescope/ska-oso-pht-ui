@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import ResolveButton from '../../../components/button/Resolve/Resolve';
@@ -14,6 +14,7 @@ import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
 import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
+import Notification from '../../../utils/types/notification';
 
 interface TargetEntryProps {
   raType: number;
@@ -27,8 +28,12 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const LAB_WIDTH = 5;
   const WRAPPER_WIDTH = '450px';
   const HELP_MAX_HEIGHT = '40vh';
-
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const {
+    application,
+    helpComponent,
+    updateAppContent2,
+    updateAppContent5
+  } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
@@ -43,6 +48,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(0);
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -118,11 +124,25 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       targetIn(target);
     }
   }, []);
+  function formValidation() {
+    let valid = true;
+    const targets = getProposal()?.targets;
+    targets.forEach(rec => {
+      if (rec.name.toLowerCase() === name.toLowerCase()) {
+        valid = false;
+        setNameFieldError(t('addTarget.error'));
+      }
+    });
+    return valid;
+  }
 
   const addButton = () => {
     const addButtonAction = () => {
-      AddTheTarget();
-      clearForm();
+      if (!formValidation()) {
+      } else {
+        AddTheTarget();
+        clearForm();
+      }
     };
 
     const AddTheTarget = () => {
@@ -149,6 +169,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         velUnit: velUnit
       };
       setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
+      NotifyOK(t('addTarget.success'));
     };
 
     const clearForm = () => {
@@ -174,6 +195,17 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       </Grid>
     );
   };
+
+  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      delay: NOTIFICATION_DELAY_IN_SECONDS,
+      message: t(str),
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const resolveButton = () => {
     const processCoordinatesResults = response => {

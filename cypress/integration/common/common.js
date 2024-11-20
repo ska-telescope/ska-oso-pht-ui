@@ -30,7 +30,10 @@ export const clickCreateProposal = () => {
 };
 
 export const verifyProposalCreatedAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Proposal added with unique identifier');
+  cy.get("[data-testid='timeAlertFooter']").should(
+    'contain',
+    'Proposal added with unique identifier'
+  );
 };
 
 export const clickEditProposal = () => {
