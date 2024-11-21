@@ -35,7 +35,7 @@ const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
 const FOOTER_HEIGHT = 40;
 const FIELD_OBS = 'observatoryDataProduct.options';
-const LABEL_WIDTH = 5;
+const LABEL_WIDTH = 4;
 const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
@@ -172,7 +172,13 @@ export default function AddDataProduct() {
 
   const dataProductsFieldOld = () => {
     return (
-      <Grid container direction="row" alignItems="space-between" justifyContent="space-between">
+      <Grid
+        container
+        minWidth={800}
+        direction="row"
+        alignItems="space-between"
+        justifyContent="space-between"
+      >
         <Grid item xs={LABEL_WIDTH}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>

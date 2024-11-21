@@ -545,7 +545,7 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "This field takes the right ascension of a target in a string format 'HH:MM:SS.S'."
+        "value": "This field takes the right ascension of a target in a string format 'HH:MM:SS.S'.   An entry of 24:00 "
       },
       "2": {
         "value": "This field takes the declination of a target in a string format 'DD:MM:SS.S'."
