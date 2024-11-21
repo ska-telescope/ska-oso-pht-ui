@@ -7,6 +7,23 @@ Starting a new Proposal
    :alt: Landing page icons
 
 
+.. |iconview| image:: /images/viewicon.png
+   :width: 20%
+   :alt: Landing page icons
+
+.. |icondelete| image:: /images/deleteicon.png
+   :width: 20%
+   :alt: Landing page icons
+
+
+.. |iconedit| image:: /images/editicon.png
+   :width: 20%
+   :alt: Landing page icons
+
+.. |iconclone| image:: /images/cloneicon.png
+   :width: 20%
+   :alt: Landing page icons
+
 Landing Page
 ============
 On the landing page is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
@@ -44,13 +61,13 @@ investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>`
    * - Icon
      - Purpose
   
-   * - Edit
-     - Click the pencil icon to edit the details of a proposal. This is only active for proposals in "Draft" status.
-   * - View
+   * -  |iconedit| (Edit)
+     - Edit the details of a proposal. This is only active for proposals in "Draft" status.
+   * - |iconview| (View)
      - Click the eye icon to view a summary of a proposal.  There is also an option to download the proposal and is available for "Submitted" and "Accepted" proposals.
-   * - Clone
+   * - |iconclone| (Clone)
      - Click the clone icon to create an exact copy of a proposal. This can be useful for creating new proposals based on similar past projects. This icon is active for "Submiited" or "Accepted" proposals.
-   * - Delete
+   * - |icondelete| (Delete)
      - Functionality is currently not available.
 
 
