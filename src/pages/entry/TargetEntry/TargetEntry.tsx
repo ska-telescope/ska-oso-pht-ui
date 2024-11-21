@@ -274,7 +274,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
-        //valueFocus={() => helpComponent(t('skyDirection.help.1.value'))} //TODO: investigate focus
+        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))} //TODO: investigate focus
       />
     </Box>
   );
@@ -292,7 +292,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         setValue={setTheDec}
         skyUnits={raType}
         value={dec}
-        //valueFocus={() => helpComponent(t('skyDirection.help.2.value'))} //TODO: investigate focus
+        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))} //TODO: investigate focus
       />
     </Box>
   );
