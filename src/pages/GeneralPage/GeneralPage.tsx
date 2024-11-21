@@ -150,7 +150,7 @@ export default function GeneralPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item md={12} lg={8}>
+        <Grid item pb={3} md={12} lg={8}>
           <Grid container direction="row">
             <Grid item md={12} lg={12} pt={2}>
               <Grid item md={12} lg={6}>

@@ -16,7 +16,7 @@ describe('Creating Proposal', () => {
     enterProposalTitle();
     clickStandardProposalSubTypeTargetOfOpportunity();
     clickCreateProposal();
-    // verifyProposalCreatedAlertFooter();
+    verifyProposalCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();

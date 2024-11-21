@@ -65,7 +65,8 @@ async function GetWeighting(
   };
 
   const getRobustness = () => {
-    return ROBUST.find(item => item.value === observation.robust)?.label;
+    const result = ROBUST.find(item => item.value === observation.robust);
+    return result ? result.label : 0;
   };
 
   const getSubArray = () => {

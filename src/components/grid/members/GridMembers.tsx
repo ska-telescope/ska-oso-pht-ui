@@ -42,13 +42,24 @@ export default function GridMembers({
   );
 
   const basicColumns = [
-    { field: 'lastName', renderHeader: () => headerDisplay('lastName.label'), flex: 2 },
-    { field: 'firstName', renderHeader: () => headerDisplay('firstName.label'), flex: 2 },
-    { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1 },
+    {
+      field: 'lastName',
+      renderHeader: () => headerDisplay('lastName.label'),
+      flex: 2,
+      minWidth: 150
+    },
+    {
+      field: 'firstName',
+      renderHeader: () => headerDisplay('firstName.label'),
+      flex: 2,
+      minWidth: 150
+    },
+    { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1, minWidth: 120 },
     {
       field: 'phdThesis',
       headerName: t('phdThesis.label'),
       flex: 1,
+      minWidth: 120,
       disableClickEventBubbling: true,
       renderHeader: () => headerDisplay('phdThesis.grid'),
       renderCell: (params: { row: { phdThesis: string; status: string } }) => (
@@ -59,6 +70,7 @@ export default function GridMembers({
       field: 'pi',
       sortable: false,
       flex: 1,
+      minWidth: 120,
       disableClickEventBubbling: true,
       renderHeader: () => headerDisplay('pi.short'),
       renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
@@ -71,6 +83,7 @@ export default function GridMembers({
       headerName: t('actions.label'),
       sortable: false,
       flex: 1,
+      minWidth: 120,
       disableClickEventBubbling: true,
       renderCell: () => <TrashIcon onClick={actionClicked} toolTip="Delete team member" />
     }

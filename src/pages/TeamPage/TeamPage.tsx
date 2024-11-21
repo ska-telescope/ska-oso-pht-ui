@@ -153,7 +153,7 @@ export default function TeamPage() {
               rows={getRows()}
             />
           </Grid>
-          <Grid item md={11} lg={6} order={{ md: 1, lg: 2 }}>
+          <Grid item mb={5} md={11} lg={6} order={{ md: 1, lg: 2 }}>
             <Box sx={{ width: '100%', border: '1px solid grey' }}>
               <Box>
                 <Tabs

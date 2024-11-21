@@ -15,7 +15,6 @@ import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
-  ELEVATION_DEFAULT,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -44,11 +43,14 @@ import {
   FREQUENCY_MHZ,
   FREQUENCY_GHZ,
   FOOTER_SPACER,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  TYPE_ZOOM,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
-import { frequencyConversion, generateId } from '../../../utils/helpers';
+import { frequencyConversion, generateId, getMinimumChannelWidth } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -58,13 +60,13 @@ import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
-import ElevationField from '../../../components/fields/elevation/Elevation';
+import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
 import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
-import ContinuumBandwidthField from '../../../components/fields/continuumBandwidth/continuumBandwidth';
-import BandwidthField from '../../../components/fields/bandwidth/bandwidth';
+import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -73,7 +75,6 @@ const BACK_PAGE = 5;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 const HELP_PANEL_HEIGHT = '50vh';
-const WRAPPER_WIDTH = '500px';
 
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
@@ -93,10 +94,10 @@ export default function ObservationEntry() {
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
-  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT);
+  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_GHZ);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -113,15 +114,18 @@ export default function ObservationEntry() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
+  const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
+  const [ob, setOb] = React.useState(null);
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
-    console.log('observationIn ob', ob);
+    setOb(ob);
     setObservingBand(ob?.observingBand);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
@@ -144,7 +148,6 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas);
     setNumOf13mAntennas(ob?.num13mAntennas);
     setNumOfStations(ob?.numStations);
-    console.log('observationIn ob?.centralFrequencyUnits', ob?.centralFrequencyUnits);
   };
 
   // SARAH
@@ -157,7 +160,7 @@ export default function ObservationEntry() {
       type: observationType,
       observingBand,
       weather,
-      elevation: elevation, // TODO: add min_elevation field and use it for LOW // TODO modify elevation format and create elevation type to capture info needed for ElevationBackend type and update sens calc mapping
+      elevation: elevation,
       centralFrequency: Number(centralFrequency),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
@@ -235,16 +238,24 @@ export default function ObservationEntry() {
     }
   };
 
+  const setDefaultElevation = (inBand: number) => {
+    if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
+      setElevation(ELEVATION_DEFAULT[telescope(inBand) - 1]);
+    }
+  };
+
   const validateId = () =>
     getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
+      setDefaultElevation(e as number);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (!isLow() && e === 0) {
-      setSuppliedType(1);
+      setDefaultElevation(e);
+      setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
@@ -340,7 +351,6 @@ export default function ObservationEntry() {
     }
   };
 
-  // TODO expand on this to fix 5a band default value issue when switching from Low
   React.useEffect(() => {
     const calculateSubarray = () => {
       if (isEdit()) {
@@ -358,25 +368,40 @@ export default function ObservationEntry() {
       }
     };
 
+    if (ob) {
+      // We just need to do this one more time as some fields could not be updated until observingBand has changed.
+      observationIn(ob);
+      setOb(null);
+    }
+
+    if (ob) {
+      // We just need to do this one more time as some fields could not be updated until observingBand has changed.
+      observationIn(ob);
+      setOb(null);
+    }
+    const calculateMinimumChannelWidthHz = () =>
+      setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
+
     calculateSubarray();
     setFrequencyUnits();
+    calculateMinimumChannelWidthHz();
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW;
-  const telescope = () => BANDWIDTH_TELESCOPE[observingBand]?.telescope;
+  const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
     subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
@@ -725,7 +750,7 @@ export default function ObservationEntry() {
     return fieldWrapper(
       <ContinuumBandwidthField
         labelWidth={BOTTOM_LABEL_WIDTH}
-        onFocus={() => helpComponent(t('continuumBandWidth.help'))}
+        onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -735,22 +760,33 @@ export default function ObservationEntry() {
         centralFrequency={centralFrequency}
         centralFrequencyUnits={centralFrequencyUnits}
         subarrayConfig={subarrayConfig}
+        setScaledBandwidth={setScaledBandwidth}
+        minimumChannelWidthHz={minimumChannelWidthHz}
       />
     );
   };
 
-  const bandwidthField = () =>
-    fieldWrapper(
-      <BandwidthField
-        onFocus={() => helpComponent(t('bandwidth.help'))}
-        required
-        setValue={setBandwidth}
-        testId="bandwidth"
-        value={bandwidth}
-        telescope={telescope()}
-        widthLabel={BOTTOM_LABEL_WIDTH}
-      />
-    );
+  const bandwidthField = () => (
+    <Grid item>
+      {fieldWrapper(
+        <BandwidthField
+          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
+          required
+          setValue={setBandwidth}
+          testId="bandwidth"
+          value={bandwidth}
+          telescope={telescope()}
+          widthLabel={BOTTOM_LABEL_WIDTH}
+          observingBand={observingBand}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          setScaledBandwidth={setScaledBandwidth}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      )}
+    </Grid>
+  );
 
   const spectralResolutionField = () =>
     fieldWrapper(
@@ -882,11 +918,26 @@ export default function ObservationEntry() {
     );
   };
 
+  // SARAH
   const SubBandsField = () => {
     const errorMessage = () => {
       const min = Number(t('subBands.range.lower'));
       const max = Number(t('subBands.range.upper'));
-      return subBands < min || subBands > max ? t('subBands.range.error') : '';
+      if (subBands < min || subBands > max) {
+        return t('subBands.range.error');
+      }
+      // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
+      // sub-bands should be greater than the minimum allowed bandwidth
+      if (!isLow() && isContinuum()) {
+        if (
+          scaledBandwidth !== 0 &&
+          subBands &&
+          scaledBandwidth / subBands < minimumChannelWidthHz
+        ) {
+          return t('subBands.range.bandwidthSubBand');
+        }
+      }
+      return '';
     };
 
     const validate = (e: number) => {
@@ -1094,6 +1145,9 @@ export default function ObservationEntry() {
                 </Grid>
                 <Grid item md={12} lg={5}>
                   {isLow() ? emptyField() : taperingField()}
+                </Grid>
+                <Grid item lg={5}>
+                  {isLow() ? <></> : emptyField()}
                 </Grid>
               </Grid>
             </CardContent>
