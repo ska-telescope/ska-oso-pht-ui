@@ -15,7 +15,7 @@ charts/*/charts
 /cypress/downloads
 /cypress/screenshots/*
 ctrf/ctrf-report.json
-/report
+/report/*
 
 # production
 /build
