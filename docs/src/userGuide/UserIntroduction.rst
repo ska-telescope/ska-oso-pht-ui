@@ -4,7 +4,7 @@ Introduction
 
 The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). The tool is guided so allows both seasoned and new astronomers to submit a scientific proposal.
 
-The PHT supports both light and dark modes and can be accessed at the top left corner of the application through the |icostatus| icon.
+The PHT supports both light and dark modes and can be accessed at the top right corner of the application through the |icostatus| icon.
 
 
 
@@ -34,7 +34,7 @@ The PHT supports both light and dark modes and can be accessed at the top left c
 .. figure:: /images/statusnav.png
    :width: 95%
    :align: center
-   :alt: Image of Status, Navigation and Validation.
+   :alt: Status, navigation, and validation displayed at the top of each page in a proposal.
 
    Status, Navigation and Validation.
 
