@@ -239,7 +239,7 @@ const getObservationsSets = (
     const observation: ObservationSetBackend = {
       observation_set_id: obs.id,
       group_id: getGroupObservation(obs.id, incObservationGroups),
-      elevation: 23, // TODO : HArd coded value
+      elevation: obs.elevation,
       observing_band: getObservingBand(obs.observingBand),
       array_details: getArrayDetails(obs),
       observation_type_details: {
@@ -250,6 +250,8 @@ const getObservationsSets = (
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
+        // robust // TODO map once PDM updated
+        // spectral_averaging // TODO map once PDM updated
       }
     };
     outObservationsSets.push(observation);
@@ -372,9 +374,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
       tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-    // TODO un-swap sensitivity and integration time as above once PDM updated
-    // => we want supplied integration time fields for supplied sensitivity
-    // and supplied sensitivity fields for supplied integration time for RESULTS
 
     const suppliedRelatedFields =
       suppliedType === 'sensitivity'
@@ -465,6 +464,5 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   helpers.transform.trimObject(transformedProposal);
-
   return transformedProposal;
 }
