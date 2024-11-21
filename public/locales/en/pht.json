@@ -545,10 +545,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "This field takes the right ascension of a target in a string format 'HH:MM:SS.S'."
+        "value": "The angular distance of an object measured eastward from the First Point of Aries.  This field takes the right ascension of a target in a string format 'HH:MM:SS.S', where an entry of 24:00:00:0 represents a full rotation."
       },
       "2": {
-        "value": "This field takes the declination of a target in a string format 'DD:MM:SS.S'."
+        "value": "Indicates an object's position in the sky relative to the celestial equator, which is the projection of Earth's equator into space. This field takes the declination of a target in a string format 'DD:MM:SS.S', where an entry of 24:00:00:0 represents a full rotation"
       }
     },
     "label": {
