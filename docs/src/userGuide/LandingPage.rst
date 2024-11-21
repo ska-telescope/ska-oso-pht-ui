@@ -1,8 +1,6 @@
 Starting a new Proposal
 ########################
 
-You do not need an account to start a proposal but you will need to sign in to submit a proposal or access the landing page (:numref:`Figure %s <figure3>`).
-
 
 .. |ico4| image:: /images/landingPageIcons.png
    :width: 20%
