@@ -2,7 +2,8 @@ import {
   clickAddProposal,
   clickCreateProposal,
   clickHome,
-  clickStandardProposalSubTypeTargetOfOpportunity,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
   verifyFirstProposalOnLandingPageIsVisible,
   verifyOnLandingPage,
@@ -14,7 +15,8 @@ describe('Creating Proposal', () => {
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddProposal();
     enterProposalTitle();
-    clickStandardProposalSubTypeTargetOfOpportunity();
+    clickProposalTypePrincipleInvestigator();
+    clickSubProposalTypeTargetOfOpportunity();
     clickCreateProposal();
     verifyProposalCreatedAlertFooter();
     clickHome();
