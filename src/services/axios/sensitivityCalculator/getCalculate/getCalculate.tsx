@@ -9,7 +9,8 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM,
   SUPPLIED_TYPE_SENSITIVITY,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  OB_SUBARRAY_CUSTOM
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -37,6 +38,7 @@ async function GetCalculate(
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
+  const isCustomSubarray = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
   const getMode = () => OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/';
@@ -209,8 +211,8 @@ async function GetCalculate(
   /*********************************************************** LOW *********************************************************/
 
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
-    return {
-      subarray_configuration: getSubArray(),
+    const params = {
+      // subarray_configuration: getSubArray(),
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
@@ -225,6 +227,9 @@ async function GetCalculate(
       ), // low continuum bandwidth should be sent in MH
       n_subbands: observation.numSubBands?.toString()
     };
+    const subArrayParamName = isCustomSubarray() ? 'num_stations' : 'subarray_configuration';
+    params[subArrayParamName] = isCustomSubarray() ? 512 : getSubArray(); // TODO replace 512 by constant
+    return params;
   };
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {

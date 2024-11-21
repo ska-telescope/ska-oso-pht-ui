@@ -93,6 +93,9 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
 
   function handleWeighting() {
     console.log('isCustom', isCustom());
+    if (isCustom()) {
+      return [];
+    }
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
       promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
@@ -139,6 +142,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
+  console.log('response', response);
   return response;
 }
 
