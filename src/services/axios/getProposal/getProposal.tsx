@@ -19,7 +19,8 @@ import {
   IMAGE_WEIGHTING,
   BAND_LOW,
   BAND_1,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  ROBUST
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -294,10 +295,11 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
           : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
-      robust: 0, // TODO map once PDM updated
+      robust: ROBUST.find(item => item.label === inValue[i].observation_type_details?.robust)
+        ?.value,
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      spectralAveraging: 1, // Number(inValue[i].array_details?.spectral_averaging) // TODO map once PDM updated
+      spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
