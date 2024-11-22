@@ -4,6 +4,16 @@ On entering the observation page for the first time, it will look like :numref:`
 and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
 
+Key Information and Actions
+===========================
+
+The Observation Page allows you to:
+
+  - Create new observation entries.
+  - Link observations to specific targets.
+  - Manage observation list.
+  - View the Sensitivity Calculator results for each linked observation-target.
+
 
 
 .. |icoobs| image:: /images/obsbutton.png
@@ -90,11 +100,22 @@ When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :n
 Actions
 +++++++++++++++++++
 
+.. |success| image:: /images/successIcon.png
+   :width: 6%
+   :alt: View icon
+
+
+- **Link an observation to a target**: When an observation is selected by clicking on it, it can be linked by clicking the thick box of target. This triggers a request 
+  to calculate the sensitivity results.
+
+  The sensitivity calculator results for the linked target-observation can be seen by clicking on the |success| icon.
+
 
 - **Edit an observation**: Available via the appropriate icon in the list of observations.  Once clicked, the selected observation is displayed in a
   form identical to the 'Add Observation page', with the titling of the form and buttons changed to reflect the different functionality
   upon completion.   
   
+
   Upon completion of this action, any affected Sensitivity Calculation results will be replaced, so it is encouraged to check that the
   results are still appropriate.   Also affected may be any Data Products, so these should also be checked to ensure suitability. While on this page, you can cancel the edit proess if you choose to.
 
@@ -113,18 +134,6 @@ Actions
    - Currently, once an observation has been added to a group, it can not be removed. Removal will be implemented at a later date
 
 
-
-
-
-Key Information and Actions
-===========================
-
-The Observation Page allows you to:
-
-  - Create new observation entries.
-  - Link observations to specific targets.
-  - Manage observation list.
-  - View the Sensitivity Calculator results for each linked observation-target.
 
 Next Steps
 ==========
