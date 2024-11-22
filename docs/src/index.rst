@@ -41,7 +41,6 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    userGuide/UserQuestions
    userGuide/UserTroubleShooting
    userGuide/UserFeedback
-   userGuide/UserFuture
 
 .. toctree::
    :maxdepth: 2

@@ -24,8 +24,8 @@ The PPT supports both light and dark modes and can be accessed at the top right 
    :width: 5%
    :alt: Not started status
 
-.. |icostatus5| image:: /images/statusnav4.png
-   :width: 5%
+.. |icostatus5| image:: /images/unacceptableicon.png
+   :width: 4%
    :alt: Failed validation status
 
 
@@ -66,4 +66,7 @@ Common elements are recurring components found across multiple pages in the tool
 
 .. admonition:: Please note
 
-   This is an MVP version of PPT, meaning it offers a subset of the functionalities planned for the future.
+   This is an MVP version of PPT which offers a subset of the functionalities planned. At the moment, one can 
+     - Create, view, and edit proposals.
+     - Specify individual targets or upload a list of targets in ICRS.
+     - Define observation sets.
