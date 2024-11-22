@@ -1,16 +1,16 @@
-Science Page
+Technical Justification Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The "Science Page" (see :numref:`Figure %s <sciencepage>`) allows you to upload a science justification in a portable document format (pdf).
+The "Technical Page" (see :numref:`Figure %s <technicalpage>`) allows you to upload a technical justification in a portable document format (pdf).
 
-.. _sciencepage:
+.. _technicalpage:
 
-.. figure:: /images/sciencePage.png
+.. figure:: /images/technicalPage.png
    :width: 90%
    :align: center
-   :alt: Image of the Science Justification page.
+   :alt: Image of the Technical Justification page.
 
-   Science Justification page.
+   Technical Justification page.
 
 .. note:: 
 
@@ -45,12 +45,12 @@ The Science & Technical Pages have clear and consistent options as outlined on t
 Key Information and Actions
 ===========================
 
-- Upload scientific justification document in PDF format.
+- Upload technical justification document in PDF format.
 - Currently, only one pdf upload is allowed for each justification, so two in total for the proposal.
 - Delete uploaded pdf
 
 Next Steps
 ==========
 
-After successfully uploading and previewing your scientific justification, click "Target" or any other page to proceed to the next page.
+After successfully uploading and previewing your technical justification, click "Data Product" or any other page to proceed to the next page.
 
