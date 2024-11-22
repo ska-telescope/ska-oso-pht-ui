@@ -62,12 +62,12 @@
   },
   "bandwidth": {
     "help": {
-      "0": " Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-      "1": "The bandwidth of the observation. It must be fully contained within the selected band. Note: For SKA-LOW continuum, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For SKA-MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For further help see <a href='https://docs.google.com/document/d/1ppt2T2d67HB3iZLb6pXAjAG3oiw5nZ3NmtTmJROqJsg/edit?tab=t.0'>link text</a>"
+      "0": " Zoom Bandwidth of the observation. SKA-LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth and multiple zoom windows can be defined. SKA-MID supports seven channelisation schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",
+      "1": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For SKA-MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
     },
     "label": {
       "0": "Bandwidth",
-      "1": "Continuum Bandwidth"
+      "1": "Bandwidth"
     },
     "range": {
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
@@ -155,7 +155,7 @@
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 20 degrees for LOW and 15 degrees for MID) and the target's zenith elevation. An error message is displayed if this is not the case. For long integrations, increasing the minimum elevation will improve the sensitivity at the expense of uv-coverage.",
+    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 20 degrees for LOW and 15 degrees for MID) and the target's zenith elevation. An error message is displayed if this is not the case.",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
@@ -216,7 +216,7 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "Optionally select an existing group to associate the observation to it.  Select `New Group` to add a new group to the list",
+    "help": "This field allows you to add observations to a defined group by selecting the `New Group` from the dropdown and typing a name of choice. None is the default in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
@@ -649,7 +649,7 @@
     }
   },
   "spectralResolution": {
-    "help": "High spectral resolution allows you to Identify and separate closely spaced spectral lines, Analyze fine details in the composition, temperature, and velocity of your targets/objects, Detect subtle shifts in wavelength due to Doppler effects or chemical composition changes.",
+    "help": "",
     "label": "Spectral Resolution"
   },
   "srcNet": {
@@ -672,7 +672,7 @@
     "5": "Not indicated"
   },
   "subBands": {
-    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1. If the number of sub-bands is greater than 1, the minimum and maximum weighted sensitivity per sub-band, confusion noise per sub-band, total sensitivity per sub-band, synthesized beam size per sub-band and surface-brightness sensitivity per sub-band, are reported.",
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1.",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
@@ -706,13 +706,13 @@
     "help": "Select either Velocity or Redshift as required"
   },
   "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. The integration time of the observation is used to calculate the sensitivity that will be reached with this integration time"
+    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. If the integration time of the observation is given, this is used to calculate the sensitivity that will be reached with this integration time."
   },
   "suppliedUnits": {
     "help": "Select the unit that is appropriate"
   },
   "suppliedValue": {
-    "help": "Enter a value that is appropriate",
+    "help": "Add the required time, selecting the appropriate unit, to reach the desired target sensitivity or the required sensitivity which will be used to estimate the required integration time",
     "range": {
       "error": "Value is outside of allowed range"
     }
