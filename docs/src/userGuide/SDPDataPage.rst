@@ -6,6 +6,13 @@ Data Products are associated to one or more Observation Set(s) which have a vali
 Here, you can request a single or multiple observatory data products for an observation set or all observation sets added to your proposal.
 The "Add Data Product" function is not active until an observation set exists, has been linked to a target and has a valid Sensitivity Calculation Result. :numref:`Figure %s <datapageextra>` shows the layout of the observatory data product data page when no data product has been added to observation set(s).
 
+Key Information and Actions
+===========================
+
+- View data products added to observation set(s).
+- Add new data products.
+- Delete data products.
+- If no observation is added to your proposal yet, the |icosdp| button will be deactivated.
 
 .. |icosdp| image:: /images/addsdp.png
    :width: 20%
@@ -39,16 +46,6 @@ The are two parts to the observatory data product page:
       - *Weighting*: The weighting of the selected observation set.
       - *"Actions"* : "Delete" is the only option available at the moment.
 
-.. note:: 
-
-   Observatory Data Products
-
-   Below is the list as available at this time
-
-   - Image Products 1 : Image Cubes
-   - Image Products 2 : UV Grids
-   - LSM Catalogue
-   - Visibilities
 
 .. _datapage1:
 
@@ -57,6 +54,15 @@ The are two parts to the observatory data product page:
    :alt: Image of the Observatory Data Product page with data products added. 
 
    Observatory Data Product page with data products added.
+
+
+
+Below is the list of Observatory Data Products as available at this time
+
+      - Image Products 1 : Image Cubes
+      - Image Products 2 : UV Grids
+      - LSM Catalogue
+      - Visibilities
 
 
   
@@ -74,14 +80,6 @@ The are two parts to the observatory data product page:
 
    Observatory Data Product management page.
 
-
-Key Information and Actions
-===========================
-
-- View data products added to observation set(s).
-- Add new data products.
-- Delete data products.
-- If no observation is added to your proposal yet, the |icosdp| button will be deactivated.
 
 Next Steps
 ==========
