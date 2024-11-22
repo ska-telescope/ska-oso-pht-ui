@@ -10,6 +10,7 @@ interface StatusIconDisplayProps {
   onClick?: Function;
   size?: number;
   testId: string;
+  toolTip?: string;
 }
 
 export default function StatusIconDisplay({
@@ -18,7 +19,8 @@ export default function StatusIconDisplay({
   level,
   onClick = null,
   size = 25,
-  testId
+  testId,
+  toolTip = ''
 }: StatusIconDisplayProps) {
   const action = () => {
     if (onClick !== null) {
@@ -32,6 +34,7 @@ export default function StatusIconDisplay({
         ariaDescription={ariaDescription}
         ariaTitle={ariaTitle}
         testId={testId}
+        toolTip={toolTip}
         text={level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
         icon={level !== STATUS_ERROR}
         level={level}

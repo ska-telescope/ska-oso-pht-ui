@@ -15,6 +15,7 @@ export default function EmptyCell(error = '') {
       onClick={null}
       size={SIZE}
       testId="emptyCell"
+      toolTip={t('empty.cell')}
     />
   );
 }

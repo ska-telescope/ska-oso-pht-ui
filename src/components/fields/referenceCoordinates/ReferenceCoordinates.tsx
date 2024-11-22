@@ -30,23 +30,22 @@ export default function ReferenceCoordinatesField({
     };
 
     return (
-      <Tooltip title={t(FIELD + '.tooltip')}>
-        <Box pt={1}>
-          <DropDown
-            disabled={OPTIONS.length < 2}
-            options={getOptions()}
-            testId={FIELD + 'Type'}
-            value={value}
-            setValue={setValue}
-            label={t(FIELD + '.label')}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={labelWidth}
-            onFocus={valueFocus}
-            required
-          />
-        </Box>
-      </Tooltip>
+      <Box pt={1}>
+        <DropDown
+          disabled={OPTIONS.length < 2}
+          options={getOptions()}
+          testId={FIELD + 'Type'}
+          value={value}
+          setValue={setValue}
+          label={t(FIELD + '.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={labelWidth}
+          onFocus={valueFocus}
+          required
+          toolTip={t(FIELD + '.tooltip')}
+        />
+      </Box>
     );
   };
 
