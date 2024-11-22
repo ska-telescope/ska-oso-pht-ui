@@ -62,8 +62,8 @@
   },
   "bandwidth": {
     "help": {
-      "0": "The bandwidth in MHz (SKA-LOW) or GHz (SKA-MID). Must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-      "1": "The bandwidth of the continuum observation. For SKA-MID, it must be fully contained within the selected band. Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA-LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations."
+      "0": " Note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
+      "1": "The bandwidth of the observation. It must be fully contained within the selected band. Note: For SKA-LOW continuum, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For SKA-MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz. For further help see <a href="https://docs.google.com/document/d/1ppt2T2d67HB3iZLb6pXAjAG3oiw5nZ3NmtTmJROqJsg/edit?tab=t.0">link text</a>"
     },
     "label": {
       "0": "Bandwidth",
@@ -264,7 +264,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and hit the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
+    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -299,7 +299,7 @@
     }
   },
   "observingBand": {
-    "help": "Select the observing band to use for observation. Note that the array will be automatically populated based on the selected band. The available bands are 50 MHz - 350 MHz for SKA-LOW and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for SKA-MID.",
+    "help": "Select the observing band to use for observation. The available bands are 50 MHz - 350 MHz for LOW and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
     "label": "Observing Band",
     "0": "Low (50 - 350 MHz)",
     "1": "Mid Band 1 (0.35 - 1.05 GHz)",
@@ -481,7 +481,7 @@
     "toolTip": "Current functionality is not yet available"
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and Equatorial reference systems are available.",
+    "help": "Only Galactic and ICRS reference systems are available.",
     "label": "Reference System",
     "tooltip": "This feature is currently disabled",
     "0": "ICRS",
@@ -779,8 +779,7 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "Specify the radial velocity.  Radial velocity is the speed of an object along the line of sight from an observer to the object. It's also known as the line-of-sight velocity.  (also known as the line-of-sight velocity).  This field will be populated by the Resolve functionality if the value is in SIMBAD.",
-    "help1": "Specify the redshift value.  Redshift is the displacement of the spectrum of an astronomical object toward longer (red) wavelengths. This field will be populated by the Resolve functionality if the value is in SIMBAD.",
+    "help0": "This can be specified as either a velocity in km/s or m/s or as a redshift using the field dropdown.  The field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
