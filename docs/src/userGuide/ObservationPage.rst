@@ -48,12 +48,13 @@ The Observation Page consists of two distinct sections - see :numref:`Figure %s 
 
 1. Observation set table which displays the following details :
   
-   - **observation Id** : unique id for each observation set.
-   - **observation group id** : displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
-   - **sub-array** : This displays the sub-array of the observation set.
-   - **observation type** : Continuum or Zoom.
-   - **Sensitivity Calculation status** : Indicates the overall status for the observation. Click to open a modal with individual results - see :numref:`Figure %s <senscal>`. 
-   - **actions** : Icons providing the ability to edit or delete ( after confirmation ) the selected observation.
+   - **Id** : Unique id for each observation set.
+   - **Group** : Displays the group Id if a given observation belongs to a group. This is needed when observations need to happen in parallel or in a group.
+   - **Observing Band** : The observing band. The options are: low band, mid band 1, mid band 2, mid band 5a and mid band 5b.
+   - **Subrray** : This displays the sub-array of the observation set.
+   - **Type** : Continuum or Zoom.
+   - **Status** : Indicates the overall status for the observation. Click to open a modal with individual results - see :numref:`Figure %s <senscal>`. 
+   - **Actions** : Icons providing the ability to edit or delete ( after confirmation ) the selected observation.
 
 2. Target List: 
    
@@ -101,14 +102,15 @@ Actions
 +++++++++++++++++++
 
 .. |success| image:: /images/successIcon.png
-   :width: 6%
+   :width: 5%
    :alt: View icon
 
 
 - **Link an observation to a target**: When an observation is selected by clicking on it, it can be linked by clicking the thick box of target. This triggers a request 
   to calculate the sensitivity results.
 
-  The sensitivity calculator results for the linked target-observation can be seen by clicking on the |success| icon.
+  The sensitivity calculator results for the linked target-observation can be seen by clicking on the |success| icon on the target section in status column. To see all the sensitivity 
+  calculator results linked to an observation, click on the |success| icon on the observation section in the status column.
 
 
 - **Edit an observation**: Available via the appropriate icon in the list of observations.  Once clicked, the selected observation is displayed in a
