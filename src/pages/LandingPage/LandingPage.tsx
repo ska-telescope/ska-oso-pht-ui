@@ -204,7 +204,7 @@ export default function LandingPage() {
 
   const colType = {
     field: 'proposalType',
-    headerName: t('proposalType.short'),
+    headerName: t('proposalType.label'),
     width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
