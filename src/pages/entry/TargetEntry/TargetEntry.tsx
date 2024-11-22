@@ -341,7 +341,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
 
   return (
     <Grid
-      p={5}
+      p={2}
       container
       direction="row"
       alignItems="space-evenly"
