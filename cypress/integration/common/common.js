@@ -20,8 +20,11 @@ export const selectCosmology = () => {
   cy.get('[data-value="1"]').click({ force: true });
 };
 
-export const clickStandardProposalSubTypeTargetOfOpportunity = () => {
+export const clickProposalTypePrincipleInvestigator = () => {
   cy.get('[id="ProposalType-1"]').click({ force: true });
+};
+
+export const clickSubProposalTypeTargetOfOpportunity = () => {
   cy.get('[id="proposalAttribute-1"]').click({ force: true });
 };
 
@@ -31,7 +34,7 @@ export const clickCreateProposal = () => {
 
 export const verifyProposalCreatedAlertFooter = () => {
   cy.get("[data-testid='timeAlertFooter']").should(
-    'contain',
+    'include.text',
     'Proposal added with unique identifier'
   );
 };
@@ -54,9 +57,10 @@ export const createStandardProposal = () => {
   clickAddProposalButton();
   pageConfirmed('TITLE');
   enterProposalTitle();
-  clickStandardProposalSubTypeTargetOfOpportunity();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
   clickCreateProposal();
-  // TODO verifyProposalCreatedAlertFooter();
+  verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
 
@@ -78,7 +82,7 @@ export const addTeamMember = () => {
 };
 
 export const verifyEmailSentAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Email invite has been sent.');
+  cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
@@ -191,7 +195,7 @@ export const clickToValidateProposal = () => {
 };
 
 export const verifyProposalValidAlertFooter = () => {
-  cy.get('#standardAlertId').should('contain', 'Proposal is Valid');
+  cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {
