@@ -28,6 +28,15 @@ Once on the team page, see :numref:`Figure %s <figure5>`,  you can move between 
 Layout and Navigation
 =====================
 
+.. |icopistar| image:: /images/PIStarIcon.png
+   :width: 5%
+   :alt: PI icon
+
+.. |icodelete| image:: /images/deleteIcon.png
+   :width: 6%
+   :alt: Delete icon
+
+
 The Team Page has two sections:
 
 1. A list of Team Members (Left)
@@ -36,10 +45,12 @@ The Team Page has two sections:
 
   - Last Name
   - First Name
-  - Status (e.g., Invited, Accepted)
+  - Status (e.g., Pending, Accepted)
   - PhD Thesis checkbox
-  - PI star icon (filled: Principal Investigator, hollow: not PI, missing: invitation not accepted)
-  - "Actions" (delete)
+  - PI star icon (|icopistar|: Principal Investigator, missing: not PI)
+  - Actions (|icodelete|: Remove a team member from the proposal.)
+
+  Status shows the invitation's status and PhD Thesis whether they are invited to collaborate as part of their PhD Thesis.
   
 
 2. Team Management Options (Right)
@@ -52,16 +63,14 @@ The Team Page has two sections:
 
    Invite Team Members
 
+   - First Name
+   - Last Name
+   - Email
+   - Principal Investigator
+   - For PhD Thesis
+
    This option is intended for individuals that are not registered users. 
    For registered users, they can be located via the Search for a Member option,
    which is not currently implemented
 
-
-
-Key Information and Actions
-===========================
-
-- View and manage your proposal team.
-- Invite new collaborators.
-- Import team members from a file or find existing users.
 
