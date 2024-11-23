@@ -20,21 +20,17 @@ Key Information and Actions
    :width: 10%
    :alt: Page filter
 
+.. |icoview| image:: /images/viewIcon.png
+   :width: 5%
+   :alt: View icon
+
 
 
 - The proposal title allows a maximum of 50 words.
-- The title field accepts latex syntax - which can be previewed by clicking the "eye" icon next to the title field.
-- Under proposal types you can select a :ref:`proposal category <proposaltypes>`. Once selected, click |icocreate| to create a proposal and proceed to the next page.
-
-.. tip:: 
-   On Hover:
-
-   - Hovering over a proposal type displays a description of the proposal type for your reference.
-  
-   Optional:
-
-   - When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can choose multiple sub-categories by clicking multiple options
-
+- The title field accepts latex syntax - which can be previewed by clicking the |ico4| icon next to the title field.
+- Table 3 lists the different :ref:`proposal types. <proposaltypes>` Optionally, you can specify an attribute for your proposal (see Table 4). Once selected, click |icoview| to create a proposal and proceed to the next page.
+- Hovering over a proposal type displays a description of the proposal type for your reference.
+- When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can choose multiple sub-categories by clicking multiple options.
 
 
 
