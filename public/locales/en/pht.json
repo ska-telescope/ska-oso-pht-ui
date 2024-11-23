@@ -906,7 +906,7 @@
       "title": "Data Product",
       "titleShort": "Data Product",
       "label": "Data Product(s)",
-      "desc": "Add data product(s) to your Observation(s). You can request more than one data products for an observation set."
+      "desc": "Add data product(s) to observation set(s). You can request more than one data products for an observation set."
     },
     "14": {
       "title": "Observation Update",
