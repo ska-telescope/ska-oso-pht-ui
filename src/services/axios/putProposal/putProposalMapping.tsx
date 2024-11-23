@@ -13,7 +13,9 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
   VEL_UNITS,
-  VELOCITY_TYPE
+  VELOCITY_TYPE,
+  ROBUST,
+  IW_BRIGGS
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
@@ -171,8 +173,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
     const lowArrayDetails: ArrayDetailsLowBackend = {
       array: TELESCOPE_LOW_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
-      number_of_stations: incObs.numStations,
-      spectral_averaging: incObs.spectralAveraging?.toString()
+      number_of_stations: incObs.numStations
     };
     return lowArrayDetails;
   } else {
@@ -249,9 +250,12 @@ const getObservationsSets = (
         supplied: getSupplied(obs),
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
-        // robust // TODO map once PDM updated
-        // spectral_averaging // TODO map once PDM updated
+        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.label,
+        spectral_averaging: obs.spectralAveraging.toString(),
+        robust:
+          obs.imageWeighting === IW_BRIGGS
+            ? ROBUST.find(item => item.value === obs.robust)?.label
+            : '0'
       }
     };
     outObservationsSets.push(observation);

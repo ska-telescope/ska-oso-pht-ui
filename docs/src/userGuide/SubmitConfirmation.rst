@@ -1,12 +1,7 @@
 Submit Confirmation Page
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Before submitting your proposal, you need to click the "validate" button to check
-your proposal against the capability of the telescope for the current cycle. 
-If the proposal is valid, you will see a confirmation message at the bottom of the screen. 
-
-If the proposal is not valid then proposal is unable to be submitted as the confirmation button will remain disabled
-The details of the validation issues are shown within a modal which lists all of the issues identified.
+Before submitting your proposal, click the “validate” button to check its compatibility with the telescope’s capabilities for the current cycle. If valid, a confirmation message will appear at the bottom. If not valid, the confirmation button will remain disabled, and a modal will display the validation issues.
 
 .. figure:: /images/validationResults.png
    :width: 90%

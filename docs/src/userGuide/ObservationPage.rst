@@ -1,6 +1,6 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
-On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add observation set(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add Observation(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
 and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
 
 
@@ -25,9 +25,9 @@ and after filling out the form and clicking "Add", the page will look like :numr
 .. figure:: /images/observationPage.png
    :width: 90%
    :align: center
-   :alt: Observation page with observation set(s) and target(s) added.
+   :alt: Observation page with Observation(s) and target(s) added.
 
-   Observation page with observation set(s) and target(s) added.
+   Observation page with Observation(s) and target(s) added.
 
 
 Layout and Navigation
@@ -129,5 +129,5 @@ The Observation Page allows you to:
 Next Steps
 ==========
 
-After adding observation set(s) you can proceed to the "Technical" page or any other page. 
+After adding Observation(s) you can proceed to the "Technical" page or any other page. 
 

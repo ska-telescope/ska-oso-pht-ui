@@ -171,9 +171,9 @@ export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const IMAGE_WEIGHTING = [
-  { lookup: 'natural', value: 0 },
-  { lookup: 'uniform', value: 1 },
-  { lookup: 'robust', value: 2 }
+  { label: 'natural', lookup: 'natural', value: 0 },
+  { label: 'uniform', lookup: 'uniform', value: 1 },
+  { label: 'briggs', lookup: 'robust', value: 2 }
 ];
 
 export const IMAGE_SIZE_UNITS = {
