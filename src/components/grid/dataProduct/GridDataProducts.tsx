@@ -83,8 +83,7 @@ export default function GridDataProducts({
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      e.row.pixelSizeValue + ' ' + "arcsec"
-  };
+      e.row.pixelSizeValue + ' ' + "arcsec"};
 
   const colImageWeighting = {
     field: 'weighting',
