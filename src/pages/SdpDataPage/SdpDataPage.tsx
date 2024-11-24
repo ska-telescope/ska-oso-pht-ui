@@ -113,7 +113,7 @@ export default function SdpDataPage() {
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {rec?.pixelSizeValue} {presentUnits(rec?.pixelSizeUnits)}
+            {rec?.pixelSizeValue} {presentUnits('arcsec')}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
