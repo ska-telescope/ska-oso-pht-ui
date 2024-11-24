@@ -40,7 +40,7 @@ investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>`
 - **Proposal Type** : The type of proposal. 
 - **Cycle** : SKAO observing cycle associated with the proposal.
 - **Proposal Title** : The title of the proposal.
-- **PI** : Principal Investigator of the proposal. A proposal in 'draft' status without a PI indicated will have the |iconunaccept| as seen in :numref:`Figure %s <figure3>`.
+- **PI** : Principal Investigator of the proposal. A proposal without a PI indicated will have the |iconunaccept| icon as seen in :numref:`Figure %s <figure3>`.
 - **Status** : Current status of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
 - **Last Updated** : Date and time the proposal was last modified.
 - **Allowed actions** (|ico4|) on each proposal. See  :numref:`Table %s <mytest>`.
@@ -106,5 +106,5 @@ Key Information and Actions
 Next Steps
 ==========
 
-- |ico1| takes you to the "Title Page".
+- |ico1| takes you to the :doc:`Title Page </userGuide/TitlePage>`.
 - If you have any questions or need technical assistance, please contact the `SKAO Help desk <https://www.skao.int/en/contact-us/>`_.

@@ -216,7 +216,7 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. None is the default in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name or a new one can be created.",
+    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. 'None' is the default, in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name or a new one can be created.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",

@@ -1,11 +1,11 @@
 {
-  "name": "ska",
-  "version": "q",
+  "name": "ska-oso-pht-ui",
+  "version": "0.5.1",
   "private": true,
-  "license": "yes",
-  "description": "yes",
-  "main": "yes",
-  "repository": "yes",
+  "license": "BSD 3-Clause",
+  "description": "SKA OSO PHT Application",
+  "main": "index.js",
+  "repository": "git@https://gitlab.com/ska-telescope/ska-oso-pht-ui.git",
   "scripts": {
     "instrument": "webpack serve --mode development @cypress/instrument-cra",
     "build": "webpack --mode production",
@@ -137,5 +137,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "author": "yes"
+  "author": "Stargazers - OMC ART"
 }

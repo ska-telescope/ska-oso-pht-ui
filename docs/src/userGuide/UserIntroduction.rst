@@ -2,7 +2,7 @@ Introduction
 ~~~~~~~~~~~~
 
 
-The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory (SKAO). 
+The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal to the Square Kilometer Array Observatory `(SKAO) <https://www.skao.int/en>`_. 
 
 The PPT supports both light and dark modes and can be accessed at the top right corner of the application through the |icostatus| icon.
 
@@ -58,8 +58,8 @@ Common elements are recurring components found across multiple pages in the tool
    "Home Button", "Positioned at the top left corner (see :numref:`Figure %s <statnavtest>`), enabling you to return to the :doc:`Landing Page </userGuide/LandingPage>`."
    "Save Button",	"Located at the top left corner (see :numref:`Figure %s <statnavtest>`), next to the home button, allowing the progress of a proposal to be saved."
    "Validate Button",	"Positioned at the top right (see :numref:`Figure %s <statnavtest>`) of the page. This allows a proposal to be validated against the capabilities of a current cycle."
-   "Submit Button",	"Located at the top right corner (see :numref:`Figure %s <statnavtest>`) of the page. This buttons only becomes active after a proposal is validated."
-   "Dynamic Help", "Always on the right side of the page. Hover over fields provide contextual descriptions and guidance for elements on all pages."
+   "Submit Button",	"Located at the top right corner (see :numref:`Figure %s <statnavtest>`) of the page. This buttons only becomes active after a proposal passes validation."
+   "Dynamic Help", "Always on the right side of the page. Hovering over fields provides contextual descriptions and guidance for elements across all pages."
 
 
 
