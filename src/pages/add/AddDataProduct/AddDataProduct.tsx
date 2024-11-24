@@ -250,7 +250,7 @@ export default function AddDataProduct() {
           setValue={setPixelSizeValue}
           required
           disabled
-          suffix={presentUnits(pixelSizeUnits)}
+          suffix={"arcsec"}
         />
       </Box>
     );
