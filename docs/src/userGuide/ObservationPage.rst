@@ -1,9 +1,17 @@
 Observation Page
 ~~~~~~~~~~~~~~~~
-On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add Observation(s) to your proposal, click the |icoobs| button (see :ref:`Add Observation section <obspage1>`) 
-and after filling out the form and clicking "Add", the page will look like :numref:`Figure %s <obspage1>`.
+On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add Observation(s), click the |icoobs| button (see :ref:`Add Observation section <obspage1>`). 
 
+.. _obspage2:
 
+.. figure:: /images/observationPage2.png
+   :width: 90%
+   :align: center
+   :alt: Image of the Observation page
+
+   Image of the Observation page. 
+
+   
 Key Information and Actions
 ===========================
 
@@ -20,15 +28,6 @@ The Observation Page allows you to:
    :width: 20%
    :alt: Page filter
 
-
-.. _obspage2:
-
-.. figure:: /images/observationPage2.png
-   :width: 90%
-   :align: center
-   :alt: Image of the Observation page
-
-   Image of the Observation page.
 
 
 .. _obspage1:
@@ -134,11 +133,4 @@ Actions
    - The observation can be added to an existing group or a new group can be created.
    - Adding an observation to a group is optional.
    - Currently, once an observation has been added to a group, it can not be removed. Removal will be implemented at a later date
-
-
-
-Next Steps
-==========
-
-After adding Observation(s) you can proceed to the "Technical" page or any other page. 
 
