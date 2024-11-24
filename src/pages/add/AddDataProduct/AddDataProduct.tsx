@@ -27,7 +27,6 @@ import { DataProductSDP } from '../../../utils/types/dataProduct';
 import Observation from '../../../utils/types/observation';
 import AddButton from '../../../components/button/Add/Add';
 import { LAB_POSITION } from '../../../utils/constants';
-import { presentUnits } from '../../../utils/present';
 import { Box } from '@mui/system';
 
 const BACK_PAGE = 7;
@@ -250,7 +249,7 @@ export default function AddDataProduct() {
           setValue={setPixelSizeValue}
           required
           disabled
-          suffix={"arcsec"}
+          suffix={'arcsec'}
         />
       </Box>
     );
