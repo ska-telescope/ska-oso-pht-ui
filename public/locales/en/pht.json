@@ -755,7 +755,7 @@
     "label": "Upload CSV File",
     "uploadSuccessMsg": "All targets in file have been uploaded into the proposal",
     "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
-    "uploadErrorEquatorialNotValidMsg": "Equatorial schema not valid",
+    "uploadErrorEquatorialNotValidMsg": "ICRS schema not valid",
     "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
     "uploadErrorUnknownParserMsg": "Unknown error in file parser - "
   },
