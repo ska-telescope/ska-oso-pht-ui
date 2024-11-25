@@ -391,8 +391,8 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
+          numOf15mAntennas: 133,
+          numOf13mAntennas: 64,
           numOfStations: 0,
           disableForBand5: false
         }

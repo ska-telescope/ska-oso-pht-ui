@@ -82,9 +82,15 @@ async function GetCalculate(
 
   /*********************************************************** MID *********************************************************/
 
-  const convertFrequency = (value: number | string, units: number | string) => {
-    return sensCalHelpers.format.convertBandwidthToHz(value, units);
-  };
+  const getMidSubArrayOrAntennas = () => (
+    isCustomSubarray() ?
+      { n_ska: observation?.num15mAntennas, n_meer: observation?.num13mAntennas } :
+      { subarray_configuration: getSubArray() }
+  );
+
+  const convertFrequency = (value: number | string, units: number | string) =>
+    sensCalHelpers.format.convertBandwidthToHz(value, units);
+
   const getSpectralResolution = () => {
     const units = FREQUENCY_UNITS[2].label;
     const spectralResValue = observation.spectralResolution.includes(units)
@@ -95,9 +101,8 @@ async function GetCalculate(
 
   const getParamZoom = (): CalculateMidZoomQuery => {
     const bandwidthValueUnit = getZoomBandwidthValueUnit();
-    return {
+    const params = {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`,
-      subarray_configuration: getSubArray(),
       freq_centres_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
@@ -108,12 +113,13 @@ async function GetCalculate(
       spectral_resolutions_hz: getSpectralResolution(),
       total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1])
     };
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennas();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getParamContinuum = (): CalculateMidContinuumQuery => {
-    return {
+    const params = {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`,
-      subarray_configuration: getSubArray(),
       freq_centre_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
@@ -128,6 +134,8 @@ async function GetCalculate(
       el: observation.elevation?.toString(),
       n_subbands: observation.numSubBands?.toString()
     };
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennas();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getSuppliedSensitivityUnits = () => {
