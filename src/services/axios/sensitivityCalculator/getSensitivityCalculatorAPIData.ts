@@ -92,7 +92,6 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
   const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   function handleWeighting() {
-    console.log('isCustom', isCustom());
     if (isCustom()) {
       return [];
     }

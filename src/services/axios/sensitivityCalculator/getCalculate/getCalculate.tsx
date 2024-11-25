@@ -82,7 +82,7 @@ async function GetCalculate(
 
   /*********************************************************** MID *********************************************************/
 
-  const getMidSubArrayOrAntennas = () => (
+  const getMidSubArrayOrAntennasParams = () => (
     isCustomSubarray() ?
       { n_ska: observation?.num15mAntennas, n_meer: observation?.num13mAntennas } :
       { subarray_configuration: getSubArray() }
@@ -113,7 +113,7 @@ async function GetCalculate(
       spectral_resolutions_hz: getSpectralResolution(),
       total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1])
     };
-    const subArrayOrAntennasParams = getMidSubArrayOrAntennas();
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennasParams();
     return { ...params, ...subArrayOrAntennasParams };
   };
 
@@ -134,7 +134,7 @@ async function GetCalculate(
       el: observation.elevation?.toString(),
       n_subbands: observation.numSubBands?.toString()
     };
-    const subArrayOrAntennasParams = getMidSubArrayOrAntennas();
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennasParams();
     return { ...params, ...subArrayOrAntennasParams };
   };
 
@@ -218,10 +218,14 @@ async function GetCalculate(
 
   /*********************************************************** LOW *********************************************************/
 
-  // SARAH
+  const getLowSubArrayOrAntennasParams = () => (
+    isCustomSubarray() ?
+      { num_stations: observation?.numStations } :
+      { subarray_configuration: getSubArray() }
+  );
+
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
     const params = {
-      // subarray_configuration: getSubArray(),
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
@@ -236,9 +240,8 @@ async function GetCalculate(
       ), // low continuum bandwidth should be sent in MH
       n_subbands: observation.numSubBands?.toString()
     };
-    const subArrayParamName = isCustomSubarray() ? 'num_stations' : 'subarray_configuration';
-    params[subArrayParamName] = isCustomSubarray() ? observation?.numStations : getSubArray();
-    return params;
+    const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {
@@ -255,9 +258,8 @@ async function GetCalculate(
         bandwidthValueUnit[1]
       ) // low zoom bandwidth should be sent in kHz
     };
-    const subArrayParamName = isCustomSubarray() ? 'num_stations' : 'subarray_configuration';
-    params[subArrayParamName] = isCustomSubarray() ? observation?.numStations : getSubArray();
-    return params;
+    const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   function mapQueryCalculateLow(): URLSearchParams {
