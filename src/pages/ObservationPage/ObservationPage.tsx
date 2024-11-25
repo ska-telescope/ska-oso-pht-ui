@@ -433,6 +433,7 @@ export default function ObservationPage() {
           ),
         sortable: false,
         flex: 2,
+        minWidth: 170,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
@@ -449,6 +450,7 @@ export default function ObservationPage() {
         renderHeader: () => (currObs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>),
         sortable: false,
         flex: 2.5,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
