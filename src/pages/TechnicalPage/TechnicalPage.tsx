@@ -88,7 +88,7 @@ export default function TechnicalPage() {
         technicalPDF: technicalPDFUploaded,
         technicalLoadStatus: FileUploadStatus.OK
       });
-      NotifyOK(t('pdfDelete.technical.success'));
+      NotifyOK('pdfUpload.technical.success');
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -133,10 +133,10 @@ export default function TechnicalPage() {
         technicalLoadStatus: FileUploadStatus.INITIAL
       });
 
-      NotifyOK(t('pdfDelete.technical.success'));
+      NotifyOK('pdfDelete.technical.success');
     } catch (e) {
       new Error(t('pdfDelete.technical.error'));
-      NotifyError(t('pdfDelete.technical.error'));
+      NotifyError('pdfDelete.technical.error');
     }
   };
 

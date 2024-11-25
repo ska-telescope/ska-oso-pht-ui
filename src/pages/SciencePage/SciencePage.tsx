@@ -89,7 +89,7 @@ export default function SciencePage() {
         scienceLoadStatus: FileUploadStatus.OK
       });
 
-      NotifyOK(t('pdfUpload.science.success'));
+      NotifyOK('pdfUpload.science.success');
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -133,7 +133,7 @@ export default function SciencePage() {
         sciencePDF: sciencePDFDeleted,
         scienceLoadStatus: FileUploadStatus.INITIAL
       });
-      NotifyOK(t('pdfDelete.science.success'));
+      NotifyOK('pdfDelete.science.success');
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
       NotifyError('pdfDelete.science.error');
