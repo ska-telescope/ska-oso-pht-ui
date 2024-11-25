@@ -230,6 +230,9 @@
     "label": "Id"
   },
   "imageSize": {
+    "0": "degrees",
+    "1": "arcmins",
+    "2": "arcsecs",
     "label": "Image Size",
     "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
     "error": "A value greater than zero is required"
@@ -532,7 +535,8 @@
     "14": "VLBI",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
-    "notSpecified": "Not specified"
+    "notSpecified": "Not specified",
+    "error": "A value is required"
   },
   "scienceSubCategory": {
     "label": "Sub-category",

@@ -74,7 +74,7 @@ export default function GridDataProducts({
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      e.row.imageSizeValue + ' ' + presentUnits(e.row.imageSizeUnits)
+      e.row.imageSizeValue + ' ' + t('imageSize.' + e.row.imageSizeUnits)
   };
 
   const colPixelSize = {
@@ -82,7 +82,8 @@ export default function GridDataProducts({
     headerName: t('pixelSize.label'),
     flex: 0.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: DataProductSDP }) => e.row.pixelSizeValue + ' ' + 'arcsec'
+    renderCell: (e: { row: DataProductSDP }) =>
+      e.row.pixelSizeValue + ' ' + presentUnits(e.row.pixelSizeUnits)
   };
 
   const colImageWeighting = {
