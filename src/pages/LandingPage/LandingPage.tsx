@@ -33,6 +33,8 @@ import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import TeamMember from 'utils/types/teamMember';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { FOOTER_SPACER } from '../../utils/constants';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -204,7 +206,7 @@ export default function LandingPage() {
 
   const colType = {
     field: 'proposalType',
-    headerName: t('proposalType.short'),
+    headerName: t('proposalType.label'),
     width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
@@ -389,6 +391,7 @@ export default function LandingPage() {
           )}
         </Grid>
       </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

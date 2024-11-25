@@ -822,6 +822,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
+        onFocus={() => helpComponent(t('robust.help'))}
         setValue={setRobust}
         testId="robust"
         value={robust}

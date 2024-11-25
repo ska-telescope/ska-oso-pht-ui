@@ -1,8 +1,5 @@
-Common Questions
+Frequenctly Asked Questions
 ~~~~~~~~~~~~~~~~
-
-FAQs for the Minimal Viable Product (MVP)
-=========================================
 
 .. admonition:: How will I know if my proposal has been successfully submitted?
 
@@ -11,7 +8,7 @@ FAQs for the Minimal Viable Product (MVP)
 
 .. admonition:: Can I edit or update my proposal after submission?
 
-      Yes. You edit and re-submit your proposal after submission before the deadline. However, after the deadline, you will have to contact operation if you wish to do so.
+      Yes, you can edit and re-submit the your proposal before the proposal deadline.
 
 
 
@@ -23,8 +20,3 @@ FAQs for the Minimal Viable Product (MVP)
    
    Answer to be supplied
 
-Additional Notes
-================
-
-- Be sure to check the proposal guidelines and deadlines carefully before submitting your proposal.
-- The support team is available to assist you with any questions or concerns you may have throughout the proposal process.
