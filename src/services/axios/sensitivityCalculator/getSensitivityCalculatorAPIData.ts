@@ -26,12 +26,14 @@ const makeResponse = (target: Target, statusGUI: number, error: string) => {
 };
 
 async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {
+  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
+
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      return await getSensitivityCalculatorAPIData(observation, target);
+      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
     } catch (e) {
       return { error: e };
     }
@@ -39,15 +41,23 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output: any = await fetchSensCalc(observation, target);
+    console.log('JUST before checking errors');
+    console.log('output', output);
     if ('error' in output) {
+      console.log('error in output', output);
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
+    console.log('CHECK1');
     if (output['calculate']['error'] && output['calculate']['error']['detail']) {
+      console.log('error in calculate output', output);
       return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
     }
-    if (output['weighting']['error'] && output['weighting']['error']['detail']) {
+    console.log('CHECK2');
+    if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
+      console.log('error in weighting output', output);
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     }
+    console.log('JUST before calling calculateSensitivityCalculatorResults');
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
@@ -60,7 +70,11 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
 }
 
-async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
+async function getSensitivityCalculatorAPIData(
+  observation: Observation,
+  target: Target,
+  isCustom: boolean
+) {
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
     there are 1, 2, 3, or 4 calls to the API made
@@ -89,10 +103,8 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     - 1 call to to getCalculate
   */
 
-  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
-
   function handleWeighting() {
-    if (isCustom()) {
+    if (isCustom) {
       return [];
     }
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
@@ -141,7 +153,7 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
-  console.log('response', response);
+  console.log('response in handleCalculate', response);
   return response;
 }
 

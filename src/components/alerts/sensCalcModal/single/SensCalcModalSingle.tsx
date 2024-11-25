@@ -12,12 +12,18 @@ interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
   data: SensCalcResults;
+  isCustom: boolean;
 }
 
 const SIZE = 30;
 const SPACER_HEIGHT = 30;
 
-export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDisplaySingleProps) {
+export default function SensCalcModalSingle({
+  open,
+  onClose,
+  data,
+  isCustom
+}: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
   };
@@ -91,7 +97,7 @@ export default function SensCalcModalSingle({ open, onClose, data }: SensCalcDis
             {data?.section1?.map(rec =>
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
-                rec.value,
+                isCustom ? 'test' : rec.value,
                 rec.units,
                 rec.field
               )
