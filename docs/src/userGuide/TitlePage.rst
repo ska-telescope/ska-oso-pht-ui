@@ -20,17 +20,17 @@ Key Information and Actions
    :width: 10%
    :alt: Page filter
 
-.. |icoview| image:: /images/viewIcon.png
-   :width: 5%
+.. |icoview| image:: /images/viewicon.png
+   :width: 6%
    :alt: View icon
 
 
 
-- The proposal title allows a maximum of 50 words.
-- The title field accepts latex syntax - which can be previewed by clicking the |ico4| icon next to the title field.
-- Table 3 lists the different :ref:`proposal types. <proposaltypes>` Optionally, you can specify an attribute for your proposal (see Table 4). Once selected, click |icoview| to create a proposal and proceed to the next page.
-- Hovering over a proposal type displays a description of the proposal type for your reference.
-- When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can choose multiple sub-categories by clicking multiple options.
+- The proposal title allows a maximum of 50 words. The title field accepts latex syntax - which can be previewed by clicking the |icoview| icon next to the title field (see :numref:`Figure %s <titlepage>`).
+- When a :ref:`proposal type <proposaltypes>` is selected (see :numref:`Table %s <proposaltypes>`), :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can select multiple attributes. 
+- Once proposal type is specified, click |icocreate| to create a proposal and proceed to the next page. 
+- Hovering over a proposal type/attributes displays a description of the proposal type for your reference.
+
 
 
 
@@ -60,11 +60,5 @@ Key Information and Actions
 Next Steps
 ==========
 
-After successfully creating your proposal on this page, you will move on to the "Team" page.
-
-Additional Notes
-================
-
-- Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated against the capability of the current cycle.
+After successfully creating a proposal on this page, the next page is the :doc:`Team Page </userGuide/TeamPage>`.
 

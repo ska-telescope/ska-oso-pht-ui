@@ -22,7 +22,7 @@
   },
   "abstract": {
     "label": "Abstract",
-    "help": "ABSTRACT: The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. It should include key elements such as the research question, background context, hypothesis, methodology, and anticipated results. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "help": "The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
     "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
@@ -62,8 +62,8 @@
   },
   "bandwidth": {
     "help": {
-      "0": " Zoom Bandwidth of the observation. SKA-LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth and multiple zoom windows can be defined. SKA-MID supports seven channelisation schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",
-      "1": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For SKA-LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the SKA LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For SKA-MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
+      "0": " Zoom Bandwidth of the observation. LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelisation schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",
+      "1": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
     },
     "label": {
       "0": "Bandwidth",
@@ -76,7 +76,7 @@
     }
   },
   "centralFrequency": {
-    "help": "The central frequency of the observation. Must be within the selected band and fully contained within the bandwidth.",
+    "help": "The central frequency of the observation. Must be within the selected band.",
     "label": "Central Frequency",
     "range": {
       "error": "Observing frequency out of range"
@@ -155,7 +155,7 @@
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "The minimum elevation at which the target will be observed, which must lie between the horizon (currently set to be an elevation of 20 degrees for LOW and 15 degrees for MID) and the target's zenith elevation. An error message is displayed if this is not the case.",
+    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID.",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
@@ -216,11 +216,11 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "This field allows you to add observations to a defined group by selecting the `New Group` from the dropdown and typing a name of choice. None is the default in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name.",
+    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. 'None' is the default, in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name or a new one can be created.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
-    "toolTip": "Add a group if the observation needs to be executed concurrently"
+    "toolTip": "Add a group if observations need to be grouped."
   },
   "homeBtn": {
     "label": "Home",
@@ -299,7 +299,7 @@
     }
   },
   "observingBand": {
-    "help": "Select the observing band to use for observation. The available bands are 50 MHz - 350 MHz for LOW and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
+    "help": "Select the observing band to use for the observation. The available bands are 50 MHz - 350 MHz for LOW; and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
     "label": "Observing Band",
     "0": "Low (50 - 350 MHz)",
     "1": "Mid Band 1 (0.35 - 1.05 GHz)",
@@ -308,9 +308,9 @@
     "4": "Mid Band 5b (8.3 - 15.4 GHz)"
   },
   "observationId": {
-    "label": "Observation Id",
-    "help": "A default identifier for the observation has been provided, however this can be overridden.  Note that this is a unique identifier so cannot be changed ast a later date",
-    "short": "Id",
+    "label": "Observation ID",
+    "help": "A unique identifier of the observation. A default identifier is auto-generated but this can be overridden by typing into the field.",
+    "short": "ID",
     "notUnique": "Another observation with this unique identifier exists"
   },
   "observations": {
@@ -489,7 +489,7 @@
   },
   "referenceFrame": {
     "label": "Reference Frame",
-    "help": "Select the option to be used to describe the position, velocity, and orientation of an object by comparing its motion to the frame.  The Heliocentric measures spatial positions relative to the center of the sun. The local standard of rest (LSR), is a point in space that moves in a circular orbit around the Galactic Center at the Sun's position. ",
+    "help": "The reference frame of the velocity entered. The default is Heliocentric.",
     "0": "Heliocentric",
     "1": "Local Standard of Rest"
   },
@@ -545,10 +545,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "This field takes the right ascension of a target in a string format 'HH:MM:SS.S'.   An entry of 24:00 "
+        "value": "This field takes the right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
       },
       "2": {
-        "value": "This field takes the declination of a target in a string format 'DD:MM:SS.S'."
+        "value": "This field takes the declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
       }
     },
     "label": {
@@ -672,7 +672,7 @@
     "5": "Not indicated"
   },
   "subBands": {
-    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32. The default number of sub-bands is 1.",
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32 for MID and 1-4 for LOW. The default number of sub-bands is 1.",
     "label": "Number of sub bands",
     "range": {
       "lower": 0,
@@ -683,7 +683,7 @@
   },
   "subArrayConfiguration": {
     "label": "Subarray Configuration",
-    "help": "Select a subarray configuration from the list of available variations. Selection will allow for manual selection of the number of stations",
+    "help": "Select a subarray configuration from the list.",
     "short": "Subarray",
     "1": "AA0.5",
     "2": "AA1",
@@ -718,7 +718,7 @@
     }
   },
   "tapering": {
-    "help": "A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering",
     "0": "No tapering"
   },
@@ -755,7 +755,7 @@
     "label": "Upload CSV File",
     "uploadSuccessMsg": "All targets in file have been uploaded into the proposal",
     "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
-    "uploadErrorEquatorialNotValidMsg": "Equatorial schema not valid",
+    "uploadErrorEquatorialNotValidMsg": "ICRS schema not valid",
     "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
     "uploadErrorUnknownParserMsg": "Unknown error in file parser - "
   },
@@ -779,7 +779,7 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "This can be specified as either a velocity in km/s or m/s or as a redshift using the field dropdown.  The field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
+    "help0": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
@@ -798,7 +798,7 @@
     "clicked": "View Proposal Icon clicked"
   },
   "weather": {
-    "help": "This is the allowed level of Precipitable Water Vapour",
+    "help": "The default value for the weather PWV (Precipitable Water Vapour) is 10 mm, corresponding to “average” conditions. Allowed values range between 3 and 25 mm. The PWV is used in the calculation of the atmospheric brightness temperature.",
     "label": "Weather",
     "units": "mm",
     "default": 10,
