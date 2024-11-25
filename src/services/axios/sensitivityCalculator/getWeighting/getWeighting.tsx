@@ -65,7 +65,8 @@ async function GetWeighting(
   };
 
   const getRobustness = () => {
-    return ROBUST.find(item => item.value === observation.robust)?.label;
+    const result = ROBUST.find(item => item.value === observation.robust);
+    return result ? result.label : 0;
   };
 
   const getSubArray = () => {
@@ -76,17 +77,11 @@ async function GetWeighting(
 
   // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
   function rightAscension() {
-    return target.ra
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.ra.replace('+', '').replace(' ', '');
   }
 
   function declination() {
-    return target.dec
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.dec.replace('+', '').replace(' ', '');
   }
 
   /*********************************************************** MID *********************************************************/

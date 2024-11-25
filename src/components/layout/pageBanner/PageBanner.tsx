@@ -8,7 +8,16 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-import { LAST_PAGE, NAV, PATH, PROPOSAL_STATUS } from '../../../utils/constants';
+import {
+  LAST_PAGE,
+  NAV,
+  PAGE_SRC_NET,
+  PATH,
+  PROPOSAL_STATUS,
+  STATUS_ERROR,
+  STATUS_INITIAL,
+  STATUS_PARTIAL
+} from '../../../utils/constants';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
@@ -25,8 +34,11 @@ interface PageBannerProps {
   backPage?: number;
 }
 
+const widthWrapStatusArray = '1500px';
+
 export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
+  const LG = useMediaQuery(useTheme().breakpoints.down('lg'));
+  const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent5 } = storageObject.useStore();
@@ -54,13 +66,24 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
+      setValidationResults(null);
+      let results = [];
+
+      for (let key in application.content1) {
+        if (
+          application.content1[key] === STATUS_ERROR ||
+          application.content1[key] === STATUS_PARTIAL ||
+          (application.content1[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+        ) {
+          results.push(t('page.' + key + '.pageError'));
+        }
+      }
       const response = await PostProposalValidate(getProposal());
-      if (response.valid && !response.error) {
-        setValidationResults(null);
+      if (response.valid && !response.error && results.length === 0) {
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
       } else {
-        setValidationResults(response.error);
+        setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);
         setCanSubmit(false);
       }
@@ -103,9 +126,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {LG()
-        ? t(`page.${pageNo}.titleShort`).toUpperCase()
-        : t(`page.${pageNo}.title`).toUpperCase()}
+      {LG ? t(`page.${pageNo}.titleShort`).toUpperCase() : t(`page.${pageNo}.title`).toUpperCase()}
     </Typography>
   );
 
@@ -143,6 +164,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       direction="row"
       alignItems="center"
       justifyContent="flex-end"
+      wrap="nowrap"
       pr={2}
     >
       <Grid item>
@@ -159,14 +181,25 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const row1 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       <Grid item>{buttonsLeft()}</Grid>
+      {wrapStatusArray ? (
+        <Grid item xs={7} display={'none'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      ) : (
+        <Grid item xs={7} display={'block'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      )}
 
-      <Grid item xs={7} display={{ xs: 'none', lg: 'block' }}>
-        {pageNo < LAST_PAGE && <StatusArray />}
-      </Grid>
-
-      <Grid item display={{ xs: 'block', lg: 'none' }}>
-        {pageTitle()}
-      </Grid>
+      {wrapStatusArray ? (
+        <Grid item display={'block'}>
+          {pageTitle()}
+        </Grid>
+      ) : (
+        <Grid item display={'none'}>
+          {pageTitle()}
+        </Grid>
+      )}
 
       <Grid item>{buttonsRight()}</Grid>
     </Grid>
@@ -174,20 +207,37 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const row2 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={12} display={{ xs: 'block', lg: 'none' }}>
-        {pageNo < LAST_PAGE && <StatusArray />}
-      </Grid>
+      {wrapStatusArray ? (
+        <Grid item xs={12} display={'block'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      ) : (
+        <Grid item xs={12} display={'none'}>
+          {pageNo < LAST_PAGE && <StatusArray />}
+        </Grid>
+      )}
     </Grid>
   );
 
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item xs={2} display={{ xs: 'none', lg: 'block' }}>
-        {pageTitle()}
-      </Grid>
-      <Grid item xs={8} display={{ xs: 'none', lg: 'block' }}>
-        {pageDesc()}
-      </Grid>
+      {wrapStatusArray && (
+        <Grid container justifyContent="center" lg={12}>
+          {pageDesc()}
+        </Grid>
+      )}
+
+      {!wrapStatusArray && (
+        <Grid item lg={4}>
+          {pageTitle()}
+        </Grid>
+      )}
+
+      {!wrapStatusArray && (
+        <Grid item lg={8}>
+          {pageDesc()}
+        </Grid>
+      )}
     </Grid>
   );
 
@@ -196,6 +246,22 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row1()}
       {row2()}
       {row3()}
+
+      {/* TODO: revisit to implement override breakpoint and use grid */}
+      {/* <Grid container spacing={1} alignItems="center">
+        <Grid item xs={6} md={6} lg={2}>
+          {buttonsLeft()}
+        </Grid>
+        <Grid item xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
+          <Grid item justifyContent="space-evenly">
+            {pageNo < LAST_PAGE && <StatusArray />}
+          </Grid>
+        </Grid>
+        <Grid item xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
+          {buttonsRight()}
+        </Grid>
+      </Grid> */}
+
       {openProposalDisplay && (
         <ProposalDisplay
           proposal={getProposal()}

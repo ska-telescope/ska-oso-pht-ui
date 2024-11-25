@@ -22,56 +22,70 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+export const ANTENNA_LOW = 'low'; // TODO can we find a better name for the Low Antenna?
+export const ANTENNA_13M = '13m';
+export const ANTENNA_15M = '15m';
+export const ANTENNA_MIXED = 'mixed';
+
 export const BANDWIDTH_TELESCOPE = [
   {
     label: 'Low (50 - 350 MHz)',
     telescope: 2,
     value: BAND_LOW,
     isBand5: false,
-    lower: 50,
-    upper: 350,
     units: 'MHz',
-    mapping: 'low_band'
+    mapping: 'low_band',
+    bandLimits: {
+      [ANTENNA_LOW]: [50.0, 350.0]
+    }
   },
   {
     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
     telescope: 1,
     value: BAND_1,
     isBand5: false,
-    lower: 0.35,
-    upper: 1.05,
     units: 'GHz',
-    mapping: 'mid_band_1'
+    mapping: 'mid_band_1',
+    bandLimits: {
+      [ANTENNA_15M]: [0.35e9, 1.05e9],
+      [ANTENNA_13M]: [0.58e9, 1.015e9],
+      [ANTENNA_MIXED]: [0.58e9, 1.015e9]
+    }
   },
   {
     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
     telescope: 1,
     value: BAND_2,
     isBand5: false,
-    lower: 0.95,
-    upper: 1.76,
     units: 'GHz',
-    mapping: 'mid_band_2'
+    mapping: 'mid_band_2',
+    bandLimits: {
+      [ANTENNA_15M]: [0.95e9, 1.76e9],
+      [ANTENNA_13M]: [0.95e9, 1.67e9],
+      [ANTENNA_MIXED]: [0.95e9, 1.67e9]
+    }
   },
   {
     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
     telescope: 1,
     value: BAND_5A,
     isBand5: true,
-    lower: 4.6,
-    upper: 8.5,
     units: 'GHz',
-    mapping: 'mid_band_3'
+    mapping: 'mid_band_3',
+    bandLimits: {
+      [ANTENNA_15M]: [4.6e9, 8.5e9]
+    }
   }, // Band 5a
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
-    lower: 8.3,
-    upper: 15.4,
     units: 'GHz',
-    mapping: 'mid_band_4'
+    mapping: 'mid_band_4',
+    bandLimits: {
+      [ANTENNA_15M]: [8.3e9, 15.4e9]
+    }
   } // Band 5b
 ];
 
@@ -97,18 +111,23 @@ export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
-export const ELEVATION_MIN = 15;
-export const ELEVATION_DEFAULT = 45;
-export const ELEVATION_MAX = 59.2;
-export const ELEVATION_UNITS = 'deg';
 
 export const FOOTER_HEIGHT = 20;
+export const FOOTER_SPACER = 130;
+
+export const FREQUENCY_GHZ = 1;
+export const FREQUENCY_MHZ = 2;
+export const FREQUENCY_KHZ = 3;
+export const FREQUENCY_HZ = 4;
+
+export const FREQUENCY_UNITS = [
+  { label: 'GHz', value: FREQUENCY_GHZ, mapping: 'GHz', toHz: 1 },
+  { label: 'MHz', value: FREQUENCY_MHZ, mapping: 'MHz', toHz: 1000 },
+  { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
+  { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
+];
 
 export const GENERAL = {
-  // REPLACED, BUT KEEP FOR NOW : Cycle: 'SKA_5000_2023',
-  Abstract:
-    'Lorem ipsum dolor sit amet, cu usu solum dictas, ad est sumo sonet. Pri ea aliquid corrumpit pertinacia, quando referrentur ei pri. Ad sea decore delenit, ea malorum minimum euripidis nam, ne facete recteque sit. Cu nisl ferri posidonium pri. Sit erroribus mediocritatem no, ipsum harum putent vim ad. Mel in quod tation doming, ius et wisi justo quaerendum. Cu eloquentiam liberavisse vis. Id rebum instructior eos, in veri erat per, vel at eius habeo salutatus. Cum dissentiunt mediocritatem ex, ut munere dicunt appareat sed, mel ea adhuc habemus elaboraret. Stet tota mentitum has cu, assum solet interpretaris mel ne, ei delectus scribentur comprehensam his. Unum tacimates est ne. Laudem dictas salutandi ne sea. Falli sanctus deterruisset ut nam. Has reque laudem at, in mea posse harum integre. An graeci deserunt neglegentur nec. Consul persecuti id sea. Mentitum liberavisse ex sit, no vix odio rebum volutpat. Error impedit ea est, duo modus blandit voluptatum ex. Usu cu convenire necessitatibus. Duo virtute denique in. Vis lorem solet mollis ad, autem aperiri principes et mea. Et diam ferri definitionem has, pri duis docendi cu, mutat nulla soleat qui ut. In meis invidunt principes sed. Regione malorum euismod no mel, vix ut natum laboramus mnesarchum. Alterum placerat forensibus cu ius. Vel magna maiestatis ut.',
-
   ScienceCategory: [
     { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
     { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
@@ -146,21 +165,21 @@ export const GENERAL = {
 export const HEADER_HEIGHT = 70;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '15vh';
+export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const IMAGE_WEIGHTING = [
-  { lookup: 'natural', value: 0 },
-  { lookup: 'uniform', value: 1 },
-  { lookup: 'robust', value: 2 }
+  { label: 'natural', lookup: 'natural', value: 0 },
+  { label: 'uniform', lookup: 'uniform', value: 1 },
+  { label: 'briggs', lookup: 'robust', value: 2 }
 ];
 
 export const IMAGE_SIZE_UNITS = {
-  ARCSECS: 'arcseconds',
-  ARCMINS: 'arcmins',
-  DEGREES: 'degrees'
+  ARCSECS: 'arcsec',
+  ARCMINS: 'arcmin',
+  DEGREES: 'degree'
 };
 
 export const LAB_IS_BOLD = true;
@@ -181,6 +200,8 @@ export const NAV = [
   '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
+
+export const PAGE_SRC_NET = 8;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 export const PROJECTS = [
@@ -260,7 +281,7 @@ export const TYPE_CONTINUUM = 1;
 
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
-  { label: 'KHz', toHz: 1000 },
+  { label: 'kHz', toHz: 1000 },
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
@@ -298,7 +319,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 4,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -307,7 +329,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 8,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -316,7 +339,8 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
+          disableForBand5: false,
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -381,12 +405,6 @@ export const OBSERVATION = {
         { label: '50 MHz', value: 5, mapping: 'MHz' },
         { label: '100 MHz', value: 6, mapping: 'MHz' },
         { label: '200 MHz', value: 7, mapping: 'MHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [
-        { label: 'GHz', value: 1, mapping: 'GHz' },
-        { label: 'MHz', value: 2, mapping: 'MHz' },
-        { label: 'KHz', value: 3, mapping: 'kHz' },
-        { label: 'Hz', value: 4, mapping: 'Hz' }
       ]
     },
     {
@@ -401,7 +419,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 6,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          continuumSpectralAveragingMax: 6906,
+          maxContBandwidthHz: 75e6
         },
         {
           value: OB_SUBARRAY_AA1,
@@ -411,7 +430,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 18,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 6906
+          continuumSpectralAveragingMax: 6906,
+          maxContBandwidthHz: 75e6
         },
         {
           value: OB_SUBARRAY_AA2,
@@ -421,7 +441,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 64,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          continuumSpectralAveragingMax: 13812,
+          maxContBandwidthHz: 150e6
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
@@ -431,7 +452,8 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 40,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
+          continuumSpectralAveragingMax: 13812,
+          maxContBandwidthHz: 150e6
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -485,27 +507,30 @@ export const OBSERVATION = {
         }
       ],
       bandWidth: [
-        { label: '24.4140625 KHz', value: 1, mapping: 'kHz' },
-        { label: '48.828125 KHz', value: 2, mapping: 'kHz' },
-        { label: '97.65625 KHz', value: 3, mapping: 'kHz' },
-        { label: '195.3125 KHz', value: 4, mapping: 'kHz' },
-        { label: '390.625 KHz', value: 5, mapping: 'kHz' },
-        { label: '781.25 KHz', value: 6, mapping: 'kHz' },
-        { label: '1562.5 KHz', value: 7, mapping: 'kHz' },
-        { label: '3125 KHz', value: 8, mapping: 'kHz' }
-      ],
-      centralFrequencyAndBandWidthUnits: [{ label: 'MHz', value: 1, mapping: 'MHz' }]
+        { label: '24.4140625 kHz', value: 1, mapping: 'kHz' },
+        { label: '48.828125 kHz', value: 2, mapping: 'kHz' },
+        { label: '97.65625 kHz', value: 3, mapping: 'kHz' },
+        { label: '195.3125 kHz', value: 4, mapping: 'kHz' },
+        { label: '390.625 kHz', value: 5, mapping: 'kHz' },
+        { label: '781.25 kHz', value: 6, mapping: 'kHz' },
+        { label: '1562.5 kHz', value: 7, mapping: 'kHz' },
+        { label: '3125 kHz', value: 8, mapping: 'kHz' }
+      ]
     }
   ],
   SpectralAveraging: [
-    { label: '1', value: 1, lookup: 0 },
-    { label: '2', value: 2, lookup: 1 },
-    { label: '3', value: 3, lookup: 2 },
-    { label: '4', value: 4, lookup: 3 },
-    { label: '6', value: 6, lookup: 4 },
-    { label: '8', value: 8, lookup: 5 },
-    { label: '12', value: 12, lookup: 6 },
-    { label: '24', value: 24, lookup: 7 }
+    { label: '1', value: 1, lookup: 1 },
+    { label: '2', value: 2, lookup: 2 },
+    { label: '3', value: 3, lookup: 3 },
+    { label: '4', value: 4, lookup: 4 },
+    { label: '6', value: 6, lookup: 6 },
+    { label: '8', value: 8, lookup: 8 },
+    { label: '12', value: 12, lookup: 12 },
+    { label: '16', value: 16, lookup: 16 },
+    { label: '24', value: 24, lookup: 24 },
+    { label: '31', value: 31, lookup: 31 },
+    { label: '32', value: 32, lookup: 32 },
+    { label: '48', value: 48, lookup: 48 }
   ],
   CentralFrequencyOBLow: [{ lookup: 0, value: 200 }],
   CentralFrequencyOB1: [
@@ -690,7 +715,7 @@ export const OBSERVATION = {
   Units: [
     { label: 'GHz', value: 1 },
     { label: 'MHz', value: 2 },
-    { label: 'KHz', value: 3 },
+    { label: 'kHz', value: 3 },
     { label: 'Hz', value: 4 }
   ]
 };
@@ -745,8 +770,11 @@ export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
+export const SPEED_OF_LIGHT = 299792458; // m/s
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
+export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
 export const STATUS = {
@@ -773,11 +801,19 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 export const TEL = ['', 'Mid', 'Low'];
+
+export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
 export const TELESCOPES = [
   { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
 ];
+
+// This is the fundamental limits of the bandwidth provided by SKA LOW and MID
+export const BANDWIDTH_MIN_CHANNEL_WIDTH_HZ = {
+  [TELESCOPE_MID_NUM]: 13.44e3,
+  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456 // TODO find meaning of numbers for clarity
+};
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
 export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
@@ -812,6 +848,13 @@ export const VELOCITY_TYPE = {
   REDSHIFT: 1
 };
 
+export const VELOCITY_UNITS = [
+  { label: 'm/s', value: 0, convert: 1 },
+  { label: 'km/s', value: 1, convert: 1000 }
+];
+
+export const WRAPPER_HEIGHT = '75px';
+
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;
 
@@ -827,4 +870,20 @@ export const DEFAULT_PI = {
   phdThesis: false,
   status: TEAM_STATUS_TYPE_OPTIONS.accepted,
   pi: true
+};
+
+export const DEFAULT_TARGETS = {
+  dec: '123',
+  decUnit: '1',
+  id: 1,
+  latitude: '123',
+  longitude: '123',
+  name: 'DUMMY',
+  ra: '123',
+  raUnit: '1',
+  redshift: '123',
+  referenceFrame: 0,
+  vel: '123',
+  velType: 0,
+  velUnit: 0
 };

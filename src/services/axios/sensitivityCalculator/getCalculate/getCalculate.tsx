@@ -8,7 +8,8 @@ import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM,
-  SUPPLIED_TYPE_SENSITIVITY
+  SUPPLIED_TYPE_SENSITIVITY,
+  FREQUENCY_UNITS
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -54,17 +55,11 @@ async function GetCalculate(
 
   // TODO : Need to know if we are getting Equatorial or Galactic  ( units ? )
   function rightAscension() {
-    return target.ra
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.ra.replace('+', '').replace(' ', '');
   }
 
   function declination() {
-    return target.dec
-      .replace('+', '')
-      .replace('-', '')
-      .replace(' ', '');
+    return target.dec.replace('+', '').replace(' ', '');
   }
 
   function getZoomBandwidthValueUnit() {
@@ -89,7 +84,8 @@ async function GetCalculate(
     return sensCalHelpers.format.convertBandwidthToHz(value, units);
   };
   const getSpectralResolution = () => {
-    const spectralResValue = observation.spectralResolution.includes('kHz')
+    const units = FREQUENCY_UNITS[2].label;
+    const spectralResValue = observation.spectralResolution.includes(units)
       ? Number(observation.spectralResolution.split(' ')[0]) * 1000
       : Number(observation.spectralResolution.split(' ')[0]);
     return spectralResValue?.toString();
@@ -160,13 +156,13 @@ async function GetCalculate(
   };
 
   const getConfusionNoise = () => {
-    return inMode === TYPE_CONTINUUM
+    return observation.type === TYPE_CONTINUUM
       ? weightingResponse?.confusion_noise.value
       : weightingResponse[0]?.confusion_noise.value;
   };
 
   const getWeightingFactor = () => {
-    return inMode === TYPE_CONTINUUM
+    return observation.type === TYPE_CONTINUUM
       ? weightingResponse.weighting_factor
       : weightingResponse[0]?.weighting_factor;
   };
@@ -244,7 +240,7 @@ async function GetCalculate(
       total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
-      ) // low zoom bandwidth should be sent in KHz
+      ) // low zoom bandwidth should be sent in kHz
     };
   };
 

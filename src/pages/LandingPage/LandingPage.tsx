@@ -1,9 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper, Stack, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -19,8 +17,7 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOT_SPECIFIED,
-  HEADER_HEIGHT
+  NOT_SPECIFIED
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -31,11 +28,13 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate, presentLatex } from '../../utils/present';
+import { presentDate, presentLatex, presentTime } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import TeamMember from 'utils/types/teamMember';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { FOOTER_SPACER } from '../../utils/constants';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -48,8 +47,6 @@ export default function LandingPage() {
     updateAppContent1,
     updateAppContent2
   } = storageObject.useStore();
-
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg'));
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -66,9 +63,7 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const DATA_GRID_HEIGHT = 70;
-
-  const gridHeight = () => DATA_GRID_HEIGHT * (window.innerHeight - HEADER_HEIGHT / 100);
+  const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
     updateAppContent2(null);
@@ -178,8 +173,8 @@ export default function LandingPage() {
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
-  const canDelete = (e: { row: { status: string } }) =>
-    e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  // TODO const canDelete = (e: { row: { status: string } }) =>
+  // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const displayProposalType = proposalType => {
     return proposalType ? proposalType : NOT_SPECIFIED;
@@ -203,29 +198,35 @@ export default function LandingPage() {
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
-  const colId = { field: 'id', headerName: t('id.label') };
+  const colId = {
+    field: 'id',
+    headerName: t('proposalId.label'),
+    width: 200
+  };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    flex: 2.5,
-    renderCell: (e: { row: any }) =>
-      element(
-        e.row.proposalType > 0
-          ? t('proposalType.title.' + displayProposalType(e.row.proposalType))
-          : NOT_SPECIFIED
-      )
+    width: 110,
+    renderCell: (e: { row: any }) => (
+      <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
+        {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
+      </Tooltip>
+    )
   };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), flex: 1 };
+  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
+
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 2.5,
+    flex: 3,
+    minWidth: 250,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    flex: 2.5,
+    width: 100,
     renderCell: (e: any) => {
       return getPIs(e.row.team);
     }
@@ -234,17 +235,16 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    minWidth: 120,
-    maxWidth: 120,
+    width: 120,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
   const colUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    minWidth: 120,
-    maxWidth: 120,
-    renderCell: (e: { row: any }) => presentDate(e.row.lastUpdated)
+    width: 180,
+    renderCell: (e: { row: any }) =>
+      presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
   };
 
   const colActions = {
@@ -252,8 +252,7 @@ export default function LandingPage() {
     type: 'actions',
     headerName: 'Actions',
     sortable: false,
-    minWidth: 200,
-    maxWidth: 200,
+    width: 150,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
@@ -270,8 +269,8 @@ export default function LandingPage() {
         />
         <TrashIcon
           onClick={() => deleteIconClicked(e.row.id)}
-          disabled={!canDelete(e)}
-          toolTip={t(canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
+          disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
+          toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
         />
       </>
     )
@@ -307,7 +306,7 @@ export default function LandingPage() {
     <AddButton
       action={clickFunction}
       testId="addProposalButton"
-      title={LG() ? 'addProposal.short' : 'addProposal.label'}
+      title={'addProposal.label'}
       toolTip="addProposal.toolTip"
     />
   );
@@ -361,62 +360,38 @@ export default function LandingPage() {
     />
   );
 
-  const row1 = () => (
-    <Grid container p={1} direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item>{pageDescription()}</Grid>
-    </Grid>
-  );
-
-  const row2 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={2}>
-        {addProposalButton()}
-      </Grid>
-      <Grid item xs={6} lg={2}>
-        {searchDropdown()}
-      </Grid>
-      <Grid item lg={4} mt={-1} display={{ xs: 'none', lg: 'block' }}>
-        {searchEntryField('searchId')}
-      </Grid>
-    </Grid>
-  );
-
-  const row3 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={10} display={{ xs: 'block', lg: 'none' }}>
-        {searchEntryField('searchId2')}
-      </Grid>
-    </Grid>
-  );
-
-  const row4 = () => (
-    <Grid pt={1} container direction="row" alignItems="center" justifyContent="space-around">
-      <Grid item xs={10}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
-        )}
-        {!axiosViewError && filteredData.length > 0 && (
-          <div style={{ width: '100%' }}>
-            <DataGrid
-              testId="dataGridId"
-              rows={filteredData}
-              columns={stdColumns}
-              height={gridHeight()}
-            />
-          </div>
-        )}
-      </Grid>
-    </Grid>
-  );
-
   return (
     <>
-      <Stack direction="column">
-        {row1()}
-        {row2()}
-        {row3()}
-        {row4()}
-      </Stack>
+      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
+        <Grid item xs={12}>
+          {pageDescription()}
+        </Grid>
+        <Grid item p={2} sm={4} md={3} lg={2}>
+          {addProposalButton()}
+        </Grid>
+        <Grid item p={2} sm={4} md={4} lg={4}>
+          {searchDropdown()}
+        </Grid>
+        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
+          {searchEntryField('searchId')}
+        </Grid>
+        <Grid item xs={12} pt={1}>
+          {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+          )}
+          {!axiosViewError && filteredData.length > 0 && (
+            <div>
+              <DataGrid
+                testId="dataGridId"
+                rows={filteredData}
+                columns={stdColumns}
+                height={DATA_GRID_HEIGHT}
+              />
+            </div>
+          )}
+        </Grid>
+      </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

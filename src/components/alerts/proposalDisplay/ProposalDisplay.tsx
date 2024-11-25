@@ -112,7 +112,7 @@ export default function ProposalDisplay({
     </Typography>
   );
 
-  const cycle = (inLabel: string, inValue: string | number) => {
+  const details = (inLabel: string, inValue: string | number) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={LABEL_WIDTH + 1}>
@@ -148,10 +148,10 @@ export default function ProposalDisplay({
   const entry = (inLabel: string, inValue, optional: boolean = false) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
+        <Grid item xs={7}>
           {label(inLabel)}
         </Grid>
-        <Grid item xs={12 - LABEL_WIDTH}>
+        <Grid item xs={5}>
           {typeof inValue !== 'number' &&
             typeof inValue !== 'string' &&
             elementArray(inValue, optional)}
@@ -165,10 +165,10 @@ export default function ProposalDisplay({
   const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid item xs={LABEL_WIDTH}>
+        <Grid item xs={7}>
           {label(inLabel)}
         </Grid>
-        <Grid item xs={12 - LABEL_WIDTH}>
+        <Grid item xs={5}>
           {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
           {!contents && emptyCell()}
         </Grid>
@@ -215,12 +215,16 @@ export default function ProposalDisplay({
   const headerContent = () => (
     <Grid item>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid item>{title(t('page.9.title') + ' : ', proposal.title)}</Grid>
-        <Grid item>
+        <Grid item xs={1}>
+          {skaoIcon({ useSymbol: true })}
+        </Grid>
+        <Grid item xs={7}>
+          {title(t('page.9.title') + '  ', proposal.title)}
+        </Grid>
+        <Grid item xs={4}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid item>{cycle(t('page.12.short'), proposal.cycle)}</Grid>
-            <Grid item>{content(proposal.id)}</Grid>
+            <Grid item>{details(t('page.12.short'), proposal.cycle)}</Grid>
+            <Grid item>{details(t('proposalId.label'), proposal.id)}</Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -245,7 +249,7 @@ export default function ProposalDisplay({
         <Grid item xs={6}>
           {entry(t('scienceCategory.label'), scienceCategory())}
         </Grid>
-        <Grid item xs={6}>
+        <Grid pt={2} item xs={6}>
           {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
         </Grid>
       </Grid>
@@ -341,7 +345,7 @@ export default function ProposalDisplay({
           </Grid>
         </DialogContent>
       )}
-      {proposal !== null && <DialogActions>{pageFooter()}</DialogActions>}
+      {proposal !== null && <DialogActions sx={{ padding: 5 }}>{pageFooter()}</DialogActions>}
     </Dialog>
   );
 }

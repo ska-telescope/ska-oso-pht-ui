@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography } from '@mui/material';
-import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
-
+import StatusIconDisplay from '../../icon/status/statusIcon';
 interface ValidationResultsProps {
   open: boolean;
   onClose: Function;
@@ -72,9 +72,15 @@ export default function ValidationResults({
         {results?.map(el => (
           <Grid p={1} key={el} container direction="row" justifyContent="left" alignItems="left">
             <Grid item>
-              <StatusIcon testId="statusId" icon level={1} size={SIZE} />
+              <StatusIconDisplay
+                ariaDescription=""
+                ariaTitle=""
+                level={1}
+                size={SIZE}
+                testId="statusId"
+              />
             </Grid>
-            <Grid pl={1} item>
+            <Grid pt={1} pl={1} item>
               <Typography
                 id="title"
                 variant={CONTENT_STYLE}

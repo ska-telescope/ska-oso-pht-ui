@@ -124,9 +124,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     </Typography>
   );
 
-  const displayWordCount = () =>
-    `${t('specialCharacters.cntWord')} ${countWords(getProposal().title)} / ${MAX_WORD}`;
-
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
     return (
@@ -138,7 +135,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
               backgroundColor: setCardBG(getProposal().proposalType, id),
 
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              minHeight: '90px'
             }}
             className={setCardClassName(getProposal().proposalType, id)}
             onClick={() => clickProposal(id)}
@@ -181,7 +179,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           <Card
             style={{
               color: setCardFG2(getProposal().proposalSubType, id),
-              backgroundColor: setCardBG2(getProposal().proposalSubType, id)
+              backgroundColor: setCardBG2(getProposal().proposalSubType, id),
+              display: 'flex',
+              justifyContent: 'center',
+              minHeight: '90px'
             }}
             className={setCardClassName2(getProposal().proposalSubType, id)}
             onClick={() => clickSubProposal(id)}
@@ -258,7 +259,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={getProposal().title.length > 0 ? t('title.helper') : ''}
+        helperText={
+          getProposal().title.length > 0
+            ? t('title.helper', {
+                current: countWords(getProposal().title),
+                max: MAX_WORD
+              })
+            : ''
+        }
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
@@ -336,29 +344,11 @@ export default function TitleEntry({ page }: TitleEntryProps) {
             <Grid item xs={LABEL_WIDTH}>
               {displayLabel(t('title.label') + ' *')}
             </Grid>
-            <Grid item xs={6 - LABEL_WIDTH}>
+            <Grid item xs={8 - LABEL_WIDTH}>
               {titleField()}
             </Grid>
-            <Grid item md={6}></Grid>
+            <Grid item md={4}></Grid>
           </Grid>
-        </Grid>
-      </Grid>
-    );
-  };
-
-  const row1b = () => {
-    return (
-      <Grid
-        pl={2}
-        pt={1}
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid item xs={FIELD_WIDTH}>
-          {titleHelpDisplay('', displayWordCount())}
         </Grid>
       </Grid>
     );
@@ -410,25 +400,11 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   return (
     <>
       {getProposal() && (
-        <Grid
-          pl={2}
-          pr={2}
-          container
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Grid item xs={12}>
-            {row1()}
-            {row1b()}
-          </Grid>
-          <Grid item xs={12}>
-            {row2()}
-          </Grid>
-          <Grid item xs={12}>
-            {getProposal().proposalType > 0 && row3()}
-          </Grid>
-        </Grid>
+        <>
+          {row1()}
+          {row2()}
+          {getProposal().proposalType > 0 && row3()}
+        </>
       )}
       <LatexPreviewModal
         value={getTitle()}

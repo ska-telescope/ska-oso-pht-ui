@@ -3,7 +3,6 @@ import {
   AXIOS_CONFIG,
   PROJECTS,
   SKA_PHT_API_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA,
   GENERAL,
   OBSERVATION,
@@ -19,7 +18,9 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   IMAGE_WEIGHTING,
   BAND_LOW,
-  BAND_1
+  BAND_1,
+  FREQUENCY_UNITS,
+  ROBUST
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -49,12 +50,12 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   for (let i = 0; i < inValue?.length; i++) {
     members.push({
       id: inValue[i].investigator_id,
+      status: inValue[i].status,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
       email: inValue[i]?.email,
       affiliation: inValue[i].organization,
       phdThesis: inValue[i].for_phd,
-      status: TEAM_STATUS_TYPE_OPTIONS.accepted,
       pi: inValue[i].principal_investigator
     });
   }
@@ -66,10 +67,10 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
+const getAttributes = (proposalType: { main_type: string; attributes?: string[] }): any => {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.sub_type?.map(subType =>
-    project.subProjects?.find(({ mapping }) => mapping === subType)
+  const subProjects = proposalType.attributes?.map(attributes =>
+    project.subProjects?.find(({ mapping }) => mapping === attributes)
   );
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
@@ -81,27 +82,17 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
-const extractFileFromURL = (url): Promise<File> => {
-  return fetch(url, { mode: 'no-cors' })
-    .then(response => response.blob())
-    .then(blob => {
-      const file = new File([blob], 'myfile.pdf', { type: 'application/pdf' });
-      return file;
-    });
-};
+const getPDF = (documents: DocumentBackend[], documentId: string): DocumentPDF => {
+  if (!documents) return null;
 
-const getPDF = async (documents: DocumentBackend[], docType: string): Promise<DocumentPDF> => {
-  const pdf = documents?.find(doc => doc.type === docType);
-  if (!pdf || !pdf.link) {
-    return null;
-  }
-  const file = (await extractFileFromURL(pdf.link)) as File;
-  const pdfDoc: DocumentPDF = {
-    documentId: pdf?.document_id,
-    link: pdf?.link,
-    file: file ? file : null
+  const documentById = documents.find(document => document.document_id === documentId);
+
+  if (!documentById) return null;
+
+  return {
+    documentId: documentById.document_id,
+    isUploadedPdf: documentById.uploaded_pdf
   };
-  return pdfDoc as DocumentPDF;
 };
 
 const getVelType = (InDefinition: string) => {
@@ -171,18 +162,16 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
-const getFromArray = (inArray: string, occ: number) => inArray.split(' ')[occ];
-
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
-    imageSizeValue: Number(getFromArray(dp.image_size, 0)),
-    imageSizeUnits: getFromArray(dp.image_size, 1),
-    pixelSizeValue: Number(getFromArray(dp.pixel_size, 0)),
-    pixelSizeUnits: getFromArray(dp.pixel_size, 1),
+    imageSizeValue: dp.image_size.value,
+    imageSizeUnits: dp.image_size.unit,
+    pixelSizeValue: dp.pixel_size.value,
+    pixelSizeUnits: dp.pixel_size.unit,
     weighting: Number(dp.weighting)
   }));
 };
@@ -203,7 +192,7 @@ const getObservingBand = (inObsBand: string, inObsArray: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend): Supplied => {
-  const typeLabel = inSupplied.type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
+  const typeLabel = inSupplied.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
   const suppliedUnits = suppliedType.units?.find(u => u.label === inSupplied.quantity.unit)?.value;
   const supplied = {
@@ -219,14 +208,11 @@ const getFrequencyAndBandwidthUnits = (
   telescope: number,
   observingBand: number
 ): number => {
-  const array = OBSERVATION.array?.find(item => item?.value === telescope);
-  let units = array.centralFrequencyAndBandWidthUnits?.find(
-    item => item.mapping.toLowerCase() === inUnits?.toLowerCase()
-  )?.value;
-  // if we don't find the matching units, use bandwidth units of the observing band as that should be correct
+  let units = FREQUENCY_UNITS.find(item => item.mapping.toLowerCase() === inUnits?.toLowerCase())
+    ?.value;
   return units
     ? units
-    : array.centralFrequencyAndBandWidthUnits?.find(
+    : FREQUENCY_UNITS.find(
         item =>
           item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
       )?.value;
@@ -309,10 +295,11 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
           : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
-      robust: 0, // TODO
+      robust: ROBUST.find(item => item.label === inValue[i].observation_type_details?.robust)
+        ?.value,
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      spectralAveraging: Number(inValue[i].array_details?.spectral_averaging),
+      spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
@@ -336,9 +323,13 @@ const getObservations = (
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
   isContinuum: boolean,
-  isSensitivity: boolean
+  isSensitivity: boolean,
+  inObservationSets: ObservationSetBackend[],
+  inResultObservationRef: string
 ): SensCalcResults['section1'] => {
   let section1 = [];
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
   if (isContinuum) {
@@ -350,8 +341,8 @@ const getResultsSection1 = (
         // => see sensitivity calculator
         // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
         field: 'continuumSensitivityWeighted',
-        value: inResult.result_details.weighted_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
+        value: inResult.result.weighted_continuum_sensitivity?.value.toString(),
+        units: inResult?.result?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
       } as ResultsSection);
     }
     section1.push({
@@ -362,47 +353,54 @@ const getResultsSection1 = (
     if (!isSensitivity) {
       section1.push({
         field: 'continuumTotalSensitivity',
-        value: inResult.result_details.total_continuum_sensitivity?.value.toString(),
-        units: inResult?.result_details?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
+        value: inResult.result.total_continuum_sensitivity?.value.toString(),
+        units: inResult?.result?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
       } as ResultsSection);
     }
     section1.push({
       field: 'continuumSynthBeamSize',
-      // value: inResult.synthesized_beam_size?.value,
-      // mock beam size value for now as format enforced by backend not correct
-      value: `${inResult.synthesized_beam_size?.value} x 171.3`,
+      value: inResult.synthesized_beam_size?.continuum,
       units: inResult?.synthesized_beam_size?.unit
     } as ResultsSection);
     if (isSensitivity) {
       section1.push({
         field: 'continuumIntegrationTime',
-        value: '999', // TODO : Need to store and retrieve correct value
-        units: 's' // TODO : Need to store and retrieve correct units
+        value: obs.observation_type_details.supplied?.quantity?.value.toString(),
+        units: obs.observation_type_details.supplied?.quantity?.unit
       } as ResultsSection);
     } else {
       section1.push({
         field: 'continuumSurfaceBrightnessSensitivity',
-        value: inResult.result_details?.surface_brightness_sensitivity?.continuum?.toString(),
-        units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+        value: inResult.result?.surface_brightness_sensitivity?.continuum?.toString(),
+        units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
       } as ResultsSection);
     }
     // for zoom observation
   } else {
-    section1 = getResultsSection2(inResult, isSensitivity);
+    section1 = getResultsSection2(
+      inResult,
+      isSensitivity,
+      inObservationSets,
+      inResultObservationRef
+    );
   }
   return section1;
 };
 
 const getResultsSection2 = (
   inResult: SensCalcResultsBackend,
-  isSensitivity: Boolean
+  isSensitivity: Boolean,
+  inObservationSets: ObservationSetBackend[],
+  inResultObservationRef: string
 ): SensCalcResults['section2'] => {
   let section2 = [];
+  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+
   if (!isSensitivity) {
     section2.push({
       field: 'spectralSensitivityWeighted',
-      value: inResult.result_details.weighted_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result.weighted_spectral_sensitivity?.value.toString(),
+      units: inResult?.result?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   section2.push({
@@ -413,28 +411,26 @@ const getResultsSection2 = (
   if (!isSensitivity) {
     section2.push({
       field: 'spectralTotalSensitivity',
-      value: inResult.result_details.total_spectral_sensitivity?.value.toString(),
-      units: inResult?.result_details?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result.total_spectral_sensitivity?.value.toString(),
+      units: inResult?.result?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   section2.push({
     field: 'spectralSynthBeamSize',
-    // TODO : value: inResult.synthesized_beam_size?.value,
-    // TODO : mock beam size value for now as format enforced by backend not correct
-    value: '190.0 x 171.3',
-    units: inResult?.synthesized_beam_size?.unit
+    value: inResult.synthesized_beam_size?.spectral,
+    units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
   } as ResultsSection);
   if (isSensitivity) {
     section2.push({
       field: 'spectralIntegrationTime',
-      value: '999', // TODO : Need to store and retrieve correct value
-      units: 's' // TODO : Need to store and retrieve correct units
+      value: obs.observation_type_details.supplied?.quantity?.value.toString(),
+      units: obs.observation_type_details.supplied?.quantity?.unit
     } as ResultsSection);
   } else {
     section2.push({
       field: 'spectralSurfaceBrightnessSensitivity',
-      value: inResult.result_details?.surface_brightness_sensitivity?.spectral?.toString(),
-      units: inResult?.result_details?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
+      value: inResult.result?.surface_brightness_sensitivity?.spectral?.toString(),
+      units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
     } as ResultsSection);
   }
   return section2;
@@ -448,13 +444,7 @@ const getResultsSection3 = (
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
   // TODO revisit mapping once integration time format from PDM merged
-  const field = isSensitivity
-    ? /*
-      ? 'sensitivity'
-      : 'integrationTime';
-    */
-      'integrationTime'
-    : 'sensitivity';
+  const field = isSensitivity ? 'integrationTime' : 'sensitivity';
   // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
   // and sensitivity for supplied integration time for RESULTS
   return [
@@ -485,7 +475,8 @@ const getTargetObservation = (
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
-    const isSensitivity = result.result_details.supplied_type === 'integration_time';
+    const isSensitivity = result.result.supplied_type === 'sensitivity';
+
     const targetObs: TargetObservation = {
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id,
@@ -495,8 +486,16 @@ const getTargetObservation = (
         title: result.target_ref,
         statusGUI: 0, // only for UI
         error: '', // only for UI
-        section1: getResultsSection1(result, isContinuum, isSensitivity),
-        section2: isContinuum ? getResultsSection2(result, isSensitivity) : [], // only used for continuum observation
+        section1: getResultsSection1(
+          result,
+          isContinuum,
+          isSensitivity,
+          inObservationSets,
+          result.observation_set_ref
+        ),
+        section2: isContinuum
+          ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref)
+          : [], // only used for continuum observation
         section3: getResultsSection3(
           result.observation_set_ref,
           inObservationSets,
@@ -512,18 +511,22 @@ const getTargetObservation = (
 
 /*************************************************************************************************************************/
 
-async function mapping(inRec: ProposalBackend): Promise<Proposal> {
+function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
-  sciencePDF = await getPDF(inRec?.info?.documents, 'proposal_science');
-  technicalPDF = await getPDF(inRec?.info?.documents, 'proposal_technical');
+
+  sciencePDF = getPDF(inRec?.info?.documents, 'science-doc-' + inRec.prsl_id);
+  technicalPDF = getPDF(inRec?.info?.documents, 'technical-doc-' + inRec.prsl_id);
+
   const targets = getTargets(inRec.info.targets);
 
   const convertedProposal = {
     id: inRec.prsl_id,
     title: inRec.info.title,
     proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.sub_type ? getSubType(inRec.info.proposal_type) : [],
+    proposalSubType: inRec.info.proposal_type.attributes
+      ? getAttributes(inRec.info.proposal_type)
+      : [],
     status: inRec.status,
     lastUpdated: inRec.metadata.last_modified_on,
     lastUpdatedBy: inRec.metadata.last_modified_by,
@@ -536,15 +539,15 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
+    scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info.observation_sets, inRec.info.results),
+    observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
-      inRec?.info?.results?.length > 0
+      inRec?.info?.result_details?.length > 0
         ? getTargetObservation(
-            inRec.info.results,
+            inRec.info.result_details,
             inRec.info.observation_sets,
             // inRec.info.targets,
             targets
@@ -556,6 +559,7 @@ async function mapping(inRec: ProposalBackend): Promise<Proposal> {
     dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+
   return convertedProposal;
 }
 

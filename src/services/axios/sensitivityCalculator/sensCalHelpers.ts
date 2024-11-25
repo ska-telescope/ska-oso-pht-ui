@@ -1,4 +1,4 @@
-import { OBSERVATION } from '../../../utils/constants';
+import { FREQUENCY_UNITS, OBSERVATION } from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
@@ -123,23 +123,11 @@ const sensCalHelpers = {
         precision
       )}`;
     },
-    convertFrequencyToHz(frequencyValue, frequencyUnits): number {
-      const unitMap: { [key: string]: number } = {
-        GHz: 1000000000,
-        MHz: 1000000,
-        KHz: 1000,
-        Hz: 1
-      };
-      if (!unitMap[frequencyUnits]) {
-        throw new Error('Invalid frequency unit');
-      }
-      return frequencyValue * unitMap[frequencyUnits];
-    },
     convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,
-        KHz: 0.001,
+        kHz: 0.001,
         Hz: 0.000001
       };
       if (!unitMap[bandwidthUnits]) {
@@ -151,7 +139,7 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000,
         MHz: 1000,
-        KHz: 1,
+        kHz: 1,
         Hz: 0.001
       };
       if (!unitMap[bandwidthUnits]) {
@@ -166,8 +154,23 @@ const sensCalHelpers = {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,
-        KHz: 1000,
+        kHz: 1000,
         Hz: 1
+      };
+      if (!unitMap[bandwidthUnits]) {
+        throw new Error('Invalid bandwidth unit');
+      }
+      return bandwidthValue * unitMap[bandwidthUnits];
+    },
+    convertBandwidthToGHz(bandwidthValue: number, bandwidthUnits): number {
+      if (typeof bandwidthUnits === 'number') {
+        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+      }
+      const unitMap: { [key: string]: number } = {
+        GHz: 1,
+        MHz: 0.001,
+        kHz: 0.000001,
+        Hz: 0.000000001
       };
       if (!unitMap[bandwidthUnits]) {
         throw new Error('Invalid bandwidth unit');
@@ -230,10 +233,7 @@ const sensCalHelpers = {
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {
-      const array = OBSERVATION.array.find(item => item.value === telescope);
-      let units = array.centralFrequencyAndBandWidthUnits.find(item => item.value === unitsField)
-        ?.label;
-      return units;
+      return FREQUENCY_UNITS.find(item => item.value === unitsField)?.label;
     }
   }
 };

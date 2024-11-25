@@ -9,6 +9,7 @@ import {
   SPECTRAL_AVERAGING_MIN,
   ZOOM_SPECTRAL_AVERAGING_MAX
 } from '../../../../utils/constants';
+import { Box } from '@mui/system';
 
 interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;
@@ -45,17 +46,19 @@ export default function SpectralAveragingLOWField({
   };
 
   return (
-    <NumberEntry
-      testId="spectralAveraging"
-      value={String(value)}
-      setValue={setValue}
-      label={t(FIELD + '.label')}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={widthLabel}
-      onFocus={() => helpComponent(t(FIELD + '.help'))}
-      required={required}
-      errorText={errorMessage()}
-    />
+    <Box pt={1}>
+      <NumberEntry
+        testId="spectralAveraging"
+        value={String(value)}
+        setValue={setValue}
+        label={t(FIELD + '.label')}
+        labelBold={LAB_IS_BOLD}
+        labelPosition={LAB_POSITION}
+        labelWidth={widthLabel}
+        onFocus={() => helpComponent(t(FIELD + '.help'))}
+        required={required}
+        errorText={errorMessage()}
+      />
+    </Box>
   );
 }

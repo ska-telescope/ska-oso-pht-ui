@@ -21,4 +21,6 @@ export type ObservationTypeDetailsBackend = {
   spectral_resolution?: string;
   effective_resolution?: string;
   image_weighting?: string;
+  spectral_averaging?: string; //TODO: patch release pdm using int
+  robust?: string; //TODO: patch release pdm using int
 };

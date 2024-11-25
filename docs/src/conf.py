@@ -3,12 +3,12 @@
 
 project = 'ska-oso-pht-ui'
 copyright = '2023, SKAO'
-author = 'SKAO, (Trevor A Swain)'
+author = 'SKAO, Stargazer'
 
 # The short X.Y version
-version = '0.5.1'
+version = '1.0.0'
 # The full version, including alpha/beta/rc tags
-release = '0.5.1'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 
@@ -37,11 +37,12 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'ska_ser_sphinx_theme'
+
 
 html_context = {}
 
 html_static_path = []
+
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -54,7 +55,7 @@ latex_elements = {
 
 latex_documents = [
     (master_doc, 'ska-oso-pht-ui.tex', 'ska-oso-pht-ui Documentation',
-     'SKAO, (Trevor A Swain)', 'manual'),
+     'SKAO, (Stargazer)', 'manual'),
 ]
 
 # -- Options for manual page output ------------------------------------------
@@ -88,6 +89,7 @@ intersphinx_mapping = {}
 
 todo_include_todos = True
 
+html_theme = 'ska_ser_sphinx_theme'
 numfig = True
 
 numfig_format={

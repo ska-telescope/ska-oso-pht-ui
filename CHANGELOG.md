@@ -5,13 +5,44 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-Future
+1.0.0
+
 -------
 
-* Observation page
-  - Fixed Sensitivity Calculator results for Mid AA05 observations
+   * Added: 
+   
+      * Observation page
+         - Added Continuum and Zoom Bandwidth validation for Mid and Low
+   
+      * Utilities
+         - Validation also checks and reports the status of each page.
+  
+   * Updated:
+   
+      * API mappings:
+         - Updated PHT services version 2.4.0 to use ODA 6.2.1 to use PDM 16.0.1
+         - Updated mailtoappings accordingly for PDM changes
+      * Landing page
+         - Time added to last update column
+      * Team Page
+         - Used SKAO email service so members can receive email through the tool. 
+      * General Page
+         - Changed order of Science Category and Abstract fields
+      * Observation Page
+         - Updated ``continuumIntegrationTime`` , ``continuumSynthBeamSize``, ``spectralIntegrationTime``, ``spectralSynthBeamSize`` to use the quantity with value and unit pair from the PDM.
+      * Utilities
+         - Change the notifications so that the icons stay to the left of any text
+         - Changed the Error status to show an exclamation mark as opposed to a cross.
+      * User Guide
+         - Updated all the pages of the user guide based on feedback from SciOps
 
----
+   * Fixed:
+  
+      * Target page
+         - Fixed issue where navigation thru the target entry would cause the entire page to re-render
+      * Observation
+         - Fixed Sensitivity Calculator results for Mid AA05 observations
+
 
 0.5.1
 
@@ -39,6 +70,7 @@ Future
 * Observation page
   - Updated observation button set to primary color if there are no observations on the proposal
   - Updated so that previously saved values are not reset to default values upon editing the Observation set
+  - Ability to override the initial ID provided to a new Observation Set
 * Observation Entry
   - Updated the Group Observation field into it's own component
   - Removed the need for the Add Group Button by hooking it directly to the dropdown values

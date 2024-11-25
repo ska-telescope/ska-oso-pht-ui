@@ -5,6 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import GroupObservation from '../../../utils/types/groupObservation';
+import { Box } from '@mui/system';
 
 interface GroupObservationsFieldProps {
   disabled?: boolean;
@@ -128,7 +129,7 @@ export default function GroupObservationsField({
   };
 
   return (
-    <>
+    <Box pt={1}>
       {editing && (
         <TextEntry
           inputRef={inputRef}
@@ -159,6 +160,6 @@ export default function GroupObservationsField({
           testId={FIELD + 'Entry'}
         />
       )}
-    </>
+    </Box>
   );
 }

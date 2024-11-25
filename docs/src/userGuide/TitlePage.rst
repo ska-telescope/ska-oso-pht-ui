@@ -1,36 +1,37 @@
 Title Page
 ~~~~~~~~~~
-:numref:`Figure %s <titlepage>` shows the look of the title page. A proposal needs to be created using this page before you can proceed.
+A proposal needs to be created using the title page (:numref:`Figure %s <titlepage>`) before you can proceed to other pages.
 
-Page Details
-============
-.. |icocreate| image:: /images/create.png
-   :width: 20%
-   :alt: Page filter
-
-
-
-- The proposal title allows a maximum of 50 words.
-- The title field accepts latex syntax - which can be previewed by clicking the "eye" icon next to the title field.
-- Under proposal types you can select a :ref:`proposal category <proposaltypes>`. Once selected, click |icocreate| to create a proposal and proceed to the next page.
-
-.. tip:: 
-   On Hover:
-
-   - Hovering over a proposal type displays a description of the proposal type for your reference.
-  
-   Optional:
-
-   - When the proposal category is selected, :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. However, you can choose multiple sub-categories by clicking multiple options
 
 .. _titlepage:
 
 .. figure:: /images/titlePage.png
-   :width: 100%
+   :width: 90%
+   :align: center
    :alt: Image of the Title page
 
    The Title page.
- 
+
+   
+Key Information and Actions
+===========================
+
+.. |icocreate| image:: /images/create.png
+   :width: 10%
+   :alt: Page filter
+
+.. |icoview| image:: /images/viewicon.png
+   :width: 6%
+   :alt: View icon
+
+
+
+- The proposal title allows a maximum of 50 words. The title field accepts latex syntax - which can be previewed by clicking the |icoview| icon next to the title field (see :numref:`Figure %s <titlepage>`).
+- When a :ref:`proposal type <proposaltypes>` is selected (see :numref:`Table %s <proposaltypes>`), :ref:`proposal attributes <subproposaltypes>` will become visible but these are optional. You can select multiple attributes. 
+- Once proposal type is specified, click |icocreate| to create a proposal and proceed to the next page. 
+- Hovering over a proposal type/attributes displays a description of the proposal type for your reference.
+
+
 
 
 .. _proposaltypes: 
@@ -59,11 +60,5 @@ Page Details
 Next Steps
 ==========
 
-After successfully creating your proposal on this page, you will move on to the "Team" page.
-
-Additional Notes
-================
-
-- Remember to save your progress regularly using the "Save" button.
-- The "Submit" button will only become active when all required information is entered and validated against the capability of the current cycle.
+After successfully creating a proposal on this page, the next page is the :doc:`Team Page </userGuide/TeamPage>`.
 

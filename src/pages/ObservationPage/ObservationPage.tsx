@@ -4,12 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
+import {
+  AlertColorTypes,
+  DataGrid,
+  LABEL_POSITION,
+  TickBox
+} from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import SensCalcDisplaySingle from '../../components/sensCalcDisplay/single/SensCalcDisplaySingle';
+import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
@@ -18,6 +23,7 @@ import { validateObservationPage } from '../../utils/proposalValidation';
 import {
   BANDWIDTH_TELESCOPE,
   PATH,
+  RA_TYPE_EQUATORIAL,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -30,9 +36,11 @@ import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { FOOTER_SPACER } from '../../utils/constants';
 
-const DATA_GRID_TARGET = 390;
-const DATA_GRID_OBSERVATION = 450;
+const DATA_GRID_TARGET = '40vh';
+const DATA_GRID_OBSERVATION = '50vh';
 const PAGE = 5;
 const SIZE = 20;
 
@@ -185,7 +193,7 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = elementsO.filter(e => e.id !== currObs.id);
+    const obs1 = getProposal().observations.filter(e => e.id !== currObs.id);
     const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs.id);
     const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs.id);
     setProposal({
@@ -194,14 +202,7 @@ export default function ObservationPage() {
       targetObservation: obs2,
       groupObservations: obs3
     });
-
-    const temp = [];
-    elementsO?.forEach(rec => {
-      if (rec.id !== currObs.id) {
-        temp.push(rec);
-      }
-    });
-    setElementsO(temp);
+    setElementsO(elementsO.filter(e => e.id !== currObs.id));
     setCurrObs(null);
     closeDeleteDialog();
   };
@@ -287,12 +288,14 @@ export default function ObservationPage() {
         field: 'id',
         headerName: t('observations.id'),
         flex: 0.75,
+        minWidth: 150,
         disableClickEventBubbling: true
       },
       {
         field: 'id2',
         headerName: t('observations.group'),
         flex: 0.75,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { id: number } }) => {
           return observationGroupIds((e.row.id as unknown) as string);
@@ -302,6 +305,7 @@ export default function ObservationPage() {
         field: 'telescope',
         headerName: t('observingBand.label'),
         flex: 1.5,
+        minWidth: 250,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
           BANDWIDTH_TELESCOPE[e.row.rec.observingBand]?.label
@@ -310,6 +314,7 @@ export default function ObservationPage() {
         field: 'subarray',
         headerName: t('subArrayConfiguration.short'),
         flex: 1,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { telescope: number; subarray: number } }) => {
           if (e.row.telescope) {
@@ -321,35 +326,38 @@ export default function ObservationPage() {
       {
         field: 'type',
         headerName: t('observationType.short'),
-        flex: 0.75,
+        width: 140,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
       },
       {
         field: 'weather',
-        headerName: '',
+        headerName: 'Status',
         sortable: false,
-        flex: 0.5,
+        width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <StatusIconDisplay
-              error={getError(obs)}
+              ariaDescription=" "
+              ariaTitle={t('sensCalc.' + getLevel(obs))}
               level={getLevel(obs)}
               onClick={() =>
                 getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
               }
               size={SIZE}
+              testId="testId"
             />
           );
         }
       },
       {
         field: 'actions',
+        headerName: 'Actions',
         type: 'actions',
         sortable: false,
-        flex: 1,
+        width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           return (
@@ -390,13 +398,14 @@ export default function ObservationPage() {
         }
       },
       { field: 'name', headerName: t('name.label'), flex: 1.5 },
-      { field: 'ra', headerName: t('rightAscension.label'), flex: 1.5 },
-      { field: 'dec', headerName: t('declination.label'), flex: 1.5 },
+      { field: 'ra', headerName: t('skyDirection.short.1.' + RA_TYPE_EQUATORIAL), width: 120 },
+      { field: 'dec', headerName: t('skyDirection.short.2.' + RA_TYPE_EQUATORIAL), width: 120 },
       {
         field: 'actions',
         type: 'actions',
+        headerName: 'Status',
         sortable: false,
-        flex: 0.5,
+        width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
@@ -516,32 +525,64 @@ export default function ObservationPage() {
         </Grid>
         <Grid item md={11} lg={6}>
           <Card variant="outlined">
-            <Grid pt={2} container alignItems="space-evenly" justifyContent="space-around">
-              <Grid item>
-                <Typography id="targetObservationLabel" pt={1} variant="h6">
-                  {t('targetObservation.label')}
-                </Typography>
+            <CardContent>
+              <Grid container alignItems="baseline" justifyContent="space-between">
+                <Grid item>
+                  <Typography id="targetObservationLabel" pt={2} variant="h6">
+                    {t('targetObservation.label')}
+                  </Typography>
+                </Grid>
+                <Grid item lg={6}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Grid
+                        container
+                        flexDirection={'row'}
+                        flexWrap={'wrap'}
+                        alignItems="space-evenly"
+                        justifyContent="space-between"
+                      >
+                        <Grid item>
+                          <Typography id="targetObservationLabel" pt={1} variant="h6">
+                            {t('targetObservation.filters')}
+                          </Typography>
+                        </Grid>
+
+                        <Grid item>
+                          <Grid
+                            container
+                            flexDirection={'row'}
+                            flexWrap={'wrap'}
+                            justifyContent={'flex-start'}
+                          >
+                            <Grid item>
+                              <TickBox
+                                disabled={!currObs}
+                                label={t('selected.label')}
+                                labelPosition={LABEL_POSITION.END}
+                                testId="selectedTickBox"
+                                checked={selected}
+                                onChange={() => setSelected(!selected)}
+                              />
+                            </Grid>
+                            <Grid item>
+                              <TickBox
+                                disabled={!currObs}
+                                label={t('notSelected.label')}
+                                labelPosition={LABEL_POSITION.END}
+                                testId="notSelectedTickBox"
+                                checked={notSelected}
+                                onChange={() => setNotSelected(!notSelected)}
+                              />
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
               </Grid>
-              <Grid item xs={1}></Grid>
-              <Grid item xs={2}>
-                <TickBox
-                  disabled={!currObs}
-                  label={t('selected.label')}
-                  testId="selectedTickBox"
-                  checked={selected}
-                  onChange={() => setSelected(!selected)}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TickBox
-                  disabled={!currObs}
-                  label={t('notSelected.label')}
-                  testId="notSelectedTickBox"
-                  checked={notSelected}
-                  onChange={() => setNotSelected(!notSelected)}
-                />
-              </Grid>
-            </Grid>
+            </CardContent>
             <CardContent>
               {hasTargets() && (
                 <DataGrid
@@ -562,6 +603,7 @@ export default function ObservationPage() {
           </Card>
         </Grid>
       </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
         <DeleteObservationConfirmation
           action={deleteConfirmed}
