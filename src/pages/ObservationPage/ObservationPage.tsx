@@ -397,7 +397,7 @@ export default function ObservationPage() {
           );
         }
       },
-      { field: 'name', headerName: t('name.label'), flex: 1.5 },
+      { field: 'name', headerName: t('name.label'), flex: 1.5, minWidth: 120 },
       { field: 'ra', headerName: t('skyDirection.short.1.' + RA_TYPE_EQUATORIAL), width: 120 },
       { field: 'dec', headerName: t('skyDirection.short.2.' + RA_TYPE_EQUATORIAL), width: 120 },
       {
