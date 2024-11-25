@@ -82,11 +82,10 @@ async function GetCalculate(
 
   /*********************************************************** MID *********************************************************/
 
-  const getMidSubArrayOrAntennasParams = () => (
-    isCustomSubarray() ?
-      { n_ska: observation?.num15mAntennas, n_meer: observation?.num13mAntennas } :
-      { subarray_configuration: getSubArray() }
-  );
+  const getMidSubArrayOrAntennasParams = () =>
+    isCustomSubarray()
+      ? { n_ska: observation?.num15mAntennas, n_meer: observation?.num13mAntennas }
+      : { subarray_configuration: getSubArray() };
 
   const convertFrequency = (value: number | string, units: number | string) =>
     sensCalHelpers.format.convertBandwidthToHz(value, units);
@@ -218,11 +217,10 @@ async function GetCalculate(
 
   /*********************************************************** LOW *********************************************************/
 
-  const getLowSubArrayOrAntennasParams = () => (
-    isCustomSubarray() ?
-      { num_stations: observation?.numStations } :
-      { subarray_configuration: getSubArray() }
-  );
+  const getLowSubArrayOrAntennasParams = () =>
+    isCustomSubarray()
+      ? { num_stations: observation?.numStations }
+      : { subarray_configuration: getSubArray() };
 
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
     const params = {
