@@ -210,6 +210,7 @@ async function GetCalculate(
 
   /*********************************************************** LOW *********************************************************/
 
+  // SARAH
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
     const params = {
       // subarray_configuration: getSubArray(),
@@ -228,14 +229,13 @@ async function GetCalculate(
       n_subbands: observation.numSubBands?.toString()
     };
     const subArrayParamName = isCustomSubarray() ? 'num_stations' : 'subarray_configuration';
-    params[subArrayParamName] = isCustomSubarray() ? 512 : getSubArray(); // TODO replace 512 by constant
+    params[subArrayParamName] = isCustomSubarray() ? observation?.numStations : getSubArray();
     return params;
   };
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {
     const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-    return {
-      subarray_configuration: getSubArray(),
+    const params = {
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
@@ -247,6 +247,9 @@ async function GetCalculate(
         bandwidthValueUnit[1]
       ) // low zoom bandwidth should be sent in kHz
     };
+    const subArrayParamName = isCustomSubarray() ? 'num_stations' : 'subarray_configuration';
+    params[subArrayParamName] = isCustomSubarray() ? observation?.numStations : getSubArray();
+    return params;
   };
 
   function mapQueryCalculateLow(): URLSearchParams {

@@ -37,6 +37,8 @@ export default function NumStationsField({
     }
   };
 
+  console.log('Num Stations', value);
+
   return (
     <Box pt={1}>
       <NumberEntry

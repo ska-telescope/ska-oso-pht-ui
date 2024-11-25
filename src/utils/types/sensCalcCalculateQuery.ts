@@ -38,7 +38,6 @@ export type CalculateLowContinuumQuery = {
 };
 
 export type CalculateLowZoomQuery = {
-  subarray_configuration: string;
   integration_time_h: number | string;
   pointing_centre: string;
   elevation_limit: number | string;
@@ -46,4 +45,6 @@ export type CalculateLowZoomQuery = {
   spectral_averaging_factor: number | string;
   spectral_resolutions_hz: number | string;
   total_bandwidths_khz: number | string;
+  subarray_configuration?: string;
+  num_stations?: number;
 };

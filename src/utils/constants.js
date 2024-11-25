@@ -501,7 +501,7 @@ export const OBSERVATION = {
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0,
+          numOfStations: 512,
           disableForBand5: false,
           continuumSpectralAveragingMax: 27624
         }
