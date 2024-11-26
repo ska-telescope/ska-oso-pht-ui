@@ -229,7 +229,8 @@ const sensCalHelpers = {
       confusion_noise: number,
       weighting_factor: number
     ): number =>
-      Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) / (weighting_factor?? 1)
+      Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) /
+      (weighting_factor ?? 1)
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {

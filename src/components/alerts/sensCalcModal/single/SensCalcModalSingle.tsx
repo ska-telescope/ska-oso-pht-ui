@@ -12,13 +12,18 @@ interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
   data: SensCalcResults;
-  isCustom: boolean
+  isCustom: boolean;
 }
 
 const SIZE = 30;
 const SPACER_HEIGHT = 30;
 
-export default function SensCalcModalSingle({ open, onClose, data, isCustom }: SensCalcDisplaySingleProps) {
+export default function SensCalcModalSingle({
+  open,
+  onClose,
+  data,
+  isCustom
+}: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
   };
@@ -31,18 +36,26 @@ export default function SensCalcModalSingle({ open, onClose, data, isCustom }: S
     if (eId === 'targetName') {
       return eValue;
     }
-    if (eId === 'continuumSensitivityWeighted' || eId === 'spectralSensitivityWeighted' || eId === 'integrationTime') {
-      return `${presentValue(eValue, eId)} `
+    if (
+      eId === 'continuumSensitivityWeighted' ||
+      eId === 'spectralSensitivityWeighted' ||
+      eId === 'integrationTime'
+    ) {
+      return `${presentValue(eValue, eId)} `;
     }
     return t('customArray.result');
-  }
+  };
 
   const PresentCustomUnitValue = (eUnits: any, eId: string) => {
-    if (eId === 'continuumSensitivityWeighted' || eId === 'spectralSensitivityWeighted' || eId === 'integrationTime') {
+    if (
+      eId === 'continuumSensitivityWeighted' ||
+      eId === 'spectralSensitivityWeighted' ||
+      eId === 'integrationTime'
+    ) {
       return presentUnits(eUnits);
     }
     return eUnits;
-  }
+  };
 
   const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
     return (
@@ -54,8 +67,12 @@ export default function SensCalcModalSingle({ open, onClose, data, isCustom }: S
         </Grid>
         <Grid item xs={3}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-            {eId === 'targetName' || isCustom ?  PresentCustomResultValue(eValue, eId) : presentValue(eValue, eId)}{' '}
-            {eId === 'targetName' || isCustom ? PresentCustomUnitValue(eUnits, eValue) : presentUnits(eUnits)}
+            {eId === 'targetName' || isCustom
+              ? PresentCustomResultValue(eValue, eId)
+              : presentValue(eValue, eId)}{' '}
+            {eId === 'targetName' || isCustom
+              ? PresentCustomUnitValue(eUnits, eValue)
+              : presentUnits(eUnits)}
           </Typography>
         </Grid>
       </Grid>

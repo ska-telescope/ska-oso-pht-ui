@@ -186,7 +186,7 @@ async function GetCalculate(
   const getThermalSensitivity = () => {
     const sensitivityJy = getSensitivityJy(); // TODO check conversion is correct
     if (isCustomSubarray()) {
-      return sensitivityJy
+      return sensitivityJy.toString();
     }
     const confusionNoise = getConfusionNoise();
     const weightingFactor = getWeightingFactor();
