@@ -163,15 +163,27 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
+  const getImageSizeUnits = (inValue: string) => {
+    const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+    for (let i = 0; i < IMAGE_SIZE_UNITS.length; i++) {
+      if (IMAGE_SIZE_UNITS[i] === inValue) {
+        return i;
+      }
+    }
+    return 0;
+  };
+
+  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsec' ? 'arcsecs' : inValue);
+
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
     imageSizeValue: dp.image_size.value,
-    imageSizeUnits: dp.image_size.unit,
+    imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
     pixelSizeValue: dp.pixel_size.value,
-    pixelSizeUnits: dp.pixel_size.unit,
+    pixelSizeUnits: getPixelSizeUnits(dp.pixel_size.unit),
     weighting: Number(dp.weighting)
   }));
 };
@@ -443,10 +455,7 @@ const getResultsSection3 = (
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
-  // TODO revisit mapping once integration time format from PDM merged
-  const field = isSensitivity ? 'integrationTime' : 'sensitivity';
-  // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
-  // and sensitivity for supplied integration time for RESULTS
+  const field = isSensitivity ? 'sensitivity' : 'integrationTime';
   return [
     {
       field: field,

@@ -210,7 +210,7 @@ export default function LandingPage() {
     width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
-        {t('proposalType.code.' + displayProposalType(e.row.proposalType))}
+        <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
       </Tooltip>
     )
   };

@@ -12,13 +12,7 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
-import {
-  HELP_FONT,
-  IMAGE_SIZE_UNITS,
-  NAV,
-  STATUS_OK,
-  WRAPPER_HEIGHT
-} from '../../../utils/constants';
+import { HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
@@ -51,7 +45,7 @@ export default function AddDataProduct() {
   const [dp3, setDP3] = React.useState(false);
   const [dp4, setDP4] = React.useState(false);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
-  const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNITS.DEGREES);
+  const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
@@ -82,7 +76,7 @@ export default function AddDataProduct() {
       const arr = sensCalc?.section1?.length > 2 ? sensCalc.section1[3].value.split(' x ') : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
       if (pixelSizeUnits === '' && sensCalc?.section1?.length > 2) {
-        setPixelSizeUnits(sensCalc.section1[3].units);
+        setPixelSizeUnits(t('imageSize.2'));
       }
       return Number(result);
     };
@@ -192,15 +186,16 @@ export default function AddDataProduct() {
   };
 
   const imageSizeUnitsField = () => {
-    const options = [
-      { label: IMAGE_SIZE_UNITS.ARCSECS, value: IMAGE_SIZE_UNITS.ARCSECS },
-      { label: IMAGE_SIZE_UNITS.ARCMINS, value: IMAGE_SIZE_UNITS.ARCMINS },
-      { label: IMAGE_SIZE_UNITS.DEGREES, value: IMAGE_SIZE_UNITS.DEGREES }
-    ];
+    const getOptions = () => {
+      return [0, 1, 2].map(e => ({
+        label: t('imageSize.' + e),
+        value: e
+      }));
+    };
 
     return (
       <DropDown
-        options={options}
+        options={getOptions()}
         testId="frequencyUnits"
         value={imageSizeUnits}
         setValue={setImageSizeUnits}
@@ -249,7 +244,7 @@ export default function AddDataProduct() {
           setValue={setPixelSizeValue}
           required
           disabled
-          suffix={'arcsec'}
+          suffix={pixelSizeUnits}
         />
       </Box>
     );

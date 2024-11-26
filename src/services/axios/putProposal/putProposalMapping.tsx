@@ -136,12 +136,16 @@ const SDPOptions = (inArray: Boolean[]) => {
 };
 
 const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+
+  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
+
   return dataproducts?.map(dp => ({
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
-    pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
+    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+    pixel_size: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
     weighting: dp.weighting?.toString()
   }));
 };
