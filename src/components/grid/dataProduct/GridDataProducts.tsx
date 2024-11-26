@@ -29,6 +29,7 @@ export default function GridDataProducts({
   const { t } = useTranslation('pht');
 
   const PAGE = 7;
+  const PIXEL_SIZE_UNITS = 'arcsec';
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
@@ -82,7 +83,7 @@ export default function GridDataProducts({
     headerName: t('pixelSize.label'),
     flex: 0.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: DataProductSDP }) => e.row.pixelSizeValue + ' ' + 'arcsec'
+    renderCell: (e: { row: DataProductSDP }) => e.row.pixelSizeValue + ' ' + PIXEL_SIZE_UNITS
   };
 
   const colImageWeighting = {

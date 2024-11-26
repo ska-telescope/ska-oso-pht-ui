@@ -112,7 +112,7 @@ export default function ObservationEntry() {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
-  const [numOfStations, setNumOfStations] = React.useState(0);
+  const [numOfStations, setNumOfStations] = React.useState(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
