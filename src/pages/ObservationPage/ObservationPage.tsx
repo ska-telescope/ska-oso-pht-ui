@@ -284,7 +284,6 @@ export default function ObservationPage() {
     )?.sensCalc;
 
   const isCustom = () => currObs?.subarray === OB_SUBARRAY_CUSTOM;
-  console.log('isCustom()', isCustom());
 
   const extendedColumnsObservations = [
     ...[

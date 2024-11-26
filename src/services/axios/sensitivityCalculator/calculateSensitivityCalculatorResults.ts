@@ -47,8 +47,6 @@ export default function calculateSensitivityCalculatorResults(
     ? getWeightedSensitivityLOW(response, isZoom())
     : getWeightedSensitivityMid(response, isZoom(), observation);
 
-  console.log('weightedSensitivity', weightedSensitivity);
-
   const confusionNoise = getConfusionNoise(response, isZoom());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
@@ -60,7 +58,7 @@ export default function calculateSensitivityCalculatorResults(
     ? getContinuumIntegrationTimeMID(response, isZoom())
     : 0;
   const spectralIntegrationTime: any = isSensitivity()
-    ? getSpectralIntegrationTimeMID(response, isZoom())
+    ? getSpectralIntegrationTimeMID(response, isZoom(), isCustomSubarray())
     : 0;
 
   const spectralWeightedSensitivity = isLow()
@@ -156,7 +154,6 @@ export default function calculateSensitivityCalculatorResults(
       : weightedSensitivityDisplay?.value.toString(),
     units: weightedSensitivityDisplay?.unit
   };
-  console.log('results1', results1);
 
   const results2 = {
     field: `${observationTypeLabel}ConfusionNoise`,
@@ -382,16 +379,21 @@ const getContinuumIntegrationTimeMID = (
   },
   isZoom: Boolean
 ) => {
+  console.log('IsZOOM CONTINUUM', isZoom);
   return isZoom
     ? response.calculate?.data[0]?.spectral_integration_time
     : response.calculate?.data?.continuum_integration_time;
 };
 
+// SARAH
 const getSpectralIntegrationTimeMID = (
   response: SensitivityCalculatorAPIResponseMid,
-  isZoom: boolean
+  isZoom: boolean,
+  isCustom: boolean
 ) => {
-  return isZoom
+  console.log('IsZOOM SPECTRAL', isZoom);
+  console.log('response', response);
+  return isCustom || isZoom // for custom array we only have 1 get calculate request for supplied sensitivity
     ? response.calculate?.data?.spectral_integration_time
     : response.calculateSpectral?.data?.spectral_integration_time;
 };

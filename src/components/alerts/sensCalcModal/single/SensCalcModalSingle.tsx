@@ -28,34 +28,20 @@ export default function SensCalcModalSingle({
     onClose();
   };
 
-  console.log('isCustom', isCustom);
-
   const { t } = useTranslation('pht');
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
     if (eId === 'targetName') {
       return eValue;
     }
-    if (
-      eId === 'continuumSensitivityWeighted' ||
-      eId === 'spectralSensitivityWeighted' ||
-      eId === 'integrationTime'
-    ) {
-      return `${presentValue(eValue, eId)} `;
+    if (eValue === 'N/A') {
+      return t('customArray.result');
     }
-    return t('customArray.result');
+    return `${presentValue(eValue, eId)} `;
   };
 
-  const PresentCustomUnitValue = (eUnits: any, eId: string) => {
-    if (
-      eId === 'continuumSensitivityWeighted' ||
-      eId === 'spectralSensitivityWeighted' ||
-      eId === 'integrationTime'
-    ) {
-      return presentUnits(eUnits);
-    }
-    return eUnits;
-  };
+  const PresentCustomUnitValue = (eUnits: any, eValue: string) =>
+    eValue === 'N/A' ? eUnits : presentUnits(eUnits);
 
   const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
     return (
