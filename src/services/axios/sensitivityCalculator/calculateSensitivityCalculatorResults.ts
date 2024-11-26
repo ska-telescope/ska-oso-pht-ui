@@ -299,7 +299,7 @@ const getSpectralWeightedSensitivityLOW = (
 ) => {
   const rec = isZoom ? response.weighting[0] : response.weightingLine;
   const calc = isZoom ? response.calculate?.data[0] : response.calculate?.data;
-  return (calc?.spectral_sensitivity?.value ?? 0) * rec?.weighting_factor;
+  return (calc?.spectral_sensitivity?.value ?? 0) * (rec?.weighting_factor?? 1);
 };
 
 const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom: boolean) => {
@@ -333,7 +333,7 @@ const getWeightedSensitivityRawValueMid = (
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
   const recWeight = isZoom ? response?.weighting[0] : response?.weighting;
   if (recCalc?.continuum_sensitivity?.value) {
-    return recCalc.continuum_sensitivity!.value! * recWeight.weighting_factor * 1e6;
+    return recCalc.continuum_sensitivity!.value! * (recWeight?.weighting_factor ?? 1) * 1e6;
   } else {
     return observation?.supplied.value;
   }
@@ -370,7 +370,7 @@ const getSpectralWeightedSensitivityRawValueMid = (
   const recCalc = isZoom ? response?.calculate?.data[0] : response?.calculate?.data;
   const recWeightLine = isZoom ? response?.weighting[0] : response?.weightingLine;
   if (recCalc?.spectral_sensitivity?.value) {
-    return recCalc.spectral_sensitivity?.value! * recWeightLine.weighting_factor * 1e6;
+    return recCalc.spectral_sensitivity?.value! * (recWeightLine?.weighting_factor?? 1) * 1e6;
   } else {
     return observation?.supplied.value;
   }
