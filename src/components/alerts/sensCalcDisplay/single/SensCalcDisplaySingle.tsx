@@ -73,7 +73,7 @@ export default function SensCalcDisplaySingle({
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           data={sensCalc}
-          isCustom
+          isCustom={isCustom}
         />
       )}
     </>
