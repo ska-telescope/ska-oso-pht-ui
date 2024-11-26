@@ -35,6 +35,7 @@ async function GetCalculate(
   weightingResponse: WeightingResponse,
   inMode: number
 ) {
+  console.log('::: in GetCalculate');
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
@@ -147,6 +148,9 @@ async function GetCalculate(
   };
 
   const getSBSConvFactor = () => {
+    if (isCustomSubarray()) {
+      return 1;
+    }
     return inMode === TYPE_CONTINUUM
       ? weightingResponse?.sbs_conv_factor
       : weightingResponse[0]?.sbs_conv_factor;
@@ -171,13 +175,19 @@ async function GetCalculate(
   };
 
   const getWeightingFactor = () => {
+    if (isCustomSubarray()) {
+      return 1;
+    }
     return observation.type === TYPE_CONTINUUM
       ? weightingResponse.weighting_factor
       : weightingResponse[0]?.weighting_factor;
   };
 
   const getThermalSensitivity = () => {
-    const sensitivityJy = getSensitivityJy();
+    const sensitivityJy = getSensitivityJy(); // TODO check conversion is correct
+    if (isCustomSubarray()) {
+      return sensitivityJy
+    }
     const confusionNoise = getConfusionNoise();
     const weightingFactor = getWeightingFactor();
     const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
@@ -285,8 +295,10 @@ async function GetCalculate(
 
   try {
     const result = await axios.get(getPath(), AXIOS_CONFIG);
+    console.log('result', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
+    console.log('e', e);
     const errorObject = {
       title: e.response?.data?.title,
       detail: e.response?.data?.detail

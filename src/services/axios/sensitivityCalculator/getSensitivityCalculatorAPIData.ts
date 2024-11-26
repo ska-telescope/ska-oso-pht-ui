@@ -115,12 +115,14 @@ async function getSensitivityCalculatorAPIData(
   }
 
   function handleCalculate(weightingResponse) {
+    console.log('::: in handleCalculate()');
     const promisesCalculate = [
       GetCalculate(observation, target, weightingResponse.weighting, observation.type)
     ];
     if (
       observation.type === TYPE_CONTINUUM &&
-      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY
+      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY &&
+      !isCustom
     ) {
       promisesCalculate.push(
         GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM)
