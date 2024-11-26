@@ -75,7 +75,6 @@ const BACK_PAGE = 5;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 const HELP_PANEL_HEIGHT = '50vh';
-const WRAPPER_WIDTH = '500px';
 
 export default function ObservationEntry() {
   const { t } = useTranslation('pht');
@@ -98,7 +97,7 @@ export default function ObservationEntry() {
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_GHZ);
+  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(1);
@@ -120,11 +119,13 @@ export default function ObservationEntry() {
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
+  const [ob, setOb] = React.useState(null);
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
+    setOb(ob);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
@@ -350,6 +351,11 @@ export default function ObservationEntry() {
       }
     };
 
+    if (ob) {
+      // We just need to do this one more time as some fields could not be updated until observingBand has changed.
+      observationIn(ob);
+      setOb(null);
+    }
     const calculateMinimumChannelWidthHz = () =>
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
 
@@ -366,13 +372,13 @@ export default function ObservationEntry() {
     subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
@@ -816,6 +822,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
+        onFocus={() => helpComponent(t('robust.help'))}
         setValue={setRobust}
         testId="robust"
         value={robust}

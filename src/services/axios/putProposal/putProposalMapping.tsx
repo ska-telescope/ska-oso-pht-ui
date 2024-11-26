@@ -13,7 +13,9 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
   VEL_UNITS,
-  VELOCITY_TYPE
+  VELOCITY_TYPE,
+  ROBUST,
+  IW_BRIGGS
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
@@ -134,12 +136,16 @@ const SDPOptions = (inArray: Boolean[]) => {
 };
 
 const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+
+  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
+
   return dataproducts?.map(dp => ({
     data_products_sdp_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: { value: dp.imageSizeValue, unit: dp.imageSizeUnits },
-    pixel_size: { value: dp.pixelSizeValue, unit: dp.pixelSizeUnits },
+    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+    pixel_size: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
     weighting: dp.weighting?.toString()
   }));
 };
@@ -171,8 +177,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
     const lowArrayDetails: ArrayDetailsLowBackend = {
       array: TELESCOPE_LOW_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
-      number_of_stations: incObs.numStations,
-      spectral_averaging: incObs.spectralAveraging?.toString()
+      number_of_stations: incObs.numStations
     };
     return lowArrayDetails;
   } else {
@@ -239,7 +244,7 @@ const getObservationsSets = (
     const observation: ObservationSetBackend = {
       observation_set_id: obs.id,
       group_id: getGroupObservation(obs.id, incObservationGroups),
-      elevation: 23, // TODO : HArd coded value
+      elevation: obs.elevation,
       observing_band: getObservingBand(obs.observingBand),
       array_details: getArrayDetails(obs),
       observation_type_details: {
@@ -249,7 +254,12 @@ const getObservationsSets = (
         supplied: getSupplied(obs),
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.lookup
+        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.label,
+        spectral_averaging: obs.spectralAveraging.toString(),
+        robust:
+          obs.imageWeighting === IW_BRIGGS
+            ? ROBUST.find(item => item.value === obs.robust)?.label
+            : '0'
       }
     };
     outObservationsSets.push(observation);
@@ -372,9 +382,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
     const spectralSection = getSpectralSection(obsType);
     const suppliedType =
       tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-    // TODO un-swap sensitivity and integration time as above once PDM updated
-    // => we want supplied integration time fields for supplied sensitivity
-    // and supplied sensitivity fields for supplied integration time for RESULTS
 
     const suppliedRelatedFields =
       suppliedType === 'sensitivity'
@@ -465,6 +472,5 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     }
   };
   helpers.transform.trimObject(transformedProposal);
-
   return transformedProposal;
 }

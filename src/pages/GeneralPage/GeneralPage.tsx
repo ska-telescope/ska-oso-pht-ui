@@ -11,7 +11,6 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateGeneralPage } from '../../utils/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
-import { fetchCycleData } from '../../utils/storage/cycleData';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -47,7 +46,7 @@ export default function GeneralPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('abstract.help'));
+    helpComponent(t('scienceCategory.help'));
   }, []);
 
   React.useEffect(() => {
@@ -69,7 +68,7 @@ export default function GeneralPage() {
       labelPosition={LAB_POSITION}
       labelWidth={LABEL_WIDTH * 2}
       testId="cycleId"
-      value={fetchCycleData().id}
+      value={getProposal().cycle}
       onFocus={() => helpComponent(t('abstract.help'))}
       required
       disabled
@@ -93,9 +92,7 @@ export default function GeneralPage() {
 
     function validateWordCount(title: string) {
       if (countWords(title) > MAX_WORD) {
-        return `${t('abstract.error')} - ${t('specialCharacters.numWord')} ${countWords(
-          title
-        )} / ${MAX_WORD}`;
+        return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
       }
     }
 
@@ -108,6 +105,7 @@ export default function GeneralPage() {
           labelWidth={LABEL_WIDTH}
           testId="abstractId"
           rows={numRows}
+          required
           value={getProposal().abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => helpComponent(t('abstract.help'))}
@@ -128,6 +126,7 @@ export default function GeneralPage() {
   const categoryField = () => (
     <DropDown
       options={GENERAL.ScienceCategory}
+      errorText={getProposal().scienceCategory ? '' : t('scienceCategory.error')}
       required
       testId="categoryId"
       value={getProposal().scienceCategory}
@@ -150,7 +149,7 @@ export default function GeneralPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item md={12} lg={8}>
+        <Grid item pb={3} md={12} lg={8}>
           <Grid container direction="row">
             <Grid item md={12} lg={12} pt={2}>
               <Grid item md={12} lg={6}>

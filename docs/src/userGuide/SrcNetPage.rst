@@ -1,4 +1,4 @@
 SRCNet Page
 ============
 
-THIS PAGE IS UNDER DEVELOPMENT AND WILL BE UPDATED SOON
+This page is just a placeholder to define SRCNet resources that will be added in a later version.

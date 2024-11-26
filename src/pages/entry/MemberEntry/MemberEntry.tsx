@@ -40,10 +40,15 @@ export default function MemberEntry() {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
-  const WRAPPER_WIDTH = '500px';
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
+    <Box
+      p={0}
+      pt={1}
+      sx={{
+        height: WRAPPER_HEIGHT
+      }}
+    >
       {children}
     </Box>
   );
@@ -207,7 +212,6 @@ export default function MemberEntry() {
         label={t('firstName.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
@@ -224,7 +228,6 @@ export default function MemberEntry() {
         label={t('lastName.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
         testId="lastName"
         value={lastName}
         setValue={setLastName}
@@ -241,7 +244,6 @@ export default function MemberEntry() {
         label={t('email.label')}
         labelBold
         labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
         testId="email"
         value={email}
         setValue={setEmail}
@@ -283,7 +285,14 @@ export default function MemberEntry() {
   };
 
   return (
-    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+    <Grid
+      p={2}
+      pb={5}
+      container
+      direction="row"
+      alignItems="space-evenly"
+      justifyContent="space-between"
+    >
       <Grid item xs={7}>
         <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {firstNameField()}

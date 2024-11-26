@@ -19,7 +19,8 @@ import {
   IMAGE_WEIGHTING,
   BAND_LOW,
   BAND_1,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  ROBUST
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -162,15 +163,27 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
+  const getImageSizeUnits = (inValue: string) => {
+    const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+    for (let i = 0; i < IMAGE_SIZE_UNITS.length; i++) {
+      if (IMAGE_SIZE_UNITS[i] === inValue) {
+        return i;
+      }
+    }
+    return 0;
+  };
+
+  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsec' ? 'arcsecs' : inValue);
+
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_products_sdp_id,
     observatoryDataProduct: getSDPOptions(dp.options),
     observationId: dp.observation_set_refs,
     imageSizeValue: dp.image_size.value,
-    imageSizeUnits: dp.image_size.unit,
+    imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
     pixelSizeValue: dp.pixel_size.value,
-    pixelSizeUnits: dp.pixel_size.unit,
+    pixelSizeUnits: getPixelSizeUnits(dp.pixel_size.unit),
     weighting: Number(dp.weighting)
   }));
 };
@@ -294,10 +307,11 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details.bandwidth?.value, arr)
           : undefined,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
-      robust: 0, // TODO
+      robust: ROBUST.find(item => item.label === inValue[i].observation_type_details?.robust)
+        ?.value,
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution,
-      spectralAveraging: Number(inValue[i].array_details?.spectral_averaging),
+      spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details.bandwidth?.value : undefined,
@@ -441,10 +455,7 @@ const getResultsSection3 = (
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
-  // TODO revisit mapping once integration time format from PDM merged
-  const field = isSensitivity ? 'integrationTime' : 'sensitivity';
-  // TODO un-swap as above once PDM updated to use integration time for supplied sensitivity
-  // and sensitivity for supplied integration time for RESULTS
+  const field = isSensitivity ? 'sensitivity' : 'integrationTime';
   return [
     {
       field: field,
