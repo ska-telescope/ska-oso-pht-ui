@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
-import StatusIconDisplay from '../../icon/status/statusIcon';
-import { NAV } from '../../../utils/constants';
+import { NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
+import { StatusIcon } from '@ska-telescope/ska-gui-components';
 
 interface StatusWrapperProps {
   level?: number;
@@ -27,16 +27,18 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   return (
     <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
       <Grid container direction="column" alignItems="center" justifyContent="center">
-        <StatusIconDisplay
-          ariaTitle={t('pageStatus.toolTip', {
-            pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
-          })}
+        <StatusIcon
           ariaDescription={t('pageStatus.toolTip', {
             pageName: pageName().toLowerCase(),
             status: t('statusValue.' + getLevel())
           })}
+          ariaTitle={t('pageStatus.toolTip', {
+            pageName: pageName().toLowerCase(),
+            status: t('statusValue.' + getLevel())
+          })}
           testId={'statusId' + page}
+          text={getLevel() === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
+          icon={getLevel() !== STATUS_ERROR}
           level={getLevel()}
           size={SIZE}
         />

@@ -354,7 +354,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
           <Grid item>{skyDirection1Field()}</Grid>
           <Grid item>{skyDirection2Field()}</Grid>
           <Grid item>{velocityField()}</Grid>
-          <Grid item>{referenceFrameField()}</Grid>
+          <Grid item>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
           <Grid item>{!id && addButton()}</Grid>
         </Grid>
       </Grid>
