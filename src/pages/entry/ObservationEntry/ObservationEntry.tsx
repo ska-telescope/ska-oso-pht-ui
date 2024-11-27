@@ -46,7 +46,8 @@ import {
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM
+  TELESCOPE_MID_NUM,
+  OB_SUBARRAY_AA2
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -369,7 +370,9 @@ export default function ObservationEntry() {
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
+    subarrayConfig === OB_SUBARRAY_AA05 ||
+    subarrayConfig === OB_SUBARRAY_AA1 ||
+    (observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
