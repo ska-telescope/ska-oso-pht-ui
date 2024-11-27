@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+1.0.1
+
+-------
+
+   * Added: 
+
+      * All Pages
+         - Responsiveness
+      * Target page
+         - Validation on name field in Add target, remove ability to add duplicate targets 
+
+   * Changed
+   
+      * Observation page
+         - Default value for 'num of stations' for a low observation, array = AA4, set to 512
+         - All MID Bands, subarray AA2, Observation type Zoom is disabled
+
+
 1.0.0
 
 -------
