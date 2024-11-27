@@ -19,7 +19,7 @@ export type DataProductSDP = {
   observatoryDataProduct: boolean[];
   observationId: string[];
   imageSizeValue: number;
-  imageSizeUnits: string;
+  imageSizeUnits: number;
   pixelSizeValue: number;
   pixelSizeUnits: string;
   weighting: number;

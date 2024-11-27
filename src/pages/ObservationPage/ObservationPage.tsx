@@ -397,7 +397,7 @@ export default function ObservationPage() {
           );
         }
       },
-      { field: 'name', headerName: t('name.label'), flex: 1.5 },
+      { field: 'name', headerName: t('name.label'), flex: 1.5, minWidth: 120 },
       { field: 'ra', headerName: t('skyDirection.short.1.' + RA_TYPE_EQUATORIAL), width: 120 },
       { field: 'dec', headerName: t('skyDirection.short.2.' + RA_TYPE_EQUATORIAL), width: 120 },
       {
@@ -433,6 +433,7 @@ export default function ObservationPage() {
           ),
         sortable: false,
         flex: 2,
+        minWidth: 170,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (
@@ -449,6 +450,7 @@ export default function ObservationPage() {
         renderHeader: () => (currObs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>),
         sortable: false,
         flex: 2.5,
+        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
           return (

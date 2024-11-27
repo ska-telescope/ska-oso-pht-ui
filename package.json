@@ -1,4 +1,5 @@
 {
+  "author": "Stargazers - OMC ART",
   "name": "ska-oso-pht-ui",
   "version": "1.0.0",
   "private": true,
@@ -49,7 +50,7 @@
     "@mui/system": "^5.16.7",
     "@mui/x-charts": "^7.12.1",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.0.21",
+    "@ska-telescope/ska-gui-components": "^2.0.20",
     "@ska-telescope/ska-gui-local-storage": "^1.0.1",
     "axios": "^1.6.3",
     "babel-core": "6",
@@ -136,6 +137,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "author": "Stargazers - OMC ART"
+  ]
 }
