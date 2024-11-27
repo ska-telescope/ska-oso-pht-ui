@@ -15,7 +15,7 @@ export default function TeamInviteButton({
   action,
   primary = false,
   title = 'button.sendInvite',
-  testId,
+  testId = 'teamInviteButtonTestId',
   toolTip
 }: TeamInviteButtonProps) {
   return (

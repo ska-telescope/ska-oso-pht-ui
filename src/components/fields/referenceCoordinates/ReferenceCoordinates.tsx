@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { Box, Tooltip } from '@mui/material';
+import { Box } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 // TODO : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY

@@ -57,7 +57,7 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
           {numPages > 1 && (
             <PreviousPageButton
               disabled={pageNumber === 1}
-              title={t('page.previous')}
+              title={'page.previous'}
               action={goToPrevPage}
             />
           )}
@@ -66,7 +66,7 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
           {numPages > 1 && (
             <NextPageButton
               disabled={pageNumber === numPages}
-              title={t('page.next')}
+              title={'page.next'}
               action={goToNextPage}
             />
           )}

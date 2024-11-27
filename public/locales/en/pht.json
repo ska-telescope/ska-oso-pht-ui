@@ -141,6 +141,9 @@
   "downloadProposal": {
     "label": "Download proposal"
   },
+  "dropzone": {
+    "prompt": "Drag and drop your files here, or click to select"
+  },
   "editProposal": {
     "toolTip": "Edit proposal",
     "disabled": "This function is not available"
@@ -230,6 +233,9 @@
     "label": "Id"
   },
   "imageSize": {
+    "0": "degrees",
+    "1": "arcmins",
+    "2": "arcsecs",
     "label": "Image Size",
     "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
     "error": "A value greater than zero is required"
@@ -532,7 +538,8 @@
     "14": "VLBI",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
-    "notSpecified": "Not specified"
+    "notSpecified": "Not specified",
+    "error": "A value is required"
   },
   "scienceSubCategory": {
     "label": "Sub-category",
@@ -780,6 +787,7 @@
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
     "help0": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
+    "help1": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
