@@ -46,7 +46,8 @@ import {
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM
+  TELESCOPE_MID_NUM,
+  OB_SUBARRAY_AA2
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -112,7 +113,7 @@ export default function ObservationEntry() {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
-  const [numOfStations, setNumOfStations] = React.useState(0);
+  const [numOfStations, setNumOfStations] = React.useState(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
@@ -369,7 +370,9 @@ export default function ObservationEntry() {
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
+    subarrayConfig === OB_SUBARRAY_AA05 ||
+    subarrayConfig === OB_SUBARRAY_AA1 ||
+    (observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
