@@ -16,8 +16,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
       * Target page
          - Validation on name field in Add target, remove ability to add duplicate targets 
 
-   * Changed
-   
+   * Changed:
+
       * Observation page
          - Default value for 'num of stations' for a low observation, array = AA4, set to 512
          - All MID Bands, subarray AA2, Observation type Zoom is disabled
