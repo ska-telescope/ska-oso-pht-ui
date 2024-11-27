@@ -60,7 +60,7 @@ function mountingURL(theTheme: any, disabled: boolean, primary: boolean) {
 }
 
 function validate(inLabel, inToolTip) {
-  cy.get('[data-testid="nextButtonTestId"]').contains(inLabel);
+  cy.get('[data-testid="nextPageButtonTestId"]').contains(inLabel);
   cy.get('[aria-label="' + inToolTip + '"]').trigger('mouseover');
   cy.contains(inToolTip).should('be.visible');
 }
@@ -70,10 +70,10 @@ function clickButton() {
 }
 
 function buttonDisabled() {
-  // cy.get('[data-testid="nextButtonTestId"]').should('be.disabled');
+  // cy.get('[data-testid="nextPageButtonTestId"]').should('be.disabled');
 }
 
-describe('<NextButton />', () => {
+describe('<NextPageButton />', () => {
   for (const theTheme of THEME) {
     it(`Theme: ${theTheme} | disabled: DEFAULT | primary: DEFAULT`, () => {
       mountingDefault(theTheme);
