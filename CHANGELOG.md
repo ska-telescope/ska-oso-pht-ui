@@ -4,6 +4,18 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+1.0.3
+
+-------
+
+   * Changed
+      * Title page
+         - Option for LTP removed when KSP selected
+      * General page
+         - Cycle was not being displayed when the proposal is first created
+      * Utilities
+         - document URL changed to make use of the version of the application
+
 1.0.2
 
 -------
