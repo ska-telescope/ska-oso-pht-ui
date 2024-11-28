@@ -8,6 +8,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 -------
 
+   * Changed
+      * Title page
+         - Option for LTP removed when KSP selected
+      * General page
+         - Cycle was not being displayed when the proposal is first created
+      * Utilities
+         - document URL changed to make use of the version of the application
+
+1.0.2
+
+-------
+
    * Reworked as previous patch failed to deploy
    
 1.0.1
