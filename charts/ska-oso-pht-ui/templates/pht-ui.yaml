@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: "{{ .Values.image.registry }}/{{ .Values.image.image }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.rest.image.registry }}/{{ .Values.rest.image.image }}:{{$.Values.rest.image.tag | default $.Chart.AppVersion}}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
