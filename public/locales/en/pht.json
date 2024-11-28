@@ -930,7 +930,7 @@
   "toolTip": {
     "button": {
       "docs": "Click here for PHT documentation",
-      "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/UserIntroduction.html",
+      "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/userGuide/UserIntroduction.html",
       "mode": "Color Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
