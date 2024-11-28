@@ -5,6 +5,7 @@ import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import { EMPTY_STATUS } from '../../../utils/constants';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { Box } from '@mui/material';
+import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const PAGE = 9;
 const PAGE_INNER = 0;
@@ -17,7 +18,9 @@ export default function AddProposal() {
 
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
-    updateAppContent2(NEW_PROPOSAL);
+    let temp = NEW_PROPOSAL;
+    temp.cycle = fetchCycleData().id;
+    updateAppContent2(temp);
   }, []);
 
   const contentValid = () => !(getProposal()?.title?.length > 0 && getProposal()?.proposalType > 0);

@@ -33,13 +33,14 @@ function App() {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
 
+  const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
+
   const skao = t('toolTip.button.skao');
   const mode = t('toolTip.button.mode');
   const headerTip = t('toolTip.button.docs');
-  const headerURL = t('toolTip.button.docsURL');
+  const headerURL = t('toolTip.button.docsURL', { version: REACT_APP_VERSION });
   const docs = { tooltip: headerTip, url: headerURL };
   const toolTip = { skao, mode };
-  const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
 
   const modeToggle = () => {
