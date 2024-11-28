@@ -56,10 +56,10 @@ export default function calculateSensitivityCalculatorResults(
 
   const continuumIntegrationTime = isSensitivity()
     ? getContinuumIntegrationTimeMID(response, isZoom())
-    : 0;
+    : { value: 0, unit: '' };
   const spectralIntegrationTime: any = isSensitivity()
     ? getSpectralIntegrationTimeMID(response, isZoom(), isCustomSubarray())
-    : 0;
+    : { value: 0, unit: '' };
 
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response, isZoom())
@@ -216,6 +216,7 @@ export default function calculateSensitivityCalculatorResults(
       : spectralSbs?.value.toString(),
     units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
   };
+  console.log('results10', results10);
 
   const results11 = {
     field: suppliedType,
@@ -378,24 +379,26 @@ const getContinuumIntegrationTimeMID = (
     calculate: { data: { spectral_integration_time: any; continuum_integration_time: any } };
   },
   isZoom: Boolean
-) => {
-  console.log('IsZOOM CONTINUUM', isZoom);
-  return isZoom
+): ValueUnitPair => {
+  const integrationTime = isZoom
     ? response.calculate?.data[0]?.spectral_integration_time
     : response.calculate?.data?.continuum_integration_time;
+  return convertIntegrationTimeUnits(integrationTime);
 };
 
-// SARAH
+const convertIntegrationTimeUnits = (integrationTime: ValueUnitPair): ValueUnitPair =>
+  sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime);
+
 const getSpectralIntegrationTimeMID = (
   response: SensitivityCalculatorAPIResponseMid,
   isZoom: boolean,
   isCustom: boolean
-) => {
-  console.log('IsZOOM SPECTRAL', isZoom);
-  console.log('response', response);
-  return isCustom || isZoom // for custom array we only have 1 get calculate request for supplied sensitivity
-    ? response.calculate?.data?.spectral_integration_time
-    : response.calculateSpectral?.data?.spectral_integration_time;
+): ValueUnitPair => {
+  const integrationTime =
+    isCustom || isZoom // for custom array we only have 1 get calculate request for supplied sensitivity
+      ? response.calculate?.data?.spectral_integration_time
+      : response.calculateSpectral?.data?.spectral_integration_time;
+  return convertIntegrationTimeUnits(integrationTime);
 };
 
 const getSpectralWeightedSensitivityMID = (

@@ -218,6 +218,41 @@ const sensCalHelpers = {
         return inputSensitivity / 1000000;
       }
       return inputSensitivity;
+    },
+    /**
+     * Converts a time in seconds to a sensible unit,
+     * e.g. display 1 ms instead of 0.001 s
+     *
+     * **/
+    convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): ValueUnitPair {
+      console.log('::: in convertTimeToDisplayUnit', time);
+      if (time.unit !== 's') {
+        // TODO make this function smarter so it can handle all units
+        throw Error('Only seconds supported currently in convertTimeToDisplayUnit');
+      }
+      const timeS = Number(time.value);
+      if (timeS > 1e-1) {
+        return {
+          value: Number(timeS.toFixed(precision)),
+          unit: 's' // TODO move units in CONSTANTS
+        };
+      }
+      if (timeS > 1e-4) {
+        return {
+          value: Number((timeS * 1e3).toFixed(precision)),
+          unit: 'ms' // TODO move units in CONSTANTS
+        };
+      }
+      if (timeS > 1e-7) {
+        return {
+          value: Number((timeS * 1e6).toFixed(precision)),
+          unit: 'us' // TODO move units in CONSTANTS
+        };
+      }
+      return {
+        value: Number((timeS * 1e9).toFixed(precision)),
+        unit: 'ns' // TODO move units in CONSTANTS
+      };
     }
   },
   calculate: {
