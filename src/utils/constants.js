@@ -236,10 +236,6 @@ export const PROJECTS = [
       {
         id: 3,
         mapping: 'coordinated_proposal'
-      },
-      {
-        id: 4,
-        mapping: 'long_term_proposal'
       }
     ]
   },
