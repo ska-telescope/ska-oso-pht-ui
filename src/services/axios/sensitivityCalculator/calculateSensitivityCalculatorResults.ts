@@ -36,7 +36,6 @@ export default function calculateSensitivityCalculatorResults(
   observation: Observation,
   target: Target
 ): SensCalcResults {
-  console.log('::: in calculateSensitivityCalculatorResults');
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
@@ -44,14 +43,14 @@ export default function calculateSensitivityCalculatorResults(
   const isCustomSubarray = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   const weightedSensitivity = isLow()
-    ? getWeightedSensitivityLOW(response, isZoom())
+    ? getWeightedSensitivityLOW(response, isZoom(), isCustomSubarray())
     : getWeightedSensitivityMid(response, isZoom(), observation);
 
-  const confusionNoise = getConfusionNoise(response, isZoom());
+  const confusionNoise = getConfusionNoise(response, isZoom(), isCustomSubarray());
 
   const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
   const beamSize = isLow()
-    ? getBeamSizeLOW(response, isZoom())
+    ? getBeamSizeLOW(response, isZoom(), isCustomSubarray())
     : getBeamSizeMID(response, isZoom());
 
   const continuumIntegrationTime = isSensitivity()
@@ -62,10 +61,10 @@ export default function calculateSensitivityCalculatorResults(
     : { value: 0, unit: '' };
 
   const spectralWeightedSensitivity = isLow()
-    ? getSpectralWeightedSensitivityLOW(response, isZoom())
+    ? getSpectralWeightedSensitivityLOW(response, isZoom(), isCustomSubarray())
     : getSpectralWeightedSensitivityMID(observation, response, isZoom());
 
-  const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom());
+  const spectralConfusionNoise = getSpectralConfusionNoise(response, isZoom(), isCustomSubarray());
 
   const spectralTotalSensitivity = getSensitivity(
     spectralConfusionNoise,
@@ -75,26 +74,38 @@ export default function calculateSensitivityCalculatorResults(
   const getSurfaceBrightnessSensitivity = (
     response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
     sense: number,
-    isZoom: boolean
+    isZoom: boolean,
+    isCustom
   ): ValueUnitPair => {
-    const rec = isZoom ? response?.weighting[0] : response?.weighting;
-    const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
-    return rec
-      ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
-      : { value: 0, unit: '' };
+    if (isCustom) {
+      return { value: 0, unit: '' };
+    } else {
+      const rec = isZoom ? response?.weighting[0] : response?.weighting;
+      const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
+      return rec
+        ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
+        : { value: 0, unit: '' };
+    }
   };
+
   const sbs = getSurfaceBrightnessSensitivity(
     response,
     isZoom() ? spectralTotalSensitivity : totalSensitivity,
-    isZoom()
+    isZoom(),
+    isCustomSubarray()
   );
 
   const spectralSbs = isLow()
-    ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity, isZoom())
+    ? getSpectralSurfaceBrightnessLOW(
+        response,
+        spectralTotalSensitivity,
+        isZoom(),
+        isCustomSubarray()
+      )
     : getSpectralSurfaceBrightnessMID(response, spectralTotalSensitivity, isZoom());
 
   const spectralBeamSize = isLow()
-    ? getSpectralBeamSizeLOW(response, isZoom())
+    ? getSpectralBeamSizeLOW(response, isZoom(), isCustomSubarray())
     : getSpectralBeamSizeMID(response, isZoom());
 
   const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
@@ -216,7 +227,6 @@ export default function calculateSensitivityCalculatorResults(
       : spectralSbs?.value.toString(),
     units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
   };
-  console.log('results10', results10);
 
   const results11 = {
     field: suppliedType,
@@ -267,58 +277,100 @@ export default function calculateSensitivityCalculatorResults(
 
 /******************************************* LOW ********************************************/
 
-const getWeightedSensitivityLOW = (
+const getWeightingFactor = (
   response: SensitivityCalculatorAPIResponseLow,
-  isZoom: boolean
-) => {
-  const sensitivity = isZoom
-    ? response.calculate.data.spectral_sensitivity?.value
-    : response?.calculate?.data?.continuum_sensitivity?.value;
-  const factor = isZoom
-    ? response.weighting[0]?.weighting_factor
-    : response.weighting?.weighting_factor;
-  return (sensitivity ?? 0) * (factor ?? 1);
+  isZoom: boolean,
+  isCustom: boolean
+): number => {
+  if (isCustom) {
+    return 1; // no weighting response for Custom
+  } else {
+    return isZoom ? response.weighting[0]?.weighting_factor : response.weighting?.weighting_factor;
+  }
 };
 
-const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom): string => {
-  const rec = isZoom ? response.weighting[0] : response.weighting;
-  return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-    rec?.beam_size.beam_maj_scaled,
-    rec?.beam_size.beam_min_scaled,
-    LOW_BEAM_SIZE_PRECISION
-  );
+// SARAH
+const getWeightedSensitivityLOW = (
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean,
+  isCustom: boolean
+) => {
+  console.log('::: in getWeightedSensitivityLOW');
+  console.log('::: response', response);
+  const sensitivity = isZoom
+    ? response.calculate.data[0].spectral_sensitivity?.value
+    : response?.calculate?.data?.continuum_sensitivity?.value;
+  const factor = getWeightingFactor(response, isZoom, isCustom);
+  return sensitivity * factor;
+};
+
+const getBeamSizeLOW = (
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean,
+  isCustom: boolean
+): string => {
+  if (isCustom) {
+    return 'N/A';
+  } else {
+    const rec = isZoom ? response.weighting[0] : response.weighting;
+    return sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+      rec?.beam_size.beam_maj_scaled,
+      rec?.beam_size.beam_min_scaled,
+      LOW_BEAM_SIZE_PRECISION
+    );
+  }
 };
 
 /* -------------- */
 
 const getSpectralWeightedSensitivityLOW = (
   response: SensitivityCalculatorAPIResponseLow,
-  isZoom: boolean
+  isZoom: boolean,
+  isCustom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine;
-  const calc = isZoom ? response.calculate?.data[0] : response.calculate?.data;
-  return (calc?.spectral_sensitivity?.value ?? 0) * (rec?.weighting_factor ?? 1);
+  if (isCustom) {
+    return isZoom
+      ? response.calculate?.data[0].spectral_sensitivity.value
+      : response.calculate.data.spectral_sensitivity?.value;
+  } else {
+    const rec = isZoom ? response.weighting[0] : response.weightingLine;
+    const calc = isZoom ? response.calculate?.data[0] : response.calculate?.data;
+    return (calc?.spectral_sensitivity?.value ?? 0) * (rec?.weighting_factor ?? 1); // TODO check to remove '??'
+  }
 };
 
-const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow, isZoom: boolean) => {
-  const rec = isZoom ? response.weighting[0]?.beam_size : response.weightingLine?.beam_size;
-  const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
-    rec?.beam_maj_scaled,
-    rec?.beam_min_scaled,
-    LOW_BEAM_SIZE_PRECISION
-  );
-  return formattedBeams;
+const getSpectralBeamSizeLOW = (
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean,
+  isCustom: boolean
+) => {
+  if (isCustom) {
+    return 'N/A';
+  } else {
+    const rec = isZoom ? response.weighting[0]?.beam_size : response.weightingLine?.beam_size;
+    const formattedBeams = sensCalHelpers.format.convertBeamValueDegreesToDisplayValue(
+      rec?.beam_maj_scaled,
+      rec?.beam_min_scaled,
+      LOW_BEAM_SIZE_PRECISION
+    );
+    return formattedBeams;
+  }
 };
 
 const getSpectralSurfaceBrightnessLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   sense: number,
-  isZoom: boolean
+  isZoom: boolean,
+  isCustom: boolean
 ) => {
-  const rec = isZoom ? response.weighting[0] : response.weightingLine;
-  return rec
-    ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor)
-    : { value: 0, unit: '' };
+  if (isCustom) {
+    return { value: 'N/A', unit: '' };
+  } else {
+    const rec = isZoom ? response.weighting[0] : response.weightingLine;
+    return rec
+      ? sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor)
+      : { value: 0, unit: '' };
+  }
 };
 
 /******************************************* MID ********************************************/
@@ -378,7 +430,7 @@ const getContinuumIntegrationTimeMID = (
   response: {
     calculate: { data: { spectral_integration_time: any; continuum_integration_time: any } };
   },
-  isZoom: Boolean
+  isZoom: boolean
 ): ValueUnitPair => {
   const integrationTime = isZoom
     ? response.calculate?.data[0]?.spectral_integration_time
@@ -440,8 +492,12 @@ const getSpectralSurfaceBrightnessMID = (
 const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
   sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise, weightedSensitivity);
 
-const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
-  const rawConfusionNoise = getRawConfusionNoise(response, isZoom);
+const getConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean,
+  isCustom: boolean
+): number => {
+  const rawConfusionNoise = getRawConfusionNoise(response, isZoom, isCustom);
   return rawConfusionNoise
     ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise))
     : 0;
@@ -449,25 +505,39 @@ const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom
 
 const getSpectralConfusionNoise = (
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
-  isZoom: Boolean
+  isZoom: boolean,
+  isCustom: boolean
 ) => {
-  const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response, isZoom);
+  const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response, isZoom, isCustom);
   return rawSpectralConfusionNoise
     ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise))
     : 0;
 };
 
-const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow, isZoom): number => {
-  return isZoom
-    ? response.weighting[0]?.confusion_noise?.value
-    : response.weighting?.confusion_noise?.value;
+const getRawConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow,
+  isZoom: boolean,
+  isCustom: boolean
+): number => {
+  if (isCustom) {
+    return 0;
+  } else {
+    return isZoom
+      ? response.weighting[0]?.confusion_noise?.value
+      : response.weighting?.confusion_noise?.value;
+  }
 };
 
 const getSpectralRawConfusionNoise = (
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
-  isZoom
+  isZoom: boolean,
+  isCustom: boolean
 ): number => {
-  return isZoom
-    ? response.weighting[0]?.confusion_noise?.value
-    : response.weightingLine?.confusion_noise?.value;
+  if (isCustom) {
+    return 0;
+  } else {
+    return isZoom
+      ? response.weighting[0]?.confusion_noise?.value
+      : response.weightingLine?.confusion_noise?.value;
+  }
 };
