@@ -293,6 +293,11 @@ export const OB_SUBARRAY_AA4_13 = 10;
 export const OB_SUBARRAY_AA4_CORE = 11;
 export const OB_SUBARRAY_CUSTOM = 20;
 
+export const SECOND_LABEL = 's';
+export const MILLISECOND_LABEL = 'ms';
+export const NANOSECOND_LABEL = 'us';
+export const MICROSECOND_LABEL = 'ns';
+
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
@@ -684,10 +689,10 @@ export const OBSERVATION = {
         { label: 'd', value: 1 },
         { label: 'h', value: 2 },
         { label: 'min', value: 3 },
-        { label: 's', value: 4 },
-        { label: 'ms', value: 5 },
-        { label: 'us', value: 6 },
-        { label: 'ns', value: 7 }
+        { label: SECOND_LABEL, value: 4 },
+        { label: MILLISECOND_LABEL, value: 5 },
+        { label: NANOSECOND_LABEL, value: 6 },
+        { label: MICROSECOND_LABEL, value: 7 }
       ]
     },
     {

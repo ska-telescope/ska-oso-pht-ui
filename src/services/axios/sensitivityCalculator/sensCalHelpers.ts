@@ -1,4 +1,11 @@
-import { FREQUENCY_UNITS, OBSERVATION } from '../../../utils/constants';
+import {
+  FREQUENCY_UNITS,
+  MICROSECOND_LABEL,
+  MILLISECOND_LABEL,
+  NANOSECOND_LABEL,
+  OBSERVATION,
+  SECOND_LABEL
+} from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
@@ -222,7 +229,6 @@ const sensCalHelpers = {
     /**
      * Converts a time in seconds to a sensible unit,
      * e.g. display 1 ms instead of 0.001 s
-     *
      * **/
     convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): ValueUnitPair {
       console.log('::: in convertTimeToDisplayUnit', time);
@@ -234,24 +240,24 @@ const sensCalHelpers = {
       if (timeS > 1e-1) {
         return {
           value: Number(timeS.toFixed(precision)),
-          unit: 's' // TODO move units in CONSTANTS
+          unit: SECOND_LABEL
         };
       }
       if (timeS > 1e-4) {
         return {
           value: Number((timeS * 1e3).toFixed(precision)),
-          unit: 'ms' // TODO move units in CONSTANTS
+          unit: MILLISECOND_LABEL
         };
       }
       if (timeS > 1e-7) {
         return {
           value: Number((timeS * 1e6).toFixed(precision)),
-          unit: 'us' // TODO move units in CONSTANTS
+          unit: NANOSECOND_LABEL
         };
       }
       return {
         value: Number((timeS * 1e9).toFixed(precision)),
-        unit: 'ns' // TODO move units in CONSTANTS
+        unit: MICROSECOND_LABEL
       };
     }
   },
