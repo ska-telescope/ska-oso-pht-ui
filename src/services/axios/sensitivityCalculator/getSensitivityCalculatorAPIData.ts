@@ -41,18 +41,14 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output: any = await fetchSensCalc(observation, target);
-    console.log('JUST before checking errors');
-    console.log('output', output);
     if ('error' in output) {
       console.log('error in output', output);
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
-    console.log('CHECK1');
     if (output['calculate']['error'] && output['calculate']['error']['detail']) {
       console.log('error in calculate output', output);
       return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
     }
-    console.log('CHECK2');
     if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
       console.log('error in weighting output', output);
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);

@@ -230,10 +230,16 @@ const sensCalHelpers = {
      * Converts a time in seconds to a sensible unit,
      * e.g. display 1 ms instead of 0.001 s
      * **/
-    convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): ValueUnitPair {
-      if (time.unit !== 's') {
+    convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
+      if (time?.unit !== 's') {
         // TODO make this function smarter so it can handle all units
         throw Error('Only seconds supported currently in convertTimeToDisplayUnit');
+      }
+      if (time.value.toString() === 'Infinity') {
+        return {
+          value: 'Infinity',
+          unit: SECOND_LABEL
+        };
       }
       const timeS = Number(time.value);
       if (timeS > 1e-1) {

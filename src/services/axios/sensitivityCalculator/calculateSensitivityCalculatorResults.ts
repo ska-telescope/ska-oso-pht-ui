@@ -42,6 +42,10 @@ export default function calculateSensitivityCalculatorResults(
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isCustomSubarray = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
+  const getCustomResultDisplayValue = (): any => {
+    return { value: 'N/A', units: '' };
+  };
+
   const weightedSensitivity = isLow()
     ? getWeightedSensitivityLOW(response, isZoom(), isCustomSubarray())
     : getWeightedSensitivityMid(response, isZoom(), observation);
@@ -78,7 +82,7 @@ export default function calculateSensitivityCalculatorResults(
     isCustom
   ): ValueUnitPair => {
     if (isCustom) {
-      return { value: 0, unit: '' };
+      return getCustomResultDisplayValue();
     } else {
       const rec = isZoom ? response?.weighting[0] : response?.weighting;
       const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
@@ -117,10 +121,6 @@ export default function calculateSensitivityCalculatorResults(
       unit: suppliedSensitivityUnits.find(u => u.value === observation.supplied.units)?.label
     };
     return displayValue;
-  };
-
-  const getCustomResultDisplayValue = (): any => {
-    return { value: 'N/A', units: '' };
   };
 
   const confusionNoiseDisplay = isCustomSubarray()
