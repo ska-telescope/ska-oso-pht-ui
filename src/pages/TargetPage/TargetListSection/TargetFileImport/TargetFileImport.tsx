@@ -173,14 +173,20 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     >
       <Grid item xs={7}>
         <FileUpload
-          chooseLabel={t('uploadCsvBtn.label')}
-          chooseFileTypes=".csv"
-          clearLabel={t('clearBtn.label')}
-          clearToolTip={t('clearBtn.toolTip')}
+          chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+          clearToolTip={t('clearBtn.tooltip')}
+          dropzone
+          dropzoneAccepted={{
+            'application/csv': ['.csv']
+          }}
+          dropzoneIcons={false}
+          dropzonePrompt={t('dropzone.prompt')}
+          dropzonePreview={false}
           direction="row"
           maxFileWidth={UPLOAD_MAX_WIDTH_CSV}
           testId="csvUpload"
           uploadFunction={validateUploadCsv}
+          uploadToolTip={t('pdfUpload.science.tooltip.upload')}
           status={uploadButtonStatus}
         />
       </Grid>

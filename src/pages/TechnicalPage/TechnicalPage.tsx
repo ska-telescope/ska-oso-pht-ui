@@ -5,6 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 import { Proposal } from '../../utils/types/proposal';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
@@ -28,12 +29,14 @@ export default function TechnicalPage() {
   const { t } = useTranslation('pht');
   const {
     application,
+    helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
+  const [originalFile, setOriginalFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -170,6 +173,11 @@ export default function TechnicalPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    if (getProposal()?.technicalPDF?.documentId) {
+      setCurrentFile(getProposal()?.technicalPDF?.documentId);
+      setOriginalFile(getProposal()?.technicalPDF?.documentId + t('fileType.pdf'));
+    }
+    helpComponent(t('page.' + PAGE + '.help'));
   }, []);
 
   React.useEffect(() => {
@@ -183,60 +191,68 @@ export default function TechnicalPage() {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
 
+  const uploadSuffix = () => (
+    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid item>
+        {getProposal().technicalPDF?.isUploadedPdf && (
+          <PDFPreviewButton
+            title="pdfUpload.technical.label.preview"
+            toolTip="pdfUpload.technical.tooltip.preview"
+            action={previewSignedUrl}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        {getProposal().technicalPDF?.isUploadedPdf && (
+          <DownloadButton
+            title="pdfUpload.technical.label.download"
+            toolTip="pdfUpload.technical.tooltip.download"
+            action={downloadPDFToSignedUrl}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        {getProposal().technicalPDF?.isUploadedPdf && (
+          <DeleteButton
+            title={'pdfUpload.technical.label.delete'}
+            toolTip="pdfUpload.technical.tooltip.delete"
+            action={deletePdfUsingSignedUrl}
+          />
+        )}
+      </Grid>
+    </Grid>
+  );
+
   return (
     <Shell page={PAGE}>
-      {!getProposal().technicalPDF?.isUploadedPdf && (
-        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-          <Grid item xs={6}>
-            <FileUpload
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.technical.label.choose')}
-              chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
-              clearLabel={t('pdfUpload.technical.label.clear')}
-              clearToolTip={t('pdfUpload.technical.tooltip.clear')}
-              direction="row"
-              file={currentFile}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-              status={getProposal().technicalLoadStatus}
-            />
-          </Grid>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid item xs={6}>
+          <FileUpload
+            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+            clearToolTip={t('pdfUpload.technical.tooltip.clear')}
+            dropzone
+            dropzoneAccepted={{
+              'application/pdf': ['.pdf']
+            }}
+            dropzoneIcons={false}
+            dropzonePrompt={t('dropzone.prompt')}
+            dropzonePreview={false}
+            direction="row"
+            file={originalFile}
+            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+            setFile={setFile}
+            setStatus={setUploadStatus}
+            testId="fileUpload"
+            uploadFunction={uploadPdftoSignedUrl}
+            uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
+            status={getProposal().technicalLoadStatus}
+            suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
+          />
         </Grid>
-      )}
-      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
-        <Grid item>
-          {getProposal().technicalPDF?.isUploadedPdf && (
-            <PDFPreviewButton
-              title="pdfUpload.technical.label.preview"
-              toolTip="pdfUpload.technical.tooltip.preview"
-              action={previewSignedUrl}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {getProposal().technicalPDF?.isUploadedPdf && (
-            <DownloadButton
-              title="pdfUpload.technical.label.download"
-              toolTip="pdfUpload.technical.tooltip.download"
-              action={downloadPDFToSignedUrl}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {getProposal().technicalPDF?.isUploadedPdf && (
-            <DeleteButton
-              title={'pdfUpload.technical.label.delete'}
-              toolTip={'pdfDelete.technical.toolTip'}
-              action={deletePdfUsingSignedUrl}
-            />
-          )}
+        <Grid item pt={4} xs={4}>
+          <HelpPanel />
         </Grid>
       </Grid>
-
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
     </Shell>
   );

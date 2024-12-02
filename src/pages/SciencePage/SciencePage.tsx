@@ -10,11 +10,12 @@ import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUr
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 
-import DownloadIcon from '../../components/icon/downloadIcon/downloadIcon';
-import PDFIcon from '../../components/icon/pdfIcon/pdfIcon';
+import DeleteButton from '../../components/button/Delete/Delete';
+import DownloadButton from '../../components/button/Download/Download';
+import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import Shell from '../../components/layout/Shell/Shell';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
@@ -28,6 +29,7 @@ export default function SciencePage() {
   const { t } = useTranslation('pht');
   const {
     application,
+    helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent5
@@ -174,6 +176,7 @@ export default function SciencePage() {
       setCurrentFile(getProposal()?.sciencePDF?.documentId);
       setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
     }
+    helpComponent(t('page.' + PAGE + '.help'));
   }, []);
 
   React.useEffect(() => {
@@ -188,25 +191,31 @@ export default function SciencePage() {
   }, [validateToggle]);
 
   const uploadSuffix = () => (
-    <Grid spacing={1} container direction="row" alignItems="center" justifyContent="center">
+    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
       <Grid item>
-        {getProposal().sciencePDF?.isUploadedPdf && (
-          <PDFIcon toolTip="pdfUpload.science.tooltip.preview" onClick={previewSignedUrl} />
-        )}
-      </Grid>
-      <Grid item>
-        {getProposal().sciencePDF?.isUploadedPdf && (
-          <DownloadIcon
-            toolTip={t('pdfUpload.science.tooltip.download')}
-            onClick={downloadPDFToSignedUrl}
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <PDFPreviewButton
+            title="pdfUpload.science.label.preview"
+            toolTip="pdfUpload.science.tooltip.preview"
+            action={previewSignedUrl}
           />
         )}
       </Grid>
       <Grid item>
-        {getProposal().sciencePDF?.isUploadedPdf && (
-          <TrashIcon
-            toolTip={t('pdfUpload.science.tooltip.delete')}
-            onClick={deletePdfUsingSignedUrl}
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <DownloadButton
+            title="pdfUpload.science.label.download"
+            toolTip="pdfUpload.science.tooltip.download"
+            action={downloadPDFToSignedUrl}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <DeleteButton
+            title={'pdfUpload.science.label.delete'}
+            toolTip="pdfUpload.science.tooltip.delete"
+            action={deletePdfUsingSignedUrl}
           />
         )}
       </Grid>
@@ -224,6 +233,7 @@ export default function SciencePage() {
             dropzoneAccepted={{
               'application/pdf': ['.pdf']
             }}
+            dropzoneIcons={false}
             dropzonePrompt={t('dropzone.prompt')}
             dropzonePreview={false}
             direction="row"
@@ -235,8 +245,11 @@ export default function SciencePage() {
             uploadFunction={uploadPdftoSignedUrl}
             uploadToolTip={t('pdfUpload.science.tooltip.upload')}
             status={getProposal().scienceLoadStatus}
-            suffix={getProposal()?.sciencePDF?.documentId ? uploadSuffix() : <></>}
+            suffix={uploadSuffix()}
           />
+        </Grid>
+        <Grid item pt={4} xs={4}>
+          <HelpPanel />
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />

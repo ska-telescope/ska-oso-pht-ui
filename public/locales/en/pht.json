@@ -848,7 +848,8 @@
       "titleShort": "Science",
       "label": "Science justification",
       "desc": "Upload a Science justification for this proposal in a portable document format (pdf).",
-      "pageError": "The SCIENCE JUSTIFICATION page is not complete"
+      "pageError": "The SCIENCE JUSTIFICATION page is not complete",
+      "help": "This is help for the Science Page"
     },
     "4": {
       "status": "Target",
@@ -871,7 +872,8 @@
       "titleShort": "Technical",
       "label": "Technical justification",
       "desc": "Upload a Technical justification for this proposal in a portable document format (pdf).",
-      "pageError": "The TECHNICAL JUSTIFICATION page is not complete"
+      "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
+      "help": "This is help for the Technical Page"
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
