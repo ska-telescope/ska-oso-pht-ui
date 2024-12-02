@@ -329,13 +329,6 @@ export default function ObservationEntry() {
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
     switch (obsBand) {
       case BAND_1:
-        console.log('subarray.. ', subarrayConfig);
-        console.log('lookup table.. ', OBSERVATION.CentralFrequencyOB1);
-        console.log(
-          'result of lookup.. ',
-          lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig)
-        );
-        //incorrect subarray config
         return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
         return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
