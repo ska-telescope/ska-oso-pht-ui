@@ -2,6 +2,7 @@ import React from 'react';
 import Latex from 'react-latex-next';
 import { t } from 'i18next';
 import 'katex/dist/katex.min.css';
+import { NOT_APPLICABLE } from '../utils/constants';
 
 export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
 
@@ -31,6 +32,9 @@ export const presentUnits = (inUnits: string) => {
 };
 
 export const presentValue = (inValue: string | number, eLabel?, fractionLength = 2) => {
+  if (inValue === NOT_APPLICABLE) {
+    return inValue;
+  }
   if (typeof inValue === 'string') {
     if (inValue.split(' ').length > 1) {
       return inValue;

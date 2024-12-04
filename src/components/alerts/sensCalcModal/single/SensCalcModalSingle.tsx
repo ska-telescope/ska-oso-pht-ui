@@ -4,7 +4,7 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { STATUS_INITIAL } from '../../../../utils/constants';
+import { NOT_APPLICABLE, STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { presentUnits, presentValue } from '../../../../utils/present';
 
@@ -34,14 +34,14 @@ export default function SensCalcModalSingle({
     if (eId === 'targetName') {
       return eValue;
     }
-    if (eValue === 'N/A') {
+    if (eValue === NOT_APPLICABLE) {
       return t('customArray.result');
     }
     return `${presentValue(eValue, eId)} `;
   };
 
   const PresentCustomUnitValue = (eUnits: any, eValue: string) =>
-    eValue === 'N/A' ? eUnits : presentUnits(eUnits);
+    eValue === NOT_APPLICABLE ? eUnits : presentUnits(eUnits);
 
   const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
     return (

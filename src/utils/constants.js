@@ -194,6 +194,7 @@ export const NAV = [
   '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
+export const NOT_APPLICABLE = 'N/A';
 
 export const PAGE_SRC_NET = 8;
 
