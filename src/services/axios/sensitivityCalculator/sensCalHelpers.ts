@@ -231,6 +231,7 @@ const sensCalHelpers = {
      * e.g. display 1 ms instead of 0.001 s
      * **/
     convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
+      console.log('::: convertTimeToDisplayUnit time', time);
       if (time?.unit !== 's') {
         // TODO make this function smarter so it can handle all units
         throw Error('Only seconds supported currently in convertTimeToDisplayUnit');

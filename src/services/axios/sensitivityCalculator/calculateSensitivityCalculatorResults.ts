@@ -402,25 +402,51 @@ const getSpectralWeightedSensitivityRawValueMid = (
   }
 };
 
+// SARAH
 const getContinuumIntegrationTimeMID = (response: {
   calculate: { data: { spectral_integration_time: any; continuum_integration_time: any } };
 }): ValueUnitPair => {
-  const integrationTime = isZoom()
-    ? response.calculate?.data[0]?.spectral_integration_time
-    : response.calculate?.data?.continuum_integration_time;
+  console.log('::: getContinuumIntegrationTimeMID response', response);
+  let integrationTime;
+  if (isCustomSubarray()) {
+    integrationTime = isZoom()
+      ? response.calculate?.data[0].spectral_integration_time
+      : response.calculate?.data.continuum_integration_time;
+    console.log('::: integrationTime, ', integrationTime);
+  } else {
+    integrationTime = isZoom()
+      ? response.calculate?.data[0]?.spectral_integration_time
+      : response.calculate?.data?.continuum_integration_time;
+  }
   return convertIntegrationTimeUnits(integrationTime);
 };
 
-const convertIntegrationTimeUnits = (integrationTime: ValueUnitPair): ValueUnitPair =>
-  sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime);
+const convertIntegrationTimeUnits = (integrationTime: ValueUnitPair): ValueUnitPair => {
+  console.log(
+    '::: sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime)',
+    sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime)
+  );
+  return sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime);
+};
 
+// SARAH CHECK
 const getSpectralIntegrationTimeMID = (
   response: SensitivityCalculatorAPIResponseMid
 ): ValueUnitPair => {
-  const integrationTime =
-    isCustomSubarray() || isZoom() // for custom array we only have 1 get calculate request for supplied sensitivity
+  console.log(
+    'getSpectralIntegrationTimeMID response.calculate?.data[0]?.spectral_integration_time',
+    response.calculate?.data[0]?.spectral_integration_time
+  );
+  let integrationTime;
+  if (isCustomSubarray()) {
+    integrationTime = isZoom()
+      ? response.calculate?.data[0]?.spectral_integration_time
+      : response.calculate?.data?.spectral_integration_time;
+  } else {
+    integrationTime = isZoom() // for custom array we only have 1 get calculate request for supplied sensitivity
       ? response.calculate?.data?.spectral_integration_time
       : response.calculateSpectral?.data?.spectral_integration_time;
+  }
   return convertIntegrationTimeUnits(integrationTime);
 };
 
