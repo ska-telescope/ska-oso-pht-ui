@@ -629,6 +629,7 @@ export default function ObservationPage() {
           observation={currObs}
           level={getLevel(currObs)}
           levelError={getError(currObs)}
+          isCustom={isCustom()}
         />
       )}
     </Shell>

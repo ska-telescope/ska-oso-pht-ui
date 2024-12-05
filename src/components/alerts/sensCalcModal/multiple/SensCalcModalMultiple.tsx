@@ -5,7 +5,11 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
-import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
+import {
+  NOT_APPLICABLE,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM
+} from '../../../../utils/constants';
 import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
@@ -15,6 +19,7 @@ interface SensCalcModalMultipleProps {
   observation: Observation;
   level: number;
   levelError: string;
+  isCustom: boolean;
 }
 
 const SIZE = 30;
@@ -25,7 +30,8 @@ export default function SensCalcModalMultiple({
   data,
   observation,
   level,
-  levelError
+  levelError,
+  isCustom
 }: SensCalcModalMultipleProps) {
   const handleClose = () => {
     onClose();
@@ -35,6 +41,19 @@ export default function SensCalcModalMultiple({
 
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+
+  const PresentCustomResultValue = (rec: any) => {
+    if (rec.field === 'targetName') {
+      return rec.value;
+    }
+    if (rec.value === NOT_APPLICABLE) {
+      return t('customArray.result');
+    }
+    return `${presentValue(rec.value, rec.field)} `;
+  };
+
+  const PresentCustomUnitValue = (rec: any) =>
+    rec.value === NOT_APPLICABLE ? rec.units : presentUnits(rec.units);
 
   let i = 0; // Just here so that the key warning is dealt with
   let headerNumber = 0;
@@ -55,8 +74,15 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = rec =>
-    rec ? presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units) : '';
+  const presentation = rec => {
+    if (rec) {
+      return isCustom
+        ? PresentCustomResultValue(rec) + ' ' + PresentCustomUnitValue(rec)
+        : presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units);
+    } else {
+      return '';
+    }
+  };
 
   const colTitle = {
     field: 'title',
