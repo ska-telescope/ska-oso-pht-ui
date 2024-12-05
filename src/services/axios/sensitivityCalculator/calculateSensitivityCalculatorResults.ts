@@ -42,7 +42,7 @@ const getCustomResultDisplayValue = (): any => {
 const isCustomSubarray = () => theObservation.subarray === OB_SUBARRAY_CUSTOM;
 const isLow = () => theObservation.telescope === TELESCOPE_LOW_NUM;
 const isZoom = () => theObservation.type === TYPE_ZOOM;
-const isSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
 
 const getSurfaceBrightnessSensitivity = (
@@ -60,17 +60,13 @@ const getSurfaceBrightnessSensitivity = (
 };
 
 const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
-  console.log('::: in convertSuppliedSensitivityToDisplayValue');
   const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
     item => item.value === SUPPLIED_TYPE_SENSITIVITY
   ).units;
-  console.log('::: suppliedSensitivityUnits', suppliedSensitivityUnits);
-  console.log('::: suppliedSensitivity', suppliedSensitivity);
   const displayValue = {
     value: suppliedSensitivity,
     unit: suppliedSensitivityUnits.find(u => u.value === theObservation.supplied.units)?.label
   };
-  console.log('displayValue', displayValue);
   return displayValue;
 };
 
@@ -182,20 +178,19 @@ const getWeightedSensitivityRawValueMid = (response: SensitivityCalculatorAPIRes
   const sensitivity = isZoom()
     ? response.calculate.data[0].continuum_sensitivity?.value
     : response?.calculate?.data?.continuum_sensitivity?.value;
-  if (!sensitivity) {
-    console.log('HERE');
-    return theObservation?.supplied.value; // for supplied sensitivity cases
-  }
   const factor = getWeightingFactor(response);
   return sensitivity * factor * 1e6;
 };
 
-const getWeightedSensitivityMid = (response: SensitivityCalculatorAPIResponseMid) => {
-  const weightedSensitivity = getWeightedSensitivityRawValueMid(response);
-  console.log('::: weightedSensitivity', weightedSensitivity);
-  return getWeightedSensitivityRawValueMid(response);
+const getSuppliedSensitivity = () => {
+  return theObservation?.supplied.value;
 };
-console.log('getWeightedSensitivityMid', getWeightedSensitivityMid);
+
+const getWeightedSensitivityMid = (response: SensitivityCalculatorAPIResponseMid) => {
+  return isSuppliedSensitivity()
+    ? getSuppliedSensitivity()
+    : getWeightedSensitivityRawValueMid(response);
+};
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid): string => {
   if (isCustomSubarray()) {
@@ -217,8 +212,6 @@ const getSpectralWeightedSensitivityRawValueMid = (
     return theObservation?.supplied.value; // for supplied sensitivity cases
   }
   if (isCustomSubarray()) {
-    console.log('test0 recCalc', recCalc);
-    console.log('test', recCalc.spectral_sensitivity?.value! * 1e6);
     return recCalc.spectral_sensitivity?.value! * 1e6;
   }
   const recWeightLine = isZoom() ? response?.weighting[0] : response?.weightingLine;
@@ -242,7 +235,6 @@ const getContinuumIntegrationTimeMID = (response: {
 };
 
 const convertIntegrationTimeUnits = (integrationTime: ValueUnitPair): ValueUnitPair => {
-  console.log('::: convertIntegrationTimeUnits integrationTime', integrationTime);
   return sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime);
 };
 
@@ -351,18 +343,17 @@ function getResultValues(response): RawResults {
 
   const beamSize = isLow() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
 
-  const continuumIntegrationTime = isSensitivity()
+  const continuumIntegrationTime = isSuppliedSensitivity()
     ? getContinuumIntegrationTimeMID(response)
     : { value: 0, unit: '' };
 
-  const spectralIntegrationTime: any = isSensitivity()
+  const spectralIntegrationTime: any = isSuppliedSensitivity()
     ? getSpectralIntegrationTimeMID(response)
     : { value: 0, unit: '' };
 
   const spectralWeightedSensitivity = isLow()
     ? getSpectralWeightedSensitivityLOW(response)
     : getSpectralWeightedSensitivityMID(response);
-  console.log('::: spectralWeightedSensitivity', spectralWeightedSensitivity);
 
   const spectralConfusionNoise = getSpectralConfusionNoise(response);
 
@@ -405,7 +396,7 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
     ? getCustomResultDisplayValue()
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(results.confusionNoise);
 
-  const weightedSensitivityDisplay = isSensitivity()
+  const weightedSensitivityDisplay = isSuppliedSensitivity()
     ? convertSuppliedSensitivityToDisplayValue(results.weightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(results.weightedSensitivity);
 
@@ -425,8 +416,7 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
         results.spectralConfusionNoise
       );
 
-  console.log('results.spectralWeightedSensitivity', results.spectralWeightedSensitivity);
-  const spectralWeightedSensitivityDisplay = isSensitivity()
+  const spectralWeightedSensitivityDisplay = isSuppliedSensitivity()
     ? convertSuppliedSensitivityToDisplayValue(results.spectralWeightedSensitivity)
     : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
         results.spectralWeightedSensitivity
@@ -459,13 +449,10 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
 }
 
 function getFinalIndividualResults(results: DisplayResults): FinalIndividualResults {
-  console.log('::: in getFinalIndividualResults');
-  console.log('::: results', results);
   const observationTypeLabel: string = OBS_TYPES[theObservation.type];
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
     ?.sensCalcResultsLabel;
 
-  console.log('spectralWeightedSensitivityDisplay', results.spectralWeightedSensitivityDisplay);
   const results1 = {
     field: `${observationTypeLabel}SensitivityWeighted`,
     value: isZoom()
@@ -493,13 +480,13 @@ function getFinalIndividualResults(results: DisplayResults): FinalIndividualResu
     units: results.beamSizeDisplay?.unit
   };
   const results5 = {
-    field: isSensitivity()
+    field: isSuppliedSensitivity()
       ? `${observationTypeLabel}IntegrationTime`
       : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-    value: isSensitivity()
+    value: isSuppliedSensitivity()
       ? results.continuumIntegrationTime?.value.toString()
       : results.sbs?.value.toString(),
-    units: isSensitivity() ? results.continuumIntegrationTime?.unit : results.sbs?.unit
+    units: isSuppliedSensitivity() ? results.continuumIntegrationTime?.unit : results.sbs?.unit
   };
   const results6 = {
     field: 'spectralSensitivityWeighted',
@@ -522,11 +509,15 @@ function getFinalIndividualResults(results: DisplayResults): FinalIndividualResu
     units: results.spectralBeamSizeDisplay?.unit
   };
   const results10 = {
-    field: isSensitivity() ? 'spectralIntegrationTime' : 'spectralSurfaceBrightnessSensitivity',
-    value: isSensitivity()
+    field: isSuppliedSensitivity()
+      ? 'spectralIntegrationTime'
+      : 'spectralSurfaceBrightnessSensitivity',
+    value: isSuppliedSensitivity()
       ? results.spectralIntegrationTime?.value.toString()
       : results.spectralSbs?.value.toString(),
-    units: isSensitivity() ? results.spectralIntegrationTime?.unit : results.spectralSbs?.unit
+    units: isSuppliedSensitivity()
+      ? results.spectralIntegrationTime?.unit
+      : results.spectralSbs?.unit
   };
   const results11 = {
     field: suppliedType,
@@ -566,22 +557,22 @@ function getFinalResults(target, results: any): SensCalcResults {
   };
 
   // Section 1
-  if (!isSensitivity()) {
+  if (!isSuppliedSensitivity()) {
     theResults.section1.push(individualresults.results1);
   }
   theResults.section1.push(individualresults.results2);
-  if (!isSensitivity()) {
+  if (!isSuppliedSensitivity()) {
     theResults.section1.push(individualresults.results3);
   }
   theResults.section1.push(individualresults.results4);
   theResults.section1.push(individualresults.results5);
   // Section 2
   if (isContinuum()) {
-    if (!isSensitivity()) {
+    if (!isSuppliedSensitivity()) {
       theResults.section2.push(individualresults.results6);
     }
     theResults.section2.push(individualresults.results7);
-    if (!isSensitivity()) {
+    if (!isSuppliedSensitivity()) {
       theResults.section2.push(individualresults.results8);
     }
     theResults.section2.push(individualresults.results9);
