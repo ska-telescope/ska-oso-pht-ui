@@ -1,6 +1,6 @@
 import sensCalHelpers from './sensCalHelpers';
 import Observation from '../../../utils/types/observation';
-import { SensCalcResults } from '../../../utils/types/sensCalcResults';
+import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   LOW_BEAM_SIZE_PRECISION,
   MID_BEAM_SIZE_PRECISION,
@@ -34,6 +34,8 @@ this is correct but returns different values than when set as zoom
 
 let theObservation: Observation = null;
 
+/********************************************* COMMON ***********************************************/
+
 const getCustomResultDisplayValue = (): any => {
   return { value: NOT_APPLICABLE, units: '' };
 };
@@ -43,229 +45,78 @@ const isZoom = () => theObservation.type === TYPE_ZOOM;
 const isSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
 
-export default function calculateSensitivityCalculatorResults(
-  response: any,
-  observation: Observation,
-  target: Target
-): SensCalcResults {
-  theObservation = observation;
+const getSurfaceBrightnessSensitivity = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
+  sense: number
+): ValueUnitPair => {
+  if (isCustomSubarray()) {
+    return getCustomResultDisplayValue();
+  }
+  const rec = isZoom() ? response?.weighting[0] : response?.weighting;
+  const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
+  return rec
+    ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
+    : { value: 0, unit: '' }; // TODO check if condition needed
+};
 
-  const weightedSensitivity = isLow()
-    ? getWeightedSensitivityLOW(response)
-    : getWeightedSensitivityMid(response);
+const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
+  console.log('::: in convertSuppliedSensitivityToDisplayValue');
+  const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
+    item => item.value === SUPPLIED_TYPE_SENSITIVITY
+  ).units;
+  console.log('::: suppliedSensitivityUnits', suppliedSensitivityUnits);
+  console.log('::: suppliedSensitivity', suppliedSensitivity);
+  const displayValue = {
+    value: suppliedSensitivity,
+    unit: suppliedSensitivityUnits.find(u => u.value === theObservation.supplied.units)?.label
+  };
+  console.log('displayValue', displayValue);
+  return displayValue;
+};
 
-  const confusionNoise = getConfusionNoise(response);
+const getWeightingFactor = (response: SensitivityCalculatorAPIResponseLow): number => {
+  if (isCustomSubarray()) {
+    return 1; // no weighting response for Custom
+  }
+  return isZoom() ? response.weighting[0]?.weighting_factor : response.weighting?.weighting_factor;
+};
 
-  const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
-  const beamSize = isLow() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
+const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
+  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise, weightedSensitivity);
 
-  const continuumIntegrationTime = isSensitivity()
-    ? getContinuumIntegrationTimeMID(response)
-    : { value: 0, unit: '' };
-  const spectralIntegrationTime: any = isSensitivity()
-    ? getSpectralIntegrationTimeMID(response)
-    : { value: 0, unit: '' };
+const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow): number => {
+  const rawConfusionNoise = getRawConfusionNoise(response);
+  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise));
+};
 
-  const spectralWeightedSensitivity = isLow()
-    ? getSpectralWeightedSensitivityLOW(response)
-    : getSpectralWeightedSensitivityMID(response);
-
-  const spectralConfusionNoise = getSpectralConfusionNoise(response);
-
-  const spectralTotalSensitivity = getSensitivity(
-    spectralConfusionNoise,
-    spectralWeightedSensitivity
+const getSpectralConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
+) => {
+  const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response);
+  return sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(
+    Number(rawSpectralConfusionNoise)
   );
+};
 
-  const getSurfaceBrightnessSensitivity = (
-    response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
-    sense: number
-  ): ValueUnitPair => {
-    if (isCustomSubarray()) {
-      return getCustomResultDisplayValue();
-    }
-    const rec = isZoom() ? response?.weighting[0] : response?.weighting;
-    const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
-    return rec
-      ? sensCalHelpers.format.convertKelvinsToDisplayValue(rawSurfaceBrightnessSensitivity)
-      : { value: 0, unit: '' };
-  };
-
-  const sbs = getSurfaceBrightnessSensitivity(
-    response,
-    isZoom() ? spectralTotalSensitivity : totalSensitivity
-  );
-
-  const spectralSbs = isLow()
-    ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity)
-    : getSpectralSurfaceBrightnessMID(response, spectralTotalSensitivity);
-
-  const spectralBeamSize = isLow()
-    ? getSpectralBeamSizeLOW(response)
-    : getSpectralBeamSizeMID(response);
-
-  const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) => {
-    const suppliedSensitivityUnits = OBSERVATION.Supplied.find(
-      item => item.value === SUPPLIED_TYPE_SENSITIVITY
-    ).units;
-    const displayValue = {
-      value: suppliedSensitivity,
-      unit: suppliedSensitivityUnits.find(u => u.value === theObservation.supplied.units)?.label
-    };
-    return displayValue;
-  };
-
-  const confusionNoiseDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(confusionNoise);
-  const weightedSensitivityDisplay = isSensitivity()
-    ? convertSuppliedSensitivityToDisplayValue(weightedSensitivity)
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(weightedSensitivity);
-  const totalSensitivityDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
-        isZoom() ? spectralTotalSensitivity : totalSensitivity
-      );
-  const beamSizeDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : { value: beamSize, units: 'arcsec2' };
-
-  const spectralConfusionNoiseDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralConfusionNoise);
-
-  const spectralWeightedSensitivityDisplay = isSensitivity()
-    ? convertSuppliedSensitivityToDisplayValue(spectralWeightedSensitivity)
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralWeightedSensitivity);
-
-  const spectralTotalSensitivityDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(spectralTotalSensitivity);
-  const spectralBeamSizeDisplay = isCustomSubarray()
-    ? getCustomResultDisplayValue()
-    : { value: spectralBeamSize, units: 'arcsec2' };
-
-  const observationTypeLabel: string = OBS_TYPES[theObservation.type];
-
-  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
-    ?.sensCalcResultsLabel;
-
-  const results1 = {
-    field: `${observationTypeLabel}SensitivityWeighted`,
-    value: isZoom()
-      ? spectralWeightedSensitivityDisplay?.value.toString()
-      : weightedSensitivityDisplay?.value.toString(),
-    units: weightedSensitivityDisplay?.unit
-  };
-
-  const results2 = {
-    field: `${observationTypeLabel}ConfusionNoise`,
-    value: isZoom()
-      ? spectralConfusionNoiseDisplay?.value.toString()
-      : confusionNoiseDisplay?.value.toString(),
-    units: confusionNoiseDisplay?.unit
-  };
-
-  const results3 = {
-    field: `${observationTypeLabel}TotalSensitivity`,
-    value: isZoom()
-      ? spectralTotalSensitivityDisplay?.value.toString()
-      : totalSensitivityDisplay?.value.toString(),
-    units: totalSensitivityDisplay?.unit
-  };
-
-  const results4 = {
-    field: `${observationTypeLabel}SynthBeamSize`,
-    value: beamSizeDisplay?.value,
-    units: beamSizeDisplay?.units
-  };
-
-  const results5 = {
-    field: isSensitivity()
-      ? `${observationTypeLabel}IntegrationTime`
-      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
-    value: isSensitivity() ? continuumIntegrationTime?.value.toString() : sbs?.value.toString(),
-    units: isSensitivity() ? continuumIntegrationTime?.unit : sbs?.unit
-  };
-
-  const results6 = {
-    field: 'spectralSensitivityWeighted',
-    value: spectralWeightedSensitivityDisplay.value.toString(),
-    units: spectralWeightedSensitivityDisplay.unit // TODO set correct unit when using supplied sensitivity
-  };
-
-  const results7 = {
-    field: 'spectralConfusionNoise',
-    value: spectralConfusionNoiseDisplay?.value.toString(),
-    units: spectralConfusionNoiseDisplay?.unit
-  };
-
-  const results8 = {
-    field: 'spectralTotalSensitivity',
-    value: spectralTotalSensitivityDisplay.value.toString(),
-    units: spectralTotalSensitivityDisplay.unit
-  };
-
-  const results9 = {
-    field: 'spectralSynthBeamSize',
-    value: spectralBeamSizeDisplay?.value,
-    units: spectralBeamSizeDisplay?.units
-  };
-
-  const results10 = {
-    field: isSensitivity() ? 'spectralIntegrationTime' : 'spectralSurfaceBrightnessSensitivity',
-    value: isSensitivity()
-      ? spectralIntegrationTime?.value.toString()
-      : spectralSbs?.value.toString(),
-    units: isSensitivity() ? spectralIntegrationTime?.unit : spectralSbs?.unit
-  };
-
-  const results11 = {
-    field: suppliedType,
-    value: theObservation.supplied.value.toString(),
-    units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-      u => u.value === theObservation.supplied.units
-    )?.label
-  };
-
-  const theResults: SensCalcResults = {
-    id: target.id,
-    title: target.name,
-    statusGUI: STATUS_OK,
-    section1: [],
-    ...(isContinuum() && {
-      section2: []
-    }),
-    section3: [results11]
-  };
-
-  // Section 1
-  if (!isSensitivity()) {
-    theResults.section1.push(results1);
+const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow): number => {
+  if (isCustomSubarray()) {
+    return 0;
   }
-  theResults.section1.push(results2);
-  if (!isSensitivity()) {
-    theResults.section1.push(results3);
-  }
-  theResults.section1.push(results4);
-  theResults.section1.push(results5);
-  // Section 2
-  if (isContinuum()) {
-    if (!isSensitivity()) {
-      theResults.section2.push(results6);
-    }
-    theResults.section2.push(results7);
-    if (!isSensitivity()) {
-      theResults.section2.push(results8);
-    }
-    theResults.section2.push(results9);
-    theResults.section2.push(results10);
-  }
+  return isZoom()
+    ? response.weighting[0]?.confusion_noise?.value
+    : response.weighting?.confusion_noise?.value;
+};
 
-  console.log('THE RESULTS', theResults);
-
-  return theResults;
-}
+const getSpectralRawConfusionNoise = (
+  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
+): number => {
+  if (isCustomSubarray()) {
+    return 0;
+  }
+  return isZoom()
+    ? response.weighting[0]?.confusion_noise?.value
+    : response.weightingLine?.confusion_noise?.value;
+};
 
 /******************************************* LOW ********************************************/
 
@@ -288,8 +139,6 @@ const getBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow): string =
     LOW_BEAM_SIZE_PRECISION
   );
 };
-
-/* -------------- */
 
 const getSpectralWeightedSensitivityLOW = (response: SensitivityCalculatorAPIResponseLow) => {
   if (isCustomSubarray()) {
@@ -333,17 +182,20 @@ const getWeightedSensitivityRawValueMid = (response: SensitivityCalculatorAPIRes
   const sensitivity = isZoom()
     ? response.calculate.data[0].continuum_sensitivity?.value
     : response?.calculate?.data?.continuum_sensitivity?.value;
-  const factor = getWeightingFactor(response);
-  if (sensitivity) {
-    return sensitivity * factor * 1e6;
-  } else {
-    return theObservation?.supplied.value;
+  if (!sensitivity) {
+    console.log('HERE');
+    return theObservation?.supplied.value; // for supplied sensitivity cases
   }
+  const factor = getWeightingFactor(response);
+  return sensitivity * factor * 1e6;
 };
 
 const getWeightedSensitivityMid = (response: SensitivityCalculatorAPIResponseMid) => {
+  const weightedSensitivity = getWeightedSensitivityRawValueMid(response);
+  console.log('::: weightedSensitivity', weightedSensitivity);
   return getWeightedSensitivityRawValueMid(response);
 };
+console.log('getWeightedSensitivityMid', getWeightedSensitivityMid);
 
 const getBeamSizeMID = (response: SensitivityCalculatorAPIResponseMid): string => {
   if (isCustomSubarray()) {
@@ -361,14 +213,16 @@ const getSpectralWeightedSensitivityRawValueMid = (
   response: SensitivityCalculatorAPIResponseMid
 ) => {
   const recCalc = isZoom() ? response?.calculate?.data[0] : response?.calculate?.data;
+  if (!recCalc?.spectral_sensitivity?.value) {
+    return theObservation?.supplied.value; // for supplied sensitivity cases
+  }
   if (isCustomSubarray()) {
+    console.log('test0 recCalc', recCalc);
+    console.log('test', recCalc.spectral_sensitivity?.value! * 1e6);
     return recCalc.spectral_sensitivity?.value! * 1e6;
   }
   const recWeightLine = isZoom() ? response?.weighting[0] : response?.weightingLine;
-  if (recCalc?.spectral_sensitivity?.value) {
-    return recCalc.spectral_sensitivity?.value! * recWeightLine?.weighting_factor * 1e6;
-  }
-  return theObservation?.supplied.value;
+  return recCalc.spectral_sensitivity?.value! * recWeightLine?.weighting_factor * 1e6;
 };
 
 const getContinuumIntegrationTimeMID = (response: {
@@ -388,6 +242,7 @@ const getContinuumIntegrationTimeMID = (response: {
 };
 
 const convertIntegrationTimeUnits = (integrationTime: ValueUnitPair): ValueUnitPair => {
+  console.log('::: convertIntegrationTimeUnits integrationTime', integrationTime);
   return sensCalHelpers.format.convertTimeToDisplayUnit(integrationTime);
 };
 
@@ -439,50 +294,312 @@ const getSpectralSurfaceBrightnessMID = (
     : { value: 0, unit: '' };
 };
 
-/********************************************* COMMON ***********************************************/
+/* **************************************************************************************** */
 
-const getWeightingFactor = (response: SensitivityCalculatorAPIResponseLow): number => {
-  if (isCustomSubarray()) {
-    return 1; // no weighting response for Custom
+interface RawResults {
+  weightedSensitivity: number;
+  confusionNoise: number;
+  totalSensitivity: number;
+  beamSize: string;
+  continuumIntegrationTime: ValueUnitPair;
+  spectralIntegrationTime: ValueUnitPair;
+  spectralWeightedSensitivity: number;
+  spectralConfusionNoise: number;
+  spectralTotalSensitivity: number;
+  sbs: ValueUnitPair;
+  spectralSbs: ValueUnitPair;
+  spectralBeamSize: string;
+}
+
+interface DisplayResults {
+  confusionNoiseDisplay: ValueUnitPair;
+  weightedSensitivityDisplay: ValueUnitPair;
+  totalSensitivityDisplay: ValueUnitPair;
+  beamSizeDisplay: { value: string; unit: string };
+  spectralConfusionNoiseDisplay: ValueUnitPair;
+  spectralWeightedSensitivityDisplay: ValueUnitPair;
+  spectralTotalSensitivityDisplay: ValueUnitPair;
+  spectralBeamSizeDisplay: { value: string; unit: string };
+  sbs: ValueUnitPair;
+  spectralSbs: ValueUnitPair;
+  continuumIntegrationTime: ValueUnitPair;
+  spectralIntegrationTime: ValueUnitPair;
+}
+
+interface FinalIndividualResults {
+  results1: ResultsSection;
+  results2: ResultsSection;
+  results3: ResultsSection;
+  results4: ResultsSection;
+  results5: ResultsSection;
+  results6: ResultsSection;
+  results7: ResultsSection;
+  results8: ResultsSection;
+  results9: ResultsSection;
+  results10: ResultsSection;
+  results11: ResultsSection;
+}
+
+function getResultValues(response): RawResults {
+  const weightedSensitivity = isLow()
+    ? getWeightedSensitivityLOW(response)
+    : getWeightedSensitivityMid(response);
+
+  const confusionNoise = getConfusionNoise(response);
+
+  const totalSensitivity = getSensitivity(confusionNoise, weightedSensitivity);
+
+  const beamSize = isLow() ? getBeamSizeLOW(response) : getBeamSizeMID(response);
+
+  const continuumIntegrationTime = isSensitivity()
+    ? getContinuumIntegrationTimeMID(response)
+    : { value: 0, unit: '' };
+
+  const spectralIntegrationTime: any = isSensitivity()
+    ? getSpectralIntegrationTimeMID(response)
+    : { value: 0, unit: '' };
+
+  const spectralWeightedSensitivity = isLow()
+    ? getSpectralWeightedSensitivityLOW(response)
+    : getSpectralWeightedSensitivityMID(response);
+  console.log('::: spectralWeightedSensitivity', spectralWeightedSensitivity);
+
+  const spectralConfusionNoise = getSpectralConfusionNoise(response);
+
+  const spectralTotalSensitivity = getSensitivity(
+    spectralConfusionNoise,
+    spectralWeightedSensitivity
+  );
+
+  const sbs = getSurfaceBrightnessSensitivity(
+    response,
+    isZoom() ? spectralTotalSensitivity : totalSensitivity
+  );
+
+  const spectralSbs = isLow()
+    ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity)
+    : getSpectralSurfaceBrightnessMID(response, spectralTotalSensitivity);
+
+  const spectralBeamSize = isLow()
+    ? getSpectralBeamSizeLOW(response)
+    : getSpectralBeamSizeMID(response);
+
+  return {
+    weightedSensitivity,
+    confusionNoise,
+    totalSensitivity,
+    beamSize,
+    continuumIntegrationTime,
+    spectralIntegrationTime,
+    spectralWeightedSensitivity,
+    spectralConfusionNoise,
+    spectralTotalSensitivity,
+    sbs,
+    spectralSbs,
+    spectralBeamSize
+  };
+}
+
+function getDisplayResultValues(results: RawResults): DisplayResults {
+  const confusionNoiseDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(results.confusionNoise);
+
+  const weightedSensitivityDisplay = isSensitivity()
+    ? convertSuppliedSensitivityToDisplayValue(results.weightedSensitivity)
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(results.weightedSensitivity);
+
+  const totalSensitivityDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
+        isZoom() ? results.spectralTotalSensitivity : results.totalSensitivity
+      );
+
+  const beamSizeDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : { value: results.beamSize, unit: 'arcsec2' };
+
+  const spectralConfusionNoiseDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
+        results.spectralConfusionNoise
+      );
+
+  console.log('results.spectralWeightedSensitivity', results.spectralWeightedSensitivity);
+  const spectralWeightedSensitivityDisplay = isSensitivity()
+    ? convertSuppliedSensitivityToDisplayValue(results.spectralWeightedSensitivity)
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
+        results.spectralWeightedSensitivity
+      );
+
+  const spectralTotalSensitivityDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : sensCalHelpers.format.convertReturnedSensitivityToDisplayValue(
+        results.spectralTotalSensitivity
+      );
+
+  const spectralBeamSizeDisplay = isCustomSubarray()
+    ? getCustomResultDisplayValue()
+    : { value: results.spectralBeamSize, units: 'arcsec2' };
+
+  return {
+    confusionNoiseDisplay,
+    weightedSensitivityDisplay,
+    totalSensitivityDisplay,
+    beamSizeDisplay,
+    spectralConfusionNoiseDisplay,
+    spectralWeightedSensitivityDisplay,
+    spectralTotalSensitivityDisplay,
+    spectralBeamSizeDisplay,
+    sbs: results.sbs,
+    spectralSbs: results.spectralSbs,
+    continuumIntegrationTime: results.continuumIntegrationTime,
+    spectralIntegrationTime: results.spectralIntegrationTime
+  };
+}
+
+function getFinalIndividualResults(results: DisplayResults): FinalIndividualResults {
+  console.log('::: in getFinalIndividualResults');
+  console.log('::: results', results);
+  const observationTypeLabel: string = OBS_TYPES[theObservation.type];
+  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
+    ?.sensCalcResultsLabel;
+
+  console.log('spectralWeightedSensitivityDisplay', results.spectralWeightedSensitivityDisplay);
+  const results1 = {
+    field: `${observationTypeLabel}SensitivityWeighted`,
+    value: isZoom()
+      ? results.spectralWeightedSensitivityDisplay?.value.toString()
+      : results.weightedSensitivityDisplay?.value.toString(),
+    units: results.weightedSensitivityDisplay?.unit
+  };
+  const results2 = {
+    field: `${observationTypeLabel}ConfusionNoise`,
+    value: isZoom()
+      ? results.spectralConfusionNoiseDisplay?.value.toString()
+      : results.confusionNoiseDisplay?.value.toString(),
+    units: results.confusionNoiseDisplay?.unit
+  };
+  const results3 = {
+    field: `${observationTypeLabel}TotalSensitivity`,
+    value: isZoom()
+      ? results.spectralTotalSensitivityDisplay?.value.toString()
+      : results.totalSensitivityDisplay?.value.toString(),
+    units: results.totalSensitivityDisplay?.unit
+  };
+  const results4 = {
+    field: `${observationTypeLabel}SynthBeamSize`,
+    value: results.beamSizeDisplay?.value,
+    units: results.beamSizeDisplay?.unit
+  };
+  const results5 = {
+    field: isSensitivity()
+      ? `${observationTypeLabel}IntegrationTime`
+      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
+    value: isSensitivity()
+      ? results.continuumIntegrationTime?.value.toString()
+      : results.sbs?.value.toString(),
+    units: isSensitivity() ? results.continuumIntegrationTime?.unit : results.sbs?.unit
+  };
+  const results6 = {
+    field: 'spectralSensitivityWeighted',
+    value: results.spectralWeightedSensitivityDisplay.value.toString(),
+    units: results.spectralWeightedSensitivityDisplay.unit // TODO set correct unit when using supplied sensitivity
+  };
+  const results7 = {
+    field: 'spectralConfusionNoise',
+    value: results.spectralConfusionNoiseDisplay?.value.toString(),
+    units: results.spectralConfusionNoiseDisplay?.unit
+  };
+  const results8 = {
+    field: 'spectralTotalSensitivity',
+    value: results.spectralTotalSensitivityDisplay.value.toString(),
+    units: results.spectralTotalSensitivityDisplay.unit
+  };
+  const results9 = {
+    field: 'spectralSynthBeamSize',
+    value: results.spectralBeamSizeDisplay?.value,
+    units: results.spectralBeamSizeDisplay?.unit
+  };
+  const results10 = {
+    field: isSensitivity() ? 'spectralIntegrationTime' : 'spectralSurfaceBrightnessSensitivity',
+    value: isSensitivity()
+      ? results.spectralIntegrationTime?.value.toString()
+      : results.spectralSbs?.value.toString(),
+    units: isSensitivity() ? results.spectralIntegrationTime?.unit : results.spectralSbs?.unit
+  };
+  const results11 = {
+    field: suppliedType,
+    value: theObservation.supplied.value.toString(),
+    units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+      u => u.value === theObservation.supplied.units
+    )?.label
+  };
+
+  return {
+    results1,
+    results2,
+    results3,
+    results4,
+    results5,
+    results6,
+    results7,
+    results8,
+    results9,
+    results10,
+    results11
+  };
+}
+
+function getFinalResults(target, results: any): SensCalcResults {
+  const individualresults = getFinalIndividualResults(results);
+
+  const theResults: SensCalcResults = {
+    id: target.id,
+    title: target.name,
+    statusGUI: STATUS_OK,
+    section1: [],
+    ...(isContinuum() && {
+      section2: []
+    }),
+    section3: [individualresults.results11]
+  };
+
+  // Section 1
+  if (!isSensitivity()) {
+    theResults.section1.push(individualresults.results1);
   }
-  return isZoom() ? response.weighting[0]?.weighting_factor : response.weighting?.weighting_factor;
-};
-
-const getSensitivity = (confusionNoise: number, weightedSensitivity: number): number =>
-  sensCalHelpers.calculate.sqrtOfSumSqs(confusionNoise, weightedSensitivity);
-
-const getConfusionNoise = (response: SensitivityCalculatorAPIResponseLow): number => {
-  const rawConfusionNoise = getRawConfusionNoise(response);
-  return rawConfusionNoise
-    ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawConfusionNoise))
-    : 0;
-};
-
-const getSpectralConfusionNoise = (
-  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
-) => {
-  const rawSpectralConfusionNoise = getSpectralRawConfusionNoise(response);
-  return rawSpectralConfusionNoise
-    ? sensCalHelpers.format.convertConfusionNoiseRawValueInuJy(Number(rawSpectralConfusionNoise))
-    : 0;
-};
-
-const getRawConfusionNoise = (response: SensitivityCalculatorAPIResponseLow): number => {
-  if (isCustomSubarray()) {
-    return 0;
+  theResults.section1.push(individualresults.results2);
+  if (!isSensitivity()) {
+    theResults.section1.push(individualresults.results3);
   }
-  return isZoom()
-    ? response.weighting[0]?.confusion_noise?.value
-    : response.weighting?.confusion_noise?.value;
-};
-
-const getSpectralRawConfusionNoise = (
-  response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid
-): number => {
-  if (isCustomSubarray()) {
-    return 0;
+  theResults.section1.push(individualresults.results4);
+  theResults.section1.push(individualresults.results5);
+  // Section 2
+  if (isContinuum()) {
+    if (!isSensitivity()) {
+      theResults.section2.push(individualresults.results6);
+    }
+    theResults.section2.push(individualresults.results7);
+    if (!isSensitivity()) {
+      theResults.section2.push(individualresults.results8);
+    }
+    theResults.section2.push(individualresults.results9);
+    theResults.section2.push(individualresults.results10);
   }
-  return isZoom()
-    ? response.weighting[0]?.confusion_noise?.value
-    : response.weightingLine?.confusion_noise?.value;
-};
+
+  return theResults;
+}
+
+export default function calculateSensitivityCalculatorResults(
+  response: any,
+  observation: Observation,
+  target: Target
+): SensCalcResults {
+  theObservation = observation;
+  const rawResults = getResultValues(response);
+  const displayResults = getDisplayResultValues(rawResults);
+  const resultsFinal = getFinalResults(target, displayResults);
+
+  return resultsFinal;
+}
