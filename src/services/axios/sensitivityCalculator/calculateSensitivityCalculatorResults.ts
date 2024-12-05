@@ -34,10 +34,18 @@ this is correct but returns different values than when set as zoom
 
 let theObservation: Observation = null;
 
+/*
+TODO
+- check mid custom observation not saving
+- clean temp fixes to check saving custom possible in this file
+- in SensCalcModalSingle and multiple, move list of fields to display when custom in CONSTANTS?
+*/
+
 /********************************************* COMMON ***********************************************/
 
 const getCustomResultDisplayValue = (): any => {
-  return { value: NOT_APPLICABLE, units: '' };
+  //return { value: NOT_APPLICABLE, units: '' };
+  return { value: '', units: '' };
 };
 const isCustomSubarray = () => theObservation.subarray === OB_SUBARRAY_CUSTOM;
 const isLow = () => theObservation.telescope === TELESCOPE_LOW_NUM;
@@ -45,12 +53,14 @@ const isZoom = () => theObservation.type === TYPE_ZOOM;
 const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
 
+// SARAH
 const getSurfaceBrightnessSensitivity = (
   response: SensitivityCalculatorAPIResponseLow | SensitivityCalculatorAPIResponseMid,
   sense: number
 ): ValueUnitPair => {
   if (isCustomSubarray()) {
-    return getCustomResultDisplayValue();
+    // return getCustomResultDisplayValue();
+    return { value: 0, unit: NOT_APPLICABLE };
   }
   const rec = isZoom() ? response?.weighting[0] : response?.weighting;
   const rawSurfaceBrightnessSensitivity = rec ? sense * rec?.sbs_conv_factor : 0;
@@ -161,12 +171,14 @@ const getSpectralBeamSizeLOW = (response: SensitivityCalculatorAPIResponseLow) =
   return formattedBeams;
 };
 
+// SARAH
 const getSpectralSurfaceBrightnessLOW = (
   response: SensitivityCalculatorAPIResponseLow,
   sense: number
 ) => {
   if (isCustomSubarray()) {
-    return getCustomResultDisplayValue();
+    // return getCustomResultDisplayValue();
+    return { value: '', unit: NOT_APPLICABLE };
   }
   const rec = isZoom() ? response.weighting[0] : response.weightingLine;
   return sensCalHelpers.format.convertKelvinsToDisplayValue(sense * rec.sbs_conv_factor);
@@ -366,6 +378,7 @@ function getResultValues(response): RawResults {
     response,
     isZoom() ? spectralTotalSensitivity : totalSensitivity
   );
+  console.log('::: sbs', sbs);
 
   const spectralSbs = isLow()
     ? getSpectralSurfaceBrightnessLOW(response, spectralTotalSensitivity)
@@ -406,9 +419,12 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
         isZoom() ? results.spectralTotalSensitivity : results.totalSensitivity
       );
 
-  const beamSizeDisplay = isCustomSubarray()
+  // SARAH
+  const beamSizeDisplay =
+    /*isCustomSubarray()
     ? getCustomResultDisplayValue()
-    : { value: results.beamSize, unit: 'arcsec2' };
+    : { value: results.beamSize, unit: 'arcsec2' };*/
+    { value: results.beamSize, unit: 'arcsec2' };
 
   const spectralConfusionNoiseDisplay = isCustomSubarray()
     ? getCustomResultDisplayValue()
@@ -428,9 +444,12 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
         results.spectralTotalSensitivity
       );
 
-  const spectralBeamSizeDisplay = isCustomSubarray()
+  // SARAH
+  const spectralBeamSizeDisplay =
+    /*isCustomSubarray()
     ? getCustomResultDisplayValue()
-    : { value: results.spectralBeamSize, units: 'arcsec2' };
+    : { value: results.spectralBeamSize, units: 'arcsec2' };*/
+    { value: results.spectralBeamSize, unit: 'arcsec2' };
 
   return {
     confusionNoiseDisplay,

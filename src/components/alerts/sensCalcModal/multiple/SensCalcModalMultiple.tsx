@@ -5,11 +5,7 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
-import {
-  NOT_APPLICABLE,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
-} from '../../../../utils/constants';
+import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
 import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
@@ -46,14 +42,18 @@ export default function SensCalcModalMultiple({
     if (rec.field === 'targetName') {
       return rec.value;
     }
-    if (rec.value === NOT_APPLICABLE) {
+    if (
+      rec.field !== 'continuumSensitivityWeighted' &&
+      rec.field !== 'spectralSensitivityWeighted' &&
+      rec.field !== 'integrationTime' &&
+      rec.field !== 'sensitivity' &&
+      rec.field !== 'continuumIntegrationTime' &&
+      rec.field !== 'spectralIntegrationTime'
+    ) {
       return t('customArray.result');
     }
-    return `${presentValue(rec.value, rec.field)} `;
+    return `${presentValue(rec.value, rec.field)} ${presentUnits(rec.units)}`;
   };
-
-  const PresentCustomUnitValue = (rec: any) =>
-    rec.value === NOT_APPLICABLE ? rec.units : presentUnits(rec.units);
 
   let i = 0; // Just here so that the key warning is dealt with
   let headerNumber = 0;
@@ -77,7 +77,7 @@ export default function SensCalcModalMultiple({
   const presentation = rec => {
     if (rec) {
       return isCustom
-        ? PresentCustomResultValue(rec) + ' ' + PresentCustomUnitValue(rec)
+        ? PresentCustomResultValue(rec) + ' '
         : presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units);
     } else {
       return '';
