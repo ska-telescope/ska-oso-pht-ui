@@ -195,6 +195,7 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
+export const BEAM_SIZE_UNITS = 'arcsec2';
 
 export const PAGE_SRC_NET = 8;
 

@@ -65,7 +65,8 @@ export default function SensCalcDisplaySingle({
       )}
       {show && field !== 'icon' && (
         <>
-          {presentValue(FieldFetch(VALUE, field))} {presentUnits(FieldFetch(UNITS, field))}
+          {presentValue(FieldFetch(VALUE, field))}{' '}
+          {isCustom ? '' : presentUnits(FieldFetch(UNITS, field))}
         </>
       )}
       {show && field === 'icon' && openDialog && (
