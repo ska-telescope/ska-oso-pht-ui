@@ -5,7 +5,11 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import Observation from '../../../../utils/types/observation';
-import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '../../../../utils/constants';
+import {
+  CUSTOM_VALID_FIELDS,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM
+} from '../../../../utils/constants';
 import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcModalMultipleProps {
@@ -42,14 +46,7 @@ export default function SensCalcModalMultiple({
     if (rec.field === 'targetName') {
       return rec.value;
     }
-    if (
-      rec.field !== 'continuumSensitivityWeighted' &&
-      rec.field !== 'spectralSensitivityWeighted' &&
-      rec.field !== 'integrationTime' &&
-      rec.field !== 'sensitivity' &&
-      rec.field !== 'continuumIntegrationTime' &&
-      rec.field !== 'spectralIntegrationTime'
-    ) {
+    if (!CUSTOM_VALID_FIELDS.includes(rec.field)) {
       return t('customArray.result');
     }
     return `${presentValue(rec.value, rec.field)} ${presentUnits(rec.units)}`;

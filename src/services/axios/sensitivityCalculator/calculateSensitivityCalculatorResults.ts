@@ -35,11 +35,6 @@ this is correct but returns different values than when set as zoom
 
 let theObservation: Observation = null;
 
-/*
-TODO
-- in SensCalcModalSingle and multiple, move list of fields to display when custom in CONSTANTS?
-*/
-
 /********************************************* COMMON ***********************************************/
 
 const getCustomResultDisplayValue = (): any => {

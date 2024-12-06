@@ -4,7 +4,7 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { STATUS_INITIAL } from '../../../../utils/constants';
+import { CUSTOM_VALID_FIELDS, STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { presentUnits, presentValue } from '../../../../utils/present';
 
@@ -30,19 +30,12 @@ export default function SensCalcModalSingle({
 
   const { t } = useTranslation('pht');
 
-  const PresentCustomResultValue = (eValue: any, eId: string, eUnits: string) => {
+  const PresentCustomResultValue = (eValue: any, eId: string) => {
     console.log('eId', eId);
     if (eId === 'targetName') {
       return eValue;
     }
-    if (
-      eId !== 'continuumSensitivityWeighted' &&
-      eId !== 'spectralSensitivityWeighted' &&
-      eId !== 'integrationTime' &&
-      eId !== 'sensitivity' &&
-      eId !== 'continuumIntegrationTime' &&
-      eId !== 'spectralIntegrationTime'
-    ) {
+    if (!CUSTOM_VALID_FIELDS.includes(eId)) {
       return t('customArray.result');
     }
     return `${presentValue(eValue, eId)}`;
@@ -59,7 +52,7 @@ export default function SensCalcModalSingle({
         <Grid item xs={3}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
             {eId === 'targetName' || isCustom
-              ? PresentCustomResultValue(eValue, eId, eUnits)
+              ? PresentCustomResultValue(eValue, eId)
               : presentValue(eValue, eId)}{' '}
             {presentUnits(eUnits)}
           </Typography>
