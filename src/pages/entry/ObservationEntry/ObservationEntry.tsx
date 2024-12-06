@@ -881,7 +881,6 @@ export default function ObservationEntry() {
     );
   };
 
-  // SARAH
   const SubBandsField = () => {
     const errorMessage = () => {
       const min = Number(t('subBands.range.lower'));

@@ -340,11 +340,6 @@ const getSuppliedFieldsSensitivity = (
       o => o.field === 'spectralSurfaceBrightnessSensitivity'
     )?.units
   };
-  console.log('tarObs.sensCalc[spectralSection]', tarObs.sensCalc[spectralSection]);
-  console.log(
-    'mapping params.surface_brightness_sensitivity',
-    params.surface_brightness_sensitivity
-  );
   return params;
 };
 

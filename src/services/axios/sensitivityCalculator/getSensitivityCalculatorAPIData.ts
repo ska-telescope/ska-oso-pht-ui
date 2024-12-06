@@ -42,18 +42,14 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   try {
     const output: any = await fetchSensCalc(observation, target);
     if ('error' in output) {
-      console.log('error in output', output);
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
     if (output['calculate']['error'] && output['calculate']['error']['detail']) {
-      console.log('error in calculate output', output);
       return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
     }
     if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
-      console.log('error in weighting output', output);
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     }
-    console.log('JUST before calling calculateSensitivityCalculatorResults');
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
@@ -111,7 +107,6 @@ async function getSensitivityCalculatorAPIData(
   }
 
   function handleCalculate(weightingResponse) {
-    console.log('::: in handleCalculate()');
     const promisesCalculate = [
       GetCalculate(observation, target, weightingResponse.weighting, observation.type)
     ];
@@ -151,7 +146,6 @@ async function getSensitivityCalculatorAPIData(
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
-  console.log('response in handleCalculate', response);
   return response;
 }
 
