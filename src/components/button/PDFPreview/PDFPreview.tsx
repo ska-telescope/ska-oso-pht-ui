@@ -16,7 +16,7 @@ export default function PDFPreviewButton({
   action,
   title = 'pdfPreview.label',
   primary = false,
-  testId,
+  testId = 'pdfPreviewButtonTestId',
   toolTip
 }: PDFPreviewButtonProps) {
   return (

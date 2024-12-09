@@ -58,6 +58,7 @@ export default function SensCalcDisplaySingle({
             ariaDescription={ariaStatusMessage(sensCalc)}
             ariaTitle={ariaStatusMessage(sensCalc)}
             testId="statusId"
+            toolTip={ariaStatusMessage(sensCalc)}
             level={sensCalc?.statusGUI}
             size={SIZE}
           />

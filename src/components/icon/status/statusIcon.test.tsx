@@ -16,6 +16,7 @@ function mounting(theTheme: any) {
         level={STATUS_OK}
         onClick={cy.stub().as('onClick')}
         testId="statusId"
+        toolTip=""
       />
     </ThemeProvider>
   );

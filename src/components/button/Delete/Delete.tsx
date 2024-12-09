@@ -16,7 +16,7 @@ export default function DeleteButton({
   action,
   title = 'deleteBtn.label',
   primary = false,
-  testId,
+  testId = 'deleteButtonTestId',
   toolTip
 }: DeleteButtonProps) {
   return (

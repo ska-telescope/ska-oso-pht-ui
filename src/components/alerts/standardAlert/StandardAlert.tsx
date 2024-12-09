@@ -46,6 +46,7 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
             level={getLevel(color)}
             size={FONTSIZE}
             testId={testId + 'Icon'}
+            toolTip=" "
           />
         </Grid>
         <Grid item>

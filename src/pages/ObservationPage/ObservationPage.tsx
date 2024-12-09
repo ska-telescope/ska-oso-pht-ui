@@ -351,6 +351,7 @@ export default function ObservationPage() {
               }
               size={SIZE}
               testId="testId"
+              toolTip={t('sensCalc.' + getLevel(obs))}
             />
           );
         }

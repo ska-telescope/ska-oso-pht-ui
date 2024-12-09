@@ -16,7 +16,7 @@ export default function SaveButton({
   action,
   title = 'saveBtn.label',
   primary = false,
-  testId,
+  testId = 'saveButtonTestId',
   toolTip = 'saveBtn.tooltip'
 }: SaveButtonProps) {
   return (

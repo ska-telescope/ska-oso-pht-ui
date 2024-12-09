@@ -4,22 +4,22 @@ import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
-import Shell from '../../components/layout/Shell/Shell';
-import { Proposal } from '../../utils/types/proposal';
-import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
-
 import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
 import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 
-import { validateSciencePage } from '../../utils/proposalValidation';
-import DownloadButton from '../../components/button/Download/Download';
 import DeleteButton from '../../components/button/Delete/Delete';
-import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
+import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import Shell from '../../components/layout/Shell/Shell';
+import HelpPanel from '../../components/info/helpPanel/helpPanel';
 
+import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
+import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 
 const PAGE = 3;
@@ -29,12 +29,14 @@ export default function SciencePage() {
   const { t } = useTranslation('pht');
   const {
     application,
+    helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState(null);
+  const [originalFile, setOriginalFile] = React.useState(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -89,7 +91,7 @@ export default function SciencePage() {
         scienceLoadStatus: FileUploadStatus.OK
       });
 
-      NotifyOK(t('pdfUpload.science.success'));
+      NotifyOK('pdfUpload.science.success');
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -133,7 +135,7 @@ export default function SciencePage() {
         sciencePDF: sciencePDFDeleted,
         scienceLoadStatus: FileUploadStatus.INITIAL
       });
-      NotifyOK(t('pdfDelete.science.success'));
+      NotifyOK('pdfDelete.science.success');
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
       NotifyError('pdfDelete.science.error');
@@ -170,6 +172,11 @@ export default function SciencePage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    if (getProposal()?.sciencePDF?.documentId) {
+      setCurrentFile(getProposal()?.sciencePDF?.documentId);
+      setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
+    }
+    helpComponent(t('page.' + PAGE + '.help'));
   }, []);
 
   React.useEffect(() => {
@@ -183,57 +190,66 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
+  const uploadSuffix = () => (
+    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid item>
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <PDFPreviewButton
+            title="pdfUpload.science.label.preview"
+            toolTip="pdfUpload.science.tooltip.preview"
+            action={previewSignedUrl}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <DownloadButton
+            title="pdfUpload.science.label.download"
+            toolTip="pdfUpload.science.tooltip.download"
+            action={downloadPDFToSignedUrl}
+          />
+        )}
+      </Grid>
+      <Grid item>
+        {getProposal()?.sciencePDF?.isUploadedPdf && (
+          <DeleteButton
+            title={'pdfUpload.science.label.delete'}
+            toolTip="pdfUpload.science.tooltip.delete"
+            action={deletePdfUsingSignedUrl}
+          />
+        )}
+      </Grid>
+    </Grid>
+  );
+
   return (
     <Shell page={PAGE}>
-      {!getProposal().sciencePDF?.isUploadedPdf && (
-        <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-          <Grid item xs={6}>
-            <FileUpload
-              chooseFileTypes=".pdf"
-              chooseLabel={t('pdfUpload.science.label.choose')}
-              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-              clearLabel={t('pdfUpload.science.label.clear')}
-              clearToolTip={t('pdfUpload.science.tooltip.clear')}
-              direction="row"
-              file={currentFile}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-              status={getProposal().scienceLoadStatus}
-            />
-          </Grid>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid item xs={6}>
+          <FileUpload
+            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+            clearToolTip={t('pdfUpload.science.tooltip.clear')}
+            dropzone
+            dropzoneAccepted={{
+              'application/pdf': ['.pdf']
+            }}
+            dropzoneIcons={false}
+            dropzonePrompt={t('dropzone.prompt')}
+            dropzonePreview={false}
+            direction="row"
+            file={originalFile}
+            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+            setFile={setFile}
+            setStatus={setUploadStatus}
+            testId="fileUpload"
+            uploadFunction={uploadPdftoSignedUrl}
+            uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+            status={getProposal().scienceLoadStatus}
+            suffix={uploadSuffix()}
+          />
         </Grid>
-      )}
-      <Grid spacing={1} p={3} container direction="row" alignItems="center" justifyContent="center">
-        <Grid item>
-          {getProposal().sciencePDF?.isUploadedPdf && (
-            <PDFPreviewButton
-              title="pdfUpload.science.label.preview"
-              toolTip="pdfUpload.science.tooltip.preview"
-              action={previewSignedUrl}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {getProposal().sciencePDF?.isUploadedPdf && (
-            <DownloadButton
-              title="pdfUpload.science.label.download"
-              toolTip="pdfUpload.science.tooltip.download"
-              action={downloadPDFToSignedUrl}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {getProposal().sciencePDF?.isUploadedPdf && (
-            <DeleteButton
-              title={'pdfUpload.science.label.delete'}
-              toolTip="pdfUpload.science.tooltip.delete"
-              action={deletePdfUsingSignedUrl}
-            />
-          )}
+        <Grid item pt={4} xs={4}>
+          <HelpPanel />
         </Grid>
       </Grid>
       <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />

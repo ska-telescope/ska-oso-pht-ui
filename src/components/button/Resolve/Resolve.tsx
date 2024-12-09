@@ -18,7 +18,7 @@ export default function ResolveButton({
   action,
   title = 'resolve.label',
   primary = false,
-  testId,
+  testId = 'resolveButtonTestId',
   toolTip
 }: ResolveButtonProps) {
   return (
