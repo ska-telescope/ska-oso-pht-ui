@@ -10,7 +10,8 @@ import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
   TYPE_CONTINUUM,
-  SUPPLIED_TYPE_SENSITIVITY
+  SUPPLIED_TYPE_SENSITIVITY,
+  OB_SUBARRAY_CUSTOM
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
@@ -25,12 +26,14 @@ const makeResponse = (target: Target, statusGUI: number, error: string) => {
 };
 
 async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {
+  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
+
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      return await getSensitivityCalculatorAPIData(observation, target);
+      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
     } catch (e) {
       return { error: e };
     }
@@ -44,7 +47,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     if (output['calculate']['error'] && output['calculate']['error']['detail']) {
       return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
     }
-    if (output['weighting']['error'] && output['weighting']['error']['detail']) {
+    if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
       return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     }
     const results = calculateSensitivityCalculatorResults(output, observation, target);
@@ -59,10 +62,14 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
 }
 
-async function getSensitivityCalculatorAPIData(observation: Observation, target: Target) {
+async function getSensitivityCalculatorAPIData(
+  observation: Observation,
+  target: Target,
+  isCustom: boolean
+) {
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
-    there are 2, 3, or 4 calls to the API made
+    there are 1, 2, 3, or 4 calls to the API made
 
     Mid Continuum Modes: 
     - 1 call to getCalculate - supplied integration time or for supplied sensitivity: with Continuum thermal sensitivity
@@ -82,9 +89,16 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     Low Zoom Modes: 
     - 1 call to getCalculate
     - 1 call to GetWeighting -  with Zoom parameter
+
+    CUSTOM Array: (For Custom array, no calls to weighting endpoint are made)
+    - 0 call to getWeighting
+    - 1 call to to getCalculate
   */
 
   function handleWeighting() {
+    if (isCustom) {
+      return [];
+    }
     const promisesWeighting = [GetWeighting(observation, target, observation.type)];
     if (observation.type === TYPE_CONTINUUM) {
       promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
@@ -98,7 +112,8 @@ async function getSensitivityCalculatorAPIData(observation: Observation, target:
     ];
     if (
       observation.type === TYPE_CONTINUUM &&
-      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY
+      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY &&
+      !isCustom
     ) {
       promisesCalculate.push(
         GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM)
