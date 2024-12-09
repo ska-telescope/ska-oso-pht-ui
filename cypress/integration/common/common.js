@@ -54,8 +54,7 @@ export const landingPageConfirmed = () => {
 };
 
 export const createStandardProposal = () => {
-  clickAddProposalButton();
-  pageConfirmed('TITLE');
+  clickAddProposal();
   enterProposalTitle();
   clickProposalTypePrincipleInvestigator();
   clickSubProposalTypeTargetOfOpportunity();
@@ -67,6 +66,11 @@ export const createStandardProposal = () => {
 export const clickHome = () => {
   cy.get('[data-testid="homeButtonTestId"]').should('exist');
   cy.get('[data-testid="homeButtonTestId"]').click();
+};
+
+export const clickSave = () => {
+  cy.get('[data-testid="saveButtonTestId"]').should('exist');
+  cy.get('[data-testid="saveButtonTestId"]').click();
 };
 
 export const clickToTeamPage = () => {
@@ -120,9 +124,19 @@ export const clickToNextPage = () => {
   cy.get('[data-testid="nextButtonTestId"]').click();
 };
 
+export const clickToPreviousPage = () => {
+  cy.get('[data-testid="prevButtonTestId"]').should('exist');
+  cy.get('[data-testid="prevButtonTestId"]').click();
+};
+
 export const clickAddDataProduct = () => {
-  cy.get('[data-testid="addDataProductButton"]', { timeout: 80000 }).should('be.enabled');
-  cy.get('[data-testid="addDataProductButton"]').click();
+  if (cy.get('[data-testid="addDataProductButton"]').should('be.disabled')) {
+    clickToPreviousPage();
+    clickToNextPage();
+    clickAddDataProduct();
+  } else {
+    cy.get('[data-testid="addDataProductButton"]').click();
+  }
 };
 
 export const addObservatoryDataProduct = () => {
