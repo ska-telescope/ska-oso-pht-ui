@@ -208,6 +208,8 @@ export const WEIGHTING_FACTOR_DEFAULT = 1;
 
 export const SBS_CONV_FACTOR_DEFAULT = 1;
 
+export const CONVERT_TIME_ERROR_MESSAGE = 'Only seconds supported currently in convertTimeToDisplayUnit';
+
 export const INFINITY = 'Infinity';
 
 export const PAGE_SRC_NET = 8;

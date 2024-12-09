@@ -1,4 +1,5 @@
 import {
+  CONVERT_TIME_ERROR_MESSAGE,
   FREQUENCY_UNITS,
   INFINITY,
   MICROSECOND_LABEL,
@@ -234,7 +235,7 @@ const sensCalHelpers = {
     convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
       if (time?.unit !== 's') {
         // TODO make this function smarter so it can handle all units
-        throw Error('Only seconds supported currently in convertTimeToDisplayUnit');
+        throw Error(CONVERT_TIME_ERROR_MESSAGE);
       }
       if (time.value.toString() === INFINITY) {
         return {
