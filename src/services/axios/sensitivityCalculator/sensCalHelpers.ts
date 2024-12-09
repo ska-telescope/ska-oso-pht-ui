@@ -5,8 +5,7 @@ import {
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
   OBSERVATION,
-  SECOND_LABEL,
-  WEIGHTING_FACTOR_DEFAULT
+  SECOND_LABEL
 } from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
@@ -277,8 +276,7 @@ const sensCalHelpers = {
       confusion_noise: number,
       weighting_factor: number
     ): number =>
-      Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) /
-      weighting_factor
+      Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) / weighting_factor
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {

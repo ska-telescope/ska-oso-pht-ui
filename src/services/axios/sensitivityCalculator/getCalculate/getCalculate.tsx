@@ -11,7 +11,6 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   FREQUENCY_UNITS,
   OB_SUBARRAY_CUSTOM,
-  WEIGHTING_FACTOR_DEFAULT,
   SBS_CONV_FACTOR_DEFAULT
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
