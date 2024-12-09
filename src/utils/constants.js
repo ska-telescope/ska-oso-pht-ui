@@ -204,6 +204,9 @@ export const CUSTOM_VALID_FIELDS = [
   'continuumIntegrationTime',
   'spectralIntegrationTime'
 ];
+export const WEIGHTING_FACTOR_DEFAULT = 1;
+
+export const INFINITY = 'Infinity';
 
 export const PAGE_SRC_NET = 8;
 

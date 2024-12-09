@@ -13,7 +13,8 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  WEIGHTING_FACTOR_DEFAULT
 } from '../../../utils/constants';
 import {
   SensitivityCalculatorAPIResponseLow,
@@ -73,7 +74,7 @@ const convertSuppliedSensitivityToDisplayValue = (suppliedSensitivity: number) =
 
 const getWeightingFactor = (response: SensitivityCalculatorAPIResponseLow): number => {
   if (isCustomSubarray()) {
-    return 1; // no weighting response for Custom
+    return WEIGHTING_FACTOR_DEFAULT; // no weighting response for Custom
   }
   return isZoom() ? response.weighting[0]?.weighting_factor : response.weighting?.weighting_factor;
 };

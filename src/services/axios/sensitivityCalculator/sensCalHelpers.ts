@@ -1,10 +1,12 @@
 import {
   FREQUENCY_UNITS,
+  INFINITY,
   MICROSECOND_LABEL,
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
   OBSERVATION,
-  SECOND_LABEL
+  SECOND_LABEL,
+  WEIGHTING_FACTOR_DEFAULT
 } from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
@@ -235,9 +237,9 @@ const sensCalHelpers = {
         // TODO make this function smarter so it can handle all units
         throw Error('Only seconds supported currently in convertTimeToDisplayUnit');
       }
-      if (time.value.toString() === 'Infinity') {
+      if (time.value.toString() === INFINITY) {
         return {
-          value: 'Infinity',
+          value: INFINITY,
           unit: SECOND_LABEL
         };
       }
@@ -276,7 +278,7 @@ const sensCalHelpers = {
       weighting_factor: number
     ): number =>
       Math.sqrt(sensitivity * sensitivity - confusion_noise * confusion_noise) /
-      (weighting_factor ?? 1)
+      weighting_factor
   },
   map: {
     getFrequencyAndBandwidthUnits(unitsField: number, telescope: number): string {

@@ -10,7 +10,8 @@ import {
   TYPE_ZOOM,
   SUPPLIED_TYPE_SENSITIVITY,
   FREQUENCY_UNITS,
-  OB_SUBARRAY_CUSTOM
+  OB_SUBARRAY_CUSTOM,
+  WEIGHTING_FACTOR_DEFAULT
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -174,9 +175,6 @@ async function GetCalculate(
   };
 
   const getWeightingFactor = () => {
-    if (isCustomSubarray()) {
-      return 1;
-    }
     return observation.type === TYPE_CONTINUUM
       ? weightingResponse.weighting_factor
       : weightingResponse[0]?.weighting_factor;
