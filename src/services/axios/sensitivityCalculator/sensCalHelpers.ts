@@ -232,6 +232,7 @@ const sensCalHelpers = {
      * Converts a time in seconds to a sensible unit,
      * e.g. display 1 ms instead of 0.001 s
      * **/
+    // SARAH
     convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
       if (time?.unit !== 's') {
         // TODO make this function smarter so it can handle all units
