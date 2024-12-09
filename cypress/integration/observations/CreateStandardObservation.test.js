@@ -7,6 +7,9 @@ import {
   clickToTargetPage,
   createStandardProposal
 } from '../common/common';
+beforeEach(() => {
+  createStandardProposal();
+});
 
 const verifyUnlinkedObservationInTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
@@ -18,7 +21,6 @@ const verifyUnlinkedObservationInTable = () => {
 
 describe('Creating Observation', () => {
   it('Create a default observation', { jiraKey: 'XTP-71406' }, () => {
-    createStandardProposal();
     //navigate to observation page
     clickToGeneralPage();
     clickToSciencePage();

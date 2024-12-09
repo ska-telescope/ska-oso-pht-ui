@@ -34,7 +34,7 @@ export const clickCreateProposal = () => {
 
 export const verifyProposalCreatedAlertFooter = () => {
   cy.get("[data-testid='timeAlertFooter']").should(
-    'include.text',
+    'contain.text',
     'Proposal added with unique identifier'
   );
 };
@@ -45,12 +45,13 @@ export const clickEditProposal = () => {
     .click();
 };
 
-export const pageConfirmed = label => {
-  cy.get('#pageTitle').contains(label);
+export const validateProposal = () => {
+  clickToValidateProposal();
+  verifyProposalValidAlertFooter();
 };
 
-export const landingPageConfirmed = () => {
-  verifyAddProposalButtonExists();
+export const pageConfirmed = label => {
+  cy.get('#pageTitle').contains(label);
 };
 
 export const createStandardProposal = () => {
@@ -200,15 +201,14 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click();
-  // cy.get('[aria-label="Status : OK "]').should('exist'); Not good to force an OK status here, should be separate
 };
 
-export const clickToValidateProposal = () => {
+const clickToValidateProposal = () => {
   cy.get('[data-testid="validationBtnTestId"]').should('exist');
   cy.get('[data-testid="validationBtnTestId"]').click();
 };
 
-export const verifyProposalValidAlertFooter = () => {
+const verifyProposalValidAlertFooter = () => {
   cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Proposal is Valid');
 };
 

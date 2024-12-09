@@ -14,9 +14,12 @@ import {
   verifyZoomSpectralAverageRangeCustom
 } from './observations';
 
+beforeEach(() => {
+  createStandardProposal();
+});
+
 describe('Creating Observations', () => {
   it('Verify Spectral average limits', { jiraKey: 'XTP-71407' }, () => {
-    createStandardProposal();
     //navigate to observation page
     clickToGeneralPage();
     clickToSciencePage();

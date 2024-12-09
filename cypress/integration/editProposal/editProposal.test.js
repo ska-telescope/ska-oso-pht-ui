@@ -5,15 +5,11 @@ import {
   addTeamMember,
   clickAddDataProduct,
   clickAddObservation,
-  clickAddProposal,
-  clickCreateProposal,
   clickEditProposal,
   clickHome,
   clickObservationFromTable,
   clickObservationSetup,
-  clickProposalTypePrincipleInvestigator,
   clickSave,
-  clickSubProposalTypeTargetOfOpportunity,
   clickToAddTarget,
   clickToConfirmProposalSubmission,
   clickToGeneralPage,
@@ -25,25 +21,24 @@ import {
   clickToTargetPage,
   clickToTeamPage,
   clickToTechnicalPage,
-  clickToValidateProposal,
   createStandardProposal,
-  enterProposalTitle,
   pageConfirmed,
   selectCosmology,
+  validateProposal,
   verifyEmailSentAlertFooter,
   verifyFirstProposalOnLandingPageHasSubmittedStatus,
   verifyFirstProposalOnLandingPageIsVisible,
   verifyObservationInTable,
   verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible,
-  verifyProposalCreatedAlertFooter,
-  verifyProposalValidAlertFooter
+  verifyOnLandingPageFilterIsVisible
 } from '../common/common';
+
+beforeEach(() => {
+  createStandardProposal();
+});
 
 describe('Edit Proposal', () => {
   it('Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
-    //create basic proposal
-    createStandardProposal();
     //edit existing proposal
     clickHome();
     verifyOnLandingPage();
@@ -74,8 +69,7 @@ describe('Edit Proposal', () => {
     clickAddDataProduct();
     addObservatoryDataProduct();
     //validate proposal
-    clickToValidateProposal();
-    verifyProposalValidAlertFooter();
+    validateProposal();
     //submit proposal
     clickToSubmitProposal();
     clickToConfirmProposalSubmission();
