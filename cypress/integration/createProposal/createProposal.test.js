@@ -9,7 +9,7 @@ import {
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
   verifyProposalCreatedAlertFooter
-} from './common/common';
+} from '../common/common';
 
 describe('Creating Proposal', () => {
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
