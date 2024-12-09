@@ -1,12 +1,12 @@
 import {
-  CONVERT_TIME_ERROR_MESSAGE,
   FREQUENCY_UNITS,
   INFINITY,
   MICROSECOND_LABEL,
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
   OBSERVATION,
-  SECOND_LABEL
+  SECOND_LABEL,
+  SECONDS_UNITS
 } from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
@@ -229,14 +229,22 @@ const sensCalHelpers = {
       return inputSensitivity;
     },
     /**
+     * Converts a ms/us/ns time into seconds
+     **/
+    timeToSeconds(time: ValueUnitPair): ValueUnitPair {
+      const unit = SECONDS_UNITS.find(unit => unit.label === time.unit);
+      return {
+        value: time.value * unit.toSeconds,
+        unit: SECOND_LABEL
+      };
+    },
+    /**
      * Converts a time in seconds to a sensible unit,
      * e.g. display 1 ms instead of 0.001 s
      * **/
-    // SARAH
     convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
-      if (time?.unit !== 's') {
-        // TODO make this function smarter so it can handle all units
-        throw Error(CONVERT_TIME_ERROR_MESSAGE);
+      if (time?.unit !== SECOND_LABEL) {
+        time = this.timeToSeconds(time);
       }
       if (time.value.toString() === INFINITY) {
         return {

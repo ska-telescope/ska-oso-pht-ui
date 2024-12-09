@@ -208,9 +208,6 @@ export const WEIGHTING_FACTOR_DEFAULT = 1;
 
 export const SBS_CONV_FACTOR_DEFAULT = 1;
 
-export const CONVERT_TIME_ERROR_MESSAGE =
-  'Only seconds supported currently in convertTimeToDisplayUnit';
-
 export const INFINITY = 'Infinity';
 
 export const PAGE_SRC_NET = 8;
@@ -315,6 +312,13 @@ export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
 export const NANOSECOND_LABEL = 'us';
 export const MICROSECOND_LABEL = 'ns';
+
+export const SECONDS_UNITS = [
+  { label: SECOND_LABEL, toSeconds: 1 },
+  { label: MILLISECOND_LABEL, toSeconds: 0.001 },
+  { label: MICROSECOND_LABEL, toSeconds: 0.000001 },
+  { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
+];
 
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
