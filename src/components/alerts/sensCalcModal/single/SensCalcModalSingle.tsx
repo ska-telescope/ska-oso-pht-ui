@@ -31,7 +31,6 @@ export default function SensCalcModalSingle({
   const { t } = useTranslation('pht');
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
-    console.log('eId', eId);
     if (eId === 'targetName') {
       return eValue;
     }
