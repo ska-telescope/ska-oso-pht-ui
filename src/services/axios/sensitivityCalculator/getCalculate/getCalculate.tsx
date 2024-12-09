@@ -11,7 +11,8 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   FREQUENCY_UNITS,
   OB_SUBARRAY_CUSTOM,
-  WEIGHTING_FACTOR_DEFAULT
+  WEIGHTING_FACTOR_DEFAULT,
+  SBS_CONV_FACTOR_DEFAULT
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -149,7 +150,7 @@ async function GetCalculate(
 
   const getSBSConvFactor = () => {
     if (isCustomSubarray()) {
-      return 1;
+      return SBS_CONV_FACTOR_DEFAULT;
     }
     return inMode === TYPE_CONTINUUM
       ? weightingResponse?.sbs_conv_factor
