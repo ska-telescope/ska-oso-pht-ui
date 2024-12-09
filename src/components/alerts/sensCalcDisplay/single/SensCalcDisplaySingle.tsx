@@ -14,12 +14,14 @@ interface SensCalcDisplaySingleProps {
   sensCalc: any;
   show: boolean;
   field: string;
+  isCustom: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   sensCalc,
   show,
-  field
+  field,
+  isCustom
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -64,7 +66,8 @@ export default function SensCalcDisplaySingle({
       )}
       {show && field !== 'icon' && (
         <>
-          {presentValue(FieldFetch(VALUE, field))} {presentUnits(FieldFetch(UNITS, field))}
+          {presentValue(FieldFetch(VALUE, field))}{' '}
+          {isCustom ? '' : presentUnits(FieldFetch(UNITS, field))}
         </>
       )}
       {show && field === 'icon' && openDialog && (
@@ -72,6 +75,7 @@ export default function SensCalcDisplaySingle({
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           data={sensCalc}
+          isCustom={isCustom}
         />
       )}
     </>

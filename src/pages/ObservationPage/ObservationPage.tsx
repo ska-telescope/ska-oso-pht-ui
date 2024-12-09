@@ -22,6 +22,7 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateObservationPage } from '../../utils/proposalValidation';
 import {
   BANDWIDTH_TELESCOPE,
+  OB_SUBARRAY_CUSTOM,
   PATH,
   RA_TYPE_EQUATORIAL,
   STATUS_ERROR,
@@ -282,6 +283,8 @@ export default function ObservationPage() {
       p => p.observationId === currObs?.id && p.targetId === targetId
     )?.sensCalc;
 
+  const isCustom = () => currObs?.subarray === OB_SUBARRAY_CUSTOM;
+
   const extendedColumnsObservations = [
     ...[
       {
@@ -414,6 +417,7 @@ export default function ObservationPage() {
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="icon"
+              isCustom={isCustom()}
             />
           );
         }
@@ -442,6 +446,7 @@ export default function ObservationPage() {
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'IntegrationTime'}
+              isCustom={isCustom()}
             />
           );
         }
@@ -459,6 +464,7 @@ export default function ObservationPage() {
               sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="SynthBeamSize"
+              isCustom={isCustom()}
             />
           );
         }
@@ -623,6 +629,7 @@ export default function ObservationPage() {
           observation={currObs}
           level={getLevel(currObs)}
           levelError={getError(currObs)}
+          isCustom={isCustom()}
         />
       )}
     </Shell>

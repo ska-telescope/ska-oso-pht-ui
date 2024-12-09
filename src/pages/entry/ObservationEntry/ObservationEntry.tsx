@@ -46,7 +46,11 @@ import {
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM
+  TELESCOPE_MID_NUM,
+  OB_SUBARRAY_AA2,
+  OB_SUBARRAY_AA_STAR_CORE,
+  OB_SUBARRAY_AA2_CORE,
+  OB_SUBARRAY_AA4_CORE
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/helpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -112,7 +116,7 @@ export default function ObservationEntry() {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
-  const [numOfStations, setNumOfStations] = React.useState(0);
+  const [numOfStations, setNumOfStations] = React.useState(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
@@ -185,16 +189,31 @@ export default function ObservationEntry() {
   };
 
   const getDefaultSubArrayConfig = (inBand: number, inSubArray: number) => {
-    if (inBand !== BAND_5A && inBand !== BAND_5B) {
-      if (inSubArray === OB_SUBARRAY_AA4_15) {
+    if (inBand === BAND_LOW) {
+      if (
+        inSubArray === OB_SUBARRAY_AA4_15 ||
+        inSubArray === OB_SUBARRAY_AA_STAR_15 ||
+        inSubArray === OB_SUBARRAY_AA4_13
+      ) {
         return OB_SUBARRAY_AA4;
       }
-    } else {
-      if (inSubArray === OB_SUBARRAY_AA_STAR) {
-        return OB_SUBARRAY_AA_STAR_15;
-      }
-      if (inSubArray === OB_SUBARRAY_AA4 || inSubArray === OB_SUBARRAY_AA4_13) {
+    } else if (inBand === BAND_5A || inBand === BAND_5B) {
+      if (
+        inSubArray === OB_SUBARRAY_AA2_CORE ||
+        inSubArray === OB_SUBARRAY_AA_STAR ||
+        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
+        inSubArray === OB_SUBARRAY_AA4 ||
+        inSubArray === OB_SUBARRAY_AA4_CORE
+      ) {
         return OB_SUBARRAY_AA4_15;
+      }
+    } else if (inBand === BAND_1 || inBand === BAND_2) {
+      if (
+        inSubArray === OB_SUBARRAY_AA2_CORE ||
+        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
+        inSubArray === OB_SUBARRAY_AA4_CORE
+      ) {
+        return OB_SUBARRAY_AA4;
       }
     }
     return inSubArray;
@@ -256,7 +275,7 @@ export default function ObservationEntry() {
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
     const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
-    if (record && record.value !== OB_SUBARRAY_CUSTOM) {
+    if (record) {
       setNumOf15mAntennas(record.numOf15mAntennas);
       setNumOf13mAntennas(record.numOf13mAntennas);
       setNumOfStations(record.numOfStations);
@@ -307,12 +326,12 @@ export default function ObservationEntry() {
     numOfStations
   ]);
 
-  const calculateCentralFrequency = (ob: number, sc: number) => {
-    switch (ob) {
+  const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
+    switch (obsBand) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, sc);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, sc);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
       case BAND_5A:
         return OBSERVATION.CentralFrequencyOB5a[0].value;
       case BAND_5B:
@@ -369,7 +388,9 @@ export default function ObservationEntry() {
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
   const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 || subarrayConfig === OB_SUBARRAY_AA1;
+    subarrayConfig === OB_SUBARRAY_AA05 ||
+    subarrayConfig === OB_SUBARRAY_AA1 ||
+    (observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -881,7 +902,6 @@ export default function ObservationEntry() {
     );
   };
 
-  // SARAH
   const SubBandsField = () => {
     const errorMessage = () => {
       const min = Number(t('subBands.range.lower'));

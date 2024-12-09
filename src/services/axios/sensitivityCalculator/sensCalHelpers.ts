@@ -1,4 +1,13 @@
-import { FREQUENCY_UNITS, OBSERVATION } from '../../../utils/constants';
+import {
+  FREQUENCY_UNITS,
+  INFINITY,
+  MICROSECOND_LABEL,
+  MILLISECOND_LABEL,
+  NANOSECOND_LABEL,
+  OBSERVATION,
+  SECOND_LABEL,
+  SECONDS_UNITS
+} from '../../../utils/constants';
 import { ValueUnitPair } from '../../../utils/types/valueUnitPair';
 
 const sensCalHelpers = {
@@ -218,6 +227,54 @@ const sensCalHelpers = {
         return inputSensitivity / 1000000;
       }
       return inputSensitivity;
+    },
+    /**
+     * Converts a ms/us/ns time into seconds
+     **/
+    timeToSeconds(time: ValueUnitPair): ValueUnitPair {
+      const unit = SECONDS_UNITS.find(unit => unit.label === time.unit);
+      return {
+        value: time.value * unit.toSeconds,
+        unit: SECOND_LABEL
+      };
+    },
+    /**
+     * Converts a time in seconds to a sensible unit,
+     * e.g. display 1 ms instead of 0.001 s
+     * **/
+    convertTimeToDisplayUnit(time: ValueUnitPair, precision = 2): any {
+      if (time?.unit !== SECOND_LABEL) {
+        time = this.timeToSeconds(time);
+      }
+      if (time.value.toString() === INFINITY) {
+        return {
+          value: INFINITY,
+          unit: SECOND_LABEL
+        };
+      }
+      const timeS = Number(time.value);
+      if (timeS > 1e-1) {
+        return {
+          value: Number(timeS.toFixed(precision)),
+          unit: SECOND_LABEL
+        };
+      }
+      if (timeS > 1e-4) {
+        return {
+          value: Number((timeS * 1e3).toFixed(precision)),
+          unit: MILLISECOND_LABEL
+        };
+      }
+      if (timeS > 1e-7) {
+        return {
+          value: Number((timeS * 1e6).toFixed(precision)),
+          unit: NANOSECOND_LABEL
+        };
+      }
+      return {
+        value: Number((timeS * 1e9).toFixed(precision)),
+        unit: MICROSECOND_LABEL
+      };
     }
   },
   calculate: {
