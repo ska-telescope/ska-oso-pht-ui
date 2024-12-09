@@ -73,7 +73,7 @@ function buttonDisabled() {
   // cy.get('[data-testid="confirmButtonTestId"]').should('be.disabled');
 }
 
-describe('<CancelButton />', () => {
+describe('<ConfirmButton />', () => {
   for (const theTheme of THEME) {
     it(`Theme: ${theTheme} | disabled: DEFAULT | primary: DEFAULT`, () => {
       mountingDefault(theTheme);
