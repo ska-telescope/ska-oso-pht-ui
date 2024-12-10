@@ -4,7 +4,7 @@
     "continuumConfusionNoise": "1.04 uJy/beam",
     "totalContinuumSensitivity": "81.61 uJy/beam",
     "continuumSynthesisedBeamSize": "3.9 x 3.0 arcsec²",
-    "continuumSurfaceBrightnessSensitivity": "210.10 K",
+    "continuumSurfaceBrightnessSensitivity": "212.10 K",
     "weightedSpectralSensitivity": "13.10 mJy/beam",
     "spectralConfusionNoise": "3.55 uJy/beam",
     "totalSpectralSensitivity": "13.10 mJy/beam",
