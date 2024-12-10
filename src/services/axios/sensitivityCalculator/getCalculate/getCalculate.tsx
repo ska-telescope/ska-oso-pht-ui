@@ -9,7 +9,9 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM,
   SUPPLIED_TYPE_SENSITIVITY,
-  FREQUENCY_UNITS
+  FREQUENCY_UNITS,
+  OB_SUBARRAY_CUSTOM,
+  SBS_CONV_FACTOR_DEFAULT
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -37,6 +39,7 @@ async function GetCalculate(
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
   const isZoom = () => observation.type === TYPE_ZOOM;
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
+  const isCustomSubarray = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   const getTelescope = () => (isLow() ? TELESCOPE_LOW.code : TELESCOPE_MID.code);
   const getMode = () => OBSERVATION_TYPE_BACKEND[observation.type].toLowerCase() + '/';
@@ -80,9 +83,14 @@ async function GetCalculate(
 
   /*********************************************************** MID *********************************************************/
 
-  const convertFrequency = (value: number | string, units: number | string) => {
-    return sensCalHelpers.format.convertBandwidthToHz(value, units);
-  };
+  const getMidSubArrayOrAntennasParams = () =>
+    isCustomSubarray()
+      ? { n_ska: observation?.num15mAntennas, n_meer: observation?.num13mAntennas }
+      : { subarray_configuration: getSubArray() };
+
+  const convertFrequency = (value: number | string, units: number | string) =>
+    sensCalHelpers.format.convertBandwidthToHz(value, units);
+
   const getSpectralResolution = () => {
     const units = FREQUENCY_UNITS[2].label;
     const spectralResValue = observation.spectralResolution.includes(units)
@@ -93,9 +101,8 @@ async function GetCalculate(
 
   const getParamZoom = (): CalculateMidZoomQuery => {
     const bandwidthValueUnit = getZoomBandwidthValueUnit();
-    return {
+    const params = {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`,
-      subarray_configuration: getSubArray(),
       freq_centres_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
@@ -106,12 +113,13 @@ async function GetCalculate(
       spectral_resolutions_hz: getSpectralResolution(),
       total_bandwidths_hz: convertFrequency(bandwidthValueUnit[0], bandwidthValueUnit[1])
     };
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getParamContinuum = (): CalculateMidContinuumQuery => {
-    return {
+    const params = {
       rx_band: `Band ${getBandNumber(observation.observingBand)}`,
-      subarray_configuration: getSubArray(),
       freq_centre_hz: convertFrequency(
         observation.centralFrequency,
         observation.centralFrequencyUnits
@@ -126,6 +134,8 @@ async function GetCalculate(
       el: observation.elevation?.toString(),
       n_subbands: observation.numSubBands?.toString()
     };
+    const subArrayOrAntennasParams = getMidSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getSuppliedSensitivityUnits = () => {
@@ -138,6 +148,9 @@ async function GetCalculate(
   };
 
   const getSBSConvFactor = () => {
+    if (isCustomSubarray()) {
+      return SBS_CONV_FACTOR_DEFAULT;
+    }
     return inMode === TYPE_CONTINUUM
       ? weightingResponse?.sbs_conv_factor
       : weightingResponse[0]?.sbs_conv_factor;
@@ -168,7 +181,10 @@ async function GetCalculate(
   };
 
   const getThermalSensitivity = () => {
-    const sensitivityJy = getSensitivityJy();
+    const sensitivityJy = getSensitivityJy(); // TODO check conversion is correct
+    if (isCustomSubarray()) {
+      return sensitivityJy.toString();
+    }
     const confusionNoise = getConfusionNoise();
     const weightingFactor = getWeightingFactor();
     const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
@@ -208,9 +224,13 @@ async function GetCalculate(
 
   /*********************************************************** LOW *********************************************************/
 
+  const getLowSubArrayOrAntennasParams = () =>
+    isCustomSubarray()
+      ? { num_stations: observation?.numStations }
+      : { subarray_configuration: getSubArray() };
+
   const getParamContinuumLow = (): CalculateLowContinuumQuery => {
-    return {
-      subarray_configuration: getSubArray(),
+    const params = {
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
@@ -225,12 +245,13 @@ async function GetCalculate(
       ), // low continuum bandwidth should be sent in MH
       n_subbands: observation.numSubBands?.toString()
     };
+    const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   const getParamZoomLow = (): CalculateLowZoomQuery => {
     const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-    return {
-      subarray_configuration: getSubArray(),
+    const params = {
       integration_time_h: Number(observation.supplied.value),
       pointing_centre: rightAscension() + ' ' + declination(),
       elevation_limit: observation.elevation?.toString(),
@@ -242,6 +263,8 @@ async function GetCalculate(
         bandwidthValueUnit[1]
       ) // low zoom bandwidth should be sent in kHz
     };
+    const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
+    return { ...params, ...subArrayOrAntennasParams };
   };
 
   function mapQueryCalculateLow(): URLSearchParams {

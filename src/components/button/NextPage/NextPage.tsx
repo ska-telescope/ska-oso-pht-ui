@@ -19,7 +19,7 @@ export default function NextPageButton({
   page = 0,
   primary = false,
   title = 'button.add',
-  testId,
+  testId = 'nextPageButtonTestId',
   toolTip
 }: NextPageButtonProps) {
   const getIcon = () => (page < 0 ? <AddIcon /> : <ArrowForwardIosIcon />);

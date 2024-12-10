@@ -275,7 +275,7 @@ export default function ObservationEntry() {
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
     const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
-    if (record && record.value !== OB_SUBARRAY_CUSTOM) {
+    if (record) {
       setNumOf15mAntennas(record.numOf15mAntennas);
       setNumOf13mAntennas(record.numOf13mAntennas);
       setNumOfStations(record.numOfStations);

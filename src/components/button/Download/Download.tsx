@@ -16,7 +16,7 @@ export default function DownloadButton({
   action,
   title = 'downloadBtn.label',
   primary = false,
-  testId,
+  testId = 'downloadButtonTestId',
   toolTip
 }: DownloadButtonProps) {
   return (

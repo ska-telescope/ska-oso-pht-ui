@@ -78,6 +78,7 @@ export default function ValidationResults({
                 level={1}
                 size={SIZE}
                 testId="statusId"
+                toolTip=""
               />
             </Grid>
             <Grid pt={1} pl={1} item>

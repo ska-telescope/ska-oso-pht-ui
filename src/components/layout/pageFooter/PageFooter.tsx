@@ -11,6 +11,7 @@ import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
+import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 interface PageFooterProps {
   pageNo: number;
@@ -51,7 +52,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
-      setProposal({ ...getProposal(), id: response });
+      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
       navigate(NAV[1]);
     } else {
       NotifyError(response.error);

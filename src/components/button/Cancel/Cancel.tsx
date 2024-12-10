@@ -16,7 +16,7 @@ export default function CancelButton({
   action,
   title = 'button.cancel',
   primary = false,
-  testId,
+  testId = 'cancelButtonTestId',
   toolTip
 }: CancelButtonProps) {
   return (

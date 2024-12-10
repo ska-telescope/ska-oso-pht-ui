@@ -98,6 +98,9 @@
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
   },
+  "customArray": {
+    "result": "N/A (no beam information available)"
+  },
   "cycle": {
     "label": "Cycle"
   },
@@ -140,6 +143,9 @@
   },
   "downloadProposal": {
     "label": "Download proposal"
+  },
+  "dropzone": {
+    "prompt": "Drag and drop your files here, or click to select"
   },
   "editProposal": {
     "toolTip": "Edit proposal",
@@ -845,7 +851,8 @@
       "titleShort": "Science",
       "label": "Science justification",
       "desc": "Upload a Science justification for this proposal in a portable document format (pdf).",
-      "pageError": "The SCIENCE JUSTIFICATION page is not complete"
+      "pageError": "The SCIENCE JUSTIFICATION page is not complete",
+      "help": "This is help for the Science Page"
     },
     "4": {
       "status": "Target",
@@ -868,7 +875,8 @@
       "titleShort": "Technical",
       "label": "Technical justification",
       "desc": "Upload a Technical justification for this proposal in a portable document format (pdf).",
-      "pageError": "The TECHNICAL JUSTIFICATION page is not complete"
+      "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
+      "help": "This is help for the Technical Page"
     },
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
