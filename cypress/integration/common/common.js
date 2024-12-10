@@ -131,13 +131,7 @@ export const clickToPreviousPage = () => {
 };
 
 export const clickAddDataProduct = () => {
-  if (cy.get('[data-testid="addDataProductButton"]').should('be.disabled')) {
-    clickToPreviousPage();
-    clickToNextPage();
-    clickAddDataProduct();
-  } else {
-    cy.get('[data-testid="addDataProductButton"]').click();
-  }
+  cy.get('[data-testid="addDataProductButton"]').click();
 };
 
 export const addObservatoryDataProduct = () => {
