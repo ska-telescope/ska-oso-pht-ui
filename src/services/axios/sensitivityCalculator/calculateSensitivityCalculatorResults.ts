@@ -433,7 +433,7 @@ function getDisplayResultValues(results: RawResults): DisplayResults {
 
   const spectralBeamSizeDisplay = {
     value: results.spectralBeamSize,
-    unit: isCustomSubarray ? NOT_APPLICABLE : BEAM_SIZE_UNITS
+    unit: isCustomSubarray() ? NOT_APPLICABLE : BEAM_SIZE_UNITS
   };
 
   return {
