@@ -47,6 +47,9 @@ export const clickEditProposal = () => {
 
 export const validateProposal = () => {
   clickToValidateProposal();
+};
+
+export const verifyProposalIsValid = () => {
   verifyProposalValidAlertFooter();
 };
 
@@ -128,6 +131,11 @@ export const clickToNextPage = () => {
 export const clickToPreviousPage = () => {
   cy.get('[data-testid="prevButtonTestId"]').should('exist');
   cy.get('[data-testid="prevButtonTestId"]').click();
+};
+
+export const verifySensitivityCalculatorStatusSuccess = () => {
+  cy.get('[data-testid="statusId"]').should('exist');
+  cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
 export const clickAddDataProduct = () => {

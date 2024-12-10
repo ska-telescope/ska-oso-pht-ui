@@ -13,9 +13,11 @@ import {
   clickToAddTarget,
   clickToConfirmProposalSubmission,
   clickToGeneralPage,
-  clickToLinkTargetAndObservation, clickToNextPage,
+  clickToLinkTargetAndObservation,
+  clickToNextPage,
   clickToObservationPage,
-  clickToObservatoryDataProductPage, clickToPreviousPage,
+  clickToObservatoryDataProductPage,
+  clickToPreviousPage,
   clickToSciencePage,
   clickToSubmitProposal,
   clickToTargetPage,
@@ -30,7 +32,9 @@ import {
   verifyFirstProposalOnLandingPageIsVisible,
   verifyObservationInTable,
   verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible
+  verifyOnLandingPageFilterIsVisible,
+  verifyProposalIsValid,
+  verifySensitivityCalculatorStatusSuccess
 } from '../common/common';
 
 beforeEach(() => {
@@ -63,33 +67,17 @@ describe('Edit Proposal', () => {
     verifyObservationInTable();
     clickObservationFromTable();
     clickToLinkTargetAndObservation();
+    verifySensitivityCalculatorStatusSuccess();
     clickSave();
     clickToTechnicalPage();
     clickToObservatoryDataProductPage();
-    //check if add data product is disabled
-    // if (cy.get('[data-testid="addDataProductButton"]').should('be.disabled')) {
-    //   clickToPreviousPage();
-    //   clickToNextPage();
-    //   clickAddDataProduct();
-    // } else {
-    //   cy.get('[data-testid="addDataProductButton"]').click();
-    // }
-    if(cy.get('[data-testid="addDataProductButton"]').should('be.disabled')){
-      console.log("Chloe .. button disabled so going back to pages ")
-      // clickToPreviousPage();
-      // clickToNextPage();
-      cy.go('back')
-      cy.go('forward')
-      clickAddDataProduct();
-    }
-    if(cy.get('[data-testid="addDataProductButton"]').should('not.be.disabled')){
-      console.log("Chloe .. button abled so adding data product")
-      clickAddDataProduct();
-    }
-    // addObservatoryDataProduct();
-    // //validate proposal
-    // validateProposal();
-    // //submit proposal
+    clickAddDataProduct();
+    addObservatoryDataProduct();
+    //validate proposal
+    validateProposal();
+    //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
+    // verifyProposalIsValid()
+    //submit proposal
     // clickToSubmitProposal();
     // clickToConfirmProposalSubmission();
     // //verify status of submitted proposal
