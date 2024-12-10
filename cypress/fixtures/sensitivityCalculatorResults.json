@@ -1,13 +1,13 @@
 [
   {
-    "weightedContinuumSensitivity": "82.48 uJy/beam",
+    "weightedContinuumSensitivity": "81.60 uJy/beam",
     "continuumConfusionNoise": "1.04 uJy/beam",
-    "totalContinuumSensitivity": "82.49 uJy/beam",
+    "totalContinuumSensitivity": "81.61 uJy/beam",
     "continuumSynthesisedBeamSize": "3.9 x 3.0 arcsec²",
-    "continuumSurfaceBrightnessSensitivity": "214.38 K",
-    "weightedSpectralSensitivity": "13.66 mJy/beam",
+    "continuumSurfaceBrightnessSensitivity": "212.10 K",
+    "weightedSpectralSensitivity": "13.10 mJy/beam",
     "spectralConfusionNoise": "3.55 uJy/beam",
-    "totalSpectralSensitivity": "13.66 mJy/beam",
+    "totalSpectralSensitivity": "13.10 mJy/beam",
     "spectralSynthesisedBeamSize": "5.9 x 5.0 arcsec²",
     "spectralSurfaceBrightnessSensitivity": "1.4e+4 K"
   }
