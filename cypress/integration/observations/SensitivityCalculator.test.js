@@ -9,7 +9,7 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  verifyObservationInTable
+  verifyObservationInTable, verifySensitivityCalculatorStatusSuccess
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
@@ -36,11 +36,6 @@ const addTargetUsingCoordinates = () => {
   cy.get('[id="name"]').type('test');
   cy.get('[id="skyDirectionValue1"]').type('00:00:00.0');
   cy.get('[id="skyDirectionValue2"]').type('00:00:00.0');
-};
-
-const verifySensitivityCalculatorStatusSuccess = () => {
-  cy.get('[data-testid="statusId"]').should('exist');
-  cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
 const clickToViewSensitivityCalculatorResults = () => {
