@@ -52,7 +52,7 @@
     "@mui/system": "^6.1.8",
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.0.33",
+    "@ska-telescope/ska-gui-components": "^2.1.5",
     "@ska-telescope/ska-gui-local-storage": "^1.0.1",
     "axios": "^1.6.3",
     "babel-core": "6",
