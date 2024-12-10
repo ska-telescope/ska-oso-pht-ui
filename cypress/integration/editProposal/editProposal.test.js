@@ -14,8 +14,10 @@ import {
   clickToConfirmProposalSubmission,
   clickToGeneralPage,
   clickToLinkTargetAndObservation,
+  clickToNextPage,
   clickToObservationPage,
   clickToObservatoryDataProductPage,
+  clickToPreviousPage,
   clickToSciencePage,
   clickToSubmitProposal,
   clickToTargetPage,
@@ -30,7 +32,9 @@ import {
   verifyFirstProposalOnLandingPageIsVisible,
   verifyObservationInTable,
   verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible
+  verifyOnLandingPageFilterIsVisible,
+  verifyProposalIsValid,
+  verifySensitivityCalculatorStatusSuccess
 } from '../common/common';
 
 beforeEach(() => {
@@ -47,30 +51,33 @@ describe('Edit Proposal', () => {
     clickEditProposal();
     pageConfirmed('TITLE');
     //complete mandatory fields
-    // clickToTeamPage();
-    // addTeamMember();
-    // verifyEmailSentAlertFooter();
-    // clickToGeneralPage();
-    // addAbstract();
-    // selectCosmology();
-    // clickToSciencePage();
-    // clickToTargetPage();
-    // addM2TargetUsingResolve();
-    // clickToAddTarget();
-    // clickToObservationPage();
-    // clickObservationSetup();
-    // clickAddObservation();
-    // verifyObservationInTable();
-    // clickObservationFromTable();
-    // clickToLinkTargetAndObservation();
-    // clickSave();
-    // clickToTechnicalPage();
-    // clickToObservatoryDataProductPage();
-    // clickAddDataProduct();
-    // addObservatoryDataProduct();
-    // //validate proposal
-    // validateProposal();
-    // //submit proposal
+    clickToTeamPage();
+    addTeamMember();
+    verifyEmailSentAlertFooter();
+    clickToGeneralPage();
+    addAbstract();
+    selectCosmology();
+    clickToSciencePage();
+    clickToTargetPage();
+    addM2TargetUsingResolve();
+    clickToAddTarget();
+    clickToObservationPage();
+    clickObservationSetup();
+    clickAddObservation();
+    verifyObservationInTable();
+    clickObservationFromTable();
+    clickToLinkTargetAndObservation();
+    verifySensitivityCalculatorStatusSuccess();
+    clickSave();
+    clickToTechnicalPage();
+    clickToObservatoryDataProductPage();
+    clickAddDataProduct();
+    addObservatoryDataProduct();
+    //validate proposal
+    validateProposal();
+    //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
+    // verifyProposalIsValid()
+    //submit proposal
     // clickToSubmitProposal();
     // clickToConfirmProposalSubmission();
     // //verify status of submitted proposal
