@@ -16,17 +16,17 @@ import {
 
 beforeEach(() => {
   createStandardProposal();
+  //navigate to observation page
+  clickToGeneralPage();
+  clickToSciencePage();
+  clickToTargetPage();
+  clickToObservationPage();
+  //add default observation
+  clickObservationSetup();
 });
 
 describe('Creating Observations', () => {
   it('Verify Spectral average limits', { jiraKey: 'XTP-71407' }, () => {
-    //navigate to observation page
-    clickToGeneralPage();
-    clickToSciencePage();
-    clickToTargetPage();
-    clickToObservationPage();
-    //add default observation
-    clickObservationSetup();
     //verify spectral average limits
     verifyContinuumSpectralAverageRangeAA4();
     verifyContinuumSpectralAverageRangeAA2();
