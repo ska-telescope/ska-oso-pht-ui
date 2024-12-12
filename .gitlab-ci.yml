@@ -18,7 +18,7 @@ stages:
   - publish
 
 install_dependencies:
-  image: node:20.2.0-alpine3.18
+  image: node:22
   stage: dependencies
   tags:
     - k8srunner
@@ -40,7 +40,7 @@ install_dependencies:
     policy: push
 
 code_analysis:
-  image: node:20.2.0-alpine3.18
+  image: node:22
   stage: lint
   tags:
     - ska-default
@@ -78,7 +78,7 @@ js-lint:
       # junit: build/reports/linting.xml
 
 test_and_coverage:
-  image: cypress/browsers:node-20.12.2-chrome-124.0.6367.155-1-ff-125.0.3-edge-124.0.2478.80-1
+  image: cypress/browsers:22.12.0
   stage: test
   tags:
     - ska-default
@@ -120,7 +120,7 @@ stop-integration-test:
 
 # list the current top level dependencies for the project
 list_dependencies:
-  image: node:20.2.0-alpine3.18
+  image: node:22
   stage: test
   tags:
     - ska-default
@@ -142,7 +142,7 @@ list_dependencies:
 
 # Build the application
 build:
-  image: node:20.2.0-alpine3.18
+  image: node:22
   stage: build
   tags:
     - ska-default
