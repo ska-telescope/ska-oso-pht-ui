@@ -16,7 +16,7 @@ export default function HomeButton({
   disabled = false,
   title = 'homeBtn.label',
   primary = false,
-  testId,
+  testId = 'homeButtonTestId',
   toolTip = 'homeBtn.tooltip'
 }: HomeButtonProps) {
   const navigate = useNavigate();

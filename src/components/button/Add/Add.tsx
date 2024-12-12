@@ -16,7 +16,7 @@ export default function AddButton({
   action,
   primary = false,
   title = 'button.add',
-  testId,
+  testId = 'addButtonTestId',
   toolTip
 }: AddButtonProps) {
   return (

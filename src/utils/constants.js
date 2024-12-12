@@ -194,6 +194,21 @@ export const NAV = [
   '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
+export const NOT_APPLICABLE = 'N/A';
+export const BEAM_SIZE_UNITS = 'arcsec2';
+export const CUSTOM_VALID_FIELDS = [
+  'continuumSensitivityWeighted',
+  'spectralSensitivityWeighted',
+  'integrationTime',
+  'sensitivity',
+  'continuumIntegrationTime',
+  'spectralIntegrationTime'
+];
+export const WEIGHTING_FACTOR_DEFAULT = 1;
+
+export const SBS_CONV_FACTOR_DEFAULT = 1;
+
+export const INFINITY = 'Infinity';
 
 export const PAGE_SRC_NET = 8;
 
@@ -289,6 +304,18 @@ export const OB_SUBARRAY_AA4_13 = 10;
 export const OB_SUBARRAY_AA4_CORE = 11;
 export const OB_SUBARRAY_CUSTOM = 20;
 
+export const SECOND_LABEL = 's';
+export const MILLISECOND_LABEL = 'ms';
+export const NANOSECOND_LABEL = 'us';
+export const MICROSECOND_LABEL = 'ns';
+
+export const SECONDS_UNITS = [
+  { label: SECOND_LABEL, toSeconds: 1 },
+  { label: MILLISECOND_LABEL, toSeconds: 0.001 },
+  { label: MICROSECOND_LABEL, toSeconds: 0.000001 },
+  { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
+];
+
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
@@ -381,8 +408,8 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_CUSTOM,
           map: 'Custom',
           label: 'Custom',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
+          numOf15mAntennas: 133,
+          numOf13mAntennas: 64,
           numOfStations: 0,
           disableForBand5: false
         }
@@ -491,7 +518,7 @@ export const OBSERVATION = {
           label: 'Custom',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 0,
+          numOfStations: 512,
           disableForBand5: false,
           continuumSpectralAveragingMax: 27624
         }
@@ -680,10 +707,10 @@ export const OBSERVATION = {
         { label: 'd', value: 1 },
         { label: 'h', value: 2 },
         { label: 'min', value: 3 },
-        { label: 's', value: 4 },
-        { label: 'ms', value: 5 },
-        { label: 'us', value: 6 },
-        { label: 'ns', value: 7 }
+        { label: SECOND_LABEL, value: 4 },
+        { label: MILLISECOND_LABEL, value: 5 },
+        { label: NANOSECOND_LABEL, value: 6 },
+        { label: MICROSECOND_LABEL, value: 7 }
       ]
     },
     {

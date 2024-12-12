@@ -1,11 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, Grid, Typography } from '@mui/material';
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import { pdfjs } from 'react-pdf';
 
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import NextPageButton from '../../button/NextPage/NextPage';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 interface PDFViewerProps {
   open: boolean;
@@ -51,7 +57,7 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
           {numPages > 1 && (
             <PreviousPageButton
               disabled={pageNumber === 1}
-              title={t('page.previous')}
+              title={'page.previous'}
               action={goToPrevPage}
             />
           )}
@@ -60,7 +66,7 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
           {numPages > 1 && (
             <NextPageButton
               disabled={pageNumber === numPages}
-              title={t('page.next')}
+              title={'page.next'}
               action={goToNextPage}
             />
           )}

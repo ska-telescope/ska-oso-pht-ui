@@ -1,49 +1,11 @@
-import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
-import {
-  clickObservationSetup,
-  clickToGeneralPage,
-  clickToObservationPage,
-  clickToSciencePage,
-  clickToTargetPage,
-  createStandardProposal,
-  landingPageConfirmed
-} from '../common/common';
-
-Given('I have access to the PHT Application', () => {
-  landingPageConfirmed();
-});
-
-And('I have navigated to the Observation Page', () => {
-  createStandardProposal();
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
-  clickToObservationPage();
-});
-
-When('I begin to add an observation setup', () => {
-  clickObservationSetup();
-});
-
-Then('I verify spectral average limits for LOW Continuum observations', () => {
-  verifyContinuumSpectralAverageRangeAA4();
-  verifyContinuumSpectralAverageRangeAA2();
-  verifyContinuumSpectralAverageRangeAA1();
-});
-
-And('I verify spectral average limits for LOW Zoom observations', () => {
-  verifyZoomSpectralAverageRangeAA2Core();
-  verifyZoomSpectralAverageRangeCustom();
-});
-
-const verifyContinuumSpectralAverageRangeAA4 = value => {
+export const verifyContinuumSpectralAverageRangeAA4 = value => {
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
   enterSpectralAverageValue(27625);
   verifySpectralAverageRangeError();
 };
 
-const verifyContinuumSpectralAverageRangeAA2 = value => {
+export const verifyContinuumSpectralAverageRangeAA2 = value => {
   selectSubArrayAA2();
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
@@ -51,7 +13,7 @@ const verifyContinuumSpectralAverageRangeAA2 = value => {
   verifySpectralAverageRangeError();
 };
 
-const verifyContinuumSpectralAverageRangeAA1 = value => {
+export const verifyContinuumSpectralAverageRangeAA1 = value => {
   selectSubArrayAA1();
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
@@ -59,7 +21,7 @@ const verifyContinuumSpectralAverageRangeAA1 = value => {
   verifySpectralAverageRangeError();
 };
 
-const verifyZoomSpectralAverageRangeAA2Core = value => {
+export const verifyZoomSpectralAverageRangeAA2Core = value => {
   selectSubArrayAA2Core();
   selectObservationTypeZoom();
   enterSpectralAverageValue(0);
@@ -68,13 +30,14 @@ const verifyZoomSpectralAverageRangeAA2Core = value => {
   verifySpectralAverageRangeError();
 };
 
-const verifyZoomSpectralAverageRangeCustom = value => {
+export const verifyZoomSpectralAverageRangeCustom = value => {
   selectSubArrayCustom();
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
   enterSpectralAverageValue(865);
   verifySpectralAverageRangeError();
 };
+
 const enterSpectralAverageValue = value => {
   cy.get('[data-testid="spectralAveraging"]').type('{selectall}{del}');
   cy.get('[data-testid="spectralAveraging"]').type(value);

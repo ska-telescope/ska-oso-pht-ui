@@ -16,7 +16,7 @@ export default function ConfirmButton({
   action,
   title = 'button.confirm',
   primary = false,
-  testId,
+  testId = 'confirmButtonTestId',
   toolTip
 }: ConfirmButtonProps) {
   return (
