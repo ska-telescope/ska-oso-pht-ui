@@ -1,0 +1,23 @@
+# This file contains the configuration of the expected environment variables
+# The format is as follows:
+# <env name>:<env type>[:<optional default>]
+
+# The current types that are expected are as follows:
+#
+# - string
+# - number
+# - boolean
+
+SKIP_PREFLIGHT_CHECK:boolean
+REACT_APP_SKA_PHT_BASE_URL:string
+REACT_APP_SKA_PHT_API_URL:string
+REACT_APP_SKA_SENSITIVITY_CALC_URL_LOCAL:string
+REACT_APP_SKA_SENSITIVITY_CALC_URL:string
+REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC:boolean
+REACT_APP_USE_LOCAL_DATA:boolean
+REACT_APP_DOMAIN:string
+REACT_APP_SKA_LOGIN_APP_URL:string
+REACT_APP_MSENTRA_CLIENT_ID:string
+REACT_APP_MSENTRA_REDIRECT_URI:string
+REACT_APP_MSENTRA_TENANT_ID:string
+REACT_APP_FORCE_HTTPS:boolean

@@ -44,6 +44,7 @@ import {
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import authAxiosClient from '../axiosAuthClient/axiosAuthClient';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -583,10 +584,11 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `/proposals/${id}`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await authAxiosClient.get(`${SKA_PHT_API_URL}${URL_PATH}`);
+
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
-    return e.message;
+    return e;
   }
 }
 

@@ -12,14 +12,15 @@ const MockProposalBackendList: ProposalBackend[] = [
       created_by: 'TestUser',
       created_on: '2022-09-23T15:43:53.971548Z',
       last_modified_by: 'TestUser',
-      last_modified_on: '2022-09-23T15:43:53.971548Z'
+      last_modified_on: '2022-09-23T15:43:53.971548Z',
+      pdm_version: '1'
     },
     cycle: 'SKA_5000_2023',
     info: {
       title: 'In a galaxy far, far away',
       proposal_type: {
         main_type: 'standard_proposal',
-        sub_type: ['coordinated_proposal']
+        attributes: ['coordinated_proposal']
       },
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
@@ -98,6 +99,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
+          status: null,
           investigator_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
@@ -341,14 +343,15 @@ const MockProposalBackendList: ProposalBackend[] = [
       created_by: 'TestUser',
       created_on: '2022-09-23T15:43:53.971548Z',
       last_modified_by: 'TestUser',
-      last_modified_on: '2022-09-23T15:43:53.971548Z'
+      last_modified_on: '2022-09-23T15:43:53.971548Z',
+      pdm_version: '1'
     },
     cycle: 'SKA_5000_2023',
     info: {
       title: 'The Milky Way View',
       proposal_type: {
         main_type: 'standard_proposal',
-        sub_type: ['coordinated_proposal']
+        attributes: ['coordinated_proposal']
       },
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
@@ -427,6 +430,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
+          status: '',
           investigator_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
@@ -473,7 +477,7 @@ const MockProposalBackendList: ProposalBackend[] = [
               unit: 'm/s'
             },
             supplied: {
-              type: 'integration',
+              supplied_type: 'integration',
               quantity: {
                 value: -12.345,
                 unit: 'ms'
@@ -521,7 +525,7 @@ const MockProposalBackendList: ProposalBackend[] = [
               unit: 'm/s'
             },
             supplied: {
-              type: 'sensitivity',
+              supplied_type: 'sensitivity',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'
@@ -587,7 +591,7 @@ const MockProposalBackendList: ProposalBackend[] = [
               unit: 'm/s'
             },
             supplied: {
-              type: 'sensitivity',
+              supplied_type: 'sensitivity',
               quantity: {
                 value: -12.345,
                 unit: 'm/s'

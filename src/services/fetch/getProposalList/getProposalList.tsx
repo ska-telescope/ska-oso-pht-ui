@@ -1,11 +1,4 @@
-import axios from 'axios';
-import {
-  AXIOS_CONFIG,
-  SKA_PHT_API_URL,
-  USE_LOCAL_DATA,
-  PROJECTS,
-  GENERAL
-} from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA, PROJECTS, GENERAL } from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
@@ -46,9 +39,9 @@ const getMostRecentProposals = (data: ProposalBackend[]) => {
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
+const getSubType = (proposalType: { main_type: string; attributes?: string[] }): any => {
   const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.sub_type?.map(subType =>
+  const subProjects = proposalType.attributes?.map(subType =>
     project.subProjects.find(({ mapping }) => mapping === subType)
   );
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
@@ -91,7 +84,7 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdBy: inRec[i].metadata?.created_by,
       version: inRec[i].metadata?.version,
       proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)?.id,
-      proposalSubType: inRec[i].info?.proposal_type.sub_type
+      proposalSubType: inRec[i].info?.proposal_type.attributes
         ? getSubType(inRec[i].info?.proposal_type)
         : [],
       scienceCategory: inRec[i].info?.science_category
@@ -119,10 +112,18 @@ async function GetProposalList(): Promise<Proposal[] | string> {
 
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
-    const uniqueResults =
-      result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
+    //
+    const headers = new Headers({});
+    headers.append('Content-Type', `application/json`);
+    //
+    const options: RequestInit = {};
+    options.method = 'GET';
+    options.headers = headers;
+    //
+    const response = await fetch(`${SKA_PHT_API_URL}${URL_PATH}`, options);
+    const data = await response.json();
+    const uniqueResults = data.length > 1 ? getMostRecentProposals(data) : data;
+    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
   } catch (e) {
     return e.message;
   }

@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axiosClient from '../../axiosClient/axiosClient';
 import {
   OBSERVATION,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
-  AXIOS_CONFIG,
   TELESCOPE_LOW_NUM,
   OBSERVATION_TYPE_SENSCALC,
   OBSERVATION_TYPE_BACKEND,
@@ -236,7 +235,7 @@ async function GetWeighting(
 
   try {
     const path = `${apiUrl}${getTelescope()}/${getMode()}${URL_WEIGHTING}?${getQueryParams()}`;
-    const result = await axios.get(path, AXIOS_CONFIG);
+    const result = await axiosClient.get(path);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     const errorObject = {

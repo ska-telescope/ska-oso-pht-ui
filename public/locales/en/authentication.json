@@ -1,0 +1,41 @@
+{
+  "button": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "signIn": "SIGN IN",
+    "signOut": "SIGN OUT",
+    "setUserPermissions": "MOCK USER PERMISSIONS"
+  },
+  "error": {
+    "signIn": "Invalid credentials passed to authentication service"
+  },
+  "label": {
+    "email": "Email Address",
+    "password": "Password",
+    "title": "Sign In",
+    "signOut": "Are you sure you want to sign out?",
+    "usingMSEntra": "Using MS Entra authentication.",
+    "msEntraUserSignedIn": "User is signed-in.",
+    "msEntraUserNotSignedIn": "User is not signed-in.",
+    "userDataNotAvailable": "User data not available.",
+    "id": "ID:",
+    "userName": "Username:",
+    "displayName": "Name:",
+    "tenantId": "Tenant Id:",
+    "language": "Language:",
+    "telescope": "Telescope:",
+    "userPermissions": "Users permissions"
+  },
+  "toolTip": {
+    "button": {
+      "signIn": "Click here to access user specific features",
+      "signOut": "Sign out of the application suite",
+      "docs": "Click here for PHT documentation",
+      "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/userGuide/UserIntroduction.html",
+      "mode": "Color Mode Toggle",
+      "skao": "SKAO WebSite",
+      "user": "Additional user functionality including sign out"
+    }
+  }
+}

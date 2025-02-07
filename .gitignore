@@ -28,14 +28,13 @@ ctrf/ctrf-report.json
 .env.test.local
 .env.production.local
 /public/env.js
+env.ts
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 /.nyc_output/*
-
-public/env.js
 *.test.ts
 
 # built docs

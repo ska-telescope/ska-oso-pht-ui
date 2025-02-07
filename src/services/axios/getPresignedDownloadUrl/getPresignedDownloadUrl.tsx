@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function GetPresignedDownloadUrl(selectedFile) {
   if (USE_LOCAL_DATA) {
@@ -8,7 +8,7 @@ async function GetPresignedDownloadUrl(selectedFile) {
 
   try {
     const URL_PATH = `/download/signedurl/${selectedFile}`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await axiosAuthClient.get(URL_PATH);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return e.message;

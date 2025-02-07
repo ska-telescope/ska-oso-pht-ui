@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { USE_LOCAL_DATA } from '../../../utils/constants';
 import MappingPutProposal from './putProposalMapping';
 
 interface PutProposalServiceResponse {
@@ -16,11 +16,7 @@ async function PutProposal(proposal, status?): Promise<PutProposalServiceRespons
     const URL_PATH = `/proposals/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status);
-    const result = await axios.put(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
-    );
+    const result = await axiosAuthClient.put(URL_PATH, convertedProposal);
     return typeof result === 'undefined' ? { error: 'error.API_UNKNOWN_ERROR' } : { valid: result };
   } catch (e) {
     return { error: e.message };

@@ -7,8 +7,14 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
 export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
+export const MSENTRA_CLIENT_ID = env.REACT_APP_MSENTRA_CLIENT_ID;
+export const MSENTRA_TENANT_ID = env.REACT_APP_MSENTRA_TENANT_ID;
+export const MSENTRA_REDIRECT_URI = env.REACT_APP_MSENTRA_REDIRECT_URI;
+export const REACT_APP_FORCE_HTTPS = env.REACT_APP_FORCE_HTTPS;
+
 /*****************************************/
 
+// TODO : Remove this
 export const AXIOS_CONFIG = {
   headers: {
     Accept: 'application/json',

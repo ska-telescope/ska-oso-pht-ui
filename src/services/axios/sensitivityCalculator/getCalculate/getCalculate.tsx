@@ -1,6 +1,5 @@
-import axios from 'axios';
+import axiosClient from '../../axiosClient/axiosClient';
 import {
-  AXIOS_CONFIG,
   OBSERVATION_TYPE_BACKEND,
   OBSERVATION,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
@@ -291,7 +290,7 @@ async function GetCalculate(
   }
 
   try {
-    const result = await axios.get(getPath(), AXIOS_CONFIG);
+    const result = await axiosClient.get(getPath());
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
     const errorObject = {

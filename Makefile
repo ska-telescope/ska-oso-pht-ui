@@ -43,7 +43,15 @@ K8S_CHART_PARAMS += \
 -include .make/xray.mk
 -include .make/js.mk
 
-
+dev-local-env:
+	-rm public/env.js src/env.ts
+	ENV_TYPE_FILE=env_scripts/env_config \
+	ENV_JS_OUTPUT_LOCATION=public/env.js \
+		bash env_scripts/env_config.sh js
+	ENV_TYPE_FILE=env_scripts/env_config \
+	ENV_JS_OUTPUT_LOCATION=src/env.ts \
+		bash env_scripts/env_config.sh ts
+		
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 

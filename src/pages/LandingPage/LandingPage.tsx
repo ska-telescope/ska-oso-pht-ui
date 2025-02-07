@@ -10,7 +10,7 @@ import {
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
+import GetProposalList from '../../services/fetch/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   NAV,
@@ -105,6 +105,7 @@ export default function LandingPage() {
       updateAppContent2(null);
       storeProposalCopy(null);
       setAxiosViewError(response);
+      window.alert = function() {};
       return false;
     } else {
       updateAppContent1(validateProposal(response));

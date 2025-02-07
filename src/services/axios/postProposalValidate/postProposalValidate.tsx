@@ -1,10 +1,5 @@
-import axios from 'axios';
-import {
-  AXIOS_CONFIG,
-  PROPOSAL_STATUS,
-  SKA_PHT_API_URL,
-  USE_LOCAL_DATA
-} from '../../../utils/constants';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { PROPOSAL_STATUS, USE_LOCAL_DATA } from '../../../utils/constants';
 import MappingPutProposal from '../putProposal/putProposalMapping';
 
 interface ValidateResponseData {
@@ -25,11 +20,7 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
   try {
     const URL_PATH = `/proposals/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    const result = await axios.post(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
-    );
+    const result = await axiosAuthClient.post(URL_PATH, convertedProposal);
 
     const validateResponseData: ValidateResponseData = result.data;
     if (typeof validateResponseData === 'undefined') {

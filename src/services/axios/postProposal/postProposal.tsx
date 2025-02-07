@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { helpers } from '../../../utils/helpers';
-import { AXIOS_CONFIG, PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { PROJECTS, USE_LOCAL_DATA } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
@@ -27,7 +27,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
       title: proposal.title,
       proposal_type: {
         main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
-        sub_type: proposal.proposalSubType
+        attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
@@ -39,7 +39,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],
-      results: []
+      result_details: []
     }
   };
   // trim undefined properties
@@ -56,11 +56,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
-    const result = await axios.post(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
-    );
+    const result = await axiosAuthClient.post(URL_PATH, convertedProposal);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return { error: e.message };

@@ -14,12 +14,15 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { AuthWrapper } from '@ska-telescope/ska-login-page';
 import Alert from '../components/alerts/standardAlert/StandardAlert';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
 import theme from '../services/theme/theme';
 import { FOOTER_HEIGHT, HEADER_HEIGHT, USE_LOCAL_DATA } from '../utils/constants';
 import Proposal from '../utils/types/proposal';
+
+// TODO : Need to do a clean up once we are happy with the AAA additions
 
 function App() {
   const { t } = useTranslation('pht');
@@ -35,12 +38,12 @@ function App() {
 
   const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
 
-  const skao = t('toolTip.button.skao');
-  const mode = t('toolTip.button.mode');
-  const headerTip = t('toolTip.button.docs');
-  const headerURL = t('toolTip.button.docsURL', { version: REACT_APP_VERSION });
-  const docs = { tooltip: headerTip, url: headerURL };
-  const toolTip = { skao, mode };
+  // const skao = t('toolTip.button.skao');
+  // const mode = t('toolTip.button.mode');
+  // const headerTip = t('toolTip.button.docs');
+  // const headerURL = t('toolTip.button.docsURL', { version: REACT_APP_VERSION });
+  // const docs = { tooltip: headerTip, url: headerURL };
+  // const toolTip = { skao, mode };
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
 
   const modeToggle = () => {
@@ -74,34 +77,75 @@ function App() {
     <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
       <React.Suspense fallback={<Loader />}>
-        <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />
-        <Header
-          docs={docs}
-          testId="headerId"
-          title={t(LG() ? 'pht.short' : 'pht.title')}
-          toolTip={toolTip}
-          selectTelescope={false}
-          storage={theStorage}
-          useSymbol={LG()}
-        />
-        <>
-          <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />
-          {REQUIRED_WIDTH && <PHT />}
-          {!REQUIRED_WIDTH && mediaSizeNotSupported()}
-          <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
-        </>
-        <Footer
-          copyrightFunc={setShowCopyright}
-          testId="footerId"
+        <AuthWrapper
+          mainChildren={
+            <>
+              {REQUIRED_WIDTH && <PHT />}
+              {!REQUIRED_WIDTH && mediaSizeNotSupported()}
+            </>
+          }
+          footerChildren={[
+            <Typography pt={1} variant="body1">
+              {getProposal()?.id}
+              {LOCAL_DATA}
+            </Typography>
+          ]}
           version={REACT_APP_VERSION}
-          versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
-        >
-          <Typography pt={1} variant="body1">
-            {getProposal()?.id}
-            {LOCAL_DATA}
-          </Typography>
-          <Typography variant="body1"></Typography>
-        </Footer>
+          application={t(LG() ? 'pht.short' : 'pht.title')}
+          buttonLoginLabel={t('button.signIn', { ns: 'authentication' })}
+          buttonLoginToolTip={t('toolTip.button.signIn', { ns: 'authentication' })}
+          buttonLogoutLabel={t('button.signOut', { ns: 'authentication' })}
+          buttonLogoutToolTip={t('toolTip.button.user', { ns: 'authentication' })}
+          buttonUserShowPhoto
+          buttonUserShowUsername
+          buttonUserToolTip={t('toolTip.button.signOut', { ns: 'authentication' })}
+          headerChildren={null}
+          docsIconToolTip={t('toolTip.button.docs', { ns: 'authentication' })}
+          docsURL={t('toolTip.button.docsURL', {
+            ns: 'authentication',
+            version: REACT_APP_VERSION
+          })}
+          skaoLogoToolTip={t('toolTip.button.skao', { ns: 'authentication' })}
+          themeModeToolTip={t('toolTip.button.mode', { ns: 'authentication' })}
+          // storageHelp={help}
+          // storageHelpToggle={helpToggle}
+          storageThemeMode={theMode}
+          storageToggleTheme={modeToggle}
+        />
+
+        {false && (
+          <>
+            {' '}
+            <CopyrightModal copyrightFunc={setShowCopyright} show={showCopyright} />
+            <Header
+              docs={null}
+              testId="headerId"
+              title={t(LG() ? 'pht.short' : 'pht.title')}
+              toolTip={null}
+              selectTelescope={false}
+              storage={theStorage}
+              useSymbol={LG()}
+            />
+            <>
+              <Spacer size={HEADER_HEIGHT} axis={SPACER_VERTICAL} />
+              {REQUIRED_WIDTH && <PHT />}
+              {!REQUIRED_WIDTH && mediaSizeNotSupported()}
+              <Spacer size={FOOTER_HEIGHT} axis={SPACER_VERTICAL} />
+            </>
+            <Footer
+              copyrightFunc={setShowCopyright}
+              testId="footerId"
+              version={REACT_APP_VERSION}
+              versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
+            >
+              <Typography pt={1} variant="body1">
+                {getProposal()?.id}
+                {LOCAL_DATA}
+              </Typography>
+              <Typography variant="body1"></Typography>
+            </Footer>
+          </>
+        )}
       </React.Suspense>
     </ThemeProvider>
   );

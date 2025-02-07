@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
 const MOCK_RESULTS = [
@@ -71,10 +71,7 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
 
   try {
     const URL_PATH = `/coordinates/`;
-    const result = await axios.get(
-      `${SKA_PHT_API_URL}${URL_PATH}${targetName}/${MOCK_UNITS[units]}`,
-      AXIOS_CONFIG
-    );
+    const result = await axiosAuthClient.get(`${URL_PATH}${targetName}/${MOCK_UNITS[units]}`);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return { error: e.message };

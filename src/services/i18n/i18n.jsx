@@ -14,7 +14,7 @@ i18n
     },
     fallbackLng: 'en',
     lng: 'en',
-    ns: ['pht'],
+    ns: ['authentication', 'pht'],
     defaultNS: 'pht',
     initImmediate: false,
     useSuspense: true,
