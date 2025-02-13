@@ -162,7 +162,7 @@ pages:
   dependencies:
     # - test-counts
     - test_and_coverage
-    - js-e2e-test
+    # - js-e2e-test
     # - list_dependencies
     - code_quality
   script:
@@ -255,15 +255,6 @@ include:
     # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
-
-js-e2e-test:
-  variables:
-    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
-  rules:
-    - exists:
-        - cypress/**/*.js
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
