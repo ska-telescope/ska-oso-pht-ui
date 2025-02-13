@@ -1,4 +1,4 @@
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import axiosClient from '../axiosClient/axiosClient';
 import { PROPOSAL_STATUS, USE_LOCAL_DATA } from '../../../utils/constants';
 import MappingPutProposal from '../putProposal/putProposalMapping';
 
@@ -20,7 +20,7 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
   try {
     const URL_PATH = `/proposals/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    const result = await axiosAuthClient.post(URL_PATH, convertedProposal);
+    const result = await axiosClient.post(URL_PATH, convertedProposal);
 
     const validateResponseData: ValidateResponseData = result.data;
     if (typeof validateResponseData === 'undefined') {

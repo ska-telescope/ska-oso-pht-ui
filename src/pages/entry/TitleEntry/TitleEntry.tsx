@@ -50,7 +50,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
+    for (let i = 0; i < getProposalState()?.length; i++) {
       temp.push(page === i ? value : getProposalState()[i]);
     }
     updateAppContent1(temp);
@@ -233,7 +233,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   };
 
   function validateWordCount(title: string) {
-    if (title.length === 0) {
+    if (!title || title?.length === 0) {
       return `${t('title.empty')}`;
     } else if (countWords(title) > MAX_WORD) {
       return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
@@ -260,7 +260,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={
-          getProposal().title.length > 0
+          getProposal().title?.length > 0
             ? t('title.helper', {
                 current: countWords(getProposal().title),
                 max: MAX_WORD

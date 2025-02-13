@@ -1,4 +1,4 @@
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import axiosClient from '../axiosClient/axiosClient';
 import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function GetPresignedDownloadUrl(selectedFile) {
@@ -8,7 +8,7 @@ async function GetPresignedDownloadUrl(selectedFile) {
 
   try {
     const URL_PATH = `/download/signedurl/${selectedFile}`;
-    const result = await axiosAuthClient.get(URL_PATH);
+    const result = await axiosClient.get(URL_PATH);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return e.message;

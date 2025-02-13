@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMsal } from '@azure/msal-react';
-import { SKA_PHT_API_URL } from '../../../utils/constants';
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
 
 export enum LogLevel {
   Error,
@@ -14,33 +14,56 @@ export const loginRequest = {
   scopes: ['User.Read']
 };
 
-const authAxiosClient = axios.create({
-  baseURL: SKA_PHT_API_URL,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-});
+export const useAxiosAuthClient = (baseURL: string) => {
+  const { instance } = useMsal();
 
-authAxiosClient.interceptors.request.use(
-  async request => {
-    if (request?.baseURL?.includes('http://')) {
-      return Promise.reject('http was used, you must use https');
+  const axiosClient = axios.create({
+    baseURL,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
     }
-    const { instance } = useMsal();
-    const account = instance.getActiveAccount();
-    if (account) {
-      const tokenResponse = await instance.acquireTokenSilent({
-        ...loginRequest,
-        account: account
-      });
-      request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
-    }
-    return request;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
+  });
 
-export default authAxiosClient;
+  axiosClient.interceptors.request.use(
+    async request => {
+      const isLocalhost =
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const isHttp = request?.baseURL?.startsWith('http://');
+
+      if (isHttp && !isLocalhost) {
+        return Promise.reject('HTTP is not allowed except on localhost.');
+      }
+
+      if (!isHttp && request?.baseURL?.startsWith('http://')) {
+        request.baseURL = request.baseURL.replace('http://', 'https://');
+      }
+
+      const account = instance.getAllAccounts()[0];
+      if (account) {
+        try {
+          const tokenResponse = await instance.acquireTokenSilent({
+            ...loginRequest,
+            account: account
+          });
+          request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+        } catch (error) {
+          console.error('Error acquiring token silently:', error);
+          if (error instanceof InteractionRequiredAuthError) {
+            instance.loginRedirect({
+              ...loginRequest,
+              redirectUri: window.location.origin
+            });
+          }
+          return Promise.reject(error);
+        }
+      }
+      return request;
+    },
+    error => Promise.reject(error)
+  );
+
+  return axiosClient;
+};
+
+export default useAxiosAuthClient;

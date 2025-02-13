@@ -1,6 +1,5 @@
-import axiosClient from '../axiosClient/axiosClient';
 import { helpers } from '../../../utils/helpers';
-import { PROJECTS, USE_LOCAL_DATA } from '../../../utils/constants';
+import { PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
@@ -54,12 +53,22 @@ async function PostProposal(proposal: Proposal, status?: string) {
 
   try {
     const URL_PATH = `/proposals`;
-    const convertedProposal = mappingPostProposal(proposal, status);
 
-    const result = await axiosClient.post(URL_PATH, convertedProposal);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+    const headers = new Headers({});
+    headers.append('Content-Type', `application/json`);
+
+    const options = {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(mappingPostProposal(proposal, status))
+    };
+
+    const response = await fetch(`${SKA_PHT_API_URL}${URL_PATH}`, options);
+    console.log('TREVOR', response);
+    const data = await response.json();
+    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : data;
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 

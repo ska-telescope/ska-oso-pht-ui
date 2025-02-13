@@ -6,12 +6,13 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PROPOSAL_STATUS, SKA_PHT_API_URL } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
-import PostProposal from '../../../services/axios/postProposal/postProposal';
+import PostProposal from '../../../services/axios/postProposal/postProposalNew';
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
+import { useAxiosAuthClient } from '../../../services/axios/axiosAuthClient/axiosAuthClient';
 
 interface PageFooterProps {
   pageNo: number;
@@ -24,6 +25,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+  const authAxiosClient = useAxiosAuthClient(SKA_PHT_API_URL);
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -49,13 +51,13 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
     NotifyWarning(t('addProposal.warning'));
-    const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
-    if (response && !response.error) {
-      NotifyOK(t('addProposal.success') + response);
-      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
-      navigate(NAV[1]);
+    const result = await PostProposal(authAxiosClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+    if (![200, 201].includes(result.status)) {
+      NotifyError(result.data.message);
     } else {
-      NotifyError(response.error);
+      NotifyOK(t('addProposal.success') + result.data);
+      setProposal({ ...getProposal(), id: result.data, cycle: fetchCycleData().id });
+      navigate(NAV[1]);
     }
   };
 

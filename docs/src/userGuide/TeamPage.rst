@@ -62,7 +62,7 @@ The Team Page has two sections:
 
 2. Team Management Options (Right)
 
-- **Invite Team Members**: Presents a form to invite team members to colloborate on the proposal as seen in :numref:`Figure %s <figure5>`. This section presents a form with the details below:
+- **Invite Team Members**: Presents a form to invite team members to collaborate on the proposal as seen in :numref:`Figure %s <figure5>`. This section presents a form with the details below:
   
   - First Name : First Name of the team member.
   - Last Name : Last  Name of the team member.

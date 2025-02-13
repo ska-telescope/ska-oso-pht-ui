@@ -10,7 +10,7 @@ import {
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
-import GetProposalList from '../../services/fetch/getProposalList/getProposalList';
+import GetProposalList from '../../services/fetch/getProposalList/getProposalListLocal';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   NAV,

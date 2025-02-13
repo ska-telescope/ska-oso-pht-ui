@@ -1,4 +1,4 @@
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import axiosClient from '../axiosClient/axiosClient';
 import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
 async function GetPresignedDeleteUrl(selectedFile) {
@@ -8,7 +8,7 @@ async function GetPresignedDeleteUrl(selectedFile) {
 
   try {
     const URL_PATH = `/delete/signedurl/${selectedFile}`;
-    const result = await axiosAuthClient.get(`${SKA_PHT_API_URL}${URL_PATH}`);
+    const result = await axiosClient.get(`${SKA_PHT_API_URL}${URL_PATH}`);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     return e.message;

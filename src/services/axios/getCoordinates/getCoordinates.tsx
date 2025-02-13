@@ -1,4 +1,4 @@
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import axiosClient from '../axiosClient/axiosClient';
 import { USE_LOCAL_DATA } from '../../../utils/constants';
 
 const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
@@ -71,7 +71,7 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
 
   try {
     const URL_PATH = `/coordinates/`;
-    const result = await axiosAuthClient.get(`${URL_PATH}${targetName}/${MOCK_UNITS[units]}`);
+    const result = await axiosClient.get(`${URL_PATH}${targetName}/${MOCK_UNITS[units]}`);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return { error: e.message };

@@ -1,16 +1,17 @@
-import { env } from '../env';
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
-export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+export const USE_LOCAL_DATA = process.env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
-  env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
-export const SKA_PHT_API_URL = env.REACT_APP_SKA_PHT_API_URL;
-export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
+  process.env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
+export const SKA_PHT_API_URL = process.env.REACT_APP_SKA_PHT_API_URL;
+export const SKA_SENSITIVITY_CALCULATOR_API_URL = process.env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 
-export const MSENTRA_CLIENT_ID = env.REACT_APP_MSENTRA_CLIENT_ID;
-export const MSENTRA_TENANT_ID = env.REACT_APP_MSENTRA_TENANT_ID;
-export const MSENTRA_REDIRECT_URI = env.REACT_APP_MSENTRA_REDIRECT_URI;
-export const REACT_APP_FORCE_HTTPS = env.REACT_APP_FORCE_HTTPS;
+export const PHT_BASE_URL = process.env.REACT_APP_SKA_PHT_BASE_URL;
+
+export const MSENTRA_CLIENT_ID = process.env.REACT_APP_MSENTRA_CLIENT_ID;
+export const MSENTRA_TENANT_ID = process.env.REACT_APP_MSENTRA_TENANT_ID;
+export const MSENTRA_REDIRECT_URI = process.env.REACT_APP_MSENTRA_REDIRECT_URI;
+export const REACT_APP_FORCE_HTTPS = process.env.REACT_APP_FORCE_HTTPS;
 
 /*****************************************/
 

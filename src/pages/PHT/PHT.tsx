@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { NAV, PATH } from '../../utils/constants';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { NAV, PATH, PHT_BASE_URL } from '../../utils/constants';
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
@@ -14,7 +14,6 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
-import { env } from '../../env';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -34,12 +33,17 @@ const ROUTES = [
 
 export default function PHT() {
   return (
-    <Router basename={env.REACT_APP_SKA_PHT_BASE_URL || '/'}>
+    <BrowserRouter basename={PHT_BASE_URL || '/'}>
       <Routes>
         {ROUTES.map((ROUTE, index) => {
-          return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
+          return (
+            <Route key={index} path={ROUTE.path}>
+              <Route index element={ROUTE.element} />
+              <Route path="*" element={ROUTE.element} />
+            </Route>
+          );
         })}
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }

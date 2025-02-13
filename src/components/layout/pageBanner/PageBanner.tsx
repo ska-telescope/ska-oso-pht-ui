@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -145,13 +145,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       justifyContent="flex-start"
       pl={2}
     >
-      <Grid item>
+      <Grid>
         {backPage > 0 && <PreviousPageButton title="button.cancel" action={prevPageNav} />}
         {!backPage && <HomeButton />}
       </Grid>
-      <Grid item>
-        {pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}
-      </Grid>
+      <Grid>{pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}</Grid>
     </Grid>
   );
 
@@ -165,12 +163,12 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       wrap="nowrap"
       pr={2}
     >
-      <Grid item>
+      <Grid>
         {pageNo < LAST_PAGE && (
           <ValidateButton action={validateClicked} toolTip={validateTooltip()} />
         )}
       </Grid>
-      <Grid item>
+      <Grid>
         {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
       </Grid>
     </Grid>
@@ -178,39 +176,35 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
   const row1 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item>{buttonsLeft()}</Grid>
+      <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
-        <Grid item xs={7} display={'none'}>
+        <Grid size={{ xs: 7 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       ) : (
-        <Grid item xs={7} display={'block'}>
+        <Grid size={{ xs: 7 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
 
       {wrapStatusArray ? (
-        <Grid item display={'block'}>
-          {pageTitle()}
-        </Grid>
+        <Grid display={'block'}>{pageTitle()}</Grid>
       ) : (
-        <Grid item display={'none'}>
-          {pageTitle()}
-        </Grid>
+        <Grid display={'none'}>{pageTitle()}</Grid>
       )}
 
-      <Grid item>{buttonsRight()}</Grid>
+      <Grid>{buttonsRight()}</Grid>
     </Grid>
   );
 
   const row2 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
-        <Grid item xs={12} display={'block'}>
+        <Grid size={{ xs: 12 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       ) : (
-        <Grid item xs={12} display={'none'}>
+        <Grid size={{ xs: 12 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
@@ -220,22 +214,14 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const row3 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray && (
-        <Grid container justifyContent="center" lg={12}>
-          {pageDesc()}
+        <Grid container justifyContent="center">
+          <Grid size={{ lg: 12 }}>{pageDesc()}</Grid>
         </Grid>
       )}
 
-      {!wrapStatusArray && (
-        <Grid item lg={4}>
-          {pageTitle()}
-        </Grid>
-      )}
+      {!wrapStatusArray && <Grid size={{ lg: 4 }}>{pageTitle()}</Grid>}
 
-      {!wrapStatusArray && (
-        <Grid item lg={8}>
-          {pageDesc()}
-        </Grid>
-      )}
+      {!wrapStatusArray && <Grid size={{ lg: 4 }}>{pageDesc()}</Grid>}
     </Grid>
   );
 
@@ -247,15 +233,15 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
 
       {/* TODO: revisit to implement override breakpoint and use grid */}
       {/* <Grid container spacing={1} alignItems="center">
-        <Grid item xs={6} md={6} lg={2}>
+        <Grid xs={6} md={6} lg={2}>
           {buttonsLeft()}
         </Grid>
-        <Grid item xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
-          <Grid item justifyContent="space-evenly">
+        <Grid xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
+          <Grid justifyContent="space-evenly">
             {pageNo < LAST_PAGE && <StatusArray />}
           </Grid>
         </Grid>
-        <Grid item xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
+        <Grid xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
           {buttonsRight()}
         </Grid>
       </Grid> */}

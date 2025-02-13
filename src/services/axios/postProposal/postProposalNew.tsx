@@ -1,7 +1,8 @@
-import axiosClient from '../axiosClient/axiosClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { AxiosResponse } from 'axios';
 import { helpers } from '../../../utils/helpers';
-import { PROJECTS, USE_LOCAL_DATA } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { PROJECTS, USE_LOCAL_DATA } from '../../../utils/constants';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
@@ -47,20 +48,35 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   return transformedProposal;
 }
 
-async function PostProposal(proposal: Proposal, status?: string) {
+const PostProposal = async (
+  axiosClient: ReturnType<typeof useAxiosAuthClient>, // Add the authAxiosClient parameter
+  proposal: Proposal,
+  status?: string
+): Promise<AxiosResponse> => {
   if (USE_LOCAL_DATA) {
-    return 'PROPOSAL-ID-001';
+    return { config: null, data: 'PROPOSAL-ID-001', headers: null, status: 200, statusText: 'OK' };
   }
 
   try {
     const URL_PATH = `/proposals`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
-    const result = await axiosClient.post(URL_PATH, convertedProposal);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
-  } catch (e) {
-    return { error: e.message };
+    const response = await axiosClient.post(URL_PATH, convertedProposal);
+    return response;
+  } catch (error) {
+    console.error('Error posting a proposal:', error);
+
+    if (error.response) {
+      // Server error
+      throw error.response; // Re-throw the AxiosResponse error for the caller to handle
+    } else if (error.request) {
+      // Request error (no response)
+      throw new Error('No response received from the server'); // Re-throw a custom error
+    } else {
+      // Client-side error
+      throw error; // Re-throw the original error
+    }
   }
-}
+};
 
 export default PostProposal;
