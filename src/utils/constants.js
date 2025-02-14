@@ -11,7 +11,6 @@ export const PHT_BASE_URL = process.env.REACT_APP_SKA_PHT_BASE_URL;
 export const MSENTRA_CLIENT_ID = process.env.REACT_APP_MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = process.env.REACT_APP_MSENTRA_TENANT_ID;
 export const MSENTRA_REDIRECT_URI = process.env.REACT_APP_MSENTRA_REDIRECT_URI;
-export const REACT_APP_FORCE_HTTPS = process.env.REACT_APP_FORCE_HTTPS;
 
 /*****************************************/
 
