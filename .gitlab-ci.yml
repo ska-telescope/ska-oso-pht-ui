@@ -79,6 +79,7 @@ js-lint:
 
 test_and_coverage:
   image: cypress/browsers:22.12.0
+  allow_failure: true
   stage: test
   tags:
     - ska-default

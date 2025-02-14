@@ -113,10 +113,12 @@ async function GetProposalList(authApiClient): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
     const response = await authApiClient(URL_PATH);
+    console.log('TREVOR 01', response);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const data = await response.json();
+    const data = await response.text();
+    console.log('TREVOR 02', response);
     const uniqueResults = data.length > 1 ? getMostRecentProposals(data) : data;
     return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
   } catch (e) {
