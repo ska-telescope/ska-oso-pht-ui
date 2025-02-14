@@ -9,9 +9,8 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import { useAPIClient } from '@ska-telescope/ska-login-page';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
-import GetProposalList from '../../services/fetch/getProposalList/getProposalList';
+import GetProposalList from '../../services/fetch/getProposalList/getProposalListLocal';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   NAV,
@@ -66,25 +65,23 @@ export default function LandingPage() {
 
   const DATA_GRID_HEIGHT = '65vh';
 
-  const FetchData = async () => {
-    const authApiClient = useAPIClient();
-    const response = await GetProposalList(authApiClient);
-    if (typeof response === 'string') {
-      setAxiosError(response);
-    } else {
-      setProposals(response);
-    }
-  };
-
   React.useEffect(() => {
     updateAppContent2(null);
     setFetchList(!fetchList);
     setCycleData(!cycleData);
   }, []);
 
-  // React.useEffect(() => {
-  FetchData();
-  // }, [fetchList]);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const response = await GetProposalList();
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setProposals(response);
+      }
+    };
+    fetchData();
+  }, [fetchList]);
 
   React.useEffect(() => {
     const cycleData = async () => {
