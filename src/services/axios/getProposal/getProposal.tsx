@@ -18,7 +18,8 @@ import {
   BAND_LOW,
   BAND_1,
   FREQUENCY_UNITS,
-  ROBUST
+  ROBUST,
+  AXIOS_CONFIG
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -43,6 +44,7 @@ import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import axiosClient from '../axiosClient/axiosClient';
+import axios from 'axios';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];
@@ -582,11 +584,10 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `/proposals/${id}`;
-    const result = await axiosClient.get(`${SKA_PHT_API_URL}${URL_PATH}`);
-
+    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
-    return e;
+    return e.message;
   }
 }
 

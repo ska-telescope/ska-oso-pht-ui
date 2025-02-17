@@ -2,6 +2,8 @@ import { helpers } from '../../../utils/helpers';
 import { PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
+// import { useAPIClient } from '@ska-telescope/ska-login-page';
+import { useAPIClient } from '../useAPIClient';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
@@ -46,7 +48,11 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   return transformedProposal;
 }
 
-async function PostProposal(proposal: Proposal, status?: string) {
+export const usePostProposal = async (proposal: Proposal, status?: string) => {
+  console.log('TREVOR 001 ');
+  const authApiClient = useAPIClient();
+  console.log('TREVOR 002 ');
+  /*
   if (USE_LOCAL_DATA) {
     return 'PROPOSAL-ID-001';
   }
@@ -62,14 +68,13 @@ async function PostProposal(proposal: Proposal, status?: string) {
       headers: headers,
       body: JSON.stringify(mappingPostProposal(proposal, status))
     };
-
-    const response = await fetch(`${SKA_PHT_API_URL}${URL_PATH}`, options);
-    console.log('TREVOR', response);
-    const data = await response.json();
-    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : data;
+    const response = await authApiClient(`${SKA_PHT_API_URL}${URL_PATH}`, options);
+    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : response;
   } catch (e) {
-    return e.message;
+    return e;
   }
-}
+    */
+  return true;
+};
 
-export default PostProposal;
+export default usePostProposal;

@@ -6,13 +6,14 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS, SKA_PHT_API_URL } from '../../../utils/constants';
+import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
-import PostProposal from '../../../services/axios/postProposal/postProposalNew';
+// AXIOS import PostProposalAxios from '../../../services/axios/postProposal/postProposalNew';
+import usePostProposal from '../../../services/fetch/postProposal/postProposal'; // FETCH
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
-import { useAxiosAuthClient } from '../../../services/axios/axiosAuthClient/axiosAuthClient';
+// AXIOS import { useAxiosAuthClient } from '../../../services/axios/axiosAuthClient/axiosAuthClient';
 
 interface PageFooterProps {
   pageNo: number;
@@ -25,7 +26,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
-  const authAxiosClient = useAxiosAuthClient(SKA_PHT_API_URL);
+  // AXIOS const authAxiosClient = useAxiosAuthClient(SKA_PHT_API_URL);
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -46,12 +47,13 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
   const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
 
-  const createProposal = async () => {
-    const getProposal = () => application.content2 as Proposal;
-    const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const CreateProposal = async () => {
+    // const getProposal = () => application.content2 as Proposal;
+    //const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    NotifyWarning(t('addProposal.warning'));
-    const result = await PostProposal(authAxiosClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+    //NotifyWarning(t('addProposal.warning'));
+    /* AXIOS
+    const result = await PostProposalAxios(authAxiosClient, getProposal(), PROPOSAL_STATUS.DRAFT);
     if (![200, 201].includes(result.status)) {
       NotifyError(result.data.message);
     } else {
@@ -59,6 +61,18 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
       setProposal({ ...getProposal(), id: result.data, cycle: fetchCycleData().id });
       navigate(NAV[1]);
     }
+    */
+    /* FETCH */
+    const result = await usePostProposal(application.content2 as Proposal, PROPOSAL_STATUS.DRAFT);
+    /*
+    if (![200, 201].includes(result.status)) {
+      NotifyError(result.data);
+    } else {
+      NotifyOK(t('addProposal.success') + result.data);
+      setProposal({ ...getProposal(), id: result.data, cycle: fetchCycleData().id });
+      navigate(NAV[1]);
+    }
+      */
   };
 
   const nextLabel = () => {
@@ -79,7 +93,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
 
   const nextPageClicked = () => {
     if (usedPageNo === -1) {
-      createProposal();
+      CreateProposal();
     } else {
       nextPageNav();
     }

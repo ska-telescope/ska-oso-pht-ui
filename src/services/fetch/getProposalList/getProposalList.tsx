@@ -1,4 +1,4 @@
-import { USE_LOCAL_DATA, PROJECTS, GENERAL } from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA, PROJECTS, GENERAL } from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
@@ -105,20 +105,23 @@ export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
 }
 
-async function GetProposalList(authApiClient): Promise<Proposal[] | string> {
+async function GetProposalList(): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
 
   try {
     const URL_PATH = `/proposals/list/DefaultUser`;
-    const response = await authApiClient(URL_PATH);
-    console.log('TREVOR 01', response);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.text();
-    console.log('TREVOR 02', response);
+    //
+    const headers = new Headers({});
+    headers.append('Content-Type', `application/json`);
+    //
+    const options: RequestInit = {};
+    options.method = 'GET';
+    options.headers = headers;
+    //
+    const response = await fetch(`${SKA_PHT_API_URL}${URL_PATH}`, options);
+    const data = await response.json();
     const uniqueResults = data.length > 1 ? getMostRecentProposals(data) : data;
     return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
   } catch (e) {

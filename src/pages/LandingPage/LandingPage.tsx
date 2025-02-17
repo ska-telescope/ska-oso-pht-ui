@@ -10,7 +10,7 @@ import {
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
-import GetProposalList from '../../services/fetch/getProposalList/getProposalListLocal';
+import GetProposalList from '../../services/fetch/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   NAV,
@@ -35,10 +35,12 @@ import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData
 import TeamMember from 'utils/types/teamMember';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER } from '../../utils/constants';
+import { useAPIClient } from '../../services/fetch/useAPIClient';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const authApiClient = useAPIClient();
 
   const {
     application,
