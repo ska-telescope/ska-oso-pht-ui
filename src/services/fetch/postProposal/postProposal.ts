@@ -48,15 +48,14 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   return transformedProposal;
 }
 
-export const usePostProposal = async (proposal: Proposal, status?: string) => {
-  console.log('TREVOR 001 ');
-  const authApiClient = useAPIClient();
-  console.log('TREVOR 002 ');
-  /*
+const postProposal = async (
+  authApiClient: (url: string, options?: RequestInit) => Promise<Response>,
+  proposal: Proposal,
+  status?: string
+) => {
   if (USE_LOCAL_DATA) {
     return 'PROPOSAL-ID-001';
   }
-
   try {
     const URL_PATH = `/proposals`;
 
@@ -69,12 +68,11 @@ export const usePostProposal = async (proposal: Proposal, status?: string) => {
       body: JSON.stringify(mappingPostProposal(proposal, status))
     };
     const response = await authApiClient(`${SKA_PHT_API_URL}${URL_PATH}`, options);
-    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : response;
+    const data: string = await response.text();
+    return typeof response === 'undefined' ? 'error.API_UNKNOWN_ERROR' : data;
   } catch (e) {
     return e;
   }
-    */
-  return true;
 };
 
-export default usePostProposal;
+export default postProposal;

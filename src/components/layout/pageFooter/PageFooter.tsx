@@ -10,10 +10,11 @@ import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 // AXIOS import PostProposalAxios from '../../../services/axios/postProposal/postProposalNew';
-import usePostProposal from '../../../services/fetch/postProposal/postProposal'; // FETCH
+import postProposal from '../../../services/fetch/postProposal/postProposal'; // FETCH
 import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 // AXIOS import { useAxiosAuthClient } from '../../../services/axios/axiosAuthClient/axiosAuthClient';
+import { useAPIClient } from '@ska-telescope/ska-login-page';
 
 interface PageFooterProps {
   pageNo: number;
@@ -26,6 +27,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+  const authApiClient = useAPIClient();
   // AXIOS const authAxiosClient = useAxiosAuthClient(SKA_PHT_API_URL);
 
   React.useEffect(() => {
@@ -48,10 +50,10 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
   const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
 
   const CreateProposal = async () => {
-    // const getProposal = () => application.content2 as Proposal;
-    //const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+    const getProposal = () => application.content2 as Proposal;
+    const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    //NotifyWarning(t('addProposal.warning'));
+    NotifyWarning(t('addProposal.warning'));
     /* AXIOS
     const result = await PostProposalAxios(authAxiosClient, getProposal(), PROPOSAL_STATUS.DRAFT);
     if (![200, 201].includes(result.status)) {
@@ -63,16 +65,14 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     }
     */
     /* FETCH */
-    const result = await usePostProposal(application.content2 as Proposal, PROPOSAL_STATUS.DRAFT);
-    /*
-    if (![200, 201].includes(result.status)) {
-      NotifyError(result.data);
-    } else {
-      NotifyOK(t('addProposal.success') + result.data);
-      setProposal({ ...getProposal(), id: result.data, cycle: fetchCycleData().id });
+    const result = await postProposal(authApiClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+    if (typeof result === 'string') {
+      NotifyOK(t('addProposal.success') + result);
+      setProposal({ ...getProposal(), id: result, cycle: fetchCycleData().id });
       navigate(NAV[1]);
+    } else {
+      NotifyError(result);
     }
-      */
   };
 
   const nextLabel = () => {
