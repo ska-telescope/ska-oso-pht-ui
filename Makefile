@@ -28,6 +28,7 @@ js-pre-e2e-test:
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
+SENSITIVITY_CALCULATOR_BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 
 K8S_CHART_PARAMS += \
