@@ -11,10 +11,14 @@ import {
   STATUS_ERROR,
   TYPE_CONTINUUM,
   SUPPLIED_TYPE_SENSITIVITY,
-  OB_SUBARRAY_CUSTOM
+  OB_SUBARRAY_CUSTOM,
+  TEL
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
+import getContinuumData from './new/getContinuumData/getContinuumData';
+import { telescope } from '@ska-telescope/ska-gui-local-storage';
+import { CONTINUUM_DATA_MOCKED } from './new/getContinuumData/mockedContinuumResults';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -33,7 +37,8 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
+      // return await getSensitivityCalculatorAPIData(observation, target, isCustom());
+      return await getSensitivityCalculatorAPIDataNew(observation, target, isCustom());
     } catch (e) {
       return { error: e };
     }
@@ -146,6 +151,31 @@ async function getSensitivityCalculatorAPIData(
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
+  return response;
+}
+
+async function getSensitivityCalculatorAPIDataNew(
+  observation: Observation,
+  target: Target,
+  isCustom: boolean
+) {
+  console.log('::: in getSensitivityCalculatorAPIDataNew :::');
+
+  const telescope: string = TEL[observation.telescope].toLowerCase();
+  const subArrayResults: any = undefined;
+  const mapping: Function = undefined;
+  const standardData: any = {};
+  const continuumData: any = {};
+
+  console.log('::: telescope', telescope);
+
+  const response = getContinuumData(
+    telescope,
+    subArrayResults,
+    mapping,
+    standardData,
+    continuumData
+  );
   return response;
 }
 
