@@ -41,15 +41,18 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output: any = await fetchSensCalc(observation, target);
+
+    console.log('after fetchSensCalc output', output);
+
     if ('error' in output) {
       return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
     }
     if (output['calculate']['error'] && output['calculate']['error']['detail']) {
       return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
     }
-    if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
-      return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
-    }
+    // if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
+    //   return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
+    // }
     const results = calculateSensitivityCalculatorResults(output, observation, target);
     return results;
   } catch (e) {
@@ -67,6 +70,7 @@ async function getSensitivityCalculatorAPIData(
   target: Target,
   isCustom: boolean
 ) {
+  console.log('getSensitivityCalculatorAPIData');
   /* 
     When the users clicks on the Calculate button of the Sensitivity Calculator,
     there are 1, 2, 3, or 4 calls to the API made
@@ -95,57 +99,73 @@ async function getSensitivityCalculatorAPIData(
     - 1 call to to getCalculate
   */
 
-  function handleWeighting() {
-    if (isCustom) {
-      return [];
-    }
-    const promisesWeighting = [GetWeighting(observation, target, observation.type)];
-    if (observation.type === TYPE_CONTINUUM) {
-      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
-    }
-    return promisesWeighting;
-  }
+  // function handleWeighting() {
+  //   if (isCustom) {
+  //     return [];
+  //   }
+  //   const promisesWeighting = [GetWeighting(observation, target, observation.type)];
+  //   if (observation.type === TYPE_CONTINUUM) {
+  //     promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
+  //   }
+  //   return promisesWeighting;
+  // }
 
-  function handleCalculate(weightingResponse) {
+  function handleCalculate() {
     const promisesCalculate = [
-      GetCalculate(observation, target, weightingResponse.weighting, observation.type)
+      GetCalculate(
+        observation,
+        target,
+        //weightingResponse.weighting,
+        observation.type
+      )
     ];
+
+    // Doesn't need second call???
     if (
       observation.type === TYPE_CONTINUUM &&
       observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY &&
       !isCustom
     ) {
       promisesCalculate.push(
-        GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM)
+        GetCalculate(
+          observation,
+          target,
+          //weightingResponse.weightingLine,
+          TYPE_ZOOM
+        )
       );
     }
     return promisesCalculate;
   }
 
-  // weighting responses
-  const promisesWeighting = handleWeighting();
-  const [weighting, weightingLine] = await Promise.all(promisesWeighting);
-  const weightingResponse = {
-    weighting,
-    weightingLine
-  };
+  // // weighting responses
+  // const promisesWeighting = handleWeighting();
+  // const [weighting, weightingLine] = await Promise.all(promisesWeighting);
+  // const weightingResponse = {
+  //   weighting,
+  //   weightingLine
+  // };
 
   // calculate responses
-  const promisesCalculate = handleCalculate(weightingResponse);
+  const promisesCalculate = handleCalculate();
   const [calculate, calculateSpectral] = await Promise.all(promisesCalculate);
   const calculateResponse = {
     calculate,
     calculateSpectral
   };
 
+  console.log('getSensitivityCalculatorAPIData calculateResponse', calculateResponse);
+
   // TODO harmonise responses format before passing to
   // calculateSensitivityCalculatorResults? (handling[0] for zoom, etc)
 
   const response = {
-    ...weightingResponse,
+    // ...weightingResponse,
     ...calculateResponse
   };
   helpers.transform.trimObject(response);
+
+  console.log('getSensitivityCalculatorAPIData response', response);
   return response;
 }
 
