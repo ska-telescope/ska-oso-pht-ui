@@ -1,0 +1,74 @@
+[
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 50, "unit": "2" },
+    "frequency": { "value": 100, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (16.3 km/s)",
+    "effectiveResolution": "5.43 kHz (16.3 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 20, "unit": "2" },
+    "frequency": { "value": 330, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (4.9 km/s)",
+    "effectiveResolution": "5.43 kHz (4.9 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 100, "unit": "2" },
+    "frequency": { "value": 100, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (16.3 km/s)",
+    "effectiveResolution": "5.43 kHz (16.3 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 100, "unit": "2" },
+    "frequency": { "value": 150, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (10.9 km/s)",
+    "effectiveResolution": "5.43 kHz (10.9 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 100, "unit": "2" },
+    "frequency": { "value": 300, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (5.4 km/s)",
+    "effectiveResolution": "5.43 kHz (5.4 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": true,
+    "bandWidth": { "value": 300, "unit": "2" },
+    "frequency": { "value": 200, "unit": "2" },
+    "spectralAveraging": 1,
+    "spectralResolution": "5.43 kHz (8.1 km/s)",
+    "effectiveResolution": "5.43 kHz (8.1 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": false,
+    "bandWidth": { "value": 0.435, "unit": "1" },
+    "frequency": { "value": 0.7975, "unit": "1" },
+    "spectralAveraging": 1,
+    "spectralResolution": "13.44 kHz (5.1 km/s)",
+    "effectiveResolution": "13.44 kHz (5.1 km/s)"
+  },
+  {
+    "continuum": true,
+    "isLow": false,
+    "bandWidth": { "value": 0.435, "unit": "1" },
+    "frequency": { "value": 0.7975, "unit": "?" },
+    "spectralAveraging": 1,
+    "spectralResolution": "13.44 kHz (0.0 m/s)",
+    "effectiveResolution": "13.44 kHz (0.0 m/s)"
+  }
+]
