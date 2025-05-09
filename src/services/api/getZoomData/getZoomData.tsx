@@ -1,3 +1,6 @@
+import Fetch from '../fetch/Fetch';
+
+/*
 import { ZOOM_DATA_MOCKED } from './mockedZoomResults';
 import {
   StandardData,
@@ -52,15 +55,12 @@ import {
   calculateSpectralResolution,
   getSpectralResolutionBaseValue
 } from '../../../utils/calculate/calculate';
-import Fetch from '../fetch/Fetch';
 import { t } from 'i18next';
 
-/************************************/
+
 
 const getBandwidth = (num: number, isLow: boolean = true): number =>
   isLow ? BANDWIDTH_LOW_ZOOM[num - 1] : BANDWIDTH_MID_ZOOM[num - 1];
-
-/************************************/
 
 const mapping = (data: any, dataS: StandardData, dataZ: ZoomData) => {
   const isCustom = dataS.subarray === OB_SUBARRAY_CUSTOM;
@@ -282,26 +282,35 @@ const addPropertiesMID = (
   return properties;
 };
 
+*/
+
 async function getZoomData(
-  telescope: Telescope,
-  subArrayResults: SubArrayResults | undefined,
-  standardData: StandardData,
-  advancedData: AdvancedData,
-  zoomData: ZoomData,
-  showAdvanced: boolean,
-  mocked = MOCKED_API
+  telescope: string, // Telescope,
+  subArrayResults: any, // SubArrayResults | undefined,
+  standardData: any, //StandardData,
+  // advancedData: AdvancedData,
+  zoomData: any, //ZoomData,
+  // showAdvanced: boolean,
+  // mocked = MOCKED_API
+  mapping: Function
 ) {
-  if (mocked) {
+  /*if (mocked) {
     return Promise.resolve(ZOOM_DATA_MOCKED);
   } else {
+   */
     const URL_PATH = `/zoom/calculate`;
+    /*
     let properties = isLow(telescope)
       ? addPropertiesLOW(telescope, standardData, zoomData)
       : addPropertiesMID(telescope, standardData, zoomData, subArrayResults);
+    */
+   let properties = '';
+   /*
     if (showAdvanced && !isLow(telescope)) {
       properties += addAdvancedData(advancedData);
     }
+      */
     return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData);
   }
-}
+// }
 export default getZoomData;
