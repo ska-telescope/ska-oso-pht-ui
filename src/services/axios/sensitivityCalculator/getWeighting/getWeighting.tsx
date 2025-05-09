@@ -60,6 +60,7 @@ async function GetWeighting(
     return OBSERVATION_TYPE_BACKEND[inMode].toLowerCase() + '/';
   };
 
+  // use new senscalc - moving these two to getcalculate??????
   const getWeightingMode = () => {
     return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
   };

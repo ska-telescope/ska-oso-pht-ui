@@ -592,8 +592,19 @@ export default function calculateSensitivityCalculatorResults(
   target: Target
 ): SensCalcResults {
   theObservation = observation;
+
+  console.log('calculateSensitivityCalculatorResults response', response);
+
+  console.log('calculateSensitivityCalculatorResults observation', observation);
+
+  console.log('calculateSensitivityCalculatorResults target', target);
+
+  // looks like skippable
   const rawResults = getResultValues(response);
+
+  // do we need to keep the preferred units? or backend has already decided???
   const displayResults = getDisplayResultValues(rawResults);
+
   const resultsFinal = getFinalResults(target, displayResults);
 
   return resultsFinal;

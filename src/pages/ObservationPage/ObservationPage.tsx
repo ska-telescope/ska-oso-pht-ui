@@ -169,6 +169,8 @@ export default function ObservationPage() {
   };
 
   const getSensCalcData = async (observation: Observation, target: Target) => {
+    console.log('getSensCalcData observation', observation);
+    console.log('getSensCalcData target', target);
     const response = await getSensCalc(observation, target);
     if (response) {
       setSensCalc(response, target, observation.id);
@@ -228,6 +230,7 @@ export default function ObservationPage() {
     ).length > 0;
 
   const targetSelectedToggle = (el: ElementT) => {
+    console.log('targetSelectedToggle el', el);
     if (isTargetSelected(el.id)) {
       deleteObservationTarget(el.target);
     } else {

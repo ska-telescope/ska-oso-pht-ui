@@ -11,7 +11,10 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   FREQUENCY_UNITS,
   OB_SUBARRAY_CUSTOM,
-  SBS_CONV_FACTOR_DEFAULT
+  SBS_CONV_FACTOR_DEFAULT,
+  IW_BRIGGS,
+  IMAGE_WEIGHTING,
+  ROBUST
 } from '../../../../utils/constants';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
@@ -33,7 +36,7 @@ const URL_CALCULATE = `calculate`;
 async function GetCalculate(
   observation: Observation,
   target: Target,
-  weightingResponse: WeightingResponse,
+  //weightingResponse: WeightingResponse,
   inMode: number
 ) {
   const isLow = () => observation.telescope === TELESCOPE_LOW_NUM;
@@ -79,6 +82,15 @@ async function GetCalculate(
     } else {
       return inValue;
     }
+  };
+
+  const getWeightingMode = () => {
+    return IMAGE_WEIGHTING.find(obj => obj.value === observation.imageWeighting)?.lookup;
+  };
+
+  const getRobustness = () => {
+    const result = ROBUST.find(item => item.value === observation.robust);
+    return result ? result.label : 0;
   };
 
   /*********************************************************** MID *********************************************************/
@@ -147,53 +159,53 @@ async function GetCalculate(
     return units;
   };
 
-  const getSBSConvFactor = () => {
-    if (isCustomSubarray()) {
-      return SBS_CONV_FACTOR_DEFAULT;
-    }
-    return inMode === TYPE_CONTINUUM
-      ? weightingResponse?.sbs_conv_factor
-      : weightingResponse[0]?.sbs_conv_factor;
-  };
+  // const getSBSConvFactor = () => {
+  //   if (isCustomSubarray()) {
+  //     return SBS_CONV_FACTOR_DEFAULT;
+  //   }
+  //   return inMode === TYPE_CONTINUUM
+  //     ? weightingResponse?.sbs_conv_factor
+  //     : weightingResponse[0]?.sbs_conv_factor;
+  // };
 
-  const getSensitivityJy = () => {
-    const selectedUnit = getSuppliedSensitivityUnits();
-    /* handles conversion to Jy */
-    const sensitivityJy = sensCalHelpers.format.convertSensitivityToJy(
-      observation.supplied.value,
-      selectedUnit
-    );
-    /* additional step to handle conversion from K/mK/uK conversion to Jy */
-    const sbs_conv_factor = getSBSConvFactor();
-    return sensCalHelpers.format.sensitivityOnUnit(selectedUnit, sensitivityJy, sbs_conv_factor);
-  };
+  // const getSensitivityJy = () => {
+  //   const selectedUnit = getSuppliedSensitivityUnits();
+  //   /* handles conversion to Jy */
+  //   const sensitivityJy = sensCalHelpers.format.convertSensitivityToJy(
+  //     observation.supplied.value,
+  //     selectedUnit
+  //   );
+  //   /* additional step to handle conversion from K/mK/uK conversion to Jy */
+  //   const sbs_conv_factor = getSBSConvFactor();
+  //   return sensCalHelpers.format.sensitivityOnUnit(selectedUnit, sensitivityJy, sbs_conv_factor);
+  // };
 
-  const getConfusionNoise = () => {
-    return observation.type === TYPE_CONTINUUM
-      ? weightingResponse?.confusion_noise.value
-      : weightingResponse[0]?.confusion_noise.value;
-  };
+  // const getConfusionNoise = () => {
+  //   return observation.type === TYPE_CONTINUUM
+  //     ? weightingResponse?.confusion_noise.value
+  //     : weightingResponse[0]?.confusion_noise.value;
+  // };
 
-  const getWeightingFactor = () => {
-    return observation.type === TYPE_CONTINUUM
-      ? weightingResponse.weighting_factor
-      : weightingResponse[0]?.weighting_factor;
-  };
+  // const getWeightingFactor = () => {
+  //   return observation.type === TYPE_CONTINUUM
+  //     ? weightingResponse.weighting_factor
+  //     : weightingResponse[0]?.weighting_factor;
+  // };
 
-  const getThermalSensitivity = () => {
-    const sensitivityJy = getSensitivityJy(); // TODO check conversion is correct
-    if (isCustomSubarray()) {
-      return sensitivityJy.toString();
-    }
-    const confusionNoise = getConfusionNoise();
-    const weightingFactor = getWeightingFactor();
-    const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
-      sensitivityJy,
-      confusionNoise,
-      weightingFactor
-    );
-    return thermalSensitivity.toString();
-  };
+  // const getThermalSensitivity = () => {
+  //   const sensitivityJy = getSensitivityJy(); // TODO check conversion is correct
+  //   if (isCustomSubarray()) {
+  //     return sensitivityJy.toString();
+  //   }
+  //   const confusionNoise = getConfusionNoise();
+  //   const weightingFactor = getWeightingFactor();
+  //   const thermalSensitivity = sensCalHelpers.calculate.thermalSensitivity(
+  //     sensitivityJy,
+  //     confusionNoise,
+  //     weightingFactor
+  //   );
+  //   return thermalSensitivity.toString();
+  // };
 
   const getSensitivityJYSpelling = () => {
     return isZoom() ? 'sensitivities_jy' : 'sensitivity_jy';
@@ -206,7 +218,7 @@ async function GetCalculate(
 
     if (SUPPLIED_IS_SENSITIVITY) {
       const sensitivityJYParamName = getSensitivityJYSpelling();
-      urlSearchParams.append(sensitivityJYParamName, getThermalSensitivity());
+      //urlSearchParams.append(sensitivityJYParamName, getThermalSensitivity());
     } else {
       const iTimeUnits: string = sensCalHelpers.format.getIntegrationTimeUnitsLabel(
         observation.supplied.units
@@ -261,9 +273,16 @@ async function GetCalculate(
       total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
         bandwidthValueUnit[0],
         bandwidthValueUnit[1]
-      ) // low zoom bandwidth should be sent in kHz
+      ), // low zoom bandwidth should be sent in kHz
+      weighting_mode: getWeightingMode(),
+      robustness: getRobustness(),
+      taper: observation.tapering
     };
     const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
+
+    if (observation.imageWeighting === IW_BRIGGS) {
+      params['robustness'] = getRobustness();
+    }
     return { ...params, ...subArrayOrAntennasParams };
   };
 
@@ -294,6 +313,7 @@ async function GetCalculate(
     const result = await axios.get(getPath(), AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result;
   } catch (e) {
+    console.log('error getCalculate e', e);
     const errorObject = {
       title: e.response?.data?.title,
       detail: e.response?.data?.detail

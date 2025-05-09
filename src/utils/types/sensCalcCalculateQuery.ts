@@ -51,4 +51,5 @@ export type CalculateLowZoomQuery = {
   total_bandwidths_khz: number | string;
   subarray_configuration?: string;
   num_stations?: number;
+  weighting_mode?: string;
 };
