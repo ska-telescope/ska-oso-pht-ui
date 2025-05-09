@@ -257,6 +257,7 @@ include:
     file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
+    ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
 
 js-e2e-deploy:
   rules:
