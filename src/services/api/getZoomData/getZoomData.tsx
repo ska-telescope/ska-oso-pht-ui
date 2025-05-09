@@ -1,5 +1,7 @@
 import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
+import Target from 'utils/types/target';
+import { StandardData, SubArrayResults, Telescope, ZoomData } from 'utils/types/typesSensCalc';
 
 /*
 import { ZOOM_DATA_MOCKED } from './mockedZoomResults';
@@ -286,13 +288,13 @@ const addPropertiesMID = (
 */
 
 async function getZoomData(
-  telescope: string, // Telescope,
-  subArrayResults: any, // SubArrayResults | undefined,
+  telescope: Telescope,
+  subArrayResults: SubArrayResults | undefined,
   // advancedData: AdvancedData,
   observation: Observation,
+  target: Target
   // showAdvanced: boolean,
   // mocked = MOCKED_API
-  mapping: Function
 ) {
   // export const NEW_ZOOM_DATA_LOW: ZoomData = {
   //   dataType: TYPE_ZOOM,
@@ -308,13 +310,9 @@ async function getZoomData(
   //   tapering: 0
   // };
   console.log('observation', observation);
-  // TODO map continuumData and standardData with observation
-  // ZoomData
-  const zoomData: any = {
-    dataType: observation.type
-    // bandwidth
-  };
-  const standardData = {}; //StandardData,
+  // TODO map zoomData and standardData with observation
+  const zoomData: ZoomData = undefined;
+  const standardData: StandardData = undefined;
 
   /*if (mocked) {
     return Promise.resolve(ZOOM_DATA_MOCKED);
@@ -332,6 +330,7 @@ async function getZoomData(
       properties += addAdvancedData(advancedData);
     }
       */
+  const mapping: Function = undefined; // TODO uncomment mapping function
   return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData);
 }
 // }

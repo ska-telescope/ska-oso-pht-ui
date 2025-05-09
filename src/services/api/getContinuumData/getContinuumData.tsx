@@ -1,6 +1,10 @@
-/*
 import { CONTINUUM_DATA_MOCKED } from './mockedContinuumResults';
-import { ContinuumData, StandardData, Telescope } from '../../../utils/types/data.tsx';
+import {
+  ContinuumData,
+  StandardData,
+  Telescope,
+  SubArrayResults
+} from '../../../utils/types/typesSensCalc';
 import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
@@ -14,8 +18,10 @@ import {
   TIME_HOURS,
   TIME_SECS,
   WEIGHTING_CORRECTION_FACTOR_30_PERCENT_BANDWIDTH,
-  WEIGHTING_CORRECTION_FACTOR_SINGLE_CHANNEL
-} from '@/utils/constants.ts';
+  WEIGHTING_CORRECTION_FACTOR_SINGLE_CHANNEL,
+  RA_TYPE_GALACTIC,
+  RA_TYPE_EQUATORIAL
+} from '../../../utils/constantsSensCalc';
 import {
   combineSensitivityAndWeightingFactor,
   getBeamSize,
@@ -26,7 +32,7 @@ import {
   shiftSensitivity,
   shiftSensitivityK,
   shiftTime
-} from '@/utils/helpers/helpers.ts';
+} from '../../../utils/helpersSensCalc';
 import {
   addAdvancedData,
   addFrequency,
@@ -43,12 +49,10 @@ import {
   rxBand,
   subArrayLookup
 } from '../submissionEntries/submissionEntries';
-import { SubArrayResults } from '../getSubArrayData/getSubArrayData';
-*/
 import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
-
-/*
+import { BANDWIDTH_TELESCOPE, OBSERVATION } from '../../../utils/constants';
+import Target from 'utils/types/target';
 
 const findCData = (data: any) => (data?.calculate ? data.calculate : data);
 const findWData = (data: any) => (data?.transformed_result ? data?.transformed_result : null);
@@ -309,8 +313,6 @@ const addPropertiesMID = (
   return properties;
 };
 
-*/
-
 declare const window: {
   env: {
     BACKEND_URL: string;
@@ -318,41 +320,69 @@ declare const window: {
 } & Window;
 
 function getContinuumData(
-  telescope: string, //Telescope,
-  subArrayResults: any, // SubArrayResults | undefined,
+  telescope: Telescope,
+  subArrayResults: SubArrayResults | undefined,
   observation: Observation,
-  mapping: Function
+  target: Target
 ) {
-  console.log('::: in getContinuumData :::');
   const URL_PATH = `/continuum/calculate`;
 
-  // export const NEW_CONTINUUM_DATA_LOW: ContinuumData = {
-  //   dataType: TYPE_CONTINUUM,
-  //   bandwidth: { value: 300, unit: '2' },
-  //   effectiveResolution: '',
-  //   suppliedType: 0,
-  //   supplied_0: DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
-  //   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
-  //   centralFrequency: { value: 200, unit: '2' },
-  //   numberOfSubBands: 1,
-  //   spectralAveraging: 1,
-  //   imageWeighting: 1,
-  //   robust: 3,
-  //   tapering: 0
-  // };
+  console.log('::: in getContinuumData :::');
   console.log('observation', observation);
-  // TODO map continuumData and standardData with observation
-  // ContinuumData
-  const continuumData: any = {
-    dataType: observation.type
-    // bandwidth
-  };
-  const standardData = {}; // StandardData
+  console.log('target', target);
 
-  // let properties = isLow(telescope)
-  //   ? addPropertiesLOW(standardData, continuumData)
-  //   : addPropertiesMID(standardData, continuumData, subArrayResults);
-  let properties = '';
+  const continuumData: ContinuumData = {
+    dataType: observation.type,
+    bandwidth: {
+      value: observation?.continuumBandwidth,
+      unit: observation?.continuumBandwidthUnits.toString()
+    },
+    effectiveResolution: observation?.effectiveResolution,
+    suppliedType: observation?.supplied?.type,
+    supplied_0: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    supplied_1: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    centralFrequency: {
+      value: observation?.centralFrequency,
+      unit: observation?.centralFrequencyUnits?.toString()
+    },
+    numberOfSubBands: observation?.numSubBands,
+    spectralAveraging: observation?.spectralAveraging,
+    imageWeighting: observation?.imageWeighting,
+    robust: observation?.robust,
+    tapering: observation?.tapering
+  };
+  console.log('continuumData', continuumData);
+
+  const standardData: StandardData = {
+    observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
+      ?.mapping,
+    weather: { value: observation.weather, unit: 'mm' },
+    subarray: OBSERVATION.array
+      .find(t => t.value === observation.telescope)
+      ?.subarray?.find(s => s.value === observation.subarray)?.map,
+    num15mAntennas: observation.num15mAntennas,
+    num13mAntennas: observation.num13mAntennas,
+    numStations: observation.numStations,
+    skyDirectionType: RA_TYPE_GALACTIC,
+    raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
+    decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
+    raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    elevation: { value: observation.elevation, unit: 'deg' },
+    advancedData: undefined,
+    modules: []
+  };
+  console.log('standardData', standardData);
+
+  let properties = isLow(telescope)
+    ? addPropertiesLOW(standardData, continuumData)
+    : addPropertiesMID(standardData, continuumData, subArrayResults);
   return Fetch(telescope, URL_PATH, properties, mapping, standardData, continuumData);
 }
 export default getContinuumData;

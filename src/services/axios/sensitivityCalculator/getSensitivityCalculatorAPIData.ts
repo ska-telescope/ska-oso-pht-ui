@@ -1,23 +1,20 @@
-import GetCalculate from './getCalculate/getCalculate';
-import GetWeighting from './getWeighting/getWeighting';
-import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
-  TYPE_ZOOM,
   STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
   TYPE_CONTINUUM,
-  SUPPLIED_TYPE_SENSITIVITY,
   OB_SUBARRAY_CUSTOM,
-  TEL
+  TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 import getZoomData from '../../api/getZoomData/getZoomData';
 import getContinuumData from '../../api/getContinuumData/getContinuumData';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -65,31 +62,20 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
 }
 
+const getTelescope = (telNum: number): Telescope =>
+  telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;
+
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,
   isCustom: boolean
 ) {
-  console.log('::: in getSensitivityCalculatorAPIData :::');
-
-  const telescope: string = TEL[observation.telescope].toLowerCase();
+  const telescope: Telescope = getTelescope(observation.telescope);
   const subArrayResults: any = undefined;
-  const mapping: Function = undefined;
-  const standardData: any = {};
 
-  console.log('::: telescope', telescope);
-  console.log('::: observation', observation);
-  console.log('::: observation type is continuum', observation.type === TYPE_CONTINUUM);
-
-  // CONTINUUM
-  if (observation.type === TYPE_CONTINUUM) {
-    const response = getContinuumData(telescope, subArrayResults, observation, mapping);
-    return response;
-    // ZOOM
-  } else {
-    const response = getZoomData(telescope, subArrayResults, observation, mapping);
-    return response;
-  }
+  return observation.type === TYPE_CONTINUUM
+    ? getContinuumData(telescope, subArrayResults, observation, target)
+    : getZoomData(telescope, subArrayResults, observation, target);
 }
 
 export default getSensCalc;

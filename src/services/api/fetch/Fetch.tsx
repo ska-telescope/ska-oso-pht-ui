@@ -1,20 +1,13 @@
 import { t } from 'i18next';
 import axios from 'axios';
-/*
-import {
-  ContinuumData,
-  PSSData,
-  StandardData,
-  Telescope,
-  ZoomData
-} from '../../../utils/types/data.tsx';
-*/
 import {
   API_VERSION,
   AXIOS_CONFIG,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   STATUS_ERROR
 } from '../../../utils/constants';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
+import { ContinuumData, PSSData, StandardData, ZoomData } from 'utils/types/typesSensCalc';
 
 declare const window: {
   env: {
@@ -25,12 +18,12 @@ declare const window: {
 // TODO : This needs to be changed to use the FETCH API, however when tried it threw a CORS error.
 
 const Fetch = async (
-  telescope: string,
+  telescope: Telescope,
   baseUrl: string,
   properties: string,
   mapping: Function,
-  inDataS: any, // StandardData | null,
-  inData: any // ContinuumData | ZoomData | PSSData | null
+  inDataS: StandardData | null,
+  inData: ContinuumData | ZoomData | PSSData | null
 ) => {
   console.log('::: in Fetch :::');
   console.log('::: Fetch', telescope, baseUrl, properties, inDataS, inData);
@@ -38,7 +31,7 @@ const Fetch = async (
     // const baseURL = window.env.BACKEND_URL + API_VERSION;
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
     console.log('::: baseURL', baseURL);
-    let finalURL = `${baseURL}${telescope}${baseUrl}`;
+    let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     console.log('::: finalURL', finalURL);
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
