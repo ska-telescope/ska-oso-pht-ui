@@ -298,19 +298,19 @@ async function getZoomData(
     return Promise.resolve(ZOOM_DATA_MOCKED);
   } else {
    */
-    const URL_PATH = `/zoom/calculate`;
-    /*
+  const URL_PATH = `/zoom/calculate`;
+  /*
     let properties = isLow(telescope)
       ? addPropertiesLOW(telescope, standardData, zoomData)
       : addPropertiesMID(telescope, standardData, zoomData, subArrayResults);
     */
-   let properties = '';
-   /*
+  let properties = '';
+  /*
     if (showAdvanced && !isLow(telescope)) {
       properties += addAdvancedData(advancedData);
     }
       */
-    return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData);
-  }
+  return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData);
+}
 // }
 export default getZoomData;

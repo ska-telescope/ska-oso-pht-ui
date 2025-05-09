@@ -16,9 +16,6 @@ import {
 } from '../../../utils/constants';
 import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-// import getContinuumData from './new/getContinuumData/getContinuumData';
-import { telescope } from '@ska-telescope/ska-gui-local-storage';
-import { CONTINUUM_DATA_MOCKED } from './new/getContinuumData/mockedContinuumResults';
 import getZoomData from '../../api/getZoomData/getZoomData';
 import getContinuumData from '../../api/getContinuumData/getContinuumData';
 
@@ -95,19 +92,12 @@ async function getSensitivityCalculatorAPIData(
       continuumData
     );
     return response;
-  // ZOOM
+    // ZOOM
   } else {
     const zoomData: any = {};
-    const response = getZoomData(
-      telescope,
-      subArrayResults,
-      mapping,
-      standardData,
-      zoomData
-    );
+    const response = getZoomData(telescope, subArrayResults, mapping, standardData, zoomData);
     return response;
   }
-  
 }
 
 export default getSensCalc;
