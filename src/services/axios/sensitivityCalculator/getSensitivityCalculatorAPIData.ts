@@ -37,8 +37,8 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      // return await getSensitivityCalculatorAPIData(observation, target, isCustom());
-      return await getSensitivityCalculatorAPIDataNew(observation, target, isCustom());
+      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
+      //return await getSensitivityCalculatorAPIDataNew(observation, target, isCustom());
     } catch (e) {
       return { error: e };
     }
