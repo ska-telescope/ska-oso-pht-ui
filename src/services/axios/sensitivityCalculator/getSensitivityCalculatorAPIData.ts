@@ -83,19 +83,11 @@ async function getSensitivityCalculatorAPIData(
 
   // CONTINUUM
   if (observation.type === TYPE_CONTINUUM) {
-    const continuumData: any = {};
-    const response = getContinuumData(
-      telescope,
-      subArrayResults,
-      mapping,
-      standardData,
-      continuumData
-    );
+    const response = getContinuumData(telescope, subArrayResults, observation, mapping);
     return response;
     // ZOOM
   } else {
-    const zoomData: any = {};
-    const response = getZoomData(telescope, subArrayResults, mapping, standardData, zoomData);
+    const response = getZoomData(telescope, subArrayResults, observation, mapping);
     return response;
   }
 }

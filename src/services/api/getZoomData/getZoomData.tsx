@@ -1,3 +1,4 @@
+import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
 
 /*
@@ -287,13 +288,34 @@ const addPropertiesMID = (
 async function getZoomData(
   telescope: string, // Telescope,
   subArrayResults: any, // SubArrayResults | undefined,
-  standardData: any, //StandardData,
   // advancedData: AdvancedData,
-  zoomData: any, //ZoomData,
+  observation: Observation,
   // showAdvanced: boolean,
   // mocked = MOCKED_API
   mapping: Function
 ) {
+  // export const NEW_ZOOM_DATA_LOW: ZoomData = {
+  //   dataType: TYPE_ZOOM,
+  //   bandwidth: { value: 1, unit: '2' },
+  //   suppliedType: 0,
+  //   supplied_0: DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
+  //   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
+  //   centralFrequency: { value: 200, unit: '2' },
+  //   spectralAveraging: 1,
+  //   spectralResolution: '',
+  //   imageWeighting: 1,
+  //   robust: 3,
+  //   tapering: 0
+  // };
+  console.log('observation', observation);
+  // TODO map continuumData and standardData with observation
+  // ZoomData
+  const zoomData: any = {
+    dataType: observation.type
+    // bandwidth
+  };
+  const standardData = {}; //StandardData,
+
   /*if (mocked) {
     return Promise.resolve(ZOOM_DATA_MOCKED);
   } else {

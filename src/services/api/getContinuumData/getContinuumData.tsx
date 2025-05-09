@@ -45,6 +45,7 @@ import {
 } from '../submissionEntries/submissionEntries';
 import { SubArrayResults } from '../getSubArrayData/getSubArrayData';
 */
+import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
 
 /*
@@ -319,12 +320,35 @@ declare const window: {
 function getContinuumData(
   telescope: string, //Telescope,
   subArrayResults: any, // SubArrayResults | undefined,
-  mapping: Function,
-  standardData: any, // StandardData,
-  continuumData: any // ContinuumData
+  observation: Observation,
+  mapping: Function
 ) {
   console.log('::: in getContinuumData :::');
   const URL_PATH = `/continuum/calculate`;
+
+  // export const NEW_CONTINUUM_DATA_LOW: ContinuumData = {
+  //   dataType: TYPE_CONTINUUM,
+  //   bandwidth: { value: 300, unit: '2' },
+  //   effectiveResolution: '',
+  //   suppliedType: 0,
+  //   supplied_0: DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
+  //   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
+  //   centralFrequency: { value: 200, unit: '2' },
+  //   numberOfSubBands: 1,
+  //   spectralAveraging: 1,
+  //   imageWeighting: 1,
+  //   robust: 3,
+  //   tapering: 0
+  // };
+  console.log('observation', observation);
+  // TODO map continuumData and standardData with observation
+  // ContinuumData
+  const continuumData: any = {
+    dataType: observation.type
+    // bandwidth
+  };
+  const standardData = {}; // StandardData
+
   // let properties = isLow(telescope)
   //   ? addPropertiesLOW(standardData, continuumData)
   //   : addPropertiesMID(standardData, continuumData, subArrayResults);
