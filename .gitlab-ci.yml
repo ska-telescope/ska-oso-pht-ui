@@ -261,8 +261,8 @@ include:
 js-e2e-deploy:
   rules:
     - exists:
-        - cypress/integration/**/*.test.tsx
-
+        - cypress/integration/**/*.test.js
+        
 js-e2e-test:
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
