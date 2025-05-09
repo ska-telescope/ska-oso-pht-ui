@@ -10,6 +10,7 @@
   "scripts": {
     "instrument": "webpack serve --mode development @cypress/instrument-cra",
     "build": "webpack --mode production",
+    "checker": "yarn prettier:fix && yarn lint:fix",
     "code-analysis": "eslint src/**/*.{js,jsx,ts,tsx} --ignore-path .eslintignore -f junit -o linting.xml",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --config video=false",
