@@ -261,7 +261,7 @@ include:
 js-e2e-deploy:
   rules:
     - exists:
-        - cypress/e2e/**/*.test.tsx
+        - cypress/integration/**/*.test.tsx
 
 js-e2e-test:
   variables:
