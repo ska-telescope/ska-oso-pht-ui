@@ -3,8 +3,7 @@ import {
   ContinuumData,
   StandardData,
   Telescope,
-  SubArrayResults,
-  SensCalcResultsNew
+  SubArrayResults
 } from '../../../utils/types/typesSensCalc';
 import {
   DECIMAL_PLACES,
@@ -120,6 +119,7 @@ export const mapping = (
       section1: cData?.warnings,
       section2: cData?.warnings,
       section3: cData?.warnings
+      // TODO we probably want warnings in 1 section instead of repeating them?
     };
   }
 
