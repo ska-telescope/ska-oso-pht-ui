@@ -8,8 +8,6 @@ import {
 } from '../../../utils/constants';
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import { ContinuumData, PSSData, StandardData, ZoomData } from 'utils/types/typesSensCalc';
-import ObservationEntry from 'pages/entry/ObservationEntry/ObservationEntry';
-import Observation from 'utils/types/observation';
 import Target from 'utils/types/target';
 
 declare const window: {
@@ -27,7 +25,6 @@ const Fetch = async (
   mapping: Function,
   inDataS: StandardData | null,
   inData: ContinuumData | ZoomData | PSSData | null,
-  observation: Observation,
   target: Target
 ) => {
   try {
@@ -36,7 +33,7 @@ const Fetch = async (
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
-    return mapping(result.data, inDataS, inData, observation, target);
+    return mapping(result.data, inDataS, inData, target);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();
     const title = errMsg?.title?.length ? errMsg.title : t('api.error');

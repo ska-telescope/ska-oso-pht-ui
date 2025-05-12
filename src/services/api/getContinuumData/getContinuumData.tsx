@@ -50,14 +50,12 @@ import {
   rxBand,
   subArrayLookup
 } from '../submissionEntries/submissionEntries';
-import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
-import { BANDWIDTH_TELESCOPE, OBSERVATION, TYPE_CONTINUUM } from '../../../utils/constants';
+import { BANDWIDTH_TELESCOPE, OBSERVATION } from '../../../utils/constants';
 import Target from 'utils/types/target';
-import { t } from 'i18next';
+// import { t } from 'i18next';
 import { SensCalcResults, ResultsSection } from 'utils/types/sensCalcResults';
-import { ContactlessOutlined } from '@mui/icons-material';
-import { forEach } from 'cypress/types/lodash';
+import Observation from 'utils/types/observation';
 
 const findCData = (data: any) => (data?.calculate ? data.calculate : data);
 const findWData = (data: any) => (data?.transformed_result ? data?.transformed_result : null);
@@ -96,7 +94,6 @@ export const mapping = (
   data: any,
   dataS: StandardData,
   dataContinuum: ContinuumData,
-  observation: Observation,
   target: Target
 ): SensCalcResults => {
   const isCustom = dataS.subarray === OB_SUBARRAY_CUSTOM;
@@ -290,9 +287,7 @@ export const mapping = (
     statusGUI: STATUS_OK,
     error: '',
     section1: section1,
-    ...(observation.type === TYPE_CONTINUUM && {
-      section2: section2
-    }),
+    section2: section2,
     section3: section3
   };
   console.log('output', output);
@@ -428,7 +423,6 @@ function getContinuumData(
     mapping,
     standardData,
     continuumData,
-    observation,
     target
   );
   return response;
