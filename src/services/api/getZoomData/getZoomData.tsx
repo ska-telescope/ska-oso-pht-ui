@@ -331,7 +331,16 @@ async function getZoomData(
     }
       */
   const mapping: Function = undefined; // TODO uncomment mapping function
-  return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData);
+  return Fetch(
+    telescope,
+    URL_PATH,
+    properties,
+    mapping,
+    standardData,
+    zoomData,
+    observation,
+    target
+  );
 }
 // }
 export default getZoomData;

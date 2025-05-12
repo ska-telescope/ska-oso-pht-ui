@@ -8,6 +8,9 @@ import {
 } from '../../../utils/constants';
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import { ContinuumData, PSSData, StandardData, ZoomData } from 'utils/types/typesSensCalc';
+import ObservationEntry from 'pages/entry/ObservationEntry/ObservationEntry';
+import Observation from 'utils/types/observation';
+import Target from 'utils/types/target';
 
 declare const window: {
   env: {
@@ -23,20 +26,17 @@ const Fetch = async (
   properties: string,
   mapping: Function,
   inDataS: StandardData | null,
-  inData: ContinuumData | ZoomData | PSSData | null
+  inData: ContinuumData | ZoomData | PSSData | null,
+  observation: Observation,
+  target: Target
 ) => {
-  console.log('::: in Fetch :::');
-  console.log('::: Fetch', telescope, baseUrl, properties, inDataS, inData);
   try {
     // const baseURL = window.env.BACKEND_URL + API_VERSION;
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
-    console.log('::: baseURL', baseURL);
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
-    console.log('::: finalURL', finalURL);
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
-    // return result.data;
-    return mapping(result.data, inDataS, inData);
+    return mapping(result.data, inDataS, inData, observation, target);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();
     const title = errMsg?.title?.length ? errMsg.title : t('api.error');

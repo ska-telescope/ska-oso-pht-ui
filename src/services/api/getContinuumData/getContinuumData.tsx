@@ -3,7 +3,8 @@ import {
   ContinuumData,
   StandardData,
   Telescope,
-  SubArrayResults
+  SubArrayResults,
+  SensCalcResultsNew
 } from '../../../utils/types/typesSensCalc';
 import {
   DECIMAL_PLACES,
@@ -52,8 +53,12 @@ import {
 } from '../submissionEntries/submissionEntries';
 import Observation from 'utils/types/observation';
 import Fetch from '../fetch/Fetch';
-import { BANDWIDTH_TELESCOPE, OBSERVATION } from '../../../utils/constants';
+import { BANDWIDTH_TELESCOPE, OBSERVATION, TYPE_CONTINUUM } from '../../../utils/constants';
 import Target from 'utils/types/target';
+import { t } from 'i18next';
+import { SensCalcResults, ResultsSection } from 'utils/types/sensCalcResults';
+import { ContactlessOutlined } from '@mui/icons-material';
+import { forEach } from 'cypress/types/lodash';
 
 const findCData = (data: any) => (data?.calculate ? data.calculate : data);
 const findWData = (data: any) => (data?.transformed_result ? data?.transformed_result : null);
@@ -88,32 +93,46 @@ const mappingSpectralSensitivity = (data: any) =>
     )
   );
 
-export const mapping = (data: any, dataS: StandardData, dataContinuum: ContinuumData) => {
-  console.log('::: in mapping :::');
-  console.log('data', data);
-  console.log('dataS', dataS);
-  console.log('dataContinuum', dataContinuum);
+export const mapping = (
+  data: any,
+  dataS: StandardData,
+  dataContinuum: ContinuumData,
+  observation: Observation,
+  target: Target
+): SensCalcResults => {
   const isCustom = dataS.subarray === OB_SUBARRAY_CUSTOM;
   const cData = findCData(data);
 
   const isNatural = dataContinuum.imageWeighting === IW_NATURAL;
 
   if (cData?.warnings?.length) {
+    // return {
+    //   id: 1,
+    //   statusGUI: STATUS_ERROR,
+    //   error: '',
+    //   results: cData?.warnings
+    // };
     return {
-      id: 1,
+      id: target.id,
+      title: target.name,
       statusGUI: STATUS_ERROR,
       error: '',
-      results: cData?.warnings
+      section1: cData?.warnings,
+      section2: cData?.warnings,
+      section3: cData?.warnings
     };
   }
 
   const wData = findWData(data);
 
   const results: any[] = [];
+  const section1: ResultsSection[] = [];
+  const section2: ResultsSection[] = [];
+  const section3: ResultsSection[] = [];
 
   if (wData) {
     if ('weighted_continuum_sensitivity' in wData) {
-      results.push(
+      section1.push(
         addMappingString(
           'continuumSensitivityWeighted',
           combineSensitivityAndWeightingFactor(
@@ -126,7 +145,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
     if ('continuum_confusion_noise' in wData) {
       addMainData(
-        results,
+        section1,
         'continuumConfusionNoise',
         wData?.continuum_confusion_noise,
         addMapping('continuumConfusionNoise', shiftSensitivity(wData?.continuum_confusion_noise)),
@@ -135,7 +154,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
     if ('total_continuum_sensitivity' in wData) {
       addMainData(
-        results,
+        section1,
         'continuumSensitivity',
         wData?.total_continuum_sensitivity,
         addMapping('continuumSensitivity', shiftSensitivity(wData?.total_continuum_sensitivity)),
@@ -144,7 +163,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
     if ('continuum_synthesized_beam_size' in wData) {
       addMainData(
-        results,
+        section1,
         'continuumSynthBeamSize',
         wData?.continuum_synthesized_beam_size,
         addMappingString(
@@ -156,7 +175,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
     if ('continuum_surface_brightness_sensitivity' in wData) {
       addMainData(
-        results,
+        section1,
         'continuumSurfaceBrightnessSensitivity',
         wData?.continuum_surface_brightness_sensitivity,
         addMapping(
@@ -168,19 +187,19 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
 
     if ('continuum_integration_time' in wData) {
-      results.push(
+      section1.push(
         addMapping('continuumIntegrationTime', shiftTime(wData?.continuum_integration_time, true))
       );
     }
     addSubBandResultData(data, results);
 
     if ('weighted_spectral_sensitivity' in wData) {
-      results.push(mappingSpectralSensitivity(data));
+      section1.push(mappingSpectralSensitivity(data));
     }
 
     if ('spectral_confusion_noise' in wData) {
       addMainData(
-        results,
+        section2,
         'spectralConfusionNoise',
         wData?.spectral_confusion_noise,
         addMapping('spectralConfusionNoise', shiftSensitivity(wData?.spectral_confusion_noise)),
@@ -190,7 +209,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
 
     if ('total_spectral_sensitivity' in wData) {
       addMainData(
-        results,
+        section2,
         'spectralTotalSensitivity',
         wData?.total_spectral_sensitivity,
         addMapping('spectralTotalSensitivity', shiftSensitivity(wData?.total_spectral_sensitivity)),
@@ -200,7 +219,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
 
     if ('spectral_synthesized_beam_size' in wData) {
       addMainData(
-        results,
+        section2,
         'spectralSynthBeamSize',
         wData?.spectral_synthesized_beam_size,
         addMappingString(
@@ -213,7 +232,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
 
     if ('spectral_surface_brightness_sensitivity' in wData) {
       addMainData(
-        results,
+        section2,
         'spectralSurfaceBrightnessSensitivity',
         wData?.spectral_surface_brightness_sensitivity,
         addMapping(
@@ -224,7 +243,7 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
       );
     }
     if ('spectral_integration_time' in wData) {
-      results.push(
+      section2.push(
         addMapping('spectralIntegrationTime', shiftTime(wData?.spectral_integration_time, true))
       );
     }
@@ -232,11 +251,13 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
 
   if (cData.spectropolarimetry_results) {
     if ('fwhm_of_the_rmsf' in cData.spectropolarimetry_results) {
-      results.push(addMapping('fwhmOfTheRmsf', cData?.spectropolarimetry_results.fwhm_of_the_rmsf));
+      section3.push(
+        addMapping('fwhmOfTheRmsf', cData?.spectropolarimetry_results.fwhm_of_the_rmsf)
+      );
     }
 
     if ('max_faraday_depth_extent' in cData.spectropolarimetry_results) {
-      results.push(
+      section3.push(
         addMapping(
           'maxFaradayDepthExtent',
           cData?.spectropolarimetry_results.max_faraday_depth_extent
@@ -245,35 +266,37 @@ export const mapping = (data: any, dataS: StandardData, dataContinuum: Continuum
     }
 
     if ('max_faraday_depth' in cData.spectropolarimetry_results) {
-      results.push(
+      section3.push(
         addMapping('maxFaradayDepth', cData?.spectropolarimetry_results.max_faraday_depth)
       );
     }
   }
-  // TODO add the warnings below
+  // TODO handle warnings and check it works as expected
   /*
-    if (isCustom) {
-      addWarningData([t('customWarning.warning')], results, 'warningCustom');
-    } else if (isNatural) {
-      addWarningData([t('noEstimateWarning.warning')], results, 'warningNoEstimate');
-    }
-      */
-  wData?.warnings.forEach((e: any) => addWarningObject(e, results));
+  - add in translations
+  - see in which section should this go?
+  */
+  // if (isCustom) {
+  //   addWarningData([t('customWarning.warning')], results, 'warningCustom');
+  // } else if (isNatural) {
+  //   addWarningData([t('noEstimateWarning.warning')], results, 'warningNoEstimate');
+  // }
+
+  // wData?.warnings.forEach((e: any) => addWarningObject(e, results));
 
   const output = {
-    id: 1,
+    id: target.id,
+    title: target.name,
     statusGUI: STATUS_OK,
     error: '',
-    results: results
+    section1: section1,
+    ...(observation.type === TYPE_CONTINUUM && {
+      section2: section2
+    }),
+    section3: section3
   };
   console.log('output', output);
-
-  return {
-    id: 1,
-    statusGUI: STATUS_OK,
-    error: '',
-    results: results
-  };
+  return output;
 };
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
@@ -348,10 +371,6 @@ function getContinuumData(
 ) {
   const URL_PATH = `/continuum/calculate`;
 
-  console.log('::: in getContinuumData :::');
-  console.log('observation', observation);
-  console.log('target', target);
-
   const continuumData: ContinuumData = {
     dataType: observation.type,
     bandwidth: {
@@ -378,15 +397,14 @@ function getContinuumData(
     robust: observation?.robust,
     tapering: observation?.tapering
   };
-  console.log('continuumData', continuumData);
 
   const standardData: StandardData = {
     observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
-      ?.mapping,
+      ?.mapping, // TODO handle band 5a and 5b correctly
     weather: { value: observation.weather, unit: 'mm' },
     subarray: OBSERVATION.array
       .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray)?.map,
+      ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
     num15mAntennas: observation.num15mAntennas,
     num13mAntennas: observation.num13mAntennas,
     numStations: observation.numStations,
@@ -399,13 +417,20 @@ function getContinuumData(
     advancedData: undefined,
     modules: []
   };
-  console.log('standardData', standardData);
 
   let properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData, subArrayResults);
-  const response = Fetch(telescope, URL_PATH, properties, mapping, standardData, continuumData);
-  console.log('response', response);
+  const response = Fetch(
+    telescope,
+    URL_PATH,
+    properties,
+    mapping,
+    standardData,
+    continuumData,
+    observation,
+    target
+  );
   return response;
 }
 export default getContinuumData;

@@ -303,3 +303,16 @@ export const NEW_STANDARD_DATA_MID = {
   advancedData: NEW_ADVANCED_DATA,
   modules: [NEW_CONTINUUM_DATA_MID, NEW_ZOOM_DATA_MID, NEW_PSS_DATA_MID]
 };
+
+export type ResultsSectionNew = {
+  field: string;
+  value: string;
+  units: string;
+} | null;
+
+export type SensCalcResultsNew = {
+  id: number;
+  statusGUI: number;
+  error: string;
+  results?: ResultsSectionNew[];
+};
