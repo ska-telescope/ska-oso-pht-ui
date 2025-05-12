@@ -35,8 +35,8 @@ const Fetch = async (
     console.log('::: finalURL', finalURL);
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
-    return result.data;
-    // return mapping(result.data, inDataS, inData);
+    // return result.data;
+    return mapping(result.data, inDataS, inData);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();
     const title = errMsg?.title?.length ? errMsg.title : t('api.error');

@@ -171,6 +171,7 @@ export default function ObservationPage() {
   const getSensCalcData = async (observation: Observation, target: Target) => {
     const response = await getSensCalc(observation, target);
     if (response) {
+      console.log('response', response);
       setSensCalc(response, target, observation.id);
     }
   };

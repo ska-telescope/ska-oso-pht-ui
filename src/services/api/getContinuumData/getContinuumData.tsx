@@ -20,7 +20,8 @@ import {
   WEIGHTING_CORRECTION_FACTOR_30_PERCENT_BANDWIDTH,
   WEIGHTING_CORRECTION_FACTOR_SINGLE_CHANNEL,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL
+  RA_TYPE_EQUATORIAL,
+  IW_NATURAL
 } from '../../../utils/constantsSensCalc';
 import {
   combineSensitivityAndWeightingFactor,
@@ -87,9 +88,15 @@ const mappingSpectralSensitivity = (data: any) =>
     )
   );
 
-const mapping = (data: any, dataS: StandardData) => {
+export const mapping = (data: any, dataS: StandardData, dataContinuum: ContinuumData) => {
+  console.log('::: in mapping :::');
+  console.log('data', data);
+  console.log('dataS', dataS);
+  console.log('dataContinuum', dataContinuum);
   const isCustom = dataS.subarray === OB_SUBARRAY_CUSTOM;
   const cData = findCData(data);
+
+  const isNatural = dataContinuum.imageWeighting === IW_NATURAL;
 
   if (cData?.warnings?.length) {
     return {
@@ -165,7 +172,6 @@ const mapping = (data: any, dataS: StandardData) => {
         addMapping('continuumIntegrationTime', shiftTime(wData?.continuum_integration_time, true))
       );
     }
-
     addSubBandResultData(data, results);
 
     if ('weighted_spectral_sensitivity' in wData) {
@@ -242,10 +248,25 @@ const mapping = (data: any, dataS: StandardData) => {
       results.push(
         addMapping('maxFaradayDepth', cData?.spectropolarimetry_results.max_faraday_depth)
       );
-      addWarningData(data?.calculate?.warnings, results);
     }
   }
+  // TODO add the warnings below
+  /*
+    if (isCustom) {
+      addWarningData([t('customWarning.warning')], results, 'warningCustom');
+    } else if (isNatural) {
+      addWarningData([t('noEstimateWarning.warning')], results, 'warningNoEstimate');
+    }
+      */
   wData?.warnings.forEach((e: any) => addWarningObject(e, results));
+
+  const output = {
+    id: 1,
+    statusGUI: STATUS_OK,
+    error: '',
+    results: results
+  };
+  console.log('output', output);
 
   return {
     id: 1,
@@ -383,6 +404,8 @@ function getContinuumData(
   let properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData, subArrayResults);
-  return Fetch(telescope, URL_PATH, properties, mapping, standardData, continuumData);
+  const response = Fetch(telescope, URL_PATH, properties, mapping, standardData, continuumData);
+  console.log('response', response);
+  return response;
 }
 export default getContinuumData;
