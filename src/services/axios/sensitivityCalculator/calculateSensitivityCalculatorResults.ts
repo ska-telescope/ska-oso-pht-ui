@@ -602,10 +602,125 @@ export default function calculateSensitivityCalculatorResults(
   // looks like skippable
   const rawResults = getResultValues(response);
 
+  /************************Experiment *************************
+  */
+
+  getDisplayResultValuesNew(response)
+
+  /******End */
+
   // do we need to keep the preferred units? or backend has already decided???
   const displayResults = getDisplayResultValues(rawResults);
 
   const resultsFinal = getFinalResults(target, displayResults);
 
   return resultsFinal;
+}
+
+
+//looks like I only need to refactor getFinalResults
+
+const getDisplayResultValuesNew = (response): DisplayResults => {
+let display
+
+
+
+  return display
+}
+
+
+
+
+const getFinalIndividualResultsNew = (results: DisplayResults): FinalIndividualResults => {
+  const observationTypeLabel: string = OBS_TYPES[theObservation.type];
+  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
+    ?.sensCalcResultsLabel;
+
+  const results1 = {
+    field: `${observationTypeLabel}SensitivityWeighted`,
+    value: isZoom()
+      ? results.spectralWeightedSensitivityDisplay?.value.toString()
+      : results.weightedSensitivityDisplay?.value.toString(),
+    units: results.weightedSensitivityDisplay?.unit
+  };
+  const results2 = {
+    field: `${observationTypeLabel}ConfusionNoise`,
+    value: isZoom()
+      ? results.spectralConfusionNoiseDisplay?.value.toString()
+      : results.confusionNoiseDisplay?.value.toString(),
+    units: results.confusionNoiseDisplay?.unit
+  };
+  const results3 = {
+    field: `${observationTypeLabel}TotalSensitivity`,
+    value: isZoom()
+      ? results.spectralTotalSensitivityDisplay?.value.toString()
+      : results.totalSensitivityDisplay?.value.toString(),
+    units: results.totalSensitivityDisplay?.unit
+  };
+  const results4 = {
+    field: `${observationTypeLabel}SynthBeamSize`,
+    value: results.beamSizeDisplay?.value,
+    units: results.beamSizeDisplay?.unit
+  };
+  const results5 = {
+    field: isSuppliedSensitivity()
+      ? `${observationTypeLabel}IntegrationTime`
+      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
+    value: isSuppliedSensitivity()
+      ? results.continuumIntegrationTime?.value.toString()
+      : results.sbs?.value.toString(),
+    units: isSuppliedSensitivity() ? results.continuumIntegrationTime?.unit : results.sbs?.unit
+  };
+  const results6 = {
+    field: 'spectralSensitivityWeighted',
+    value: results.spectralWeightedSensitivityDisplay.value.toString(),
+    units: results.spectralWeightedSensitivityDisplay.unit // TODO set correct unit when using supplied sensitivity
+  };
+  const results7 = {
+    field: 'spectralConfusionNoise',
+    value: results.spectralConfusionNoiseDisplay?.value.toString(),
+    units: results.spectralConfusionNoiseDisplay?.unit
+  };
+  const results8 = {
+    field: 'spectralTotalSensitivity',
+    value: results.spectralTotalSensitivityDisplay.value.toString(),
+    units: results.spectralTotalSensitivityDisplay.unit
+  };
+  const results9 = {
+    field: 'spectralSynthBeamSize',
+    value: results.spectralBeamSizeDisplay?.value,
+    units: results.spectralBeamSizeDisplay?.unit
+  };
+  const results10 = {
+    field: isSuppliedSensitivity()
+      ? 'spectralIntegrationTime'
+      : 'spectralSurfaceBrightnessSensitivity',
+    value: isSuppliedSensitivity()
+      ? results.spectralIntegrationTime?.value.toString()
+      : results.spectralSbs?.value.toString(),
+    units: isSuppliedSensitivity()
+      ? results.spectralIntegrationTime?.unit
+      : results.spectralSbs?.unit
+  };
+  const results11 = {
+    field: suppliedType,
+    value: theObservation.supplied.value.toString(),
+    units: OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+      u => u.value === theObservation.supplied.units
+    )?.label
+  };
+
+  return {
+    results1,
+    results2,
+    results3,
+    results4,
+    results5,
+    results6,
+    results7,
+    results8,
+    results9,
+    results10,
+    results11
+  };
 }

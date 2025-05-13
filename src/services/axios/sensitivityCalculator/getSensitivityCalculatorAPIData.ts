@@ -168,6 +168,8 @@ async function getSensitivityCalculatorAPIData(
     // ...weightingResponse,
     ...calculateResponse
   };
+
+  //not sure why it is here for senscalc calls
   helpers.transform.trimObject(response);
 
   console.log('getSensitivityCalculatorAPIData response', response);
