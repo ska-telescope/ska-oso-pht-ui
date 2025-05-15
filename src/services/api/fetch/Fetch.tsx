@@ -9,6 +9,7 @@ import {
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import { ContinuumData, PSSData, StandardData, ZoomData } from 'utils/types/typesSensCalc';
 import Target from 'utils/types/target';
+import Observation from 'utils/types/observation';
 
 declare const window: {
   env: {
@@ -25,15 +26,17 @@ const Fetch = async (
   mapping: Function,
   inDataS: StandardData | null,
   inData: ContinuumData | ZoomData | PSSData | null,
-  target: Target
+  target: Target,
+  observation?: Observation
 ) => {
   try {
+    console.log('Fetch properties', properties)
     // const baseURL = window.env.BACKEND_URL + API_VERSION;
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
-    return mapping(result.data, inDataS, inData, target);
+    return mapping(result.data,target, observation);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();
     const title = errMsg?.title?.length ? errMsg.title : t('api.error');

@@ -41,17 +41,26 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output: any = await fetchSensCalc(observation, target);
-    if ('error' in output) {
-      return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
-    }
-    if (output['calculate']['error'] && output['calculate']['error']['detail']) {
-      return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
-    }
-    if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
-      return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
-    }
-    const results = calculateSensitivityCalculatorResults(output, observation, target);
-    return results;
+
+
+    console.log('getSensCalc output', output)
+
+    // TODO: revisit error handling - maybe moving to mapping?
+    // if ('error' in output) {
+    //   return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
+    // }
+    // if (output['calculate']['error'] && output['calculate']['error']['detail']) {
+    //   return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
+    // }
+    // if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
+    //   return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
+    // }
+
+    // already done is new mapping 
+    //const results = calculateSensitivityCalculatorResults(output, observation, target);
+    // return results
+
+    return output;
   } catch (e) {
     const results = Object.assign(
       {},
