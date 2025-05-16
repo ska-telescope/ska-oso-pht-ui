@@ -40,7 +40,6 @@ import {
   isSuppliedTime
 } from '../../../utils/helpersSensCalc';
 
-
 import {
   pointingCentre,
   rxBand,
@@ -55,10 +54,17 @@ import {
   addMainData,
   addAdvancedData
 } from '../submissionEntries/submissionEntries';
-import { BANDWIDTH_TELESCOPE, FREQUENCY_UNITS, OBS_TYPES, OBSERVATION, SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM, TYPE_ZOOM } from '../../../utils/constants';
+import {
+  BANDWIDTH_TELESCOPE,
+  FREQUENCY_UNITS,
+  OBS_TYPES,
+  OBSERVATION,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
+} from '../../../utils/constants';
 import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
 import { ResultsSection, SensCalcResults } from 'utils/types/sensCalcResults';
-
 
 // import {
 //   calculateSpectralResolution,
@@ -66,37 +72,31 @@ import { ResultsSection, SensCalcResults } from 'utils/types/sensCalcResults';
 // } from '../../../utils/calculate/calculate';
 // import { t } from 'i18next';
 
-
-
-
-const getBandwidth = (num: number, isLow: boolean = true): number =>
-{
-  console.log('getBandwidth num ', num , 'isLow', isLow)
+const getBandwidth = (num: number, isLow: boolean = true): number => {
+  console.log('getBandwidth num ', num, 'isLow', isLow);
   return isLow ? BANDWIDTH_LOW_ZOOM[num - 1] : BANDWIDTH_MID_ZOOM[num - 1];
-}
+};
 const mapping = (
   data: any,
   //dataS: StandardData,
   //dataContinuum: ContinuumData,
   target: Target,
-  observation:Observation
+  observation: Observation
 ): SensCalcResults => {
+  const output = getFinalResults(target, data, observation);
 
-const output = getFinalResults(target, data, observation)
-
-// const output = {
-//   id: target.id,
-//   title: target.name,
-//   statusGUI: STATUS_OK,
-//   error: '',
-//   section1: [],
-//   section2: [],
-//   section3: []
-// };
-console.log('output', output);
-return output;
+  // const output = {
+  //   id: target.id,
+  //   title: target.name,
+  //   statusGUI: STATUS_OK,
+  //   error: '',
+  //   section1: [],
+  //   section2: [],
+  //   section3: []
+  // };
+  console.log('output', output);
+  return output;
 };
-
 
 // from calculateSensitivityCalculatorResults.ts - TODO: put it somewhere shared
 interface FinalIndividualResults {
@@ -113,12 +113,10 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-// from calculateSensitivityCalculatorResults.ts 
+// from calculateSensitivityCalculatorResults.ts
 function getFinalResults(target, results: any, theObservation): SensCalcResults {
-
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
   const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
-
 
   const individualresults = getFinalIndividualResultsForZoom(results, theObservation);
 
@@ -156,21 +154,21 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
     theResults.section2.push(individualresults.results10);
   }
 
-  console.log('getFinalResults theResults', theResults)
+  console.log('getFinalResults theResults', theResults);
 
   return theResults;
 }
 
-// from calculateSensitivityCalculatorResults.ts 
+// from calculateSensitivityCalculatorResults.ts
 function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIndividualResults {
   const isZoom = () => theObservation.type === TYPE_ZOOM;
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  console.log('getFinalIndividualResultsForZoom results', results)
+  console.log('getFinalIndividualResultsForZoom results', results);
 
-  let transformed_result = results.transformed_result[0] // ui only uses first result
+  let transformed_result = results.transformed_result[0]; // ui only uses first result
 
-  console.log('transformed_result', transformed_result)
+  console.log('transformed_result', transformed_result);
 
   const observationTypeLabel: string = OBS_TYPES[theObservation.type];
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
@@ -184,7 +182,6 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   //   units: results.weightedSensitivityDisplay?.unit
   // };
 
-
   const results1 = {
     field: `${observationTypeLabel}SensitivityWeighted`,
     value: isZoom()
@@ -192,8 +189,6 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
       : results.weightedSensitivityDisplay?.value.toString(), // not zoom - TODO: remove?
     units: transformed_result.weighted_spectral_sensitivity?.unit
   };
-
-
 
   // const results2 = {
   //   field: `${observationTypeLabel}ConfusionNoise`,
@@ -210,7 +205,6 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
       : results.confusionNoiseDisplay?.value.toString(), // not zoom - TODO: remove?
     units: transformed_result.spectral_confusion_noise?.unit
   };
-
 
   // const results3 = {
   //   field: `${observationTypeLabel}TotalSensitivity`,
@@ -234,13 +228,14 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   //   units: results.beamSizeDisplay?.unit
   // };
 
-
   const results4 = {
     field: `${observationTypeLabel}SynthBeamSize`,
-    value: transformed_result.spectral_synthesized_beam_size?.beam_maj.value.toString() + ' x ' + transformed_result.spectral_synthesized_beam_size?.beam_min.value.toString(),
-    units: transformed_result.spectral_synthesized_beam_size?.beam_maj.unit
+    value:
+      transformed_result.spectral_synthesized_beam_size?.beam_maj.value.toString() +
+      ' x ' +
+      transformed_result.spectral_synthesized_beam_size?.beam_min.value.toString(),
+    units: transformed_result.spectral_synthesized_beam_size?.beam_maj.unit // TODO: hard code arcsec2 for now or not?
   };
-
 
   // const results5 = {
   //   field: isSuppliedSensitivity()
@@ -252,17 +247,18 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   //   units: isSuppliedSensitivity() ? results.continuumIntegrationTime?.unit : results.sbs?.unit
   // };
 
-
-  const results5 = { // low zoom only supports integration time hence return sensitivity
+  const results5 = {
+    // low zoom only supports integration time hence return sensitivity
     field: isSuppliedSensitivity()
-      ? `${observationTypeLabel}IntegrationTime` 
-      : `${observationTypeLabel}SurfaceBrightnessSensitivity`, 
+      ? `${observationTypeLabel}IntegrationTime`
+      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
     value: isSuppliedSensitivity()
       ? results.continuumIntegrationTime?.value.toString() //TODO: remove?
       : transformed_result.spectral_surface_brightness_sensitivity?.value.toString(), // why it used to call sbs- ref const sbs = getSurfaceBrightnessSensitivity(
-    units: isSuppliedSensitivity() ? results.continuumIntegrationTime?.unit : transformed_result.spectral_surface_brightness_sensitivity?.unit
+    units: isSuppliedSensitivity()
+      ? results.continuumIntegrationTime?.unit
+      : transformed_result.spectral_surface_brightness_sensitivity?.unit
   };
-
 
   // const results6 = {
   //   field: 'spectralSensitivityWeighted',
@@ -276,20 +272,17 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
     units: transformed_result.weighted_spectral_sensitivity.unit // TODO set correct unit when using supplied sensitivity
   };
 
-
   // const results7 = {
   //   field: 'spectralConfusionNoise',
   //   value: results.spectralConfusionNoiseDisplay?.value.toString(),
   //   units: results.spectralConfusionNoiseDisplay?.unit
   // };
 
-
   const results7 = {
     field: 'spectralConfusionNoise',
     value: transformed_result.spectral_confusion_noise?.value.toString(),
     units: transformed_result.spectral_confusion_noise?.unit
   };
-
 
   // const results8 = {
   //   field: 'spectralTotalSensitivity',
@@ -309,9 +302,13 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   //   units: results.spectralBeamSizeDisplay?.unit
   // };
 
-  const results9 = { //overlap 4?
+  const results9 = {
+    //overlap 4?
     field: 'spectralSynthBeamSize',
-    value: transformed_result.spectral_synthesized_beam_size?.beam_maj.value.toString() + ' x ' + transformed_result.spectral_synthesized_beam_size?.beam_min.value.toString(),
+    value:
+      transformed_result.spectral_synthesized_beam_size?.beam_maj.value.toString() +
+      ' x ' +
+      transformed_result.spectral_synthesized_beam_size?.beam_min.value.toString(),
     units: transformed_result.spectral_synthesized_beam_size?.unit
   };
 
@@ -327,9 +324,9 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   //     : results.spectralSbs?.unit
   // };
 
-
-  const results10 = { // overlap 5
-    field: isSuppliedSensitivity() // zoom only supplied integration 
+  const results10 = {
+    // overlap 5
+    field: isSuppliedSensitivity() // zoom only supplied integration
       ? 'spectralIntegrationTime'
       : 'spectralSurfaceBrightnessSensitivity',
     value: isSuppliedSensitivity()
@@ -339,7 +336,6 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
       ? results.spectralIntegrationTime?.unit
       : transformed_result.spectral_surface_brightness_sensitivity?.unit
   };
-
 
   const results11 = {
     field: suppliedType,
@@ -363,11 +359,10 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
     results11
   };
 
-  console.log('getFinalIndividualResultsForZoom updated_results', updated_results)
+  console.log('getFinalIndividualResultsForZoom updated_results', updated_results);
 
-  return updated_results
+  return updated_results;
 }
-
 
 /*
 const mapping = (data: any, dataS: StandardData, dataZ: ZoomData) => {
@@ -520,13 +515,15 @@ const mapping = (data: any, dataS: StandardData, dataZ: ZoomData) => {
 
 */
 
-
-
-const addPropertiesLOW = (telescope: Telescope, standardData: StandardData, zoomData: ZoomData, observation:Observation) => {
-
+const addPropertiesLOW = (
+  telescope: Telescope,
+  standardData: StandardData,
+  zoomData: ZoomData,
+  observation: Observation
+) => {
   const getBandwidthValues = () =>
     OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-  
+
   function getZoomBandwidthValueUnit() {
     const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
       ?.label;
@@ -534,14 +531,14 @@ const addPropertiesLOW = (telescope: Telescope, standardData: StandardData, zoom
   }
 
   const getSpectralResolution = () => {
-      const units = FREQUENCY_UNITS[2].label;
-      const spectralResValue = observation.spectralResolution.includes(units)
-        ? Number(observation.spectralResolution.split(' ')[0]) * 1000
-        : Number(observation.spectralResolution.split(' ')[0]);
-      return spectralResValue?.toString();
-    };
+    const units = FREQUENCY_UNITS[2].label;
+    const spectralResValue = observation.spectralResolution.includes(units)
+      ? Number(observation.spectralResolution.split(' ')[0]) * 1000
+      : Number(observation.spectralResolution.split(' ')[0]);
+    return spectralResValue?.toString();
+  };
 
-  console.log('addPropertiesLOW')
+  console.log('addPropertiesLOW');
   const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
   let properties = '';
   if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
@@ -566,22 +563,18 @@ const addPropertiesLOW = (telescope: Telescope, standardData: StandardData, zoom
   // );
 
   //use old method for now
-  properties += addValue(
-    'spectral_resolutions_hz',
-    getSpectralResolution()
-  );
+  properties += addValue('spectral_resolutions_hz', getSpectralResolution());
 
-  properties += addValue('total_bandwidths_khz', sensCalHelpers.format.convertBandwidthToKHz(
-    bandwidthValueUnit[0],
-    bandwidthValueUnit[1]
-  )) //from old method,  low zoom bandwidth should be sent in kHz);
+  properties += addValue(
+    'total_bandwidths_khz',
+    sensCalHelpers.format.convertBandwidthToKHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
+  ); //from old method,  low zoom bandwidth should be sent in kHz);
   properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
   properties = addRobustProperty(zoomData, properties);
 
-  console.log('addPropertiesLOW properties', properties)
+  console.log('addPropertiesLOW properties', properties);
 
   return properties;
-  
 };
 
 /* REF old method
@@ -697,64 +690,62 @@ async function getZoomData(
   //const standardData: StandardData = undefined;
 
   const zoomData: ZoomData = {
-      dataType: observation.type,
-      bandwidth: {
-        value: observation?.continuumBandwidth,
-        unit: observation?.continuumBandwidthUnits.toString()
-      },
-      suppliedType: observation?.supplied?.type,
-      supplied_0: {
-        value: observation?.supplied?.value,
-        unit: observation?.supplied?.units?.toString()
-      },
-      supplied_1: {
-        value: observation?.supplied?.value,
-        unit: observation?.supplied?.units?.toString()
-      },
-      centralFrequency: {
-        value: observation?.centralFrequency,
-        unit: observation?.centralFrequencyUnits?.toString()
-      },
-      spectralAveraging: observation?.spectralAveraging,
-      spectralResolution: '',
-      imageWeighting: observation?.imageWeighting,
-      robust: observation?.robust,
-      tapering: observation?.tapering
-    };
+    dataType: observation.type,
+    bandwidth: {
+      value: observation?.continuumBandwidth,
+      unit: observation?.continuumBandwidthUnits.toString()
+    },
+    suppliedType: observation?.supplied?.type,
+    supplied_0: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    supplied_1: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    centralFrequency: {
+      value: observation?.centralFrequency,
+      unit: observation?.centralFrequencyUnits?.toString()
+    },
+    spectralAveraging: observation?.spectralAveraging,
+    spectralResolution: '',
+    imageWeighting: observation?.imageWeighting,
+    robust: observation?.robust,
+    tapering: observation?.tapering
+  };
 
   const standardData: StandardData = {
-      observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
-        ?.mapping, // TODO handle band 5a and 5b correctly
-      weather: { value: observation.weather, unit: 'mm' },
-      subarray: OBSERVATION.array
-        .find(t => t.value === observation.telescope)
-        ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
-      num15mAntennas: observation.num15mAntennas,
-      num13mAntennas: observation.num13mAntennas,
-      numStations: observation.numStations,
-      skyDirectionType: RA_TYPE_GALACTIC,
-      raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
-      decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
-      raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
-      decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
-      elevation: { value: observation.elevation, unit: 'deg' },
-      advancedData: undefined, // no advanced data(?) in pht
-      modules: []
-    };
-
-
+    observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
+      ?.mapping, // TODO handle band 5a and 5b correctly
+    weather: { value: observation.weather, unit: 'mm' },
+    subarray: OBSERVATION.array
+      .find(t => t.value === observation.telescope)
+      ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
+    num15mAntennas: observation.num15mAntennas,
+    num13mAntennas: observation.num13mAntennas,
+    numStations: observation.numStations,
+    skyDirectionType: RA_TYPE_GALACTIC,
+    raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
+    decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
+    raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    elevation: { value: observation.elevation, unit: 'deg' },
+    advancedData: undefined, // no advanced data(?) in pht
+    modules: []
+  };
 
   /*if (mocked) {
     return Promise.resolve(ZOOM_DATA_MOCKED);
   } else {
    */
   const URL_PATH = `/zoom/calculate`;
-  
+
   let properties = isLow(telescope)
-      ? addPropertiesLOW(telescope, standardData, zoomData, observation)
-      : 'not low'
-      //: addPropertiesMID(telescope, standardData, zoomData, subArrayResults);
-    
+    ? addPropertiesLOW(telescope, standardData, zoomData, observation)
+    : 'not low';
+  //: addPropertiesMID(telescope, standardData, zoomData, subArrayResults);
+
   //let properties = '';
   /*
     if (showAdvanced && !isLow(telescope)) {
@@ -762,9 +753,18 @@ async function getZoomData(
     }
       */
 
-  console.log('properties', properties)
+  console.log('properties', properties);
   // const mapping: Function = undefined; // TODO uncomment mapping function
-  return Fetch(telescope, URL_PATH, properties, mapping, standardData, zoomData, target, observation);
+  return Fetch(
+    telescope,
+    URL_PATH,
+    properties,
+    mapping,
+    standardData,
+    zoomData,
+    target,
+    observation
+  );
 }
 // }
 export default getZoomData;

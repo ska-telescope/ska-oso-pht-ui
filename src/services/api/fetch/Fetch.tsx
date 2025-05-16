@@ -30,13 +30,13 @@ const Fetch = async (
   observation?: Observation
 ) => {
   try {
-    console.log('Fetch properties', properties)
+    console.log('Fetch properties', properties);
     // const baseURL = window.env.BACKEND_URL + API_VERSION;
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     finalURL += properties;
     const result = await axios.get(finalURL, AXIOS_CONFIG);
-    return mapping(result.data,target, observation);
+    return mapping(result.data, target, observation);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();
     const title = errMsg?.title?.length ? errMsg.title : t('api.error');

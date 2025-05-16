@@ -42,8 +42,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   try {
     const output: any = await fetchSensCalc(observation, target);
 
-
-    console.log('getSensCalc output', output)
+    console.log('getSensCalc output', output);
 
     // TODO: revisit error handling - maybe moving to mapping?
     // if ('error' in output) {
@@ -56,7 +55,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     //   return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
     // }
 
-    // already done is new mapping 
+    // already done is new mapping
     //const results = calculateSensitivityCalculatorResults(output, observation, target);
     // return results
 
