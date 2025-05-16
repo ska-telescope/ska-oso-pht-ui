@@ -9,7 +9,7 @@ global:
 # with the PostgreSQL instance.
 # The configuration can be changed using the parameters below, or see the `make dev-up` target.
 
-ska-oso-pht-services:
+ska-oso-services:
   rest:
     logLevel: debug
     # oda:
