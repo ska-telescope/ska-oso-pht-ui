@@ -23,7 +23,7 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
   }
 
   try {
-    const URL_PATH = `/proposals/validate`;
+    const URL_PATH = `/prsls/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,

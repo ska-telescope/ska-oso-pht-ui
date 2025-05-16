@@ -53,7 +53,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
   }
 
   try {
-    const URL_PATH = `/proposals`;
+    const URL_PATH = `/prsls/create`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
     const result = await axios.post(
