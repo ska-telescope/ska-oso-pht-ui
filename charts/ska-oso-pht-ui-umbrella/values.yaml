@@ -9,12 +9,12 @@ global:
 # with the PostgreSQL instance.
 # The configuration can be changed using the parameters below, or see the `make dev-up` target.
 
-ska-oso-pht-services:
-  rest:
-    logLevel: debug
-    # oda:
-    #   backendType: rest
-    #   url: ~ # Use the default value in the chart, which is the ODA service address
+#ska-oso-pht-services:
+#  rest:
+#    logLevel: debug
+#    # oda:
+#    #   backendType: rest
+#    #   url: ~ # Use the default value in the chart, which is the ODA service address
 
 ska-db-oda-umbrella:
   enabled: true

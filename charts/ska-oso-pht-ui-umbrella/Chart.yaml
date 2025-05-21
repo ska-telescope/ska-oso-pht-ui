@@ -10,7 +10,7 @@ dependencies:
   version: 1.0.4
   repository: file://../ska-oso-pht-ui
 
-# PHT services provides services required by the PHT UI and acts as the proxy
+# OSO services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load SBD, save SBD, etc.)
 - name: ska-oso-services
   version: 1.1.0
