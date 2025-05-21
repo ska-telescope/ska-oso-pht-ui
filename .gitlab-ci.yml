@@ -62,17 +62,17 @@ code_analysis:
 
 js-lint:
   cache:
-    paths:
+    #paths:
     # - node_modules/
     policy: pull
-  before_script:
+  #before_script:
     # - mkdir -p build/reports
-  after_script:
+  #after_script:
     # - yarn install --immutable
     # - yarn code-analysis
     # - mv linting.xml build/reports/linting.xml
   artifacts:
-    paths:
+    #paths:
     # - build/
     reports:
       # junit: build/reports/linting.xml
