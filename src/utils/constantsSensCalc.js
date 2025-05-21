@@ -196,9 +196,6 @@ export const TIME_UNITS = [
   { id: TIME_NS, value: 'ns', toDay: 86400 * 1000000000 }
 ];
 
-export const SUPPLIED_TYPE_INTEGRATION = 0;
-export const SUPPLIED_TYPE_SENSITIVITY = 1;
-
 export const OB_SUBARRAY_CUSTOM = 'custom';
 export const SUBARRAY_TYPE_MIXED = 0;
 export const SUBARRAY_TYPE_SKA = 1;

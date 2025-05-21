@@ -9,7 +9,7 @@ import {
   OB_SUBARRAY_CUSTOM,
   TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
-import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
+// import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 import getZoomData from '../../api/getZoomData/getZoomData';
 import getContinuumData from '../../api/getContinuumData/getContinuumData';

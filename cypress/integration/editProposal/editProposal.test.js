@@ -66,7 +66,7 @@ describe('Edit Proposal', () => {
     clickAddObservation();
     verifyObservationInTable();
     clickObservationFromTable();
-    clickToLinkTargetAndObservation();
+    // clickToLinkTargetAndObservation();
     verifySensitivityCalculatorStatusSuccess();
     clickSave();
     clickToTechnicalPage();

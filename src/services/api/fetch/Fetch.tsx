@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import axios from 'axios';
 import {
-  API_VERSION,
   AXIOS_CONFIG,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   STATUS_ERROR
@@ -10,12 +9,6 @@ import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import { ContinuumData, PSSData, StandardData, ZoomData } from 'utils/types/typesSensCalc';
 import Target from 'utils/types/target';
 import Observation from 'utils/types/observation';
-
-declare const window: {
-  env: {
-    BACKEND_URL: string;
-  };
-} & Window;
 
 // TODO : This needs to be changed to use the FETCH API, however when tried it threw a CORS error.
 
