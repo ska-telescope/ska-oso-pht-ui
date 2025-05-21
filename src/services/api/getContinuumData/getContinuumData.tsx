@@ -40,7 +40,6 @@ import {
   TYPE_CONTINUUM
 } from '../../../utils/constants';
 import Target from 'utils/types/target';
-// import { t } from 'i18next';
 import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
 import { presentUnits } from '../../../utils/present';
@@ -48,7 +47,6 @@ import { presentUnits } from '../../../utils/present';
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
 
-//TODO: move to common folder
 interface FinalIndividualResults {
   results1: ResultsSection;
   results2: ResultsSection;
@@ -63,7 +61,6 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-// from calculateSensitivityCalculatorResults.ts
 function getFinalResults(target, results: any, theObservation): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
   const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
@@ -81,7 +78,6 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
     section3: [individualResults.results11]
   };
 
-  // Section 1
   if (!isSuppliedSensitivity()) {
     theResults.section1.push(individualResults.results1);
   }
@@ -91,7 +87,7 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
   }
   theResults.section1.push(individualResults.results4);
   theResults.section1.push(individualResults.results5);
-  // Section 2
+
   if (isContinuum()) {
     if (!isSuppliedSensitivity()) {
       theResults.section2.push(individualResults.results6);
@@ -103,9 +99,6 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
     theResults.section2.push(individualResults.results9);
     theResults.section2.push(individualResults.results10);
   }
-
-  console.log('[getContinuumData] getFinalResults theResults', theResults);
-
   return theResults;
 }
 
@@ -122,9 +115,6 @@ function getFinalIndividualResultsForContinuum(
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  console.log('theObservation', theObservation);
-  console.log('getContinuumData] getFinalIndividualResultsForContinuum results', results);
-
   let transformed_result = results.transformed_result;
 
   const observationTypeLabel: string = OBS_TYPES[theObservation.type];
@@ -134,21 +124,22 @@ function getFinalIndividualResultsForContinuum(
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
   const results1 = {
     field: `${observationTypeLabel}SensitivityWeighted`,
-    value: shifted1.value.toString() ?? 0,
-    units: shifted1.unit ?? 'ERR1'
+    value: shifted1.value.toString(),
+    units: shifted1.unit
   };
 
+  const shifted2 = shiftSensitivity(transformed_result?.continuum_confusion_noise);
   const results2 = {
     field: `${observationTypeLabel}ConfusionNoise`,
-    value: transformed_result?.spectral_confusion_noise?.value ?? 0,
-    units: transformed_result?.spectral_confusion_noise?.unit ?? 'ERR2'
+    value: shifted2.value.toString(),
+    units: shifted2.unit
   };
 
   const shifted3 = shiftSensitivity(transformed_result?.total_continuum_sensitivity);
   const results3 = {
     field: `${observationTypeLabel}TotalSensitivity`,
-    value: shifted3.value ?? 0,
-    units: shifted3.unit ?? 'ERR3'
+    value: shifted3.value.toString(),
+    units: shifted3.unit
   };
 
   const results4 = {
@@ -157,10 +148,7 @@ function getFinalIndividualResultsForContinuum(
       toFixed(transformed_result?.continuum_synthesized_beam_size?.beam_maj.value).toString() +
       ' x ' +
       toFixed(transformed_result?.continuum_synthesized_beam_size?.beam_min.value).toString(),
-    units: presentUnits(
-      'arcsec2'
-      // transformed_result?.continuum_synthesized_beam_size?.beam_maj.unit ?? 'ERR4'
-    )
+    units: presentUnits('arcsec2')
   };
 
   const results5 = {
@@ -171,28 +159,29 @@ function getFinalIndividualResultsForContinuum(
       ? transformed_result?.continuum_integration_time?.value.toString()
       : transformed_result?.continuum_surface_brightness_sensitivity?.value.toString(),
     units: isSuppliedSensitivity()
-      ? transformed_result?.continuum_integration_time?.unit ?? 'ERR5a'
-      : transformed_result?.continuum_surface_brightness_sensitivity?.unit ?? 'ERR5b'
+      ? transformed_result?.continuum_integration_time?.unit
+      : transformed_result?.continuum_surface_brightness_sensitivity?.unit
   };
 
   const shifted6 = shiftSensitivity(transformed_result?.weighted_spectral_sensitivity);
   const results6 = {
     field: 'spectralSensitivityWeighted',
-    value: shifted6.value?.toString() ?? 0,
-    units: shifted6.unit ?? 'ERR6'
+    value: shifted6.value?.toString(),
+    units: shifted6.unit
   };
 
+  const shifted7 = shiftSensitivity(transformed_result?.spectral_confusion_noise);
   const results7 = {
     field: 'spectralConfusionNoise',
-    value: transformed_result?.spectral_confusion_noise?.value?.toString() ?? 0,
-    units: transformed_result?.spectral_confusion_noise?.unit ?? 'ERR7'
+    value: shifted7.value?.toString(),
+    units: shifted7.unit
   };
 
   const shifted8 = shiftSensitivity(transformed_result?.total_spectral_sensitivity);
   const results8 = {
     field: 'spectralTotalSensitivity',
-    value: shifted8.value?.toString() ?? 0,
-    units: shifted8.unit ?? 'ERR8'
+    value: shifted8.value?.toString(),
+    units: shifted8.unit
   };
 
   const results9 = {
@@ -201,7 +190,7 @@ function getFinalIndividualResultsForContinuum(
       toFixed(transformed_result?.spectral_synthesized_beam_size?.beam_maj.value).toString() +
       ' x ' +
       toFixed(transformed_result?.spectral_synthesized_beam_size?.beam_min.value).toString(),
-    units: presentUnits('arcsec2') // transformed_result?.spectral_synthesized_beam_size?.beam_maj.unit ?? 'ERR9')
+    units: presentUnits('arcsec2')
   };
 
   const results10 = {
@@ -209,8 +198,8 @@ function getFinalIndividualResultsForContinuum(
       ? 'spectralIntegrationTime'
       : 'spectralSurfaceBrightnessSensitivity',
     value: isSuppliedSensitivity()
-      ? transformed_result?.spectral_integration_time?.value?.toString() ?? 0
-      : transformed_result?.spectral_surface_brightness_sensitivity?.value?.toString() ?? 0,
+      ? transformed_result?.spectral_integration_time?.value?.toString()
+      : transformed_result?.spectral_surface_brightness_sensitivity?.value?.toString(),
     units: isSuppliedSensitivity()
       ? transformed_result?.spectral_integration_time?.unit ?? 'ERR10a'
       : transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b'
@@ -218,11 +207,11 @@ function getFinalIndividualResultsForContinuum(
 
   const results11 = {
     field: suppliedType,
-    value: theObservation?.supplied?.value?.toString() ?? 0,
+    value: theObservation?.supplied?.value?.toString(),
     units:
       OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
         u => u.value === theObservation.supplied.units
-      )?.label ?? 'ERR11'
+      )?.label ?? ''
   };
 
   const updated_results = {
@@ -238,24 +227,8 @@ function getFinalIndividualResultsForContinuum(
     results10,
     results11
   };
-
-  console.log('updated_results', updated_results);
-
   return updated_results;
 }
-
-// TODO handle warnings and check it works as expected
-/*
-  - add in translations
-  - see in which section should this go?
-  */
-// if (isCustom) {
-//   addWarningData([t('customWarning.warning')], results, 'warningCustom');
-// } else if (isNatural) {
-//   addWarningData([t('noEstimateWarning.warning')], results, 'warningNoEstimate');
-// }
-
-// wData?.warnings.forEach((e: any) => addWarningObject(e, results));
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';

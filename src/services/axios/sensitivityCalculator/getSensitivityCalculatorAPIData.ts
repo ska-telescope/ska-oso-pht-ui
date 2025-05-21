@@ -42,8 +42,6 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   try {
     const output: any = await fetchSensCalc(observation, target);
 
-    console.log('getSensCalc output', output);
-
     // TODO: revisit error handling - maybe moving to mapping?
     // if ('error' in output) {
     //   return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);

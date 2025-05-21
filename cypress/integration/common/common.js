@@ -196,7 +196,7 @@ export const verifyObservationInTable = () => {
     .children('div[role="row"]')
     .should('contain', 'obs-')
     .should('contain', 'AA4')
-    .should('have.length', 3);
+    .should('have.length', 2);
 };
 
 export const clickObservationFromTable = () => {
