@@ -8,7 +8,7 @@
     "weightedSpectralSensitivity": "13.10 mJy/beam",
     "spectralConfusionNoise": "3.55 μJy/beam",
     "totalSpectralSensitivity": "13.10 mJy/beam",
-    "spectralSynthesisedBeamSize": "5.89 x 5.03LOW_inner arcsec²",
+    "spectralSynthesisedBeamSize": "5.88 x 5.02 arcsec²",
     "spectralSurfaceBrightnessSensitivity": "1.4e+4 K"
   }
 ]

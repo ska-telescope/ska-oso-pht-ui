@@ -15,13 +15,15 @@ import {
   FREQUENCY_MHZ,
   DECIMAL_PLACES,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL
+  RA_TYPE_EQUATORIAL,
+  TIME_SECS
 } from '../../../utils/constantsSensCalc';
 import {
   isLow,
   getImageWeightingMapping,
   shiftSensitivity,
-  isSuppliedTime
+  isSuppliedTime,
+  getSensitivitiesUnitsMapping
 } from '../../../utils/helpersSensCalc';
 
 import {
@@ -29,10 +31,12 @@ import {
   addValue,
   addTime,
   addFrequency,
-  addRobustProperty
+  addRobustProperty,
+  rxBand
 } from '../submissionEntries/submissionEntries';
 import {
   BANDWIDTH_TELESCOPE,
+  FREQUENCY_HZ,
   FREQUENCY_UNITS,
   OBS_TYPES,
   OBSERVATION,
@@ -228,7 +232,6 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
 }
 
 const addPropertiesLOW = (
-  telescope: Telescope,
   standardData: StandardData,
   zoomData: ZoomData,
   observation: Observation
@@ -267,136 +270,55 @@ const addPropertiesLOW = (
   properties += addFrequency('freq_centres_mhz', zoomData.centralFrequency, FREQUENCY_MHZ);
   properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
 
-  //TODO: where to get getSpectralResolutionBaseValue
-  // properties += addValue(
-  //   'spectral_resolutions_hz',
-  //   getSpectralResolutionBaseValue(zoomData.bandwidth, false, isLow(telescope))
-  // );
-
-  //use old method for now
   properties += addValue('spectral_resolutions_hz', getSpectralResolution());
 
   properties += addValue(
     'total_bandwidths_khz',
     sensCalHelpers.format.convertBandwidthToKHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
-  ); //from old method,  low zoom bandwidth should be sent in kHz);
+  );
   properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
   properties = addRobustProperty(zoomData, properties);
 
   return properties;
 };
 
-/* REF old method
-
-const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-
-function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
-      ?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-
-const getParamZoomLow = (): CalculateLowZoomQuery => {
-    const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-    const params = {
-      integration_time_h: Number(observation.supplied.value),
-      pointing_centre: rightAscension() + ' ' + declination(),
-      elevation_limit: observation.elevation?.toString(),
-      freq_centres_mhz: observation.centralFrequency.toString(),
-      spectral_averaging_factor: observation.spectralAveraging,
-      spectral_resolutions_hz: getSpectralResolution(),
-      total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
-        bandwidthValueUnit[0],
-        bandwidthValueUnit[1]
-      ) // low zoom bandwidth should be sent in kHz
-    };
-    const subArrayOrAntennasParams = getLowSubArrayOrAntennasParams();
-    return { ...params, ...subArrayOrAntennasParams };
-  };
-
-  */
-
-/*
-
-const addPropertiesMID = (
-  telescope: Telescope,
-  standardData: StandardData,
-  zoomData: ZoomData,
-  subArrayResults: SubArrayResults | undefined
-) => {
+const addPropertiesMID = (standardData: StandardData, zoomData: ZoomData) => {
   let properties = '';
-
-  properties += rxBand(standardData.observingBand, SEPARATOR0);
-  if (subArrayResults && standardData.subarray !== OB_SUBARRAY_CUSTOM) {
-    properties += subArrayLookup(standardData, subArrayResults);
-  } else {
-    properties += addValue('n_ska', standardData.num15mAntennas);
-    properties += addValue('n_meer', standardData.num13mAntennas);
-  }
-  properties += addFrequency('freq_centres_hz', zoomData.centralFrequency, FREQUENCY_HZ);
-  properties += pointingCentre(standardData);
-  properties += addValue('pmv', standardData.weather.value);
-  properties += addValue('el', standardData.elevation.value);
-  const specResolutionDisplay = calculateSpectralResolution(
-    zoomData.bandwidth,
-    false,
-    zoomData.centralFrequency,
-    isLow(telescope)
-  );
-  const specResolutionArr = specResolutionDisplay.split(' ');
-  const specResolutionHz = frequencyConversion(specResolutionArr[0], FREQUENCY_KHZ);
-  properties += addValue('spectral_resolutions_hz', specResolutionHz);
-  properties += addValue(
-    'total_bandwidths_hz',
-    frequencyConversion(getBandwidth(zoomData.bandwidth.value, false), FREQUENCY_MHZ, FREQUENCY_HZ)
-  );
   if (isSuppliedTime(zoomData.suppliedType)) {
-    properties += addTime('integration_time_s', zoomData.supplied_0, TIME_SECS);
+    properties += addTime('integration_time_s', zoomData.supplied_0, TIME_SECS, SEPARATOR0);
   } else {
-    properties += addValue('supplied_sensitivities', zoomData.supplied_1.value);
+    properties += addValue('supplied_sensitivity', zoomData.supplied_1.value, SEPARATOR0);
     properties += addValue(
       'sensitivity_unit',
       getSensitivitiesUnitsMapping(Number(zoomData.supplied_1.unit))
     );
   }
+  properties += rxBand(standardData.observingBand);
+
+  if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
+    properties += addValue('subarray_configuration', standardData.subarray);
+  } else {
+    properties += addValue('n_ska', standardData.num15mAntennas);
+    properties += addValue('n_meer', standardData.num13mAntennas);
+  }
+  properties += addFrequency('freq_centre_hz', zoomData.centralFrequency, FREQUENCY_HZ);
+  properties += addFrequency('bandwidth_hz', zoomData.bandwidth, FREQUENCY_HZ);
+  properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
+  properties += pointingCentre(standardData);
+  properties += addValue('pmv', Number(standardData.weather.value));
+  properties += addValue('el', Number(standardData.elevation.value));
   properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
-  properties = addRobustProperty(zoomData, properties);
   properties += addValue('taper', zoomData.tapering);
-  // TODO : Add advanced
+  properties = addRobustProperty(zoomData, properties);
   return properties;
 };
-
-*/
 
 async function getZoomData(
   telescope: Telescope,
   subArrayResults: SubArrayResults | undefined,
-  // advancedData: AdvancedData,
   observation: Observation,
   target: Target
-  // showAdvanced: boolean,
-  // mocked = MOCKED_API
 ) {
-  // export const NEW_ZOOM_DATA_LOW: ZoomData = {
-  //   dataType: TYPE_ZOOM,
-  //   bandwidth: { value: 1, unit: '2' },
-  //   suppliedType: 0,
-  //   supplied_0: DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
-  //   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
-  //   centralFrequency: { value: 200, unit: '2' },
-  //   spectralAveraging: 1,
-  //   spectralResolution: '',
-  //   imageWeighting: 1,
-  //   robust: 3,
-  //   tapering: 0
-  // };
-
-  // TODO map zoomData and standardData with observation
-  //const zoomData: ZoomData = undefined;
-  //const standardData: StandardData = undefined;
-
   const zoomData: ZoomData = {
     dataType: observation.type,
     bandwidth: {
@@ -425,11 +347,11 @@ async function getZoomData(
 
   const standardData: StandardData = {
     observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
-      ?.mapping, // TODO handle band 5a and 5b correctly
+      ?.mapping,
     weather: { value: observation.weather, unit: 'mm' },
     subarray: OBSERVATION.array
       .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
+      ?.subarray?.find(s => s.value === observation.subarray)?.map,
     num15mAntennas: observation.num15mAntennas,
     num13mAntennas: observation.num13mAntennas,
     numStations: observation.numStations,
@@ -439,7 +361,7 @@ async function getZoomData(
     raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
     decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
     elevation: { value: observation.elevation, unit: 'deg' },
-    advancedData: undefined, // no advanced data(?) in pht
+    advancedData: undefined,
     modules: []
   };
 
@@ -450,18 +372,10 @@ async function getZoomData(
   const URL_PATH = `/zoom/calculate`;
 
   let properties = isLow(telescope)
-    ? addPropertiesLOW(telescope, standardData, zoomData, observation)
-    : 'not low';
-  //: addPropertiesMID(telescope, standardData, zoomData, subArrayResults);
+    ? addPropertiesLOW(standardData, zoomData, observation)
+    : addPropertiesMID(standardData, zoomData);
 
-  //let properties = '';
-  /*
-    if (showAdvanced && !isLow(telescope)) {
-      properties += addAdvancedData(advancedData);
-    }
-      */
-
-  // const mapping: Function = undefined; // TODO uncomment mapping function
+  // const mapping: Function = undefined;
   return Fetch(
     telescope,
     URL_PATH,

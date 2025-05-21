@@ -253,11 +253,7 @@ const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumDa
   return properties;
 };
 
-const addPropertiesMID = (
-  standardData: StandardData,
-  continuumData: ContinuumData,
-  subArrayResults: SubArrayResults | undefined
-) => {
+const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';
   if (isSuppliedTime(continuumData.suppliedType)) {
     properties += addTime('integration_time_s', continuumData.supplied_0, TIME_SECS, SEPARATOR0);
@@ -346,7 +342,7 @@ function getContinuumData(
 
   let properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
-    : addPropertiesMID(standardData, continuumData, subArrayResults);
+    : addPropertiesMID(standardData, continuumData);
   const response = Fetch(
     telescope,
     URL_PATH,

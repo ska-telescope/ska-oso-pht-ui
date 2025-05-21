@@ -386,6 +386,7 @@ export default function LandingPage() {
                 rows={filteredData}
                 columns={stdColumns}
                 height={DATA_GRID_HEIGHT}
+                sx={{ border: 'none' }}
               />
             </div>
           )}

@@ -3890,10 +3890,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@ska-telescope/ska-gui-components@^2.3.13":
-  version "2.3.13"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.3.13.tgz#c3c8fad72d6ad6b7446bf6b02bc1fffc25ff19d7"
-  integrity sha512-Jra1sgelg/+OtUEkHACYvizwILEVdLJGROLTIISo08l1XhuBWQnPzguXs4f4YKTz8H9aeIjddC/hpanUgaWbcA==
+"@ska-telescope/ska-gui-components@^2.3.14":
+  version "2.3.14"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.3.14.tgz#0de4da1bab16ae14f0a58b637d90db005a6f494b"
+  integrity sha512-aNeenI54tqzbU2rhAUTHs5c0B1UWjlBqXGBXHtHJQBkDlNaajJYBPR8cgt7fCEgU/FyJGBERlCQdZ2aJQj/j4g==
   dependencies:
     "@base-ui-components/react" "^1.0.0-alpha.6"
     "@fontsource/material-icons" "^5.2.5"
