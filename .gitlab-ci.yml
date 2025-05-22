@@ -267,11 +267,27 @@ js-e2e-deploy:
 
 js-e2e-test:
   allow_failure: true
+  before_script:
+    - make js-install-reinstall
+    - mkdir -p build/screenshots
+    - mkdir -p build/reports
+    - mkdir -p build/tests
+    - mkdir -p build/.nyc_output
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+  after_script:
+    - cp cypress/artefacts/screenshots/*.png build/screenshots
+    - yarn test:e2e:coverage
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/reports/e2e-coverage.xml
+      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
   rules:
     - exists:
-        - cypress/integration/**/*.test.js
+        - cypress/integration/**/*.test.tsx
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
