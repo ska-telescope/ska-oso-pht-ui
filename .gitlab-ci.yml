@@ -8,9 +8,9 @@ variables:
   JS_E2E_TESTS_DIR: cypress
   JS_E2E_TEST_COMMAND: test:e2e
 
-  KUBE_HOST: 'https://k8s.stfc.skao.int'
-  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/senscalc
-  JS_NODE_VERSION: 20
+#  KUBE_HOST: 'https://k8s.stfc.skao.int'
+#  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/senscalc
+#  JS_NODE_VERSION: 20
 
 
 include:
@@ -57,7 +57,7 @@ stages:
   - publish
 
 install_dependencies:
-  image: node:22
+  image: $NODE_IMAGE
   stage: dependencies
   tags:
     - k8srunner
@@ -79,7 +79,7 @@ install_dependencies:
     policy: push
 
 code_analysis:
-  image: node:22
+  image: $NODE_IMAGE
   stage: lint
   tags:
     - ska-default
@@ -159,7 +159,7 @@ stop-integration-test:
 
 # list the current top level dependencies for the project
 list_dependencies:
-  image: node:22
+  image: $NODE_IMAGE
   stage: test
   tags:
     - ska-default
@@ -181,7 +181,7 @@ list_dependencies:
 
 # Build the application
 build:
-  image: node:22
+  image: $NODE_IMAGE
   stage: build
   tags:
     - ska-default
