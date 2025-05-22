@@ -77,11 +77,10 @@ async function getSensitivityCalculatorAPIData(
   isCustom: boolean
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
-  const subArrayResults: any = undefined;
 
   return observation.type === TYPE_CONTINUUM
-    ? getContinuumData(telescope, subArrayResults, observation, target)
-    : getZoomData(telescope, subArrayResults, observation, target);
+    ? getContinuumData(telescope, observation, target)
+    : getZoomData(telescope, observation, target);
 }
 
 export default getSensCalc;

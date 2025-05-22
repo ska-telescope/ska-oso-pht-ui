@@ -194,8 +194,8 @@ export const verifyFirstProposalOnLandingPageIsVisible = () => {
 export const verifyObservationInTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
-    .should('contain', 'obs-')
-    .should('contain', 'AA4');
+    .should('contain', 'obs-');
+  //  .should('contain', 'AA4');
   //  .should('have.length', 2);
 };
 

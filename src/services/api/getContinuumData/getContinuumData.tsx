@@ -1,9 +1,4 @@
-import {
-  ContinuumData,
-  StandardData,
-  Telescope,
-  SubArrayResults
-} from '../../../utils/types/typesSensCalc';
+import { ContinuumData, StandardData, Telescope } from '../../../utils/types/typesSensCalc';
 import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
@@ -285,12 +280,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   return properties;
 };
 
-function getContinuumData(
-  telescope: Telescope,
-  subArrayResults: SubArrayResults | undefined,
-  observation: Observation,
-  target: Target
-) {
+function getContinuumData(telescope: Telescope, observation: Observation, target: Target) {
   const URL_PATH = `/continuum/calculate`;
 
   const continuumData: ContinuumData = {

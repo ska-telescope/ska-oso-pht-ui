@@ -12,7 +12,6 @@ variables:
 #  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/senscalc
 #  JS_NODE_VERSION: 20
 
-
 include:
   - template: Code-Quality.gitlab-ci.yml
   - template: 'Verify/Accessibility.gitlab-ci.yml'
