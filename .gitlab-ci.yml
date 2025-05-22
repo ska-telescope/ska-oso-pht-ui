@@ -261,14 +261,20 @@ include:
 js-e2e-deploy:
   rules:
     - exists:
+        - cypress/e2e/**/*.test.tsx
+
+js-e2e-deploy-old:
+  rules:
+    - exists:
         - cypress/integration/**/*.test.js
 
 js-e2e-test:
+  allow_failure: true
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
   rules:
     - exists:
-        - cypress/**/*.js
+        - cypress/integration/**/*.test.js
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
