@@ -4,6 +4,37 @@ variables:
   a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
   JS_NODE_VERSION: 20
 
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+  - template: 'Verify/Accessibility.gitlab-ci.yml'
+  # Docs pages
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+    # OCI Images
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+    # Tag Based GitLab Release Management
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
+    # .post step finalizers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+    # helm chart
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+    # deploy steps
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+    # Upload BDD test results to JIRA X-ray
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
+    # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
+
 stages:
   - dependencies
   - lint
@@ -227,36 +258,6 @@ helm-chart-build:
   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
-
-include:
-  - template: Code-Quality.gitlab-ci.yml
-  - template: 'Verify/Accessibility.gitlab-ci.yml'
-  # Docs pages
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
-    # OCI Images
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
-    # Tag Based GitLab Release Management
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalizers eg: badges
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
-    # helm chart
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
-    # deploy steps
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
-    # Upload BDD test results to JIRA X-ray
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
-    # TS linting and unit testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
 
 js-e2e-deploy:
   rules:
