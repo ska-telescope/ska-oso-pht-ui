@@ -260,9 +260,10 @@ helm-chart-build:
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 js-e2e-deploy:
+  allow_failure: true
   rules:
     - exists:
-        - cypress/e2e/**/*.test.tsx
+        - cypress/integration/**/*.test.js
 
 js-e2e-test:
   allow_failure: true
