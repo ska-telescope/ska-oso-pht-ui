@@ -99,7 +99,6 @@ export default function GridMembers({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
-          sx={{ border: 'none' }}
           testId="teamTableId"
         />
       )}

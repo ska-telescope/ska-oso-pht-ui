@@ -159,7 +159,6 @@ export default function GridObservationSummary({
           getRowHeight={() => 'auto'}
           height={height}
           onRowClick={rowClick}
-          sx={{ border: 'none' }}
           testId="teamTableId"
         />
       )}

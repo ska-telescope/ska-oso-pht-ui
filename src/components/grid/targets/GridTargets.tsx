@@ -88,7 +88,6 @@ export default function GridTargets({
           height={height}
           onRowClick={rowClick}
           testId="targetListColumns"
-          sx={{ border: 'none' }}
         />
       )}
       {!rows ||

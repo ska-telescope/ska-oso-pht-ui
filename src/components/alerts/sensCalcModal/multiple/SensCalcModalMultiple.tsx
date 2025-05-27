@@ -298,7 +298,6 @@ export default function SensCalcModalMultiple({
               columns={getColumns()}
               columnHeaderHeight={100}
               height={500}
-              sx={{ border: 'none' }}
               testId="sensCalcDetailsList"
             />
           ) : (

@@ -520,7 +520,6 @@ export default function ObservationPage() {
                   setRowSelectionModel(newRowSelectionModel);
                 }}
                 rowSelectionModel={rowSelectionModel}
-                sx={{ border: 'none' }}
                 testId="observationDetails"
               />
             )}
@@ -599,7 +598,6 @@ export default function ObservationPage() {
                   rows={filteredTargets()}
                   columns={extendedColumnsTargets}
                   height={DATA_GRID_TARGET}
-                  sx={{ border: 'none' }}
                   testId="linkedTargetDetails"
                 />
               )}

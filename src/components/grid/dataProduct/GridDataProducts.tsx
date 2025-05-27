@@ -133,7 +133,6 @@ export default function GridDataProducts({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
-          sx={{ border: 'none' }}
           testId="dataProductsColumns"
         />
       )}
