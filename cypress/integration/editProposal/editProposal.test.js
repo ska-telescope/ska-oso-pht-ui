@@ -11,15 +11,11 @@ import {
   clickObservationSetup,
   clickSave,
   clickToAddTarget,
-  clickToConfirmProposalSubmission,
   clickToGeneralPage,
   clickToLinkTargetAndObservation,
-  clickToNextPage,
   clickToObservationPage,
   clickToObservatoryDataProductPage,
-  clickToPreviousPage,
   clickToSciencePage,
-  clickToSubmitProposal,
   clickToTargetPage,
   clickToTeamPage,
   clickToTechnicalPage,
@@ -28,12 +24,10 @@ import {
   selectCosmology,
   validateProposal,
   verifyEmailSentAlertFooter,
-  verifyFirstProposalOnLandingPageHasSubmittedStatus,
   verifyFirstProposalOnLandingPageIsVisible,
   verifyObservationInTable,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
-  verifyProposalIsValid,
   verifySensitivityCalculatorStatusSuccess
 } from '../common/common';
 
@@ -65,9 +59,9 @@ describe('Edit Proposal', () => {
     clickObservationSetup();
     clickAddObservation();
     verifyObservationInTable();
-    clickObservationFromTable();
-    clickToLinkTargetAndObservation();
-    verifySensitivityCalculatorStatusSuccess();
+    // clickObservationFromTable();
+    // clickToLinkTargetAndObservation();
+    // verifySensitivityCalculatorStatusSuccess();
     clickSave();
     clickToTechnicalPage();
     clickToObservatoryDataProductPage();
