@@ -1,3 +1,6 @@
+// DISABLED UNTIL VITEST IS IMPLEMENTED
+
+/*
 import { describe, test } from 'vitest';
 import getZoomData from './getZoomData';
 import '@testing-library/jest-dom';
@@ -31,3 +34,4 @@ describe('getZoomData', () => {
     expect(addWarningData(inData, results, 'warningCustom')).toBeDefined();
   });
 });
+*/

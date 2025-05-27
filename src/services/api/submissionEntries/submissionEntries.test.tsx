@@ -1,3 +1,6 @@
+// DISABLED UNTIL VITEST IS IMPLEMENTED
+
+/*
 import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
 import {
@@ -162,3 +165,4 @@ describe('Submission entries', () => {
     expect(addWarningData(inData, results, 'warningCustom')).toBeDefined();
   });
 });
+*/

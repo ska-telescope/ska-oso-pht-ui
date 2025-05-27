@@ -1,8 +1,46 @@
+image: $SKA_K8S_TOOLS_BUILD_DEPLOY
+
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  KUBE_HOST: 'https://k8s.stfc.skao.int'
-  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/pht
-  JS_NODE_VERSION: 20
+  NODE_IMAGE: 'node:22'
+  CYPRESS_IMAGE: 'cypress/browsers:22.12.0'
+  YARN_VERSION: '4.3.1'
+  JS_E2E_TESTS_DIR: cypress
+  JS_E2E_TEST_COMMAND: test:e2e
+
+#  KUBE_HOST: 'https://k8s.stfc.skao.int'
+#  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/senscalc
+#  JS_NODE_VERSION: 20
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+  - template: 'Verify/Accessibility.gitlab-ci.yml'
+  # Docs pages
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+    # OCI Images
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+    # Tag Based GitLab Release Management
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
+    # .post step finalizers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+    # helm chart
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+    # deploy steps
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+    # Upload BDD test results to JIRA X-ray
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
+    # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
 
 stages:
   - dependencies
@@ -18,7 +56,7 @@ stages:
   - publish
 
 install_dependencies:
-  image: node:22
+  image: $NODE_IMAGE
   stage: dependencies
   tags:
     - k8srunner
@@ -40,7 +78,7 @@ install_dependencies:
     policy: push
 
 code_analysis:
-  image: node:22
+  image: $NODE_IMAGE
   stage: lint
   tags:
     - ska-default
@@ -120,7 +158,7 @@ stop-integration-test:
 
 # list the current top level dependencies for the project
 list_dependencies:
-  image: node:22
+  image: $NODE_IMAGE
   stage: test
   tags:
     - ska-default
@@ -142,7 +180,7 @@ list_dependencies:
 
 # Build the application
 build:
-  image: node:22
+  image: $NODE_IMAGE
   stage: build
   tags:
     - ska-default
@@ -228,47 +266,35 @@ helm-chart-build:
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
-  - template: 'Verify/Accessibility.gitlab-ci.yml'
-  # Docs pages
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
-    # OCI Images
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
-    # Tag Based GitLab Release Management
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalizers eg: badges
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
-    # helm chart
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
-    # deploy steps
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
-    # Upload BDD test results to JIRA X-ray
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
-    # TS linting and unit testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
-
 js-e2e-deploy:
+  allow_failure: true
   rules:
     - exists:
         - cypress/integration/**/*.test.js
-        
+
 js-e2e-test:
+  allow_failure: true
+  before_script:
+    - make js-install-reinstall
+    - mkdir -p build/screenshots
+    - mkdir -p build/reports
+    - mkdir -p build/tests
+    - mkdir -p build/.nyc_output
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+  after_script:
+    - cp cypress/artefacts/screenshots/*.png build/screenshots
+    - yarn test:e2e:coverage
+    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/reports/e2e-coverage.xml
+      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
   rules:
     - exists:
-        - cypress/**/*.js
+        - cypress/integration/**/*.test.tsx
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report

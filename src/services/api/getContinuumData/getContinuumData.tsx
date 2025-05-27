@@ -1,47 +1,47 @@
-import Observation from 'utils/types/observation';
-import Fetch from '../fetch/Fetch';
-import Target from 'utils/types/target';
-import { StandardData, ZoomData, Telescope } from '../../../utils/types/typesSensCalc';
+import { ContinuumData, StandardData, Telescope } from '../../../utils/types/typesSensCalc';
 import {
+  DECIMAL_PLACES,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
   OB_SUBARRAY_CUSTOM,
   SEPARATOR0,
   STATUS_OK,
   TIME_HOURS,
-  FREQUENCY_MHZ,
-  DECIMAL_PLACES,
+  TIME_SECS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL,
-  TIME_SECS
+  RA_TYPE_EQUATORIAL
 } from '../../../utils/constantsSensCalc';
 import {
-  isLow,
   getImageWeightingMapping,
-  shiftSensitivity,
+  getSensitivitiesUnitsMapping,
+  isLow,
   isSuppliedTime,
-  getSensitivitiesUnitsMapping
+  shiftSensitivity
 } from '../../../utils/helpersSensCalc';
-
 import {
-  pointingCentre,
-  addValue,
-  addTime,
   addFrequency,
   addRobustProperty,
+  addTime,
+  addValue,
+  pointingCentre,
   rxBand
 } from '../submissionEntries/submissionEntries';
+import Fetch from '../fetch/Fetch';
 import {
   BANDWIDTH_TELESCOPE,
-  FREQUENCY_HZ,
-  FREQUENCY_UNITS,
+  OBS_TYPES,
   OBSERVATION,
-  SUPPLIED_TYPE_SENSITIVITY
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM
 } from '../../../utils/constants';
-import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
-import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
+import Target from 'utils/types/target';
+import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
+import Observation from '../../../utils/types/observation';
 import { presentUnits } from '../../../utils/present';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
+
 interface FinalIndividualResults {
   results1: ResultsSection;
   results2: ResultsSection;
@@ -58,27 +58,42 @@ interface FinalIndividualResults {
 
 function getFinalResults(target, results: any, theObservation): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+  const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
 
-  const individualResults = getFinalIndividualResultsForZoom(results, theObservation);
+  const individualResults = getFinalIndividualResultsForContinuum(results, theObservation);
 
   const theResults: SensCalcResults = {
     id: target.id,
     title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
+    ...(isContinuum() && {
+      section2: []
+    }),
     section3: [individualResults.results11]
   };
 
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results6);
+    theResults.section1.push(individualResults.results1);
   }
-  theResults.section1.push(individualResults.results7);
+  theResults.section1.push(individualResults.results2);
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results8);
+    theResults.section1.push(individualResults.results3);
   }
-  theResults.section1.push(individualResults.results9);
-  theResults.section1.push(individualResults.results10);
+  theResults.section1.push(individualResults.results4);
+  theResults.section1.push(individualResults.results5);
 
+  if (isContinuum()) {
+    if (!isSuppliedSensitivity()) {
+      theResults.section2.push(individualResults.results6);
+    }
+    theResults.section2.push(individualResults.results7);
+    if (!isSuppliedSensitivity()) {
+      theResults.section2.push(individualResults.results8);
+    }
+    theResults.section2.push(individualResults.results9);
+    theResults.section2.push(individualResults.results10);
+  }
   return theResults;
 }
 
@@ -89,37 +104,41 @@ const toFixed = (value: number) => {
   return Number(value).toFixed(DECIMAL_PLACES);
 };
 
-function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIndividualResults {
+function getFinalIndividualResultsForContinuum(
+  results: any,
+  theObservation
+): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  let transformed_result = results.transformed_result[0]; // ui only uses first result
+  let transformed_result = results.transformed_result;
 
+  const observationTypeLabel: string = OBS_TYPES[theObservation.type];
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
     ?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
   const results1 = {
-    field: `continuumSensitivityWeighted`,
-    value: shifted1.value.toString(), // not zoom - TODO: remove?
+    field: `${observationTypeLabel}SensitivityWeighted`,
+    value: shifted1.value.toString(),
     units: shifted1.unit
   };
 
   const shifted2 = shiftSensitivity(transformed_result?.continuum_confusion_noise);
   const results2 = {
-    field: `continuumConfusionNoise`,
+    field: `${observationTypeLabel}ConfusionNoise`,
     value: shifted2.value.toString(),
     units: shifted2.unit
   };
 
   const shifted3 = shiftSensitivity(transformed_result?.total_continuum_sensitivity);
   const results3 = {
-    field: `continuumTotalSensitivity`,
+    field: `${observationTypeLabel}TotalSensitivity`,
     value: shifted3.value.toString(),
     units: shifted3.unit
   };
 
   const results4 = {
-    field: `continuumSynthBeamSize`,
+    field: `${observationTypeLabel}SynthBeamSize`,
     value:
       toFixed(transformed_result?.continuum_synthesized_beam_size?.beam_maj.value).toString() +
       ' x ' +
@@ -129,8 +148,8 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
 
   const results5 = {
     field: isSuppliedSensitivity()
-      ? `continuumIntegrationTime`
-      : `continuumSurfaceBrightnessSensitivity`,
+      ? `${observationTypeLabel}IntegrationTime`
+      : `${observationTypeLabel}SurfaceBrightnessSensitivity`,
     value: isSuppliedSensitivity()
       ? transformed_result?.continuum_integration_time?.value.toString()
       : transformed_result?.continuum_surface_brightness_sensitivity?.value.toString(),
@@ -206,81 +225,38 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   return updated_results;
 }
 
-const getSpectralResolution = observation => {
-  const units = FREQUENCY_UNITS[2].label;
-  const spectralResValue = observation.spectralResolution.includes(units)
-    ? Number(observation.spectralResolution.split(' ')[0]) * 1000
-    : Number(observation.spectralResolution.split(' ')[0]);
-  return spectralResValue?.toString();
-};
-
-const addPropertiesLOW = (
-  standardData: StandardData,
-  zoomData: ZoomData,
-  observation: Observation
-) => {
-  const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
-      ?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';
   if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
   } else {
     properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
   }
-  if (isSuppliedTime(zoomData.suppliedType)) {
-    properties += addTime('integration_time_h', zoomData.supplied_0, TIME_HOURS);
+  if (isSuppliedTime(continuumData.suppliedType)) {
+    properties += addTime('integration_time_h', continuumData.supplied_0, TIME_HOURS);
   } else {
-    properties += addValue('sensitivity_jy', zoomData.supplied_1.value);
+    properties += addValue('sensitivity_jy', continuumData.supplied_1.value);
   }
   properties += pointingCentre(standardData);
-  properties += addValue('elevation_limit', standardData.elevation.value);
-  properties += addFrequency('freq_centres_mhz', zoomData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
-
-  properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
-
-  properties += addValue(
-    'total_bandwidths_khz',
-    sensCalHelpers.format.convertBandwidthToKHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
-  );
-  properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
-  properties = addRobustProperty(zoomData, properties);
-
+  properties += addValue('elevation_limit', Number(standardData.elevation.value));
+  properties += addFrequency('freq_centre_mhz', continuumData.centralFrequency, FREQUENCY_MHZ);
+  properties += addValue('spectral_averaging_factor', continuumData.spectralAveraging);
+  properties += addFrequency('bandwidth_mhz', continuumData.bandwidth, FREQUENCY_MHZ);
+  properties += addValue('n_subbands', continuumData.numberOfSubBands);
+  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
+  properties = addRobustProperty(continuumData, properties);
   return properties;
 };
 
-const addPropertiesMID = (
-  standardData: StandardData,
-  zoomData: ZoomData,
-  observation: Observation
-) => {
-  const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
-
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
-      ?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
-
+const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';
-  if (isSuppliedTime(zoomData.suppliedType)) {
-    properties += addTime('integration_time_s', zoomData.supplied_0, TIME_SECS, SEPARATOR0);
+  if (isSuppliedTime(continuumData.suppliedType)) {
+    properties += addTime('integration_time_s', continuumData.supplied_0, TIME_SECS, SEPARATOR0);
   } else {
-    properties += addValue('supplied_sensitivity', zoomData.supplied_1.value, SEPARATOR0);
+    properties += addValue('supplied_sensitivity', continuumData.supplied_1.value, SEPARATOR0);
     properties += addValue(
       'sensitivity_unit',
-      getSensitivitiesUnitsMapping(Number(zoomData.supplied_1.unit))
+      getSensitivitiesUnitsMapping(Number(continuumData.supplied_1.unit))
     );
   }
   properties += rxBand(standardData.observingBand);
@@ -291,30 +267,29 @@ const addPropertiesMID = (
     properties += addValue('n_ska', standardData.num15mAntennas);
     properties += addValue('n_meer', standardData.num13mAntennas);
   }
-  properties += addFrequency('freq_centres_hz', zoomData.centralFrequency, FREQUENCY_HZ);
-  // properties += addFrequency('bandwidth_hz', zoomData.bandwidth, FREQUENCY_HZ);
-  properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
-  properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
+  properties += addFrequency('freq_centre_hz', continuumData.centralFrequency, FREQUENCY_HZ);
+  properties += addFrequency('bandwidth_hz', continuumData.bandwidth, FREQUENCY_HZ);
+  properties += addValue('spectral_averaging_factor', continuumData.spectralAveraging);
   properties += pointingCentre(standardData);
   properties += addValue('pmv', Number(standardData.weather.value));
   properties += addValue('el', Number(standardData.elevation.value));
-  properties += addValue(
-    'total_bandwidths_hz',
-    sensCalHelpers.format.convertBandwidthToHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
-  );
-  properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
-  properties += addValue('taper', zoomData.tapering);
-  properties = addRobustProperty(zoomData, properties);
+  properties += addValue('n_subbands', continuumData.numberOfSubBands);
+  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
+  properties += addValue('taper', continuumData.tapering);
+  properties = addRobustProperty(continuumData, properties);
   return properties;
 };
 
-async function getZoomData(telescope: Telescope, observation: Observation, target: Target) {
-  const zoomData: ZoomData = {
+function getContinuumData(telescope: Telescope, observation: Observation, target: Target) {
+  const URL_PATH = `/continuum/calculate`;
+
+  const continuumData: ContinuumData = {
     dataType: observation.type,
     bandwidth: {
-      value: 0, //observation?.continuumBandwidth,
-      unit: '' // observation?.continuumBandwidthUnits.toString()
+      value: observation?.continuumBandwidth,
+      unit: observation?.continuumBandwidthUnits.toString()
     },
+    effectiveResolution: observation?.effectiveResolution,
     suppliedType: observation?.supplied?.type,
     supplied_0: {
       value: observation?.supplied?.value,
@@ -328,8 +303,8 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
+    numberOfSubBands: observation?.numSubBands,
     spectralAveraging: observation?.spectralAveraging,
-    spectralResolution: '',
     imageWeighting: observation?.imageWeighting,
     robust: observation?.robust,
     tapering: observation?.tapering
@@ -337,11 +312,11 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
 
   const standardData: StandardData = {
     observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
-      ?.mapping,
+      ?.mapping, // TODO handle band 5a and 5b correctly
     weather: { value: observation.weather, unit: 'mm' },
     subarray: OBSERVATION.array
       .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray)?.map,
+      ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
     num15mAntennas: observation.num15mAntennas,
     num13mAntennas: observation.num13mAntennas,
     numStations: observation.numStations,
@@ -355,26 +330,19 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
     modules: []
   };
 
-  /*if (mocked) {
-    return Promise.resolve(ZOOM_DATA_MOCKED);
-  } else {
-   */
-  const URL_PATH = `/zoom/calculate`;
-
   let properties = isLow(telescope)
-    ? addPropertiesLOW(standardData, zoomData, observation)
-    : addPropertiesMID(standardData, zoomData, observation);
-
-  // const mapping: Function = undefined;
-  return Fetch(
+    ? addPropertiesLOW(standardData, continuumData)
+    : addPropertiesMID(standardData, continuumData);
+  const response = Fetch(
     telescope,
     URL_PATH,
     properties,
     mapping,
     standardData,
-    zoomData,
+    continuumData,
     target,
     observation
   );
+  return response;
 }
-export default getZoomData;
+export default getContinuumData;

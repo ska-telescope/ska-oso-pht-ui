@@ -1,24 +1,20 @@
-import GetCalculate from './getCalculate/getCalculate';
-import GetWeighting from './getWeighting/getWeighting';
-import { helpers } from '../../../utils/helpers';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
-  TYPE_ZOOM,
   STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   STATUS_ERROR,
   TYPE_CONTINUUM,
-  SUPPLIED_TYPE_SENSITIVITY,
   OB_SUBARRAY_CUSTOM,
-  TEL
+  TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
-import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
+// import calculateSensitivityCalculatorResults from './calculateSensitivityCalculatorResults';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-import getContinuumData from './new/getContinuumData/getContinuumData';
-import { telescope } from '@ska-telescope/ska-gui-local-storage';
-import { CONTINUUM_DATA_MOCKED } from './new/getContinuumData/mockedContinuumResults';
+import getZoomData from '../../api/getZoomData/getZoomData';
+import getContinuumData from '../../api/getContinuumData/getContinuumData';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -37,8 +33,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
   const fetchSensCalc = async (observation: Observation, target: Target) => {
     try {
-      // return await getSensitivityCalculatorAPIData(observation, target, isCustom());
-      return await getSensitivityCalculatorAPIDataNew(observation, target, isCustom());
+      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
     } catch (e) {
       return { error: e };
     }
@@ -46,17 +41,23 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
 
   try {
     const output: any = await fetchSensCalc(observation, target);
-    if ('error' in output) {
-      return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
-    }
-    if (output['calculate']['error'] && output['calculate']['error']['detail']) {
-      return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
-    }
-    if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
-      return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
-    }
-    const results = calculateSensitivityCalculatorResults(output, observation, target);
-    return results;
+
+    // TODO: revisit error handling - maybe moving to mapping?
+    // if ('error' in output) {
+    //   return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
+    // }
+    // if (output['calculate']['error'] && output['calculate']['error']['detail']) {
+    //   return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
+    // }
+    // if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
+    //   return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
+    // }
+
+    // already done is new mapping
+    //const results = calculateSensitivityCalculatorResults(output, observation, target);
+    // return results
+
+    return output;
   } catch (e) {
     const results = Object.assign(
       {},
@@ -67,116 +68,19 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
   }
 }
 
+const getTelescope = (telNum: number): Telescope =>
+  telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;
+
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,
   isCustom: boolean
 ) {
-  /* 
-    When the users clicks on the Calculate button of the Sensitivity Calculator,
-    there are 1, 2, 3, or 4 calls to the API made
+  const telescope: Telescope = getTelescope(observation.telescope);
 
-    Mid Continuum Modes: 
-    - 1 call to getCalculate - supplied integration time or for supplied sensitivity: with Continuum thermal sensitivity
-    - 1 call to getCalculate - for supplied sensitivity: with Spectral thermal sensitivity
-    - 1 call to GetWeighting - with Continuum parameter
-    - 1 call to GetWeighting - with Spectral parameter (weightingLine)
-
-    Mid Zoom Modes: 
-    - 1 call to getCalculate - with Zoom parameter and with supplied integration time or for supplied sensitivity: with Spectral thermal sensitivity
-    - 1 call to GetWeighting - with Zoom parameter (weightingLine)
-
-    Low Continuum Modes: 
-    - 1 call to getCalculate
-    - 1 call to GetWeighting - with Continuum parameter
-    - 1 call to GetWeighting - with Spectral parameter (weightingLine)
-
-    Low Zoom Modes: 
-    - 1 call to getCalculate
-    - 1 call to GetWeighting -  with Zoom parameter
-
-    CUSTOM Array: (For Custom array, no calls to weighting endpoint are made)
-    - 0 call to getWeighting
-    - 1 call to to getCalculate
-  */
-
-  function handleWeighting() {
-    if (isCustom) {
-      return [];
-    }
-    const promisesWeighting = [GetWeighting(observation, target, observation.type)];
-    if (observation.type === TYPE_CONTINUUM) {
-      promisesWeighting.push(GetWeighting(observation, target, TYPE_ZOOM, true));
-    }
-    return promisesWeighting;
-  }
-
-  function handleCalculate(weightingResponse) {
-    const promisesCalculate = [
-      GetCalculate(observation, target, weightingResponse.weighting, observation.type)
-    ];
-    if (
-      observation.type === TYPE_CONTINUUM &&
-      observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY &&
-      !isCustom
-    ) {
-      promisesCalculate.push(
-        GetCalculate(observation, target, weightingResponse.weightingLine, TYPE_ZOOM)
-      );
-    }
-    return promisesCalculate;
-  }
-
-  // weighting responses
-  const promisesWeighting = handleWeighting();
-  const [weighting, weightingLine] = await Promise.all(promisesWeighting);
-  const weightingResponse = {
-    weighting,
-    weightingLine
-  };
-
-  // calculate responses
-  const promisesCalculate = handleCalculate(weightingResponse);
-  const [calculate, calculateSpectral] = await Promise.all(promisesCalculate);
-  const calculateResponse = {
-    calculate,
-    calculateSpectral
-  };
-
-  // TODO harmonise responses format before passing to
-  // calculateSensitivityCalculatorResults? (handling[0] for zoom, etc)
-
-  const response = {
-    ...weightingResponse,
-    ...calculateResponse
-  };
-  helpers.transform.trimObject(response);
-  return response;
-}
-
-async function getSensitivityCalculatorAPIDataNew(
-  observation: Observation,
-  target: Target,
-  isCustom: boolean
-) {
-  console.log('::: in getSensitivityCalculatorAPIDataNew :::');
-
-  const telescope: string = TEL[observation.telescope].toLowerCase();
-  const subArrayResults: any = undefined;
-  const mapping: Function = undefined;
-  const standardData: any = {};
-  const continuumData: any = {};
-
-  console.log('::: telescope', telescope);
-
-  const response = getContinuumData(
-    telescope,
-    subArrayResults,
-    mapping,
-    standardData,
-    continuumData
-  );
-  return response;
+  return observation.type === TYPE_CONTINUUM
+    ? getContinuumData(telescope, observation, target)
+    : getZoomData(telescope, observation, target);
 }
 
 export default getSensCalc;
