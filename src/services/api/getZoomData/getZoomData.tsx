@@ -79,7 +79,6 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
   theResults.section1.push(individualResults.results9);
   theResults.section1.push(individualResults.results10);
 
-  console.log('TREVOR', theResults);
   return theResults;
 }
 
