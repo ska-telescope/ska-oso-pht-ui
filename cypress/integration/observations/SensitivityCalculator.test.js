@@ -13,7 +13,6 @@ import {
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
-import { UpdateDisabledRounded } from '@mui/icons-material';
 
 beforeEach(() => {
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
@@ -106,27 +105,20 @@ const verifySensitivityCalculatorResults = rec => {
 
 describe('Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    const band = rec.band === '0' ? 'LOW' : 'MID';
-    const array = rec.subarray === '8' ? 'AA4' : '???';
-    const oType = rec.observationType === '0' ? 'Zoom' : 'Continuum';
-    it(
-      'Verify sensitivity calculator results : ' + band + ' : ' + array + ' : ' + oType,
-      { jiraKey: 'XTP-71885' },
-      () => {
-        //add observation
-        clickObservationSetup();
-        updateBand(rec);
-        updateSubarray(rec);
-        updateObservationType(rec);
-        clickAddObservation();
-        verifyObservationInTable();
-        //
-        clickObservationFromTable();
-        clickToLinkTargetAndObservation();
-        verifySensitivityCalculatorStatusSuccess();
-        clickToViewSensitivityCalculatorResults();
-        verifySensitivityCalculatorResults(rec);
-      }
-    );
+    it('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
+      //add observation
+      clickObservationSetup();
+      updateBand(rec);
+      updateSubarray(rec);
+      updateObservationType(rec);
+      clickAddObservation();
+      verifyObservationInTable();
+      //
+      clickObservationFromTable();
+      clickToLinkTargetAndObservation();
+      verifySensitivityCalculatorStatusSuccess();
+      clickToViewSensitivityCalculatorResults();
+      verifySensitivityCalculatorResults(rec);
+    });
   }
 });

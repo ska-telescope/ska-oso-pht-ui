@@ -1,5 +1,6 @@
 [
   {
+    "test": "LOW telescope, with subarray AA4, Continuum",
     "band": "0",
     "subarray": "8",
     "observationType": "1",
@@ -15,6 +16,7 @@
     "spectralSurfaceBrightnessSensitivity": "1.4e+4 K"
   },
   {
+    "test": "LOW telescope, with subarray AA4, Zoom",
     "band": "0",
     "subarray": "8",
     "observationType": "0",
@@ -30,6 +32,7 @@
     "spectralSurfaceBrightnessSensitivity": "2.7e+5 K"
   },
   {
+    "test": "MID telescope, with subarray AA4, Continuum",
     "band": "1",
     "subarray": "8",
     "observationType": "1",
@@ -45,6 +48,7 @@
     "spectralSurfaceBrightnessSensitivity": "2.9e+4 K"
   },
   {
+    "test": "MID telescope, with subarray AA4, Zoom",
     "band": "1",
     "subarray": "8",
     "observationType": "0",
