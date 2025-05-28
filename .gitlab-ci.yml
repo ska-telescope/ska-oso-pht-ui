@@ -252,7 +252,7 @@ pages:
     echo "Addresses to connect to the deployment of the PHT: "
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
     echo "Backend API:"
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
+    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/oso/api/v1/ui/"
 
 xray-publish:
   variables:
