@@ -13,7 +13,7 @@ async function PutProposal(proposal, status?): Promise<PutProposalServiceRespons
   }
 
   try {
-    const URL_PATH = `/proposals/${proposal.id}`;
+    const URL_PATH = `/prsls/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status);
     const result = await axios.put(
