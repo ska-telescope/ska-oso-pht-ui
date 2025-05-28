@@ -26,6 +26,14 @@ export const presentUnits = (inUnits: string) => {
       return 'arcsec\xb2';
     case 'arcsecs2':
       return 'arcsecs\xb2';
+    case 'pc/cm3':
+      return 'pc/cm\xb3';
+    case 'Jy / beam':
+      return 'Jy/beam';
+    case 'uJy / beam':
+      return 'μJy/beam';
+    case 'rad / m2':
+      return 'rad/m\xb2';
     default:
       return inUnits;
   }
@@ -45,7 +53,10 @@ export const presentValue = (inValue: string | number, eLabel?, fractionLength =
     }
   }
   const result = Number(inValue);
-  return result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
+  if (result === 0) {
+    return '0';
+  }
+  return result < 0.01 || result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 
 export const presentDate = (inString: string, reverse: boolean = false) =>

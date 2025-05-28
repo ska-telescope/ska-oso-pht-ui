@@ -10,6 +10,7 @@
   "scripts": {
     "instrument": "webpack serve --mode development @cypress/instrument-cra",
     "build": "webpack --mode production",
+    "checker": "yarn prettier:fix && yarn lint:fix",
     "code-analysis": "eslint src/**/*.{js,jsx,ts,tsx} --ignore-path .eslintignore -f junit -o linting.xml",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --config video=false",
@@ -29,7 +30,10 @@
     "test:component:headless": "cypress run --component --headless --config video=false",
     "test:cypress:e2e:ci": "cypress run --e2e --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml",
     "test:cypress:component:ci": "cypress run --component --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
-    "test:e2e:headless": "cypress run --e2e --headless"
+    "test:e2e:headless": "cypress run --e2e --headless",
+    "test:e2e:coverage": "nyc report --report-dir=build/reports --reporter=cobertura",
+    "test:e2e": "cypress run --spec=cypress/e2e/**/*.test.tsx video=false",
+    "test:e2e:ui": "cypress open"
   },
   "resolutions": {
     "@cypress/request": "3.x.x",
@@ -52,7 +56,7 @@
     "@mui/system": "^6.1.8",
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.0.33",
+    "@ska-telescope/ska-gui-components": "^2.3.15",
     "@ska-telescope/ska-gui-local-storage": "^1.0.1",
     "axios": "^1.6.3",
     "babel-core": "6",
