@@ -18,13 +18,13 @@ dependencies:
 
 # Sensitivity calculator services required by the PHT for the observation page
 - name: ska-ost-senscalc
-  version: 10.1.0
+  version: 11.2.0
   repository: https://artefact.skao.int/repository/helm-internal
 
 # ODA is a dependency of PHT Services. Include it for data persistence
 # The ODA umbrella chart includes ODA API, PostgreSQL database and SKUID
 - name: ska-db-oda-umbrella
-  version: 6.3.1
+  version: 8.0.2
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-db-oda.enabled
 

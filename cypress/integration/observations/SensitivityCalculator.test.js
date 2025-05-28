@@ -25,10 +25,6 @@ beforeEach(() => {
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();
-  //add default observation
-  clickObservationSetup();
-  clickAddObservation();
-  verifyObservationInTable();
 });
 
 const addTargetUsingCoordinates = () => {
@@ -47,91 +43,82 @@ const clickToViewSensitivityCalculatorResults = () => {
   cy.get('[data-testid="statusId"]').click();
 };
 
-const verifyWeightedContinuumSensitivity = () => {
-  cy.get('[id="continuumSensitivityWeightedLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].weightedContinuumSensitivity
-  );
+const updateDropdown = (id, value) => {
+  cy.get('[data-testid="' + id + '"]', { timeout: 10000 }).click();
+  cy.get('[data-value="' + value + '"]', { timeout: 10000 }).click({ force: true });
 };
 
-const verifyContinuumConfusionNoise = () => {
-  cy.get('[id="continuumConfusionNoiseLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].continuumConfusionNoise
-  );
+const updateBand = rec => updateDropdown('observingBand', rec.band);
+const updateSubarray = rec => updateDropdown('subArrayConfiguration', rec.subarray);
+const updateObservationType = rec => updateDropdown('observationType', rec.observationType);
+
+const verifyField = (id, value) => {
+  if (value !== '') {
+    cy.get('[id="' + id + '"]').should('contain', value);
+  }
 };
 
-const verifyTotalContinuumSensitivity = () => {
-  cy.get('[id="continuumTotalSensitivityLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].totalContinuumSensitivity
-  );
-};
+const verifyWeightedContinuumSensitivity = rec =>
+  verifyField('continuumSensitivityWeightedLabel', rec.weightedContinuumSensitivity);
 
-const verifyContinuumSurfaceBrightnessSensitivity = () => {
-  cy.get('[id="continuumSurfaceBrightnessSensitivityLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].continuumSurfaceBrightnessSensitivity
-  );
-};
+const verifyContinuumConfusionNoise = rec =>
+  verifyField('continuumConfusionNoiseLabel', rec.continuumConfusionNoise);
 
-const verifyWeightedSpectralSensitivity = () => {
-  cy.get('[id="spectralSensitivityWeightedLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].weightedSpectralSensitivity
-  );
-};
+const verifyTotalContinuumSensitivity = rec =>
+  verifyField('continuumTotalSensitivityLabel', rec.totalContinuumSensitivity);
 
-const verifySpectralConfusionNoise = () => {
-  cy.get('[id="spectralConfusionNoiseLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].spectralConfusionNoise
+const verifyContinuumSurfaceBrightnessSensitivity = rec =>
+  verifyField(
+    'continuumSurfaceBrightnessSensitivityLabel',
+    rec.continuumSurfaceBrightnessSensitivity
   );
-};
 
-const verifyTotalSpectralSensitivity = () => {
-  cy.get('[id="spectralTotalSensitivityLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].totalSpectralSensitivity
+const verifyWeightedSpectralSensitivity = rec =>
+  verifyField('spectralSensitivityWeightedLabel', rec.weightedSpectralSensitivity);
+
+const verifySpectralConfusionNoise = rec =>
+  verifyField('spectralConfusionNoiseLabel', rec.spectralConfusionNoise);
+
+const verifyTotalSpectralSensitivity = rec =>
+  verifyField('spectralTotalSensitivityLabel', rec.totalSpectralSensitivity);
+
+const verifySpectralSynthesizedBeamSize = rec =>
+  verifyField('spectralSynthBeamSizeLabel', rec.spectralSynthesizedBeamSize);
+
+const verifySpectralSurfaceBrightnessSensitivity = rec =>
+  verifyField(
+    'spectralSurfaceBrightnessSensitivityLabel',
+    rec.spectralSurfaceBrightnessSensitivity
   );
-};
 
-const verifySpectralSynthesisedBeamSize = () => {
-  cy.get('[id="spectralSynthBeamSizeLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].spectralSynthesisedBeamSize
-  );
-};
-
-const verifySpectralSurfaceBrightnessSensitivity = () => {
-  cy.get('[id="spectralSurfaceBrightnessSensitivityLabel"]').should(
-    'contain',
-    sensitivityCalculatorResults[0].spectralSurfaceBrightnessSensitivity
-  );
-};
-
-const verifySensitivityCalculatorResults = () => {
-  verifyWeightedContinuumSensitivity();
-  verifyContinuumConfusionNoise();
-  verifyTotalContinuumSensitivity();
-  verifyContinuumSurfaceBrightnessSensitivity();
-  verifyWeightedSpectralSensitivity();
-  verifySpectralConfusionNoise();
-  verifyTotalSpectralSensitivity();
-  verifySpectralSynthesisedBeamSize();
-  verifySpectralSurfaceBrightnessSensitivity();
+const verifySensitivityCalculatorResults = rec => {
+  verifyWeightedContinuumSensitivity(rec);
+  verifyContinuumConfusionNoise(rec);
+  verifyTotalContinuumSensitivity(rec);
+  verifyContinuumSurfaceBrightnessSensitivity(rec);
+  verifyWeightedSpectralSensitivity(rec);
+  verifySpectralConfusionNoise(rec);
+  verifyTotalSpectralSensitivity(rec);
+  verifySpectralSynthesizedBeamSize(rec);
+  verifySpectralSurfaceBrightnessSensitivity(rec);
 };
 
 describe('Sensitivity Calculator', () => {
-  it(
-    'Verify sensitivity calculator results for a Low Continuum AA4 observation',
-    { jiraKey: 'XTP-71885' },
-    () => {
+  for (const rec of sensitivityCalculatorResults) {
+    it('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
+      //add observation
+      clickObservationSetup();
+      updateBand(rec);
+      updateSubarray(rec);
+      updateObservationType(rec);
+      clickAddObservation();
+      verifyObservationInTable();
+      //
       clickObservationFromTable();
       clickToLinkTargetAndObservation();
       verifySensitivityCalculatorStatusSuccess();
       clickToViewSensitivityCalculatorResults();
-      verifySensitivityCalculatorResults();
-    }
-  );
+      verifySensitivityCalculatorResults(rec);
+    });
+  }
 });
