@@ -159,7 +159,7 @@ stop-integration-test:
 # list the current top level dependencies for the project
 list_dependencies:
   image: $NODE_IMAGE
-  stage: test
+  stage: dependencies
   tags:
     - ska-default
   allow_failure: true
@@ -262,6 +262,9 @@ stop-dev-environment:
   <<: *dev_env
 
 helm-chart-build:
+  allow_failure: true
+
+oci-image-build:
   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
