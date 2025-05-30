@@ -5,23 +5,9 @@ FROM node:22 as base
 WORKDIR /app
 COPY . .
 
-# install app dependencies
+# install app dependencies and build the app
 RUN yarn install && yarn cache clean
-
-EXPOSE 6101
-
-# start app
-CMD ["yarn", "start"]
-
-FROM base as builder
-
-RUN yarn webpack build \
-    --mode production \
-    --optimization-concatenate-modules \
-    --optimization-minimize \
-    --output-clean \
-    --output-path /dist/ && \
-    npx react-inject-env set -d /dist/
+RUN yarn build
 
 FROM nginx:1.25.2 as final
 

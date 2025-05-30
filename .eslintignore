@@ -3,7 +3,6 @@ coverage
 **/*.css
 **/*.scss
 **/*.ttf
-webpack.config.js
 build
 dist
 **/*.py

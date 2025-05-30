@@ -13,7 +13,7 @@ export default defineConfig({
     indexHtmlFile: 'cypress/support/component-index.html',
     devServer: {
       framework: 'react',
-      bundler: 'webpack'
+      bundler: 'vite'
     },
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
@@ -24,8 +24,8 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
-    deleteVideoOnPassed: true,
-    betterRetries: true,
+    experimentalRunAllSpecs: true,
+    experimentalMemoryManagement: true,
     reporter: 'cypress-xray-junit-reporter',
     reporterOptions: {
       mochaFile: './report/[suiteName].xml',
