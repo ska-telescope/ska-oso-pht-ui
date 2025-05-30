@@ -1,5 +1,4 @@
 window.env = { 
-    BACKEND_URL: "http://localhost:5000/ska-ost-senscalc", 
     BASE_URL: "/",
     REACT_APP_SKA_PHT_BASE_URL: "",
     REACT_APP_SKA_PHT_API_URL: "http://192.168.49.2/ska-oso-pht-services/pht/api/v2",

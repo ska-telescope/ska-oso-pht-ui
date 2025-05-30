@@ -5,7 +5,7 @@ import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import { EMPTY_STATUS } from '../../../utils/constants';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { Box } from '@mui/material';
-import { fetchCycleData } from '../../../utils/storage/cycleData';
+// import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const PAGE = 9;
 const PAGE_INNER = 0;

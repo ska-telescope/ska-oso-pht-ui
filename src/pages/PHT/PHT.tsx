@@ -13,7 +13,6 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
-import { env } from '../../env';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
