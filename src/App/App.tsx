@@ -17,9 +17,10 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Alert from '../components/alerts/standardAlert/StandardAlert';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
-import theme from '../services/theme/theme';
+import theme from '../services/theme/theme.tsx';
 import { FOOTER_HEIGHT, HEADER_HEIGHT, USE_LOCAL_DATA } from '../utils/constants';
 import Proposal from '../utils/types/proposal';
+import packageJson from '../../package.json';
 
 function App() {
   const { t } = useTranslation('pht');
@@ -33,7 +34,7 @@ function App() {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
 
-  const REACT_APP_VERSION = process.env.REACT_APP_VERSION;
+  const REACT_APP_VERSION = packageJson.version;
 
   const skao = t('toolTip.button.skao');
   const mode = t('toolTip.button.mode');
@@ -93,6 +94,7 @@ function App() {
         <Footer
           copyrightFunc={setShowCopyright}
           testId="footerId"
+          toolTipPlacement="top"
           version={REACT_APP_VERSION}
           versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
         >

@@ -19,7 +19,7 @@ export default function AddProposal() {
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
     let temp = NEW_PROPOSAL;
-    temp.cycle = fetchCycleData().id;
+    // TODO : temp.cycle = fetchCycleData().id;
     updateAppContent2(temp);
   }, []);
 

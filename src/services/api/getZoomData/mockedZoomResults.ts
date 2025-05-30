@@ -1,4 +1,4 @@
-import { STATUS_OK } from '@/utils/constants.ts';
+import { STATUS_OK } from '@/utils/constants';
 import { SensCalcResults } from '@/utils/types/sensCalc.tsx';
 
 export const ZOOM_DATA_MOCKED: SensCalcResults = {

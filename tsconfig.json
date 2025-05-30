@@ -1,41 +1,45 @@
 {
   "compilerOptions": {
-    "types": ["cypress", "node"],
-    "baseUrl": "src/",
-    "target": "es6",
-    "lib": ["dom", "ES6", "dom.iterable", "ScriptHost", "ES2016.Array.Include"],
-    "allowJs": true,
+    "allowJs": false,
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "outDir": "dist",
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Absolute Imports */
+    "baseUrl": ".",
     "paths": {
-      "@badeball/cypress-cucumber-preprocessor/*": [
-        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
-      ]
-    }
+      "@/*": ["src/*"],
+      "@api/*": ["src/api/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@pages/*": ["src/pages/*"]
+    },
+
+    /* Types */
+    "types": ["cypress", "vitest/globals", "node", "cypress-real-events"],
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": [
-    "src",
-    "cypress",
-    "./cypress.d.ts",
-    "./cypress/support/index.d.ts",
-    "public/locales/en/userJourney.test.ts"
-  ],
-  "exclude": ["node_modules"],
-  "paths": {
-    "@components/*": ["components/*"],
-    "@pages/*": ["pages/*"],
-    "@hooks/*": ["hooks/*"]
-  }
+  "include": ["src", "./setupTests.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
