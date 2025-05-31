@@ -1,6 +1,5 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
+import vitePreprocessor from 'cypress-vite';
 
 export default defineConfig({
   projectId: 'ssiwb9',
@@ -35,7 +34,8 @@ export default defineConfig({
       attachScreenshot: true // if a test fails, the screenshot will be attached to the XML report and imported into xray
     },
     setupNodeEvents(on, config) {
-      require('cypress-xray-junit-reporter/plugin')(on, config, {}); // also needed
+      on('file:preprocessor', vitePreprocessor());
+      // require('cypress-xray-junit-reporter/plugin')(on, config, {}); // also needed
       return config;
     },
     specPattern: 'cypress/integration/**/*.test.js'
