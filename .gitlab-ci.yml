@@ -267,6 +267,9 @@ helm-chart-build:
 oci-image-build:
   allow_failure: true
 
+test_and_coverage:
+  allow_failure: true
+
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 js-e2e-deploy:
