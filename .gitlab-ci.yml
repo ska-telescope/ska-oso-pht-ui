@@ -116,6 +116,7 @@ js-lint:
       # junit: build/reports/linting.xml
 
 test_and_coverage:
+  allow_failure: true
   image: cypress/browsers:22.12.0
   stage: test
   tags:
@@ -265,9 +266,6 @@ helm-chart-build:
   allow_failure: true
 
 oci-image-build:
-  allow_failure: true
-
-test_and_coverage:
   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
