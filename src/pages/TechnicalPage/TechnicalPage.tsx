@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import { Proposal } from '../../utils/types/proposal';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';

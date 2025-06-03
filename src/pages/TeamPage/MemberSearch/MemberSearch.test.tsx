@@ -1,20 +1,10 @@
-/* eslint-disable no-restricted-syntax */
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import MemberSearch from './MemberSearch';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
 
 describe('<MemberSearch />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      viewPort();
-      cy.mount(
-        <ThemeProvider theme={theme(theTheme)}>
-          <CssBaseline />
-          <MemberSearch />
-        </ThemeProvider>
-      );
-    });
-  }
+  test('renders correctly', () => {
+    render(<MemberSearch />);
+  });
 });

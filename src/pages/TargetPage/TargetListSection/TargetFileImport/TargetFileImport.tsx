@@ -7,7 +7,7 @@ import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/sk
 import Notification from '../../../../utils/types/notification';
 import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import Papa from 'papaparse';
-import HelpPanel from '../../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 

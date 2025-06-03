@@ -14,7 +14,7 @@ interface CancelButtonProps {
 export default function CancelButton({
   disabled = false,
   action,
-  title = 'button.cancel',
+  title = 'cancelBtn.label',
   primary = false,
   testId = 'cancelButtonTestId',
   toolTip

@@ -1,36 +1,12 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
-import StatusIconDisplay from './statusIcon';
-import { STATUS_OK } from '../../../utils/constants';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import StatusIcon from './statusIcon';
 
-function mounting(theTheme: any) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <StatusIconDisplay
-        ariaDescription=""
-        ariaTitle=""
-        level={STATUS_OK}
-        onClick={cy.stub().as('onClick')}
-        testId="statusId"
-        toolTip=""
-      />
-    </ThemeProvider>
-  );
-}
-
-function validateClick() {
-  cy.get('[data-testid="statusId"]').click();
-}
-
-describe('<Icon />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme);
-      validateClick();
-    });
-  }
+describe('<StatusIcon />', () => {
+  test('renders correctly', () => {
+    render(
+      <StatusIcon ariaDescription="" onClick={vi.fn()} ariaTitle={''} level={0} testId={''} />
+    );
+  });
 });

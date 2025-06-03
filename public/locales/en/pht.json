@@ -10,9 +10,6 @@
   "no": "No",
   "none": "None",
   "button": {
-    "add": "Add",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
     "confirmDeleteMember": "Confirm Team Member Deletion",
     "confirmSubmit": "Confirm Proposal Submission",
     "close": "Close",
@@ -31,6 +28,9 @@
   },
   "actions": {
     "label": "Actions"
+  },
+  "addBtn": {
+    "label": "Add"
   },
   "addObservation": {
     "idPrefix": "obs-",
@@ -75,6 +75,12 @@
       "rangeError": "Bandwidth must be fully contained within the band"
     }
   },
+  "baseBtn": {
+    "label": "Add"
+  },
+  "cancelBtn": {
+    "label": "Cancel"
+  },
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band.",
     "label": "Central Frequency",
@@ -94,6 +100,9 @@
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
+  },
+  "confirmBtn": {
+    "label": "Confirm"
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."

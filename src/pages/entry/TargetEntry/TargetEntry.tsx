@@ -10,7 +10,7 @@ import ReferenceFrameField from '../../../components/fields/referenceFrame/Refer
 import SkyDirection1 from '../../../components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '../../../components/fields/skyDirection/SkyDirection2';
 import VelocityField from '../../../components/fields/velocity/Velocity';
-import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
 import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';

@@ -1,4 +1,3 @@
-import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BaseButton from '../Base/Button';
 

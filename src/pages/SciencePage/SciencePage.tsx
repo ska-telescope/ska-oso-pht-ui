@@ -15,7 +15,7 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';

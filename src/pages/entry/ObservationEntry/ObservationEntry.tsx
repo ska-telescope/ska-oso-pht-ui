@@ -52,7 +52,7 @@ import {
   OB_SUBARRAY_AA2_CORE,
   OB_SUBARRAY_AA4_CORE
 } from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import { frequencyConversion, generateId, getMinimumChannelWidth } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';

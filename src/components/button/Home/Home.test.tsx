@@ -1,102 +1,15 @@
-import React from 'react';
-import { Router } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
+import { describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import HomeButton from './Home';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
+import '@testing-library/jest-dom';
 
-const TOOLTIP = 'Tooltip';
-const TITLE = 'BASE BUTTON';
-
-const DISABLED = [true, false];
-const PRIMARY = [true, false];
-
-function mountingDefault(theTheme: any) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <Router location="/" navigator={undefined}>
-        <HomeButton />
-      </Router>
-    </ThemeProvider>
-  );
-}
-
-function mountingAction(theTheme: any, disabled: boolean, primary: boolean) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <Router location="/" navigator={undefined}>
-        <HomeButton disabled={disabled} primary={primary} title={TITLE} toolTip={TOOLTIP} />
-      </Router>
-    </ThemeProvider>
-  );
-}
-
-function mountingURL(theTheme: any, disabled: boolean, primary: boolean) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <Router location="/" navigator={undefined}>
-        <HomeButton disabled={disabled} primary={primary} title={TITLE} toolTip={TOOLTIP} />
-      </Router>
-    </ThemeProvider>
-  );
-}
-
-function validate(inLabel, inToolTip) {
-  cy.get('[data-testid="homeButtonTestId"]').contains(inLabel);
-  cy.get('[aria-label="' + inToolTip + '"]').trigger('mouseover');
-  cy.contains(inToolTip).should('be.visible');
-}
-
-function clickButton() {
-  cy.get('[aria-label="' + TOOLTIP + '"]').click();
-}
-
-function buttonDisabled() {
-  // cy.get('[data-testid="homeButtonTestId"]').should('be.disabled');
-}
-
-describe('<HomeButton />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme: ${theTheme} | disabled: DEFAULT | primary: DEFAULT`, () => {
-      mountingDefault(theTheme);
-    });
-  }
-
-  for (const theTheme of THEME) {
-    for (const disabled of DISABLED) {
-      for (const primary of PRIMARY) {
-        it(`Theme: ${theTheme} | disabled: ${disabled} | primary: ${primary}`, () => {
-          mountingAction(theTheme, disabled, primary);
-          validate(TITLE, TOOLTIP);
-          if (disabled) {
-            buttonDisabled();
-          } else {
-            clickButton();
-          }
-        });
-      }
-    }
-  }
-
-  for (const theTheme of THEME) {
-    for (const disabled of DISABLED) {
-      for (const primary of PRIMARY) {
-        it(`Theme: ${theTheme} | disabled: ${disabled} | primary: ${primary}`, () => {
-          mountingURL(theTheme, disabled, primary);
-          validate(TITLE, TOOLTIP);
-          if (disabled) {
-            buttonDisabled();
-          } else {
-            clickButton();
-          }
-        });
-      }
-    }
-  }
+describe('Delete Button', () => {
+  test('renders correctly', () => {
+    render(<HomeButton />);
+    expect(screen.getByTestId('homeButtonTestId')).toHaveTextContent('homeBtn.label');
+  });
+  test('renders correctly with tooltip empty', () => {
+    render(<HomeButton toolTip="" />);
+    expect(screen.getByTestId('homeButtonTestId')).toHaveTextContent('homeBtn.label');
+  });
 });

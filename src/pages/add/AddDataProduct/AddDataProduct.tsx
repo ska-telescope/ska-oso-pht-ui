@@ -13,7 +13,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import { HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
