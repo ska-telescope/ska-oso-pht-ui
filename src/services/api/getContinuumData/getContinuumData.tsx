@@ -34,7 +34,7 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
-import Target from 'utils/types/target';
+import Target, { PointingPatternParams } from '../../../utils/types/target';
 import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
 import { presentUnits } from '../../../utils/present';
@@ -56,7 +56,54 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(target, results: any, theObservation): SensCalcResults {
+function getFinalResults(
+  target: {
+    dec?: string;
+    decUnit?: string;
+    id: any;
+    name: any;
+    latitude?: string;
+    longitude?: string;
+    ra?: string;
+    raUnit?: string;
+    redshift?: string;
+    referenceFrame?: number;
+    rcReferenceFrame?: string | undefined;
+    raReferenceFrame?: string | undefined;
+    raDefinition?: string | undefined;
+    velType?: number;
+    vel?: string;
+    velUnit?: number;
+    pointingPattern?: { active: string; parameters: PointingPatternParams[] } | undefined;
+  },
+  results: any,
+  theObservation: {
+    id?: string;
+    telescope?: number;
+    subarray?: number;
+    linked?: string;
+    type: any;
+    observingBand?: number;
+    weather?: number | undefined;
+    elevation?: number;
+    centralFrequency?: number;
+    centralFrequencyUnits?: number;
+    bandwidth?: number;
+    continuumBandwidth?: number;
+    continuumBandwidthUnits?: number;
+    spectralAveraging?: number | undefined;
+    tapering?: number | undefined;
+    imageWeighting?: number;
+    robust?: number;
+    supplied: any;
+    spectralResolution?: string;
+    effectiveResolution?: string;
+    numSubBands?: number | undefined;
+    num15mAntennas?: number | undefined;
+    num13mAntennas?: number | undefined;
+    numStations?: number | undefined;
+  }
+): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
   const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
 
@@ -74,25 +121,25 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
   };
 
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results1);
+    theResults.section1?.push(individualResults.results1);
   }
-  theResults.section1.push(individualResults.results2);
+  theResults.section1?.push(individualResults.results2);
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results3);
+    theResults.section1?.push(individualResults.results3);
   }
-  theResults.section1.push(individualResults.results4);
-  theResults.section1.push(individualResults.results5);
+  theResults.section1?.push(individualResults.results4);
+  theResults.section1?.push(individualResults.results5);
 
   if (isContinuum()) {
     if (!isSuppliedSensitivity()) {
-      theResults.section2.push(individualResults.results6);
+      theResults.section2?.push(individualResults.results6);
     }
-    theResults.section2.push(individualResults.results7);
+    theResults.section2?.push(individualResults.results7);
     if (!isSuppliedSensitivity()) {
-      theResults.section2.push(individualResults.results8);
+      theResults.section2?.push(individualResults.results8);
     }
-    theResults.section2.push(individualResults.results9);
-    theResults.section2.push(individualResults.results10);
+    theResults.section2?.push(individualResults.results9);
+    theResults.section2?.push(individualResults.results10);
   }
   return theResults;
 }
@@ -106,13 +153,16 @@ const toFixed = (value: number) => {
 
 function getFinalIndividualResultsForContinuum(
   results: any,
-  theObservation
+  theObservation: {
+    supplied: { type: number; value: { toString: () => any }; units: number };
+    type: string | number;
+  }
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   let transformed_result = results.transformed_result;
 
-  const observationTypeLabel: string = OBS_TYPES[theObservation.type];
+  const observationTypeLabel: string = OBS_TYPES[theObservation.type as number];
   const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
     ?.sensCalcResultsLabel;
 
@@ -303,28 +353,28 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    numberOfSubBands: observation?.numSubBands,
-    spectralAveraging: observation?.spectralAveraging,
+    numberOfSubBands: observation?.numSubBands ?? 0,
+    spectralAveraging: observation?.spectralAveraging ?? 0,
     imageWeighting: observation?.imageWeighting,
     robust: observation?.robust,
-    tapering: observation?.tapering
+    tapering: observation?.tapering ?? 0
   };
 
   const standardData: StandardData = {
     observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
       ?.mapping, // TODO handle band 5a and 5b correctly
-    weather: { value: observation.weather, unit: 'mm' },
+    weather: { value: observation.weather ?? 0, unit: 'mm' },
     subarray: OBSERVATION.array
       .find(t => t.value === observation.telescope)
       ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
-    num15mAntennas: observation.num15mAntennas,
-    num13mAntennas: observation.num13mAntennas,
-    numStations: observation.numStations,
+    num15mAntennas: observation.num15mAntennas ?? 0,
+    num13mAntennas: observation.num13mAntennas ?? 0,
+    numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
     raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
     decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
-    raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: undefined,
     modules: []

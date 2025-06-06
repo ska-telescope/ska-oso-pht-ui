@@ -32,8 +32,8 @@ export default function SpectralResolutionField({
   labelWidth = 6,
   observingBand,
   observationType,
-  onFocus = null,
-  setValue = null
+  onFocus,
+  setValue
 }: SpectralResolutionFieldProps) {
   const [spectralResolution, setSpectralResolution] = React.useState('');
 
@@ -45,7 +45,7 @@ export default function SpectralResolutionField({
     const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
     const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
     const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
-    return (results[bandWidth - 1].toFixed(2) as unknown) as number;
+    return (results[bandWidth - 1]?.toFixed(2) as unknown) as number;
   };
 
   const MIDContinuumBase = () => 13.44;
@@ -78,7 +78,9 @@ export default function SpectralResolutionField({
 
   const getDisplay = () => {
     setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
-    setValue(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
+    if (setValue) {
+      setValue(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
+    }
   };
 
   React.useEffect(() => {

@@ -2,9 +2,14 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import GeneralPage from './GeneralPage';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 describe('<GeneralPage />', () => {
   test('renders correctly', () => {
-    render(<GeneralPage />);
+    render(
+      <StoreProvider>
+        <GeneralPage />
+      </StoreProvider>
+    );
   });
 });

@@ -34,7 +34,7 @@ declare const window: any;
 
 export default function PHT() {
   return (
-    <Router basename={window.env.REACT_APP_SKA_PHT_BASE_URL || '/'}>
+    <Router basename={window?.env?.REACT_APP_SKA_PHT_BASE_URL || '/'}>
       <Routes>
         {ROUTES.map((ROUTE, index) => {
           return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;

@@ -2,9 +2,14 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TeamPage from './TeamPage';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 describe('<TeamPage />', () => {
   test('renders correctly', () => {
-    render(<TeamPage />);
+    render(
+      <StoreProvider>
+        <TeamPage />
+      </StoreProvider>
+    );
   });
 });

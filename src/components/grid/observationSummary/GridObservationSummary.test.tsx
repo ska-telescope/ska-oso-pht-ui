@@ -1,24 +1,42 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
-import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
-
-function mounting(theTheme: any, proposal) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <GridObservationSummary proposal={proposal} />
-    </ThemeProvider>
-  );
-}
 
 describe('<GridObservationSummary />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      mounting(theTheme, GetMockProposal);
-    });
-  }
+  test('renders correctly', () => {
+    render(
+      <GridObservationSummary
+        proposal={{
+          id: '',
+          title: '',
+          status: '',
+          lastUpdated: '',
+          lastUpdatedBy: '',
+          createdOn: '',
+          createdBy: '',
+          version: 0,
+          cycle: '',
+          proposalType: 0,
+          proposalSubType: undefined,
+          scienceCategory: undefined,
+          scienceSubCategory: undefined,
+          team: undefined,
+          abstract: undefined,
+          sciencePDF: undefined,
+          scienceLoadStatus: undefined,
+          targetOption: undefined,
+          targets: undefined,
+          observations: undefined,
+          groupObservations: undefined,
+          targetObservation: undefined,
+          technicalPDF: undefined,
+          technicalLoadStatus: undefined,
+          dataProductSDP: undefined,
+          dataProductSRC: undefined,
+          pipeline: undefined
+        }}
+      />
+    );
+  });
 });

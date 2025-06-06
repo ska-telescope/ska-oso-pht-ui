@@ -15,7 +15,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { validateTechnicalPage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
-import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+// import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
@@ -158,7 +158,7 @@ export default function TechnicalPage() {
     }
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -190,6 +190,8 @@ export default function TechnicalPage() {
   React.useEffect(() => {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
+
+  const PDFView = () => <></>; // TODO : Need to do this without WebPack as a dependency   <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
 
   const uploadSuffix = () => (
     <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
@@ -253,7 +255,7 @@ export default function TechnicalPage() {
           <HelpPanel />
         </Grid>
       </Grid>
-      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
+      {PDFView()}
     </Shell>
   );
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
@@ -42,19 +41,19 @@ export default function BandwidthField({
   disabled = false,
   onFocus,
   required = false,
-  setValue = null,
+  setValue,
   suffix = null,
   value,
   telescope,
   testId,
-  widthButton,
+  widthButton = 50,
   widthLabel = 5,
-  observingBand,
-  centralFrequency,
+  observingBand = 0,
+  centralFrequency = 0,
   centralFrequencyUnits,
-  subarrayConfig,
+  subarrayConfig = 0,
   setScaledBandwidth,
-  minimumChannelWidthHz
+  minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
@@ -62,8 +61,8 @@ export default function BandwidthField({
   const getOptions = () => {
     return OBSERVATION.array[telescope - 1].bandWidth;
   };
-  const roundBandwidthValue = options =>
-    options.map(obj => {
+  const roundBandwidthValue = (options: any[]) =>
+    options.map((obj: { label: string; value: any; mapping: any }) => {
       return {
         label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
         value: obj.value,
@@ -82,9 +81,8 @@ export default function BandwidthField({
     return Number(lookupBandwidth(value)?.label.split(' ')[0]);
   };
 
-  const getFrequencyhUnitsLabel = (): string => {
-    return FREQUENCY_UNITS.find(item => item.value === centralFrequencyUnits)?.label;
-  };
+  const getFrequencyUnitsLabelFunc = () =>
+    FREQUENCY_UNITS.find(item => item.value === centralFrequencyUnits)?.label;
 
   const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
@@ -105,16 +103,18 @@ export default function BandwidthField({
   const errorMessage = () => {
     const bandwidthUnitsLabel = getBandwidthUnitsLabel();
     const bandwidthValue = getBandwidthValue();
-    const frequencyUnitsLabel = getFrequencyhUnitsLabel();
+    const frequencyUnitsLabel = getFrequencyUnitsLabelFunc();
     const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
-    setScaledBandwidth(scaledBandwidth);
-    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel);
+    if (setScaledBandwidth) {
+      setScaledBandwidth(scaledBandwidth);
+    }
+    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel ?? '');
 
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
+    const maxContBandwidthHz: number = getMaxContBandwidthHz(telescope, subarrayConfig);
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }

@@ -7,12 +7,12 @@ describe('Validate Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     render(<ValidateButton action={mockAction} />);
-    expect(screen.getByTestId('validationBtnTestId')).toHaveTextContent('validateBtn.label');
+    expect(screen.getByTestId('validationBtnTestId')).toHaveTextContent('validationBtn.label');
     screen.getByTestId('validationBtnTestId').click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     render(<ValidateButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('validationBtnTestId')).toHaveTextContent('validateBtn.label');
+    expect(screen.getByTestId('validationBtnTestId')).toHaveTextContent('validationBtn.label');
   });
 });

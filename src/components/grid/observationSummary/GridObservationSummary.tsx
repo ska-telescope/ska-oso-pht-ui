@@ -36,8 +36,8 @@ export default function GridObservationSummary({
   const elementArray = (inArr: Array<string>) => {
     return (
       <>
-        {inArr.length === 0 && emptyCell()}
-        {inArr.length > 0 && (
+        {!inArr || (inArr?.length === 0 && emptyCell())}
+        {inArr && inArr?.length > 0 && (
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => {
               return (
@@ -63,7 +63,7 @@ export default function GridObservationSummary({
 
   const getObservationTargets = (rec: { type?: number; id?: any }) => {
     const array = proposal.targetObservation.filter(e => e.observationId === rec.id);
-    if (!array || array.length === 0) {
+    if (!array || array?.length === 0) {
       return [];
     } else {
       const output = [];
@@ -74,12 +74,12 @@ export default function GridObservationSummary({
 
   const getDataProducts = (rec: { type?: number; id?: any }): string[] => {
     const array = proposal.dataProductSDP?.filter(e => e.observationId.find(el => el === rec.id));
-    if (!array || array.length === 0) {
+    if (!array || array?.length === 0) {
       return [];
     } else {
       const output = []; // TODO : This is dirty until final structure is fixed
-      for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array[i].observatoryDataProduct.length; j++) {
+      for (let i = 0; i < array?.length; i++) {
+        for (let j = 0; j < array[i].observatoryDataProduct?.length; j++) {
           if (array[i].observatoryDataProduct[j]) {
             output.push(t(FIELD_OBS + '.' + (j + 1)));
           }
@@ -152,7 +152,7 @@ export default function GridObservationSummary({
 
   return (
     <>
-      {proposal.observations.length > 0 && (
+      {proposal?.observations?.length > 0 && (
         <DataGrid
           rows={proposal.observations}
           columns={getColumns()}
@@ -163,7 +163,7 @@ export default function GridObservationSummary({
         />
       )}
       {!proposal.observations ||
-        (proposal.observations.length === 0 && (
+        (proposal?.observations?.length === 0 && (
           <Alert
             color={AlertColorTypes.Error}
             text={t('error.noObservations')}
