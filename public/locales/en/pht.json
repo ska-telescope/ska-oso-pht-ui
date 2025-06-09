@@ -196,32 +196,6 @@
   "fileType": {
     "pdf": ".pdf"
   },
-  "pdfDelete": {
-    "science": {
-      "label": "science",
-      "toolTip": "Click delete the Science Justification PDF",
-      "error": "Not able to delete Science Justification PDF",
-      "success": "Science Justification PDF successfully deleted"
-    },
-    "technical": {
-      "label": "technical",
-      "toolTip": "Click delete the Technical Justification PDF",
-      "error": "Not able to delete Technical Justification PDF",
-      "success": "Technical Justification PDF successfully deleted"
-    }
-  },
-  "pdfDownload": {
-    "error": "Not able to Get PDF Download URL",
-    "science": {
-      "label": "science",
-      "toolTip": "Click to download the Science Justification PDF"
-    },
-    "technical": {
-      "label": "technical",
-      "toolTip": "Click to download the Technical Justification PDF"
-    },
-    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
-  },
   "firstName": {
     "label": "First Name",
     "help": "First name of the principal investigator or co-investigator."
@@ -279,6 +253,11 @@
   },
   "mediaSize": {
     "notSupported": "The application is not supported on a screen with these dimensions"
+  },
+  "menuOptions": {
+    "overview": "Overview",
+    "proposals": "Proposals",
+    "ScienceVerification": "Science Verification"
   },
   "name": {
     "label": "Name",
@@ -368,6 +347,32 @@
   },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
+  },
+  "pdfDelete": {
+    "science": {
+      "label": "science",
+      "toolTip": "Click delete the Science Justification PDF",
+      "error": "Not able to delete Science Justification PDF",
+      "success": "Science Justification PDF successfully deleted"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click delete the Technical Justification PDF",
+      "error": "Not able to delete Technical Justification PDF",
+      "success": "Technical Justification PDF successfully deleted"
+    }
+  },
+  "pdfDownload": {
+    "error": "Not able to Get PDF Download URL",
+    "science": {
+      "label": "science",
+      "toolTip": "Click to download the Science Justification PDF"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click to download the Technical Justification PDF"
+    },
+    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "pdfUpload": {
     "science": {
