@@ -10,7 +10,7 @@ variables:
 
 #  KUBE_HOST: 'https://k8s.stfc.skao.int'
 #  a11y_urls: $KUBE_HOST/$KUBE_NAMESPACE/senscalc
-#  JS_NODE_VERSION: 20
+#  JS_NODE_VERSION: 22
 
 include:
   - template: Code-Quality.gitlab-ci.yml

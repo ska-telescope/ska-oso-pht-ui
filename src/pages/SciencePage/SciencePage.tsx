@@ -13,7 +13,7 @@ import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import DeleteButton from '../../components/button/Delete/Delete';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
-// import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
@@ -35,8 +35,8 @@ export default function SciencePage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentFile, setCurrentFile] = React.useState(null);
-  const [originalFile, setOriginalFile] = React.useState(null);
+  const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
+  const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -53,7 +53,7 @@ export default function SciencePage() {
     updateAppContent1(temp);
   };
 
-  const setFile = (theFile: File) => {
+  const setFile = (theFile: string | null) => {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
@@ -190,7 +190,9 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
-  const PDFView = () => <></>; // TODO : Need to do this without WebPack as a dependency   <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  const PDFView = () => (
+    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  );
 
   const uploadSuffix = () => (
     <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">

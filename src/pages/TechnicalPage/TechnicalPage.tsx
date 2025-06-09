@@ -15,7 +15,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { validateTechnicalPage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
-// import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
@@ -35,8 +35,8 @@ export default function TechnicalPage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentFile, setCurrentFile] = React.useState(null);
-  const [originalFile, setOriginalFile] = React.useState(null);
+  const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
+  const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -53,11 +53,11 @@ export default function TechnicalPage() {
     updateAppContent1(temp);
   };
 
-  const setUploadStatus = (status: FileUploadStatus) => {
+  const setUploadStatus = (status: typeof FileUploadStatus) => {
     setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
-  const setFile = (theFile: File) => {
+  const setFile = (theFile: string | null) => {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
@@ -66,7 +66,7 @@ export default function TechnicalPage() {
     }
   };
 
-  const uploadPdftoSignedUrl = async theFile => {
+  const uploadPdftoSignedUrl = async (theFile: File) => {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
@@ -191,7 +191,9 @@ export default function TechnicalPage() {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
 
-  const PDFView = () => <></>; // TODO : Need to do this without WebPack as a dependency   <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  const PDFView = () => (
+    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  );
 
   const uploadSuffix = () => (
     <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
