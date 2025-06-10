@@ -1,4 +1,4 @@
-import { SUPPLIED_TYPE_INTEGRATION, SUPPLIED_TYPE_SENSITIVITY } from './constants';
+import { SUPPLIED_TYPE_INTEGRATION } from './constants';
 import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
@@ -6,7 +6,6 @@ import {
   IMAGE_WEIGHTING,
   RA_TYPE_GALACTIC,
   ROBUST,
-  SENSITIVITY_K,
   SENSITIVITY_UNITS,
   TELESCOPE_LOW_CODE,
   TIME_SECS,
@@ -20,15 +19,16 @@ export const getImageWeightingMapping = (value: number) => {
   return IMAGE_WEIGHTING.find(e => e.value === value)?.mapping;
 };
 
-export const combineSensitivityAndWeightingFactor = (
-  inValues: ValueUnitPair,
-  factor: number,
-  symbol: string
-) => {
-  const value = inValues.value;
-  const unit = inValues.unit;
-  return `${value?.toFixed(DECIMAL_PLACES)} ${unit} (${factor?.toFixed(DECIMAL_PLACES)})${symbol}`;
-};
+//TODO: Verify if this can be removed
+// export const combineSensitivityAndWeightingFactor = (
+//   inValues: ValueUnitPair,
+//   factor: number,
+//   symbol: string
+// ) => {
+//   const value = inValues.value;
+//   const unit = inValues.unit;
+//   return `${value?.toFixed(DECIMAL_PLACES)} ${unit} (${factor?.toFixed(DECIMAL_PLACES)})${symbol}`;
+// };
 
 export const getBeamSize = (obj: any, fraction: number = 1) => {
   return `${obj?.beam_maj.value.toFixed(fraction).toString()}" x ${obj?.beam_min.value
@@ -140,8 +140,9 @@ export const degRaToSexagesimal = (value: string): string => {
 
 export const isSuppliedTime = (suppliedType: number) => suppliedType === SUPPLIED_TYPE_INTEGRATION;
 
-export const isSuppliedSensitivity = (suppliedType: number) =>
-  suppliedType === SUPPLIED_TYPE_SENSITIVITY;
+//TODO: Verify if this can be removed
+// export const isSuppliedSensitivity = (suppliedType: number) =>
+//   suppliedType === SUPPLIED_TYPE_SENSITIVITY;
 
 export const getSensitivitiesUnitsMapping = (value: number) => {
   return SENSITIVITY_UNITS[value - 1].value;
@@ -184,30 +185,31 @@ export const shiftSensitivity = (inValues: ValueUnitPair) => {
 };
 
 // As above but works within the 'K' units
-export const shiftSensitivityK = (inValues: ValueUnitPair) => {
-  if (!inValues) {
-    return { value: 0, unit: '' };
-  }
-  if (Number(inValues.value) === 0) {
-    return { value: 0, unit: inValues.unit };
-  }
-
-  let posUnits = SENSITIVITY_UNITS.find(e => e.mapping === inValues.unit)?.id;
-  const baseValue = sensitivityConversion(
-    inValues.value,
-    posUnits ? posUnits : SENSITIVITY_K,
-    SENSITIVITY_K
-  );
-  if (baseValue < 0.001) {
-    posUnits = 7;
-  } else if (baseValue < 1) {
-    posUnits = 6;
-  } else {
-    posUnits = SENSITIVITY_K;
-  }
-  const outValue = sensitivityConversion(baseValue, SENSITIVITY_K, posUnits);
-  return { value: outValue, unit: SENSITIVITY_UNITS[posUnits - 1].value };
-};
+//TODO: Verify if this can be removed
+// export const shiftSensitivityK = (inValues: ValueUnitPair) => {
+//   if (!inValues) {
+//     return { value: 0, unit: '' };
+//   }
+//   if (Number(inValues.value) === 0) {
+//     return { value: 0, unit: inValues.unit };
+//   }
+//
+//   let posUnits = SENSITIVITY_UNITS.find(e => e.mapping === inValues.unit)?.id;
+//   const baseValue = sensitivityConversion(
+//     inValues.value,
+//     posUnits ? posUnits : SENSITIVITY_K,
+//     SENSITIVITY_K
+//   );
+//   if (baseValue < 0.001) {
+//     posUnits = 7;
+//   } else if (baseValue < 1) {
+//     posUnits = 6;
+//   } else {
+//     posUnits = SENSITIVITY_K;
+//   }
+//   const outValue = sensitivityConversion(baseValue, SENSITIVITY_K, posUnits);
+//   return { value: outValue, unit: SENSITIVITY_UNITS[posUnits - 1].value };
+// };
 
 export const timeConversion = (inValue: any, from: number, to: number = TIME_SECS) => {
   return (inValue * TIME_UNITS[to - 1]?.toDay) / TIME_UNITS[from - 1]?.toDay;
