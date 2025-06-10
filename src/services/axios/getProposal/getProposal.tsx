@@ -21,19 +21,19 @@ import {
   BAND_1,
   FREQUENCY_UNITS,
   ROBUST
-} from '../../../utils/constants';
+} from '@/utils/constants.ts';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
-import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
+import { InvestigatorBackend } from '@/utils/types/investigator.tsx';
+import { DocumentBackend, DocumentPDF } from '@/utils/types/document.tsx';
 import Target, { TargetBackend } from '../../../utils/types/target';
-import { ObservationSetBackend } from '../../../utils/types/observationSet';
+import { ObservationSetBackend } from '@/utils/types/observationSet.tsx';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend
-} from '../../../utils/types/dataProduct';
+} from '@/utils/types/dataProduct.tsx';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
 import Observation from '../../../utils/types/observation';
 import {

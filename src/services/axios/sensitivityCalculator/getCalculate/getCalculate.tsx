@@ -12,14 +12,14 @@ import {
   FREQUENCY_UNITS,
   OB_SUBARRAY_CUSTOM,
   SBS_CONV_FACTOR_DEFAULT
-} from '../../../../utils/constants';
+} from '@/utils/constants.ts';
 import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
 import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
 import Observation from '../../../../utils/types/observation';
 import sensCalHelpers from '../sensCalHelpers';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from '../../../../utils/types/target';
-import { helpers } from '../../../../utils/helpers';
+import { helpers } from '@/utils/helpers.ts';
 import {
   CalculateMidContinuumQuery,
   CalculateMidZoomQuery,

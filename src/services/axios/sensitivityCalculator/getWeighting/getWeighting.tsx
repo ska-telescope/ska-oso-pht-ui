@@ -12,7 +12,7 @@ import {
   ROBUST,
   IW_BRIGGS,
   TYPE_CONTINUUM
-} from '../../../../utils/constants';
+} from '@/utils/constants.ts';
 import {
   MockResponseMidWeightingContinuum,
   MockResponseMidWeightingLine

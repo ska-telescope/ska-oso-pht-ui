@@ -1,4 +1,4 @@
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 function PostUploadPDF(): string {
   const URL_UPLOAD = `/upload/pdf`;

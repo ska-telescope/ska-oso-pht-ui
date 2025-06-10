@@ -5,10 +5,10 @@ import {
   USE_LOCAL_DATA,
   PROJECTS,
   GENERAL
-} from '../../../utils/constants';
+} from '@/utils/constants.ts';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
+import { InvestigatorBackend } from '@/utils/types/investigator.tsx';
 import TeamMember from 'utils/types/teamMember';
 
 /*********************************************************** filter *********************************************************/

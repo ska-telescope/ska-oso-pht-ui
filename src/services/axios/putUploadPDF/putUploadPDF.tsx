@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { USE_LOCAL_DATA } from '../../../utils/constants';
+import { USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 async function PutUploadPDF(signedUrl, selectedFile) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';

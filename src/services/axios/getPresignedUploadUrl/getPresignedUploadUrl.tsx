@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 async function GetPresignedUploadUrl(filename: string): Promise<string> {
   if (USE_LOCAL_DATA) {
