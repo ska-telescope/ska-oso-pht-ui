@@ -2,6 +2,7 @@ import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
 import {
   getBeamSize,
+  getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
   isGalactic,
   isLow,
@@ -317,5 +318,17 @@ describe('Sensitivity Calculator helper functions', () => {
       unit: 'ns'
     };
     expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
+  });
+
+  test('Image Weighting, value natural', () => {
+    expect(getImageWeightingMapping(0)).toBe('natural');
+  });
+
+  test('Image Weighting, value natural', () => {
+    expect(getImageWeightingMapping(1)).toBe('uniform');
+  });
+
+  test('Image Weighting, value natural', () => {
+    expect(getImageWeightingMapping(2)).toBe('robust');
   });
 });
