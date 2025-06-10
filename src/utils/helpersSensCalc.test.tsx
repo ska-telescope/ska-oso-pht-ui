@@ -2,10 +2,14 @@ import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
 import {
   getBeamSize,
+  getSensitivitiesUnitsMapping,
   isGalactic,
   isLow,
   isNumeric,
   isSuppliedTime,
+  shiftSensitivity,
+  shiftTime,
+  timeConversion,
   transformPerSubBandData,
   transformPerSubBandTime,
   transformSurfaceBrightnessPerSubBandData,
@@ -173,5 +177,145 @@ describe('Sensitivity Calculator helper functions', () => {
   });
   test('Supplied Time check, Returns false when supplied value is "SUPPLIED_TYPE_SENSITIVITY"', () => {
     expect(isSuppliedTime(SUPPLIED_TYPE_SENSITIVITY)).toBe(false);
+  });
+
+  test('Map Sensitivities Units', () => {
+    expect(getSensitivitiesUnitsMapping(3)).toStrictEqual('uJy/beam');
+  });
+
+  test('Shift Sensitivity { value : 50000000000, unit : Jy}', () => {
+    expect(shiftSensitivity({ value: 5000000000, unit: 'Jy' })).toStrictEqual({
+      value: 5000000000,
+      unit: 'Jy'
+    });
+  });
+  test('Shift Sensitivity { value : 40000000000, unit : 3}', () => {
+    expect(shiftSensitivity({ value: 4000000000, unit: '3' })).toStrictEqual({
+      value: 4,
+      unit: 'Jy/beam'
+    });
+  });
+  test('Shift Sensitivity { value : 300000000, unit : 3}', () => {
+    expect(shiftSensitivity({ value: 300000000, unit: '3' })).toStrictEqual({
+      value: 300,
+      unit: 'mJy/beam'
+    });
+  });
+  test('Shift Sensitivity { value : 200000, unit : 3}', () => {
+    expect(shiftSensitivity({ value: 200000, unit: '3' })).toStrictEqual({
+      value: 200,
+      unit: 'μJy/beam'
+    });
+  });
+  test('Shift Sensitivity { value : 100, unit : 3}', () => {
+    expect(shiftSensitivity({ value: 100, unit: '3' })).toStrictEqual({
+      value: 100,
+      unit: 'nJy/beam'
+    });
+  });
+  test('Shift Sensitivity { value : 0, unit : 3}', () => {
+    expect(shiftSensitivity({ value: 0, unit: 'nJy/beam' })).toStrictEqual({
+      value: 0,
+      unit: 'nJy/beam'
+    });
+  });
+
+  test('Time Conversion, In values 100, 3. Out value 6000', () => {
+    expect(timeConversion('100', 3)).toBe(6000);
+  });
+  test('Time Conversion, In values 100, 3, 2. Out value 1.6666666666666667', () => {
+    expect(timeConversion('100', 3, 2)).toBe(1.6666666666666667);
+  });
+
+  test('Shift Time, no value', () => {
+    const time = undefined;
+    const expected = { value: 0, unit: '' };
+    expect(shiftTime(time as any, false)).toStrictEqual(expected);
+  });
+  test('Shift Time, value 0', () => {
+    const time = {
+      value: 0,
+      unit: 's'
+    };
+    const expected = { value: 0, unit: 's' };
+    expect(shiftTime(time as any, false)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to d', () => {
+    const time = {
+      value: 10e9,
+      unit: 's'
+    };
+    const expected = {
+      value: 115740.74074074074,
+      unit: 'd'
+    };
+    expect(shiftTime(time, false)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to h', () => {
+    const time = {
+      value: 3e6,
+      unit: 's'
+    };
+    const expected = {
+      value: 833.3333333333334,
+      unit: 'h'
+    };
+    expect(shiftTime(time, false)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to min', () => {
+    const time = {
+      value: 9.99e5,
+      unit: 's'
+    };
+    const expected = {
+      value: 16650,
+      unit: 'min'
+    };
+    expect(shiftTime(time, false)).toStrictEqual(expected);
+  });
+  const secondsOnly = true;
+  test('Shift Time, s to s', () => {
+    const time = {
+      value: 161.87084064089981,
+      unit: 's'
+    };
+    const expected = {
+      value: 161.87084064089981,
+      unit: 's'
+    };
+    expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to ms', () => {
+    const time = {
+      value: 0.018506663149092245,
+      unit: 's'
+    };
+    const expected = {
+      value: 18.506663149092244,
+      unit: 'ms'
+    };
+    expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to μs', () => {
+    const time = {
+      value: 0.0000018506663149092246,
+      unit: 's'
+    };
+    const expected = {
+      value: 1.8506663149092246,
+      unit: 'μs'
+    };
+    expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
+  });
+  test('Shift Time, s to ns', () => {
+    const time = {
+      value: 1.850666314909224e-10,
+      unit: 's'
+    };
+    const expected = {
+      value: 0.1850666314909224,
+      unit: 'ns'
+    };
+    expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
   });
 });
