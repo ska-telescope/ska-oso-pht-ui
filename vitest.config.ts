@@ -29,7 +29,10 @@ export default defineConfig({
         'src/services/api/getContinuumData/mockedContinuumResults.ts',
         'src/services/api/getPSSData/mockedPSSResults.ts',
         'src/services/api/getSubArrayData/getSubArrayData.tsx',
-        'src/services/api/getZoomData/mockedZoomResults.ts'
+        'src/services/api/getZoomData/mockedZoomResults.ts',
+        'src/utils/storage',
+        'src/utils/testing',
+        'src/utils/types'
       ]
     },
     exclude: [...configDefaults.exclude, 'shared/*']
