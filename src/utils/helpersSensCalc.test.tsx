@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import {
   getBeamSize,
   getImageWeightingMapping,
+  getRobustMapping,
   getSensitivitiesUnitsMapping,
   isGalactic,
   isLow,
@@ -320,15 +321,35 @@ describe('Sensitivity Calculator helper functions', () => {
     expect(shiftTime(time, secondsOnly)).toStrictEqual(expected);
   });
 
-  test('Image Weighting, value natural', () => {
+  test('Image Weighting, value 0, return natural', () => {
     expect(getImageWeightingMapping(0)).toBe('natural');
   });
 
-  test('Image Weighting, value natural', () => {
+  test('Image Weighting, value 1, return uniform', () => {
     expect(getImageWeightingMapping(1)).toBe('uniform');
   });
 
-  test('Image Weighting, value natural', () => {
+  test('Image Weighting, value 2, return robust', () => {
     expect(getImageWeightingMapping(2)).toBe('robust');
+  });
+
+  test('Robust mapping, value 1, return -2', () => {
+    expect(getRobustMapping(1)).toBe(-2);
+  });
+
+  test('Robust mapping, value 2, return -1', () => {
+    expect(getRobustMapping(2)).toBe(-1);
+  });
+
+  test('Robust mapping, value 3, return 0', () => {
+    expect(getRobustMapping(3)).toBe(0);
+  });
+
+  test('Robust mapping, value 4, return 1', () => {
+    expect(getRobustMapping(4)).toBe(1);
+  });
+
+  test('Robust mapping, value 5, return 2', () => {
+    expect(getRobustMapping(5)).toBe(2);
   });
 });
