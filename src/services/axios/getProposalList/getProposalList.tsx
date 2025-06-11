@@ -118,7 +118,7 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   }
 
   try {
-    const URL_PATH = `/prsls/list/DefaultUser`;
+    const URL_PATH = `/pht/prsls/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     const uniqueResults =
       result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;

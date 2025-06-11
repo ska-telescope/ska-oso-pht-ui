@@ -7,7 +7,7 @@ async function GetPresignedUploadUrl(filename: string): Promise<string> {
   }
 
   try {
-    const URL_PATH = `/upload/signedurl/${filename}`;
+    const URL_PATH = `/pht/prsls/signed-url/upload/${filename}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {

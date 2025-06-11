@@ -19,7 +19,7 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id?.toString(),
     status: status,
-    submitted_on: '',
+    // submitted_on: '', // oso-services 1.0.1 does not support ''
     submitted_by: '',
     investigator_refs: [],
     cycle: fetchCycleData().id,
@@ -53,7 +53,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
   }
 
   try {
-    const URL_PATH = `/prsls/create`;
+    const URL_PATH = `/pht/prsls/create`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
     const result = await axios.post(

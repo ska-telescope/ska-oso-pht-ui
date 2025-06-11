@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
 
-const MOCK_UNITS = ['EQUATORIAL', 'GALACTIC'];
+const MOCK_UNITS = ['equatorial', 'galactic'];
 const MOCK_RESULTS = [
   {
     equatorial: {

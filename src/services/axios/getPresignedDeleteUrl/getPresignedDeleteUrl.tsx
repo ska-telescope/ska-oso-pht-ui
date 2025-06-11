@@ -7,7 +7,7 @@ async function GetPresignedDeleteUrl(selectedFile) {
   }
 
   try {
-    const URL_PATH = `/delete/signedurl/${selectedFile}`;
+    const URL_PATH = `/pht/prsls/signed-url/delete/${selectedFile}`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
