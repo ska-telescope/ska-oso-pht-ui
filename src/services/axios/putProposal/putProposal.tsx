@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  OSO_SERVICES_PROPOSAL_PATH,
+  SKA_PHT_API_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import MappingPutProposal from './putProposalMapping';
 
 interface PutProposalServiceResponse {
@@ -13,7 +18,7 @@ async function PutProposal(proposal, status?): Promise<PutProposalServiceRespons
   }
 
   try {
-    const URL_PATH = `/pht/prsls/${proposal.id}`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status);
     const result = await axios.put(

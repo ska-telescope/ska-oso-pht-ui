@@ -4,7 +4,8 @@ import {
   SKA_PHT_API_URL,
   USE_LOCAL_DATA,
   PROJECTS,
-  GENERAL
+  GENERAL,
+  OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -118,7 +119,7 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   }
 
   try {
-    const URL_PATH = `/pht/prsls/list/DefaultUser`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/DefaultUser`;
     const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
     const uniqueResults =
       result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;

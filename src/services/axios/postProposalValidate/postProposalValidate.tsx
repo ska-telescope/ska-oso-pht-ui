@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
+  OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
@@ -23,7 +24,7 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
   }
 
   try {
-    const URL_PATH = `/pht/prsls/validate`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     const result = await axios.post(
       `${SKA_PHT_API_URL}${URL_PATH}`,
