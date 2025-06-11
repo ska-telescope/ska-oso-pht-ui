@@ -21,7 +21,7 @@ import { ButtonUserMenu } from '@/components/button/UserMenu/UserMenu.tsx';
 
 function App() {
   const { t } = useTranslation('pht');
-  const { help, helpToggle } = storageObject.useStore();
+  const { application, help, helpToggle } = storageObject.useStore();
   const [theMode, setTheMode] = React.useState(
     localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
   );
@@ -29,9 +29,6 @@ function App() {
 
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
-
-  const REACT_APP_VERSION = packageJson.version;
-
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
 
   const modeToggle = () => {
@@ -40,7 +37,6 @@ function App() {
     setTheMode(newMode);
   };
 
-  const { application } = storageObject.useStore();
   const getProposal = () => application.content2 as Proposal;
 
   const mediaSizeNotSupported = () => {
@@ -55,10 +51,12 @@ function App() {
 
   const signIn = () => (
     // TODO : This is totally mocked and will be replaced in time
-    <ButtonUserMenu label={'MOCKED'} toolTip={t('buttonUser.tooltip', { ns: 'authentication' })}>
+    <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'}>
       <MenuItem disabled>{t('menuOptions.overview')}</MenuItem>
       <MenuItem disabled>{t('menuOptions.proposals')}</MenuItem>
-      <MenuItem disabled>{t('scienceVerification')}</MenuItem>
+      <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
+      <MenuItem disabled>{t('menuOptions.panelSummary')}</MenuItem>
+      <MenuItem disabled>{t('menuOptions.reviews')}</MenuItem>
       <Divider component="li" />
       <MenuItem disabled> Logout</MenuItem>
     </ButtonUserMenu>
@@ -78,7 +76,7 @@ function App() {
           }
           headerChildren={null}
           iconDocsToolTip={t('toolTip.button.docs')}
-          iconDocsURL={t('toolTip.button.docsURL', { version: REACT_APP_VERSION })}
+          iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
           loginComponent={[signIn()]}
           mainChildren={
             <>
@@ -86,14 +84,11 @@ function App() {
               {!REQUIRED_WIDTH && mediaSizeNotSupported()}
             </>
           }
-          selectTelescope={false}
           storageHelp={help}
           storageHelpToggle={helpToggle}
-          storageTelescope={null}
           storageThemeMode={theMode}
           storageToggleTheme={modeToggle}
-          storageUpdateTelescope={null}
-          version={REACT_APP_VERSION}
+          version={packageJson.version}
           versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
         />
       </React.Suspense>

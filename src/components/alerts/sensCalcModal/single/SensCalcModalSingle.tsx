@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@mui/material';
 import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
@@ -110,7 +109,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}
@@ -119,7 +118,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}
@@ -128,7 +127,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}

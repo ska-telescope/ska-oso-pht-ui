@@ -4,6 +4,9 @@ import '@testing-library/jest-dom';
 import ValidationResults from './ValidationResults';
 
 describe('<ValidationResults />', () => {
+  test('renders correctly ( empty proposal', () => {
+    render(<ValidationResults open={false} onClose={vi.fn()} proposal={null} results={[]} />);
+  });
   test('renders correctly', () => {
     render(
       <ValidationResults
@@ -38,7 +41,7 @@ describe('<ValidationResults />', () => {
           dataProductSRC: undefined,
           pipeline: undefined
         }}
-        results={[]}
+        results={['LOOKS OK', 'NO ISSUES FOUND']}
       />
     );
   });

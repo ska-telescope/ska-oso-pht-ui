@@ -256,8 +256,10 @@
   },
   "menuOptions": {
     "overview": "Overview",
+    "panelSummary": "Panel",
     "proposals": "Proposals",
-    "ScienceVerification": "Science Verification"
+    "reviews": "Reviews",
+    "scienceVerification": "Science Verification"
   },
   "name": {
     "label": "Name",

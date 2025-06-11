@@ -12,6 +12,7 @@ import {
 } from '../../../../utils/constants';
 import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
+export type Rec = { field: string; value: string; units: string };
 interface SensCalcModalMultipleProps {
   open: boolean;
   onClose: Function;
@@ -42,7 +43,7 @@ export default function SensCalcModalMultiple({
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  const PresentCustomResultValue = (rec: any) => {
+  const PresentCustomResultValue = (rec: Rec) => {
     if (rec.field === 'targetName') {
       return rec.value;
     }
@@ -71,7 +72,7 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = rec => {
+  const presentation = (rec: Rec | null) => {
     if (rec) {
       return isCustom
         ? PresentCustomResultValue(rec) + ' '
@@ -93,7 +94,7 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section1[0].field),
-    renderCell: (e: { row: { section1: { value: any }[] } }) =>
+    renderCell: (e: { row: { section1: Rec[] } }) =>
       presentation(e?.row?.section1 ? e.row.section1[0] : null)
   };
 
@@ -102,7 +103,7 @@ export default function SensCalcModalMultiple({
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section1[1].field),
-    renderCell: (e: { row: { section1: { value: any }[] } }) =>
+    renderCell: (e: { row: { section1: Rec[] } }) =>
       presentation(e?.row?.section1 ? e.row.section1[1] : null)
   };
 
@@ -111,7 +112,7 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section1[2].field),
-    renderCell: (e: { row: { section1: { value: any }[] } }) =>
+    renderCell: (e: { row: { section1: Rec[] } }) =>
       presentation(e?.row?.section1 ? e.row.section1[2] : null)
   };
 
@@ -120,7 +121,7 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section1[3].field),
-    renderCell: (e: { row: { section1: { value: any }[] } }) =>
+    renderCell: (e: { row: { section1: Rec[] } }) =>
       presentation(e?.row?.section1 ? e.row.section1[3] : null)
   };
 
@@ -129,7 +130,7 @@ export default function SensCalcModalMultiple({
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section1[4].field),
-    renderCell: (e: { row: { section1: { value: any }[] } }) =>
+    renderCell: (e: { row: { section1: Rec[] } }) =>
       presentation(e?.row?.section1 ? e.row.section1[4] : null)
   };
 
@@ -138,7 +139,7 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section2[0].field),
-    renderCell: (e: { row: { section2: { value: any }[] } }) =>
+    renderCell: (e: { row: { section2: Rec[] } }) =>
       presentation(e?.row?.section2 ? e.row.section2[0] : null)
   };
 
@@ -147,9 +148,9 @@ export default function SensCalcModalMultiple({
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section2[1].field),
-    renderCell: (e: { row: { section2: { value: any }[] } }) =>
+    renderCell: (e: { row: { section2: Rec[] } }) =>
       presentation(e?.row?.section2 ? e.row.section2[1] : null),
-    optional: params => params.value !== null
+    optional: (params: { value: null }) => params.value !== null
   };
 
   const colField8 = {
@@ -157,9 +158,9 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section2[2].field),
-    renderCell: (e: { row: { section2: { value: any }[] } }) =>
+    renderCell: (e: { row: { section2: Rec[] } }) =>
       presentation(e?.row?.section2 ? e.row.section2[2] : null),
-    optional: params => params.value !== null
+    optional: (params: { value: null }) => params.value !== null
   };
 
   const colField9 = {
@@ -167,9 +168,9 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section2[3].field),
-    renderCell: (e: { row: { section2: { value: any }[] } }) =>
+    renderCell: (e: { row: { section2: Rec[] } }) =>
       presentation(e?.row?.section2 ? e.row.section2[3] : null),
-    optional: params => params.value !== null
+    optional: (params: { value: null }) => params.value !== null
   };
 
   const colField10 = {
@@ -177,9 +178,9 @@ export default function SensCalcModalMultiple({
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section2[4].field),
-    renderCell: (e: { row: { section2: { value: any }[] } }) =>
+    renderCell: (e: { row: { section2: Rec[] } }) =>
       presentation(e?.row?.section2 ? e.row.section2[4] : null),
-    optional: params => params.value !== null
+    optional: (params: { value: null }) => params.value !== null
   };
 
   const colField11 = {
@@ -187,9 +188,9 @@ export default function SensCalcModalMultiple({
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
     renderHeader: () => headerDisplay(data[headerNumber].section3[0].field),
-    renderCell: (e: { row: { section3: { value: any }[] } }) =>
+    renderCell: (e: { row: { section3: Rec[] } }) =>
       presentation(e?.row?.section3 ? e.row.section3[0] : null),
-    optional: params => params.value !== null
+    optional: (params: { value: null }) => params.value !== null
   };
 
   const colStatus = {

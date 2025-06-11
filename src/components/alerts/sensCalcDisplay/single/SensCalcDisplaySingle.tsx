@@ -12,16 +12,16 @@ const UNITS = 'units';
 
 interface SensCalcDisplaySingleProps {
   sensCalc: any;
-  show: boolean;
+  show?: boolean;
   field: string;
-  isCustom: boolean;
+  isCustom?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   sensCalc,
-  show,
+  show = false,
   field,
-  isCustom
+  isCustom = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -29,7 +29,7 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = sensCalc => {
+  const ariaStatusMessage = (sensCalc: { statusGUI: string; error: string }) => {
     const status = t('statusLoading.' + sensCalc?.statusGUI);
     const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });

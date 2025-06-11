@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography } from '@mui/material';
@@ -11,7 +10,7 @@ import StatusIconDisplay from '../../icon/status/statusIcon';
 interface ValidationResultsProps {
   open: boolean;
   onClose: Function;
-  proposal: Proposal;
+  proposal: Proposal | null;
   results: string[];
 }
 
@@ -61,7 +60,7 @@ export default function ValidationResults({
             {t('validationResults.title')}
           </Typography>
         </Grid>
-        <Grid item>{proposal.id}</Grid>
+        <Grid item>{proposal?.id}</Grid>
       </Grid>
     </Grid>
   );
