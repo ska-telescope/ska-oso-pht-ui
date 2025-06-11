@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
@@ -16,11 +15,11 @@ interface GridTargetsProps {
 }
 
 export default function GridTargets({
-  deleteClicked = null,
-  editClicked = null,
+  deleteClicked,
+  editClicked,
   height = 171,
-  raType = 1,
-  rowClick = null,
+  raType,
+  rowClick,
   rows = []
 }: GridTargetsProps) {
   const { t } = useTranslation('pht');
@@ -63,10 +62,16 @@ export default function GridTargets({
         return (
           <>
             {editClicked !== null && (
-              <EditIcon onClick={() => editClicked(rec)} toolTip={t('editTarget.toolTip')} />
+              <EditIcon
+                onClick={() => (editClicked ? editClicked(rec) : null)}
+                toolTip={t('editTarget.toolTip')}
+              />
             )}
             {deleteClicked !== null && (
-              <TrashIcon onClick={() => deleteClicked(rec)} toolTip={t('deleteTarget.toolTip')} />
+              <TrashIcon
+                onClick={() => (deleteClicked ? deleteClicked(rec) : null)}
+                toolTip={t('deleteTarget.toolTip')}
+              />
             )}
           </>
         );
