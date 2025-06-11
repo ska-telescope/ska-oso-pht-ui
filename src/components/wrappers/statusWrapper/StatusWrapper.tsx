@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
-import { NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import { NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 
 interface StatusWrapperProps {
   level?: number;

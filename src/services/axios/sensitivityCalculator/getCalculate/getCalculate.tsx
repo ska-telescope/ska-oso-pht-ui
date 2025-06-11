@@ -1,4 +1,18 @@
 import axios from 'axios';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import sensCalHelpers from '../sensCalHelpers';
+import Observation from '../../../../utils/types/observation';
+import Target from '../../../../utils/types/target';
+import {
+  CalculateMidContinuumQuery,
+  CalculateMidZoomQuery,
+  CalculateLowContinuumQuery,
+  CalculateLowZoomQuery
+} from '../../../../utils/types/sensCalcCalculateQuery';
+import { WeightingResponse } from '../../../../utils/types/sensitivityCalculatorAPIResponse';
+import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
+import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
+import { helpers } from '@/utils/helpers.ts';
 import {
   AXIOS_CONFIG,
   OBSERVATION_TYPE_BACKEND,
@@ -13,20 +27,6 @@ import {
   OB_SUBARRAY_CUSTOM,
   SBS_CONV_FACTOR_DEFAULT
 } from '@/utils/constants.ts';
-import { MockResponseMidCalculateZoom, MockResponseMidCalculate } from './mockResponseMidCalculate';
-import { MockResponseLowCalculate, MockResponseLowCalculateZoom } from './mockResponseLowCalculate';
-import Observation from '../../../../utils/types/observation';
-import sensCalHelpers from '../sensCalHelpers';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
-import Target from '../../../../utils/types/target';
-import { helpers } from '@/utils/helpers.ts';
-import {
-  CalculateMidContinuumQuery,
-  CalculateMidZoomQuery,
-  CalculateLowContinuumQuery,
-  CalculateLowZoomQuery
-} from '../../../../utils/types/sensCalcCalculateQuery';
-import { WeightingResponse } from '../../../../utils/types/sensitivityCalculatorAPIResponse';
 
 const URL_CALCULATE = `calculate`;
 

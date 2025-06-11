@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import { Box } from '@mui/system';
 import {
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -15,7 +16,6 @@ import {
   checkMaxContBandwidthHz,
   checkBandLimits
 } from '../bandwidthValidationCommon';
-import { Box } from '@mui/system';
 
 interface continuumBandwidthFieldProps {
   disabled?: boolean;

@@ -1,3 +1,4 @@
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { DocumentBackend, DocumentPDF } from './document';
 import {
   DataProductSDP,
@@ -15,7 +16,6 @@ import TeamMember from './teamMember';
 import { ObservationSetBackend } from './observationSet';
 import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 export type ProposalBackend = {
   prsl_id: string;

@@ -1,11 +1,11 @@
 import axios from 'axios';
+import MappingPutProposal from '../putProposal/putProposalMapping';
 import {
   AXIOS_CONFIG,
   PROPOSAL_STATUS,
   SKA_PHT_API_URL,
   USE_LOCAL_DATA
 } from '@/utils/constants.ts';
-import MappingPutProposal from '../putProposal/putProposalMapping';
 
 interface ValidateResponseData {
   result: Boolean;

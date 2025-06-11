@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-scroll';
 import PageBanner from '../pageBanner/PageBanner';
 import PageFooter from '../pageFooter/PageFooter';
-import { Link } from 'react-scroll';
 
 interface ShellProps {
   page: number;

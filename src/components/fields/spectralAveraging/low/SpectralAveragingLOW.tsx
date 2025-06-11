@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Box } from '@mui/system';
 import {
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -9,7 +10,6 @@ import {
   SPECTRAL_AVERAGING_MIN,
   ZOOM_SPECTRAL_AVERAGING_MAX
 } from '../../../../utils/constants';
-import { Box } from '@mui/system';
 
 interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;

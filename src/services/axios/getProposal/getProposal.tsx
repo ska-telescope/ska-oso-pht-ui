@@ -1,4 +1,17 @@
 import axios from 'axios';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import Target, { TargetBackend } from '../../../utils/types/target';
+import Observation from '../../../utils/types/observation';
+import {
+  ResultsSection,
+  SensCalcResults,
+  SensCalcResultsBackend
+} from '../../../utils/types/sensCalcResults';
+import TargetObservation from '../../../utils/types/targetObservation';
+import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
+import MockProposalBackend from './mockProposalBackend';
 import {
   AXIOS_CONFIG,
   PROJECTS,
@@ -22,11 +35,8 @@ import {
   FREQUENCY_UNITS,
   ROBUST
 } from '@/utils/constants.ts';
-import MockProposalBackend from './mockProposalBackend';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '@/utils/types/investigator.tsx';
 import { DocumentBackend, DocumentPDF } from '@/utils/types/document.tsx';
-import Target, { TargetBackend } from '../../../utils/types/target';
 import { ObservationSetBackend } from '@/utils/types/observationSet.tsx';
 import {
   DataProductSDP,
@@ -34,16 +44,6 @@ import {
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@/utils/types/dataProduct.tsx';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
-import Observation from '../../../utils/types/observation';
-import {
-  ResultsSection,
-  SensCalcResults,
-  SensCalcResultsBackend
-} from '../../../utils/types/sensCalcResults';
-import TargetObservation from '../../../utils/types/targetObservation';
-import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 const getTeamMembers = (inValue: InvestigatorBackend[]) => {
   let members = [];

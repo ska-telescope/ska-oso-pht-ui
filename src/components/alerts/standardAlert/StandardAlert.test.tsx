@@ -2,8 +2,8 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
-import StandardAlert from './StandardAlert';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import StandardAlert from './StandardAlert';
 
 describe('<StandardAlert />', () => {
   test('renders correctly (INFO)', () => {

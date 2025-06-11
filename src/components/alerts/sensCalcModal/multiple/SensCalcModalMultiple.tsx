@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
-import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
 import {
   CUSTOM_VALID_FIELDS,

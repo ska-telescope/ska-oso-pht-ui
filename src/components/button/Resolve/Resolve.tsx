@@ -1,8 +1,8 @@
 import React from 'react';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
-import BaseButton from '../Base/Button';
 import { Box } from '@mui/material';
 import { ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
+import BaseButton from '../Base/Button';
 
 interface ResolveButtonProps {
   title?: string;

@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import useTheme from '@mui/material/styles/useTheme';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import TargetListSection from './TargetListSection/targetListSection';
-import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
-import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import Shell from '../../components/layout/Shell/Shell';
 import { validateTargetPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import { TARGET_OPTION } from '../../utils/constants';
+import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
+import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
+import TargetListSection from './TargetListSection/targetListSection';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 

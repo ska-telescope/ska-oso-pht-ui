@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box } from '@mui/system';
 import {
   BAND_LOW,
   FREQUENCY_UNITS,
@@ -8,7 +9,6 @@ import {
   TYPE_CONTINUUM
 } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
-import { Box } from '@mui/system';
 
 interface SpectralResolutionFieldProps {
   bandWidth: number;

@@ -1,5 +1,6 @@
 import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import {
   getBeamSize,
   getImageWeightingMapping,
@@ -17,7 +18,6 @@ import {
   transformSurfaceBrightnessPerSubBandData,
   transformSynthesizedBeamSizePerSubBandData
 } from '@/utils/helpersSensCalc.ts';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '@/utils/constantsSensCalc.ts';
 import { SUPPLIED_TYPE_INTEGRATION, SUPPLIED_TYPE_SENSITIVITY } from '@/utils/constants.ts';
 

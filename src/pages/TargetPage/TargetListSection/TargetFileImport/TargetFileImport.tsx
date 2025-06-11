@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
-import { Proposal } from '../../../../utils/types/proposal';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import Papa from 'papaparse';
+import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
 import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
-import Papa from 'papaparse';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;

@@ -1,5 +1,5 @@
-import { AXIOS_CONFIG, SKA_PHT_API_URL } from '@/utils/constants.ts';
 import axios from 'axios';
+import { AXIOS_CONFIG, SKA_PHT_API_URL } from '@/utils/constants.ts';
 import { EmailInviteBackend } from '@/utils/types/emailInvite.tsx';
 
 async function PostSendEmailInvite(email: EmailInviteBackend) {

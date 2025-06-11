@@ -1,7 +1,7 @@
 import axios from 'axios';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { helpers } from '@/utils/helpers.ts';
 import { AXIOS_CONFIG, PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '@/utils/constants.ts';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '@/utils/storage/cycleData.tsx';
 
 function mappingPostProposal(proposal: Proposal, status: string): ProposalBackend {

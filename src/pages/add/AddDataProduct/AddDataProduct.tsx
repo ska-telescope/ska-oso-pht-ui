@@ -11,6 +11,7 @@ import {
   NumberEntry,
   TickBox
 } from '@ska-telescope/ska-gui-components';
+import { Box } from '@mui/system';
 import PageBanner from '../../../components/layout/pageBanner/PageBanner';
 import { HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
@@ -21,7 +22,6 @@ import { DataProductSDP } from '../../../utils/types/dataProduct';
 import Observation from '../../../utils/types/observation';
 import AddButton from '../../../components/button/Add/Add';
 import { LAB_POSITION } from '../../../utils/constants';
-import { Box } from '@mui/system';
 
 const BACK_PAGE = 7;
 const PAGE = 13;

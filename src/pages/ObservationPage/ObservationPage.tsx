@@ -10,6 +10,7 @@ import {
   LABEL_POSITION,
   TickBox
 } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -37,7 +38,6 @@ import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER } from '../../utils/constants';
 
 const DATA_GRID_TARGET = '40vh';

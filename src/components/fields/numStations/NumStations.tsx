@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
+import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 interface NumStationsFieldProps {
   disabled?: boolean;

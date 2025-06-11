@@ -1,4 +1,7 @@
 import axios from 'axios';
+import TeamMember from 'utils/types/teamMember';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import MockProposalBackendList from './mockProposalBackendList';
 import {
   AXIOS_CONFIG,
   SKA_PHT_API_URL,
@@ -6,10 +9,7 @@ import {
   PROJECTS,
   GENERAL
 } from '@/utils/constants.ts';
-import MockProposalBackendList from './mockProposalBackendList';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '@/utils/types/investigator.tsx';
-import TeamMember from 'utils/types/teamMember';
 
 /*********************************************************** filter *********************************************************/
 

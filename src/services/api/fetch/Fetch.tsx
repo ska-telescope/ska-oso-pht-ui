@@ -1,10 +1,10 @@
 import axios from 'axios';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import {
   AXIOS_CONFIG,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   STATUS_ERROR
 } from '../../../utils/constants';
-import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import { ContinuumData, PSSData, StandardData, ZoomData } from '../../../utils/types/typesSensCalc';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
