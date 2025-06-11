@@ -20,4 +20,16 @@ describe('<Bandwidth />', () => {
       />
     );
   });
+  test('renders correctly ( suffix )', () => {
+    render(
+      <Bandwidth
+        telescope={2}
+        testId="bandwidth"
+        value={value}
+        centralFrequencyUnits={1}
+        setScaledBandwidth={vi.fn()}
+        suffix={'#'}
+      />
+    );
+  });
 });

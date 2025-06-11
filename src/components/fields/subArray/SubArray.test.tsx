@@ -12,4 +12,25 @@ describe('<SubArray />', () => {
       </StoreProvider>
     );
   });
+  test('renders correctly ( telescope > 0 )', () => {
+    render(
+      <StoreProvider>
+        <SubArray observingBand={0} telescope={1} value={0} />
+      </StoreProvider>
+    );
+  });
+  test('renders correctly ( invalid observingBand )', () => {
+    render(
+      <StoreProvider>
+        <SubArray observingBand={99} telescope={1} value={0} />
+      </StoreProvider>
+    );
+  });
+  test('renders correctly ( suffix )', () => {
+    render(
+      <StoreProvider>
+        <SubArray observingBand={1} suffix={'#'} telescope={2} value={0} />
+      </StoreProvider>
+    );
+  });
 });

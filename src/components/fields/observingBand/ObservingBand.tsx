@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -28,11 +27,7 @@ export default function ObservingBandField({
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'observingBand';
 
-  const getOptions = () => {
-    return BANDWIDTH_TELESCOPE
-      ? BANDWIDTH_TELESCOPE
-      : [{ label: 'Not applicable', telescope: 2, value: 0 }];
-  };
+  const getOptions = () => BANDWIDTH_TELESCOPE;
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">

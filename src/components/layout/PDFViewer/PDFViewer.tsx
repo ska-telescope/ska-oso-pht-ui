@@ -14,17 +14,17 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 interface PDFViewerProps {
-  open: boolean;
+  open?: boolean;
   onClose: Function;
   url: string;
 }
 
 export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps) {
   const { t } = useTranslation('pht');
-  const [numPages, setNumPages] = React.useState(null);
+  const [numPages, setNumPages] = React.useState<number>(0);
   const [pageNumber, setPageNumber] = React.useState(1);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
+  const onDocumentLoadSuccess = (numPages: number) => {
     setNumPages(numPages);
   };
 

@@ -12,4 +12,11 @@ describe('<ObservingBand />', () => {
       </StoreProvider>
     );
   });
+  test('renders correctly ( suffix )', () => {
+    render(
+      <StoreProvider>
+        <ObservingBand suffix={'#'} value={0} />
+      </StoreProvider>
+    );
+  });
 });

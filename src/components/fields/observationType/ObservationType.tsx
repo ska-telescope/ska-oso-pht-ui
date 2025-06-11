@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -36,7 +35,7 @@ export default function ObservationTypeField({
   const FIELD = 'observationType';
 
   const options = (prefix: string, arr: number[]) => {
-    let results = [];
+    let results: { label: string; value: number }[] = [];
     arr.forEach(element => {
       results.push({ label: t(prefix + '.' + element), value: element });
     });

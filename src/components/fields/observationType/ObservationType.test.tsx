@@ -12,4 +12,11 @@ describe('<ObservationType />', () => {
       </StoreProvider>
     );
   });
+  test('renders correctly ( isContinuumOnly )', () => {
+    render(
+      <StoreProvider>
+        <ObservationType suffix={'#'} value={0} isContinuumOnly />
+      </StoreProvider>
+    );
+  });
 });
