@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   AXIOS_CONFIG,
   PROJECTS,
-  SKA_PHT_API_URL,
+  SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   GENERAL,
   OBSERVATION,
@@ -20,7 +20,8 @@ import {
   BAND_LOW,
   BAND_1,
   FREQUENCY_UNITS,
-  ROBUST
+  ROBUST,
+  OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import MockProposalBackend from './mockProposalBackend';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -582,8 +583,8 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   }
 
   try {
-    const URL_PATH = `/proposals/${id}`;
-    const result = await axios.get(`${SKA_PHT_API_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
+    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     return e.message;

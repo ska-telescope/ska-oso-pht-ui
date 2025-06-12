@@ -32,11 +32,11 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "ska-oso-pht-ui.urls-skaPhtApiUrl" -}}
-{{- if .Values.runtimeEnv.skaPhtApiUrl -}}
-{{ .Values.runtimeEnv.skaPhtApiUrl }}
+{{- define "ska-oso-pht-ui.urls-skaOsoServicesUrl" -}}
+{{- if .Values.runtimeEnv.skaOsoServicesUrl -}}
+{{ .Values.runtimeEnv.skaOsoServicesUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/pht/api/v2
+/{{ .Release.Namespace }}/oso/api/v1
 {{- end }}
 {{- end }}
 

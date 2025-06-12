@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { helpers } from '../../../utils/helpers';
-import { AXIOS_CONFIG, PROJECTS, SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../../utils/constants';
+import {
+  AXIOS_CONFIG,
+  OSO_SERVICES_PROPOSAL_PATH,
+  PROJECTS,
+  SKA_OSO_SERVICES_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
@@ -19,7 +25,6 @@ function mappingPostProposal(proposal: Proposal, status: string): ProposalBacken
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id?.toString(),
     status: status,
-    submitted_on: '',
     submitted_by: '',
     investigator_refs: [],
     cycle: fetchCycleData().id,
@@ -53,11 +58,11 @@ async function PostProposal(proposal: Proposal, status?: string) {
   }
 
   try {
-    const URL_PATH = `/proposals`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
     const result = await axios.post(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );

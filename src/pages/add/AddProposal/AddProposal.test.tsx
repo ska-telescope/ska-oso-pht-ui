@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter, Router } from 'react-router-dom';
 import theme from '../../../services/theme/theme';
 import AddProposal from './AddProposal';
-import { SKA_PHT_API_URL } from '../../../utils/constants';
+import { SKA_OSO_SERVICES_URL } from '../../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { THEME, viewPort } from '../../../utils/testing/cypress';
 
@@ -28,7 +28,7 @@ describe('<AddProposal />', () => {
 
 describe('POST proposal/ bad request', () => {
   beforeEach(() => {
-    cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
+    cy.intercept('POST', `${SKA_OSO_SERVICES_URL}`, { statusCode: 500 }).as('postProposalFail');
     cy.mount(
       <StoreProvider>
         <Router location="/" navigator={undefined}>

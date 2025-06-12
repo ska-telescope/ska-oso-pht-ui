@@ -21,7 +21,7 @@ spec:
             port:
               number: 80
         # Match everything but '/api' which is reserved for back-end
-        path: {{ include "ska-oso-pht-ui.ingress.path" . }}/(?!api)(.*)
+        path: {{ include "ska-oso-pht-ui.ingress.path" . }}/(?!oso)(.*)
         pathType: ImplementationSpecific
 
 {{- end }}
