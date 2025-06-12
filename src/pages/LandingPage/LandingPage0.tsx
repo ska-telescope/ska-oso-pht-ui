@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Grid, Paper, Tooltip, Typography } from '@mui/material';
+import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -9,8 +9,8 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
+import TeamMember from 'utils/types/teamMember';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import TeamMember from '../../utils/types/teamMember';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
@@ -50,7 +50,7 @@ export default function LandingPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposals, setProposals] = React.useState([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -66,7 +66,7 @@ export default function LandingPage() {
   const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
-    updateAppContent2((null as unknown) as Proposal);
+    updateAppContent2(null);
     setFetchList(!fetchList);
     setCycleData(!cycleData);
   }, []);
@@ -176,7 +176,7 @@ export default function LandingPage() {
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
-  const displayProposalType = (proposalType: any) => {
+  const displayProposalType = proposalType => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
 
@@ -186,7 +186,7 @@ export default function LandingPage() {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
-    const results: any[] = [];
+    const results = [];
     arr.forEach(e => {
       if (e.pi) {
         results.push(e.lastName + ', ' + e.firstName);
@@ -297,56 +297,17 @@ export default function LandingPage() {
   };
 
   const pageDescription = () => (
-    <Typography align="center" minHeight="5vh">
-      {t('page.15.desc')}
+    <Typography align="center" variant="h6" minHeight="5vh">
+      {t('page.11.desc')}
     </Typography>
   );
 
-  const panelsSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh">
-      {t('panels.label')}
-    </Typography>
-  );
-
-  const ProposalsSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
-      {t('proposals.label')}
-    </Typography>
-  );
-
-  const overviewButton = () => (
+  const addProposalButton = () => (
     <AddButton
       action={clickFunction}
-      testId="overviewButton"
-      title={'overview.label'}
-      toolTip="overview.toolTip"
-    />
-  );
-
-  const addPanelButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId="addPanelButton"
-      title={'addPanel.label'}
-      toolTip="addPanel.toolTip"
-    />
-  );
-
-  const getReviewersButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId="getReviewersButton"
-      title={'getReviewers.label'}
-      toolTip="getReviewers.toolTip"
-    />
-  );
-
-  const assignProposalsButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId="assignProposalsButton"
-      title={'assignProposals.label'}
-      toolTip="assignProposals.toolTip"
+      testId="addProposalButton"
+      title={'addProposal.label'}
+      toolTip="addProposal.toolTip"
     />
   );
 
@@ -405,85 +366,29 @@ export default function LandingPage() {
         <Grid item xs={12}>
           {pageDescription()}
         </Grid>
-        <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
-          <Grid mr={5} pt={1}>
-            {overviewButton()}
-          </Grid>
+        <Grid item p={2} sm={4} md={3} lg={2}>
+          {addProposalButton()}
         </Grid>
-        <Grid container p={5} lg={9} direction="row" justifyContent="flex-end">
-          <Grid mr={5} pt={1}>
-            {addPanelButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {getReviewersButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {assignProposalsButton()}
-          </Grid>
+        <Grid item p={2} sm={4} md={4} lg={4}>
+          {searchDropdown()}
         </Grid>
-        <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
-          <Grid item p={2} sm={12} md={5} lg={3}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }} minHeight="50vh">
-              <Card variant="outlined">{panelsSectionTitle()}</Card>
-              <div>List</div>
-            </Box>
-          </Grid>
-
-          <Grid
-            item
-            p={2}
-            sm={12}
-            md={7}
-            lg={9}
-            container
-            direction="row"
-            justifyContent="space-around"
-            alignItems="flex-start"
-          >
-            <Grid item p={2} lg={12} pt={0}>
-              {ProposalsSectionTitle()}
-            </Grid>
-            <Grid
-              item
-              p={2}
-              sm={12}
-              md={8}
-              lg={12}
-              container
-              direction="row"
-              justifyContent="space-around"
-              alignItems="center"
-            >
-              <Grid item p={2} sm={12} md={6} lg={4}>
-                {searchDropdown()}
-              </Grid>
-              <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
-                {searchEntryField('searchId')}
-              </Grid>
-              <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-                <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} pt={1}>
-              {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-                <Alert
-                  color={AlertColorTypes.Info}
-                  text={t('proposals.empty')}
-                  testId="helpPanelId"
-                />
-              )}
-              {!axiosViewError && filteredData.length > 0 && (
-                <div>
-                  <DataGrid
-                    testId="dataGridId"
-                    rows={filteredData}
-                    columns={stdColumns}
-                    height={DATA_GRID_HEIGHT}
-                  />
-                </div>
-              )}
-            </Grid>
-          </Grid>
+        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
+          {searchEntryField('searchId')}
+        </Grid>
+        <Grid item xs={12} pt={1}>
+          {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+          )}
+          {!axiosViewError && filteredData.length > 0 && (
+            <div>
+              <DataGrid
+                testId="dataGridId"
+                rows={filteredData}
+                columns={stdColumns}
+                height={DATA_GRID_HEIGHT}
+              />
+            </div>
+          )}
         </Grid>
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

@@ -36,6 +36,13 @@
     "idPrefix": "obs-",
     "button": "Observation Setup"
   },
+  "addPanel": {
+    "short": "Add",
+    "label": "Add Panel",
+    "success": "Panel added with unique identifier ",
+    "toolTip": "Click to add a new panel.",
+    "warning": "Please wait whilst we create a new panel."
+  },
   "addProposal": {
     "short": "Add",
     "label": "Add Proposal",
@@ -59,6 +66,13 @@
     "0": "Not specified",
     "1": "SKA-MID",
     "2": "SKA-LOW"
+  },
+  "assignProposals": {
+    "short": "Assign",
+    "label": "Assign Proposals",
+    "success": "Proposals assigned successfully.",
+    "toolTip": "Click to assign proposals to the panel.",
+    "warning": "Please wait whilst we assign the proposals."
   },
   "bandwidth": {
     "help": {
@@ -202,6 +216,13 @@
   },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
+  },
+  "getReviewers": {
+    "short": "Get",
+    "label": "Get Reviewers",
+    "success": "Reviewers retrieved successfully.",
+    "toolTip": "Click to get the list of reviewers.",
+    "warning": "Please wait whilst we retrieve the reviewers."
   },
   "groupObservations": {
     "label": "Group",
@@ -347,8 +368,16 @@
     "label": "Details",
     "minDisplayRows": "5"
   },
+  "overview": {
+    "label": "Overview",
+    "toolTip": "Overview of proposals"
+  },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
+  },
+  "panels": {
+    "empty": "THERE ARE NO PANELS TO BE DISPLAYED",
+    "label": "Panels"
   },
   "pdfDelete": {
     "science": {
@@ -466,7 +495,8 @@
     }
   },
   "proposals": {
-    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
+    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
+    "label": "Proposals"
   },
   "proposalStatus": {
     "draft": "Draft",
@@ -941,6 +971,11 @@
       "title": "Observation Update",
       "titleShort": "Observation Update",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
+    },
+    "15": {
+      "title": "Panel Maintenance Page",
+      "desc": "Panel maintenance.",
+      "empty": "NO PANELS AVAILABLE"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",
