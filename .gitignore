@@ -48,5 +48,3 @@ junit.xml
 linting.xml
 unit-tests.xml
 PrivateRules.mak
-
-/.temp-testing

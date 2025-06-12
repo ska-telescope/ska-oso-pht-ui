@@ -4,7 +4,7 @@ import {
   AXIOS_CONFIG,
   OSO_SERVICES_PROPOSAL_PATH,
   PROJECTS,
-  SKA_PHT_API_URL,
+  SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -62,7 +62,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
     const convertedProposal = mappingPostProposal(proposal, status);
 
     const result = await axios.post(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );

@@ -50,7 +50,7 @@ describe('<PageBanner />', () => {
 // TODO: move POST proposal/ bad request test where create button is -> title page
 describe('POST proposal/ bad request', () => {
   beforeEach(() => {
-    // cy.intercept('POST', `${SKA_PHT_API_URL}`, { statusCode: 500 }).as('postProposalFail');
+    // cy.intercept('POST', `${SKA_OSO_SERVICES_URL}`, { statusCode: 500 }).as('postProposalFail');
     viewPort();
     cy.mount(
       <StoreProvider>

@@ -4,7 +4,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { Router } from 'react-router';
 import theme from '../../services/theme/theme';
 import LandingPage from './LandingPage';
-import { SKA_PHT_API_URL, USE_LOCAL_DATA } from '../../utils/constants';
+import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '../../utils/constants';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { THEME, viewPort } from '../../utils/testing/cypress';
 
@@ -26,7 +26,7 @@ describe('<LandingPage />', () => {
 
 describe('search functionality', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
+    cy.intercept('GET', `${SKA_OSO_SERVICES_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
       'getProposalList'
     );
     viewPort();
@@ -79,7 +79,7 @@ describe('search functionality', () => {
 
 describe('filtering by proposal type', () => {
   beforeEach(() => {
-    cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
+    cy.intercept('GET', `${SKA_OSO_SERVICES_URL}/list`, { fixture: 'proposalsOldFormat.json' }).as(
       'getProposalList'
     );
     viewPort();
@@ -156,7 +156,7 @@ describe('filtering by proposal type', () => {
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list good request', () => {
     beforeEach(() => {
-      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { fixture: 'proposals.json' }).as(
+      cy.intercept('GET', `${SKA_OSO_SERVICES_URL}/list`, { fixture: 'proposals.json' }).as(
         'getProposalList'
       );
       viewPort();
@@ -185,7 +185,9 @@ if (!USE_LOCAL_DATA) {
 if (!USE_LOCAL_DATA) {
   describe('Get proposal/list bad request', () => {
     beforeEach(() => {
-      cy.intercept('GET', `${SKA_PHT_API_URL}/list`, { statusCode: 500 }).as('getProposalListFail');
+      cy.intercept('GET', `${SKA_OSO_SERVICES_URL}/list`, { statusCode: 500 }).as(
+        'getProposalListFail'
+      );
       viewPort();
       cy.mount(
         <StoreProvider>
@@ -217,7 +219,7 @@ describe('Get proposal good request', () => {
   // TODO: issue with targeting the view button in cypress
   /*
     it('displays proposal title in Alert component on success getProposal', () => {
-      cy.intercept('GET', `${SKA_PHT_API_URL}`, { fixture: 'proposal.json' }).as('getProposal');
+      cy.intercept('GET', `${SKA_OSO_SERVICES_URL}`, { fixture: 'proposal.json' }).as('getProposal');
       cy.get('.MuiIconButton-root [data-testid="VisibilityRoundedIcon"]').click();
       cy.wait('@getProposal');
       cy.get('[data-testid="alertViewErrorId"]').should('be.visible');
