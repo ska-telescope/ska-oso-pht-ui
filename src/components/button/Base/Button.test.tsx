@@ -16,4 +16,9 @@ describe('Base Button', () => {
     render(<BaseButton action={mockAction} icon={<AddIcon />} toolTip="" />);
     expect(screen.getByTestId('baseButtonTestId')).toHaveTextContent('baseBtn.label');
   });
+  test('renders correctly with action as a string', () => {
+    render(<BaseButton action={'string'} icon={<AddIcon />} toolTip="" />);
+    expect(screen.getByTestId('baseButtonTestId')).toHaveTextContent('baseBtn.label');
+    screen.getByTestId('baseButtonTestId').click();
+  });
 });

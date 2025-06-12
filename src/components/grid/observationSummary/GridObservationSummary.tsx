@@ -175,7 +175,7 @@ export default function GridObservationSummary({
           testId="teamTableId"
         />
       )}
-      {!proposal.observations ||
+      {!proposal?.observations ||
         (proposal?.observations?.length === 0 && (
           <Alert
             color={AlertColorTypes.Error}

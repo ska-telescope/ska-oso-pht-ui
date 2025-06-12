@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Breakpoint,
@@ -6,7 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Grid2 as Grid,
   Typography
 } from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
@@ -41,7 +40,7 @@ export default function AlertDialog({
 
   const alertTitle = () => (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid item>
+      <Grid>
         <Typography variant="h5">{t(title)}</Typography>
       </Grid>
     </Grid>
@@ -61,11 +60,11 @@ export default function AlertDialog({
       <DialogContent>{children}</DialogContent>
       <DialogActions sx={{ padding: 5 }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid item>
-            <CancelButton action={handleCancel} testId="cancelButtonTestId" />
+          <Grid>
+            <CancelButton action={handleCancel} />
           </Grid>
-          <Grid item>
-            <ConfirmButton action={handleContinue} testId="confirmButtonTestId" />
+          <Grid>
+            <ConfirmButton action={handleContinue} />
           </Grid>
         </Grid>
       </DialogActions>
