@@ -84,6 +84,7 @@ function App() {
               {!REQUIRED_WIDTH && mediaSizeNotSupported()}
             </>
           }
+          selectTelescope={false}
           storageHelp={help}
           storageHelpToggle={helpToggle}
           storageThemeMode={theMode}
