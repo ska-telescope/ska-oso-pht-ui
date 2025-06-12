@@ -1,7 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Grid, Paper, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -35,6 +46,9 @@ import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
+import OverviewButton from '@/components/button/Overview/Overview';
+import GetButton from '@/components/button/Get/Get';
+import AssignButton from '@/components/button/Assign/Assign';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -315,7 +329,7 @@ export default function LandingPage() {
   );
 
   const overviewButton = () => (
-    <AddButton
+    <OverviewButton
       action={clickFunction}
       testId="overviewButton"
       title={'overview.label'}
@@ -333,7 +347,7 @@ export default function LandingPage() {
   );
 
   const getReviewersButton = () => (
-    <AddButton
+    <GetButton
       action={clickFunction}
       testId="getReviewersButton"
       title={'getReviewers.label'}
@@ -342,7 +356,7 @@ export default function LandingPage() {
   );
 
   const assignProposalsButton = () => (
-    <AddButton
+    <AssignButton
       action={clickFunction}
       testId="assignProposalsButton"
       title={'assignProposals.label'}
@@ -399,6 +413,25 @@ export default function LandingPage() {
     />
   );
 
+  const getPanels = () => {
+    return [
+      { id: 'P400', name: 'Stargazers' },
+      { id: 'P500', name: 'Buttons' },
+      { id: 'P600', name: 'Nakshatra' }
+    ];
+  };
+
+  const getpanelListItems = () => {
+    const panels = getPanels();
+    return panels.map(panel => (
+      <ListItem key={panel.id} sx={{ bgcolor: 'transparent' }}>
+        <ListItemButton>
+          <ListItemText primary={panel.name} secondary={panel.id} />
+        </ListItemButton>
+      </ListItem>
+    ));
+  };
+
   return (
     <>
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
@@ -423,9 +456,35 @@ export default function LandingPage() {
         </Grid>
         <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
           <Grid item p={2} sm={12} md={5} lg={3}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }} minHeight="50vh">
-              <Card variant="outlined">{panelsSectionTitle()}</Card>
-              <div>List</div>
+            <Box
+              sx={{
+                width: '100%',
+                border: '1px solid grey',
+                borderRadius: '16px',
+                borderTop: 'none'
+              }}
+              minHeight="50vh"
+            >
+              <Card
+                variant="outlined"
+                sx={{
+                  padding: '12px',
+                  border: '1px solid grey',
+                  width: '101%',
+                  marginLeft: '-2px'
+                }}
+              >
+                {panelsSectionTitle()}
+              </Card>
+              <List>
+                {getpanelListItems().length > 0 ? (
+                  getpanelListItems()
+                ) : (
+                  <ListItem>
+                    <ListItemText primary={t('panels.empty')} />
+                  </ListItem>
+                )}
+              </List>
             </Box>
           </Grid>
 
@@ -440,7 +499,7 @@ export default function LandingPage() {
             justifyContent="space-around"
             alignItems="flex-start"
           >
-            <Grid item p={2} lg={12} pt={0}>
+            <Grid item p={2} lg={12}>
               {ProposalsSectionTitle()}
             </Grid>
             <Grid
