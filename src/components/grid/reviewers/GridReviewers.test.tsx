@@ -1,13 +1,13 @@
 import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import GridProposals from './GridProposals';
+import GridReviewers from './GridReviewers';
 
-describe('<GridProposals />', () => {
+describe('<GridReviewers />', () => {
   test('renders correctly', () => {
-    render(<GridProposals />);
+    render(<GridReviewers />);
   });
   test('renders correctly', () => {
-    render(<GridProposals />);
+    render(<GridReviewers />);
   });
 });
