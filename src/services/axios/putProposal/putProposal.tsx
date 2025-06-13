@@ -1,6 +1,11 @@
 import axios from 'axios';
+import {
+  AXIOS_CONFIG,
+  OSO_SERVICES_PROPOSAL_PATH,
+  SKA_OSO_SERVICES_URL,
+  USE_LOCAL_DATA
+} from '../../../utils/constants';
 import MappingPutProposal from './putProposalMapping';
-import { AXIOS_CONFIG, SKA_PHT_API_URL, USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 interface PutProposalServiceResponse {
   error?: string;
@@ -13,11 +18,11 @@ async function PutProposal(proposal, status?): Promise<PutProposalServiceRespons
   }
 
   try {
-    const URL_PATH = `/proposals/${proposal.id}`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status);
     const result = await axios.put(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );

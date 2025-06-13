@@ -13,10 +13,10 @@ type Observation = {
   elevation: number; // TODO should be only for Mid => what property for LOW?
   centralFrequency: number;
   centralFrequencyUnits: number;
-  bandwidth: number; // only for zoom
+  bandwidth?: number; // only for zoom
   // bandwidthUnits: number; // only for zoom
-  continuumBandwidth: number; // only for continuum
-  continuumBandwidthUnits: number; // only for continuum
+  continuumBandwidth?: number; // only for continuum
+  continuumBandwidthUnits?: number; // only for continuum
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID
   imageWeighting: number;

@@ -7,7 +7,7 @@ ingress:
 
 runtimeEnv:
   skipPreflightCheck: "true"
-  skaPhtApiUrl: ""
+  skaOsoServicesUrl: ""
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
   domain: ""

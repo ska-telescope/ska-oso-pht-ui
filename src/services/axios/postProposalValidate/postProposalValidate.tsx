@@ -2,8 +2,9 @@ import axios from 'axios';
 import MappingPutProposal from '../putProposal/putProposalMapping';
 import {
   AXIOS_CONFIG,
+  OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
-  SKA_PHT_API_URL,
+  SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@/utils/constants.ts';
 
@@ -23,10 +24,10 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
   }
 
   try {
-    const URL_PATH = `/proposals/validate`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     const result = await axios.post(
-      `${SKA_PHT_API_URL}${URL_PATH}`,
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal,
       AXIOS_CONFIG
     );
