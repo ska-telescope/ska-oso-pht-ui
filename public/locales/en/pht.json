@@ -560,6 +560,10 @@
       "Request failed with status code 500": "Unable to resolve provided name"
     }
   },
+  "reviewers": {
+    "label": "Reviewers",
+    "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED"
+  },
   "rightAscension": {
     "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
     "label": "Right ascension"
