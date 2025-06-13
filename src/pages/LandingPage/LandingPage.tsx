@@ -20,6 +20,7 @@ import OverviewButton from '@/components/button/Overview/Overview';
 import GetButton from '@/components/button/Get/Get';
 import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
+import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -199,7 +200,7 @@ export default function LandingPage() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <div>There are no reviewers to be displayed</div>}
+              {theValue === 0 && <GridReviewers />}
               {theValue === 1 && <GridProposals />}
             </Box>
           </Grid>
