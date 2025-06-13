@@ -74,6 +74,9 @@
     "toolTip": "Click to assign proposals to the panel.",
     "warning": "Please wait whilst we assign the proposals."
   },
+  "authors": {
+    "label": "Authors"
+  },
   "bandwidth": {
     "help": {
       "0": " Zoom Bandwidth of the observation. LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelisation schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",

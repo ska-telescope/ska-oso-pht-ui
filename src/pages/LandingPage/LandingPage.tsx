@@ -41,7 +41,7 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate, presentLatex, presentTime } from '../../utils/present';
+import { presentLatex } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
@@ -92,6 +92,48 @@ export default function LandingPage() {
         setAxiosError(response);
       } else {
         setProposals(response);
+
+        // TODO : remove this once email invitation is working
+        // temporary hack to get team members into the proposals as the functionality is not working at the moment
+        response.forEach((proposal: Proposal) => {
+          if (proposal.team && proposal.team.length === 0) {
+            proposal.team = [
+              {
+                firstName: 'Alice',
+                lastName: 'Spears',
+                pi: true,
+                phdThesis: true,
+                id: '123',
+                email: 'alice.spears@example.com',
+                country: 'United Kingdom',
+                affiliation: 'University of Cambridge',
+                status: 'accepted'
+              },
+              {
+                firstName: 'Joshua',
+                lastName: 'Smith',
+                pi: false,
+                phdThesis: true,
+                id: '124',
+                email: 'joshua.smith@example.com',
+                country: 'United Kingdom',
+                affiliation: 'University of Cambridge',
+                status: 'accepted'
+              },
+              {
+                firstName: 'Sophie',
+                lastName: 'Dupont',
+                pi: false,
+                phdThesis: true,
+                id: '125',
+                email: 'sophie.dupont@example.com',
+                country: 'France',
+                affiliation: 'University Paris Sorbonne',
+                status: 'accepted'
+              }
+            ];
+          }
+        });
       }
     };
     fetchData();
@@ -161,14 +203,14 @@ export default function LandingPage() {
     setOpenCloneDialog(false);
     setProposal({
       ...getProposal(),
-      id: null,
+      id: '',
       title: getProposal().title + ' ' + t('cloneProposal.suffix')
     });
     goToTitlePage();
   };
 
-  const deleteIconClicked = (id: string) => {
-    if (getTheProposal(id)) {
+  const deleteIconClicked = async (id: string) => {
+    if (await getTheProposal(id)) {
       setTimeout(() => {
         setOpenDeleteDialog(true);
       }, 1000);
@@ -196,31 +238,21 @@ export default function LandingPage() {
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
-  const getPIs = (arr: TeamMember[]) => {
+  const getAuthors = (arr: TeamMember[]) => {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
     const results: any[] = [];
     arr.forEach(e => {
-      if (e.pi) {
-        results.push(e.lastName + ', ' + e.firstName);
-      }
+      results.push(e.lastName + ', ' + e.firstName);
     });
-    if (results.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const colId = {
-    field: 'id',
-    headerName: t('proposalId.label'),
-    width: 200
   };
 
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
+    flex: 1,
     width: 110,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
@@ -228,22 +260,31 @@ export default function LandingPage() {
       </Tooltip>
     )
   };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
 
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 3,
+    flex: 2,
     minWidth: 250,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
-  const colPI = {
-    field: 'pi',
-    headerName: t('pi.short'),
-    width: 100,
+
+  const colAuthors = {
+    field: 'authors',
+    headerName: t('authors.label'),
+    flex: 2,
+    minWidth: 300,
     renderCell: (e: any) => {
-      return getPIs(e.row.team);
+      return getAuthors(e.row.team);
     }
+  };
+
+  const colScienceCategory = {
+    field: 'scienceCategory',
+    headerName: t('scienceCategory.label'),
+    flex: 2,
+    minWidth: 250,
+    renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
   };
 
   const colStatus = {
@@ -251,14 +292,6 @@ export default function LandingPage() {
     headerName: t('status.label'),
     width: 120,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
-  const colUpdated = {
-    field: 'lastUpdated',
-    headerName: t('updated.label'),
-    width: 180,
-    renderCell: (e: { row: any }) =>
-      presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
   };
 
   const colActions = {
@@ -291,14 +324,15 @@ export default function LandingPage() {
   };
 
   const stdColumns = [
-    ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
+    ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
   ];
 
   function filterProposals() {
+    const fields: (keyof Proposal)[] = ['title'];
     return proposals.filter(
       item =>
-        ['id', 'title', 'cycle', 'pi'].some(field =>
-          item[field]?.toLowerCase().includes(searchTerm?.toLowerCase())
+        fields.some(field =>
+          (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
         (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
     );

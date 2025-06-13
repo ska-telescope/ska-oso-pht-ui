@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, test, vi } from 'vitest';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import AlertDialog from './AlertDialog';
 import '../../../services/i18n/i18n';
