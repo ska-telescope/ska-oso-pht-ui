@@ -18,10 +18,11 @@ import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 
 interface GridProposalsProps {
+  height: string;
   listOnly?: boolean;
 }
 
-export default function GridProposals({ listOnly = false }: GridProposalsProps) {
+export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
@@ -222,6 +223,7 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
         {!axiosViewError && filteredData.length > 0 && (
           <div>
             <DataGrid
+              maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
               columns={stdColumns}

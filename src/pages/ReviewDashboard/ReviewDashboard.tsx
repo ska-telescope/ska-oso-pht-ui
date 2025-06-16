@@ -71,13 +71,13 @@ export default function ReviewDashboard() {
         'menuOptions.reviews',
         t('reviewers.overviewTooltip'),
         PMT[1],
-        <GridReviewers listOnly />
+        <GridReviewers height={CONTENT_HEIGHT} listOnly />
       )}
       {panel(
         'menuOptions.proposals',
         t('proposals.overviewTooltip'),
         PATH[0],
-        <GridProposals listOnly />
+        <GridProposals height={CONTENT_HEIGHT} listOnly />
       )}
     </Grid2>
   );

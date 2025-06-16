@@ -35,10 +35,11 @@ import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
 interface GridProposalsProps {
+  height: string;
   listOnly?: boolean;
 }
 
-export default function GridProposals({ listOnly = false }: GridProposalsProps) {
+export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const navigate = useNavigate();
@@ -424,6 +425,7 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
         {!axiosViewError && filteredData.length > 0 && (
           <div>
             <DataGrid
+              maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
               columns={stdColumns}
