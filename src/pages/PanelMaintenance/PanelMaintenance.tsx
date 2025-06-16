@@ -1,3 +1,5 @@
+import Box from '@mui/system/Box';
+
 export default function ReviewPage() {
-  return <>I am the Panels Maintenance Page</>;
+  return <Box p={1}>I am the Panels Maintenance Page</Box>;
 }

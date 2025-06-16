@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box';
+
 export default function ReviewDashboard() {
-  return <>I am the Review Dashboard</>;
+  return <Box p={1}>I am the Review Dashboard</Box>;
 }
