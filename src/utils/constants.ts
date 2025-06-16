@@ -216,6 +216,9 @@ export const INFINITY = 'Infinity';
 export const PAGE_SRC_NET = 8;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+
+export const PMT = ['/review/panel', '/review/dashboard', '/review/proposal'];
+
 export const PROJECTS = [
   {
     id: 1,

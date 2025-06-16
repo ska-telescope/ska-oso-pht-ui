@@ -1,6 +1,6 @@
+import path from 'path';
 import react from '@vitejs/plugin-react';
 import { configDefaults, defineConfig } from 'vitest/config';
-import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -42,7 +42,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@api': path.resolve(__dirname, './src/api'),
       '@components': path.resolve(__dirname, './src/components'),
-      '@pages': path.resolve(__dirname, './src/pages')
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@services': path.resolve(__dirname, './src/services'),
+      '@utils': path.resolve(__dirname, './src/utils')
     }
   }
 });
