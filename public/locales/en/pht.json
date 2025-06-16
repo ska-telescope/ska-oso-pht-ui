@@ -56,6 +56,10 @@
     "success": "Target is successfully added",
     "error": "Failed to add target - check for duplicate"
   },
+  "affiliation": {
+    "0": "All Affiliations",
+    "label": "Affiliation"
+  },
   "apiVersion": {
     "label": "API Version"
   },
@@ -781,7 +785,7 @@
     "20": "Custom"
   },
   "subjectExpertise": {
-    "0": "All expertises",
+    "0": "All Expertises",
     "label": "Expertise"
   },
   "submitBtn": {

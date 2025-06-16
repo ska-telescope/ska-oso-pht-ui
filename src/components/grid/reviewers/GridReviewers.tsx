@@ -5,23 +5,14 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
-import {
-  FOOTER_SPACER,
-  NOT_SPECIFIED,
-  PROPOSAL_STATUS,
-  SEARCH_TYPE_OPTIONS,
-  NAV,
-  SEARCH_TYPE_OPTIONS_REVIEWERS
-} from '@/utils/constants';
-import PutProposal from '@/services/axios/putProposal/putProposal';
+import { FOOTER_SPACER, NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
@@ -35,14 +26,12 @@ interface GridProposalsProps {
 export default function GridProposals({ listOnly = false }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
-  const navigate = useNavigate();
-
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [searchType, setSearchType] = React.useState('');
+  const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
+  const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
 
   const {
-    application,
     clearApp,
     helpComponent,
     updateAppContent1,
@@ -51,9 +40,6 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
 
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
-  const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
@@ -151,7 +137,10 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
         fields.some(field =>
           (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.subExpertise?.toLowerCase() === searchType?.toLowerCase())
+        (searchTypeExpertise === '' ||
+          item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
+        (searchTypeAffiliation === '' ||
+          item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
     );
   }
 
@@ -163,13 +152,33 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
     </Typography>
   );
 
-  const searchDropdown = () => (
+  const searchDropdownExpertise = () => (
     <DropDown
       options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
       testId="subExpertise"
-      value={searchType}
-      setValue={setSearchType}
+      value={searchTypeExpertise}
+      setValue={setSearchTypeExpertise}
       label={t('subjectExpertise.0')}
+    />
+  );
+
+  const getAffiliationOptions = () => {
+    const affiliations = reviewers
+      .map(reviewer => reviewer.officeLocation)
+      .filter((value, index, self) => self.indexOf(value) === index && value !== '');
+    return affiliations.map(affiliation => ({
+      label: affiliation,
+      value: affiliation
+    }));
+  };
+
+  const searchDropdownAffiliation = () => (
+    <DropDown
+      options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
+      testId="officeLocation"
+      value={searchTypeAffiliation}
+      setValue={setSearchTypeAffiliation}
+      label={t('affiliation.0')}
     />
   );
 
@@ -223,13 +232,13 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
           alignItems="center"
         >
           <Grid item p={2} sm={12} md={6} lg={4}>
-            {searchDropdown()}
+            {searchDropdownExpertise()}
           </Grid>
-          <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
-            {searchEntryField('searchId')}
+          <Grid item p={2} sm={12} md={6} lg={4}>
+            {searchDropdownAffiliation()}
           </Grid>
           <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
+            {searchEntryField('searchId')}
           </Grid>
         </Grid>
       )}
