@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DataGrid,
@@ -6,7 +7,6 @@ import {
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import { Tooltip, Typography, Grid, Box } from '@mui/material';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -34,7 +34,11 @@ import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
-export default function GridProposals({}) {
+interface GridProposalsProps {
+  listOnly?: boolean;
+}
+
+export default function GridProposals({ listOnly = false }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const navigate = useNavigate();
@@ -383,31 +387,36 @@ export default function GridProposals({}) {
 
   return (
     <>
-      <Grid item p={2} lg={12}>
-        {ProposalsSectionTitle()}
-      </Grid>
+      {!listOnly && (
+        <Grid item p={2} lg={12}>
+          {ProposalsSectionTitle()}
+        </Grid>
+      )}
 
-      <Grid
-        item
-        p={2}
-        sm={12}
-        md={8}
-        lg={12}
-        container
-        direction="row"
-        justifyContent="space-around"
-        alignItems="center"
-      >
-        <Grid item p={2} sm={12} md={6} lg={4}>
-          {searchDropdown()}
+      {!listOnly && (
+        <Grid
+          item
+          p={2}
+          sm={12}
+          md={8}
+          lg={12}
+          container
+          direction="row"
+          justifyContent="space-around"
+          alignItems="center"
+        >
+          <Grid item p={2} sm={12} md={6} lg={4}>
+            {searchDropdown()}
+          </Grid>
+          <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
+            {searchEntryField('searchId')}
+          </Grid>
+          <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
+            <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
+          </Grid>
         </Grid>
-        <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
-          {searchEntryField('searchId')}
-        </Grid>
-        <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-          <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
-        </Grid>
-      </Grid>
+      )}
+
       <Grid item xs={12} pt={1}>
         {!axiosViewError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
