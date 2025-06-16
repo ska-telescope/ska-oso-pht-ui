@@ -96,7 +96,7 @@ export default function PanelMaintenance() {
     return [
       { id: 'P400', name: 'Stargazers' },
       { id: 'P500', name: 'Buttons' },
-      { id: 'P600', name: 'Nakshatra' }
+      { id: 'P600', name: 'Nashrakra' }
     ];
   };
 
