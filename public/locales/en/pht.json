@@ -562,7 +562,26 @@
   },
   "reviewers": {
     "label": "Reviewers",
-    "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED"
+    "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED",
+    "title": "Title",
+    "givenName": "Given Name",
+    "surname": "Surname",
+    "officeLocation": "Office Location",
+    "subExpertise": "Sub-expertise",
+    "status": "Status",
+    "subExpertiseCategory": {
+      "Pulsar Timing": "Pulsar Timing",
+      "Galaxy Evolution": "Galaxy Evolution",
+      "Radio Transients": "Radio Transients",
+      "Cosmic Magnetism": "Cosmic Magnetism",
+      "HI Surveys": "HI Surveys"
+    },
+    "statusCategory": {
+      "notSpecified": "Not specified",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "inviteSent": "Invite sent"
+    }
   },
   "rightAscension": {
     "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
