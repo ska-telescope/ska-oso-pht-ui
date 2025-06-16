@@ -7,9 +7,10 @@ import { PATH, PMT } from '@/utils/constants';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
+import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 
 const MIN_CARD_WIDTH = 300;
-const MIN_CARD_HEIGHT = 200;
+const CARD_HEIGHT = '35vh';
 
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
@@ -37,7 +38,7 @@ export default function ReviewDashboard() {
     return (
       <Grid2>
         <Tooltip title={toolTip} arrow>
-          <Card sx={{ minWidth: MIN_CARD_WIDTH, minHeight: MIN_CARD_HEIGHT, padding: 2 }}>
+          <Card sx={{ minWidth: MIN_CARD_WIDTH, height: CARD_HEIGHT, padding: 2 }}>
             <CardHeader
               action={
                 <IconButton aria-label="settings">
@@ -55,9 +56,24 @@ export default function ReviewDashboard() {
 
   return (
     <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-around">
-      {panel('menuOptions.panelSummary', 'tooltip', PMT[0], null)}
-      {panel('menuOptions.reviews', 'tooltip', PMT[1], <GridReviewers listOnly />)}
-      {panel('menuOptions.proposals', 'tooltip', PATH[0], <GridProposals listOnly />)}
+      {panel(
+        'menuOptions.panelSummary',
+        t('panels.overviewTooltip'),
+        PMT[0],
+        <GridReviewPanels listOnly />
+      )}
+      {panel(
+        'menuOptions.reviews',
+        t('reviewers.overviewTooltip'),
+        PMT[1],
+        <GridReviewers listOnly />
+      )}
+      {panel(
+        'menuOptions.proposals',
+        t('proposals.overviewTooltip'),
+        PATH[0],
+        <GridProposals listOnly />
+      )}
     </Grid2>
   );
 }

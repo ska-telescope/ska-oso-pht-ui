@@ -284,7 +284,7 @@
   },
   "menuOptions": {
     "overview": "Overview",
-    "panelSummary": "Panel",
+    "panelSummary": "Panels",
     "proposals": "Proposals",
     "reviews": "Reviews",
     "scienceVerification": "Science Verification"
@@ -384,7 +384,9 @@
   },
   "panels": {
     "empty": "THERE ARE NO PANELS TO BE DISPLAYED",
-    "label": "Panels"
+    "label": "Panels",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
   },
   "pdfDelete": {
     "science": {
@@ -503,7 +505,9 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
-    "label": "Proposals"
+    "label": "Proposals",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
   },
   "proposalStatus": {
     "draft": "Draft",
@@ -571,6 +575,7 @@
     "givenName": "Given Name",
     "surname": "Surname",
     "officeLocation": "Office Location",
+    "overviewTooltip": "Tooltip for the card on the Overview",
     "subExpertise": "Sub-expertise",
     "status": "Status",
     "subExpertiseCategory": {
