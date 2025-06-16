@@ -18,7 +18,7 @@ import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 
 interface GridProposalsProps {
-  height: string;
+  height?: string;
   listOnly?: boolean;
 }
 

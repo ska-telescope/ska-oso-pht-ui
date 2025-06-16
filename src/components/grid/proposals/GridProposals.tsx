@@ -35,7 +35,7 @@ import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
 interface GridProposalsProps {
-  height: string;
+  height?: string;
   listOnly?: boolean;
 }
 
