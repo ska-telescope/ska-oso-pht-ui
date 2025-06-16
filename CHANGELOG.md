@@ -4,6 +4,17 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+UNRELEASED
+------------
+
+2.0.0
+
+-------
+
+* [BREAKING] Changed backend from PHT Services to OSO Services 1.1.0
+* Changed ODA version from 6.3.1 to 8.0.2
+* [BREAKING] Changed Sensitivity Calculator backend to V11.2.0
+
 1.0.4
 
 -------
