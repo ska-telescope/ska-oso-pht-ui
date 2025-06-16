@@ -37,9 +37,9 @@ export default function ReviewDashboard() {
       | undefined
   ) => {
     return (
-      <Grid2>
+      <Grid2 m={2}>
         <Tooltip title={toolTip} arrow>
-          <Card sx={{ minWidth: MIN_CARD_WIDTH, height: CARD_HEIGHT, padding: 2 }}>
+          <Card sx={{ minWidth: MIN_CARD_WIDTH, height: CARD_HEIGHT }}>
             <CardHeader
               action={
                 <IconButton aria-label="settings">
