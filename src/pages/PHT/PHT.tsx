@@ -29,7 +29,7 @@ const ROUTES = [
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },
-  { path: '/Review', element: <ReviewPage /> } //TODO: remove hardcode and add const for PMT paths
+  { path: '/Review', element: <ReviewPage /> } //TODO: remove hardcode and add const for PMT paths - also to agree name of the paths
 ];
 
 declare const window: any;
