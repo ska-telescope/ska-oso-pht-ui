@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Card, CardActionArea, CardHeader, IconButton, Tooltip, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, IconButton, Paper, Tooltip } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import { useTranslation } from 'react-i18next';
 import { ReactElement, JSXElementConstructor, ReactNode } from 'react';
@@ -10,7 +10,8 @@ import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 
 const MIN_CARD_WIDTH = 300;
-const CARD_HEIGHT = '35vh';
+const CARD_HEIGHT = '37vh';
+const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
 
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
@@ -47,7 +48,11 @@ export default function ReviewDashboard() {
               }
               title={t(title)}
             />
-            {content}{' '}
+            <CardContent>
+              <Paper style={{ maxHeight: CONTENT_HEIGHT, overflow: 'auto' }} elevation={0}>
+                {content}
+              </Paper>
+            </CardContent>
           </Card>
         </Tooltip>
       </Grid2>
@@ -60,7 +65,7 @@ export default function ReviewDashboard() {
         'menuOptions.panelSummary',
         t('panels.overviewTooltip'),
         PMT[0],
-        <GridReviewPanels listOnly />
+        <GridReviewPanels height={CONTENT_HEIGHT} listOnly />
       )}
       {panel(
         'menuOptions.reviews',

@@ -10,12 +10,10 @@ import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
 import { FOOTER_SPACER, NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
-import GetProposal from '@/services/axios/getProposal/getProposal';
-import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
+import { storeCycleData } from '@/utils/storage/cycleData';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 
@@ -31,12 +29,7 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
 
-  const {
-    clearApp,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { updateAppContent2 } = storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
@@ -190,26 +183,6 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
       setValue={setSearchTerm}
     />
   );
-
-  const getTheProposal = async (id: string) => {
-    helpComponent('');
-    clearApp();
-
-    const response = await GetProposal(id);
-    if (typeof response === 'string') {
-      updateAppContent1(null);
-      updateAppContent2(null);
-      storeProposalCopy(null);
-      setAxiosViewError(response);
-      return false;
-    } else {
-      updateAppContent1(validateProposal(response));
-      updateAppContent2(response);
-      storeProposalCopy(response);
-      validateProposal(response);
-      return true;
-    }
-  };
 
   return (
     <>

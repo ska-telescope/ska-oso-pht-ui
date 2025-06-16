@@ -7,10 +7,14 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import { FOOTER_SPACER } from '@/utils/constants';
 
 interface GridReviewPanelsProps {
+  height?: string;
   listOnly?: boolean;
 }
 
-export default function GridReviewPanels({ listOnly = false }: GridReviewPanelsProps) {
+export default function GridReviewPanels({
+  height = '50vh',
+  listOnly = false
+}: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
 
   const [data, setData] = React.useState<any[]>([]);
@@ -63,6 +67,7 @@ export default function GridReviewPanels({ listOnly = false }: GridReviewPanelsP
         {true && data.length > 0 && (
           <div>
             <DataGrid
+              maxHeight={height}
               testId="dataGridId"
               rows={data}
               columns={stdColumns}
