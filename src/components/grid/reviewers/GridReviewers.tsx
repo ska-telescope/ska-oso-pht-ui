@@ -18,7 +18,8 @@ import {
   NOT_SPECIFIED,
   PROPOSAL_STATUS,
   SEARCH_TYPE_OPTIONS,
-  NAV
+  NAV,
+  SEARCH_TYPE_OPTIONS_REVIEWERS
 } from '@/utils/constants';
 import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
@@ -144,13 +145,13 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
   ];
 
   function filterReviewers() {
-    const fields: (keyof Reviewer)[] = ['officeLocation'];
+    const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
     return reviewers.filter(
       item =>
         fields.some(field =>
           (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.officeLocation?.toLowerCase() === searchType?.toLowerCase())
+        (searchType === '' || item.subExpertise?.toLowerCase() === searchType?.toLowerCase())
     );
   }
 
@@ -164,11 +165,11 @@ export default function GridProposals({ listOnly = false }: GridProposalsProps) 
 
   const searchDropdown = () => (
     <DropDown
-      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
-      testId="proposalType"
+      options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
+      testId="subExpertise"
       value={searchType}
       setValue={setSearchType}
-      label={t('status.0')}
+      label={t('subjectExpertise.0')}
     />
   );
 

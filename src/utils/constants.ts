@@ -789,6 +789,13 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
 ];
+export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
+  { label: 'Pulsar Timing', value: 'Pulsar Timing' },
+  { label: 'Galaxy Evolution', value: 'Galaxy Evolution' },
+  { label: 'Radio Transients', value: 'Radio Transients' },
+  { label: 'Cosmic Magnetism', value: 'Cosmic Magnetism' },
+  { label: 'HI Surveys', value: 'HI Surveys' }
+];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;

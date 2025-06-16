@@ -780,6 +780,10 @@
     "11": "AA4 (core only)",
     "20": "Custom"
   },
+  "subjectExpertise": {
+    "0": "All expertises",
+    "label": "Expertise"
+  },
   "submitBtn": {
     "label": "Submit",
     "tooltip": "Progress the proposal to the submitted state"
