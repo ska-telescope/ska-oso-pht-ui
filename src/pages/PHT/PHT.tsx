@@ -13,6 +13,7 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
+import ReviewPage from '../ReviewPage/ReviewPage';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -27,7 +28,8 @@ const ROUTES = [
   { path: NAV[8], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <ObservationEntry /> },
-  { path: PATH[3], element: <AddDataProduct /> }
+  { path: PATH[3], element: <AddDataProduct /> },
+  { path: '/Review', element: <ReviewPage /> } //TODO: remove hardcode and add const for PMT paths
 ];
 
 declare const window: any;

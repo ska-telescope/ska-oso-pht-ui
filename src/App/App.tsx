@@ -10,6 +10,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { useNavigate } from 'react-router-dom';
 import Alert from '../components/alerts/standardAlert/StandardAlert';
 import Loader from '../components/layout/Loader/Loader';
 import PHT from '../pages/PHT/PHT';
@@ -30,6 +31,7 @@ function App() {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  // const navigate = useNavigate(); TODO: fix App is outside router
 
   const modeToggle = () => {
     const newMode = theMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
@@ -49,14 +51,19 @@ function App() {
     );
   };
 
+  const onMenuSelect = () =>{
+    console.log('menu selected')
+    //navigate('/Review') // TODO: fix useNavigate() may be used only in the context of a <Router> component.
+  }
+
   const signIn = () => (
     // TODO : This is totally mocked and will be replaced in time
     <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'}>
       <MenuItem disabled>{t('menuOptions.overview')}</MenuItem>
       <MenuItem disabled>{t('menuOptions.proposals')}</MenuItem>
       <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
-      <MenuItem disabled>{t('menuOptions.panelSummary')}</MenuItem>
-      <MenuItem disabled>{t('menuOptions.reviews')}</MenuItem>
+      <MenuItem onClick={onMenuSelect}>{t('menuOptions.panelSummary')}</MenuItem>
+      <MenuItem>{t('menuOptions.reviews')}</MenuItem>
       <Divider component="li" />
       <MenuItem disabled> Logout</MenuItem>
     </ButtonUserMenu>
