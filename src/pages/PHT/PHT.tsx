@@ -6,7 +6,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { MenuItem, Divider, Typography, useTheme } from '@mui/material';
+import { MenuItem, Divider, Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -33,6 +33,7 @@ import { ButtonUserMenu } from '@/components/button/UserMenu/UserMenu';
 
 // import getProposal from '@/services/axios/getProposal/getProposal';
 import Proposal from '@/utils/types/proposal';
+import theme from '@/services/theme/theme';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -104,37 +105,40 @@ export default function PHT() {
   );
 
   return (
-    <AppWrapper
-      application={t(LG() ? 'pht.short' : 'pht.title')}
-      footerChildren={
-        <Typography pt={1} variant="body1">
-          {getProposal()?.id}
-          {LOCAL_DATA}
-        </Typography>
-      }
-      headerChildren={null}
-      iconDocsToolTip={t('toolTip.button.docs')}
-      iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
-      loginComponent={[signIn()]}
-      mainChildren={
-        <>
-          {REQUIRED_WIDTH && (
-            <Routes>
-              {ROUTES.map((ROUTE, index) => {
-                return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
-              })}
-            </Routes>
-          )}
-          {!REQUIRED_WIDTH && mediaSizeNotSupported()}
-        </>
-      }
-      selectTelescope={false}
-      storageHelp={help}
-      storageHelpToggle={helpToggle}
-      storageThemeMode={theMode}
-      storageToggleTheme={modeToggle}
-      version={packageJson.version}
-      versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
-    />
+    <ThemeProvider theme={theme(theMode)}>
+      <CssBaseline enableColorScheme />
+      <AppWrapper
+        application={t(LG() ? 'pht.short' : 'pht.title')}
+        footerChildren={
+          <Typography pt={1} variant="body1">
+            {getProposal()?.id}
+            {LOCAL_DATA}
+          </Typography>
+        }
+        headerChildren={null}
+        iconDocsToolTip={t('toolTip.button.docs')}
+        iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
+        loginComponent={[signIn()]}
+        mainChildren={
+          <>
+            {REQUIRED_WIDTH && (
+              <Routes>
+                {ROUTES.map((ROUTE, index) => {
+                  return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
+                })}
+              </Routes>
+            )}
+            {!REQUIRED_WIDTH && mediaSizeNotSupported()}
+          </>
+        }
+        selectTelescope={false}
+        storageHelp={help}
+        storageHelpToggle={helpToggle}
+        storageThemeMode={theMode}
+        storageToggleTheme={modeToggle}
+        version={packageJson.version}
+        versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
+      />
+    </ThemeProvider>
   );
 }
