@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 
-async function GetPresignedDownloadUrl(selectedFile) {
+async function GetPresignedDownloadUrl(selectedFile: string) {
   if (USE_LOCAL_DATA) {
     return 'https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf';
   }

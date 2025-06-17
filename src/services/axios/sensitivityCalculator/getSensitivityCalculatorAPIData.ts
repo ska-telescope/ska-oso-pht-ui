@@ -1,3 +1,5 @@
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
@@ -13,8 +15,6 @@ import {
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
 import getZoomData from '../../api/getZoomData/getZoomData';
 import getContinuumData from '../../api/getContinuumData/getContinuumData';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
-import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {

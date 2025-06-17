@@ -1,34 +1,35 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../../services/theme/theme';
-import BandwidthField from './bandwidth';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { viewPort } from '../../../../utils/testing/cypress';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Bandwidth from './bandwidth';
 
 const value = 1;
 
-function mountDefault() {
-  viewPort();
-  cy.mount(
-    <StoreProvider>
-      <ThemeProvider theme={theme('light')}>
-        <CssBaseline />
-        <BandwidthField
-          telescope={1}
-          testId="bandwidth"
-          value={value}
-          observingBand={0}
-          centralFrequency={200}
-          centralFrequencyUnits={1}
-          subarrayConfig={8}
-        />
-      </ThemeProvider>
-    </StoreProvider>
-  );
-}
-
-describe('<BandwidthField />', () => {
-  it('<Bandwidth />', () => {
-    mountDefault();
+describe('<Bandwidth />', () => {
+  test('renders correctly', () => {
+    render(
+      <Bandwidth
+        telescope={1}
+        testId="bandwidth"
+        value={value}
+        observingBand={0}
+        centralFrequency={200}
+        centralFrequencyUnits={1}
+        setScaledBandwidth={vi.fn()}
+        subarrayConfig={8}
+      />
+    );
+  });
+  test('renders correctly ( suffix )', () => {
+    render(
+      <Bandwidth
+        telescope={2}
+        testId="bandwidth"
+        value={value}
+        centralFrequencyUnits={1}
+        setScaledBandwidth={vi.fn()}
+        suffix={'#'}
+      />
+    );
   });
 });

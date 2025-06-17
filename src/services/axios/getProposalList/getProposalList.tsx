@@ -1,4 +1,6 @@
 import axios from 'axios';
+import TeamMember from '../../../utils/types/teamMember';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   AXIOS_CONFIG,
   SKA_OSO_SERVICES_URL,
@@ -7,40 +9,49 @@ import {
   GENERAL,
   OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
-import MockProposalBackendList from './mockProposalBackendList';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
-import TeamMember from 'utils/types/teamMember';
+import MockProposalBackendList from './mockProposalBackendList';
 
 /*********************************************************** filter *********************************************************/
 
 const sortByLastUpdated = (array: ProposalBackend[]) => {
   array.sort(function(a, b) {
     return (
-      new Date(b.metadata.last_modified_on).valueOf() -
-      new Date(a.metadata.last_modified_on).valueOf()
+      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
+      new Date(a.metadata?.last_modified_on as string)?.valueOf()
     );
   });
 };
 
+// const groupByProposalId = (data: ProposalBackend[]) => {
+//   return data.reduce((grouped, obj) => {
+//     if (!grouped[obj.prsl_id]) {
+//       grouped[obj.prsl_id] = [obj];
+//     } else {
+//       grouped[obj.prsl_id].push(obj);
+//     }
+//     return grouped;
+//   }, {});
+// };
+
 const groupByProposalId = (data: ProposalBackend[]) => {
-  return data.reduce((grouped, obj) => {
+  return data.reduce((grouped: { [key: string]: ProposalBackend[] }, obj) => {
     if (!grouped[obj.prsl_id]) {
       grouped[obj.prsl_id] = [obj];
     } else {
       grouped[obj.prsl_id].push(obj);
     }
     return grouped;
-  }, {});
+  }, {} as { [key: string]: ProposalBackend[] });
 };
 
 const getMostRecentProposals = (data: ProposalBackend[]) => {
   let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
-  let sorted = (Object as any).values(grouped).map(arr => {
+  let sorted = (Object as any).values(grouped).map((arr: ProposalBackend[]) => {
     sortByLastUpdated(arr);
     return arr;
   });
-  const result = sorted.map(arr => arr[0]);
+  const result = sorted.map((arr: ProposalBackend[]) => arr[0]);
   return result;
 };
 
@@ -50,8 +61,8 @@ const getMostRecentProposals = (data: ProposalBackend[]) => {
 const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
   const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
   const subProjects = proposalType.sub_type?.map(subType =>
-    project.subProjects.find(({ mapping }) => mapping === subType)
-  );
+    project?.subProjects?.find(({ mapping }) => mapping === subType)
+  ) as { id: number; mapping: string }[];
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
@@ -86,18 +97,19 @@ function mappingList(inRec: ProposalBackend[]): Proposal[] {
     const rec: Proposal = {
       id: inRec[i].prsl_id?.toString(),
       status: inRec[i].status,
-      lastUpdated: inRec[i].metadata?.last_modified_on,
-      lastUpdatedBy: inRec[i].metadata?.last_modified_by,
-      createdOn: inRec[i].metadata?.created_on,
-      createdBy: inRec[i].metadata?.created_by,
-      version: inRec[i].metadata?.version,
-      proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)?.id,
+      lastUpdated: inRec[i].metadata?.last_modified_on as string,
+      lastUpdatedBy: inRec[i].metadata?.last_modified_by as string,
+      createdOn: inRec[i].metadata?.created_on as string,
+      createdBy: inRec[i].metadata?.created_by as string,
+      version: inRec[i].metadata?.version as number,
+      proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)
+        ?.id as number,
       proposalSubType: inRec[i].info?.proposal_type.sub_type
         ? getSubType(inRec[i].info?.proposal_type)
         : [],
       scienceCategory: inRec[i].info?.science_category
-        ? getScienceCategory(inRec[i].info.science_category)
-        : null,
+        ? (getScienceCategory(inRec[i].info.science_category) as number)
+        : ((null as unknown) as number),
       title: inRec[i].info?.title,
       cycle: inRec[i]?.cycle,
       team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : []

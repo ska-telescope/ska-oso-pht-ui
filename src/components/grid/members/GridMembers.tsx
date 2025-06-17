@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
@@ -18,20 +17,20 @@ interface GridMembersProps {
 
 export default function GridMembers({
   action = false,
-  actionClicked = null,
+  actionClicked,
   height = 171,
-  rowClick = null,
+  rowClick,
   rows = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
 
-  const PIStar = ({ pi }) => {
+  const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
       return <StarIcon />;
     }
   };
 
-  const PHDThesis = ({ value }) => {
+  const PHDThesis = ({ value }: { value: any }) => {
     if (value) {
       return <TickIcon />;
     }
@@ -77,6 +76,8 @@ export default function GridMembers({
     }
   ];
 
+  const trashClicked = () => (actionClicked ? actionClicked : null);
+
   const actionColumns = [
     {
       field: 'id',
@@ -85,7 +86,7 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={actionClicked} toolTip="Delete team member" />
+      renderCell: () => <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
     }
   ];
 

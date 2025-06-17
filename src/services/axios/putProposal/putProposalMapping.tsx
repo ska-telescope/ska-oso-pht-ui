@@ -1,3 +1,20 @@
+import Target, { TargetBackend } from 'utils/types/target';
+import Observation from 'utils/types/observation';
+import { ObservationSetBackend } from 'utils/types/observationSet';
+import GroupObservation from 'utils/types/groupObservation';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
+import { ValueUnitPair } from 'utils/types/valueUnitPair';
+import TargetObservation from 'utils/types/targetObservation';
+import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import {
+  DataProductSDP,
+  DataProductSDPsBackend,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from '../../../utils/types/dataProduct';
+import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
+import { helpers } from '../../../utils/helpers';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   BANDWIDTH_TELESCOPE,
   FREQUENCY_UNITS,
@@ -17,23 +34,6 @@ import {
   ROBUST,
   IW_BRIGGS
 } from '../../../utils/constants';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import { helpers } from '../../../utils/helpers';
-import Target, { TargetBackend } from 'utils/types/target';
-import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
-import {
-  DataProductSDP,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from '../../../utils/types/dataProduct';
-import Observation from 'utils/types/observation';
-import { ObservationSetBackend } from 'utils/types/observationSet';
-import GroupObservation from 'utils/types/groupObservation';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
-import { ValueUnitPair } from 'utils/types/valueUnitPair';
-import TargetObservation from 'utils/types/targetObservation';
-import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;

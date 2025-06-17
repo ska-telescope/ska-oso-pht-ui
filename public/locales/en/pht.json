@@ -10,9 +10,6 @@
   "no": "No",
   "none": "None",
   "button": {
-    "add": "Add",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
     "confirmDeleteMember": "Confirm Team Member Deletion",
     "confirmSubmit": "Confirm Proposal Submission",
     "close": "Close",
@@ -32,9 +29,19 @@
   "actions": {
     "label": "Actions"
   },
+  "addBtn": {
+    "label": "Add"
+  },
   "addObservation": {
     "idPrefix": "obs-",
     "button": "Observation Setup"
+  },
+  "addPanel": {
+    "short": "Add",
+    "label": "Add Panel",
+    "success": "Panel added with unique identifier ",
+    "toolTip": "Click to add a new panel.",
+    "warning": "Please wait whilst we create a new panel."
   },
   "addProposal": {
     "short": "Add",
@@ -49,6 +56,10 @@
     "success": "Target is successfully added",
     "error": "Failed to add target - check for duplicate"
   },
+  "affiliation": {
+    "0": "All Affiliations",
+    "label": "Affiliation"
+  },
   "apiVersion": {
     "label": "API Version"
   },
@@ -59,6 +70,16 @@
     "0": "Not specified",
     "1": "SKA-MID",
     "2": "SKA-LOW"
+  },
+  "assignProposals": {
+    "short": "Assign",
+    "label": "Assign Proposals",
+    "success": "Proposals assigned successfully.",
+    "toolTip": "Click to assign proposals to the panel.",
+    "warning": "Please wait whilst we assign the proposals."
+  },
+  "authors": {
+    "label": "Authors"
   },
   "bandwidth": {
     "help": {
@@ -74,6 +95,12 @@
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
       "rangeError": "Bandwidth must be fully contained within the band"
     }
+  },
+  "baseBtn": {
+    "label": "Add"
+  },
+  "cancelBtn": {
+    "label": "Cancel"
   },
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band.",
@@ -94,6 +121,9 @@
   "cloneProposal": {
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
+  },
+  "confirmBtn": {
+    "label": "Confirm"
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
@@ -187,38 +217,19 @@
   "fileType": {
     "pdf": ".pdf"
   },
-  "pdfDelete": {
-    "science": {
-      "label": "science",
-      "toolTip": "Click delete the Science Justification PDF",
-      "error": "Not able to delete Science Justification PDF",
-      "success": "Science Justification PDF successfully deleted"
-    },
-    "technical": {
-      "label": "technical",
-      "toolTip": "Click delete the Technical Justification PDF",
-      "error": "Not able to delete Technical Justification PDF",
-      "success": "Technical Justification PDF successfully deleted"
-    }
-  },
-  "pdfDownload": {
-    "error": "Not able to Get PDF Download URL",
-    "science": {
-      "label": "science",
-      "toolTip": "Click to download the Science Justification PDF"
-    },
-    "technical": {
-      "label": "technical",
-      "toolTip": "Click to download the Technical Justification PDF"
-    },
-    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
-  },
   "firstName": {
     "label": "First Name",
     "help": "First name of the principal investigator or co-investigator."
   },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
+  },
+  "getReviewers": {
+    "short": "Get",
+    "label": "Get Reviewers",
+    "success": "Reviewers retrieved successfully.",
+    "toolTip": "Click to get the list of reviewers.",
+    "warning": "Please wait whilst we retrieve the reviewers."
   },
   "groupObservations": {
     "label": "Group",
@@ -270,6 +281,13 @@
   },
   "mediaSize": {
     "notSupported": "The application is not supported on a screen with these dimensions"
+  },
+  "menuOptions": {
+    "overview": "Overview",
+    "panelSummary": "Panels",
+    "proposals": "Proposals",
+    "reviews": "Reviews",
+    "scienceVerification": "Science Verification"
   },
   "name": {
     "label": "Name",
@@ -357,8 +375,44 @@
     "label": "Details",
     "minDisplayRows": "5"
   },
+  "overview": {
+    "label": "Overview",
+    "toolTip": "Overview of proposals"
+  },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
+  },
+  "panels": {
+    "empty": "THERE ARE NO PANELS TO BE DISPLAYED",
+    "label": "Panels",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
+  },
+  "pdfDelete": {
+    "science": {
+      "label": "science",
+      "toolTip": "Click delete the Science Justification PDF",
+      "error": "Not able to delete Science Justification PDF",
+      "success": "Science Justification PDF successfully deleted"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click delete the Technical Justification PDF",
+      "error": "Not able to delete Technical Justification PDF",
+      "success": "Technical Justification PDF successfully deleted"
+    }
+  },
+  "pdfDownload": {
+    "error": "Not able to Get PDF Download URL",
+    "science": {
+      "label": "science",
+      "toolTip": "Click to download the Science Justification PDF"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click to download the Technical Justification PDF"
+    },
+    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
   "pdfUpload": {
     "science": {
@@ -450,7 +504,10 @@
     }
   },
   "proposals": {
-    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED"
+    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
+    "label": "Proposals",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
   },
   "proposalStatus": {
     "draft": "Draft",
@@ -509,6 +566,30 @@
       "mapping": "Unable to map results from API.",
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name"
+    }
+  },
+  "reviewers": {
+    "label": "Reviewers",
+    "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED",
+    "title": "Title",
+    "givenName": "Given Name",
+    "surname": "Surname",
+    "officeLocation": "Office Location",
+    "overviewTooltip": "Tooltip for the card on the Overview",
+    "subExpertise": "Sub-expertise",
+    "status": "Status",
+    "subExpertiseCategory": {
+      "Pulsar Timing": "Pulsar Timing",
+      "Galaxy Evolution": "Galaxy Evolution",
+      "Radio Transients": "Radio Transients",
+      "Cosmic Magnetism": "Cosmic Magnetism",
+      "HI Surveys": "HI Surveys"
+    },
+    "statusCategory": {
+      "notSpecified": "Not specified",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "inviteSent": "Invite sent"
     }
   },
   "rightAscension": {
@@ -707,6 +788,10 @@
     "10": "AA*/AA4 (13.5-m antennas only)",
     "11": "AA4 (core only)",
     "20": "Custom"
+  },
+  "subjectExpertise": {
+    "0": "All Expertises",
+    "label": "Expertise"
   },
   "submitBtn": {
     "label": "Submit",
@@ -925,6 +1010,11 @@
       "title": "Observation Update",
       "titleShort": "Observation Update",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
+    },
+    "15": {
+      "title": "Panel Maintenance Page",
+      "desc": "Panel maintenance.",
+      "empty": "NO PANELS AVAILABLE"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

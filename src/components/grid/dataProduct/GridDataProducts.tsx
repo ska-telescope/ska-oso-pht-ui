@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
@@ -19,11 +18,11 @@ interface GridDataProductsProps {
 }
 
 export default function GridDataProducts({
-  baseObservations = null,
-  deleteClicked = null,
-  editClicked = null,
+  baseObservations,
+  deleteClicked,
+  editClicked,
   height = 171,
-  rowClick = null,
+  rowClick,
   rows = []
 }: GridDataProductsProps) {
   const { t } = useTranslation('pht');
@@ -32,7 +31,7 @@ export default function GridDataProducts({
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
-  const getODPString = inArr => {
+  const getODPString = (inArr: boolean[]) => {
     let str = '';
     for (let i = 0; i < inArr?.length; i++) {
       if (inArr[i]) {
@@ -59,10 +58,10 @@ export default function GridDataProducts({
     headerName: t('observatoryDataProduct.label'),
     flex: 2,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { observatoryDataProduct: number } }) => (
+    renderCell: (e: { row: { observatoryDataProduct: boolean[] } }) => (
       <Box pt={2}>
         <Tooltip data-testid="odp-values" title={getODPString(e.row.observatoryDataProduct)} arrow>
-          <Typography>{getODPString(e.row.observatoryDataProduct)}</Typography>
+          <Typography>{getODPString(e?.row?.observatoryDataProduct)}</Typography>
         </Tooltip>
       </Box>
     )
@@ -109,12 +108,15 @@ export default function GridDataProducts({
         <>
           {editClicked !== null && (
             <EditIcon
-              onClick={() => editClicked(rec)}
+              onClick={() => (editClicked ? editClicked(rec) : null)}
               toolTip="This feature is currently disabled"
             />
           )}
           {deleteClicked !== null && (
-            <TrashIcon onClick={() => deleteClicked(rec)} toolTip={t('deleteDataProduct.label')} />
+            <TrashIcon
+              onClick={() => (deleteClicked ? deleteClicked(rec) : null)}
+              toolTip={t('deleteDataProduct.label')}
+            />
           )}
         </>
       );

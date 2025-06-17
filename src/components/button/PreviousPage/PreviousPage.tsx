@@ -15,7 +15,7 @@ export default function PreviousPageButton({
   disabled = false,
   action,
   primary = false,
-  title = 'button.add',
+  title = 'baseBtn.label',
   testId = 'previousPageButtonTestId',
   toolTip
 }: PreviousPageButtonProps) {

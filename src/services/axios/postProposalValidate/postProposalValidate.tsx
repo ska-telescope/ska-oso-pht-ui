@@ -1,12 +1,12 @@
 import axios from 'axios';
+import MappingPutProposal from '../putProposal/putProposalMapping';
 import {
   AXIOS_CONFIG,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
-} from '../../../utils/constants';
-import MappingPutProposal from '../putProposal/putProposalMapping';
+} from '@/utils/constants.ts';
 
 interface ValidateResponseData {
   result: Boolean;

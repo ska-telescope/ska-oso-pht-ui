@@ -1,4 +1,3 @@
-import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import BaseButton from '../Base/Button';
 
@@ -15,7 +14,7 @@ export default function AddButton({
   disabled = false,
   action,
   primary = false,
-  title = 'button.add',
+  title = 'addBtn.label',
   testId = 'addButtonTestId',
   toolTip
 }: AddButtonProps) {

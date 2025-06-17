@@ -2,10 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import GroupObservation from '../../../utils/types/groupObservation';
-import { Box } from '@mui/system';
 
 interface GroupObservationsFieldProps {
   disabled?: boolean;

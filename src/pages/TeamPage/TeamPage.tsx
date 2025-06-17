@@ -9,13 +9,13 @@ import { validateTeamPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberEntry from '../entry/MemberEntry/MemberEntry';
-import TeamFileImport from './TeamFileImport/TeamFileImport';
-import MemberSearch from './MemberSearch/MemberSearch';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
 import { FOOTER_SPACER } from '../../utils/constants';
+import MemberSearch from './MemberSearch/MemberSearch';
+import TeamFileImport from './TeamFileImport/TeamFileImport';
 
 const PAGE = 1;
 

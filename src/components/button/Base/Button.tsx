@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,7 +13,7 @@ interface BaseButtonProps {
   disabled?: boolean;
   icon: string | JSX.Element;
   primary?: boolean;
-  size?: ButtonSizeTypes;
+  size?: string;
   testId?: string;
   toolTip?: string;
 }
@@ -22,7 +21,7 @@ interface BaseButtonProps {
 export default function BaseButton({
   disabled = false,
   action,
-  title = 'button.add',
+  title = 'baseBtn.label',
   icon,
   primary = false,
   size = ButtonSizeTypes.Medium,

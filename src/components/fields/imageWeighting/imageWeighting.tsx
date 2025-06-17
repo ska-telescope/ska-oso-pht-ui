@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { Box } from '@mui/system';
+import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 interface ImageWeightingFieldProps {
   disabled?: boolean;

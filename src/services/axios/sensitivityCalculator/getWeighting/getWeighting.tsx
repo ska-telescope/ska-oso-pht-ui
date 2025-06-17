@@ -1,4 +1,26 @@
 import axios from 'axios';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import Observation from '../../../../utils/types/observation';
+import sensCalHelpers from '../sensCalHelpers';
+import Target from '../../../../utils/types/target';
+import {
+  WeightingLowContinuumQuery,
+  WeightingLowSpectralQuery,
+  WeightingLowZoomQuery,
+  WeightingMidContinuumQuery,
+  WeightingMidSpectralQuery,
+  WeightingMidZoomQuery,
+  WeightingQuery
+} from '.././../../../utils/types/sensCalcWeightingQuery';
+import {
+  MockResponseLowWeightingContinuum,
+  MockResponseLowWeightingLineZoom,
+  MockResponseLowWeightingLineSpectral
+} from './mockResponseLowWeighting';
+import {
+  MockResponseMidWeightingContinuum,
+  MockResponseMidWeightingLine
+} from './mockResponseMidWeighting';
 import {
   OBSERVATION,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
@@ -12,29 +34,7 @@ import {
   ROBUST,
   IW_BRIGGS,
   TYPE_CONTINUUM
-} from '../../../../utils/constants';
-import {
-  MockResponseMidWeightingContinuum,
-  MockResponseMidWeightingLine
-} from './mockResponseMidWeighting';
-import {
-  MockResponseLowWeightingContinuum,
-  MockResponseLowWeightingLineZoom,
-  MockResponseLowWeightingLineSpectral
-} from './mockResponseLowWeighting';
-import Observation from '../../../../utils/types/observation';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
-import sensCalHelpers from '../sensCalHelpers';
-import Target from '../../../../utils/types/target';
-import {
-  WeightingLowContinuumQuery,
-  WeightingLowSpectralQuery,
-  WeightingLowZoomQuery,
-  WeightingMidContinuumQuery,
-  WeightingMidSpectralQuery,
-  WeightingMidZoomQuery,
-  WeightingQuery
-} from '.././../../../utils/types/sensCalcWeightingQuery';
+} from '@/utils/constants.ts';
 
 const URL_WEIGHTING = `weighting`;
 

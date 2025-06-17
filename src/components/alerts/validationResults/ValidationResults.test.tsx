@@ -1,40 +1,48 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import theme from '../../../services/theme/theme';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import ValidationResults from './ValidationResults';
-import { GetMockProposal } from '../../../services/axios/getProposal/getProposal';
-import { Router } from 'react-router-dom';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
-
-function mounting(theTheme, proposal) {
-  viewPort();
-  cy.mount(
-    <StoreProvider>
-      <ThemeProvider theme={theme(theTheme)}>
-        <CssBaseline />
-        <Router location="/" navigator={undefined}>
-          <ValidationResults
-            proposal={proposal}
-            onClose={cy.stub().as('handleCancel')}
-            results={['Error 1', 'Error 2', 'Error 3']}
-            open={true}
-          />
-        </Router>
-      </ThemeProvider>
-    </StoreProvider>
-  );
-}
-
-function verifyContent() {
-  // cy.get('[data-testId="title"]').contains('displayProposal.warning');
-}
 
 describe('<ValidationResults />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Proposal : Contents`, () => {
-      mounting(theTheme, GetMockProposal);
-      verifyContent();
-    });
-  }
+  test('renders correctly ( empty proposal', () => {
+    render(<ValidationResults open={false} onClose={vi.fn()} proposal={null} results={[]} />);
+  });
+  test('renders correctly', () => {
+    render(
+      <ValidationResults
+        open={false}
+        onClose={vi.fn()}
+        proposal={{
+          id: '',
+          title: '',
+          status: '',
+          lastUpdated: '',
+          lastUpdatedBy: '',
+          createdOn: '',
+          createdBy: '',
+          version: 0,
+          cycle: '',
+          proposalType: 0,
+          proposalSubType: undefined,
+          scienceCategory: undefined,
+          scienceSubCategory: undefined,
+          team: undefined,
+          abstract: undefined,
+          sciencePDF: undefined,
+          scienceLoadStatus: undefined,
+          targetOption: undefined,
+          targets: undefined,
+          observations: undefined,
+          groupObservations: undefined,
+          targetObservation: undefined,
+          technicalPDF: undefined,
+          technicalLoadStatus: undefined,
+          dataProductSDP: undefined,
+          dataProductSRC: undefined,
+          pipeline: undefined
+        }}
+        results={['LOOKS OK', 'NO ISSUES FOUND']}
+      />
+    );
+  });
 });

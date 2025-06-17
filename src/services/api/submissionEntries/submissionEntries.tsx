@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import {
   degDecToSexagesimal,
   degRaToSexagesimal,
@@ -19,7 +20,6 @@ import {
   ValueUnitPair,
   ZoomData
 } from '../../../utils/types/typesSensCalc';
-import { t } from 'i18next';
 
 /***************/
 

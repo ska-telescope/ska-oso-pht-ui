@@ -2,7 +2,7 @@ import React from 'react';
 import Latex from 'react-latex-next';
 import { t } from 'i18next';
 import 'katex/dist/katex.min.css';
-import { NOT_APPLICABLE } from '../utils/constants';
+import { NOT_APPLICABLE } from './constants';
 
 export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Grid } from '@mui/material';
 import { validateSRCPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import { Grid } from '@mui/material';
 
 const PAGE = 8;
 

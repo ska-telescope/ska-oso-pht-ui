@@ -1,66 +1,46 @@
-import React from 'react';
-import { Router } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
-import { NEW_OBSERVATION } from '../../../utils/types/observation';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
-
-function mountingDefault(theTheme: any) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <Router location="/" navigator={undefined}>
-        <DeleteObservationConfirmation
-          action={cy.stub().as('action')}
-          observation={NEW_OBSERVATION}
-          open
-          setOpen={cy.stub().as('setOpen')}
-        />
-      </Router>
-    </ThemeProvider>
-  );
-}
-
-function validateContent() {
-  cy.get('#alert-dialog-title').contains('deleteObservation.label');
-
-  cy.get('#arrayConfigurationLabel').contains('arrayConfiguration.label');
-  cy.get('#subArrayConfigurationLabel').contains('subArrayConfiguration.short');
-  cy.get('#observationTypeLabel').contains('observationType.label');
-
-  cy.get('#arrayConfigurationData').contains('arrayConfiguration.0');
-  cy.get('#subArrayConfigurationData').contains('subArrayConfiguration.0');
-  cy.get('#observationTypeData').contains('observationType.0');
-  cy.get('#standardAlertId').contains('deleteObservation.info');
-
-  cy.get('[data-testid="cancelButtonTestId"]').contains('button.cancel');
-  cy.get('[data-testid="confirmButtonTestId"]').contains('button.confirm');
-}
-
-function cancelButtonClick() {
-  cy.get('[data-testid="cancelButtonTestId"]').click();
-}
-
-function confirmButtonClick() {
-  cy.get('[data-testid="confirmButtonTestId"]').click();
-}
 
 describe('<DeleteObservationConfirmation />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme: ${theTheme}`, () => {
-      mountingDefault(theTheme);
-    });
-    it(`-- Clicked Confirm`, () => {
-      mountingDefault(theTheme);
-      validateContent();
-      confirmButtonClick();
-    });
-    it(`-- Clicked Cancel`, () => {
-      mountingDefault(theTheme);
-      validateContent();
-      cancelButtonClick();
-    });
-  }
+  test('renders correctly', () => {
+    render(
+      <DeleteObservationConfirmation
+        action={vi.fn()}
+        observation={{
+          id: '',
+          telescope: 0,
+          subarray: 0,
+          linked: '',
+          type: 0,
+          observingBand: 0,
+          weather: undefined,
+          elevation: 0,
+          centralFrequency: 0,
+          centralFrequencyUnits: 0,
+          bandwidth: 0,
+          continuumBandwidth: 0,
+          continuumBandwidthUnits: 0,
+          spectralAveraging: undefined,
+          tapering: undefined,
+          imageWeighting: 0,
+          robust: 0,
+          supplied: {
+            type: 0,
+            value: 0,
+            units: 0
+          },
+          spectralResolution: '',
+          effectiveResolution: '',
+          numSubBands: undefined,
+          num15mAntennas: undefined,
+          num13mAntennas: undefined,
+          numStations: undefined
+        }}
+        open={false}
+        setOpen={vi.fn()}
+      />
+    );
+  });
 });

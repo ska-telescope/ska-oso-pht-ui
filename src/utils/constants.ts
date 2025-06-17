@@ -1,5 +1,5 @@
-import { env } from '../env';
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { env } from '../env';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -8,6 +8,7 @@ export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 export const API_VERSION = '/senscalc/api/v11';
 export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
+export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 
 /*****************************************/
 
@@ -215,6 +216,9 @@ export const INFINITY = 'Infinity';
 export const PAGE_SRC_NET = 8;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+
+export const PMT = ['/review/panel', '/review/dashboard', '/review/proposal'];
+
 export const PROJECTS = [
   {
     id: 1,
@@ -784,6 +788,13 @@ export const SEARCH_TYPE_OPTIONS = [
   { label: 'Accepted', value: 'accepted' },
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }
+];
+export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
+  { label: 'Pulsar Timing', value: 'Pulsar Timing' },
+  { label: 'Galaxy Evolution', value: 'Galaxy Evolution' },
+  { label: 'Radio Transients', value: 'Radio Transients' },
+  { label: 'Cosmic Magnetism', value: 'Cosmic Magnetism' },
+  { label: 'HI Surveys', value: 'HI Surveys' }
 ];
 export const SPECTRAL_AVERAGING_MIN = 1;
 

@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import { Proposal } from '../../utils/types/proposal';
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
@@ -35,8 +35,8 @@ export default function TechnicalPage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentFile, setCurrentFile] = React.useState(null);
-  const [originalFile, setOriginalFile] = React.useState(null);
+  const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
+  const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -53,11 +53,11 @@ export default function TechnicalPage() {
     updateAppContent1(temp);
   };
 
-  const setUploadStatus = (status: FileUploadStatus) => {
+  const setUploadStatus = (status: typeof FileUploadStatus) => {
     setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
-  const setFile = (theFile: File) => {
+  const setFile = (theFile: string | null) => {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
@@ -66,7 +66,7 @@ export default function TechnicalPage() {
     }
   };
 
-  const uploadPdftoSignedUrl = async theFile => {
+  const uploadPdftoSignedUrl = async (theFile: File) => {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
@@ -158,7 +158,7 @@ export default function TechnicalPage() {
     }
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -190,6 +190,10 @@ export default function TechnicalPage() {
   React.useEffect(() => {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
+
+  const PDFView = () => (
+    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  );
 
   const uploadSuffix = () => (
     <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
@@ -253,7 +257,7 @@ export default function TechnicalPage() {
           <HelpPanel />
         </Grid>
       </Grid>
-      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
+      {PDFView()}
     </Shell>
   );
 }

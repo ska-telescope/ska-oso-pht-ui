@@ -1,5 +1,5 @@
 export const env = {
-  ...process.env,
+  ...import.meta.env,
   ...window.env,
   ...(typeof Cypress !== 'undefined' ? Cypress.env() : {})
 };

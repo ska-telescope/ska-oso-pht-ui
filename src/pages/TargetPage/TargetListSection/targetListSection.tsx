@@ -4,8 +4,6 @@ import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
-import TargetFileImport from './TargetFileImport/TargetFileImport';
-import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -19,6 +17,8 @@ import {
 } from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
+import SpatialImaging from './SpatialImaging/SpatialImaging';
+import TargetFileImport from './TargetFileImport/TargetFileImport';
 
 const DATA_GRID_HEIGHT = '50vh';
 const WRAPPER_WIDTH = '500px';

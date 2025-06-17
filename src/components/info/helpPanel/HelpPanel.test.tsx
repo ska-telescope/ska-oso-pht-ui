@@ -1,23 +1,15 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
-import HelpPanel from './helpPanel';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
-
-function mountingBasic(theTheme: any) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <HelpPanel />
-    </ThemeProvider>
-  );
-}
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import HelpPanel from './HelpPanel';
 
 describe('<HelpPanel />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders (basic)`, () => {
-      mountingBasic(theTheme);
-    });
-  }
+  test('renders correctly', () => {
+    render(
+      <StoreProvider>
+        <HelpPanel />
+      </StoreProvider>
+    );
+  });
 });

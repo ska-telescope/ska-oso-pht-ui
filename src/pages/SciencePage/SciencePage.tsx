@@ -15,7 +15,7 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
@@ -35,8 +35,8 @@ export default function SciencePage() {
     updateAppContent5
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentFile, setCurrentFile] = React.useState(null);
-  const [originalFile, setOriginalFile] = React.useState(null);
+  const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
+  const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
@@ -53,7 +53,7 @@ export default function SciencePage() {
     updateAppContent1(temp);
   };
 
-  const setFile = (theFile: File) => {
+  const setFile = (theFile: string | null) => {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
@@ -62,11 +62,11 @@ export default function SciencePage() {
     }
   };
 
-  const setUploadStatus = (status: FileUploadStatus) => {
+  const setUploadStatus = (status: typeof FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
-  const uploadPdftoSignedUrl = async theFile => {
+  const uploadPdftoSignedUrl = async (theFile: any) => {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
@@ -157,7 +157,7 @@ export default function SciencePage() {
     }
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -189,6 +189,10 @@ export default function SciencePage() {
   React.useEffect(() => {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
+
+  const PDFView = () => (
+    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+  );
 
   const uploadSuffix = () => (
     <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
@@ -252,7 +256,7 @@ export default function SciencePage() {
           <HelpPanel />
         </Grid>
       </Grid>
-      <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile} />
+      {PDFView()}
     </Shell>
   );
 }

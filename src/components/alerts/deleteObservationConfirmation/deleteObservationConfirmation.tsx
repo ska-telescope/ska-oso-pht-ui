@@ -1,10 +1,9 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alertDialog/AlertDialog';
 import FieldWrapper from '../../wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../../utils/types/observation';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 
 const LABEL_WIDTH = 6;

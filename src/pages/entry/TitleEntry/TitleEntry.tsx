@@ -11,6 +11,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import { validateTitlePage } from '../../../utils/proposalValidation';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
+import CardTitle from '@/components/cards/cardTitle/CardTitle';
 
 const LABEL_WIDTH = 2;
 const FIELD_WIDTH = 10;
@@ -50,8 +51,11 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(page === i ? value : getProposalState()[i]);
+    const theState = getProposalState();
+    if (theState) {
+      for (let i = 0; i < theState?.length; i++) {
+        temp.push(page === i ? value : getProposalState()[i]);
+      }
     }
     updateAppContent1(temp);
   };
@@ -128,45 +132,18 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     const { id } = TYPE;
     return (
       <Grid key={id} item md={4} lg={3}>
-        <Tooltip title={t('proposalType.desc.' + id)} arrow>
-          <Card
-            style={{
-              color: setCardFG(getProposal().proposalType, id),
-              backgroundColor: setCardBG(getProposal().proposalType, id),
-
-              display: 'flex',
-              justifyContent: 'center',
-              minHeight: '90px'
-            }}
-            className={setCardClassName(getProposal().proposalType, id)}
-            onClick={() => clickProposal(id)}
-            variant="outlined"
-            id={`ProposalType-${id}`}
-          >
-            <CardActionArea>
-              <CardHeader
-                avatar={
-                  <Avatar
-                    variant="rounded"
-                    style={{
-                      color: setCardBG(getProposal().proposalType, id),
-                      backgroundColor: setCardFG(getProposal().proposalType, id)
-                    }}
-                  >
-                    <Typography variant="body2" component="div">
-                      {t('proposalType.code.' + id)}
-                    </Typography>
-                  </Avatar>
-                }
-                title={
-                  <Typography variant="h6" component="div" maxWidth={230}>
-                    <Typography>{t('proposalType.title.' + id)}</Typography>
-                  </Typography>
-                }
-              />
-            </CardActionArea>
-          </Card>
-        </Tooltip>
+        <CardTitle
+          className={setCardClassName(getProposal().proposalType, id)}
+          code={t('proposalType.code.' + id)}
+          colorAvatarBG={setCardFG(getProposal().proposalType, id)}
+          colorAvatarFG={setCardBG(getProposal().proposalType, id)}
+          colorCardBG={setCardBG(getProposal().proposalType, id)}
+          colorCardFG={setCardFG(getProposal().proposalType, id)}
+          id={`ProposalType-${id}`}
+          onClick={() => clickProposal(id)}
+          title={t('proposalType.title.' + id)}
+          toolTip={t('proposalType.desc.' + id)}
+        />
       </Grid>
     );
   }
@@ -233,7 +210,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   };
 
   function validateWordCount(title: string) {
-    if (title.length === 0) {
+    if (!title || title?.length === 0) {
       return `${t('title.empty')}`;
     } else if (countWords(title) > MAX_WORD) {
       return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
@@ -260,7 +237,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={
-          getProposal().title.length > 0
+          getProposal()?.title?.length > 0
             ? t('title.helper', {
                 current: countWords(getProposal().title),
                 max: MAX_WORD

@@ -1,23 +1,18 @@
-/* eslint-disable no-restricted-syntax */
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../services/theme/theme';
-import PHT from './PHT';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { THEME, viewPort } from '../../utils/testing/cypress';
+import { MemoryRouter } from 'react-router-dom';
+import PHT from './PHT';
 
 describe('<PHT />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders`, () => {
-      viewPort();
-      cy.mount(
+  test('renders correctly', () => {
+    render(
+      <MemoryRouter>
         <StoreProvider>
-          <ThemeProvider theme={theme(theTheme)}>
-            <CssBaseline />
-            <PHT />
-          </ThemeProvider>
+          <PHT />
         </StoreProvider>
-      );
-    });
-  }
+      </MemoryRouter>
+    );
+  });
 });

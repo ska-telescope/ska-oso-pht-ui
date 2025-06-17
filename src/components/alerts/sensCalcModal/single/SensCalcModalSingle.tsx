@@ -1,9 +1,8 @@
-import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@mui/material';
-import CancelButton from '../../../button/Cancel/Cancel';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import CancelButton from '../../../button/Cancel/Cancel';
 import { CUSTOM_VALID_FIELDS, STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { presentUnits, presentValue } from '../../../../utils/present';
@@ -110,7 +109,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}
@@ -119,7 +118,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}
@@ -128,7 +127,7 @@ export default function SensCalcModalSingle({
               displayElement(
                 t('sensitivityCalculatorResults.' + rec.field),
                 rec.value,
-                rec.units,
+                rec.units ?? '',
                 rec.field
               )
             )}

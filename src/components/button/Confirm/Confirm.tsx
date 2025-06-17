@@ -1,4 +1,3 @@
-import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import BaseButton from '../Base/Button';
 
@@ -14,7 +13,7 @@ interface ConfirmButtonProps {
 export default function ConfirmButton({
   disabled = false,
   action,
-  title = 'button.confirm',
+  title = 'confirmBtn.label',
   primary = false,
   testId = 'confirmButtonTestId',
   toolTip

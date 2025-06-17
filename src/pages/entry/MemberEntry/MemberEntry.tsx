@@ -8,7 +8,7 @@ import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import Notification from '../../../utils/types/notification';

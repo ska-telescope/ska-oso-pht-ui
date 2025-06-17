@@ -1,5 +1,4 @@
 // import axios from 'axios';
-import { USE_LOCAL_DATA } from '../../../utils/constants';
 import CycleData from '../../../utils/types/cycleData';
 import MockCycleData from './mockCycleData';
 
@@ -12,9 +11,7 @@ export function GetMockCycleData(): CycleData[] {
 }
 
 async function GetCycleData(): Promise<CycleData[] | string> {
-  if (true || USE_LOCAL_DATA) {
-    return GetMockCycleData();
-  }
+  return GetMockCycleData();
 }
 
 export default GetCycleData;

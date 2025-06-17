@@ -1,4 +1,4 @@
-import sensCalHelpers from './sensCalHelpers';
+import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import Observation from '../../../utils/types/observation';
 import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
@@ -16,12 +16,12 @@ import {
   TYPE_ZOOM,
   WEIGHTING_FACTOR_DEFAULT
 } from '../../../utils/constants';
+import Target from '../../../utils/types/target';
 import {
   SensitivityCalculatorAPIResponseLow,
   SensitivityCalculatorAPIResponseMid
 } from './../../../utils/types/sensitivityCalculatorAPIResponse';
-import Target from '../../../utils/types/target';
-import { ValueUnitPair } from 'utils/types/valueUnitPair';
+import sensCalHelpers from './sensCalHelpers';
 
 // STAR-612 : Note that the actual calculation for this will be done in a separate ticket
 

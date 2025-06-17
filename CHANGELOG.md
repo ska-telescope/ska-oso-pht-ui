@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
+* Changed build system from Webpack to Vite
+* Added a mocked connected user
+* Added a navigation menu
+* Added an Overview page - in progress
+* Added a Pannel Maintenance page - in progress
+* Added a Review page placeholder
+
 2.0.0
 
 -------

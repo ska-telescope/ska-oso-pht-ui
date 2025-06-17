@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
@@ -19,7 +18,7 @@ import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { presentLatex } from '../../../utils/present';
 
 interface ProposalDisplayProps {
-  proposal: Proposal;
+  proposal: Proposal | null;
   open: boolean;
   onClose: Function;
   onConfirm: Function;
@@ -61,7 +60,7 @@ export default function ProposalDisplay({
 
   const downloadPdf = async (fileType: string) => {
     try {
-      const selectedFile = `${proposal.id}-` + fileType + t('fileType.pdf');
+      const selectedFile = `${proposal?.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       window.open(signedUrl, '_blank');
@@ -76,15 +75,15 @@ export default function ProposalDisplay({
   };
 
   const proposalType = () => {
-    const proposalType = proposal.proposalType;
+    const proposalType = proposal?.proposalType;
     const proposalName =
       !proposalType || proposalType < 1 ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
   };
 
   const proposalAttributes = () => {
-    let output = [];
-    const subTypes: number[] = proposal.proposalSubType;
+    let output: string[] = [];
+    const subTypes: number[] = proposal?.proposalSubType ?? [];
     if (subTypes?.length && subTypes[0] > 0) {
       subTypes.forEach(element => output.push(t('proposalAttribute.title.' + element)));
     }
@@ -92,7 +91,7 @@ export default function ProposalDisplay({
   };
 
   const scienceCategory = () => {
-    const scienceCat = proposal.scienceCategory;
+    const scienceCat = proposal?.scienceCategory;
     return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
@@ -145,7 +144,11 @@ export default function ProposalDisplay({
     );
   };
 
-  const entry = (inLabel: string, inValue, optional: boolean = false) => {
+  const entry = (
+    inLabel: string,
+    inValue: string | (string | number)[],
+    optional: boolean = false
+  ) => {
     return (
       <Grid container direction="row" justifyContent="space-around" alignItems="center">
         <Grid item xs={7}>
@@ -219,12 +222,12 @@ export default function ProposalDisplay({
           {skaoIcon({ useSymbol: true })}
         </Grid>
         <Grid item xs={7}>
-          {title(t('page.9.title') + '  ', proposal.title)}
+          {title(t('page.9.title') + '  ', proposal?.title ?? '')}
         </Grid>
         <Grid item xs={4}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid item>{details(t('page.12.short'), proposal.cycle)}</Grid>
-            <Grid item>{details(t('proposalId.label'), proposal.id)}</Grid>
+            <Grid item>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>
+            <Grid item>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -235,7 +238,7 @@ export default function ProposalDisplay({
     <Grid item>
       <Grid container direction="column" justifyContent="center" alignItems="center">
         <Grid item>{label(t('abstract.label'))}</Grid>
-        <Grid item>{proposal.abstract?.length ? content(proposal.abstract) : emptyCell()}</Grid>
+        <Grid item>{proposal?.abstract?.length ? content(proposal?.abstract) : emptyCell()}</Grid>
       </Grid>
     </Grid>
   );
@@ -262,7 +265,7 @@ export default function ProposalDisplay({
         <Grid item>{label(t('page.10.label'))}</Grid>
       </Grid>
       <Grid item>
-        <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />
+        {proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}
       </Grid>
     </>
   );
@@ -273,7 +276,7 @@ export default function ProposalDisplay({
         <Grid item>{label(t('members.label'))}</Grid>
       </Grid>
       <Grid item>
-        <GridMembers height={GRID_HEIGHT} rows={proposal.team} />
+        <GridMembers height={GRID_HEIGHT} rows={proposal?.team} />
       </Grid>
     </>
   );
@@ -286,7 +289,7 @@ export default function ProposalDisplay({
             t('page.3.label'),
             t('pdfDownload.science.toolTip'),
             () => downloadPdf('science'),
-            proposal.sciencePDF
+            proposal?.sciencePDF
           )}
         </Grid>
         <Grid item xs={6}>
@@ -294,7 +297,7 @@ export default function ProposalDisplay({
             t('page.6.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
-            proposal.technicalPDF
+            proposal?.technicalPDF
           )}
         </Grid>
       </Grid>

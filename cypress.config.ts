@@ -1,6 +1,5 @@
-/* eslint-disable global-require */
-/* eslint-disable import/no-import-module-exports */
 import { defineConfig } from 'cypress';
+import vitePreprocessor from 'cypress-vite';
 
 export default defineConfig({
   projectId: 'ssiwb9',
@@ -13,11 +12,10 @@ export default defineConfig({
     indexHtmlFile: 'cypress/support/component-index.html',
     devServer: {
       framework: 'react',
-      bundler: 'webpack'
+      bundler: 'vite'
     },
     setupNodeEvents(on, config) {
-      require('@cypress/code-coverage/task')(on, config);
-      on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
+      // require('@cypress/code-coverage/task')(on, config);
       return config;
     },
     excludeSpecPattern: 'cypress/integration/**'
@@ -25,8 +23,8 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:6101',
     defaultCommandTimeout: 10000,
-    deleteVideoOnPassed: true,
-    betterRetries: true,
+    experimentalRunAllSpecs: true,
+    experimentalMemoryManagement: true,
     reporter: 'cypress-xray-junit-reporter',
     reporterOptions: {
       mochaFile: './report/[suiteName].xml',
@@ -36,7 +34,8 @@ export default defineConfig({
       attachScreenshot: true // if a test fails, the screenshot will be attached to the XML report and imported into xray
     },
     setupNodeEvents(on, config) {
-      require('cypress-xray-junit-reporter/plugin')(on, config, {}); // also needed
+      on('file:preprocessor', vitePreprocessor());
+      // require('cypress-xray-junit-reporter/plugin')(on, config, {}); // also needed
       return config;
     },
     specPattern: 'cypress/integration/**/*.test.js'

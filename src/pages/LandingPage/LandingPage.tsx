@@ -9,6 +9,8 @@ import {
   SearchEntry,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
+import TeamMember from '@utils/types/teamMember';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
@@ -32,8 +34,6 @@ import { presentDate, presentLatex, presentTime } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
-import TeamMember from 'utils/types/teamMember';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER } from '../../utils/constants';
 
 export default function LandingPage() {

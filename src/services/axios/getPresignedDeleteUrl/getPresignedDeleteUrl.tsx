@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 
-async function GetPresignedDeleteUrl(selectedFile) {
+async function GetPresignedDeleteUrl(selectedFile: string) {
   if (USE_LOCAL_DATA) {
     return 'https://httpbin.org/delete';
   }

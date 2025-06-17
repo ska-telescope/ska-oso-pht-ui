@@ -52,7 +52,7 @@ import {
   OB_SUBARRAY_AA2_CORE,
   OB_SUBARRAY_AA4_CORE
 } from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/helpPanel';
+import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import { frequencyConversion, generateId, getMinimumChannelWidth } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
@@ -645,7 +645,7 @@ export default function ObservationEntry() {
             testId="suppliedType"
             value={suppliedType}
             setValue={setSuppliedType}
-            disabled={getOptions().length < 2}
+            disabled={getOptions()?.length < 2}
             label=""
             onFocus={() => helpComponent(t('suppliedType.help'))}
             required
@@ -739,7 +739,7 @@ export default function ObservationEntry() {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
-          disabled={options.length === 1}
+          disabled={options?.length === 1}
           onFocus={() => helpComponent(t('frequencyUnits.help'))}
         />
       );
@@ -896,7 +896,7 @@ export default function ObservationEntry() {
         value={centralFrequencyUnits}
         setValue={setCentralFrequencyUnits}
         label=""
-        disabled={options.length === 1}
+        disabled={options?.length === 1}
         onFocus={() => helpComponent(t('frequencyUnits.help'))}
       />
     );
@@ -964,7 +964,7 @@ export default function ObservationEntry() {
 
       const oldObservations = getProposal().observations;
       const newObservations: Observation[] = [];
-      if (oldObservations.length > 0) {
+      if (oldObservations && oldObservations?.length > 0) {
         oldObservations.forEach(inValue => {
           newObservations.push(inValue.id === newObservation.id ? newObservation : inValue);
         });

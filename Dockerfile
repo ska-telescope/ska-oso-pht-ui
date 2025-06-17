@@ -1,27 +1,14 @@
 # pull the base image
-FROM node:22 as base
+FROM node:22.16 as base
 
 # # set the working direction
 WORKDIR /app
 COPY . .
 
-# install app dependencies
+# install app dependencies and build the app
 RUN yarn install && yarn cache clean
 
-EXPOSE 6101
-
-# start app
-CMD ["yarn", "start"]
-
-FROM base as builder
-
-RUN yarn webpack build \
-    --mode production \
-    --optimization-concatenate-modules \
-    --optimization-minimize \
-    --output-clean \
-    --output-path /dist/ && \
-    npx react-inject-env set -d /dist/
+RUN yarn build
 
 FROM nginx:1.25.2 as final
 
@@ -29,4 +16,5 @@ FROM nginx:1.25.2 as final
 COPY .env /.env
 COPY nginx_env_config.sh /docker-entrypoint.d/
 RUN chmod 777 /docker-entrypoint.d/nginx_env_config.sh
-COPY --from=builder /dist/* /usr/share/nginx/html/
+COPY --from=base /app/dist /usr/share/nginx/html/
+

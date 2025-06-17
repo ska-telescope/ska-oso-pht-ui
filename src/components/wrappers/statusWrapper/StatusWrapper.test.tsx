@@ -1,23 +1,17 @@
-import React from 'react';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from '../../../services/theme/theme';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import StatusWrapper from './StatusWrapper';
-import { THEME, viewPort } from '../../../utils/testing/cypress';
-
-function mountingBasic(theTheme: any) {
-  viewPort();
-  cy.mount(
-    <ThemeProvider theme={theme(theTheme)}>
-      <CssBaseline />
-      <StatusWrapper page={1} />
-    </ThemeProvider>
-  );
-}
+import { STATUS_ERROR } from '@/utils/constants';
 
 describe('<StatusWrapper />', () => {
-  for (const theTheme of THEME) {
-    it(`Theme ${theTheme}: Renders (basic)`, () => {
-      mountingBasic(theTheme);
-    });
-  }
+  test('renders correctly ( default )', () => {
+    render(<StatusWrapper page={1} />);
+  });
+  test('renders correctly ( STATUS_ERROR  )', () => {
+    render(<StatusWrapper page={1} level={STATUS_ERROR} />);
+  });
+  test('renders correctly ( 7 )', () => {
+    render(<StatusWrapper page={1} level={7} />);
+  });
 });

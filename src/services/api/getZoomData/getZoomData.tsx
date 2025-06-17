@@ -1,6 +1,6 @@
 import Observation from 'utils/types/observation';
-import Fetch from '../fetch/Fetch';
 import Target from 'utils/types/target';
+import Fetch from '../fetch/Fetch';
 import { StandardData, ZoomData, Telescope } from '../../../utils/types/typesSensCalc';
 import {
   OB_SUBARRAY_CUSTOM,

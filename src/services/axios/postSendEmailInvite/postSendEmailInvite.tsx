@@ -1,10 +1,10 @@
+import axios from 'axios';
 import {
   AXIOS_CONFIG,
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL
 } from '../../../utils/constants';
-import axios from 'axios';
-import { EmailInviteBackend } from '../../../utils/types/emailInvite';
+import { EmailInviteBackend } from '@/utils/types/emailInvite.tsx';
 
 async function PostSendEmailInvite(email: EmailInviteBackend) {
   try {

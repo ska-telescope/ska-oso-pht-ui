@@ -1,8 +1,8 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { Box } from '@mui/system';
 import { FREQUENCY_UNITS, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
-import { Box } from '@mui/system';
 
 interface EffectiveResolutionFieldProps {
   frequency: number;

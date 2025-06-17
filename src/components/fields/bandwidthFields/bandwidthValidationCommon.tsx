@@ -9,7 +9,7 @@ import {
 } from '../../../utils/constants';
 import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
 
-const isLow = telescope => telescope === TELESCOPE_LOW_NUM;
+const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 
 export const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): number => {
   return sensCalHelpers.format.convertBandwidthToHz(incValue, incUnits);
@@ -43,17 +43,24 @@ const getSubArrayAntennasCounts = (telescope: number, subarrayConfig: number) =>
   };
 };
 
-const getBandLimitsForAntennaCounts = (bandLimits, n15mAntennas, n13mAntennas) => {
+const getBandLimitsForAntennaCounts = (
+  bandLimits:
+    | { low: any[]; '15m'?: any[]; '13m'?: any[]; mixed?: any[] }
+    | { '15m': any[]; '13m': any[]; mixed: any[]; low?: any[] }
+    | { '15m': any[]; low?: any[]; '13m'?: any[]; mixed?: any[] },
+  n15mAntennas: number,
+  n13mAntennas: number
+) => {
   let limits = [];
   switch (true) {
     case n13mAntennas > 0 && !n15mAntennas:
-      limits = bandLimits[ANTENNA_13M];
+      limits = bandLimits[ANTENNA_13M] ?? [];
       break;
     case n15mAntennas > 0 && !n13mAntennas:
-      limits = bandLimits[ANTENNA_15M];
+      limits = bandLimits[ANTENNA_15M] ?? [];
       break;
     default:
-      limits = bandLimits[ANTENNA_MIXED];
+      limits = bandLimits[ANTENNA_MIXED] ?? [];
       break;
   }
   return limits;

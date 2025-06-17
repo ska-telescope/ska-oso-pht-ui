@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -35,7 +34,8 @@ export default function SubArrayField({
 
   const getOptions = () => {
     if (telescope > 0) {
-      return subArrayOptions(BANDWIDTH_TELESCOPE[observingBand])?.map(e => {
+      const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand]);
+      return options?.map(e => {
         return {
           label: t('subArrayConfiguration.' + e.value),
           value: e.value
@@ -47,19 +47,21 @@ export default function SubArrayField({
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} item xs={suffix ? 12 - widthButton : 12}>
-        <DropDown
-          disabled={disabled}
-          options={getOptions()}
-          testId={FIELD}
-          value={value}
-          setValue={setValue}
-          label={t(FIELD + '.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={suffix ? widthLabel + 1 : widthLabel}
-          onFocus={() => helpComponent(t(FIELD + '.help'))}
-          required={required}
-        />
+        {getOptions() && (
+          <DropDown
+            disabled={disabled}
+            options={getOptions()}
+            testId={FIELD}
+            value={value}
+            setValue={setValue}
+            label={t(FIELD + '.label')}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
+            labelWidth={suffix ? widthLabel + 1 : widthLabel}
+            onFocus={() => helpComponent(t(FIELD + '.help'))}
+            required={required}
+          />
+        )}
       </Grid>
       <Grid item xs={suffix ? widthButton : 0}>
         {suffix}
