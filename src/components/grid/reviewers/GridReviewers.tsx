@@ -3,9 +3,10 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  AlertColorTypes,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -77,6 +78,47 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
       : t('reviewers.statusCategory.' + NOT_SPECIFIED);
   };
 
+  const isReviewerSelected = (reviewerId: string): boolean => {
+    /*
+    getProposal().targetObservation.filter(
+      entry => entry.observationId === currObs?.id && entry.targetId === reviewerId
+    ).length > 0;
+    */
+    return reviewers.filter(entry => entry.id === reviewerId).length > 0;
+  };
+
+  const reviewerSelectedToggle = (el: any) => {
+    /*
+    if (isTargetSelected(el.id)) {
+      deleteObservationTarget(el.target);
+    } else {
+      addObservationTarget(el.target);
+    }
+      */
+    if (isReviewerSelected(el.id)) {
+      // deleteObservationTarget(el.target);
+    } else {
+      // addObservationTarget(el.target);
+    }
+  };
+
+  const colSelect = {
+    field: 'select',
+    headerName: '',
+    flex: 0.6,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: any }) => (
+      <Box pr={1}>
+        <TickBox
+          label=""
+          testId="linkedTickBox"
+          checked={isReviewerSelected(e.row.reviewerId)}
+          onChange={() => reviewerSelectedToggle(e.row)}
+        />
+      </Box>
+    )
+  };
+
   const colTitle = {
     field: 'title',
     headerName: t('reviewers.title'),
@@ -121,7 +163,15 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   };
 
   const stdColumns = [
-    ...[colTitle, colGivenName, colSurname, colOfficeLocation, colSubExpertise, colStatus]
+    ...[
+      colSelect,
+      colTitle,
+      colGivenName,
+      colSurname,
+      colOfficeLocation,
+      colSubExpertise,
+      colStatus
+    ]
   ];
 
   function filterReviewers() {
