@@ -7,7 +7,6 @@
   "license": "BSD 3-Clause",
   "repository": "git@https://gitlab.com/ska-telescope/ska-oso-pht-ui.git",
   "type": "module",
-  "version": "1.0.4",
   "exports": {
     ".": {
       "import": "./esm/main.tsx",
