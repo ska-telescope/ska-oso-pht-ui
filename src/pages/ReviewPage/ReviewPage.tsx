@@ -1,5 +1,7 @@
-import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
+import PageHeaderPMT from '@/components/layout/pageHeaderPMT/PageHeaderPMT';
 
 export default function ReviewPage() {
-  return <Box p={1}>I am the Review Page</Box>;
+  const { t } = useTranslation('pht');
+  return <PageHeaderPMT title={t('menuOptions.reviews')} />;
 }

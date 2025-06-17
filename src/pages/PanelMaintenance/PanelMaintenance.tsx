@@ -21,6 +21,7 @@ import GetButton from '@/components/button/Get/Get';
 import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
+import PageHeaderPMT from '@/components/layout/pageHeaderPMT/PageHeaderPMT';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -113,6 +114,7 @@ export default function PanelMaintenance() {
 
   return (
     <>
+      <PageHeaderPMT pageNo={0} title={t('page.15.desc')} />
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid item xs={12}>
           {pageDescription()}
