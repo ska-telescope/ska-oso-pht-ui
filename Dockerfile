@@ -7,6 +7,9 @@ COPY . .
 
 # install app dependencies and build the app
 RUN yarn install && yarn cache clean
+
+FROM base as builder
+
 RUN yarn build
 
 FROM nginx:1.25.2 as final
@@ -15,4 +18,4 @@ FROM nginx:1.25.2 as final
 COPY .env /.env
 COPY nginx_env_config.sh /docker-entrypoint.d/
 RUN chmod 777 /docker-entrypoint.d/nginx_env_config.sh
-COPY --from=base /dist/* /usr/share/nginx/html/
+COPY --from=builder /dist/* /usr/share/nginx/html/
