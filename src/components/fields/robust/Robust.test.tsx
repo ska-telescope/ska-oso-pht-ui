@@ -7,4 +7,7 @@ describe('<Robust />', () => {
   test('renders correctly', () => {
     render(<Robust label={''} testId={''} value={''} />);
   });
+  test('renders correctly, with suffix', () => {
+    render(<Robust label={''} suffix={'?'} testId={''} value={''} />);
+  });
 });

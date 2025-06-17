@@ -11,6 +11,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import { validateTitlePage } from '../../../utils/proposalValidation';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
+import CardTitle from '@/components/cards/cardTitle/CardTitle';
 
 const LABEL_WIDTH = 2;
 const FIELD_WIDTH = 10;
@@ -131,45 +132,18 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     const { id } = TYPE;
     return (
       <Grid key={id} item md={4} lg={3}>
-        <Tooltip title={t('proposalType.desc.' + id)} arrow>
-          <Card
-            style={{
-              color: setCardFG(getProposal().proposalType, id),
-              backgroundColor: setCardBG(getProposal().proposalType, id),
-
-              display: 'flex',
-              justifyContent: 'center',
-              minHeight: '90px'
-            }}
-            className={setCardClassName(getProposal().proposalType, id)}
-            onClick={() => clickProposal(id)}
-            variant="outlined"
-            id={`ProposalType-${id}`}
-          >
-            <CardActionArea>
-              <CardHeader
-                avatar={
-                  <Avatar
-                    variant="rounded"
-                    style={{
-                      color: setCardBG(getProposal().proposalType, id),
-                      backgroundColor: setCardFG(getProposal().proposalType, id)
-                    }}
-                  >
-                    <Typography variant="body2" component="div">
-                      {t('proposalType.code.' + id)}
-                    </Typography>
-                  </Avatar>
-                }
-                title={
-                  <Typography variant="h6" component="div" maxWidth={230}>
-                    <Typography>{t('proposalType.title.' + id)}</Typography>
-                  </Typography>
-                }
-              />
-            </CardActionArea>
-          </Card>
-        </Tooltip>
+        <CardTitle
+          className={setCardClassName(getProposal().proposalType, id)}
+          code={t('proposalType.code.' + id)}
+          colorAvatarBG={setCardFG(getProposal().proposalType, id)}
+          colorAvatarFG={setCardBG(getProposal().proposalType, id)}
+          colorCardBG={setCardBG(getProposal().proposalType, id)}
+          colorCardFG={setCardFG(getProposal().proposalType, id)}
+          id={`ProposalType-${id}`}
+          onClick={() => clickProposal(id)}
+          title={t('proposalType.title.' + id)}
+          toolTip={t('proposalType.desc.' + id)}
+        />
       </Grid>
     );
   }
