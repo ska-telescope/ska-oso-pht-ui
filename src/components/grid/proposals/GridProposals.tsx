@@ -13,7 +13,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { validateProposal } from '../../../utils/proposalValidation';
+import { validateProposal } from '@utils/proposalValidation.tsx';
 import Proposal from '@/utils/types/proposal';
 import {
   FOOTER_SPACER,
