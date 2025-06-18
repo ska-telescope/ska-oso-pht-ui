@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import {
   AlertColorTypes,
   AppWrapper,
@@ -68,6 +68,12 @@ export default function PHT() {
   const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  const location = useLocation();
+  React.useEffect(() => {
+    if (location.pathname !== '/') {
+      navigate(PATH[0]);
+    }
+  }, []);
 
   const getProposal = () => application.content2 as Proposal;
 
