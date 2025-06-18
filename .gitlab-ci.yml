@@ -151,7 +151,7 @@ js-test:
   script:
     - yarn install
     - yarn test:unit
-    - cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+    - cp build/coverage/cobertura-coverage.xml build/reports/code-coverage.xml
   cache:
     paths:
       - node_modules/
