@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, IconButton, Paper, Tooltip, MenuItem, Select, TextField, InputLabel, FormControl } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  Paper,
+  Tooltip,
+  MenuItem,
+  Select,
+  TextField,
+  InputLabel,
+  FormControl
+} from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import useTheme from '@mui/material/styles/useTheme';
 import { useTranslation } from 'react-i18next';
 import { ReactElement, JSXElementConstructor, ReactNode } from 'react';
+import { proposals } from './mocked';
 import { PATH, PMT } from '@/utils/constants';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -12,21 +25,29 @@ import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import D3PieChart from '@/components/charts/D3PieChart';
-import { proposals } from './mocked';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
 const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
 
-function groupByField(data: typeof proposals, field: keyof typeof proposals[0], filters: { telescope: string; country: string; date: string }, search: string) {
+function groupByField(
+  data: typeof proposals,
+  field: keyof typeof proposals[0],
+  filters: { telescope: string; country: string; date: string },
+  search: string
+) {
   const filtered = data.filter(d => {
     const searchMatch = Object.values(d).some(v =>
-      String(v).toLowerCase().includes(search.toLowerCase())
+      String(v)
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
-    return (!filters.telescope || d.telescope === filters.telescope) &&
-           (!filters.country || d.country === filters.country) &&
-           (!filters.date || d.date === filters.date) &&
-           (!search || searchMatch);
+    return (
+      (!filters.telescope || d.telescope === filters.telescope) &&
+      (!filters.country || d.country === filters.country) &&
+      (!filters.date || d.date === filters.date) &&
+      (!search || searchMatch)
+    );
   });
 
   const counts = filtered.reduce((acc, item) => {
@@ -41,11 +62,25 @@ function groupByField(data: typeof proposals, field: keyof typeof proposals[0], 
 const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
   <div
     className="border rounded p-3 bg-white shadow flex flex-col resize overflow-auto mb-6 hover:bg-gray-100 hover:shadow-md transition-all duration-200"
-    style={{ minWidth: '350px', minHeight: '300px', resize: 'both', overflow: 'auto', border: '1px solid #ccc' }}
+    style={{
+      minWidth: '350px',
+      minHeight: '300px',
+      resize: 'both',
+      overflow: 'auto',
+      border: '1px solid #ccc'
+    }}
   >
     <h2 className="text-lg font-semibold mb-2 text-center">{title}</h2>
     <div className="flex-1 flex items-center justify-center w-full h-full">
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%'
+        }}
+      >
         {children}
       </div>
     </div>

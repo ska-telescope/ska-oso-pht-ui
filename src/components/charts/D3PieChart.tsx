@@ -27,21 +27,28 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     const centerLabel = centerText || total.toString();
 
     // Accessible, color-blind friendly palette
-    const colors = d3.scaleOrdinal<string>()
+    const colors = d3
+      .scaleOrdinal<string>()
       .domain(data.map(d => d.name))
       .range(d3.schemeTableau10);
 
     // Pie and arc generators
-    const pie = d3.pie<PieData>().value(d => d.value).sort(null);
-    const arc = d3.arc<d3.PieArcDatum<PieData>>()
+    const pie = d3
+      .pie<PieData>()
+      .value(d => d.value)
+      .sort(null);
+    const arc = d3
+      .arc<d3.PieArcDatum<PieData>>()
       .innerRadius(showTotal ? radius / 2 : 0)
       .outerRadius(radius);
-    const outerArc = d3.arc<d3.PieArcDatum<PieData>>()
+    const outerArc = d3
+      .arc<d3.PieArcDatum<PieData>>()
       .innerRadius(radius * 1.1)
       .outerRadius(radius * 1.1);
 
     // Setup SVG with pronounced emboss filter and overflow visible
-    const svg = d3.select(svgRef.current)
+    const svg = d3
+      .select(svgRef.current)
       .attr('width', svgWidth)
       .attr('height', svgHeight)
       .style('overflow', 'visible');
@@ -49,16 +56,19 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     // Define emboss filter
     const defs = svg.append('defs');
     const filter = defs.append('filter').attr('id', 'emboss');
-    filter.append('feGaussianBlur')
+    filter
+      .append('feGaussianBlur')
       .attr('in', 'SourceAlpha')
       .attr('stdDeviation', 3)
       .attr('result', 'blur');
-    filter.append('feOffset')
+    filter
+      .append('feOffset')
       .attr('in', 'blur')
       .attr('dx', -2)
       .attr('dy', -2)
       .attr('result', 'offsetBlur');
-    filter.append('feSpecularLighting')
+    filter
+      .append('feSpecularLighting')
       .attr('in', 'blur')
       .attr('surfaceScale', 4)
       .attr('specularConstant', 1)
@@ -68,12 +78,14 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .attr('x', -5000)
       .attr('y', -10000)
       .attr('z', 20000);
-    filter.append('feComposite')
+    filter
+      .append('feComposite')
       .attr('in', 'specOut')
       .attr('in2', 'SourceAlpha')
       .attr('operator', 'in')
       .attr('result', 'specOut');
-    filter.append('feComposite')
+    filter
+      .append('feComposite')
       .attr('in', 'SourceGraphic')
       .attr('in2', 'specOut')
       .attr('operator', 'arithmetic')
@@ -85,13 +97,18 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     svg.selectAll('*:not(defs)').remove();
 
     // Main chart group
-    const chartGroup = svg.append('g')
-      .attr('transform', `translate(${margin.left + chartWidth / 2}, ${margin.top + chartHeight / 2})`);
+    const chartGroup = svg
+      .append('g')
+      .attr(
+        'transform',
+        `translate(${margin.left + chartWidth / 2}, ${margin.top + chartHeight / 2})`
+      );
 
     const sliceData = pie(data);
 
     // Draw slices with emboss effect
-    const slices = chartGroup.selectAll('path')
+    const slices = chartGroup
+      .selectAll('path')
       .data(sliceData)
       .enter()
       .append('path')
@@ -100,14 +117,21 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
       .attr('filter', 'url(#emboss)')
-      .each(function (d) { (this as any)._current = d; })
+      .each(function(d) {
+        (this as any)._current = d;
+      })
       .on('mouseover', (event, d) => {
         const [x, y] = d3.pointer(event, svg.node());
         d3.select(tooltipRef.current)
           .style('left', `${x + 15}px`)
           .style('top', `${y + 15}px`)
           .style('opacity', 1)
-          .html(`<strong>${d.data.name}</strong>: ${d.data.value} (${((d.data.value / total) * 100).toFixed(1)}%)`);
+          .html(
+            `<strong>${d.data.name}</strong>: ${d.data.value} (${(
+              (d.data.value / total) *
+              100
+            ).toFixed(1)}%)`
+          );
       })
       .on('mousemove', event => {
         const [x, y] = d3.pointer(event, svg.node());
@@ -120,15 +144,19 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       });
 
     // Animate slices
-    slices.transition().duration(800).attrTween('d', function (d) {
-      const interpolator = d3.interpolate((this as any)._current, d);
-      (this as any)._current = interpolator(0);
-      return t => arc(interpolator(t))!;
-    });
+    slices
+      .transition()
+      .duration(800)
+      .attrTween('d', function(d) {
+        const interpolator = d3.interpolate((this as any)._current, d);
+        (this as any)._current = interpolator(0);
+        return t => arc(interpolator(t))!;
+      });
 
     // Center label with actual total
     if (showTotal) {
-      chartGroup.append('text')
+      chartGroup
+        .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
         .attr('font-size', '20px')
@@ -137,7 +165,8 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     }
 
     // Annotations with larger label font
-    chartGroup.selectAll('polyline')
+    chartGroup
+      .selectAll('polyline')
       .data(sliceData)
       .enter()
       .append('polyline')
@@ -152,7 +181,8 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .attr('stroke', '#666')
       .attr('stroke-width', 1.5);
 
-    chartGroup.selectAll('text.label')
+    chartGroup
+      .selectAll('text.label')
       .data(sliceData)
       .enter()
       .append('text')
@@ -163,11 +193,10 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         pos[0] = radius * 1.4 * (mid < Math.PI ? 1 : -1);
         return `translate(${pos})`;
       })
-      .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2) < Math.PI ? 'start' : 'end')
+      .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
       .attr('font-size', '14px')
       .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`);
-
   }, [data, showTotal, centerText]);
 
   return (
