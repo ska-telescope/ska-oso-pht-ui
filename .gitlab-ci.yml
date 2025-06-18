@@ -39,19 +39,24 @@ include:
     # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
+  # JS E2E Testing
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
+    ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
 
 stages:
   - dependencies
   - lint
   - build
   - test
-  - scan
+  - test-e2e
+  - deploy # this is the name of the dev environment stage in the ST template
+  - publish
   - pages
-  - deploy
+  - scan
   - integration
   - staging
+  - production
   - accessibility
   - publish
 
@@ -99,22 +104,6 @@ js-lint:
     reports:
       junit: build/reports/linting.xml
 
-stop-integration-test:
-  image: $SKA_K8S_TOOLS_BUILD_DEPLOY
-  stage: test
-  tags:
-    - ska-k8s
-  when: manual
-  variables:
-    KUBE_NAMESPACE: 'ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA'
-  script:
-    - make k8s-uninstall-chart
-    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-    - make k8s-delete-namespace
-  environment:
-    name: test/$CI_COMMIT_REF_SLUG
-    action: stop
-
 # list the current top level dependencies for the project
 list_dependencies:
   image: $NODE_IMAGE
@@ -136,20 +125,6 @@ list_dependencies:
   #artifacts:
   #paths:
   #  - .public
-
-# Build the application
-build:
-  image: $NODE_IMAGE
-  stage: build
-  tags:
-    - ska-default
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - yarn install --immutable
-    - yarn build
 
 # export the report
 pages:
@@ -246,6 +221,9 @@ helm-chart-build:
 
 oci-image-build:
   allow_failure: true
+
+pages:deploy:
+  stage: pages
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
