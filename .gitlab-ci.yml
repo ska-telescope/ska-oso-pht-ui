@@ -77,8 +77,9 @@ install_dependencies:
       - node_modules/
     policy: push
 
-code_analysis:
+js-lint:
   image: $NODE_IMAGE
+  allow_failure: true
   stage: lint
   tags:
     - ska-default
@@ -97,49 +98,6 @@ code_analysis:
       - build/
     reports:
       junit: build/reports/linting.xml
-
-js-lint:
-  cache:
-    paths:
-    # - node_modules/
-    policy: pull
-  before_script:
-    # - mkdir -p build/reports
-  after_script:
-    # - yarn install --immutable
-    # - yarn code-analysis
-    # - mv linting.xml build/reports/linting.xml
-  artifacts:
-    paths:
-    # - build/
-    reports:
-      # junit: build/reports/linting.xml
-
-test_and_coverage:
-  allow_failure: true
-  image: cypress/browsers:22.16.0
-  stage: test
-  tags:
-    - ska-default
-  before_script:
-    - rm -rf node_modules
-    - mkdir -p build/reports
-    - mkdir -p build/tests
-    - mkdir -p build/.nyc_output
-    - yarn install --immutable
-  script:
-    - yarn test:cypress:component:ci
-    - yarn merge-component-reports
-    - yarn test:coverage:report:ci
-    - cp build/reports/cobertura-coverage.xml build/tests/e2e-coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: build/tests/e2e-coverage.xml
-      junit: build/tests/component-tests.xml, build/tests/e2e-coverage.xml
-    paths:
-      - build/
 
 stop-integration-test:
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY
@@ -199,10 +157,7 @@ pages:
   tags:
     - ska-default
   dependencies:
-    # - test-counts
-    - test_and_coverage
     - js-e2e-test
-    # - list_dependencies
     - code_quality
   script:
     - mv public/* .
@@ -212,6 +167,28 @@ pages:
     paths:
       - public
     expire_in: 30 days
+
+    # ----------------------------------------------------------------------------------------
+
+js-test:
+  allow_failure: true
+  before_script:
+    - mkdir -p build/coverage
+  script:
+    - yarn install
+    - yarn test:unit
+    - cp build/coverage/cobertura-coverage.xml build/reports/code-coverage.xml
+  cache:
+    paths:
+      - node_modules/
+    policy: pull
+  artifacts:
+    when: always
+    reports:
+      junit: build/reports/unit-tests.xml
+    paths:
+      - build/reports
+    expire_in: 7 days
 
 ######################### PHT SPECIFIC STUFF BELOW HERE #################################
 
@@ -268,10 +245,6 @@ helm-chart-build:
   allow_failure: true
 
 oci-image-build:
-  allow_failure: true
-
-js-lint:
-  image: $NODE_IMAGE
   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
