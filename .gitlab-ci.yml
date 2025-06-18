@@ -13,6 +13,10 @@ variables:
 #  JS_NODE_VERSION: 22
 
 include:
+  # Code quality
+  - template: Code-Quality.gitlab-ci.yml
+  # Accessibility
+  - template: 'Verify/Accessibility.gitlab-ci.yml'
   # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'
