@@ -304,7 +304,7 @@ js-e2e-test:
       junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
   rules:
     - exists:
-        - cypress/integration/**/*.test.tsx
+        - cypress/integration/**/*.test.js
 
 code_quality:
   # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
