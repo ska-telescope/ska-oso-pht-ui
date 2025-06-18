@@ -25,6 +25,7 @@ import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import D3PieChart from '@/components/charts/D3PieChart';
+import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
@@ -123,6 +124,7 @@ export default function ReviewDashboard() {
 
   return (
     <>
+      <PageBannerPMT hideOverviewButton title={t('menuOptions.overview')} />
       <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-around">
         {panelButton('menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
         {panelButton('menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}

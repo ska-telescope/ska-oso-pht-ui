@@ -1,5 +1,6 @@
-import Box from '@mui/material/Box';
+import { t } from 'i18next';
+import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 
 export default function ReviewPage() {
-  return <Box p={1}>I am the Review Page</Box>;
+  return <PageBannerPMT title={t('menuOptions.reviews')} />;
 }
