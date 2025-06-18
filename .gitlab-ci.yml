@@ -99,6 +99,8 @@ code_analysis:
       junit: build/reports/linting.xml
 
 js-lint:
+  image: $NODE_IMAGE
+  allow_failure: true
   cache:
     paths:
     # - node_modules/
@@ -270,9 +272,6 @@ helm-chart-build:
 oci-image-build:
   allow_failure: true
 
-js-lint:
-  image: $NODE_IMAGE
-  allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
