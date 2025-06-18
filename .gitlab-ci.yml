@@ -148,11 +148,12 @@ pages:
 js-test:
   allow_failure: true
   before_script:
-    - mkdir -p build/coverage
+    - mkdir -p build/reports
   script:
     - yarn install
     - yarn test:unit
-    - cp build/coverage/cobertura-coverage.xml build/reports/code-coverage.xml
+  after_script:
+    - cp build/reports/unit-tests.xml build/reports/code-coverage.xml
   cache:
     paths:
       - node_modules/
