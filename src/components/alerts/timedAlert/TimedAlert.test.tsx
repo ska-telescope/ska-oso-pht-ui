@@ -1,5 +1,5 @@
 import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import '@testing-library/jest-dom';
@@ -9,7 +9,7 @@ describe('<TimedAlert />', () => {
   test('renders correctly (INFO)', () => {
     render(
       <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Info} testId={''} text={''} />
+        <TimedAlert color={AlertColorTypes.Info} delay={1} testId={''} text={''} />
       </StoreProvider>
     );
   });
@@ -27,4 +27,5 @@ describe('<TimedAlert />', () => {
       </StoreProvider>
     );
   });
+  screen.queryByTestId('CloseIcon')?.click();
 });
