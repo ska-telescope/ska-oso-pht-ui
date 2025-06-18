@@ -29,6 +29,12 @@ include:
   # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
+  # Upload BDD test results to JIRA X-ray
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
+    # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
   # Helm Chart linting and Publish
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
