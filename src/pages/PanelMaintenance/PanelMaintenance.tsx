@@ -14,7 +14,7 @@ import {
   Tabs,
   Typography
 } from '@mui/material';
-import { PATH } from '../../utils/constants';
+import { PATH, PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import OverviewButton from '@/components/button/Overview/Overview';
 import GetButton from '@/components/button/Get/Get';
@@ -67,7 +67,7 @@ export default function PanelMaintenance() {
 
   const addPanelButton = () => (
     <AddButton
-      action={clickFunction}
+      action={() => navigate(PMT[3])}
       testId="addPanelButton"
       title={'addPanel.label'}
       toolTip="addPanel.toolTip"

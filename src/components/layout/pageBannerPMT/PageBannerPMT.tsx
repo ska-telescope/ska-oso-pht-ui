@@ -1,16 +1,11 @@
 import { Box, Grid2, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import OverviewButton from '@/components/button/Overview/Overview';
-import { PATH } from '@/utils/constants';
 
 interface PageBannerPMTProps {
-  hideOverviewButton?: boolean;
+  backBtn?: JSX.Element;
   title: string;
 }
 
-export default function PageBannerPMT({ hideOverviewButton = false, title }: PageBannerPMTProps) {
-  const navigate = useNavigate();
-
+export default function PageBannerPMT({ backBtn, title }: PageBannerPMTProps) {
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
       {title?.toUpperCase()}
@@ -26,16 +21,7 @@ export default function PageBannerPMT({ hideOverviewButton = false, title }: Pag
       justifyContent="flex-start"
       pl={2}
     >
-      <Grid2>
-        {!hideOverviewButton && (
-          <OverviewButton
-            action={() => navigate(PATH[1])}
-            testId="overviewButton"
-            title={'overview.label'}
-            toolTip="overview.toolTip"
-          />
-        )}
-      </Grid2>
+      <Grid2>{backBtn}</Grid2>
     </Grid2>
   );
 

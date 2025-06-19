@@ -151,7 +151,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     >
       <Grid item>
         {backPage && backPage > 0 && (
-          <PreviousPageButton title="button.cancel" action={prevPageNav} />
+          <PreviousPageButton title="cancelBtn.label" action={prevPageNav} />
         )}
         {!backPage && <HomeButton />}
       </Grid>
@@ -272,7 +272,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
-          onConfirmLabel={t('button.confirmSubmit')}
+          onConfirmLabel={t('confirmSubmitBtn.label')}
         />
       )}
       {openValidationResults && (

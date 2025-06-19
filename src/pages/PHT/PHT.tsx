@@ -28,6 +28,7 @@ import ReviewPage from '../ReviewPage/ReviewPage';
 import packageJson from '../../../package.json';
 import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
+import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { ButtonUserMenu } from '@/components/button/UserMenu/UserMenu';
 
@@ -51,7 +52,8 @@ const ROUTES = [
   { path: PATH[3], element: <AddDataProduct /> },
   { path: PMT[0], element: <PanelMaintenance /> },
   { path: PMT[1], element: <ReviewPage /> },
-  { path: PMT[2], element: <ReviewDashboard /> }
+  { path: PMT[2], element: <ReviewDashboard /> },
+  { path: PMT[3], element: <ReviewPanelEntry /> }
 ];
 
 // declare const window: any;
