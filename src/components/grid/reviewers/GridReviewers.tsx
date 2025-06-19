@@ -12,7 +12,12 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '@/utils/types/proposal';
-import { FOOTER_SPACER, NOT_SPECIFIED, REVIEWER_STATUS, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
+import {
+  FOOTER_SPACER,
+  NOT_SPECIFIED,
+  REVIEWER_STATUS,
+  SEARCH_TYPE_OPTIONS_REVIEWERS
+} from '@/utils/constants';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import { storeCycleData } from '@/utils/storage/cycleData';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
@@ -26,7 +31,11 @@ interface GridProposalsProps {
   currentPanel: Panel;
 }
 
-export default function GridProposals({ height = '50vh', listOnly = false, currentPanel }: GridProposalsProps) {
+export default function GridProposals({
+  height = '50vh',
+  listOnly = false,
+  currentPanel
+}: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
@@ -34,16 +43,14 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
 
-  const [,setAxiosError] = React.useState('');
-  const [axiosViewError,] = React.useState('');
+  const [, setAxiosError] = React.useState('');
+  const [axiosViewError] = React.useState('');
 
   const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
-  const [fetchList,] = React.useState(false);
+  const [fetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
 
-
-  
   React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetReviewerList();
@@ -56,12 +63,10 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
     };
     fetchData();
   }, [fetchList]);
- 
 
   React.useEffect(() => {
     setLocalPanel(currentPanel);
   }, [currentPanel]);
-
 
   const displayStatus = (status: any) => {
     return status
@@ -70,10 +75,10 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
   };
 
   const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
-      setLocalPanel({
-        ...localPanel,
-        reviewers: reviewerPanels
-      });
+    setLocalPanel({
+      ...localPanel,
+      reviewers: reviewerPanels
+    });
   };
 
   /*
@@ -90,7 +95,10 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
 
   const isReviewerSelected = (reviewerId: string): boolean => {
     console.log('/// selected', localPanel?.reviewers);
-    console.log('/// selected', localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId));
+    console.log(
+      '/// selected',
+      localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId)
+    );
     return localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId) !== undefined;
   };
 
@@ -98,8 +106,8 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
     const reviewers = localPanel.reviewers;
     reviewers.push(rec);
     setReviewerPanels(reviewers);
-      console.log('/// in addReviewerPanel:', localPanel?.reviewers);
-    };
+    console.log('/// in addReviewerPanel:', localPanel?.reviewers);
+  };
 
   const addPanelReviewer = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
@@ -135,7 +143,6 @@ export default function GridProposals({ height = '50vh', listOnly = false, curre
           onChange={() => reviewerSelectedToggle(e.row)}
         />
       </Box>
-
     )
   };
 

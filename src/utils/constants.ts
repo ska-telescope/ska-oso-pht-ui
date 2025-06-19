@@ -289,7 +289,7 @@ export const PROPOSAL_STATUS = {
 
 export const REVIEWER_STATUS = {
   ACCEPTED: 'accepted',
-  DECLINED: 'declined',
+  DECLINED: 'declined'
 };
 
 export const TYPE_ZOOM = 0;

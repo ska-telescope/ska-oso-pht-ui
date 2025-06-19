@@ -29,9 +29,11 @@ export default function PanelMaintenance() {
   const navigate = useNavigate();
 
   const [theValue, setTheValue] = React.useState(0);
-  const [panels] = React.useState<Panel[]>([{ panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
-      { panelId: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
-      { panelId: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }]);
+  const [panels] = React.useState<Panel[]>([
+    { panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { panelId: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { panelId: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
+  ]);
   const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
 
   React.useEffect(() => {
@@ -100,7 +102,6 @@ export default function PanelMaintenance() {
       toolTip="assignProposals.toolTip"
     />
   );
-
 
   const getpanelListItems = () => {
     return panels.map(panel => (
