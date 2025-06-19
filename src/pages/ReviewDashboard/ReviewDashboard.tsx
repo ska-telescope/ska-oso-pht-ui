@@ -25,6 +25,7 @@ import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import D3PieChart from '@/components/charts/D3PieChart';
+import D3BarChart from '@/components/charts/D3BarChart';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 
 const MIN_CARD_WIDTH = 350;
@@ -58,6 +59,15 @@ function groupByField(
   }, {} as Record<string, number>);
 
   return Object.entries(counts).map(([name, value]) => ({ name, value }));
+}
+
+function groupRankDistribution(data: typeof proposals) {
+  const counts: Record<string, number> = {};
+  for (const item of data) {
+    const key = item.rank?.toString() || 'Unranked';
+    counts[key] = (counts[key] || 0) + 1;
+  }
+  return Object.entries(counts).map(([rank, count]) => ({ group: rank, rank: count }));
 }
 
 const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
@@ -121,6 +131,7 @@ export default function ReviewDashboard() {
 
   const proposalStatusData = groupByField(proposals, 'status', filter, search);
   const scienceCategoryData = groupByField(proposals, 'category', filter, search);
+  const barChartData = groupRankDistribution(proposals);
 
   return (
     <>
@@ -206,6 +217,11 @@ export default function ReviewDashboard() {
               showTotal={true}
               centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
+          </ResizablePanel>
+        </Grid2>
+        <Grid2>
+          <ResizablePanel title="Reviewer Rank Distribution">
+            <D3BarChart data={barChartData} fields={['rank']} groupBy={['group']} />
           </ResizablePanel>
         </Grid2>
         <Grid2>

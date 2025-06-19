@@ -4,23 +4,25 @@ import * as d3 from 'd3';
 type DataRow = Record<string, any>;
 type Props = {
   data: DataRow[];
+  category: string;
   fields: string[];
-  groupBy: string[];
 };
 
-const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
+const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!svgRef.current || !tooltipRef.current) return;
 
+    // dimensions
     const margin = { top: 50, right: 40, bottom: 50, left: 50 };
     const fullWidth = 600;
     const fullHeight = 350;
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
+    // responsive SVG
     const svg = d3.select(svgRef.current)
       .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -30,29 +32,28 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
     const fontSize = rectSize * 0.8;
     const legendSpacing = rectSize * 6;
 
+    // tableau 10 color scale
     const color = d3.scaleOrdinal<string>()
       .domain(fields)
       .range(d3.schemeTableau10);
 
-    const getGroupLabel = (d: DataRow) => groupBy.map(key => d[key]).join(' - ');
-    const groups = data.map(getGroupLabel);
-
+    // scales
+    const groups = Array.from(new Set(data.map(d => d[category])));
     const x0 = d3.scaleBand<string>()
       .domain(groups)
       .range([margin.left, margin.left + width])
       .padding(0.2);
-
     const x1 = d3.scaleBand<string>()
       .domain(fields)
       .range([0, x0.bandwidth()])
       .padding(0.1);
-
     const maxValue = d3.max(data, d => Math.max(...fields.map(f => +d[f] || 0))) || 0;
     const y = d3.scaleLinear()
       .domain([0, maxValue])
       .nice()
       .range([margin.top + height, margin.top]);
 
+    // matte-like filter (subtle shadows)
     const defs = svg.append('defs');
     const filter = defs.append('filter').attr('id', 'matte-bar');
     filter.append('feDropShadow')
@@ -62,6 +63,7 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
       .attr('flood-color', '#999')
       .attr('flood-opacity', '0.4');
 
+    // legend
     const legendWidth = fields.length * legendSpacing;
     const legendGroup = svg.append('g')
       .attr('transform', `translate(${(fullWidth - legendWidth) / 2}, ${margin.top / 2})`);
@@ -79,6 +81,7 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
         .text(field.charAt(0).toUpperCase() + field.slice(1));
     });
 
+    // axes
     svg.append('g')
       .attr('transform', `translate(0, ${margin.top + height})`)
       .call(d3.axisBottom(x0))
@@ -91,11 +94,12 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
       .selectAll('text')
       .attr('font-size', `${fontSize}px`);
 
-    data.forEach((entry, gi) => {
-      const groupLabel = getGroupLabel(entry);
+    // bars & labels
+    groups.forEach((grp, gi) => {
       fields.forEach((field, fi) => {
-        const value = +entry[field] || 0;
-        const x = x0(groupLabel)! + x1(field)!;
+        const entry = data.find(d => d[category] === grp);
+        const value = entry ? +entry[field] || 0 : 0;
+        const x = x0(grp)! + x1(field)!;
         const y0 = margin.top + height;
         const y1 = y(value);
 
@@ -129,11 +133,12 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
           .text(value);
       });
     });
-  }, [data, fields, groupBy]);
+
+  }, [data, category, fields]);
 
   return (
-    <div className="relative flex flex-col sm:flex-row justify-between items-start w-full h-full gap-4 p-2">
-      <svg ref={svgRef} className="w-full sm:w-[70%] h-full" />
+    <div className="relative flex justify-between items-start w-full h-full gap-4 p-2">
+      <svg ref={svgRef} className="w-[70%] h-full" />
       <div
         ref={tooltipRef}
         className="absolute bg-white border border-gray-300 p-2 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 text-base"
