@@ -1,4 +1,3 @@
-import React from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import BaseButton from '../Base/Button';
 interface TeamInviteButtonProps {
@@ -14,7 +13,7 @@ export default function TeamInviteButton({
   disabled = false,
   action,
   primary = false,
-  title = 'button.sendInvite',
+  title = 'sendInviteBtn.label',
   testId = 'teamInviteButtonTestId',
   toolTip
 }: TeamInviteButtonProps) {

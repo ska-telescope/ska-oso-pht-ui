@@ -7,12 +7,12 @@ describe('TeamInvite Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     render(<TeamInviteButton action={mockAction} />);
-    expect(screen.getByTestId('teamInviteButtonTestId')).toHaveTextContent('button.sendInvite');
+    expect(screen.getByTestId('teamInviteButtonTestId')).toHaveTextContent('sendInviteBtn.label');
     screen.getByTestId('teamInviteButtonTestId').click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     render(<TeamInviteButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('teamInviteButtonTestId')).toHaveTextContent('button.sendInvite');
+    expect(screen.getByTestId('teamInviteButtonTestId')).toHaveTextContent('sendInviteBtn.label');
   });
 });

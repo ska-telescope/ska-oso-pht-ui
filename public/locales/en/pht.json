@@ -9,14 +9,6 @@
   "yes": "Yes",
   "no": "No",
   "none": "None",
-  "button": {
-    "confirmDeleteMember": "Confirm Team Member Deletion",
-    "confirmSubmit": "Confirm Proposal Submission",
-    "close": "Close",
-    "create": "Create",
-    "sendInvite": "Send invitation",
-    "update": "Update"
-  },
   "abstract": {
     "label": "Abstract",
     "help": "The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
@@ -122,11 +114,23 @@
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal."
   },
+  "closeBtn": {
+    "label": "Close"
+  },
   "confirmBtn": {
     "label": "Confirm"
   },
+  "confirmDeleteMemberBtn": {
+    "label": "Confirm Team Member Deletion"
+  },
+  "confirmSubmitBtn": {
+    "label": "Confirm Proposal Submission"
+  },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
+  },
+  "createBtn": {
+    "label": "Create"
   },
   "customArray": {
     "result": "N/A (no beam information available)"
@@ -592,6 +596,9 @@
       "inviteSent": "Invite sent"
     }
   },
+  "reviewPanelEntry": {
+    "title": "Review Panel Entry"
+  },
   "rightAscension": {
     "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
     "label": "Right ascension"
@@ -632,6 +639,9 @@
   },
   "searchForMember": {
     "label": "Search for a member"
+  },
+  "sendInviteBtn": {
+    "label": "Send invitation"
   },
   "skyDirection": {
     "help": {
@@ -843,6 +853,9 @@
     "help": "",
     "helper": "Please enter your title information. This field supports latex syntax. - Word count {{current}} / {{max}}"
   },
+  "updateBtn": {
+    "label": "Update"
+  },
   "updated": {
     "label": "Last Updated"
   },
@@ -1014,7 +1027,8 @@
     "15": {
       "title": "Panel Maintenance Page",
       "desc": "Panel maintenance",
-      "empty": "NO PANELS AVAILABLE"
+      "empty": "NO PANELS AVAILABLE",
+      "toolTip": ""
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

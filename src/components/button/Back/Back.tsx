@@ -1,7 +1,7 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BaseButton from '../Base/Button';
 
-interface OverviewButtonProps {
+interface BackButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -10,14 +10,14 @@ interface OverviewButtonProps {
   toolTip?: string;
 }
 
-export default function OverviewButton({
+export default function BackButton({
   disabled = false,
   action,
   primary = false,
-  title = 'overviewBtn.label',
-  testId = 'overviewButtonTestId',
+  title = 'backBtn.label',
+  testId = 'backButtonTestId',
   toolTip
-}: OverviewButtonProps) {
+}: BackButtonProps) {
   return (
     <BaseButton
       action={action}

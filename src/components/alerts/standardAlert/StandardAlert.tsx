@@ -53,7 +53,7 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
         </Grid2>
         <Grid2>
           {closeFunc ? (
-            <CloseIcon onClick={() => closeFunc()} toolTip={t('button.close')} />
+            <CloseIcon onClick={() => closeFunc()} toolTip={t('btnClose.label')} />
           ) : (
             <></>
           )}
