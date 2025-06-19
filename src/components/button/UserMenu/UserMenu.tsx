@@ -1,7 +1,10 @@
 import React from 'react';
-import { Menu } from '@mui/material';
+import { Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { PMT, PATH } from '@/utils/constants';
 
 export type Children = JSX.Element | JSX.Element[] | null;
 
@@ -20,7 +23,6 @@ export interface ButtonUserMenuProps {
 export function ButtonUserMenu({
   ariaDescription = 'User Button',
   color = ButtonColorTypes.Inherit,
-  children,
   label = 'username',
   onClick,
   photo,
@@ -29,6 +31,8 @@ export function ButtonUserMenu({
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
+  const { t } = useTranslation('pht');
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -36,6 +40,11 @@ export function ButtonUserMenu({
     } else {
       setAnchorEl(event.currentTarget);
     }
+  };
+
+  const onMenuSelect = (thePath: string) => {
+    navigate(thePath);
+    setAnchorEl(null);
   };
 
   return (
@@ -64,16 +73,14 @@ export function ButtonUserMenu({
         toolTip={toolTip}
         variant={ButtonVariantTypes.Contained}
       />
-      <Menu
-        id="user-menu"
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={() => setAnchorEl(null)}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button'
-        }}
-      >
-        {children}
+      <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
+        <MenuItem onClick={() => onMenuSelect(PMT[2])}>{t('menuOptions.overview')}</MenuItem>
+        <MenuItem onClick={() => onMenuSelect(PATH[0])}>{t('menuOptions.proposals')}</MenuItem>
+        <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
+        <MenuItem onClick={() => onMenuSelect(PMT[0])}>{t('menuOptions.panelSummary')}</MenuItem>
+        <MenuItem onClick={() => onMenuSelect(PMT[1])}>{t('menuOptions.reviews')}</MenuItem>
+        <Divider component="li" />
+        <MenuItem disabled> Logout</MenuItem>
       </Menu>
     </>
   );

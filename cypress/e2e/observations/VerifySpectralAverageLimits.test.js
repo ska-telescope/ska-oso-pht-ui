@@ -4,7 +4,8 @@ import {
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
-  createStandardProposal
+  createStandardProposal,
+  initialize
 } from '../common/common';
 import {
   verifyContinuumSpectralAverageRangeAA1,
@@ -15,6 +16,7 @@ import {
 } from './observations';
 
 beforeEach(() => {
+  initialize();
   createStandardProposal();
   //navigate to observation page
   clickToGeneralPage();
