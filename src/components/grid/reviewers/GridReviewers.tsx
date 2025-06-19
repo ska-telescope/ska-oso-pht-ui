@@ -33,7 +33,6 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   const { updateAppContent2 } = storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
-  const [axiosViewError, setAxiosViewError] = React.useState('');
 
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
@@ -217,10 +216,10 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
         </Grid>
       )}
       <Grid item xs={12} pt={1}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+        {!axiosError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('reviewers.empty')} testId="helpPanelId" />
         )}
-        {!axiosViewError && filteredData.length > 0 && (
+        {!axiosError && filteredData.length > 0 && (
           <div>
             <DataGrid
               maxHeight={height}
@@ -230,6 +229,9 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
               height={DATA_GRID_HEIGHT}
             />
           </div>
+        )}
+        {axiosError && (
+          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

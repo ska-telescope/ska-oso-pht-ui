@@ -37,9 +37,14 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
+  forReview?: boolean;
 }
 
-export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
+export default function GridProposals({
+  height = '50vh',
+  listOnly = false,
+  forReview = false
+}: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const navigate = useNavigate();
@@ -229,7 +234,8 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
     headerName: t('scienceCategory.label'),
     flex: 2,
     minWidth: 250,
-    renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
+    renderCell: (e: { row: any }) =>
+      e?.row?.scienceCategory ? t('scienceCategory.' + e.row.scienceCategory) : ''
   };
 
   const colStatus = {
@@ -271,6 +277,7 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   const stdColumns = [
     ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
   ];
+  const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   function filterProposals() {
     const fields: (keyof Proposal)[] = ['title'];
@@ -311,13 +318,13 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   );
 
   const getTheProposal = async (id: string) => {
-    helpComponent('');
+    helpComponent({});
     clearApp();
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
-      updateAppContent1(null);
-      updateAppContent2(null);
+      updateAppContent1({});
+      updateAppContent2({});
       storeProposalCopy(null);
       setAxiosViewError(response);
       return false;
@@ -428,10 +435,20 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
               maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
-              columns={stdColumns}
+              columns={forReview ? reviewColumns : stdColumns}
               height={DATA_GRID_HEIGHT}
             />
           </div>
+        )}
+        {axiosViewError && (
+          <Alert
+            color={AlertColorTypes.Error}
+            testId="axiosViewErrorTestId"
+            text={axiosViewError}
+          />
+        )}
+        {axiosError && (
+          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

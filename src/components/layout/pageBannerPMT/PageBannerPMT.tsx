@@ -13,7 +13,7 @@ export default function PageBannerPMT({ hideOverviewButton = false, title }: Pag
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {title.toUpperCase()}
+      {title?.toUpperCase()}
     </Typography>
   );
 

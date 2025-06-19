@@ -7,7 +7,7 @@ import StandardAlert from '../standardAlert/StandardAlert';
 const SECS = 2000;
 
 interface TimedAlertProps {
-  color: AlertColorTypes;
+  color: typeof AlertColorTypes;
   delay?: number;
   testId: string;
   text: string;
@@ -17,7 +17,7 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
   const [show, setShow] = React.useState(false);
   const { updateAppContent5 } = storageObject.useStore();
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       message: str,

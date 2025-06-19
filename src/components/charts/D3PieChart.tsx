@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import useTheme from '@mui/material/styles/useTheme';
 
 type PieData = { name: string; value: number };
 
@@ -12,6 +13,7 @@ type Props = {
 const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (!svgRef.current || !tooltipRef.current) return;
@@ -161,6 +163,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         .attr('dy', '0.35em')
         .attr('font-size', '20px')
         .attr('font-weight', 'bold')
+        .style('fill', theme.palette.primary.contrastText)
         .text(centerLabel);
     }
 
@@ -196,6 +199,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
       .attr('font-size', '14px')
+      .style('fill', theme.palette.primary.contrastText)
       .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`);
   }, [data, showTotal, centerText]);
 
