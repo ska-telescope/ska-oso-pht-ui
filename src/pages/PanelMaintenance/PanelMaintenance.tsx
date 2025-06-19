@@ -73,7 +73,7 @@ export default function PanelMaintenance() {
     <AddButton
       action={() => navigate(PMT[3])}
       testId="addPanelButton"
-      title={'addPanel.label'}
+      title=""
       toolTip="addPanel.toolTip"
     />
   );
@@ -92,11 +92,6 @@ export default function PanelMaintenance() {
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
-          <Grid mr={5} pt={1}>
-            {addPanelButton()}
-          </Grid>
-        </Grid>
         <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
           <Grid item p={2} sm={12} md={5} lg={3}>
             <Box
@@ -117,7 +112,12 @@ export default function PanelMaintenance() {
                   marginLeft: '-2px'
                 }}
               >
-                {panelsSectionTitle()}
+                <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                  <Grid mr={20} pt={1}>
+                    {panelsSectionTitle()}
+                  </Grid>
+                  <Grid>{addPanelButton()}</Grid>
+                </Grid>
               </Card>
               <List>
                 {getpanelListItems().length > 0 ? (
