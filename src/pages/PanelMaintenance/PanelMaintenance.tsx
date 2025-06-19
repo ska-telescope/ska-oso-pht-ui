@@ -17,11 +17,10 @@ import {
 import { PATH, PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import BackButton from '@/components/button/Back/Back';
-import GetButton from '@/components/button/Get/Get';
-import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import { Panel } from '@/utils/types/panel';
+import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -55,12 +54,6 @@ export default function PanelMaintenance() {
     navigate(PATH[1]);
   };
 
-  const pageDescription = () => (
-    <Typography align="center" minHeight="5vh">
-      {t('page.15.desc')}
-    </Typography>
-  );
-
   const panelsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh">
       {t('panels.label')}
@@ -85,24 +78,6 @@ export default function PanelMaintenance() {
     />
   );
 
-  const getReviewersButton = () => (
-    <GetButton
-      action={clickFunction}
-      testId="getReviewersButton"
-      title={'getReviewers.label'}
-      toolTip="getReviewers.toolTip"
-    />
-  );
-
-  const assignProposalsButton = () => (
-    <AssignButton
-      action={clickFunction}
-      testId="assignProposalsButton"
-      title={'assignProposals.label'}
-      toolTip="assignProposals.toolTip"
-    />
-  );
-
   const getpanelListItems = () => {
     return panels.map(panel => (
       <ListItem key={panel.panelId} sx={{ bgcolor: 'transparent' }}>
@@ -115,24 +90,11 @@ export default function PanelMaintenance() {
 
   return (
     <>
+      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid item xs={12}>
-          {pageDescription()}
-        </Grid>
         <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
           <Grid mr={5} pt={1}>
-            {backButton()}
-          </Grid>
-        </Grid>
-        <Grid container p={5} lg={9} direction="row" justifyContent="flex-end">
-          <Grid mr={5} pt={1}>
             {addPanelButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {getReviewersButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {assignProposalsButton()}
           </Grid>
         </Grid>
         <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">

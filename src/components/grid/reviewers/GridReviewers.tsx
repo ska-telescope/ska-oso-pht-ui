@@ -39,7 +39,6 @@ export default function GridProposals({
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
   const [axiosError, setAxiosError] = React.useState('');
-
   const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
   const [fetchList] = React.useState(false);
 
@@ -75,44 +74,32 @@ export default function GridProposals({
     });
   };
 
-  const deletePanelReviewer = (reviewer: Reviewer) => {
-    /*
-    function filterRecords(id: string) {
-      return localPanel?.reviewers.filter(
-        item => !(item.panelId === localPanel.panelId && item.reviewerId === id)
-      ) ?? [];
-    }
-    setReviewerPanels(filterRecords(reviewer.id));
-    */
+  const deleteReviewerPanel = (reviewer: Reviewer) => {
     const reviewers = localPanel.reviewers.filter(entry => entry.reviewerId !== reviewer.id);
     setReviewerPanels(reviewers);
   };
 
   const isReviewerSelected = (reviewerId: string): boolean => {
-    return localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId) !== undefined;
+    return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
   };
 
-  const addReviewerPanel = (rec: PanelReviewer) => {
-    const reviewers = localPanel.reviewers;
-    reviewers.push(rec);
-    setReviewerPanels(reviewers);
-  };
-
-  const addPanelReviewer = (reviewer: Reviewer) => {
+  const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
       panelId: localPanel?.panelId ?? '',
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.ACCEPTED
     };
-    addReviewerPanel(rec);
+    const reviewers = localPanel.reviewers;
+    reviewers.push(rec);
+    setReviewerPanels(reviewers);
   };
 
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
     if (isReviewerSelected(reviewer.id)) {
-      deletePanelReviewer(reviewer);
+      deleteReviewerPanel(reviewer);
     } else {
-      addPanelReviewer(reviewer);
+      addReviewerPanel(reviewer);
     }
   };
 
@@ -126,7 +113,7 @@ export default function GridProposals({
         <TickBox
           label=""
           testId="linkedTickBox"
-          checked={isReviewerSelected(e.row.reviewerId)}
+          checked={isReviewerSelected(e.row.id)}
           onChange={() => reviewerSelectedToggle(e.row)}
         />
       </Box>
