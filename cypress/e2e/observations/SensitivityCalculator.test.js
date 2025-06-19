@@ -9,12 +9,14 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
+  initialize,
   verifyObservationInTable
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
 
 beforeEach(() => {
+  initialize();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createStandardProposal();
   //navigate to observation page
