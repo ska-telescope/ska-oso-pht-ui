@@ -81,20 +81,26 @@ export default function GridProposals({
     });
   };
 
-  /*
   const deletePanelReviewer = (reviewer: Reviewer) => {
+    /*
     function filterRecords(id: string) {
       return localPanel?.reviewers.filter(
         item => !(item.panelId === localPanel.panelId && item.reviewerId === id)
       ) ?? [];
     }
     setReviewerPanels(filterRecords(reviewer.id));
-    console.log('/// in deletePanelReviewer:', currentPanel?.reviewers);
+    */
+   const reviewers = localPanel.reviewers.filter(
+      entry => entry.reviewerId !== reviewer.id
+    );
+    console.log('/// in deletePanelReviewer currentPanel reviewers:', currentPanel?.reviewers);
+    console.log('/// reviewers after delete:', reviewers);
+    setReviewerPanels(reviewers);
+    console.log('/// in deletePanelReviewer currentPanel reviewers:', currentPanel?.reviewers);
   };
-  */
 
   const isReviewerSelected = (reviewerId: string): boolean => {
-    console.log('/// selected', localPanel?.reviewers);
+    // console.log('/// selected', localPanel?.reviewers);
     console.log(
       '/// selected',
       localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId)
