@@ -38,7 +38,7 @@ describe('<DeleteObservationConfirmation />', () => {
           num13mAntennas: undefined,
           numStations: undefined
         }}
-        open={false}
+        open={true}
         setOpen={vi.fn()}
       />
     );

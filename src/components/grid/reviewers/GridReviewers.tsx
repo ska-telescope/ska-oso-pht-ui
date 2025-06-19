@@ -300,10 +300,10 @@ export default function GridProposals({
         </Grid>
       )}
       <Grid item xs={12} pt={1}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+        {!axiosError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('reviewers.empty')} testId="helpPanelId" />
         )}
-        {!axiosViewError && filteredData.length > 0 && (
+        {!axiosError && filteredData.length > 0 && (
           <div>
             <DataGrid
               maxHeight={height}
@@ -313,6 +313,9 @@ export default function GridProposals({
               height={DATA_GRID_HEIGHT}
             />
           </div>
+        )}
+        {axiosError && (
+          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

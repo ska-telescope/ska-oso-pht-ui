@@ -1,16 +1,19 @@
 import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ValidationResults from './ValidationResults';
 
 describe('<ValidationResults />', () => {
   test('renders correctly ( empty proposal', () => {
-    render(<ValidationResults open={false} onClose={vi.fn()} proposal={null} results={[]} />);
+    const mockActionClose = vi.fn();
+    render(
+      <ValidationResults open={false} onClose={mockActionClose} proposal={null} results={[]} />
+    );
   });
   test('renders correctly', () => {
     render(
       <ValidationResults
-        open={false}
+        open={true}
         onClose={vi.fn()}
         proposal={{
           id: '',
@@ -44,5 +47,6 @@ describe('<ValidationResults />', () => {
         results={['LOOKS OK', 'NO ISSUES FOUND']}
       />
     );
+    screen.queryByTestId('cancelButtonTestId')?.click();
   });
 });

@@ -1032,7 +1032,7 @@ export default function ObservationEntry() {
               disabled={addButtonDisabled()}
               primary
               testId={isEdit() ? 'updateObservationButton' : 'addObservationButton'}
-              title={isEdit() ? 'button.update' : 'button.add'}
+              title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid>
         </Grid>

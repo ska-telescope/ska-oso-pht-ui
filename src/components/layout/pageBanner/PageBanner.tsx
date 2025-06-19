@@ -45,11 +45,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
-  const [validationResults, setValidationResults] = React.useState(null);
+  const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
   const getProposal = () => application.content2 as Proposal;
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       message: t(str),
@@ -92,14 +92,16 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const prevPageNav = () => {
-    navigate(NAV[backPage]);
+    if (backPage) {
+      navigate(NAV[backPage]);
+    }
   };
 
   const updateProposalResponse = response => {
     if (response && !response.error) {
       NotifyOK('saveBtn.success');
     } else {
-      NotifyError(response.error);
+      NotifyError(response.error ?? 'An unknown error occurred');
     }
   };
 
@@ -119,14 +121,16 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       setOpenProposalDisplay(false);
       navigate(PATH[0]);
     } else {
-      NotifyError(response.error);
+      NotifyError(response.error ?? 'An unknown error occurred');
       setOpenProposalDisplay(false);
     }
   };
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {LG ? t(`page.${pageNo}.titleShort`).toUpperCase() : t(`page.${pageNo}.title`).toUpperCase()}
+      {LG
+        ? t(`page.${pageNo}.titleShort`)?.toUpperCase()
+        : t(`page.${pageNo}.title`)?.toUpperCase()}
     </Typography>
   );
 
@@ -146,7 +150,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       pl={2}
     >
       <Grid item>
-        {backPage > 0 && <PreviousPageButton title="button.cancel" action={prevPageNav} />}
+        {backPage && backPage > 0 && (
+          <PreviousPageButton title="cancelBtn.label" action={prevPageNav} />
+        )}
         {!backPage && <HomeButton />}
       </Grid>
       <Grid item>
@@ -266,7 +272,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
-          onConfirmLabel={t('button.confirmSubmit')}
+          onConfirmLabel={t('confirmSubmitBtn.label')}
         />
       )}
       {openValidationResults && (
