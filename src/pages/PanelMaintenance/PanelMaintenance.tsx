@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { PATH, PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
-import OverviewButton from '@/components/button/Overview/Overview';
+import BackButton from '@/components/button/Back/Back';
 import GetButton from '@/components/button/Get/Get';
 import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -56,10 +56,10 @@ export default function PanelMaintenance() {
     </Typography>
   );
 
-  const overviewButton = () => (
-    <OverviewButton
+  const backButton = () => (
+    <BackButton
       action={clickFunction}
-      testId="overviewButton"
+      testId="backButtonTestId"
       title={'overview.label'}
       toolTip="overview.toolTip"
     />
@@ -119,7 +119,7 @@ export default function PanelMaintenance() {
         </Grid>
         <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
           <Grid mr={5} pt={1}>
-            {overviewButton()}
+            {backButton()}
           </Grid>
         </Grid>
         <Grid container p={5} lg={9} direction="row" justifyContent="flex-end">
