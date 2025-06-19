@@ -12,18 +12,21 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '@/utils/types/proposal';
-import { FOOTER_SPACER, NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
+import { FOOTER_SPACER, NOT_SPECIFIED, REVIEWER_STATUS, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import { storeCycleData } from '@/utils/storage/cycleData';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
+import { Panel } from '@/utils/types/panel';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
 
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
+  currentPanel: Panel;
 }
 
-export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
+export default function GridProposals({ height = '50vh', listOnly = false, currentPanel }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
@@ -31,22 +34,16 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
 
-  const { updateAppContent2 } = storageObject.useStore();
+  const [,setAxiosError] = React.useState('');
+  const [axiosViewError,] = React.useState('');
 
-  const [axiosError, setAxiosError] = React.useState('');
-  const [axiosViewError, setAxiosViewError] = React.useState('');
-
-  const [cycleData, setCycleData] = React.useState(false);
-  const [fetchList, setFetchList] = React.useState(false);
+  const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
+  const [fetchList,] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
 
-  React.useEffect(() => {
-    updateAppContent2((null as unknown) as Proposal);
-    setFetchList(!fetchList);
-    setCycleData(!cycleData);
-  }, []);
 
+  
   React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetReviewerList();
@@ -59,18 +56,12 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
     };
     fetchData();
   }, [fetchList]);
+ 
 
   React.useEffect(() => {
-    const cycleData = async () => {
-      const response = await GetCycleData();
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        storeCycleData(response);
-      }
-    };
-    cycleData();
-  }, [cycleData]);
+    setLocalPanel(currentPanel);
+  }, [currentPanel]);
+
 
   const displayStatus = (status: any) => {
     return status
@@ -78,27 +69,55 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
       : t('reviewers.statusCategory.' + NOT_SPECIFIED);
   };
 
-  const isReviewerSelected = (reviewerId: string): boolean => {
-    /*
-    getProposal().targetObservation.filter(
-      entry => entry.observationId === currObs?.id && entry.targetId === reviewerId
-    ).length > 0;
-    */
-    return reviewers.filter(entry => entry.id === reviewerId).length > 0;
+  const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
+      setLocalPanel({
+        ...localPanel,
+        reviewers: reviewerPanels
+      });
   };
 
-  const reviewerSelectedToggle = (el: any) => {
-    /*
-    if (isTargetSelected(el.id)) {
-      deleteObservationTarget(el.target);
-    } else {
-      addObservationTarget(el.target);
+  /*
+  const deletePanelReviewer = (reviewer: Reviewer) => {
+    function filterRecords(id: string) {
+      return localPanel?.reviewers.filter(
+        item => !(item.panelId === localPanel.panelId && item.reviewerId === id)
+      ) ?? [];
     }
-      */
-    if (isReviewerSelected(el.id)) {
-      // deleteObservationTarget(el.target);
+    setReviewerPanels(filterRecords(reviewer.id));
+    console.log('/// in deletePanelReviewer:', currentPanel?.reviewers);
+  };
+  */
+
+  const isReviewerSelected = (reviewerId: string): boolean => {
+    console.log('/// selected', localPanel?.reviewers);
+    console.log('/// selected', localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId));
+    return localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId) !== undefined;
+  };
+
+  const addReviewerPanel = (rec: PanelReviewer) => {
+    const reviewers = localPanel.reviewers;
+    reviewers.push(rec);
+    setReviewerPanels(reviewers);
+      console.log('/// in addReviewerPanel:', localPanel?.reviewers);
+    };
+
+  const addPanelReviewer = (reviewer: Reviewer) => {
+    const rec: PanelReviewer = {
+      reviewerId: reviewer.id,
+      panelId: localPanel?.panelId ?? '',
+      assignedOn: new Date().toISOString(),
+      status: REVIEWER_STATUS.ACCEPTED
+    };
+    addReviewerPanel(rec);
+  };
+
+  const reviewerSelectedToggle = (reviewer: Reviewer) => {
+    console.log('/// reviewer', reviewer);
+    console.log('/// currentPanel', currentPanel);
+    if (isReviewerSelected(reviewer.id)) {
+      deletePanelReviewer(reviewer);
     } else {
-      // addObservationTarget(el.target);
+      addPanelReviewer(reviewer);
     }
   };
 
@@ -116,6 +135,7 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
           onChange={() => reviewerSelectedToggle(e.row)}
         />
       </Box>
+
     )
   };
 

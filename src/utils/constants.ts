@@ -287,6 +287,11 @@ export const PROPOSAL_STATUS = {
   REJECTED: 'rejected'
 };
 
+export const REVIEWER_STATUS = {
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined',
+};
+
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 

@@ -21,6 +21,7 @@ import GetButton from '@/components/button/Get/Get';
 import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
+import { Panel } from '@/utils/types/panel';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -28,6 +29,14 @@ export default function PanelMaintenance() {
   const navigate = useNavigate();
 
   const [theValue, setTheValue] = React.useState(0);
+  const [panels] = React.useState<Panel[]>([{ panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
+      { panelId: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
+      { panelId: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }]);
+  const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
+
+  React.useEffect(() => {
+    setCurrentPanel(panels[0]); // Set the first panel as current by default for now
+  }, panels);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
@@ -92,20 +101,12 @@ export default function PanelMaintenance() {
     />
   );
 
-  const getPanels = () => {
-    return [
-      { id: 'P400', name: 'Stargazers' },
-      { id: 'P500', name: 'Buttons' },
-      { id: 'P600', name: 'Nashrakra' }
-    ];
-  };
 
   const getpanelListItems = () => {
-    const panels = getPanels();
     return panels.map(panel => (
-      <ListItem key={panel.id} sx={{ bgcolor: 'transparent' }}>
+      <ListItem key={panel.panelId} sx={{ bgcolor: 'transparent' }}>
         <ListItemButton>
-          <ListItemText primary={panel.name} secondary={panel.id} />
+          <ListItemText primary={panel.name} secondary={panel.panelId} />
         </ListItemButton>
       </ListItem>
     ));
@@ -200,7 +201,7 @@ export default function PanelMaintenance() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <GridReviewers />}
+              {theValue === 0 && <GridReviewers currentPanel={currentPanel} />}
               {theValue === 1 && <GridProposals />}
             </Box>
           </Grid>
