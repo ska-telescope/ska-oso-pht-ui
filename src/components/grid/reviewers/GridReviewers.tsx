@@ -21,6 +21,25 @@ import Reviewer from '@/utils/types/reviewer';
 import { Panel } from '@/utils/types/panel';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 
+export function filterReviewers(
+  reviewers: Reviewer[],
+  searchTerm: string,
+  searchTypeExpertise: string,
+  searchTypeAffiliation: string
+) {
+  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
+  return reviewers.filter(
+    item =>
+      fields.some(field =>
+        (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
+      ) &&
+      (searchTypeExpertise === '' ||
+        item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
+      (searchTypeAffiliation === '' ||
+        item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
+  );
+}
+
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
@@ -175,21 +194,9 @@ export default function GridProposals({
     ]
   ];
 
-  function filterReviewers() {
-    const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
-    return reviewers.filter(
-      item =>
-        fields.some(field =>
-          (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
-        ) &&
-        (searchTypeExpertise === '' ||
-          item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
-        (searchTypeAffiliation === '' ||
-          item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
-    );
-  }
-
-  const filteredData = reviewers ? filterReviewers() : [];
+  const filteredData = reviewers
+    ? filterReviewers(reviewers, searchTerm, searchTypeExpertise, searchTypeAffiliation)
+    : [];
 
   const ReviewersSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
