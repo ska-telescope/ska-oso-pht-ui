@@ -8,18 +8,14 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import Proposal from '@/utils/types/proposal';
 import {
   FOOTER_SPACER,
   NOT_SPECIFIED,
   REVIEWER_STATUS,
   SEARCH_TYPE_OPTIONS_REVIEWERS
 } from '@/utils/constants';
-import GetCycleData from '@/services/axios/getCycleData/getCycleData';
-import { storeCycleData } from '@/utils/storage/cycleData';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 import { Panel } from '@/utils/types/panel';
@@ -42,9 +38,7 @@ export default function GridProposals({
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
-
-  const [, setAxiosError] = React.useState('');
-  const [axiosViewError] = React.useState('');
+  const [axiosError, setAxiosError] = React.useState('');
 
   const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
   const [fetchList] = React.useState(false);
@@ -90,21 +84,11 @@ export default function GridProposals({
     }
     setReviewerPanels(filterRecords(reviewer.id));
     */
-   const reviewers = localPanel.reviewers.filter(
-      entry => entry.reviewerId !== reviewer.id
-    );
-    console.log('/// in deletePanelReviewer currentPanel reviewers:', currentPanel?.reviewers);
-    console.log('/// reviewers after delete:', reviewers);
+    const reviewers = localPanel.reviewers.filter(entry => entry.reviewerId !== reviewer.id);
     setReviewerPanels(reviewers);
-    console.log('/// in deletePanelReviewer currentPanel reviewers:', currentPanel?.reviewers);
   };
 
   const isReviewerSelected = (reviewerId: string): boolean => {
-    // console.log('/// selected', localPanel?.reviewers);
-    console.log(
-      '/// selected',
-      localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId)
-    );
     return localPanel?.reviewers?.find(entry => entry.reviewerId === reviewerId) !== undefined;
   };
 
@@ -112,7 +96,6 @@ export default function GridProposals({
     const reviewers = localPanel.reviewers;
     reviewers.push(rec);
     setReviewerPanels(reviewers);
-    console.log('/// in addReviewerPanel:', localPanel?.reviewers);
   };
 
   const addPanelReviewer = (reviewer: Reviewer) => {
@@ -126,8 +109,6 @@ export default function GridProposals({
   };
 
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
-    console.log('/// reviewer', reviewer);
-    console.log('/// currentPanel', currentPanel);
     if (isReviewerSelected(reviewer.id)) {
       deletePanelReviewer(reviewer);
     } else {
