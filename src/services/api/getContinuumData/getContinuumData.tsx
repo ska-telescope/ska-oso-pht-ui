@@ -1,3 +1,4 @@
+import { presentUnits } from '@utils/present/present';
 import { ContinuumData, StandardData, Telescope } from '../../../utils/types/typesSensCalc';
 import {
   DECIMAL_PLACES,
@@ -37,7 +38,6 @@ import {
 import Target, { PointingPatternParams } from '../../../utils/types/target';
 import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
-import { presentUnits } from '../../../utils/present';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -336,8 +336,8 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
   const continuumData: ContinuumData = {
     dataType: observation.type,
     bandwidth: {
-      value: observation?.continuumBandwidth,
-      unit: observation?.continuumBandwidthUnits.toString()
+      value: observation?.continuumBandwidth ?? 0,
+      unit: observation?.continuumBandwidthUnits?.toString() ?? ''
     },
     effectiveResolution: observation?.effectiveResolution,
     suppliedType: observation?.supplied?.type,
@@ -361,7 +361,7 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
   };
 
   const standardData: StandardData = {
-    observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
+    observingBand: BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand)
       ?.mapping, // TODO handle band 5a and 5b correctly
     weather: { value: observation.weather ?? 0, unit: 'mm' },
     subarray: OBSERVATION.array
@@ -376,7 +376,7 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
     raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     elevation: { value: observation.elevation, unit: 'deg' },
-    advancedData: undefined,
+    advancedData: null,
     modules: []
   };
 

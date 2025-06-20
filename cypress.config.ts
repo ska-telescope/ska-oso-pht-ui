@@ -8,15 +8,6 @@ export default defineConfig({
   screenshotsFolder: 'cypress/artefacts/screenshots',
   videosFolder: 'cypress/artefacts/videos',
   downloadsFolder: 'cypress/artefacts/downloads',
-  component: {
-    supportFile: 'cypress/support/component.ts',
-    specPattern: ['**/*.test.{js,jsx,ts,tsx}'],
-    indexHtmlFile: 'cypress/support/component-index.html',
-    devServer: {
-      framework: 'react',
-      bundler: 'vite'
-    }
-  },
   e2e: {
     baseUrl: 'http://localhost:6101',
     experimentalRunAllSpecs: true,

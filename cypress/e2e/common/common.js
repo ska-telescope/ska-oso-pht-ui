@@ -1,7 +1,7 @@
 export const viewPort = (format = 'pc') => {
   const isPC = () => format === 'pc';
-  const xAxis = isPC() ? 1000 : 600;
-  const yAxis = isPC() ? 660 : 600;
+  const xAxis = isPC() ? 2000 : 600;
+  const yAxis = isPC() ? 1200 : 600;
   cy.viewport(xAxis, yAxis);
 };
 
@@ -30,12 +30,15 @@ export const clickButton = testId => {
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddObservation = () => clickButton('addObservationButton');
+export const clickAddPanel = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickLoginUser = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
+export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
+export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
 export const clickSave = () => clickButton('saveButtonTestId');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
@@ -53,7 +56,28 @@ export const clickDropdown = (testId, value) => {
 
 /*----------------------------------------------------------------------*/
 
-export const clickMenuOptionPanels = () => {};
+export const clickNav = (testId, title) => {
+  click(testId);
+  if (title.length) {
+    verifyContent('pageTitle', title);
+  }
+};
+export const clickPanelButtonPanels = () => clickNav('panelBtn1', 'PANEL MAINTENANCE');
+export const clickPanelButtonReviews = () => clickNav('panelBtn2', 'REVIEWS');
+export const clickPanelButtonProposals = () => clickNav('panelBtn3', '');
+
+/*----------------------------------------------------------------------*/
+
+export const clickUserMenu = (testId, title) => {
+  clickLoginUser();
+  clickNav(testId, title);
+};
+export const clickUserMenuOverview = () => clickUserMenu('menuItemOverview', 'OVERVIEW');
+export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '');
+export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
+export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
+export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEWS');
+export const clickUserMenuLogout = () => click('menuItemLogout');
 
 /*----------------------------------------------------------------------*/
 
