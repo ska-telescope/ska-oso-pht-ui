@@ -214,7 +214,7 @@ js-e2e-test:
       junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
   rules:
     - exists:
-        - cypress/e2e/**/*.test.tsx
+        - cypress/e2e/**/*.test.js
 
 code_quality:
   services: []
