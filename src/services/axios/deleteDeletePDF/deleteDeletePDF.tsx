@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { USE_LOCAL_DATA } from '../../../utils/constants';
 
-async function DeleteDeletePDF(signedUrl) {
+async function DeleteDeletePDF(signedUrl: string) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/delete';
 
   if (USE_LOCAL_DATA) {
@@ -14,7 +14,10 @@ async function DeleteDeletePDF(signedUrl) {
       ? 'error.API_UNKNOWN_ERROR'
       : result.data;
   } catch (e) {
-    return { error: e.message };
+    if (e instanceof Error) {
+      return { error: e.message };
+    }
+    return { error: 'error.API_UNKNOWN_ERROR' };
   }
 }
 

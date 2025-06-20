@@ -7,6 +7,7 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@/utils/constants.ts';
+import Proposal from '@/utils/types/proposal';
 
 interface ValidateResponseData {
   result: Boolean;
@@ -18,7 +19,7 @@ interface ValidateServiceResponse {
   valid?: string;
 }
 
-async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> {
+async function PostProposalValidate(proposal: Proposal): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {
     return { valid: 'success' };
   }
@@ -41,8 +42,12 @@ async function PostProposalValidate(proposal): Promise<ValidateServiceResponse> 
       return { valid: 'success' };
     }
   } catch (e) {
-    const errorMessage = `${e?.message}: ${e?.response?.data?.title}`;
-    return { error: [errorMessage] };
+    if (e instanceof Error) {
+      return { error: [e.message] };
+    } else {
+      const error = e as { response: { data: { title: string } } };
+      return { error: [error?.response?.data?.title] };
+    }
   }
 }
 

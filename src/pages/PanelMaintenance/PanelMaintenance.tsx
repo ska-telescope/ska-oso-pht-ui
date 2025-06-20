@@ -17,10 +17,10 @@ import {
 import { PATH, PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import BackButton from '@/components/button/Back/Back';
-import GetButton from '@/components/button/Get/Get';
-import AssignButton from '@/components/button/Assign/Assign';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
+import { Panel } from '@/utils/types/panel';
+import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -28,6 +28,16 @@ export default function PanelMaintenance() {
   const navigate = useNavigate();
 
   const [theValue, setTheValue] = React.useState(0);
+  const [panels] = React.useState<Panel[]>([
+    { panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { panelId: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { panelId: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
+  ]);
+  const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
+
+  React.useEffect(() => {
+    setCurrentPanel(panels[0]); // Set the first panel as current by default for now
+  }, panels);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
@@ -43,12 +53,6 @@ export default function PanelMaintenance() {
   const clickFunction = () => {
     navigate(PATH[1]);
   };
-
-  const pageDescription = () => (
-    <Typography align="center" minHeight="5vh">
-      {t('page.15.desc')}
-    </Typography>
-  );
 
   const panelsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh">
@@ -69,43 +73,16 @@ export default function PanelMaintenance() {
     <AddButton
       action={() => navigate(PMT[3])}
       testId="addPanelButton"
-      title={'addPanel.label'}
+      title=""
       toolTip="addPanel.toolTip"
     />
   );
 
-  const getReviewersButton = () => (
-    <GetButton
-      action={clickFunction}
-      testId="getReviewersButton"
-      title={'getReviewers.label'}
-      toolTip="getReviewers.toolTip"
-    />
-  );
-
-  const assignProposalsButton = () => (
-    <AssignButton
-      action={clickFunction}
-      testId="assignProposalsButton"
-      title={'assignProposals.label'}
-      toolTip="assignProposals.toolTip"
-    />
-  );
-
-  const getPanels = () => {
-    return [
-      { id: 'P400', name: 'Stargazers' },
-      { id: 'P500', name: 'Buttons' },
-      { id: 'P600', name: 'Nashrakra' }
-    ];
-  };
-
   const getpanelListItems = () => {
-    const panels = getPanels();
     return panels.map(panel => (
-      <ListItem key={panel.id} sx={{ bgcolor: 'transparent' }}>
+      <ListItem key={panel.panelId} sx={{ bgcolor: 'transparent' }}>
         <ListItemButton>
-          <ListItemText primary={panel.name} secondary={panel.id} />
+          <ListItemText primary={panel.name} secondary={panel.panelId} />
         </ListItemButton>
       </ListItem>
     ));
@@ -113,26 +90,8 @@ export default function PanelMaintenance() {
 
   return (
     <>
+      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid item xs={12}>
-          {pageDescription()}
-        </Grid>
-        <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
-          <Grid mr={5} pt={1}>
-            {backButton()}
-          </Grid>
-        </Grid>
-        <Grid container p={5} lg={9} direction="row" justifyContent="flex-end">
-          <Grid mr={5} pt={1}>
-            {addPanelButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {getReviewersButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {assignProposalsButton()}
-          </Grid>
-        </Grid>
         <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
           <Grid item p={2} sm={12} md={5} lg={3}>
             <Box
@@ -153,7 +112,12 @@ export default function PanelMaintenance() {
                   marginLeft: '-2px'
                 }}
               >
-                {panelsSectionTitle()}
+                <Grid container direction="row" justifyContent="space-around" alignItems="center">
+                  <Grid mr={20} pt={1}>
+                    {panelsSectionTitle()}
+                  </Grid>
+                  <Grid>{addPanelButton()}</Grid>
+                </Grid>
               </Card>
               <List>
                 {getpanelListItems().length > 0 ? (
@@ -200,7 +164,7 @@ export default function PanelMaintenance() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <GridReviewers />}
+              {theValue === 0 && <GridReviewers currentPanel={currentPanel} />}
               {theValue === 1 && <GridProposals />}
             </Box>
           </Grid>

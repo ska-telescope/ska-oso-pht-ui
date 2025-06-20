@@ -68,7 +68,10 @@ async function PostProposal(proposal: Proposal, status?: string) {
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+    if (e instanceof Error) {
+      return { error: e.message };
+    }
+    return { error: 'error.API_UNKNOWN_ERROR' };
   }
 }
 

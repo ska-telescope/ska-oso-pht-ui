@@ -10,7 +10,7 @@ import Reviewer from '@/utils/types/reviewer';
 
 /*********************************************************** filter *********************************************************/
 
-const getReviewersAlphabetical = (data: Reviewer[]) => {
+export const getReviewersAlphabetical = (data: Reviewer[]) => {
   return data.sort((a, b) => a.displayName.localeCompare(b.displayName));
 };
 
@@ -26,7 +26,6 @@ async function GetReviewerList(): Promise<Reviewer[] | string> {
   }
 
   try {
-    // const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}/list/DefaultUser`;
     const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
     const results = result.data.length > 1 ? getReviewersAlphabetical(result.data) : result.data;
