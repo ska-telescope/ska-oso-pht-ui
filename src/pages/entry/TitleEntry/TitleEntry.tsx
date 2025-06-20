@@ -1,6 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Card,
+  CardActionArea,
+  CardHeader,
+  Grid2,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
@@ -89,7 +97,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   function clickSubProposal(id: number) {
     let removed = false;
     const newList = [];
-    getProposal().proposalSubType.forEach(subType => {
+    getProposal().proposalSubType?.forEach(subType => {
       if (subType !== id) {
         newList.push(subType);
       } else {
@@ -131,7 +139,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item md={4} lg={3}>
+      <Grid2 key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
           className={setCardClassName(getProposal().proposalType, id)}
           code={t('proposalType.code.' + id)}
@@ -144,14 +152,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           title={t('proposalType.title.' + id)}
           toolTip={t('proposalType.desc.' + id)}
         />
-      </Grid>
+      </Grid2>
     );
   }
 
   function Attributes(TYPE: any) {
     const { id } = TYPE;
     return (
-      <Grid key={id} item md={6} lg={3}>
+      <Grid2 key={id} size={{ md: 6, lg: 3 }}>
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
           <Card
             style={{
@@ -190,13 +198,13 @@ export default function TitleEntry({ page }: TitleEntryProps) {
             </CardActionArea>
           </Card>
         </Tooltip>
-      </Grid>
+      </Grid2>
     );
   }
 
   const alertContent = () => {
     return (
-      <Grid
+      <Grid2
         p={2}
         container
         direction="column"
@@ -205,7 +213,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
       >
         <Typography variant="body1">{t('changeProposal.content1')}</Typography>
         <Typography variant="body1">{t('changeProposal.content2')}</Typography>
-      </Grid>
+      </Grid2>
     );
   };
 
@@ -251,20 +259,18 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const titleHelpDisplay = (title: string, description: string, labelWidth = LABEL_WIDTH) => {
     return (
-      <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-        <Grid item xs={labelWidth}>
-          {displayLabel(title)}
-        </Grid>
-        <Grid item xs={12 - labelWidth}>
+      <Grid2 container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+        <Grid2 size={{ xs: labelWidth }}>{displayLabel(title)}</Grid2>
+        <Grid2 size={{ xs: 12 - labelWidth }}>
           <Typography variant="body2">{description}</Typography>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
   const proposalTypes = () => {
     return (
-      <Grid
+      <Grid2
         p={2}
         container
         direction="row"
@@ -273,12 +279,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         spacing={4}
       >
         {PROJECTS.map((proposalType: any) => ProposalType(proposalType))}
-      </Grid>
+      </Grid2>
     );
   };
 
   const proposalAttributes = () => (
-    <Grid
+    <Grid2
       p={2}
       container
       direction="row"
@@ -292,12 +298,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         PROJECTS[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
           Attributes(proposalType)
         )}
-    </Grid>
+    </Grid2>
   );
 
   const row1 = () => {
     return (
-      <Grid
+      <Grid2
         pl={2}
         container
         direction="row"
@@ -305,35 +311,27 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH} display={{ xs: 'block', lg: 'none' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid item xs={LABEL_WIDTH}>
-              {displayLabel(t('title.label') + ' *')}
-            </Grid>
-            <Grid item xs={12 - LABEL_WIDTH}>
-              {titleField(true)}
-            </Grid>
-          </Grid>
-        </Grid>
+        <Grid2 size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
+          <Grid2 container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+            <Grid2 size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid2>
+            <Grid2 size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid2>
+          </Grid2>
+        </Grid2>
 
-        <Grid item xs={FIELD_WIDTH} display={{ xs: 'none', lg: 'block' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid item xs={LABEL_WIDTH}>
-              {displayLabel(t('title.label') + ' *')}
-            </Grid>
-            <Grid item xs={8 - LABEL_WIDTH}>
-              {titleField()}
-            </Grid>
-            <Grid item md={4}></Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+        <Grid2 size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
+          <Grid2 container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+            <Grid2 size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid2>
+            <Grid2 size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid2>
+            <Grid2 size={{ md: 4 }}></Grid2>
+          </Grid2>
+        </Grid2>
+      </Grid2>
     );
   };
 
   const row2 = () => {
     return (
-      <Grid
+      <Grid2
         pl={2}
         pt={3}
         container
@@ -342,20 +340,18 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH}>
+        <Grid2 size={{ xs: FIELD_WIDTH }}>
           {titleHelpDisplay(t('proposalType.plural') + ' *', t('proposalType.help'))}
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={FIELD_WIDTH}>
-          {proposalTypes()}
-        </Grid>
-      </Grid>
+        <Grid2 size={{ xs: FIELD_WIDTH }}>{proposalTypes()}</Grid2>
+      </Grid2>
     );
   };
 
   const row3 = () => {
     return (
-      <Grid
+      <Grid2
         pl={2}
         container
         direction="row"
@@ -363,14 +359,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid item xs={FIELD_WIDTH}>
+        <Grid2 size={{ xs: FIELD_WIDTH }}>
           {titleHelpDisplay(t('proposalAttribute.plural'), t('proposalAttribute.help'))}
-        </Grid>
+        </Grid2>
 
-        <Grid item xs={FIELD_WIDTH}>
-          {proposalAttributes()}
-        </Grid>
-      </Grid>
+        <Grid2 size={{ xs: FIELD_WIDTH }}>{proposalAttributes()}</Grid2>
+      </Grid2>
     );
   };
 

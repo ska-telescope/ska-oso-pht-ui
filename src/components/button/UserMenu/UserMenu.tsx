@@ -20,7 +20,7 @@ export interface ButtonUserMenuProps {
   showPhoto?: boolean;
 }
 
-export function ButtonUserMenu({
+export default function ButtonUserMenu({
   ariaDescription = 'User Button',
   color = ButtonColorTypes.Inherit,
   label = 'username',
