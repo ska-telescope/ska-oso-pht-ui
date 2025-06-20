@@ -5,15 +5,18 @@ import { Typography, Grid2 } from '@mui/material';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { FOOTER_SPACER } from '@/utils/constants';
+import { Panel } from '@/utils/types/panel';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
+  onRowClick?: (row: any) => void;
 }
 
 export default function GridReviewPanels({
   height = '50vh',
-  listOnly = false
+  listOnly = false,
+  onRowClick
 }: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
 
@@ -22,10 +25,10 @@ export default function GridReviewPanels({
 
   const DATA_GRID_HEIGHT = '65vh';
 
-  const GetReviewPanels = () => [
-    { id: 'P400', name: 'Stargazers' },
-    { id: 'P500', name: 'Buttons' },
-    { id: 'P600', name: 'Nashrakra' }
+  const GetReviewPanels = (): Panel[] => [
+    { id: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { id: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
+    { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
   ];
 
   React.useEffect(() => {
@@ -72,6 +75,9 @@ export default function GridReviewPanels({
               rows={data}
               columns={stdColumns}
               height={DATA_GRID_HEIGHT}
+              onRowClick={(e: any) => {
+                onRowClick?.(e.row);
+              }}
             />
           </div>
         )}

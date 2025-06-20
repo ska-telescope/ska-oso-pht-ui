@@ -13,7 +13,10 @@ interface PutProposalServiceResponse {
   valid?: any;
 }
 
-async function PutProposal(proposal: Proposal, status?: string): Promise<PutProposalServiceResponse> {
+async function PutProposal(
+  proposal: Proposal,
+  status?: string
+): Promise<PutProposalServiceResponse> {
   if (USE_LOCAL_DATA) {
     return { valid: 'success' };
   }
@@ -30,7 +33,7 @@ async function PutProposal(proposal: Proposal, status?: string): Promise<PutProp
     return typeof result === 'undefined' ? { error: 'error.API_UNKNOWN_ERROR' } : { valid: result };
   } catch (e) {
     if (e instanceof Error) {
-       return { error: e.message };
+      return { error: e.message };
     }
     return { error: 'error.API_UNKNOWN_ERROR' };
   }
