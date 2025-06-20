@@ -14,13 +14,14 @@ import MockProposalBackendList from './mockProposalBackendList';
 
 /*********************************************************** filter *********************************************************/
 
-const sortByLastUpdated = (array: ProposalBackend[]) => {
+export const sortByLastUpdated = (array: ProposalBackend[]): ProposalBackend[] => {
   array.sort(function(a, b) {
     return (
       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
       new Date(a.metadata?.last_modified_on as string)?.valueOf()
     );
   });
+  return array;
 };
 
 // const groupByProposalId = (data: ProposalBackend[]) => {
@@ -91,7 +92,7 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
-function mappingList(inRec: ProposalBackend[]): Proposal[] {
+export function mappingList(inRec: ProposalBackend[]): Proposal[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
     const rec: Proposal = {
@@ -137,7 +138,10 @@ async function GetProposalList(): Promise<Proposal[] | string> {
       result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
   } catch (e) {
-    return e.message;
+    if (e instanceof Error) {
+      return e.message;
+    }
+    return 'error.API_UNKNOWN_ERROR';
   }
 }
 
