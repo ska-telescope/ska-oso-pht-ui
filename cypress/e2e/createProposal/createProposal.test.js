@@ -4,6 +4,7 @@ import {
   clickHome,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
+  initialize,
   enterProposalTitle,
   verifyFirstProposalOnLandingPageIsVisible,
   verifyOnLandingPage,
@@ -12,6 +13,9 @@ import {
 } from '../common/common';
 
 describe('Creating Proposal', () => {
+  beforeEach(() => {
+    initialize();
+  });
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddProposal();
     enterProposalTitle();

@@ -1,43 +1,76 @@
-export const clickAddProposal = () => {
-  verifyAddProposalButtonExists();
-  clickAddProposalButton();
+export const viewPort = (format = 'pc') => {
+  const isPC = () => format === 'pc';
+  const xAxis = isPC() ? 1000 : 600;
+  const yAxis = isPC() ? 660 : 600;
+  cy.viewport(xAxis, yAxis);
 };
 
-export const clickAddProposalButton = () => {
-  cy.get('[data-testid="addProposalButton"]').click();
+export const initialize = () => {
+  viewPort();
+  cy.visit('/');
 };
 
-export const verifyAddProposalButtonExists = () => {
-  cy.get('[data-testid="addProposalButton"]').should('exist');
+/*----------------------------------------------------------------------*/
+
+export const click = testId => cy.get('[data-testid="' + testId + '"]').click();
+export const entry = (testId, value) => cy.get('[data-testid="' + testId + '"]').type(value);
+export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
+export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
+export const verifyContent = (testId, value) =>
+  cy.get('[data-testid="' + testId + '"]').should('contain.text', value);
+export const verifyExists = testId => cy.get('[data-testid="' + testId + '"]').should('exist');
+
+/*----------------------------------------------------------------------*/
+
+export const clickButton = testId => {
+  verifyExists(testId);
+  click(testId);
 };
 
-export const enterProposalTitle = () => {
-  cy.get('[data-testid="titleId"]').type('Proposal Title');
+export const clickAddButton = () => clickButton('addButton');
+export const clickAddDataProduct = () => clickButton('addDataProductButton');
+export const clickAddObservation = () => clickButton('addObservationButton');
+export const clickAddProposal = () => clickButton('addProposalButton');
+export const clickCreateProposal = () => clickButton('nextButtonTestId');
+export const clickHome = () => clickButton('homeButtonTestId');
+export const clickLoginUser = () => clickButton('usernameMenu');
+export const clickObservationSetup = () => clickButton('addObservationButton');
+export const clickResolveButton = () => clickButton('resolveButton');
+export const clickSave = () => clickButton('saveButtonTestId');
+export const clickSendInviteButton = () => clickButton('sendInviteButton');
+export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
+export const clickToNextPage = () => clickButton('nextButtonTestId');
+export const clickToPreviousPage = () => clickButton('prevButtonTestId');
+
+/*----------------------------------------------------------------------*/
+
+export const clickDropdown = (testId, value) => {
+  verifyExists(testId);
+  click(testId);
+  selectValue(value);
 };
 
-export const selectCosmology = () => {
-  cy.get('[data-testid="categoryId"]').click();
-  cy.get('[data-value="1"]').click({ force: true });
-};
+/*----------------------------------------------------------------------*/
 
-export const clickProposalTypePrincipleInvestigator = () => {
-  cy.get('[id="ProposalType-1"]').click({ force: true });
-};
+export const clickMenuOptionPanels = () => {};
 
-export const clickSubProposalTypeTargetOfOpportunity = () => {
-  cy.get('[id="proposalAttribute-1"]').click({ force: true });
-};
+/*----------------------------------------------------------------------*/
 
-export const clickCreateProposal = () => {
-  cy.get('[data-testid="nextButtonTestId"]').click();
-};
+export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
+export const verifyOnLandingPage = () => verifyExists('addProposalButton');
 
-export const verifyProposalCreatedAlertFooter = () => {
-  cy.get("[data-testid='timeAlertFooter']").should(
-    'contain.text',
-    'Proposal added with unique identifier'
-  );
-};
+/*----------------------------------------------------------------------*/
+
+export const enterProposalTitle = () => entry('titleIdIpad', 'Proposal Title');
+
+export const selectCosmology = () => clickDropdown('categoryId', '1');
+
+export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
+export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
+
+export const verifyProposalCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const clickEditProposal = () => {
   cy.get("[data-testid='EditRoundedIcon']")
@@ -53,10 +86,6 @@ export const verifyProposalIsValid = () => {
   verifyProposalValidAlertFooter();
 };
 
-export const pageConfirmed = label => {
-  cy.get('#pageTitle').contains(label);
-};
-
 export const createStandardProposal = () => {
   clickAddProposal();
   enterProposalTitle();
@@ -67,26 +96,16 @@ export const createStandardProposal = () => {
   pageConfirmed('TEAM');
 };
 
-export const clickHome = () => {
-  cy.get('[data-testid="homeButtonTestId"]').should('exist');
-  cy.get('[data-testid="homeButtonTestId"]').click();
-};
-
-export const clickSave = () => {
-  cy.get('[data-testid="saveButtonTestId"]').should('exist');
-  cy.get('[data-testid="saveButtonTestId"]').click();
-};
-
 export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
 };
 
 export const addTeamMember = () => {
-  cy.get('[data-testid="firstName"]').type('Test');
-  cy.get('[data-testid="lastName"]').type('User');
-  cy.get('[data-testid="email"]').type('TestUser@test.com');
-  cy.get('[data-testid="sendInviteButton"]').click();
+  entry('firstName', 'Test');
+  entry('lastName', 'User');
+  entry('email', 'TestUser@test.com');
+  clickSendInviteButton();
 };
 
 export const verifyEmailSentAlertFooter = () => {
@@ -124,23 +143,9 @@ export const clickToObservatoryDataProductPage = () => {
   pageConfirmed('OBSERVATORY DATA PRODUCT');
 };
 
-export const clickToNextPage = () => {
-  cy.get('[data-testid="nextButtonTestId"]').should('exist');
-  cy.get('[data-testid="nextButtonTestId"]').click();
-};
-
-export const clickToPreviousPage = () => {
-  cy.get('[data-testid="prevButtonTestId"]').should('exist');
-  cy.get('[data-testid="prevButtonTestId"]').click();
-};
-
 export const verifySensitivityCalculatorStatusSuccess = () => {
   cy.get('[data-testid="statusId"]').should('exist');
   cy.get('[aria-label="Status : OK "]').should('exist');
-};
-
-export const clickAddDataProduct = () => {
-  cy.get('[data-testid="addDataProductButton"]').click();
 };
 
 export const addObservatoryDataProduct = () => {
@@ -148,7 +153,7 @@ export const addObservatoryDataProduct = () => {
   cy.get('[id="observations"]').type('{enter}');
   cy.get('[data-testid="observatoryDataProduct1"]').click();
   cy.get('[id="imageSize"]').type('1');
-  cy.get('[data-testid="addButton"]').click();
+  clickAddButton();
 };
 
 export const addAbstract = () => {
@@ -159,24 +164,7 @@ export const addAbstract = () => {
 export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').should('exist');
   cy.get('[id="name"]').type('M2');
-  cy.get('[data-testid="resolveButton"]').click();
-};
-
-export const clickToAddTarget = () => {
-  cy.get('[data-testid="addTargetButton"]').should('exist');
-  cy.get('[data-testid="addTargetButton"]').click();
-};
-
-export const clickObservationSetup = () => {
-  cy.get('[data-testid="addObservationButton"]').click();
-};
-
-export const clickAddObservation = () => {
-  cy.get('[data-testid="addObservationButton"]').click();
-};
-
-export const verifyOnLandingPage = () => {
-  cy.get('[data-testid="addProposalButton"]').should('exist');
+  clickResolveButton();
 };
 
 export const verifyOnLandingPageFilterIsVisible = () => {
@@ -218,11 +206,6 @@ const verifyProposalValidAlertFooter = () => {
 export const clickToSubmitProposal = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
-};
-
-export const clickToConfirmProposalSubmission = () => {
-  cy.get('[data-testid="displayConfirmationButton"]').should('exist');
-  cy.get('[data-testid="displayConfirmationButton"]').click();
 };
 
 export const verifyFirstProposalOnLandingPageHasSubmittedStatus = () => {

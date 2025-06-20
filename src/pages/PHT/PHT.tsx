@@ -6,7 +6,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { MenuItem, Divider, Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -95,22 +95,7 @@ export default function PHT() {
     setTheMode(newMode);
   };
 
-  const onMenuSelect = (thePath: string) => {
-    navigate(thePath);
-  };
-
-  const signIn = () => (
-    // TODO : This is totally mocked and will be replaced in time
-    <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'}>
-      <MenuItem onClick={() => onMenuSelect(PMT[2])}>{t('menuOptions.overview')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PATH[0])}>{t('menuOptions.proposals')}</MenuItem>
-      <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PMT[0])}>{t('menuOptions.panelSummary')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PMT[1])}>{t('menuOptions.reviews')}</MenuItem>
-      <Divider component="li" />
-      <MenuItem disabled> Logout</MenuItem>
-    </ButtonUserMenu>
-  );
+  const signIn = () => <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'} />;
 
   return (
     <ThemeProvider theme={theme(theMode)}>
