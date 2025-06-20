@@ -42,33 +42,12 @@ describe('GetReviewerList', () => {
 
   test('returns sorted data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    const mockData: Reviewer[] = [
-      {
-        id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a5',
-        jobTitle: 'Dr.',
-        givenName: 'Anna',
-        surname: 'Lucas',
-        displayName: 'Anna Lucas',
-        mail: 'anna.lucas@example.com',
-        officeLocation: 'Annex',
-        subExpertise: 'HI Surveys'
-      },
-      {
-        id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a6',
-        jobTitle: 'Prof.',
-        givenName: 'Bernadette',
-        surname: 'Lewis',
-        displayName: 'Bernadette Lewis',
-        mail: 'bernardette.lewis@example.com',
-        officeLocation: 'Lab 1',
-        subExpertise: 'Pulsar Timing'
-      }
-    ];
-    mockedAxios.get.mockResolvedValue({ data: mockData });
+    mockedAxios.get.mockResolvedValue({ data: MockReviewersBackendList });
 
     const result = (await GetReviewerList()) as Reviewer[];
-    expect(result[0].displayName).toBe('Anna Lucas');
-    expect(result[1].displayName).toBe('Bernadette Lewis');
+    expect(result[0].displayName).toBe('Aisha Rahman');
+    expect(result[1].displayName).toBe('Amara Okafor');
+    expect(result).to.equal(MockReviewersBackendList);
   });
 
   test('returns error message on API failure', async () => {
