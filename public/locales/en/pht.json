@@ -559,6 +559,10 @@
     "0": "Heliocentric",
     "1": "Local Standard of Rest"
   },
+  "reset": {
+    "label": "Reset",
+    "toolTip": ""
+  },
   "resolve": {
     "label": "Resolve",
     "toolTip": "Query SIMBAD and NED",

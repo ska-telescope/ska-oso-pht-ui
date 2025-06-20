@@ -15,7 +15,7 @@ import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import D3PieChart from '@/components/charts/D3PieChart';
 import D3BarChart from '@/components/charts/D3BarChart';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import CancelButton from '@/components/button/Cancel/Cancel';
+import ResetButton from '@/components/button/Reset/Reset';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
@@ -187,8 +187,7 @@ export default function ReviewDashboard() {
           />
         </Grid2>
         <Grid2 size={{ xs: 2 }}>
-          {/* Need to make a new button with a better reset */}
-          <CancelButton
+          <ResetButton
             action={handleReset}
             disabled={
               search === '' &&
