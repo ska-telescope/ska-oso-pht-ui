@@ -107,7 +107,7 @@ export default function GridProposals({
       reviewerId: reviewer.id,
       panelId: localPanel?.panelId ?? '',
       assignedOn: new Date().toISOString(),
-      status: REVIEWER_STATUS.ACCEPTED
+      status: REVIEWER_STATUS.PENDING
     };
     const reviewers = localPanel.reviewers;
     reviewers.push(rec);
