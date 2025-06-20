@@ -5,9 +5,11 @@ import {
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
-  createStandardProposal
+  createStandardProposal,
+  initialize
 } from '../common/common';
 beforeEach(() => {
+  initialize();
   createStandardProposal();
 });
 

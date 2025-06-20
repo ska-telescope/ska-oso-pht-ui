@@ -7,12 +7,10 @@ import {
   clickAddObservation,
   clickEditProposal,
   clickHome,
-  clickObservationFromTable,
   clickObservationSetup,
   clickSave,
   clickToAddTarget,
   clickToGeneralPage,
-  clickToLinkTargetAndObservation,
   clickToObservationPage,
   clickToObservatoryDataProductPage,
   clickToSciencePage,
@@ -20,6 +18,7 @@ import {
   clickToTeamPage,
   clickToTechnicalPage,
   createStandardProposal,
+  initialize,
   pageConfirmed,
   selectCosmology,
   validateProposal,
@@ -27,11 +26,11 @@ import {
   verifyFirstProposalOnLandingPageIsVisible,
   verifyObservationInTable,
   verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible,
-  verifySensitivityCalculatorStatusSuccess
+  verifyOnLandingPageFilterIsVisible
 } from '../common/common';
 
 beforeEach(() => {
+  initialize();
   createStandardProposal();
 });
 
