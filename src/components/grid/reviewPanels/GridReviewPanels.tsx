@@ -9,11 +9,13 @@ import { FOOTER_SPACER } from '@/utils/constants';
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
+  onRowClick?: (row: any) => void;
 }
 
 export default function GridReviewPanels({
   height = '50vh',
-  listOnly = false
+  listOnly = false,
+  onRowClick
 }: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
 
@@ -72,6 +74,9 @@ export default function GridReviewPanels({
               rows={data}
               columns={stdColumns}
               height={DATA_GRID_HEIGHT}
+              onRowClick={(e: any) => {
+                onRowClick?.(e.row);
+              }}
             />
           </div>
         )}

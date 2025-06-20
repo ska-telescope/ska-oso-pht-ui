@@ -43,7 +43,7 @@ export function filterReviewers(
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
-  currentPanel: Panel;
+  currentPanel?: Panel;
 }
 
 export default function GridProposals({
@@ -58,7 +58,7 @@ export default function GridProposals({
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
   const [axiosError, setAxiosError] = React.useState('');
-  const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
+  const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
   const [fetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
@@ -77,7 +77,9 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    setLocalPanel(currentPanel);
+    if (currentPanel && currentPanel.panelId !== 'undefined') {
+      setLocalPanel(currentPanel);
+    }
   }, [currentPanel]);
 
   const displayStatus = (status: any) => {
@@ -107,7 +109,7 @@ export default function GridProposals({
       reviewerId: reviewer.id,
       panelId: localPanel?.panelId ?? '',
       assignedOn: new Date().toISOString(),
-      status: REVIEWER_STATUS.ACCEPTED
+      status: REVIEWER_STATUS.PENDING
     };
     const reviewers = localPanel.reviewers;
     reviewers.push(rec);

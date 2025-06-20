@@ -1,19 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Card,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Tab,
-  Tabs,
-  Typography
-} from '@mui/material';
+import { Box, Card, Grid, Paper, Tab, Tabs, Typography } from '@mui/material';
 import { PATH, PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import BackButton from '@/components/button/Back/Back';
@@ -21,12 +9,14 @@ import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import { Panel } from '@/utils/types/panel';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
+import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
+
+const CARD_HEIGHT = '37vh';
+const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
-
   const navigate = useNavigate();
-
   const [theValue, setTheValue] = React.useState(0);
   const [panels] = React.useState<Panel[]>([
     { panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
@@ -38,6 +28,10 @@ export default function PanelMaintenance() {
   React.useEffect(() => {
     setCurrentPanel(panels[0]); // Set the first panel as current by default for now
   }, panels);
+
+  const handlePanelChange = (row: Panel) => {
+    // setCurrentPanel(row);
+  };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
@@ -78,16 +72,6 @@ export default function PanelMaintenance() {
     />
   );
 
-  const getpanelListItems = () => {
-    return panels.map(panel => (
-      <ListItem key={panel.panelId} sx={{ bgcolor: 'transparent' }}>
-        <ListItemButton>
-          <ListItemText primary={panel.name} secondary={panel.panelId} />
-        </ListItemButton>
-      </ListItem>
-    ));
-  };
-
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
@@ -119,15 +103,11 @@ export default function PanelMaintenance() {
                   <Grid>{addPanelButton()}</Grid>
                 </Grid>
               </Card>
-              <List>
-                {getpanelListItems().length > 0 ? (
-                  getpanelListItems()
-                ) : (
-                  <ListItem>
-                    <ListItemText primary={t('panels.empty')} />
-                  </ListItem>
-                )}
-              </List>
+              <GridReviewPanels
+                height={CONTENT_HEIGHT}
+                listOnly
+                onRowClick={row => handlePanelChange(row)}
+              />
             </Box>
           </Grid>
 
