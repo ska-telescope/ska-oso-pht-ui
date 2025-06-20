@@ -1,12 +1,8 @@
-// https://dev.to/eamonnprwalsh/migrating-from-jest-to-vitest-for-react-testing-ljn
-// add Vitest functions here globally
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
-// Extends Vitest's expect method with methods from react-testing-library
-// https://github.com/testing-library/jest-dom?tab=readme-ov-file#with-vitest
 import '@testing-library/jest-dom';
 
-vi.mock('zustand'); // to make it works like Jest (auto-mocking)
+vi.mock('zustand');
 
 vi.stubEnv('BASE_URL', '/');
 vi.stubEnv('BACKEND_URL', 'https://192.168.49.2/ska-oso-odt-ui/odt/api/v1/sbds');
@@ -34,6 +30,22 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockedUseNavigate
   };
 });
+
+vi.mock('react-i18next', () => ({
+  // this mock makes sure any components using the translate hook can use it without a warning being shown
+  useTranslation: () => {
+    return {
+      t: (i18nKey: string) => i18nKey,
+      i18n: {
+        changeLanguage: () => new Promise(() => {})
+      }
+    };
+  },
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => {}
+  }
+}));
 
 // Run cleanup after each test case (e.g., clearing jsdom)
 afterEach(() => {
