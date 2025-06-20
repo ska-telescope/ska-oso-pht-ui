@@ -4,7 +4,7 @@ import { PanelReviewer } from './panelReviewer';
 
 export type Panel = {
   metaData?: Metadata;
-  panelId: string;
+  id: string;
   name: string;
   cycle: string;
   proposals: PanelProposal[];

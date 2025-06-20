@@ -43,13 +43,15 @@ export function filterReviewers(
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
-  currentPanel: Panel;
+  currentPanel?: Panel;
+  onRowCheckBoxClick?: (reviewersList: PanelReviewer[]) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
   listOnly = false,
-  currentPanel
+  currentPanel,
+  onRowCheckBoxClick
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -58,7 +60,7 @@ export default function GridProposals({
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
   const [axiosError, setAxiosError] = React.useState('');
-  const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
+  const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
   const [fetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
@@ -77,7 +79,9 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    setLocalPanel(currentPanel);
+    if (currentPanel && currentPanel?.id) {
+      setLocalPanel(currentPanel);
+    }
   }, [currentPanel]);
 
   const displayStatus = (status: any) => {
@@ -91,6 +95,12 @@ export default function GridProposals({
       ...localPanel,
       reviewers: reviewerPanels
     });
+    /*
+    // send updated reviewer list to parent component
+    if (onRowCheckBoxClick) {
+      onRowCheckBoxClick(localPanel.reviewers);
+    }
+    */
   };
 
   const deleteReviewerPanel = (reviewer: Reviewer) => {
@@ -105,7 +115,7 @@ export default function GridProposals({
   const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
-      panelId: localPanel?.panelId ?? '',
+      panelId: localPanel?.id ?? '',
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };

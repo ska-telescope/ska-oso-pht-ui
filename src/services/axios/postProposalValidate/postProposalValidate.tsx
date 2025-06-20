@@ -42,8 +42,6 @@ async function PostProposalValidate(proposal: Proposal): Promise<ValidateService
       return { valid: 'success' };
     }
   } catch (e) {
-
-
     if (e instanceof Error) {
       return { error: [e.message] };
     } else {
