@@ -39,7 +39,7 @@ export default function BaseButton({
     }
   };
 
-  const theTitle = t(title);
+  const theTitle = title === '' ? '' : t(title);
   const theToolTip = toolTip.length ? t(toolTip) : '';
 
   return (

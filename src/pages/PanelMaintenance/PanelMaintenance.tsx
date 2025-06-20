@@ -22,6 +22,7 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
 
   const handlePanelChange = (row: Panel) => {
+    // console.log('::: in handlePanelChange :::', row);
     setCurrentPanel(row);
   };
 
@@ -106,6 +107,7 @@ export default function PanelMaintenance() {
                 height={CONTENT_HEIGHT}
                 listOnly
                 onRowClick={row => handlePanelChange(row)}
+                updatedData={currentPanel.reviewers}
               />
             </Box>
           </Grid>

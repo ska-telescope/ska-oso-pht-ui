@@ -43,7 +43,7 @@ export function filterReviewers(
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
-  currentPanel?: Panel;
+  currentPanel: Panel;
   onRowCheckBoxClick?: (reviewersList: PanelReviewer[]) => void;
 }
 
@@ -95,17 +95,19 @@ export default function GridProposals({
       ...localPanel,
       reviewers: reviewerPanels
     });
-    /*
-    // send updated reviewer list to parent component
-    if (onRowCheckBoxClick) {
-      onRowCheckBoxClick(localPanel.reviewers);
-    }
-    */
   };
 
+  React.useEffect(() => {
+    // console.log('useeffect setLocalPanel localPanel', localPanel);
+  }, [setReviewerPanels]);
+
   const deleteReviewerPanel = (reviewer: Reviewer) => {
-    const reviewers = localPanel.reviewers.filter(entry => entry.reviewerId !== reviewer.id);
-    setReviewerPanels(reviewers);
+    function filterRecords(id: string) {
+      return localPanel.reviewers.filter(item => !(item.reviewerId === id));
+    }
+    const filtered = filterRecords(reviewer.id);
+    // console.log('deleteReviewerPanel filtered', filtered);
+    setReviewerPanels(filtered);
   };
 
   const isReviewerSelected = (reviewerId: string): boolean => {
@@ -115,7 +117,7 @@ export default function GridProposals({
   const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
-      panelId: localPanel?.id ?? '',
+      panelId: currentPanel.id, // panelId: localPanel?.id ?? '',
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };
@@ -126,11 +128,22 @@ export default function GridProposals({
 
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
     if (isReviewerSelected(reviewer.id)) {
+      // console.log('in delete');
       deleteReviewerPanel(reviewer);
     } else {
+      // console.log('in add');
       addReviewerPanel(reviewer);
     }
   };
+
+  /*
+  React.useEffect(() => {
+    // send updated reviewer list to parent component
+    if (onRowCheckBoxClick) {
+      onRowCheckBoxClick(localPanel?.reviewers);
+    }
+  }, [reviewerSelectedToggle]);
+  */
 
   const colSelect = {
     field: 'select',

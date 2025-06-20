@@ -6,21 +6,24 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { FOOTER_SPACER } from '@/utils/constants';
 import { Panel } from '@/utils/types/panel';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
   onRowClick?: (row: any) => void;
+  updatedData: PanelReviewer[];
 }
 
 export default function GridReviewPanels({
   height = '50vh',
   listOnly = false,
-  onRowClick
+  onRowClick,
+  updatedData
 }: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
 
-  const [data, setData] = React.useState<any[]>([]);
+  const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
@@ -31,6 +34,16 @@ export default function GridReviewPanels({
     { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
   ];
 
+  const updateReviewPanel = (updatedData: PanelReviewer[]) => {
+    if (updatedData && updatedData.length > 0) {
+      // console.log('Updating review panel with data:', updatedData);
+    }
+  };
+
+  React.useEffect(() => {
+    updateReviewPanel(updatedData);
+  }, updatedData);
+
   React.useEffect(() => {
     setFetchList(!fetchList);
   }, []);
@@ -39,6 +52,7 @@ export default function GridReviewPanels({
     const fetchData = () => {
       const response = GetReviewPanels();
       setData(response);
+      onRowClick?.(response[0]); // Trigger onRowClick with the first row on load of data to select it by default
     };
     fetchData();
   }, [fetchList]);
