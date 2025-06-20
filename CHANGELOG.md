@@ -7,12 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
-* Changed build system from Webpack to Vite
+* [BREAKING] Changed build system from Webpack to Vite
+* PHT-Services changed to OSO-services
 * Added a mocked connected user
 * Added a navigation menu
 * Added an Overview page - in progress
-* Added a Pannel Maintenance page - in progress
+* Added a Panel Maintenance page - in progress
 * Added a Review page placeholder
+* Various improvements for to the CI/CD pipeline
+* Changed Sensitivity Calculator backend to V11.2.2
 
 2.0.0
 

@@ -8,14 +8,14 @@ describe('<ObservationType />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <ObservationType value={0} />
+        <ObservationType value={1} />
       </StoreProvider>
     );
   });
   test('renders correctly ( isContinuumOnly )', () => {
     render(
       <StoreProvider>
-        <ObservationType suffix={'#'} value={0} isContinuumOnly />
+        <ObservationType suffix={'#'} value={1} isContinuumOnly />
       </StoreProvider>
     );
   });
