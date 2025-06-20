@@ -18,19 +18,23 @@ export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const [theValue, setTheValue] = React.useState(0);
+  /*
   const [panels] = React.useState<Panel[]>([
     { panelId: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
     { panelId: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
     { panelId: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
   ]);
+  */
   const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
 
+  /*
   React.useEffect(() => {
     setCurrentPanel(panels[0]); // Set the first panel as current by default for now
   }, panels);
+  */
 
   const handlePanelChange = (row: Panel) => {
-    // setCurrentPanel(row);
+    setCurrentPanel(row);
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {

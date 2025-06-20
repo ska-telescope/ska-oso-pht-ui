@@ -77,7 +77,7 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    if (currentPanel && currentPanel.panelId !== 'undefined') {
+    if (currentPanel && currentPanel?.id) {
       setLocalPanel(currentPanel);
     }
   }, [currentPanel]);
@@ -107,7 +107,7 @@ export default function GridProposals({
   const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
-      panelId: localPanel?.panelId ?? '',
+      panelId: localPanel?.id ?? '',
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };

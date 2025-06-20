@@ -21,7 +21,7 @@ async function PutUploadPDF(signedUrl: string, selectedFile: any) {
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     if (e instanceof Error) {
-       return { error: e.message };
+      return { error: e.message };
     }
     return { error: 'error.API_UNKNOWN_ERROR' };
   }
