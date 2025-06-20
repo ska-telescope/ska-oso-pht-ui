@@ -138,14 +138,14 @@ js-test:
     echo "Backend API:"
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
-xray-publish:
-  variables:
-    XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-      when: always
-    - if: '$CI_COMMIT_REF_NAME != "main"'
-      when: manual
+# xray-publish:
+#   variables:
+#     XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
+#   rules:
+#     - if: '$CI_COMMIT_REF_NAME == "main"'
+#       when: always
+#     - if: '$CI_COMMIT_REF_NAME != "main"'
+#       when: manual
 
 .dev_env: &dev_env
   variables:
