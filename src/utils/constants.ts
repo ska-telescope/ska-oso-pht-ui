@@ -293,6 +293,7 @@ export const PROPOSAL_STATUS = {
 };
 
 export const REVIEWER_STATUS = {
+  PENDING: 'pending',
   ACCEPTED: 'accepted',
   DECLINED: 'declined'
 };
