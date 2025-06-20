@@ -34,7 +34,7 @@ export default function GridReviewPanels({
   ];
 
   const updateReviewPanel = (updatedData: Panel) => {
-    // Update the data state with the updated panel data (uypdated list of reviewers)
+    // Update the data state with the updated data (updated list of reviewers) for curremt panel
     setData(prevData => prevData.map(item => (item.id === updatedData.id ? updatedData : item)));
   };
 
@@ -50,7 +50,6 @@ export default function GridReviewPanels({
     const fetchData = () => {
       const response = GetReviewPanels();
       setData(response);
-      onRowClick?.(response[0]); // Trigger onRowClick with the first row on load of data to select it by default
     };
     fetchData();
   }, [fetchList]);

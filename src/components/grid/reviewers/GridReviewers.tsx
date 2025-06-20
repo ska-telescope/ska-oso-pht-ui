@@ -110,7 +110,7 @@ export default function GridProposals({
   const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
-      panelId: currentPanel.id, // panelId: localPanel?.id ?? '',
+      panelId: localPanel.id,
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };

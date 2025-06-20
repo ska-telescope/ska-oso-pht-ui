@@ -26,6 +26,7 @@ export default function PanelMaintenance() {
   };
 
   const handleReviewersChange = (reviewersList: PanelReviewer[]) => {
+    // Update the current panel's reviewers with the new list
     setCurrentPanel(prevPanel => ({
       ...prevPanel,
       reviewers: reviewersList
