@@ -3,7 +3,7 @@ import vitePreprocessor from 'cypress-vite';
 
 export default defineConfig({
   video: false,
-  // projectId: 'ssiwb9',
+  projectId: 'ssiwb9',
   fixturesFolder: 'cypress/fixtures',
   screenshotsFolder: 'cypress/artefacts/screenshots',
   videosFolder: 'cypress/artefacts/videos',
