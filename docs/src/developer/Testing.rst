@@ -42,8 +42,8 @@ The coverage results are displayed in the console. They are also written to the 
 
 **All the tests should pass before merging the code**
 
-End-End
-=======
+End-2-End
+=========
 Examples can be found in the PT UI repo, however below should be a guide in how to follow the standard for enw tests.
 Note: This is for BDD Cucumber style cypress testing.
 
