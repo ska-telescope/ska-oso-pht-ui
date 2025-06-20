@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
@@ -28,8 +28,7 @@ export default function TargetListSection() {
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [rowTarget, setRowTarget] = React.useState(null);
-  // const [raType, setRAType] = React.useState(RA_TYPE_EQUATORIAL);
+  const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -42,8 +41,8 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().targets.filter(e => e.id !== rowTarget.id);
-    const obs2 = getProposal().targetObservation.filter(e => e.targetId !== rowTarget.id);
+    const obs1 = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    const obs2 = getProposal().targetObservation?.filter(e => e.targetId !== rowTarget?.id);
     setProposal({ ...getProposal(), targets: obs1, targetObservation: obs2 });
     setRowTarget(null);
     closeDialog();
@@ -55,13 +54,13 @@ export default function TargetListSection() {
   };
 
   const editConfirmed = () => {
-    if (rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
+    if (rowTarget && rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
       rowTarget.redshift = '';
-    } else {
+    } else if (rowTarget) {
       rowTarget.vel = '';
     }
-    const obs1 = getProposal().targets.map(rec => {
-      return rec.id === rowTarget.id ? rowTarget : rec;
+    const obs1 = getProposal().targets?.map(rec => {
+      return rec.id === rowTarget?.id ? rowTarget : rec;
     });
     setProposal({ ...getProposal(), targets: obs1 });
     setRowTarget(null);
@@ -70,9 +69,9 @@ export default function TargetListSection() {
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal().targets.find(p => p.id === rowTarget.id);
+    const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
     return (
-      <Grid
+      <Grid2
         p={2}
         pb={0}
         container
@@ -81,25 +80,25 @@ export default function TargetListSection() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.name}</Typography>
+          <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
         <FieldWrapper
           label={t('skyDirection.label.1.' + RA_TYPE_EQUATORIAL)}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec.ra}</Typography>
+          <Typography variant="body1">{rec?.ra}</Typography>
         </FieldWrapper>
         <FieldWrapper
           label={t('skyDirection.label.2.' + RA_TYPE_EQUATORIAL)}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec.dec}</Typography>
+          <Typography variant="body1">{rec?.dec}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.vel}</Typography>
+          <Typography variant="body1">{rec?.vel}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.1')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.redshift}</Typography>
+          <Typography variant="body1">{rec?.redshift}</Typography>
         </FieldWrapper>
 
         <Alert
@@ -107,7 +106,7 @@ export default function TargetListSection() {
           text={t('deleteTarget.info')}
           testId="deleteTargetInfoId"
         />
-      </Grid>
+      </Grid2>
     );
   };
 
@@ -134,25 +133,29 @@ export default function TargetListSection() {
   );
 
   const emptyField = () => {
-    return <Grid item>{fieldWrapper()}</Grid>;
+    return <Grid2>{fieldWrapper()}</Grid2>;
   };
 
   const referenceCoordinatesField = () => {
     return (
-      <Grid item>
+      <Grid2>
         {fieldWrapper(
           <Box pt={1}>
-            <ReferenceCoordinatesField labelWidth={6} setValue={null} value={RA_TYPE_EQUATORIAL} />
+            <ReferenceCoordinatesField
+              labelWidth={6}
+              setValue={undefined}
+              value={RA_TYPE_EQUATORIAL}
+            />
           </Box>
         )}
-      </Grid>
+      </Grid2>
     );
   };
 
   const displayRow1 = () => {
     return (
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-        <Grid item md={12} lg={5} order={{ md: 2, lg: 1 }}>
+      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+        <Grid2 size={{ md: 12, lg: 5 }} order={{ md: 2, lg: 1 }}>
           {emptyField()}
           <GridTargets
             deleteClicked={deleteIconClicked}
@@ -161,8 +164,8 @@ export default function TargetListSection() {
             raType={RA_TYPE_EQUATORIAL}
             rows={getProposal().targets}
           />
-        </Grid>
-        <Grid item md={12} lg={6} order={{ md: 1, lg: 2 }}>
+        </Grid2>
+        <Grid2 size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
           {referenceCoordinatesField()}
           <Box sx={{ width: '100%', border: '1px solid grey' }}>
             <Tabs
@@ -193,13 +196,13 @@ export default function TargetListSection() {
             {value === 1 && <TargetFileImport raType={RA_TYPE_EQUATORIAL} />}
             {value === 2 && <SpatialImaging />}
           </Box>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
   return (
-    <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+    <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       {displayRow1()}
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
@@ -220,9 +223,13 @@ export default function TargetListSection() {
           onDialogResponse={editConfirmed}
           title="editTarget.label"
         >
-          <TargetEntry raType={RA_TYPE_EQUATORIAL} setTarget={setRowTarget} target={rowTarget} />
+          <TargetEntry
+            raType={RA_TYPE_EQUATORIAL}
+            setTarget={setRowTarget}
+            target={rowTarget ? rowTarget : undefined}
+          />
         </AlertDialog>
       )}
-    </Grid>
+    </Grid2>
   );
 }

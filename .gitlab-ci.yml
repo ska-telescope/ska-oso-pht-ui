@@ -104,46 +104,7 @@ js-lint:
     reports:
       junit: build/reports/linting.xml
 
-# list the current top level dependencies for the project
-list_dependencies:
-  image: $NODE_IMAGE
-  stage: dependencies
-  tags:
-    - ska-default
-  allow_failure: true
-  #cache:
-  #  paths:
-  #    - node_modules/
-  #  policy: pull
-  script:
-    - yarn install --immutable
-    #- yarn list --depth=0 --json >> npm_deps.json
-    #- yarn list --depth=0  >> npm_deps.txt
-    #- mkdir .public
-    #- cp npm_deps.txt .public/
-    #- cp npm_deps.json .public/
-  #artifacts:
-  #paths:
-  #  - .public
-
-# export the report
-pages:
-  stage: pages
-  tags:
-    - ska-default
-  dependencies:
-    - js-e2e-test
-    - code_quality
-  script:
-    - mv public/* .
-    - cp -r build/* public
-    - cp -r .public/* public
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
-
-    # ----------------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------------------
 
 js-test:
   allow_failure: true
@@ -177,14 +138,14 @@ js-test:
     echo "Backend API:"
     echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
 
-xray-publish:
-  variables:
-    XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-      when: always
-    - if: '$CI_COMMIT_REF_NAME != "main"'
-      when: manual
+# xray-publish:
+#   variables:
+#     XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
+#   rules:
+#     - if: '$CI_COMMIT_REF_NAME == "main"'
+#       when: always
+#     - if: '$CI_COMMIT_REF_NAME != "main"'
+#       when: manual
 
 .dev_env: &dev_env
   variables:
@@ -229,7 +190,7 @@ js-e2e-deploy:
   allow_failure: true
   rules:
     - exists:
-        - cypress/integration/**/*.test.js
+        - cypress/e2e/**/*.test.js
 
 js-e2e-test:
   allow_failure: true
@@ -253,30 +214,18 @@ js-e2e-test:
       junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
   rules:
     - exists:
-        - cypress/integration/**/*.test.tsx
+        - cypress/e2e/**/*.test.tsx
 
 code_quality:
-  # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#generate-an-html-report
-  # artifacts:
-  #  paths: [gl-code-quality-report.json]
-  # disable dind service as it's not needed for ska-default runners
   services: []
   tags:
     - ska-default
-  # We need to merge the rules with what we have here on template rules
-  # https://gitlab.com/ska-telescope/templates-repository/-/blob/master/gitlab-ci/includes/rules.gitlab-ci.yml
-  # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
-    # don't run branch pipeline if there are open MRs
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
       when: never
-    # run on MRs
     - if: $CI_MERGE_REQUEST_IID
-    # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
-    # run on branches
     - if: '$CI_COMMIT_BRANCH'

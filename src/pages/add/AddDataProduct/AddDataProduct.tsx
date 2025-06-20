@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Card, CardContent, Grid2, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
@@ -56,7 +56,7 @@ export default function AddDataProduct() {
     helpComponent(t('observations.dp.help'));
     const results: Observation[] = getProposal()?.observations?.filter(
       ob =>
-        typeof getProposal()?.targetObservation.find(
+        typeof getProposal()?.targetObservation?.find(
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
@@ -65,7 +65,7 @@ export default function AddDataProduct() {
 
   React.useEffect(() => {
     const getImageWeighting = (id: string) => {
-      const temp = getProposal()?.observations.find(e => e.id === id);
+      const temp = getProposal()?.observations?.find(e => e.id === id);
       return temp ? temp.imageWeighting : 0;
     };
 
@@ -165,23 +165,23 @@ export default function AddDataProduct() {
 
   const dataProductsFieldOld = () => {
     return (
-      <Grid
+      <Grid2
         container
         minWidth={800}
         direction="row"
         alignItems="space-between"
         justifyContent="space-between"
       >
-        <Grid item xs={LABEL_WIDTH}>
+        <Grid2 item xs={LABEL_WIDTH}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
-        </Grid>
-        <Grid item xs={12 - LABEL_WIDTH}>
+        </Grid2>
+        <Grid2 item xs={12 - LABEL_WIDTH}>
           {tickElement(1, dp1, setDP1)}
           {tickElement(2, dp2, setDP2)}
           {tickElement(3, dp3, setDP3)}
           {tickElement(4, dp4, setDP4)}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
@@ -271,7 +271,7 @@ export default function AddDataProduct() {
       const hasRecord = getProposal().dataProductSDP;
       let highestId = 1;
       if (hasRecord) {
-        highestId = getProposal().dataProductSDP.reduce(
+        highestId = getProposal().dataProductSDP?.reduce(
           (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
           0
         );
@@ -311,19 +311,19 @@ export default function AddDataProduct() {
         sx={{ bgcolor: 'transparent', position: 'fixed', bottom: FOOTER_HEIGHT, left: 0, right: 0 }}
         elevation={0}
       >
-        <Grid
+        <Grid2
           p={2}
           container
           direction="row"
           alignItems="space-between"
           justifyContent="space-between"
         >
-          <Grid item />
-          <Grid item />
-          <Grid item>
+          <Grid2 />
+          <Grid2 />
+          <Grid2>
             <AddButton disabled={!enabled()} primary testId="addButton" action={buttonClicked} />
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </Paper>
     );
   };
@@ -332,7 +332,7 @@ export default function AddDataProduct() {
     <>
       <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
 
-      <Grid
+      <Grid2
         p={2}
         container
         direction="row"
@@ -340,7 +340,7 @@ export default function AddDataProduct() {
         justifyContent="space-around"
         spacing={1}
       >
-        <Grid item md={11} lg={4}>
+        <Grid2 size={{ md: 11, lg: 4 }}>
           <Stack>
             {fieldWrapper(observationsField())}
             {dataProductsFieldOld()}
@@ -348,13 +348,9 @@ export default function AddDataProduct() {
             {fieldWrapper(pixelSizeField())}
             {fieldWrapper(imageWeightingField())}
           </Stack>
-        </Grid>
-        {false && ( // TODO : Retain for now as this is likely to be implemented soon
-          <Grid item md={11} lg={3}>
-            {dataProductsField()}
-          </Grid>
-        )}
-        <Grid item md={11} lg={3}>
+        </Grid2>
+        {false && <Grid2 size={{ md: 11, lg: 3 }}>{dataProductsField()}</Grid2>}
+        <Grid2 size={{ md: 11, lg: 3 }}>
           <Stack spacing={1}>
             <HelpPanel />
             <InfoCard
@@ -364,8 +360,8 @@ export default function AddDataProduct() {
               testId="developmentPanelId"
             />
           </Stack>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       {pageFooter()}
     </>
   );

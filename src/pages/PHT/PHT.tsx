@@ -30,7 +30,7 @@ import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import { ButtonUserMenu } from '@/components/button/UserMenu/UserMenu';
+import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
 // import getProposal from '@/services/axios/getProposal/getProposal';
 import Proposal from '@/utils/types/proposal';

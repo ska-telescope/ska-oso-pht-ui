@@ -8,7 +8,7 @@ describe('<SpectralAveragingMID />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <SpectralAveragingMID value={0} />
+        <SpectralAveragingMID value={1} />
       </StoreProvider>
     );
   });
