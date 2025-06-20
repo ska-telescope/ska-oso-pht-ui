@@ -7,7 +7,6 @@ variables:
   YARN_VERSION: '4.3.1'
   JS_E2E_TESTS_DIR: cypress
   JS_E2E_TEST_COMMAND: test:e2e
-  CYPRESS_CLOUD: cypress run--record--key4a3a14b8-b3ce-429e-b960-6183c885513e
 
 include:
   # Code quality
@@ -243,7 +242,6 @@ js-e2e-test:
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
   after_script:
-    - $CYPRESS_CLOUD
     - cp cypress/artefacts/screenshots/*.png build/screenshots
     - yarn test:e2e:coverage
     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
