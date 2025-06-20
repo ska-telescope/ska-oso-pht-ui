@@ -6,13 +6,12 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { FOOTER_SPACER } from '@/utils/constants';
 import { Panel } from '@/utils/types/panel';
-import { PanelReviewer } from '@/utils/types/panelReviewer';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
   onRowClick?: (row: any) => void;
-  updatedData: PanelReviewer[];
+  updatedData: Panel;
 }
 
 export default function GridReviewPanels({
@@ -34,15 +33,14 @@ export default function GridReviewPanels({
     { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
   ];
 
-  const updateReviewPanel = (updatedData: PanelReviewer[]) => {
-    if (updatedData && updatedData.length > 0) {
-      // console.log('Updating review panel with data:', updatedData);
-    }
+  const updateReviewPanel = (updatedData: Panel) => {
+    // Update the data state with the updated panel data (uypdated list of reviewers)
+    setData(prevData => prevData.map(item => (item.id === updatedData.id ? updatedData : item)));
   };
 
   React.useEffect(() => {
     updateReviewPanel(updatedData);
-  }, updatedData);
+  }, [updatedData]);
 
   React.useEffect(() => {
     setFetchList(!fetchList);

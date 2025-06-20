@@ -22,7 +22,6 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
 
   const handlePanelChange = (row: Panel) => {
-    // console.log('::: in handlePanelChange :::', row);
     setCurrentPanel(row);
   };
 
@@ -107,7 +106,7 @@ export default function PanelMaintenance() {
                 height={CONTENT_HEIGHT}
                 listOnly
                 onRowClick={row => handlePanelChange(row)}
-                updatedData={currentPanel.reviewers}
+                updatedData={currentPanel}
               />
             </Box>
           </Grid>
@@ -148,7 +147,7 @@ export default function PanelMaintenance() {
               {theValue === 0 && (
                 <GridReviewers
                   currentPanel={currentPanel}
-                  onRowCheckBoxClick={item => handleReviewersChange(item)}
+                  onReviewersChange={item => handleReviewersChange(item)}
                 />
               )}
               {theValue === 1 && <GridProposals />}

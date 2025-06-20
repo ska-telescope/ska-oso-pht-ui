@@ -44,14 +44,14 @@ interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
   currentPanel: Panel;
-  onRowCheckBoxClick?: (reviewersList: PanelReviewer[]) => void;
+  onReviewersChange: (reviewersList: PanelReviewer[]) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
   listOnly = false,
   currentPanel,
-  onRowCheckBoxClick
+  onReviewersChange
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -91,22 +91,15 @@ export default function GridProposals({
   };
 
   const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
-    setLocalPanel({
-      ...localPanel,
-      reviewers: reviewerPanels
-    });
+    // send updated reviewer list to parent component
+    onReviewersChange(reviewerPanels);
   };
-
-  React.useEffect(() => {
-    // console.log('useeffect setLocalPanel localPanel', localPanel);
-  }, [setReviewerPanels]);
 
   const deleteReviewerPanel = (reviewer: Reviewer) => {
     function filterRecords(id: string) {
       return localPanel.reviewers.filter(item => !(item.reviewerId === id));
     }
     const filtered = filterRecords(reviewer.id);
-    // console.log('deleteReviewerPanel filtered', filtered);
     setReviewerPanels(filtered);
   };
 
@@ -128,22 +121,11 @@ export default function GridProposals({
 
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
     if (isReviewerSelected(reviewer.id)) {
-      // console.log('in delete');
       deleteReviewerPanel(reviewer);
     } else {
-      // console.log('in add');
       addReviewerPanel(reviewer);
     }
   };
-
-  /*
-  React.useEffect(() => {
-    // send updated reviewer list to parent component
-    if (onRowCheckBoxClick) {
-      onRowCheckBoxClick(localPanel?.reviewers);
-    }
-  }, [reviewerSelectedToggle]);
-  */
 
   const colSelect = {
     field: 'select',
