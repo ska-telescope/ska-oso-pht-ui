@@ -10,6 +10,7 @@ import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import { Panel } from '@/utils/types/panel';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
 
 const CARD_HEIGHT = '37vh';
 const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
@@ -22,6 +23,13 @@ export default function PanelMaintenance() {
 
   const handlePanelChange = (row: Panel) => {
     setCurrentPanel(row);
+  };
+
+  const handleReviewersChange = (reviewersList: PanelReviewer[]) => {
+    setCurrentPanel(prevPanel => ({
+      ...prevPanel,
+      reviewers: reviewersList
+    }));
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -135,7 +143,12 @@ export default function PanelMaintenance() {
                   />
                 </Tabs>
               </Box>
-              {theValue === 0 && <GridReviewers currentPanel={currentPanel} />}
+              {theValue === 0 && (
+                <GridReviewers
+                  currentPanel={currentPanel}
+                  onRowCheckBoxClick={item => handleReviewersChange(item)}
+                />
+              )}
               {theValue === 1 && <GridProposals />}
             </Box>
           </Grid>

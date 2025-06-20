@@ -44,12 +44,14 @@ interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
   currentPanel?: Panel;
+  onRowCheckBoxClick?: (reviewersList: PanelReviewer[]) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
   listOnly = false,
-  currentPanel
+  currentPanel,
+  onRowCheckBoxClick
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -93,6 +95,12 @@ export default function GridProposals({
       ...localPanel,
       reviewers: reviewerPanels
     });
+    /*
+    // send updated reviewer list to parent component
+    if (onRowCheckBoxClick) {
+      onRowCheckBoxClick(localPanel.reviewers);
+    }
+    */
   };
 
   const deleteReviewerPanel = (reviewer: Reviewer) => {
