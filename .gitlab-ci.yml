@@ -229,7 +229,7 @@ js-e2e-deploy:
   allow_failure: true
   rules:
     - exists:
-        - cypress/integration/**/*.test.js
+        - cypress/e2e/**/*.test.js
 
 js-e2e-test:
   allow_failure: true
