@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, Grid, Paper, Tab, Tabs, Typography } from '@mui/material';
-import { PATH, PMT } from '../../utils/constants';
+import { PMT } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -43,10 +43,6 @@ export default function PanelMaintenance() {
     };
   }
 
-  const clickFunction = () => {
-    navigate(PATH[1]);
-  };
-
   const panelsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh">
       {t('panels.label')}
@@ -55,8 +51,8 @@ export default function PanelMaintenance() {
 
   const backButton = () => (
     <BackButton
-      action={clickFunction}
-      testId="backButtonTestId"
+      action={() => navigate(PMT[2])}
+      testId="overviewButtonTestId"
       title={'overview.label'}
       toolTip="overview.toolTip"
     />

@@ -24,7 +24,7 @@ import {
 } from '@/utils/constants';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import TeamMember from '@/utils/types/teamMember';
-import { presentLatex } from '@/utils/present';
+import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import PutProposal from '@/services/axios/putProposal/putProposal';

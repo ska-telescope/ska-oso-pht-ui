@@ -1,6 +1,5 @@
-import React from 'react';
 import { Dialog, DialogContent, Grid, DialogTitle } from '@mui/material';
-import { presentLatex } from '../../../utils/present';
+import { presentLatex } from '@utils/present/present';
 import CancelButton from '../../button/Cancel/Cancel';
 interface LatexPreviewProps {
   value: string;

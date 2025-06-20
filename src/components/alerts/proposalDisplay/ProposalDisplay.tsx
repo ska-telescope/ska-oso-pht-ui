@@ -3,6 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
+import { presentLatex } from '@utils/present/present';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
@@ -15,7 +16,6 @@ import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
-import { presentLatex } from '../../../utils/present';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;

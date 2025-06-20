@@ -74,13 +74,25 @@ export function ButtonUserMenu({
         variant={ButtonVariantTypes.Contained}
       />
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
-        <MenuItem onClick={() => onMenuSelect(PMT[2])}>{t('menuOptions.overview')}</MenuItem>
-        <MenuItem onClick={() => onMenuSelect(PATH[0])}>{t('menuOptions.proposals')}</MenuItem>
-        <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
-        <MenuItem onClick={() => onMenuSelect(PMT[0])}>{t('menuOptions.panelSummary')}</MenuItem>
-        <MenuItem onClick={() => onMenuSelect(PMT[1])}>{t('menuOptions.reviews')}</MenuItem>
+        <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
+          {t('menuOptions.overview')}
+        </MenuItem>
+        <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
+          {t('menuOptions.proposals')}
+        </MenuItem>
+        <MenuItem data-testid="menuItemVerification" disabled>
+          {t('menuOptions.scienceVerification')}
+        </MenuItem>
+        <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
+          {t('menuOptions.panelSummary')}
+        </MenuItem>
+        <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
+          {t('menuOptions.reviews')}
+        </MenuItem>
         <Divider component="li" />
-        <MenuItem disabled> Logout</MenuItem>
+        <MenuItem data-testid="menuItemPanelLogout" disabled>
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );

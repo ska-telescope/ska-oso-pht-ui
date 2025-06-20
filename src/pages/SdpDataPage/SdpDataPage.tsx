@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { presentUnits } from '@utils/present/present';
 import { STATUS_OK } from '../../utils/constants';
 import { validateSDPPage } from '../../utils/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
@@ -13,7 +14,6 @@ import GridDataProducts from '../../components/grid/dataProduct/GridDataProducts
 import { PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
-import { presentUnits } from '../../utils/present';
 
 const PAGE = 7;
 const DATA_GRID_HEIGHT = 450;
@@ -43,7 +43,7 @@ export default function SdpDataPage() {
   React.useEffect(() => {
     const results: Observation[] = getProposal()?.observations?.filter(
       ob =>
-        typeof getProposal()?.targetObservation.find(
+        typeof getProposal()?.targetObservation?.find(
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
@@ -72,7 +72,7 @@ export default function SdpDataPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProductSDP.filter(e => e.id !== currentRow);
+    const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== currentRow);
 
     setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
@@ -80,7 +80,7 @@ export default function SdpDataPage() {
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProductSDP.find(p => p.id === currentRow);
+    const rec = getProposal().dataProductSDP?.find(p => p.id === currentRow);
     return (
       <Grid
         p={2}

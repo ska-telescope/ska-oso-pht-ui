@@ -7,7 +7,7 @@ interface PageBannerPMTProps {
 
 export default function PageBannerPMT({ backBtn, title }: PageBannerPMTProps) {
   const pageTitle = () => (
-    <Typography id="pageTitle" variant="h6" m={2}>
+    <Typography data-testid="pageTitle" id="pageTitle" variant="h6" m={2}>
       {title?.toUpperCase()}
     </Typography>
   );
