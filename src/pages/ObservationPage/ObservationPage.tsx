@@ -6,7 +6,7 @@ import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
-  DataGrid2,
+  DataGrid,
   LABEL_POSITION,
   TickBox
 } from '@ska-telescope/ska-gui-components';
@@ -140,7 +140,7 @@ export default function ObservationPage() {
   const popElementO = (rec: Observation) => {
     return {
       id: rec.id,
-      id2: rec.id /* Only here to satisfy syntax of DataGrid2 headers */,
+      id2: rec.id /* Only here to satisfy syntax of DataGrid headers */,
       rec: rec,
       telescope: rec.telescope,
       subarray: rec.subarray,
@@ -149,7 +149,7 @@ export default function ObservationPage() {
     };
   };
 
-  /* This type is required for the DataGrid2 showing the Targets */
+  /* This type is required for the DataGrid showing the Targets */
   type ElementT = {
     id: number;
     name: string;
@@ -511,7 +511,7 @@ export default function ObservationPage() {
               </Grid2>
             </Grid2>
             {hasObservations() && (
-              <DataGrid2
+              <DataGrid
                 rows={elementsO}
                 columns={extendedColumnsObservations}
                 height={DATA_GRID_OBSERVATION}
@@ -594,7 +594,7 @@ export default function ObservationPage() {
             </CardContent>
             <CardContent>
               {hasTargets() && (
-                <DataGrid2
+                <DataGrid
                   rows={filteredTargets()}
                   columns={extendedColumnsTargets}
                   height={DATA_GRID_TARGET}
