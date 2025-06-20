@@ -47,9 +47,9 @@ End-End
 Examples can be found in the PT UI repo, however below should be a guide in how to follow the standard for enw tests.
 Note: This is for BDD Cucumber style cypress testing.
 
-In the cypress/integration directory
+In the cypress/e2e directory
     - Create a feature file for example {createProposal.feature}
-    - Create a new directory within cypress/integration named the EXACT same as the feature file created.
+    - Create a new directory within cypress/e2e named the EXACT same as the feature file created.
     - Within the new directory for example {createProposal} create a new step definition file for example
     {createProposal.js}
 
