@@ -104,27 +104,6 @@ js-lint:
     reports:
       junit: build/reports/linting.xml
 
-list_dependencies:
-  image: $NODE_IMAGE
-  stage: dependencies
-  tags:
-    - ska-default
-  allow_failure: true
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-  paths:
-    - .public
-
   # ----------------------------------------------------------------------------------------
 
 js-test:
