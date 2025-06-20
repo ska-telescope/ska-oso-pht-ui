@@ -16,7 +16,10 @@ async function GetPresignedDeleteUrl(selectedFile: string) {
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return e.message;
+    if (e instanceof Error) {
+      return e.message;
+    }
+    return 'error.API_UNKNOWN_ERROR';
   }
 }
 

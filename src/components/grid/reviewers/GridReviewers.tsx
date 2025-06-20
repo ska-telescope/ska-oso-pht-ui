@@ -3,47 +3,65 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  AlertColorTypes,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import Proposal from '@/utils/types/proposal';
-import { FOOTER_SPACER, NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
-import GetCycleData from '@/services/axios/getCycleData/getCycleData';
-import { storeCycleData } from '@/utils/storage/cycleData';
+import {
+  FOOTER_SPACER,
+  NOT_SPECIFIED,
+  REVIEWER_STATUS,
+  SEARCH_TYPE_OPTIONS_REVIEWERS
+} from '@/utils/constants';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
+import { Panel } from '@/utils/types/panel';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
+
+export function filterReviewers(
+  reviewers: Reviewer[],
+  searchTerm: string,
+  searchTypeExpertise: string,
+  searchTypeAffiliation: string
+) {
+  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
+  return reviewers.filter(
+    item =>
+      fields.some(field =>
+        (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
+      ) &&
+      (searchTypeExpertise === '' ||
+        item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
+      (searchTypeAffiliation === '' ||
+        item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
+  );
+}
 
 interface GridProposalsProps {
   height?: string;
   listOnly?: boolean;
+  currentPanel: Panel;
 }
 
-export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
+export default function GridProposals({
+  height = '50vh',
+  listOnly = false,
+  currentPanel
+}: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
-
-  const { updateAppContent2 } = storageObject.useStore();
-
   const [axiosError, setAxiosError] = React.useState('');
-
-  const [cycleData, setCycleData] = React.useState(false);
-  const [fetchList, setFetchList] = React.useState(false);
+  const [localPanel, setLocalPanel] = React.useState<Panel>(currentPanel);
+  const [fetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
-
-  React.useEffect(() => {
-    updateAppContent2((null as unknown) as Proposal);
-    setFetchList(!fetchList);
-    setCycleData(!cycleData);
-  }, []);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -59,21 +77,66 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   }, [fetchList]);
 
   React.useEffect(() => {
-    const cycleData = async () => {
-      const response = await GetCycleData();
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        storeCycleData(response);
-      }
-    };
-    cycleData();
-  }, [cycleData]);
+    setLocalPanel(currentPanel);
+  }, [currentPanel]);
 
   const displayStatus = (status: any) => {
     return status
       ? t('reviewers.statusCategory.' + status)
       : t('reviewers.statusCategory.' + NOT_SPECIFIED);
+  };
+
+  const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
+    setLocalPanel({
+      ...localPanel,
+      reviewers: reviewerPanels
+    });
+  };
+
+  const deleteReviewerPanel = (reviewer: Reviewer) => {
+    const reviewers = localPanel.reviewers.filter(entry => entry.reviewerId !== reviewer.id);
+    setReviewerPanels(reviewers);
+  };
+
+  const isReviewerSelected = (reviewerId: string): boolean => {
+    return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
+  };
+
+  const addReviewerPanel = (reviewer: Reviewer) => {
+    const rec: PanelReviewer = {
+      reviewerId: reviewer.id,
+      panelId: localPanel?.panelId ?? '',
+      assignedOn: new Date().toISOString(),
+      status: REVIEWER_STATUS.PENDING
+    };
+    const reviewers = localPanel.reviewers;
+    reviewers.push(rec);
+    setReviewerPanels(reviewers);
+  };
+
+  const reviewerSelectedToggle = (reviewer: Reviewer) => {
+    if (isReviewerSelected(reviewer.id)) {
+      deleteReviewerPanel(reviewer);
+    } else {
+      addReviewerPanel(reviewer);
+    }
+  };
+
+  const colSelect = {
+    field: 'select',
+    headerName: '',
+    flex: 0.6,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: any }) => (
+      <Box pr={1}>
+        <TickBox
+          label=""
+          testId="linkedTickBox"
+          checked={isReviewerSelected(e.row.id)}
+          onChange={() => reviewerSelectedToggle(e.row)}
+        />
+      </Box>
+    )
   };
 
   const colTitle = {
@@ -120,24 +183,20 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   };
 
   const stdColumns = [
-    ...[colTitle, colGivenName, colSurname, colOfficeLocation, colSubExpertise, colStatus]
+    ...[
+      colSelect,
+      colTitle,
+      colGivenName,
+      colSurname,
+      colOfficeLocation,
+      colSubExpertise,
+      colStatus
+    ]
   ];
 
-  function filterReviewers() {
-    const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
-    return reviewers.filter(
-      item =>
-        fields.some(field =>
-          (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
-        ) &&
-        (searchTypeExpertise === '' ||
-          item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
-        (searchTypeAffiliation === '' ||
-          item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
-    );
-  }
-
-  const filteredData = reviewers ? filterReviewers() : [];
+  const filteredData = reviewers
+    ? filterReviewers(reviewers, searchTerm, searchTypeExpertise, searchTypeAffiliation)
+    : [];
 
   const ReviewersSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
