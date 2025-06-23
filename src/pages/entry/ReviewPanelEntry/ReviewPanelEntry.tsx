@@ -24,8 +24,12 @@ export default function ReviewPageEntry() {
   const setPanel = (panel: Panel) => updateAppContent2(panel);
 
   const [panelName, setPanelName] = React.useState('');
-  const [panelDateCreated, setPanelDateCreated] = React.useState('');
-  const [panelDateExpiry, setPanelDateExpiry] = React.useState('');
+
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString('en-GB');
+
+  const [panelDateCreated, setPanelDateCreated] = React.useState(formattedDate);
+  const [panelDateExpiry, setPanelDateExpiry] = React.useState(formattedDate);
 
   React.useEffect(() => {
     if (isEdit()) {
@@ -37,6 +41,10 @@ export default function ReviewPageEntry() {
     }
   }, []);
 
+  React.useEffect(() => {
+    panelNameEmpty()
+  }, [panelName]);
+
   const panelIn = (panel: Panel) => {
     setPanelName(panel.name);
   };
@@ -45,14 +53,25 @@ export default function ReviewPageEntry() {
     const newPanel: Panel = {
       id: '',
       name: panelName,
+      createdOn: panelDateCreated,
+      expiresOn: panelDateExpiry,
       proposals: [],
       reviewers: []
     };
     return newPanel;
   };
 
+  const panelNameEmpty = () => {
+    if(panelName === ''){
+          return true;
+    }
+    else{
+      return false;
+    } 
+  };
+
   const addButtonDisabled = () => {
-    return isEdit() ? false : false;
+    return panelNameEmpty();
   };
 
   const backButton = () => (
@@ -84,7 +103,7 @@ export default function ReviewPageEntry() {
   const panelDateCreatedField = () =>
     fieldWrapper(
       <DateEntry
-        label="panelDateCreated"
+        label="Panel Date Created"
         testId="panelDateCreatedTestId"
         value={panelDateCreated}
         setValue={setPanelDateCreated}
@@ -94,7 +113,7 @@ export default function ReviewPageEntry() {
   const panelDateExpiryField = () =>
     fieldWrapper(
       <DateEntry
-        label="panelDateExpiry"
+        label="Panel Date Expiry"
         testId="panelDateExpiryTestId"
         value={panelDateExpiry}
         setValue={setPanelDateExpiry}
@@ -129,13 +148,6 @@ export default function ReviewPageEntry() {
         ...getPanel(),
         panels: newPanels
       });
-
-      /*
-      getAffected(newObservation.id).map(rec => {
-        const target = getProposal().targets.find(t => t.id === rec.targetId);
-        getSensCalcData(newObservation, target);
-      });
-      */
     };
 
     const buttonClicked = () => {
