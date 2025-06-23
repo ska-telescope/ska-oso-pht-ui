@@ -134,9 +134,14 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/DefaultUser`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+
+    if (!result || !Array.isArray(result.data)) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+
     const uniqueResults =
       result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
+    return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

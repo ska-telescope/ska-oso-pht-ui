@@ -42,7 +42,6 @@ describe('GetReviewerList Service', () => {
   test('returns sorted data from API when USE_LOCAL_DATA is false and multiple reviewers are returned', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockResolvedValue({ data: MockReviewersBackendList });
-
     const result = (await GetReviewerList()) as Reviewer[];
     expect(result[0].displayName).toBe('Aisha Rahman');
     expect(result[1].displayName).toBe('Amara Okafor');
@@ -52,7 +51,6 @@ describe('GetReviewerList Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     const singleReviewer = [{ displayName: 'Zara Khan' }];
     mockedAxios.get.mockResolvedValue({ data: singleReviewer });
-
     const result = await GetReviewerList();
     expect(result).toEqual(singleReviewer);
   });
@@ -60,7 +58,6 @@ describe('GetReviewerList Service', () => {
   test('returns error message on API failure with Error instance', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-
     const result = await GetReviewerList();
     expect(result).toBe('Network Error');
   });
@@ -68,7 +65,6 @@ describe('GetReviewerList Service', () => {
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-
     const result = await GetReviewerList();
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
@@ -76,7 +72,6 @@ describe('GetReviewerList Service', () => {
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-
     const result = await GetReviewerList();
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
