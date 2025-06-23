@@ -1,6 +1,7 @@
 import {
   click,
   entry,
+  get,
   selectId,
   selectValue,
   verifyContent,
@@ -90,7 +91,7 @@ export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const clickEditProposal = () => {
-  cy.get("[data-testid='EditRoundedIcon']")
+  get('EditRoundedIcon')
     .eq(0)
     .click();
 };
@@ -127,7 +128,7 @@ export const addTeamMember = () => {
 
 export const verifyEmailSentAlertFooter = () => {
   // TODO : DISABLED : Will fix once migration to Vite has been completed
-  // cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Email invite has been sent.');
+  // get('timeAlertFooter').should('include.text', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
@@ -217,7 +218,7 @@ const clickToValidateProposal = () => {
 };
 
 const verifyProposalValidAlertFooter = () => {
-  cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Proposal is Valid');
+  get('timeAlertFooter').should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

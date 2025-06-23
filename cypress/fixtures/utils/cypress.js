@@ -7,10 +7,10 @@ export const viewPort = (format = 'pc') => {
 
 /*----------------------------------------------------------------------*/
 
-export const click = testId => cy.get('[data-testid="' + testId + '"]').click();
-export const entry = (testId, value) => cy.get('[data-testid="' + testId + '"]').type(value);
+export const click = testId => get(testId).click();
+export const entry = (testId, value) => get(testId).type(value);
+export const get = testId => cy.get('[data-testid="' + testId + '"]');
 export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
 export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
-export const verifyContent = (testId, value) =>
-  cy.get('[data-testid="' + testId + '"]').should('contain.text', value);
-export const verifyExists = testId => cy.get('[data-testid="' + testId + '"]').should('exist');
+export const verifyContent = (testId, value) => get(testId).should('contain.text', value);
+export const verifyExists = testId => get(testId).should('exist');
