@@ -41,31 +41,34 @@ export default function ReviewDashboard() {
       | undefined
   ) => {
     return (
-      <Grid2 m={2}>
-        <Tooltip title={toolTip} arrow>
-          <Card sx={{ minWidth: MIN_CARD_WIDTH, height: CARD_HEIGHT }}>
-            <CardHeader
-              action={
-                <IconButton aria-label="settings">
-                  <ViewIcon onClick={() => onPanelClick(nav)} />
-                </IconButton>
-              }
-              title={t(title)}
-            />
-            <CardContent>
-              <Paper style={{ maxHeight: CONTENT_HEIGHT, overflow: 'auto' }} elevation={0}>
-                {content}
-              </Paper>
-            </CardContent>
-          </Card>
-        </Tooltip>
-      </Grid2>
+      <>
+        <PageBannerPMT title={t('overview.label')} />
+        <Grid2 m={2}>
+          <Tooltip title={toolTip} arrow>
+            <Card sx={{ minWidth: MIN_CARD_WIDTH, height: CARD_HEIGHT }}>
+              <CardHeader
+                action={
+                  <IconButton aria-label="settings">
+                    <ViewIcon onClick={() => onPanelClick(nav)} />
+                  </IconButton>
+                }
+                title={t(title)}
+              />
+              <CardContent>
+                <Paper style={{ maxHeight: CONTENT_HEIGHT, overflow: 'auto' }} elevation={0}>
+                  {content}
+                </Paper>
+              </CardContent>
+            </Card>
+          </Tooltip>
+        </Grid2>
+      </>
     );
   };
 
-  const panelButton = (title: string, toolTip: string, nav: string) => {
+  const panelButton = (testId: string, title: string, toolTip: string, nav: string) => {
     return (
-      <Grid2 m={2}>
+      <Grid2 m={2} data-testid={testId}>
         <CardTitle
           className={''}
           code={t(title)[0].toUpperCase()}
@@ -86,9 +89,9 @@ export default function ReviewDashboard() {
     <>
       <PageBannerPMT title={t('menuOptions.overview')} />
       <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        {panelButton('menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
-        {panelButton('menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}
-        {panelButton('menuOptions.proposals', 'proposals.overviewTooltip', PATH[0])}
+        {panelButton('panelBtn1', 'menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
+        {panelButton('panelBtn2', 'menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}
+        {panelButton('panelBtn3', 'menuOptions.proposals', 'proposals.overviewTooltip', PATH[0])}
       </Grid2>
 
       {/* USE THE GRID BELOW FOR METRICS  */}

@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import { presentUnits } from '@utils/present/present';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { presentUnits } from '../../../utils/present';
 import { DataProductSDP } from '../../../utils/types/dataProduct';
 
 interface GridDataProductsProps {

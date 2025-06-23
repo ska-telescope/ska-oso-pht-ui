@@ -1,5 +1,6 @@
-import Observation from 'utils/types/observation';
-import Target from 'utils/types/target';
+import Observation from '@utils/types/observation';
+import Target from '@utils/types/target';
+import { presentUnits } from '@utils/present/present';
 import Fetch from '../fetch/Fetch';
 import { StandardData, ZoomData, Telescope } from '../../../utils/types/typesSensCalc';
 import {
@@ -38,7 +39,6 @@ import {
 } from '../../../utils/constants';
 import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
 import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
-import { presentUnits } from '../../../utils/present';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -56,7 +56,7 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(target, results: any, theObservation): SensCalcResults {
+function getFinalResults(target: Target, results: any, theObservation: any): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const individualResults = getFinalIndividualResultsForZoom(results, theObservation);
@@ -70,14 +70,14 @@ function getFinalResults(target, results: any, theObservation): SensCalcResults 
   };
 
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results6);
+    theResults.section1?.push(individualResults.results6);
   }
-  theResults.section1.push(individualResults.results7);
+  theResults.section1?.push(individualResults.results7);
   if (!isSuppliedSensitivity()) {
-    theResults.section1.push(individualResults.results8);
+    theResults.section1?.push(individualResults.results8);
   }
-  theResults.section1.push(individualResults.results9);
-  theResults.section1.push(individualResults.results10);
+  theResults.section1?.push(individualResults.results9);
+  theResults.section1?.push(individualResults.results10);
 
   return theResults;
 }
@@ -89,7 +89,10 @@ const toFixed = (value: number) => {
   return Number(value).toFixed(DECIMAL_PLACES);
 };
 
-function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIndividualResults {
+function getFinalIndividualResultsForZoom(
+  results: any,
+  theObservation: any
+): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   let transformed_result = results.transformed_result[0]; // ui only uses first result
@@ -206,7 +209,7 @@ function getFinalIndividualResultsForZoom(results: any, theObservation): FinalIn
   return updated_results;
 }
 
-const getSpectralResolution = observation => {
+const getSpectralResolution = (observation: Observation) => {
   const units = FREQUENCY_UNITS[2].label;
   const spectralResValue = observation.spectralResolution.includes(units)
     ? Number(observation.spectralResolution.split(' ')[0]) * 1000
@@ -220,7 +223,7 @@ const addPropertiesLOW = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
+    OBSERVATION.array?.find(item => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
     const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
@@ -228,7 +231,7 @@ const addPropertiesLOW = (
     return bandWidthValue?.split(' ');
   }
 
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
   let properties = '';
   if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
@@ -263,7 +266,7 @@ const addPropertiesMID = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope).bandWidth;
+    OBSERVATION.array.find(item => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
     const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
@@ -271,7 +274,7 @@ const addPropertiesMID = (
     return bandWidthValue?.split(' ');
   }
 
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit();
+  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
 
   let properties = '';
   if (isSuppliedTime(zoomData.suppliedType)) {
@@ -328,30 +331,30 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    spectralAveraging: observation?.spectralAveraging,
+    spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
     imageWeighting: observation?.imageWeighting,
     robust: observation?.robust,
-    tapering: observation?.tapering
+    tapering: observation?.tapering ?? 0
   };
 
   const standardData: StandardData = {
     observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
       ?.mapping,
-    weather: { value: observation.weather, unit: 'mm' },
+    weather: { value: observation.weather ?? 0, unit: 'mm' },
     subarray: OBSERVATION.array
       .find(t => t.value === observation.telescope)
       ?.subarray?.find(s => s.value === observation.subarray)?.map,
-    num15mAntennas: observation.num15mAntennas,
-    num13mAntennas: observation.num13mAntennas,
-    numStations: observation.numStations,
+    num15mAntennas: observation.num15mAntennas ?? 0,
+    num13mAntennas: observation.num13mAntennas ?? 0,
+    numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
     raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
     decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
-    raEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: undefined, unit: RA_TYPE_EQUATORIAL },
+    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     elevation: { value: observation.elevation, unit: 'deg' },
-    advancedData: undefined,
+    advancedData: null,
     modules: []
   };
 

@@ -11,6 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import TeamMember from '@utils/types/teamMember';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
@@ -30,7 +31,6 @@ import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDis
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { presentDate, presentLatex, presentTime } from '../../utils/present';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';

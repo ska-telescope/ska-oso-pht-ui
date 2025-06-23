@@ -2,10 +2,10 @@ import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@m
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import { presentUnits, presentValue } from '@utils/present/present';
 import CancelButton from '../../../button/Cancel/Cancel';
 import { CUSTOM_VALID_FIELDS, STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
-import { presentUnits, presentValue } from '../../../../utils/present';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -36,7 +36,7 @@ export default function SensCalcModalSingle({
     if (!CUSTOM_VALID_FIELDS.includes(eId)) {
       return t('customArray.result');
     }
-    return `${presentValue(eValue, eId)}`;
+    return `${presentValue(eValue)}`;
   };
 
   const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
@@ -51,7 +51,7 @@ export default function SensCalcModalSingle({
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
             {eId === 'targetName' || isCustom
               ? PresentCustomResultValue(eValue, eId)
-              : presentValue(eValue, eId)}{' '}
+              : presentValue(eValue)}{' '}
             {presentUnits(eUnits)}
           </Typography>
         </Grid>
