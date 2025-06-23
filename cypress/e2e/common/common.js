@@ -1,24 +1,18 @@
-export const viewPort = (format = 'pc') => {
-  const isPC = () => format === 'pc';
-  const xAxis = isPC() ? 2000 : 600;
-  const yAxis = isPC() ? 1200 : 600;
-  cy.viewport(xAxis, yAxis);
-};
+import {
+  click,
+  entry,
+  get,
+  selectId,
+  selectValue,
+  verifyContent,
+  verifyExists,
+  viewPort
+} from '../../fixtures/utils/cypress';
 
 export const initialize = () => {
   viewPort();
   cy.visit('/');
 };
-
-/*----------------------------------------------------------------------*/
-
-export const click = testId => cy.get('[data-testid="' + testId + '"]').click();
-export const entry = (testId, value) => cy.get('[data-testid="' + testId + '"]').type(value);
-export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
-export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
-export const verifyContent = (testId, value) =>
-  cy.get('[data-testid="' + testId + '"]').should('contain.text', value);
-export const verifyExists = testId => cy.get('[data-testid="' + testId + '"]').should('exist');
 
 /*----------------------------------------------------------------------*/
 
@@ -30,7 +24,7 @@ export const clickButton = testId => {
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddObservation = () => clickButton('addObservationButton');
-export const clickAddPanel = () => clickButton('addPanelButton');
+export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
@@ -86,7 +80,7 @@ export const verifyOnLandingPage = () => verifyExists('addProposalButton');
 
 /*----------------------------------------------------------------------*/
 
-export const enterProposalTitle = () => entry('titleIdIpad', 'Proposal Title');
+export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 
@@ -97,7 +91,7 @@ export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const clickEditProposal = () => {
-  cy.get("[data-testid='EditRoundedIcon']")
+  get('EditRoundedIcon')
     .eq(0)
     .click();
 };
@@ -134,7 +128,7 @@ export const addTeamMember = () => {
 
 export const verifyEmailSentAlertFooter = () => {
   // TODO : DISABLED : Will fix once migration to Vite has been completed
-  // cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Email invite has been sent.');
+  // get('timeAlertFooter').should('include.text', 'Email invite has been sent.');
 };
 
 export const clickToGeneralPage = () => {
@@ -224,7 +218,7 @@ const clickToValidateProposal = () => {
 };
 
 const verifyProposalValidAlertFooter = () => {
-  cy.get("[data-testid='timeAlertFooter']").should('include.text', 'Proposal is Valid');
+  get('timeAlertFooter').should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

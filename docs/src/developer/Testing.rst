@@ -34,7 +34,7 @@ This will also watch the source files and re-run when any changes are detected
 
 To run the tests with coverage, execute
 
-    > yarn test:coverage
+    > yarn test:unit:coverage
 
 The coverage results are displayed in the console. They are also written to the `coverage` folder.
 

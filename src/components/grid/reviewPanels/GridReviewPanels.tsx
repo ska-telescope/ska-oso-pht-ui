@@ -2,16 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid2 } from '@mui/material';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { FOOTER_SPACER } from '@/utils/constants';
 import { Panel } from '@/utils/types/panel';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
   onRowClick?: (row: any) => void;
-  updatedData: Panel;
+  updatedData: Panel | null;
 }
 
 export default function GridReviewPanels({
@@ -35,11 +33,13 @@ export default function GridReviewPanels({
 
   const updateReviewPanel = (updatedData: Panel) => {
     // Update the data state with the updated data (updated list of reviewers) for curremt panel
-    setData(prevData => prevData.map(item => (item.id === updatedData.id ? updatedData : item)));
+    setData(prevData => prevData.map(item => (item?.id === updatedData?.id ? updatedData : item)));
   };
 
   React.useEffect(() => {
-    updateReviewPanel(updatedData);
+    if (updatedData) {
+      updateReviewPanel(updatedData);
+    }
   }, [updatedData]);
 
   React.useEffect(() => {
@@ -93,7 +93,6 @@ export default function GridReviewPanels({
           </div>
         )}
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </>
   );
 }
