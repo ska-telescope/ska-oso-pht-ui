@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Grid, Paper, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { PMT } from '../../utils/constants';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
@@ -12,14 +14,14 @@ import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import PlusIcon from '@/components/icon/plusIcon/plusIcon';
 
-const CARD_HEIGHT = '37vh';
-const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
+const CONTENT_HEIGHT = '37vh';
+const TAB_CONTENT_HEIGHT = `calc(${CONTENT_HEIGHT} - 2000px)`;
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const [theValue, setTheValue] = React.useState(0);
-  const [currentPanel, setCurrentPanel] = React.useState<Panel>({} as Panel);
+  const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
 
   const handlePanelChange = (row: Panel) => {
     setCurrentPanel(row);
@@ -27,10 +29,13 @@ export default function PanelMaintenance() {
 
   const handleReviewersChange = (reviewersList: PanelReviewer[]) => {
     // Update the current panel's reviewers with the new list
-    setCurrentPanel(prevPanel => ({
-      ...prevPanel,
-      reviewers: reviewersList
-    }));
+    setCurrentPanel(prevPanel => {
+      if (!prevPanel) return prevPanel;
+      return {
+        ...prevPanel,
+        reviewers: reviewersList
+      };
+    });
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -59,38 +64,40 @@ export default function PanelMaintenance() {
     />
   );
 
-  const addPanelButton = () => <PlusIcon onClick={() => navigate(PMT[3])} />;
+  const addPanelIcon = () => <PlusIcon onClick={() => navigate(PMT[3])} />;
 
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
-      <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
-        <Grid item p={2} sm={12} md={5} lg={3}>
+      <Grid2
+        container
+        pl={2}
+        pr={2}
+        direction="row"
+        justifyContent="space-around"
+        alignItems="flex-start"
+      >
+        <Grid2 p={2} size={{ sm: 12, md: 5, lg: 3 }}>
           <Box
             sx={{
               width: '100%',
-              border: '1px solid grey',
-              borderRadius: '16px',
-              borderTop: 'none'
+              border: '1px solid lightGrey',
+              borderRadius: '16px'
             }}
             minHeight="50vh"
           >
-            <Card
-              variant="outlined"
-              sx={{
-                padding: '12px',
-                border: '1px solid grey',
-                width: '101%',
-                marginLeft: '-2px'
-              }}
+            <Grid2
+              sx={{ borderBottom: '1px solid lightGrey' }}
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
             >
-              <Grid container direction="row" justifyContent="space-around" alignItems="center">
-                <Grid mr={30} pt={1}>
-                  {panelsSectionTitle()}
-                </Grid>
-                <Grid>{addPanelButton()}</Grid>
-              </Grid>
-            </Card>
+              <Grid2 mr={30} pt={2}>
+                {panelsSectionTitle()}
+              </Grid2>
+              <Grid2>{addPanelIcon()}</Grid2>
+            </Grid2>
             <GridReviewPanels
               height={CONTENT_HEIGHT}
               listOnly
@@ -98,57 +105,60 @@ export default function PanelMaintenance() {
               updatedData={currentPanel}
             />
           </Box>
-        </Grid>
+        </Grid2>
 
-        <Grid
-          item
+        <Grid2
           p={2}
-          sm={12}
-          md={7}
-          lg={9}
+          size={{ sm: 12, md: 6, lg: 9 }}
           container
           direction="row"
           justifyContent="space-around"
           alignItems="flex-start"
         >
-          <Box sx={{ width: '100%' }}>
-            <Box>
-              <Tabs
-                variant="fullWidth"
-                textColor="secondary"
-                indicatorColor="secondary"
-                value={theValue}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab
-                  label={t('reviewers.label')}
-                  {...a11yProps(0)}
-                  sx={{ border: '1px solid grey' }}
+          {currentPanel && (
+            <Box sx={{ border: '1px solid Grey', height: TAB_CONTENT_HEIGHT, width: '90%' }}>
+              <Box>
+                <Tabs
+                  variant="fullWidth"
+                  textColor="secondary"
+                  indicatorColor="secondary"
+                  value={theValue}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab
+                    label={t('reviewers.label')}
+                    {...a11yProps(0)}
+                    sx={{ border: '1px solid lightGrey' }}
+                  />
+                  <Tab
+                    label={t('proposals.label')}
+                    {...a11yProps(1)}
+                    sx={{ border: '1px solid lightGrey' }}
+                  />
+                </Tabs>
+              </Box>
+              {theValue === 0 && (
+                <GridReviewers
+                  currentPanel={currentPanel}
+                  showSearch
+                  onChange={item => handleReviewersChange(item)}
                 />
-                <Tab
-                  label={t('proposals.label')}
-                  {...a11yProps(1)}
-                  sx={{ border: '1px solid grey' }}
-                />
-              </Tabs>
+              )}
+              {theValue === 1 && <GridProposals showSearch />}
             </Box>
-            {theValue === 0 && (
-              <GridReviewers
-                currentPanel={currentPanel}
-                onChange={item => handleReviewersChange(item)}
+          )}
+          {!currentPanel && (
+            <Box sx={{ width: '90%' }}>
+              <Alert
+                color={AlertColorTypes.Info}
+                text={t('panels.notSelected')}
+                testId="helpPanelId"
               />
-            )}
-            {theValue === 1 && <GridProposals />}
-          </Box>
-        </Grid>
-      </Grid>
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      >
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly"></Grid>
-      </Paper>
+            </Box>
+          )}
+        </Grid2>
+      </Grid2>
     </>
   );
 }

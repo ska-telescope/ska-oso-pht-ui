@@ -390,6 +390,7 @@
     "empty": "THERE ARE NO PANELS TO BE DISPLAYED",
     "label": "Panels",
     "name": "Name",
+    "notSelected": "Please choose a panel from the list provided",
     "overviewTooltip": "Tooltip for the card on the Overview"
   },
   "pdfDelete": {

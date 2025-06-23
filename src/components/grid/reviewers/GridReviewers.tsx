@@ -42,14 +42,16 @@ export function filterReviewers(
 
 interface GridReviewersProps {
   height?: string;
-  listOnly?: boolean;
-  currentPanel: Panel;
+  currentPanel: Panel | null;
   onChange: (reviewersList: PanelReviewer[]) => void;
+  showTitle?: boolean;
+  showSearch?: boolean;
 }
 
 export default function GridProposals({
   height = '50vh',
-  listOnly = false,
+  showTitle = false,
+  showSearch = false,
   currentPanel,
   onChange
 }: GridReviewersProps) {
@@ -250,13 +252,13 @@ export default function GridProposals({
 
   return (
     <>
-      {!listOnly && (
+      {showTitle && (
         <Grid item p={2} lg={12}>
           {ReviewersSectionTitle()}
         </Grid>
       )}
 
-      {!listOnly && (
+      {showSearch && (
         <Grid
           item
           p={2}

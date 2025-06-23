@@ -1,4 +1,3 @@
-import React from 'react';
 import View from '@mui/icons-material/VisibilityRounded';
 import Icon from '../icon/Icon';
 

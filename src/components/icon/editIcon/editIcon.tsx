@@ -1,4 +1,3 @@
-import React from 'react';
 import Edit from '@mui/icons-material/EditRounded';
 import Icon from '../icon/Icon';
 
