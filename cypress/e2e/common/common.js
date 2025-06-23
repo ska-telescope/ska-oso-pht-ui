@@ -24,7 +24,7 @@ export const clickButton = testId => {
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddObservation = () => clickButton('addObservationButton');
-export const clickAddPanel = () => clickButton('addPanelButton');
+export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
