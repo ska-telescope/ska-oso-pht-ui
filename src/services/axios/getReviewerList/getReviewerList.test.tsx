@@ -13,23 +13,22 @@ const mockedAxios = (axios as unknown) as {
   // add other axios methods as needed
 };
 
-describe('GetReviewerList', () => {
+describe('Helper Functions', () => {
   test('getReviewersAlphabetical returns reviewers sorted alphabetically by displayName', () => {
     const result = getReviewersAlphabetical(MockReviewersBackendList);
-    expect(result).to.have.lengthOf(MockReviewersBackendList.length);
-    expect(result[0].displayName).to.equal('Aisha Rahman');
-    expect(result[1].displayName).to.equal('Amara Okafor');
-    expect(result[2].displayName).to.equal('Chloe Dubois');
+    expect(result).toHaveLength(MockReviewersBackendList.length);
+    expect(result[0].displayName).toBe('Aisha Rahman');
+    expect(result[1].displayName).toBe('Amara Okafor');
+    expect(result[2].displayName).toBe('Chloe Dubois');
   });
 
   test('GetMockReviewerList returns mock reviewers list', () => {
     const result = GetMockReviewerList();
-    expect(result).to.have.lengthOf(MockReviewersBackendList.length);
-    expect(result).to.equal(MockReviewersBackendList);
+    expect(result).toEqual(MockReviewersBackendList);
   });
 });
 
-describe('GetReviewerList', () => {
+describe('GetReviewerList Service', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -40,17 +39,25 @@ describe('GetReviewerList', () => {
     expect(result).toEqual(MockReviewersBackendList);
   });
 
-  test('returns sorted data from API when USE_LOCAL_DATA is false', async () => {
+  test('returns sorted data from API when USE_LOCAL_DATA is false and multiple reviewers are returned', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockResolvedValue({ data: MockReviewersBackendList });
 
     const result = (await GetReviewerList()) as Reviewer[];
     expect(result[0].displayName).toBe('Aisha Rahman');
     expect(result[1].displayName).toBe('Amara Okafor');
-    expect(result).to.equal(MockReviewersBackendList);
   });
 
-  test('returns error message on API failure', async () => {
+  test('returns unsorted data when API returns only one reviewer', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    const singleReviewer = [{ displayName: 'Zara Khan' }];
+    mockedAxios.get.mockResolvedValue({ data: singleReviewer });
+
+    const result = await GetReviewerList();
+    expect(result).toEqual(singleReviewer);
+  });
+
+  test('returns error message on API failure with Error instance', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue(new Error('Network Error'));
 
@@ -58,17 +65,17 @@ describe('GetReviewerList', () => {
     expect(result).toBe('Network Error');
   });
 
-  test('returns error for API_UNKNOWN_ERROR', async () => {
+  test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: 'API_UNKNOWN_ERROR' });
+    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
 
     const result = await GetReviewerList();
-    expect(result).toBe('API_UNKNOWN_ERROR');
+    expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
-  test('returns error for undefined data', async () => {
+  test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: 'undefined' });
+    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
 
     const result = await GetReviewerList();
     expect(result).toBe('error.API_UNKNOWN_ERROR');
