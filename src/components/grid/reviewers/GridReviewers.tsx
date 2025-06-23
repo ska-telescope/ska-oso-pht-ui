@@ -40,19 +40,19 @@ export function filterReviewers(
   );
 }
 
-interface GridProposalsProps {
+interface GridReviewersProps {
   height?: string;
   listOnly?: boolean;
   currentPanel: Panel;
-  onReviewersChange: (reviewersList: PanelReviewer[]) => void;
+  onChange: (reviewersList: PanelReviewer[]) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
   listOnly = false,
   currentPanel,
-  onReviewersChange
-}: GridProposalsProps) {
+  onChange
+}: GridReviewersProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
@@ -92,12 +92,12 @@ export default function GridProposals({
 
   const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
     // send updated reviewer list to parent component
-    onReviewersChange(reviewerPanels);
+    onChange(reviewerPanels);
   };
 
   const deleteReviewerPanel = (reviewer: Reviewer) => {
     function filterRecords(id: string) {
-      return localPanel.reviewers.filter(item => !(item.reviewerId === id));
+      return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
     }
     const filtered = filterRecords(reviewer.id);
     setReviewerPanels(filtered);
@@ -110,11 +110,11 @@ export default function GridProposals({
   const addReviewerPanel = (reviewer: Reviewer) => {
     const rec: PanelReviewer = {
       reviewerId: reviewer.id,
-      panelId: localPanel.id,
+      panelId: localPanel?.id ?? '',
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };
-    const reviewers = localPanel.reviewers;
+    const reviewers = localPanel?.reviewers;
     reviewers.push(rec);
     setReviewerPanels(reviewers);
   };

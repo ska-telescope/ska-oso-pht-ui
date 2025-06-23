@@ -144,7 +144,7 @@ export default function PanelMaintenance() {
               {theValue === 0 && (
                 <GridReviewers
                   currentPanel={currentPanel}
-                  onReviewersChange={item => handleReviewersChange(item)}
+                  onChange={item => handleReviewersChange(item)}
                 />
               )}
               {theValue === 1 && <GridProposals />}
