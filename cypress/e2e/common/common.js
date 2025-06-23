@@ -1,24 +1,17 @@
-export const viewPort = (format = 'pc') => {
-  const isPC = () => format === 'pc';
-  const xAxis = isPC() ? 2000 : 600;
-  const yAxis = isPC() ? 1200 : 600;
-  cy.viewport(xAxis, yAxis);
-};
+import {
+  click,
+  entry,
+  selectId,
+  selectValue,
+  verifyContent,
+  verifyExists,
+  viewPort
+} from '../../fixtures/utils/cypress';
 
 export const initialize = () => {
   viewPort();
   cy.visit('/');
 };
-
-/*----------------------------------------------------------------------*/
-
-export const click = testId => cy.get('[data-testid="' + testId + '"]').click();
-export const entry = (testId, value) => cy.get('[data-testid="' + testId + '"]').type(value);
-export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
-export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
-export const verifyContent = (testId, value) =>
-  cy.get('[data-testid="' + testId + '"]').should('contain.text', value);
-export const verifyExists = testId => cy.get('[data-testid="' + testId + '"]').should('exist');
 
 /*----------------------------------------------------------------------*/
 
@@ -86,7 +79,7 @@ export const verifyOnLandingPage = () => verifyExists('addProposalButton');
 
 /*----------------------------------------------------------------------*/
 
-export const enterProposalTitle = () => entry('titleIdIpad', 'Proposal Title');
+export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 
