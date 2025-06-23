@@ -3,15 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '../../../utils/constants';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 import { Panel } from '@/utils/types/panel';
-
-const TOP_LABEL_WIDTH = 6;
 
 export default function ReviewPageEntry() {
   const { t } = useTranslation('pht');
@@ -26,10 +24,16 @@ export default function ReviewPageEntry() {
   const setPanel = (panel: Panel) => updateAppContent2(panel);
 
   const [panelName, setPanelName] = React.useState('');
+  const [panelDateCreated, setPanelDateCreated] = React.useState('');
+  const [panelDateExpiry, setPanelDateExpiry] = React.useState('');
 
   React.useEffect(() => {
     if (isEdit()) {
       panelIn(locationProperties.state);
+    } else {
+      setPanelName(panelName);
+      setPanelDateCreated(panelDateCreated);
+      setPanelDateExpiry(panelDateExpiry);
     }
   }, []);
 
@@ -45,6 +49,10 @@ export default function ReviewPageEntry() {
       reviewers: []
     };
     return newPanel;
+  };
+
+  const addButtonDisabled = () => {
+    return isEdit() ? false : false;
   };
 
   const backButton = () => (
@@ -67,10 +75,29 @@ export default function ReviewPageEntry() {
     fieldWrapper(
       <PanelNameField
         label={t('panelName.label')}
-        widthLabel={TOP_LABEL_WIDTH}
         setValue={setPanelName}
-        testId="panelName"
         value={panelName}
+        testId="panelName"
+      />
+    );
+
+  const panelDateCreatedField = () =>
+    fieldWrapper(
+      <DateEntry
+        label="panelDateCreated"
+        testId="panelDateCreatedTestId"
+        value={panelDateCreated}
+        setValue={setPanelDateCreated}
+      />
+    );
+
+  const panelDateExpiryField = () =>
+    fieldWrapper(
+      <DateEntry
+        label="panelDateExpiry"
+        testId="panelDateExpiryTestId"
+        value={panelDateExpiry}
+        setValue={setPanelDateExpiry}
       />
     );
 
@@ -168,6 +195,8 @@ export default function ReviewPageEntry() {
           >
             <Grid2 size={{ lg: 5 }}></Grid2>
             <Grid2 size={{ md: 12, lg: 5 }}>{panelNameField()}</Grid2>
+            <Grid2 size={{ md: 12, lg: 5 }}>{panelDateCreatedField()}</Grid2>
+            <Grid2 size={{ md: 12, lg: 5 }}>{panelDateExpiryField()}</Grid2>
           </Grid2>
         </Grid2>
       </Grid2>
