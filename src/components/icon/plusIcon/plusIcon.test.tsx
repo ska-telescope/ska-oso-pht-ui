@@ -1,10 +1,10 @@
 import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import CreateIcon from './createIcon';
+import PlusIcon from './plusIcon';
 
 describe('<TickIcon />', () => {
   test('renders correctly', () => {
-    render(<CreateIcon onClick={vi.fn()} />);
+    render(<PlusIcon onClick={vi.fn()} />);
   });
 });

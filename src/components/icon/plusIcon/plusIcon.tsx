@@ -2,23 +2,23 @@ import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import Icon from '../icon/Icon';
 
-interface CreateIconProps {
+interface PlusIconProps {
   disabled?: boolean;
   onClick?: Function;
   toolTip?: string;
 }
 
-export default function CreateIcon({
+export default function PlusIcon({
   disabled = false,
   onClick = null,
   toolTip = ''
-}: CreateIconProps) {
+}: PlusIconProps) {
   return (
     <Icon
       disabled={disabled}
       onClick={onClick}
       icon={<AddIcon />}
-      testId="tickIcon"
+      testId="plusIcon"
       toolTip={toolTip}
     />
   );

@@ -10,7 +10,7 @@ import { Panel } from '@/utils/types/panel';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
-import CreateIcon from '@/components/icon/createIcon/createIcon';
+import PlusIcon from '@/components/icon/plusIcon/plusIcon';
 
 const CARD_HEIGHT = '37vh';
 const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
@@ -59,7 +59,7 @@ export default function PanelMaintenance() {
     />
   );
 
-  const addPanelButton = () => <CreateIcon onClick={() => navigate(PMT[3])} />;
+  const addPanelButton = () => <PlusIcon onClick={() => navigate(PMT[3])} />;
 
   return (
     <>
