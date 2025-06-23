@@ -4,12 +4,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
-import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '../../../utils/constants';
+import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 import { Panel } from '@/utils/types/panel';
+import { Metadata } from '@utils/types/metadata.tsx';
+import { PanelProposal } from '@utils/types/panelProposal.tsx';
+import { PanelReviewer } from '@utils/types/panelReviewer.tsx';
 
 export default function ReviewPageEntry() {
   const { t } = useTranslation('pht');
@@ -21,7 +24,16 @@ export default function ReviewPageEntry() {
   const { application, updateAppContent2 } = storageObject.useStore();
 
   const getPanel = () => application.content2 as Panel;
-  const setPanel = (panel: Panel) => updateAppContent2(panel);
+  const setPanel = (panel: {
+    metaData?: Metadata;
+    panels: any[];
+    name: string;
+    expiresOn: string;
+    id: string;
+    proposals: PanelProposal[];
+    createdOn: string;
+    reviewers: PanelReviewer[]
+  }) => updateAppContent2(panel);
 
   const [panelName, setPanelName] = React.useState('');
 
@@ -47,6 +59,8 @@ export default function ReviewPageEntry() {
 
   const panelIn = (panel: Panel) => {
     setPanelName(panel.name);
+    setPanelDateCreated(panel.createdOn)
+    setPanelDateCreated(panel.expiresOn)
   };
 
   const panelOut = () => {
@@ -62,12 +76,7 @@ export default function ReviewPageEntry() {
   };
 
   const panelNameEmpty = () => {
-    if(panelName === ''){
-          return true;
-    }
-    else{
-      return false;
-    } 
+    return panelName === '';
   };
 
   const addButtonDisabled = () => {
@@ -127,7 +136,7 @@ export default function ReviewPageEntry() {
       const newPanel: Panel = panelOut();
       setPanel({
         ...getPanel(),
-        panels: [...getPanel().name, newPanel]
+        panels: [...getPanel(), newPanel]
       });
     };
 
