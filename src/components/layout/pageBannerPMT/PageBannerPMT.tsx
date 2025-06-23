@@ -29,9 +29,9 @@ export default function PageBannerPMT({ backBtn, title }: PageBannerPMTProps) {
 
   const row1 = () => (
     <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid2>{buttonsLeft()}</Grid2>
+      <Grid2 size={{ xs: 3 }}>{buttonsLeft()}</Grid2>
       <Grid2>{pageTitle()}</Grid2>
-      <Grid2>{buttonsRight()}</Grid2>
+      <Grid2 size={{ xs: 3 }}>{buttonsRight()}</Grid2>
     </Grid2>
   );
 

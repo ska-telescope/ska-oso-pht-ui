@@ -40,19 +40,21 @@ export function filterReviewers(
   );
 }
 
-interface GridProposalsProps {
+interface GridReviewersProps {
   height?: string;
-  listOnly?: boolean;
-  currentPanel?: Panel;
-  onRowCheckBoxClick?: (reviewersList: PanelReviewer[]) => void;
+  currentPanel: Panel | null;
+  onChange: (reviewersList: PanelReviewer[]) => void;
+  showTitle?: boolean;
+  showSearch?: boolean;
 }
 
 export default function GridProposals({
   height = '50vh',
-  listOnly = false,
+  showTitle = false,
+  showSearch = false,
   currentPanel,
-  onRowCheckBoxClick
-}: GridProposalsProps) {
+  onChange
+}: GridReviewersProps) {
   const { t } = useTranslation('pht');
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
@@ -91,21 +93,16 @@ export default function GridProposals({
   };
 
   const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
-    setLocalPanel({
-      ...localPanel,
-      reviewers: reviewerPanels
-    });
-    /*
     // send updated reviewer list to parent component
-    if (onRowCheckBoxClick) {
-      onRowCheckBoxClick(localPanel.reviewers);
-    }
-    */
+    onChange(reviewerPanels);
   };
 
   const deleteReviewerPanel = (reviewer: Reviewer) => {
-    const reviewers = localPanel.reviewers.filter(entry => entry.reviewerId !== reviewer.id);
-    setReviewerPanels(reviewers);
+    function filterRecords(id: string) {
+      return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
+    }
+    const filtered = filterRecords(reviewer.id);
+    setReviewerPanels(filtered);
   };
 
   const isReviewerSelected = (reviewerId: string): boolean => {
@@ -119,7 +116,7 @@ export default function GridProposals({
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     };
-    const reviewers = localPanel.reviewers;
+    const reviewers = localPanel?.reviewers;
     reviewers.push(rec);
     setReviewerPanels(reviewers);
   };
@@ -255,13 +252,13 @@ export default function GridProposals({
 
   return (
     <>
-      {!listOnly && (
+      {showTitle && (
         <Grid item p={2} lg={12}>
           {ReviewersSectionTitle()}
         </Grid>
       )}
 
-      {!listOnly && (
+      {showSearch && (
         <Grid
           item
           p={2}

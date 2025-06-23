@@ -36,13 +36,15 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 
 interface GridProposalsProps {
   height?: string;
-  listOnly?: boolean;
   forReview?: boolean;
+  showSearch?: boolean;
+  showTitle?: boolean;
 }
 
 export default function GridProposals({
   height = '50vh',
-  listOnly = false,
+  showSearch = false,
+  showTitle = false,
   forReview = false
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
@@ -394,13 +396,13 @@ export default function GridProposals({
 
   return (
     <>
-      {!listOnly && (
+      {showTitle && (
         <Grid item p={2} lg={12}>
           {ProposalsSectionTitle()}
         </Grid>
       )}
 
-      {!listOnly && (
+      {showSearch && (
         <Grid
           item
           p={2}

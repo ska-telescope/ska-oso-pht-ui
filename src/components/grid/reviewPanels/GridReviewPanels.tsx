@@ -2,25 +2,25 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid2 } from '@mui/material';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { FOOTER_SPACER } from '@/utils/constants';
 import { Panel } from '@/utils/types/panel';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
   onRowClick?: (row: any) => void;
+  updatedData: Panel | null;
 }
 
 export default function GridReviewPanels({
   height = '50vh',
   listOnly = false,
-  onRowClick
+  onRowClick,
+  updatedData
 }: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
 
-  const [data, setData] = React.useState<any[]>([]);
+  const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
 
   const DATA_GRID_HEIGHT = '65vh';
@@ -30,6 +30,17 @@ export default function GridReviewPanels({
     { id: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
     { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
   ];
+
+  const updateReviewPanel = (updatedData: Panel) => {
+    // Update the data state with the updated data (updated list of reviewers) for curremt panel
+    setData(prevData => prevData.map(item => (item?.id === updatedData?.id ? updatedData : item)));
+  };
+
+  React.useEffect(() => {
+    if (updatedData) {
+      updateReviewPanel(updatedData);
+    }
+  }, [updatedData]);
 
   React.useEffect(() => {
     setFetchList(!fetchList);
@@ -82,7 +93,6 @@ export default function GridReviewPanels({
           </div>
         )}
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </>
   );
 }
