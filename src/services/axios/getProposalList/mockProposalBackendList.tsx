@@ -12,14 +12,15 @@ const MockProposalBackendList: ProposalBackend[] = [
       created_by: 'TestUser',
       created_on: '2022-09-23T15:43:53.971548Z',
       last_modified_by: 'TestUser',
-      last_modified_on: '2022-09-23T15:43:53.971548Z'
+      last_modified_on: '2022-09-23T15:43:53.971548Z',
+      pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
     info: {
       title: 'In a galaxy far, far away',
       proposal_type: {
         main_type: 'standard_proposal',
-        sub_type: ['coordinated_proposal']
+        attributes: ['coordinated_proposal']
       },
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
@@ -341,14 +342,15 @@ const MockProposalBackendList: ProposalBackend[] = [
       created_by: 'TestUser',
       created_on: '2022-09-23T15:43:53.971548Z',
       last_modified_by: 'TestUser',
-      last_modified_on: '2022-09-23T15:43:53.971548Z'
+      last_modified_on: '2022-09-23T15:43:53.971548Z',
+      pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
     info: {
       title: 'The Milky Way View',
       proposal_type: {
         main_type: 'standard_proposal',
-        sub_type: ['coordinated_proposal']
+        attributes: ['coordinated_proposal']
       },
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
@@ -670,14 +672,15 @@ const MockProposalBackendList: ProposalBackend[] = [
       created_by: 'TestUser',
       created_on: '2022-09-23T15:43:53.971548Z',
       last_modified_by: 'TestUser',
-      last_modified_on: '2022-09-23T15:43:53.971548Z'
+      last_modified_on: '2022-09-23T15:43:53.971548Z',
+      pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
     info: {
       title: 'Incomplete Proposal',
       proposal_type: {
         main_type: 'standard_proposal'
-        // sub_type: []
+        // attributes: []
       },
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
