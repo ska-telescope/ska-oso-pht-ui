@@ -57,4 +57,20 @@ describe('GetReviewerList', () => {
     const result = await GetReviewerList();
     expect(result).toBe('Network Error');
   });
+
+  test('returns error for API_UNKNOWN_ERROR', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAxios.get.mockResolvedValue({ data: 'API_UNKNOWN_ERROR' });
+
+    const result = await GetReviewerList();
+    expect(result).toBe('API_UNKNOWN_ERROR');
+  });
+
+  test('returns error for undefined data', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAxios.get.mockResolvedValue({ data: 'undefined' });
+
+    const result = await GetReviewerList();
+    expect(result).toBe('error.API_UNKNOWN_ERROR');
+  });
 });

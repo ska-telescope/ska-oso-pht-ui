@@ -7,11 +7,7 @@ interface PlusIconProps {
   toolTip?: string;
 }
 
-export default function PlusIcon({
-  disabled = false,
-  onClick,
-  toolTip = ''
-}: PlusIconProps) {
+export default function PlusIcon({ disabled = false, onClick, toolTip = '' }: PlusIconProps) {
   return (
     <Icon
       disabled={disabled}
