@@ -6,7 +6,8 @@ export type Panel = {
   metaData?: Metadata;
   id: string;
   name: string;
-  cycle: string;
+  createdOn: string;
+  expiresOn: string;
   proposals: PanelProposal[];
   reviewers: PanelReviewer[];
 };

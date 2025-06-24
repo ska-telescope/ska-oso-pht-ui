@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SpectralResolution from './SpectralResolution';
+import { BAND_LOW, TYPE_CONTINUUM } from '@/utils/constants';
 
 describe('<SpectralResolution />', () => {
   test('renders correctly', () => {
@@ -13,8 +14,8 @@ describe('<SpectralResolution />', () => {
           bandWidthUnits={0}
           frequency={0}
           frequencyUnits={0}
-          observingBand={0}
-          observationType={0}
+          observingBand={BAND_LOW}
+          observationType={TYPE_CONTINUUM}
         />
       </StoreProvider>
     );

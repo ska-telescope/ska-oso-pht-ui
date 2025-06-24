@@ -64,7 +64,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
       return `addBtn.label`;
     }
     if (usedPageNo === -1) {
-      return `button.create`;
+      return `createBtn.label`;
     }
     return `page.${usedPageNo + 1}.title`;
   };

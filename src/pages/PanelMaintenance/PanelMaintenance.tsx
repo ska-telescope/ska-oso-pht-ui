@@ -14,8 +14,10 @@ import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import PlusIcon from '@/components/icon/plusIcon/plusIcon';
 
-const CONTENT_HEIGHT = '37vh';
-const TAB_CONTENT_HEIGHT = `calc(${CONTENT_HEIGHT} - 2000px)`;
+const REVIEWER_HEIGHT = '65vh';
+const TABS_HEIGHT = '72vh';
+const TABS_CONTENT_HEIGHT = '67vh';
+const TAB_GRID_HEIGHT = '51vh';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -74,10 +76,10 @@ export default function PanelMaintenance() {
         pl={2}
         pr={2}
         direction="row"
-        justifyContent="space-around"
+        justifyContent="space-between"
         alignItems="flex-start"
       >
-        <Grid2 p={2} size={{ sm: 12, md: 5, lg: 3 }}>
+        <Grid2 p={2} size={{ sm: 12, md: 6, lg: 3 }}>
           <Box
             sx={{
               width: '100%',
@@ -99,7 +101,7 @@ export default function PanelMaintenance() {
               <Grid2>{addPanelIcon()}</Grid2>
             </Grid2>
             <GridReviewPanels
-              height={CONTENT_HEIGHT}
+              height={REVIEWER_HEIGHT}
               listOnly
               onRowClick={row => handlePanelChange(row)}
               updatedData={currentPanel}
@@ -116,7 +118,7 @@ export default function PanelMaintenance() {
           alignItems="flex-start"
         >
           {currentPanel && (
-            <Box sx={{ border: '1px solid Grey', height: TAB_CONTENT_HEIGHT, width: '90%' }}>
+            <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '90%' }}>
               <Box>
                 <Tabs
                   variant="fullWidth"
@@ -126,26 +128,30 @@ export default function PanelMaintenance() {
                   onChange={handleChange}
                   aria-label="basic tabs example"
                 >
-                  <Tab
-                    label={t('reviewers.label')}
-                    {...a11yProps(0)}
-                    sx={{ border: '1px solid lightGrey' }}
-                  />
-                  <Tab
-                    label={t('proposals.label')}
-                    {...a11yProps(1)}
-                    sx={{ border: '1px solid lightGrey' }}
-                  />
+                  <Tab label={t('reviewers.label')} {...a11yProps(0)} />
+                  <Tab label={t('proposals.label')} {...a11yProps(1)} />
                 </Tabs>
               </Box>
-              {theValue === 0 && (
-                <GridReviewers
-                  currentPanel={currentPanel}
-                  showSearch
-                  onChange={item => handleReviewersChange(item)}
-                />
-              )}
-              {theValue === 1 && <GridProposals showSearch />}
+              <Box
+                p={2}
+                sx={{
+                  width: '100%',
+                  height: TABS_CONTENT_HEIGHT,
+                  border: '1px solid lightgrey',
+                  borderBottomLeftRadius: '16px',
+                  borderBottomRightRadius: '16px'
+                }}
+              >
+                {theValue === 0 && (
+                  <GridReviewers
+                    currentPanel={currentPanel}
+                    height={TAB_GRID_HEIGHT}
+                    showSearch
+                    onChange={item => handleReviewersChange(item)}
+                  />
+                )}
+                {theValue === 1 && <GridProposals showSearch />}
+              </Box>
             </Box>
           )}
           {!currentPanel && (
