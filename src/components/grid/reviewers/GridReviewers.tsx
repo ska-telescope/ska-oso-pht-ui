@@ -21,6 +21,33 @@ import Reviewer from '@/utils/types/reviewer';
 import { Panel } from '@/utils/types/panel';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 
+export const addReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: (reviewers: PanelReviewer[]) => void
+) => {
+  const rec: PanelReviewer = {
+    reviewerId: reviewer.id,
+    panelId: localPanel?.id ?? '',
+    assignedOn: new Date().toISOString(),
+    status: REVIEWER_STATUS.PENDING
+  };
+  const updatedReviewers = [...localPanel?.reviewers, rec];
+  setReviewerPanels(updatedReviewers);
+};
+
+export const deleteReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
+  }
+  const filtered = filterRecords(reviewer.id);
+  setReviewerPanels(filtered);
+};
+
 export function filterReviewers(
   reviewers: Reviewer[],
   searchTerm: string,
@@ -97,35 +124,15 @@ export default function GridProposals({
     onChange(reviewerPanels);
   };
 
-  const deleteReviewerPanel = (reviewer: Reviewer) => {
-    function filterRecords(id: string) {
-      return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
-    }
-    const filtered = filterRecords(reviewer.id);
-    setReviewerPanels(filtered);
-  };
-
   const isReviewerSelected = (reviewerId: string): boolean => {
     return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
   };
 
-  const addReviewerPanel = (reviewer: Reviewer) => {
-    const rec: PanelReviewer = {
-      reviewerId: reviewer.id,
-      panelId: localPanel?.id ?? '',
-      assignedOn: new Date().toISOString(),
-      status: REVIEWER_STATUS.PENDING
-    };
-    const reviewers = localPanel?.reviewers;
-    reviewers.push(rec);
-    setReviewerPanels(reviewers);
-  };
-
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
     if (isReviewerSelected(reviewer.id)) {
-      deleteReviewerPanel(reviewer);
+      deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
     } else {
-      addReviewerPanel(reviewer);
+      addReviewerPanel(reviewer, localPanel, setReviewerPanels);
     }
   };
 
