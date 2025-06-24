@@ -12,4 +12,11 @@ describe('<SpectralAveraging />', () => {
       </StoreProvider>
     );
   });
+  test('renders correctly', () => {
+    render(
+      <StoreProvider>
+        <SpectralAveraging isLow widthLabel={0} value={1} />
+      </StoreProvider>
+    );
+  });
 });

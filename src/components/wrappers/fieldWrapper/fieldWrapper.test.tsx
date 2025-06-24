@@ -7,4 +7,7 @@ describe('<FieldWrapper />', () => {
   test('renders correctly', () => {
     render(<FieldWrapper />);
   });
+  test('renders correctly', () => {
+    render(<FieldWrapper big />);
+  });
 });

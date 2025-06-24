@@ -11,7 +11,7 @@ import Reviewer from '@/utils/types/reviewer';
 /*********************************************************** filter *********************************************************/
 
 export const getReviewersAlphabetical = (data: Reviewer[]) => {
-  return data.sort((a, b) => a.displayName.localeCompare(b.displayName));
+  return data?.sort((a, b) => a?.displayName?.localeCompare(b?.displayName));
 };
 
 /*****************************************************************************************************************************/
@@ -28,8 +28,11 @@ async function GetReviewerList(): Promise<Reviewer[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
-    const results = result.data.length > 1 ? getReviewersAlphabetical(result.data) : result.data;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : (results as Reviewer[]);
+
+    if (!result || !Array.isArray(result.data)) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+    return result?.data?.length > 1 ? getReviewersAlphabetical(result?.data) : result?.data;
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

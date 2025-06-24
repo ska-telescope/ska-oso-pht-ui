@@ -10,6 +10,14 @@ export default defineConfig({
   downloadsFolder: 'cypress/artefacts/downloads',
   e2e: {
     baseUrl: 'http://localhost:6101',
+    //
+    defaultCommandTimeout: 10000,  // 4000
+    execTimeout: 120000, // 60000
+    taskTimeout: 120000, // 60000
+    pageLoadTimeout:  120000, // 60000
+    requestTimeout:  10000, // 5000
+    responseTimeout:  60000, // 30000
+    //
     experimentalRunAllSpecs: true,
     experimentalMemoryManagement: true,
     supportFile: 'cypress/support/e2e.ts',

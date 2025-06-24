@@ -18,7 +18,7 @@ const mockedAxios = (axios as unknown) as {
   // add other axios methods as needed
 };
 
-describe('GetProposalList', () => {
+describe('Helper Functions', () => {
   test('sortByLastUpdated returns proposals sorted by last updated date', () => {
     const result: ProposalBackend[] = sortByLastUpdated(MockProposalBackendList);
     expect(result).to.have.lengthOf(MockProposalBackendList.length);
@@ -38,7 +38,7 @@ describe('GetProposalList', () => {
   });
 });
 
-describe('GetProposalList', () => {
+describe('GetProposalList Service', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -56,10 +56,31 @@ describe('GetProposalList', () => {
     expect(result).to.deep.equal(MockProposalFrontendList);
   });
 
+  test('returns unsorted data when API returns only one proposal', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAxios.get.mockResolvedValue({ data: [MockProposalBackendList[0]] });
+    const result = await GetProposalList();
+    expect(result).toEqual([MockProposalFrontendList[0]]);
+  });
+
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue(new Error('Network Error'));
     const result = await GetProposalList();
     expect(result).toBe('Network Error');
+  });
+
+  test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
+    const result = await GetProposalList();
+    expect(result).toBe('error.API_UNKNOWN_ERROR');
+  });
+
+  test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
+    const result = await GetProposalList();
+    expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });

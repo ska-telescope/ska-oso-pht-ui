@@ -6,9 +6,9 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid2, Box, Card, CardContent } from '@mui/material';
 import React from 'react';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import {
   FOOTER_SPACER,
@@ -20,6 +20,33 @@ import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 import { Panel } from '@/utils/types/panel';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
+
+export const addReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: (reviewers: PanelReviewer[]) => void
+) => {
+  const rec: PanelReviewer = {
+    reviewerId: reviewer.id,
+    panelId: localPanel?.id ?? '',
+    assignedOn: new Date().toISOString(),
+    status: REVIEWER_STATUS.PENDING
+  };
+  const updatedReviewers = [...localPanel?.reviewers, rec];
+  setReviewerPanels(updatedReviewers);
+};
+
+export const deleteReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
+  }
+  const filtered = filterRecords(reviewer.id);
+  setReviewerPanels(filtered);
+};
 
 export function filterReviewers(
   reviewers: Reviewer[],
@@ -61,11 +88,11 @@ export default function GridProposals({
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
+  const [selected, setSelected] = React.useState(true);
+  const [notSelected, setNotSelected] = React.useState(true);
   const [axiosError, setAxiosError] = React.useState('');
   const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
   const [fetchList] = React.useState(false);
-
-  const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -97,35 +124,15 @@ export default function GridProposals({
     onChange(reviewerPanels);
   };
 
-  const deleteReviewerPanel = (reviewer: Reviewer) => {
-    function filterRecords(id: string) {
-      return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
-    }
-    const filtered = filterRecords(reviewer.id);
-    setReviewerPanels(filtered);
-  };
-
   const isReviewerSelected = (reviewerId: string): boolean => {
     return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
   };
 
-  const addReviewerPanel = (reviewer: Reviewer) => {
-    const rec: PanelReviewer = {
-      reviewerId: reviewer.id,
-      panelId: localPanel?.id ?? '',
-      assignedOn: new Date().toISOString(),
-      status: REVIEWER_STATUS.PENDING
-    };
-    const reviewers = localPanel?.reviewers;
-    reviewers.push(rec);
-    setReviewerPanels(reviewers);
-  };
-
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
     if (isReviewerSelected(reviewer.id)) {
-      deleteReviewerPanel(reviewer);
+      deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
     } else {
-      addReviewerPanel(reviewer);
+      addReviewerPanel(reviewer, localPanel, setReviewerPanels);
     }
   };
 
@@ -201,8 +208,11 @@ export default function GridProposals({
     ]
   ];
 
-  const filteredData = reviewers
-    ? filterReviewers(reviewers, searchTerm, searchTypeExpertise, searchTypeAffiliation)
+  const selectedData = reviewers
+    ? reviewers.filter(e => (isReviewerSelected(e.id) ? selected : notSelected))
+    : [];
+  const filteredData = selectedData
+    ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
     : [];
 
   const ReviewersSectionTitle = () => (
@@ -253,35 +263,82 @@ export default function GridProposals({
   return (
     <>
       {showTitle && (
-        <Grid item p={2} lg={12}>
+        <Grid2 p={2} size={{ lg: 12 }}>
           {ReviewersSectionTitle()}
-        </Grid>
+        </Grid2>
       )}
 
       {showSearch && (
-        <Grid
-          item
-          p={2}
-          sm={12}
-          md={8}
-          lg={12}
+        <Grid2
+          pt={2}
+          size={{ sm: 12, md: 8, lg: 12 }}
           container
           direction="row"
-          justifyContent="space-around"
+          spacing={2}
+          justifyContent="space-between"
           alignItems="center"
         >
-          <Grid item p={2} sm={12} md={6} lg={4}>
-            {searchDropdownExpertise()}
-          </Grid>
-          <Grid item p={2} sm={12} md={6} lg={4}>
-            {searchDropdownAffiliation()}
-          </Grid>
-          <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-            {searchEntryField('searchId')}
-          </Grid>
-        </Grid>
+          <Grid2 size={{ sm: 12, lg: 8 }}>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{searchDropdownExpertise()}</Grid2>
+              <Grid2 size={{ sm: 6 }}>{searchDropdownAffiliation()}</Grid2>
+            </Grid2>
+            <Grid2 size={{ sm: 12 }} mt={-1}>
+              {searchEntryField('searchId')}
+            </Grid2>
+          </Grid2>
+          <Grid2 size={{ sm: 12, lg: 4 }}>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid2
+                  container
+                  flexDirection={'row'}
+                  flexWrap={'wrap'}
+                  alignItems="space-evenly"
+                  justifyContent="space-between"
+                >
+                  <Grid2>
+                    <Typography id="targetObservationLabel" pt={1} variant="h6">
+                      {t('targetObservation.filters')}
+                    </Typography>
+                  </Grid2>
+
+                  <Grid2>
+                    <Grid2
+                      container
+                      flexDirection={'row'}
+                      flexWrap={'wrap'}
+                      justifyContent={'flex-start'}
+                    >
+                      <Grid2>
+                        <TickBox
+                          disabled={!localPanel}
+                          label={t('selected.label')}
+                          labelPosition={LABEL_POSITION.END}
+                          testId="selectedTickBox"
+                          checked={selected}
+                          onChange={() => setSelected(!selected)}
+                        />
+                      </Grid2>
+                      <Grid2>
+                        <TickBox
+                          disabled={!localPanel}
+                          label={t('notSelected.label')}
+                          labelPosition={LABEL_POSITION.END}
+                          testId="notSelectedTickBox"
+                          checked={notSelected}
+                          onChange={() => setNotSelected(!notSelected)}
+                        />
+                      </Grid2>
+                    </Grid2>
+                  </Grid2>
+                </Grid2>
+              </CardContent>
+            </Card>
+          </Grid2>
+        </Grid2>
       )}
-      <Grid item xs={12} pt={1}>
+      <Grid2 size={{ xs: 12 }} pt={1}>
         {!axiosError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('reviewers.empty')} testId="helpPanelId" />
         )}
@@ -292,14 +349,14 @@ export default function GridProposals({
               testId="dataGridId"
               rows={filteredData}
               columns={stdColumns}
-              height={DATA_GRID_HEIGHT}
+              height={height}
             />
           </div>
         )}
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
-      </Grid>
+      </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </>
   );
