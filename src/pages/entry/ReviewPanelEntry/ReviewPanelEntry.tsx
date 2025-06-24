@@ -90,9 +90,6 @@ export default function ReviewPageEntry() {
   const pageFooter = () => {
     const buttonClicked = () => {
       //create panel end point
-      //edit - call endpoint
-
-      // isEdit() ? updatePanelOnProposal() : addPanelToProposal();
       navigate(PMT[0]);
     };
 
@@ -115,7 +112,7 @@ export default function ReviewPageEntry() {
               action={buttonClicked}
               disabled={addButtonDisabled()}
               primary
-              testId={isEdit() ? 'updateObservationButton' : 'addObservationButton'}
+              testId={isEdit() ? 'updatePanelButton' : 'addPanelButton'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid2>

@@ -25,6 +25,7 @@ export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddObservation = () => clickButton('addObservationButton');
 export const clickAddPanel = () => clickButton('plusIcon');
+export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
@@ -48,6 +49,13 @@ export const clickDropdown = (testId, value) => {
   selectValue(value);
 };
 
+export const checkFieldDisabled = (testId, disabled) => {
+  if (disabled) {
+    cy.get('[data-testid="' + testId + '"]').should('not.be.enabled');
+  } else {
+    cy.get('[data-testid="' + testId + '"]').should('not.be.disabled');
+  }
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {
@@ -59,6 +67,9 @@ export const clickNav = (testId, title) => {
 export const clickPanelButtonPanels = () => clickNav('panelBtn1', 'PANEL MAINTENANCE');
 export const clickPanelButtonReviews = () => clickNav('panelBtn2', 'REVIEWS');
 export const clickPanelButtonProposals = () => clickNav('panelBtn3', '');
+
+export const enterPanelName = () => entry('panelName', 'Panel Name');
+
 
 /*----------------------------------------------------------------------*/
 
