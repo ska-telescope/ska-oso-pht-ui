@@ -23,8 +23,6 @@ export default function GridReviewPanels({
   const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
 
-  const DATA_GRID_HEIGHT = '65vh';
-
   const GetReviewPanels = (): Panel[] => [
     { id: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
     { id: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
@@ -85,7 +83,7 @@ export default function GridReviewPanels({
               testId="dataGridId"
               rows={data}
               columns={stdColumns}
-              height={DATA_GRID_HEIGHT}
+              height={height}
               onRowClick={(e: any) => {
                 onRowClick?.(e.row);
               }}
