@@ -1,6 +1,6 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
 
-const MockProposalBackend: ProposalBackend = {
+export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: 'draft',
   submitted_by: '',
@@ -213,4 +213,152 @@ const MockProposalBackend: ProposalBackend = {
   }
 };
 
-export default MockProposalBackend;
+export const MockProposalBackendZoom: ProposalBackend = {
+  prsl_id: 'prsl-t0001-20250624-00049',
+  status: 'draft',
+  submitted_by: '',
+  metadata: {
+    version: 5,
+    created_by: 'DefaultUser',
+    created_on: '2025-06-24T22:33:30.487950Z',
+    last_modified_by: 'DefaultUser',
+    last_modified_on: '2025-06-24T22:35:19.489320Z',
+    pdm_version: '18.1.0'
+  },
+  cycle: 'SKA_1962_2024',
+  info: {
+    title: 'Proposal Zoom',
+    proposal_type: {
+      main_type: 'key_science_proposal'
+    },
+    abstract: 'My zoom abstract.',
+    science_category: 'High Energy Cosmic Particles',
+    targets: [
+      {
+        target_id: 'm2',
+        name: '',
+        pointing_pattern: {
+          active: 'SinglePointParameters',
+          parameters: [
+            {
+              kind: 'SinglePointParameters',
+              offset_x_arcsec: 0.5,
+              offset_y_arcsec: 0.5
+            }
+          ]
+        },
+        reference_coordinate: {
+          kind: 'equatorial',
+          ra: '21:33:27.0200',
+          dec: '-00:49:23.700',
+          reference_frame: 'icrs',
+          epoch: 2000,
+          unit: ['hourangle', 'deg']
+        },
+        radial_velocity: {
+          quantity: {
+            value: -3.6,
+            unit: 'km / s'
+          },
+          definition: 'RADIO',
+          reference_frame: 'LSRK',
+          redshift: 0
+        }
+      }
+    ],
+    observation_sets: [
+      {
+        observation_set_id: 'obs-arMIoY',
+        observing_band: 'low_band',
+        elevation: 20,
+        array_details: {
+          array: 'ska_low',
+          subarray: 'aa4',
+          number_of_stations: 512
+        },
+        observation_type_details: {
+          observation_type: 'zoom',
+          bandwidth: {
+            value: 24.4140625,
+            unit: 'kHz'
+          },
+          central_frequency: {
+            value: 200,
+            unit: 'MHz'
+          },
+          supplied: {
+            supplied_type: 'integration_time',
+            quantity: {
+              value: 1,
+              unit: 'h'
+            }
+          },
+          spectral_resolution: '14.13 Hz (21.2 m/s)',
+          effective_resolution: '14.13 Hz (21.2 m/s)',
+          image_weighting: 'briggs',
+          robust: '1',
+          spectral_averaging: '1'
+        }
+      }
+    ],
+    data_product_sdps: [
+      {
+        data_products_sdp_id: 'SDP-1',
+        options: ['Y', 'Y', 'Y', 'Y'],
+        observation_set_refs: ['obs-arMIoY'],
+        image_size: {
+          value: 100,
+          unit: 'deg'
+        },
+        pixel_size: {
+          value: 3.7,
+          unit: 'arcsec'
+        },
+        weighting: '2'
+      }
+    ],
+    result_details: [
+      {
+        observation_set_ref: 'obs-arMIoY',
+        target_ref: 'm2',
+        result: {
+          supplied_type: 'integration_time',
+          weighted_continuum_sensitivity: {
+            value: 0
+            // TODO: check why unit is missing
+          },
+          weighted_spectral_sensitivity: {
+            value: 29.69626339640881,
+            unit: 'mJy / beam'
+          },
+          total_continuum_sensitivity: {
+            value: 0
+            // TODO: check why unit is missing
+          },
+          total_spectral_sensitivity: {
+            value: 29.696271681672012,
+            unit: 'mJy / beam'
+          },
+          surface_brightness_sensitivity: {
+            continuum: 0,
+            spectral: 6071.553983562558,
+            unit: 'K'
+          }
+        },
+        continuum_confusion_noise: {
+          value: 0
+          // TODO: check why unit is missing
+        },
+        synthesized_beam_size: {
+          continuum: 'dummy',
+          spectral: '13.47 x 11.10',
+          unit: 'arcsec²'
+        },
+        spectral_confusion_noise: {
+          value: 22.18293905542935,
+          unit: 'uJy / beam'
+        }
+      }
+    ]
+  }
+};

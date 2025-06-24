@@ -38,7 +38,7 @@ import {
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import MockProposalBackend from './mockProposalBackend';
+import { MockProposalBackend } from './mockProposalBackend';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
@@ -625,7 +625,6 @@ async function GetProposal(id: string): Promise<Proposal | string> {
     if (!result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
-
     return mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {

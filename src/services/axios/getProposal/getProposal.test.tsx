@@ -1,8 +1,8 @@
 import { describe, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import GetProposal, { GetMockProposal, mapping } from './getProposal';
-import MockProposalBackend from './mockProposalBackend';
-import MockProposalFrontend from './mockProposalFrontend';
+import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend';
+import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
@@ -19,9 +19,14 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal(MockProposalFrontend);
   });
 
-  test('mappingList returns mapped proposal from backend to frontend format', () => {
+  test('mappingList returns mapped continuum proposal from backend to frontend format', () => {
     const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontend);
+  });
+
+  test('mappingList returns mapped zoom proposal from backend to frontend format', () => {
+    const proposalFrontEnd: Proposal = mapping(MockProposalBackendZoom);
+    expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendZoom);
   });
 });
 

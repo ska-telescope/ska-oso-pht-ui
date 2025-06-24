@@ -22,7 +22,7 @@ export type ProposalBackend = {
   status: string;
   submitted_by?: string;
   submitted_on?: string;
-  investigator_refs: string[];
+  investigator_refs?: string[];
   metadata?: Metadata;
   cycle: string;
   info: {
@@ -34,12 +34,12 @@ export type ProposalBackend = {
     abstract: string;
     science_category: string;
     targets: TargetBackend[];
-    documents: DocumentBackend[];
-    investigators: InvestigatorBackend[];
-    observation_sets: ObservationSetBackend[];
-    data_product_sdps: DataProductSDPsBackend[];
-    data_product_src_nets: DataProductSRCNetBackend[];
-    result_details: SensCalcResultsBackend[];
+    documents?: DocumentBackend[];
+    investigators?: InvestigatorBackend[];
+    observation_sets?: ObservationSetBackend[];
+    data_product_sdps?: DataProductSDPsBackend[];
+    data_product_src_nets?: DataProductSRCNetBackend[];
+    result_details?: SensCalcResultsBackend[];
   };
 };
 

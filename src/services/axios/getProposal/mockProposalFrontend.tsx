@@ -1,6 +1,6 @@
 import Proposal from '@/utils/types/proposal';
 
-const MockProposalFrontend: Proposal = {
+export const MockProposalFrontend: Proposal = {
   id: 'prsl-t0001-20250613-00002',
   title: 'New Proposal test2',
   proposalType: 1,
@@ -230,4 +230,150 @@ const MockProposalFrontend: Proposal = {
   pipeline: ''
 };
 
-export default MockProposalFrontend;
+export const MockProposalFrontendZoom: Proposal = {
+  id: 'prsl-t0001-20250624-00049',
+  title: 'Proposal Zoom',
+  proposalType: 2,
+  proposalSubType: [],
+  status: 'draft',
+  lastUpdated: '2025-06-24T22:35:19.489320Z',
+  lastUpdatedBy: 'DefaultUser',
+  createdOn: '2025-06-24T22:33:30.487950Z',
+  createdBy: 'DefaultUser',
+  version: 5,
+  cycle: 'SKA_1962_2024',
+  team: [],
+  abstract: 'My zoom abstract.',
+  scienceCategory: 7,
+  scienceSubCategory: [1],
+  scienceLoadStatus: 9,
+  sciencePDF: undefined,
+  technicalPDF: undefined,
+  targetOption: 1,
+  targets: [
+    {
+      dec: '-00:49:23.700',
+      decUnit: 'deg',
+      id: 1,
+      name: 'm2',
+      latitude: '',
+      longitude: '',
+      ra: '21:33:27.0200',
+      raUnit: 'hourangle',
+      redshift: '0',
+      referenceFrame: 0,
+      rcReferenceFrame: 'icrs',
+      raReferenceFrame: 'LSRK',
+      raDefinition: 'RADIO',
+      velType: 1,
+      vel: '-3.6',
+      velUnit: 0,
+      pointingPattern: {
+        active: 'SinglePointParameters',
+        parameters: [
+          {
+            kind: 'SinglePointParameters',
+            offsetXArcsec: 0.5,
+            offsetYArcsec: 0.5
+          }
+        ]
+      }
+    }
+  ],
+  observations: [
+    {
+      id: 'obs-arMIoY',
+      telescope: 2,
+      subarray: 8,
+      type: 0,
+      imageWeighting: 1,
+      observingBand: 0,
+      centralFrequency: 200,
+      centralFrequencyUnits: 2,
+      elevation: 20,
+      numSubBands: 1,
+      bandwidth: 1,
+      continuumBandwidth: undefined,
+      continuumBandwidthUnits: undefined,
+      supplied: {
+        type: 1,
+        value: 1,
+        units: 2
+      },
+      robust: 4,
+      tapering: undefined,
+      weather: undefined,
+      spectralResolution: '14.13 Hz (21.2 m/s)',
+      effectiveResolution: '14.13 Hz (21.2 m/s)',
+      spectralAveraging: 1,
+      linked: 'm2',
+      numStations: 512,
+      num13mAntennas: undefined,
+      num15mAntennas: undefined
+    }
+  ],
+  groupObservations: [],
+  targetObservation: [
+    {
+      targetId: 1,
+      observationId: 'obs-arMIoY',
+      sensCalc: {
+        id: 1,
+        title: 'm2',
+        statusGUI: 0,
+        error: '',
+        section1: [
+          {
+            field: 'spectralSensitivityWeighted',
+            value: '29.69626339640881',
+            units: 'mJy/beam'
+          },
+          {
+            field: 'spectralConfusionNoise',
+            value: '22.18293905542935',
+            units: 'uJy/beam'
+          },
+          {
+            field: 'spectralTotalSensitivity',
+            value: '29.696271681672012',
+            units: 'mJy/beam'
+          },
+          {
+            field: 'spectralSynthBeamSize',
+            value: '13.47 x 11.10',
+            units: 'arcsec²'
+          },
+          {
+            field: 'spectralSurfaceBrightnessSensitivity',
+            value: '6071.553983562558',
+            units: 'K'
+          }
+        ],
+        section2: [],
+        section3: [
+          {
+            field: 'integrationTime',
+            value: '1',
+            units: 'h'
+          }
+        ]
+      }
+    }
+  ],
+  technicalLoadStatus: 9,
+  dataProductSDP: [
+    {
+      id: 1,
+      dataProductsSDPId: 'SDP-1',
+      observatoryDataProduct: [true, true, true, true],
+      observationId: ['obs-arMIoY'],
+      imageSizeValue: 100,
+      imageSizeUnits: 0,
+      pixelSizeValue: 3.7,
+      pixelSizeUnits: 'arcsecs',
+      weighting: 2
+    }
+  ],
+  dataProductSRC: [],
+  pipeline: ''
+};
