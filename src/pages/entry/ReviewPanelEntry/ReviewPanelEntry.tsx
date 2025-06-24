@@ -22,56 +22,14 @@ export default function ReviewPageEntry() {
 
   const isEdit = () => locationProperties.state !== null;
 
-  const { application, updateAppContent2 } = storageObject.useStore();
-
-  const getPanel = () => application.content2 as Panel;
-  const setPanel = (panel: {
-    metaData?: Metadata;
-    panels: any[];
-    name: string;
-    expiresOn: string;
-    id: string;
-    proposals: PanelProposal[];
-    createdOn: string;
-    reviewers: PanelReviewer[];
-  }) => updateAppContent2(panel);
-
   const [panelName, setPanelName] = React.useState('');
 
   const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
 
   React.useEffect(() => {
-    if (isEdit()) {
-      panelIn(locationProperties.state);
-    } else {
-      setPanelName(panelName);
-      setPanelDateCreated(panelDateCreated);
-      setPanelDateExpiry(panelDateExpiry);
-    }
-  }, []);
-
-  React.useEffect(() => {
     panelNameEmpty();
   }, [panelName]);
-
-  const panelIn = (panel: Panel) => {
-    setPanelName(panel.name);
-    setPanelDateCreated(panel.createdOn);
-    setPanelDateCreated(panel.expiresOn);
-  };
-
-  const panelOut = () => {
-    const newPanel: Panel = {
-      id: '',
-      name: panelName,
-      createdOn: panelDateCreated,
-      expiresOn: panelDateExpiry,
-      proposals: [],
-      reviewers: []
-    };
-    return newPanel;
-  };
 
   const panelNameEmpty = () => {
     return panelName === '';
