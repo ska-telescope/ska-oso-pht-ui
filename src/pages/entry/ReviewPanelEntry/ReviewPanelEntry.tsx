@@ -2,18 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
-import { Metadata } from '@utils/types/metadata.tsx';
-import { PanelProposal } from '@utils/types/panelProposal.tsx';
-import { PanelReviewer } from '@utils/types/panelReviewer.tsx';
 import moment from 'moment';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
-import { Panel } from '@/utils/types/panel';
 
 export default function ReviewPageEntry() {
   const { t } = useTranslation('pht');
@@ -144,9 +139,15 @@ export default function ReviewPageEntry() {
             justifyContent="space-around"
           >
             <Grid2 container alignItems="center" justifyContent="center" size={{ md: 12, lg: 10 }}>
-              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelNameField()}</Grid2>
-              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelDateCreatedField()}</Grid2>
-              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelDateExpiryField()}</Grid2>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">
+                {panelNameField()}
+              </Grid2>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">
+                {panelDateCreatedField()}
+              </Grid2>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">
+                {panelDateExpiryField()}
+              </Grid2>
             </Grid2>
           </Grid2>
         </Grid2>
