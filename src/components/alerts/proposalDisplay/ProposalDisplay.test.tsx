@@ -1,9 +1,11 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ProposalDisplay from './ProposalDisplay';
 
 describe('<ProposalDisplay />', () => {
+  const mockActionConfirm = vi.fn();
+  const mockActionClose = vi.fn();
   test('renders if null proposal', () => {
     render(<ProposalDisplay proposal={null} open={false} onClose={vi.fn()} onConfirm={vi.fn()} />);
   });
@@ -39,11 +41,13 @@ describe('<ProposalDisplay />', () => {
           dataProductSRC: undefined,
           pipeline: undefined
         }}
-        open={false}
-        onClose={vi.fn()}
-        onConfirm={vi.fn()}
+        open={true}
+        onClose={mockActionClose}
+        onConfirm={mockActionConfirm}
       />
     );
+    screen.getByTestId('cancelButtonTestId').click();
+    expect(mockActionClose).toBeCalled();
   });
   test('renders correctly ( type 1 )', () => {
     render(
@@ -77,10 +81,12 @@ describe('<ProposalDisplay />', () => {
           dataProductSRC: undefined,
           pipeline: undefined
         }}
-        open={false}
-        onClose={vi.fn()}
-        onConfirm={vi.fn()}
+        open={true}
+        onClose={mockActionClose}
+        onConfirm={mockActionConfirm}
       />
     );
+    // screen.getByTestId('displayConfirmationButton').click();
+    // expect(mockActionConfirm).toBeCalled();
   });
 });
