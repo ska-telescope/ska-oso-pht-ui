@@ -48,6 +48,10 @@
     "success": "Target is successfully added",
     "error": "Failed to add target - check for duplicate"
   },
+  "panelName": {
+    "label": "Panel Name",
+    "toolTip": "Name of Panel to be created."
+  },
   "affiliation": {
     "0": "All Affiliations",
     "label": "Affiliation"
