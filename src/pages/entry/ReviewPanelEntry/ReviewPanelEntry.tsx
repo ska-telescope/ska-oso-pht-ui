@@ -5,14 +5,15 @@ import { Box, Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
+import { Metadata } from '@utils/types/metadata.tsx';
+import { PanelProposal } from '@utils/types/panelProposal.tsx';
+import { PanelReviewer } from '@utils/types/panelReviewer.tsx';
+import moment from 'moment';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 import { Panel } from '@/utils/types/panel';
-import { Metadata } from '@utils/types/metadata.tsx';
-import { PanelProposal } from '@utils/types/panelProposal.tsx';
-import { PanelReviewer } from '@utils/types/panelReviewer.tsx';
 
 export default function ReviewPageEntry() {
   const { t } = useTranslation('pht');
@@ -32,16 +33,13 @@ export default function ReviewPageEntry() {
     id: string;
     proposals: PanelProposal[];
     createdOn: string;
-    reviewers: PanelReviewer[]
+    reviewers: PanelReviewer[];
   }) => updateAppContent2(panel);
 
   const [panelName, setPanelName] = React.useState('');
 
-  const date = new Date();
-  const formattedDate = date.toLocaleDateString('en-GB');
-
-  const [panelDateCreated, setPanelDateCreated] = React.useState(formattedDate);
-  const [panelDateExpiry, setPanelDateExpiry] = React.useState(formattedDate);
+  const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
+  const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
 
   React.useEffect(() => {
     if (isEdit()) {
@@ -54,13 +52,13 @@ export default function ReviewPageEntry() {
   }, []);
 
   React.useEffect(() => {
-    panelNameEmpty()
+    panelNameEmpty();
   }, [panelName]);
 
   const panelIn = (panel: Panel) => {
     setPanelName(panel.name);
-    setPanelDateCreated(panel.createdOn)
-    setPanelDateCreated(panel.expiresOn)
+    setPanelDateCreated(panel.createdOn);
+    setPanelDateCreated(panel.expiresOn);
   };
 
   const panelOut = () => {
@@ -80,7 +78,7 @@ export default function ReviewPageEntry() {
   };
 
   const addButtonDisabled = () => {
-    return panelNameEmpty();
+    return isEdit() ? false : panelNameEmpty();
   };
 
   const backButton = () => (
@@ -132,35 +130,11 @@ export default function ReviewPageEntry() {
   /**************************************************************/
 
   const pageFooter = () => {
-    const addPanelToProposal = () => {
-      const newPanel: Panel = panelOut();
-      setPanel({
-        ...getPanel(),
-        panels: [...getPanel(), newPanel]
-      });
-    };
-
-    const updatePanelOnProposal = () => {
-      const newPanel: Panel = panelOut();
-
-      const oldPanels = getPanel().name;
-      const newPanels: Panel[] = [];
-      if (oldPanels && oldPanels?.length > 0) {
-        oldPanels.forEach(inValue => {
-          newPanels.push(inValue.id === newPanel.id ? newPanel : inValue);
-        });
-      } else {
-        newPanels.push(newPanel);
-      }
-
-      setPanel({
-        ...getPanel(),
-        panels: newPanels
-      });
-    };
-
     const buttonClicked = () => {
-      isEdit() ? updatePanelOnProposal() : addPanelToProposal();
+      //create panel end point
+      //edit - call endpoint
+
+      // isEdit() ? updatePanelOnProposal() : addPanelToProposal();
       navigate(PMT[0]);
     };
 
