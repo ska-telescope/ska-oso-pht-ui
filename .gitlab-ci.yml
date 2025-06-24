@@ -204,7 +204,7 @@ js-e2e-test:
   variables:
     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
   after_script:
-    - cp /builds/ska-telescope/oso/ska-oso-pht-ui/cypress/artefacts/screenshots/**/*.png build/screenshots
+    - cp artefacts/screenshots/**/*.png build/screenshots
     - yarn test:e2e:coverage
     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
   artifacts:
