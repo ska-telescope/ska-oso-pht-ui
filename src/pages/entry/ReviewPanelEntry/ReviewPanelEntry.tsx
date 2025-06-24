@@ -146,10 +146,11 @@ export default function ReviewPageEntry() {
             spacing={1}
             justifyContent="space-around"
           >
-            <Grid2 size={{ lg: 5 }}></Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{panelNameField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{panelDateCreatedField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{panelDateExpiryField()}</Grid2>
+            <Grid2 container alignItems="center" justifyContent="center" size={{ md: 12, lg: 10 }}>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelNameField()}</Grid2>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelDateCreatedField()}</Grid2>
+              <Grid2 item size={{ md: 12, lg: 10 }} justifyContent="center">{panelDateExpiryField()}</Grid2>
+            </Grid2>
           </Grid2>
         </Grid2>
       </Grid2>
