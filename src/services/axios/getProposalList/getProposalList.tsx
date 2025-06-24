@@ -59,9 +59,12 @@ const getMostRecentProposals = (data: ProposalBackend[]) => {
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-const getSubType = (proposalType: { main_type: string; sub_type: string[] }): any => {
+const getSubType = (proposalType: {
+  main_type: string | undefined;
+  attributes?: string[] | undefined;
+}): any => {
   const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.sub_type?.map(subType =>
+  const subProjects = proposalType.attributes?.map(subType =>
     project?.subProjects?.find(({ mapping }) => mapping === subType)
   ) as { id: number; mapping: string }[];
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
@@ -82,7 +85,7 @@ const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
     };
     teamMembers.push(teamMember);
   }
-  return teamMembers;
+  return teamMembers as TeamMember[];
 };
 
 const getScienceCategory = (scienceCat: string) => {
@@ -105,7 +108,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       version: inRec[i].metadata?.version as number,
       proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)
         ?.id as number,
-      proposalSubType: inRec[i].info?.proposal_type.sub_type
+      proposalSubType: inRec[i].info?.proposal_type?.attributes
         ? getSubType(inRec[i].info?.proposal_type)
         : [],
       scienceCategory: inRec[i].info?.science_category
@@ -134,9 +137,14 @@ async function GetProposalList(): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/DefaultUser`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+
+    if (!result || !Array.isArray(result.data)) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+
     const uniqueResults =
       result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingList(uniqueResults);
+    return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
