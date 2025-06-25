@@ -16,7 +16,7 @@ export const MockProposalFrontend: Proposal = {
   abstract: 'My scienceTest abstract',
   scienceCategory: 1,
   scienceSubCategory: [1],
-  sciencePDF: undefined,
+  sciencePDF: null,
   scienceLoadStatus: 9,
   targetOption: 1,
   targets: [
@@ -127,7 +127,7 @@ export const MockProposalFrontend: Proposal = {
       effectiveResolution: '5.43 kHz (8.1 km/s)',
       spectralAveraging: 1,
       linked: 'M2',
-      bandwidth: undefined,
+      bandwidth: null,
       tapering: undefined,
       weather: undefined,
       continuumBandwidth: 300,
@@ -211,7 +211,7 @@ export const MockProposalFrontend: Proposal = {
       }
     }
   ],
-  technicalPDF: undefined,
+  technicalPDF: null,
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
@@ -247,8 +247,8 @@ export const MockProposalFrontendZoom: Proposal = {
   scienceCategory: 7,
   scienceSubCategory: [1],
   scienceLoadStatus: 9,
-  sciencePDF: undefined,
-  technicalPDF: undefined,
+  sciencePDF: null,
+  technicalPDF: null,
   targetOption: 1,
   targets: [
     {
@@ -293,8 +293,8 @@ export const MockProposalFrontendZoom: Proposal = {
       elevation: 20,
       numSubBands: 1,
       bandwidth: 1,
-      continuumBandwidth: undefined,
-      continuumBandwidthUnits: undefined,
+      continuumBandwidth: null,
+      continuumBandwidthUnits: null,
       supplied: {
         type: 1,
         value: 1,
