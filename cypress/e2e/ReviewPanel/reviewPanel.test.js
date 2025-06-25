@@ -8,7 +8,12 @@ import {
   clickReviewOverviewButton,
   clickUserMenuProposals,
   clickUserMenuReviews,
-  initialize, clickPanelMaintenanceButton, enterPanelName, clickAddPanelEntry, checkFieldDisabled, verifyWarning
+  initialize,
+  clickPanelMaintenanceButton,
+  enterPanelName,
+  clickAddPanelEntry,
+  checkFieldDisabled,
+  verifyWarning
 } from '../common/common';
 
 describe('Review Panel', () => {
@@ -19,13 +24,13 @@ describe('Review Panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
     enterPanelName();
-    clickAddPanelEntry()
+    clickAddPanelEntry();
     //Add verification once list is populated
   });
 
   it('Verify add button is disabled, when panel name field is incomplete', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    checkFieldDisabled("addPanelButton", true)
+    checkFieldDisabled('addPanelButton', true);
   });
 });

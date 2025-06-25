@@ -34,12 +34,12 @@ export type ProposalBackend = {
     abstract: string;
     science_category: string;
     targets: TargetBackend[];
-    documents?: DocumentBackend[];
-    investigators?: InvestigatorBackend[];
-    observation_sets?: ObservationSetBackend[];
-    data_product_sdps?: DataProductSDPsBackend[];
-    data_product_src_nets?: DataProductSRCNetBackend[];
-    result_details?: SensCalcResultsBackend[];
+    documents: DocumentBackend[] | null;
+    investigators: InvestigatorBackend[] | null;
+    observation_sets: ObservationSetBackend[] | null;
+    data_product_sdps: DataProductSDPsBackend[] | null;
+    data_product_src_nets: DataProductSRCNetBackend[] | null;
+    result_details: SensCalcResultsBackend[] | null;
   };
 };
 
@@ -59,14 +59,14 @@ export type Proposal = {
   scienceSubCategory?: number[];
   team?: TeamMember[];
   abstract?: string;
-  sciencePDF?: DocumentPDF;
+  sciencePDF: DocumentPDF | null;
   scienceLoadStatus?: number;
   targetOption?: number;
   targets?: Target[];
   observations?: Observation[];
   groupObservations?: GroupObservation[];
   targetObservation?: TargetObservation[];
-  technicalPDF?: DocumentPDF;
+  technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
   // dataProducts?: DataProduct[];
   dataProductSDP?: DataProductSDP[];

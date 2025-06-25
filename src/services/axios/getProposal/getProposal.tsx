@@ -616,7 +616,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
-
+    console.log('backend', result.data);
     if (!result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
