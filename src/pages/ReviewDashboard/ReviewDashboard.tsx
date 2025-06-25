@@ -26,7 +26,9 @@ import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import D3PieChart from '@/components/charts/D3PieChart';
 import D3BarChart from '@/components/charts/D3BarChart';
+import { D3ChartSelector } from "@/components/charts/D3ChartSelector";
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
+import D3BarChartWithToggle from '@/components/charts/D3BarChartWithToggle';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
@@ -61,13 +63,14 @@ function groupByField(
   return Object.entries(counts).map(([name, value]) => ({ name, value }));
 }
 
+
 function groupRankDistribution(data: typeof proposals) {
   const counts: Record<string, number> = {};
   for (const item of data) {
     const key = item.rank?.toString() || 'Unranked';
     counts[key] = (counts[key] || 0) + 1;
   }
-  return Object.entries(counts).map(([rank, count]) => ({ group: rank, rank: count }));
+  return Object.entries(counts).map(([group, count]) => ({ group, rank: count }));
 }
 
 const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
@@ -102,7 +105,8 @@ export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const theme = useTheme();
-
+  const [barGroupBy, setBarGroupBy] = useState('panel');
+  const [barFields, setBarFields] = useState<string[]>(['proposals', 'priority']);
   const [filter, setFilter] = useState({ telescope: '', country: '', date: '' });
   const [search, setSearch] = useState('');
 
@@ -221,9 +225,19 @@ export default function ReviewDashboard() {
         </Grid2>
         <Grid2>
           <ResizablePanel title="Reviewer Rank Distribution">
-            <D3BarChart data={barChartData} fields={['rank']} groupBy={['group']} />
+            <D3BarChartWithToggle
+              data={proposals}
+              groupByOptions={['status', 'category', 'country']}
+              allFields={['rank', 'telescope']}
+            />
           </ResizablePanel>
         </Grid2>
+        <Grid2>
+          <ResizablePanel title="New Rank Distribution">
+            <D3ChartSelector data={proposals} />
+          </ResizablePanel>
+        </Grid2>
+        
         <Grid2>
           <ResizablePanel title={t('menuOptions.panelSummary')}>
             <GridReviewPanels height={CONTENT_HEIGHT} listOnly />

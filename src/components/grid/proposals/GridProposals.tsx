@@ -128,7 +128,7 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
                 email: 'alice.spears@example.com',
                 country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
-                status: 'accepted'
+                status: 'reviewed'
               },
               {
                 firstName: 'Joshua',

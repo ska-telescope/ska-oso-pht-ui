@@ -4,11 +4,11 @@ import * as d3 from 'd3';
 type DataRow = Record<string, any>;
 type Props = {
   data: DataRow[];
+  category: string;
   fields: string[];
-  groupBy: string[];
 };
 
-const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
+const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
@@ -16,8 +16,8 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
     if (!svgRef.current || !tooltipRef.current) return;
 
     const margin = { top: 50, right: 40, bottom: 50, left: 50 };
-    const fullWidth = 600;
-    const fullHeight = 350;
+    const fullWidth = 500;
+    const fullHeight = 300;
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
@@ -32,36 +32,24 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
 
     const color = d3.scaleOrdinal<string>()
       .domain(fields)
-      .range(d3.schemeTableau10);
+      .range(['#6b7280', '#9ca3af', '#d1d5db', '#4b5563', '#374151']); // matte grey palette
 
-    const getGroupLabel = (d: DataRow) => groupBy.map(key => d[key]).join(' - ');
-    const groups = data.map(getGroupLabel);
-
+    const groups = Array.from(new Set(data.map(d => d[category])));
     const x0 = d3.scaleBand<string>()
       .domain(groups)
       .range([margin.left, margin.left + width])
       .padding(0.2);
-
     const x1 = d3.scaleBand<string>()
       .domain(fields)
       .range([0, x0.bandwidth()])
       .padding(0.1);
-
     const maxValue = d3.max(data, d => Math.max(...fields.map(f => +d[f] || 0))) || 0;
     const y = d3.scaleLinear()
       .domain([0, maxValue])
       .nice()
       .range([margin.top + height, margin.top]);
 
-    const defs = svg.append('defs');
-    const filter = defs.append('filter').attr('id', 'matte-bar');
-    filter.append('feDropShadow')
-      .attr('dx', '0')
-      .attr('dy', '1')
-      .attr('stdDeviation', '1')
-      .attr('flood-color', '#999')
-      .attr('flood-opacity', '0.4');
-
+    // centered legend
     const legendWidth = fields.length * legendSpacing;
     const legendGroup = svg.append('g')
       .attr('transform', `translate(${(fullWidth - legendWidth) / 2}, ${margin.top / 2})`);
@@ -91,11 +79,11 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
       .selectAll('text')
       .attr('font-size', `${fontSize}px`);
 
-    data.forEach((entry, gi) => {
-      const groupLabel = getGroupLabel(entry);
+    groups.forEach((grp, gi) => {
       fields.forEach((field, fi) => {
-        const value = +entry[field] || 0;
-        const x = x0(groupLabel)! + x1(field)!;
+        const entry = data.find(d => d[category] === grp);
+        const value = entry ? +entry[field] || 0 : 0;
+        const x = x0(grp)! + x1(field)!;
         const y0 = margin.top + height;
         const y1 = y(value);
 
@@ -105,7 +93,8 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
           .attr('y', y0)
           .attr('height', 0)
           .attr('fill', color(field))
-          .attr('filter', 'url(#matte-bar)')
+          .attr('stroke', '#e5e7eb') // subtle border for matte style
+          .attr('stroke-width', 0.5)
           .on('mouseover', (event) => {
             const [mx, my] = d3.pointer(event, svgRef.current);
             d3.select(tooltipRef.current)
@@ -129,14 +118,15 @@ const D3BarChart: React.FC<Props> = ({ data, fields, groupBy }) => {
           .text(value);
       });
     });
-  }, [data, fields, groupBy]);
+
+  }, [data, category, fields]);
 
   return (
-    <div className="relative flex flex-col sm:flex-row justify-between items-start w-full h-full gap-4 p-2">
-      <svg ref={svgRef} className="w-full sm:w-[70%] h-full" />
+    <div className="relative flex justify-center w-full h-full">
+      <svg ref={svgRef} className="block w-full h-full" />
       <div
         ref={tooltipRef}
-        className="absolute bg-white border border-gray-300 p-2 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 text-base"
+        className="absolute bg-white border border-gray-300 p-2 rounded shadow-md pointer-events-none opacity-0 transition-opacity duration-200 text-base"
       />
     </div>
   );
