@@ -1,7 +1,14 @@
 import React from 'react';
+import { useMsal } from '@azure/msal-react';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
+import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
+import {
+  Button,
+  ButtonColorTypes,
+  ButtonVariantTypes,
+  TickBox
+} from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PMT, PATH } from '@/utils/constants';
@@ -30,9 +37,14 @@ export default function ButtonUserMenu({
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mockedLogin, setMockedLogin] = React.useState(false);
   const openMenu = Boolean(anchorEl);
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+
+  const { accounts } = useMsal();
+  const username = accounts.length > 0 ? accounts[0].name : '';
+  const displayName = mockedLogin ? 'Mocked' : username;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -49,30 +61,39 @@ export default function ButtonUserMenu({
 
   return (
     <>
-      <Button
-        icon={
-          showPhoto && photo ? (
-            <img
-              src={photo}
-              alt="Profile"
-              style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }}
-            />
-          ) : (
-            <AccountCircleIcon />
-          )
-        }
-        aria-controls={openMenu ? 'user-menu' : undefined}
-        aria-description={ariaDescription}
-        aria-expanded={openMenu ? 'true' : undefined}
-        aria-haspopup="true"
-        aria-label={label}
-        color={color}
-        label={label}
-        onClick={handleMenuOpen}
-        testId="usernameMenu"
-        toolTip={toolTip}
-        variant={ButtonVariantTypes.Contained}
+      <TickBox
+        label="mock"
+        testId="linkedTickBox"
+        checked={mockedLogin}
+        onChange={() => setMockedLogin(!mockedLogin)}
       />
+      {!displayName && <ButtonLogin />}
+      {displayName && (
+        <Button
+          icon={
+            showPhoto && photo ? (
+              <img
+                src={photo}
+                alt="Profile"
+                style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }}
+              />
+            ) : (
+              <AccountCircleIcon />
+            )
+          }
+          aria-controls={openMenu ? 'user-menu' : undefined}
+          aria-description={ariaDescription}
+          aria-expanded={openMenu ? 'true' : undefined}
+          aria-haspopup="true"
+          aria-label={label}
+          color={color}
+          label={displayName}
+          onClick={handleMenuOpen}
+          testId="usernameMenu"
+          toolTip={toolTip}
+          variant={ButtonVariantTypes.Contained}
+        />
+      )}
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
         <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
           {t('menuOptions.overview')}
@@ -90,8 +111,8 @@ export default function ButtonUserMenu({
           {t('menuOptions.reviews')}
         </MenuItem>
         <Divider component="li" />
-        <MenuItem data-testid="menuItemPanelLogout" disabled>
-          Logout
+        <MenuItem data-testid="menuItemPanelLogout">
+          {mockedLogin ? 'Logout' : <ButtonLogout variant={ButtonVariantTypes.Outlined} />}
         </MenuItem>
       </Menu>
     </>
