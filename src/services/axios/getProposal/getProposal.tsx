@@ -33,7 +33,8 @@ import {
   BAND_1,
   FREQUENCY_UNITS,
   ROBUST,
-  OSO_SERVICES_PROPOSAL_PATH
+  OSO_SERVICES_PROPOSAL_PATH,
+  PDF_NAME_PREFIXES
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
@@ -557,11 +558,11 @@ export function mapping(inRec: ProposalBackend): Proposal {
 
   sciencePDF = (getPDF(
     inRec?.info?.documents,
-    'science-doc-' + inRec.prsl_id
+    PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
   ) as unknown) as DocumentPDF;
   technicalPDF = (getPDF(
     inRec?.info?.documents,
-    'technical-doc-' + inRec.prsl_id
+    PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
 
   const targets = getTargets(inRec.info.targets);
@@ -625,6 +626,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
     if (!result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
+    console.log('GetProposal backend:', result.data);
     return mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
