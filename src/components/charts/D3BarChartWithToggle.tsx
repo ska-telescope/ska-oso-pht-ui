@@ -37,24 +37,44 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
     const groups = Array.from(new Set(data.map(d => d[groupBy])));
-    const x0 = d3.scaleBand<string>().domain(groups).range([MARGIN.left, MARGIN.left + width]).padding(0.2);
-    const x1 = d3.scaleBand<string>().domain(visibleFields).range([0, x0.bandwidth()]).padding(0.1);
+    const x0 = d3
+      .scaleBand<string>()
+      .domain(groups)
+      .range([MARGIN.left, MARGIN.left + width])
+      .padding(0.2);
+    const x1 = d3
+      .scaleBand<string>()
+      .domain(visibleFields)
+      .range([0, x0.bandwidth()])
+      .padding(0.1);
 
-    const maxValue = d3.max(groups.flatMap(group =>
-      visibleFields.map(field => {
-        const entries = data.filter(d => d[groupBy] === group);
-        return d3.sum(entries, d => +d[field] || 0);
-      })
-    )) || 0;
+    const maxValue =
+      d3.max(
+        groups.flatMap(group =>
+          visibleFields.map(field => {
+            const entries = data.filter(d => d[groupBy] === group);
+            return d3.sum(entries, d => +d[field] || 0);
+          })
+        )
+      ) || 0;
 
-    const y = d3.scaleLinear().domain([0, maxValue]).nice().range([MARGIN.top + height, MARGIN.top]);
-    const color = d3.scaleOrdinal<string>().domain(allFields).range(d3.schemeTableau10);
+    const y = d3
+      .scaleLinear()
+      .domain([0, maxValue])
+      .nice()
+      .range([MARGIN.top + height, MARGIN.top]);
+    const color = d3
+      .scaleOrdinal<string>()
+      .domain(allFields)
+      .range(d3.schemeTableau10);
 
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(0, ${MARGIN.top + height})`)
       .call(d3.axisBottom(x0));
 
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(${MARGIN.left}, 0)`)
       .call(d3.axisLeft(y));
 
@@ -66,7 +86,8 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
         const y1 = y(value);
         const y0 = MARGIN.top + height;
 
-        svg.append('rect')
+        svg
+          .append('rect')
           .attr('x', x)
           .attr('width', x1.bandwidth())
           .attr('y', y0)
@@ -74,7 +95,7 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
           .attr('fill', color(field))
           .attr('stroke', '#e5e7eb')
           .attr('stroke-width', 0.5)
-          .on('mouseover', (event) => {
+          .on('mouseover', event => {
             const [mx, my] = d3.pointer(event, svgRef.current);
             d3.select(tooltipRef.current)
               .style('left', `${mx + 15}px`)
@@ -90,12 +111,12 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
       });
     });
 
-    const legend = svg.append('g')
+    const legend = svg
+      .append('g')
       .attr('transform', `translate(${MARGIN.left}, ${containerHeight - 40})`);
 
     visibleFields.forEach((field, i) => {
-      const lg = legend.append('g')
-        .attr('transform', `translate(${i * 120}, 0)`);
+      const lg = legend.append('g').attr('transform', `translate(${i * 120}, 0)`);
       lg.append('rect')
         .attr('width', 15)
         .attr('height', 15)
@@ -122,7 +143,9 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
           onChange={e => setGroupBy(e.target.value)}
         >
           {groupByOptions.map(option => (
-            <option key={option} value={option}>{option}</option>
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
         </select>
         <select
@@ -135,7 +158,9 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
           }}
         >
           {allFields.map(option => (
-            <option key={option} value={option}>{option}</option>
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
         </select>
       </div>

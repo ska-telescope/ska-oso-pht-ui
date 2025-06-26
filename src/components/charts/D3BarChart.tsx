@@ -21,7 +21,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
 
-    const svg = d3.select(svgRef.current)
+    const svg = d3
+      .select(svgRef.current)
       .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
     svg.selectAll('*').remove();
@@ -30,32 +31,36 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     const fontSize = rectSize * 0.8;
     const legendSpacing = rectSize * 6;
 
-    const color = d3.scaleOrdinal<string>()
+    const color = d3
+      .scaleOrdinal<string>()
       .domain(fields)
       .range(['#6b7280', '#9ca3af', '#d1d5db', '#4b5563', '#374151']); // matte grey palette
 
     const groups = Array.from(new Set(data.map(d => d[category])));
-    const x0 = d3.scaleBand<string>()
+    const x0 = d3
+      .scaleBand<string>()
       .domain(groups)
       .range([margin.left, margin.left + width])
       .padding(0.2);
-    const x1 = d3.scaleBand<string>()
+    const x1 = d3
+      .scaleBand<string>()
       .domain(fields)
       .range([0, x0.bandwidth()])
       .padding(0.1);
     const maxValue = d3.max(data, d => Math.max(...fields.map(f => +d[f] || 0))) || 0;
-    const y = d3.scaleLinear()
+    const y = d3
+      .scaleLinear()
       .domain([0, maxValue])
       .nice()
       .range([margin.top + height, margin.top]);
 
     // centered legend
     const legendWidth = fields.length * legendSpacing;
-    const legendGroup = svg.append('g')
+    const legendGroup = svg
+      .append('g')
       .attr('transform', `translate(${(fullWidth - legendWidth) / 2}, ${margin.top / 2})`);
     fields.forEach((field, i) => {
-      const lg = legendGroup.append('g')
-        .attr('transform', `translate(${i * legendSpacing},0)`);
+      const lg = legendGroup.append('g').attr('transform', `translate(${i * legendSpacing},0)`);
       lg.append('rect')
         .attr('width', rectSize)
         .attr('height', rectSize)
@@ -67,13 +72,15 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
         .text(field.charAt(0).toUpperCase() + field.slice(1));
     });
 
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(0, ${margin.top + height})`)
       .call(d3.axisBottom(x0))
       .selectAll('text')
       .attr('font-size', `${fontSize}px`);
 
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(y))
       .selectAll('text')
@@ -87,7 +94,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
         const y0 = margin.top + height;
         const y1 = y(value);
 
-        svg.append('rect')
+        svg
+          .append('rect')
           .attr('x', x)
           .attr('width', x1.bandwidth())
           .attr('y', y0)
@@ -95,7 +103,7 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
           .attr('fill', color(field))
           .attr('stroke', '#e5e7eb') // subtle border for matte style
           .attr('stroke-width', 0.5)
-          .on('mouseover', (event) => {
+          .on('mouseover', event => {
             const [mx, my] = d3.pointer(event, svgRef.current);
             d3.select(tooltipRef.current)
               .style('left', `${mx + 15}px`)
@@ -110,7 +118,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
           .attr('y', y1)
           .attr('height', y0 - y1);
 
-        svg.append('text')
+        svg
+          .append('text')
           .attr('x', x + x1.bandwidth() / 2)
           .attr('y', y1 - rectSize * 0.5)
           .attr('text-anchor', 'middle')
@@ -118,7 +127,6 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
           .text(value);
       });
     });
-
   }, [data, category, fields]);
 
   return (

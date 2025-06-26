@@ -23,7 +23,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     const height = fullHeight - margin.top - margin.bottom;
 
     // responsive SVG
-    const svg = d3.select(svgRef.current)
+    const svg = d3
+      .select(svgRef.current)
       .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
     svg.selectAll('*').remove();
@@ -33,22 +34,26 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     const legendSpacing = rectSize * 6;
 
     // tableau 10 color scale
-    const color = d3.scaleOrdinal<string>()
+    const color = d3
+      .scaleOrdinal<string>()
       .domain(fields)
       .range(d3.schemeTableau10);
 
     // scales
     const groups = Array.from(new Set(data.map(d => d[category])));
-    const x0 = d3.scaleBand<string>()
+    const x0 = d3
+      .scaleBand<string>()
       .domain(groups)
       .range([margin.left, margin.left + width])
       .padding(0.2);
-    const x1 = d3.scaleBand<string>()
+    const x1 = d3
+      .scaleBand<string>()
       .domain(fields)
       .range([0, x0.bandwidth()])
       .padding(0.1);
     const maxValue = d3.max(data, d => Math.max(...fields.map(f => +d[f] || 0))) || 0;
-    const y = d3.scaleLinear()
+    const y = d3
+      .scaleLinear()
       .domain([0, maxValue])
       .nice()
       .range([margin.top + height, margin.top]);
@@ -56,7 +61,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     // matte-like filter (subtle shadows)
     const defs = svg.append('defs');
     const filter = defs.append('filter').attr('id', 'matte-bar');
-    filter.append('feDropShadow')
+    filter
+      .append('feDropShadow')
       .attr('dx', '0')
       .attr('dy', '1')
       .attr('stdDeviation', '1')
@@ -65,11 +71,11 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
 
     // legend
     const legendWidth = fields.length * legendSpacing;
-    const legendGroup = svg.append('g')
+    const legendGroup = svg
+      .append('g')
       .attr('transform', `translate(${(fullWidth - legendWidth) / 2}, ${margin.top / 2})`);
     fields.forEach((field, i) => {
-      const lg = legendGroup.append('g')
-        .attr('transform', `translate(${i * legendSpacing},0)`);
+      const lg = legendGroup.append('g').attr('transform', `translate(${i * legendSpacing},0)`);
       lg.append('rect')
         .attr('width', rectSize)
         .attr('height', rectSize)
@@ -82,13 +88,15 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
     });
 
     // axes
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(0, ${margin.top + height})`)
       .call(d3.axisBottom(x0))
       .selectAll('text')
       .attr('font-size', `${fontSize}px`);
 
-    svg.append('g')
+    svg
+      .append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(y))
       .selectAll('text')
@@ -103,14 +111,15 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
         const y0 = margin.top + height;
         const y1 = y(value);
 
-        svg.append('rect')
+        svg
+          .append('rect')
           .attr('x', x)
           .attr('width', x1.bandwidth())
           .attr('y', y0)
           .attr('height', 0)
           .attr('fill', color(field))
           .attr('filter', 'url(#matte-bar)')
-          .on('mouseover', (event) => {
+          .on('mouseover', event => {
             const [mx, my] = d3.pointer(event, svgRef.current);
             d3.select(tooltipRef.current)
               .style('left', `${mx + 15}px`)
@@ -125,7 +134,8 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
           .attr('y', y1)
           .attr('height', y0 - y1);
 
-        svg.append('text')
+        svg
+          .append('text')
           .attr('x', x + x1.bandwidth() / 2)
           .attr('y', y1 - rectSize * 0.5)
           .attr('text-anchor', 'middle')
@@ -133,7 +143,6 @@ const D3BarChart: React.FC<Props> = ({ data, category, fields }) => {
           .text(value);
       });
     });
-
   }, [data, category, fields]);
 
   return (

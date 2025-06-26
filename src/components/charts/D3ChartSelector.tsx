@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
-import * as d3 from "d3";
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import * as d3 from 'd3';
 
 /**
  * Generic row type – extend or replace as needed.
@@ -22,18 +22,16 @@ export const D3ChartSelector: React.FC<{
   height?: number;
 }> = ({ data, width = 640, height = 400 }) => {
   /* ── Derive available field lists ────────────────────────────── */
-  const allFields = React.useMemo(() => (data[0] ? Object.keys(data[0]) : []), [
-    data,
-  ]);
+  const allFields = React.useMemo(() => (data[0] ? Object.keys(data[0]) : []), [data]);
   const stringFields = allFields.filter(
-    (k) => typeof data[0]?.[k] === "string" || typeof data[0]?.[k] === "boolean"
+    k => typeof data[0]?.[k] === 'string' || typeof data[0]?.[k] === 'boolean'
   );
-  const numberFields = allFields.filter((k) => typeof data[0]?.[k] === "number");
+  const numberFields = allFields.filter(k => typeof data[0]?.[k] === 'number');
 
   /* ── Local UI state ──────────────────────────────────────────── */
-  const [chartType, setChartType] = useState<"bar" | "pie">("bar");
-  const [groupField, setGroupField] = useState<string>(stringFields[0] || "");
-  const [valueField, setValueField] = useState<string>(numberFields[0] || "");
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const [groupField, setGroupField] = useState<string>(stringFields[0] || '');
+  const [valueField, setValueField] = useState<string>(numberFields[0] || '');
 
   /* ── Aggregate data whenever selections change ──────────────── */
   const aggregated = useMemo(() => {
@@ -41,14 +39,14 @@ export const D3ChartSelector: React.FC<{
 
     // BAR   → use numeric value (mean)  ❘  PIE → simple counts
     const reducer =
-      chartType === "bar" && valueField
-        ? (v: DataRow[]) => d3.mean(v, (d) => +d[valueField])
+      chartType === 'bar' && valueField
+        ? (v: DataRow[]) => d3.mean(v, d => +d[valueField])
         : (v: DataRow[]) => v.length;
 
-    const rollup = d3.rollup(data, reducer, (d) => d[groupField]);
+    const rollup = d3.rollup(data, reducer, d => d[groupField]);
     return Array.from(rollup, ([key, value]) => ({
       key: key as string,
-      value: value as number,
+      value: value as number
     }));
   }, [data, chartType, groupField, valueField]);
 
@@ -60,7 +58,7 @@ export const D3ChartSelector: React.FC<{
         <label className="font-semibold">Chart Type:</label>
         <select
           value={chartType}
-          onChange={(e) => setChartType(e.target.value as "bar" | "pie")}
+          onChange={e => setChartType(e.target.value as 'bar' | 'pie')}
           className="select select-bordered"
         >
           <option value="bar">Bar</option>
@@ -70,23 +68,23 @@ export const D3ChartSelector: React.FC<{
         <label className="font-semibold">Group&nbsp;By:</label>
         <select
           value={groupField}
-          onChange={(e) => setGroupField(e.target.value)}
+          onChange={e => setGroupField(e.target.value)}
           className="select select-bordered"
         >
-          {stringFields.map((f) => (
+          {stringFields.map(f => (
             <option key={f}>{f}</option>
           ))}
         </select>
 
-        {chartType === "bar" && numberFields.length > 0 && (
+        {chartType === 'bar' && numberFields.length > 0 && (
           <>
             <label className="font-semibold">Value&nbsp;Field:</label>
             <select
               value={valueField}
-              onChange={(e) => setValueField(e.target.value)}
+              onChange={e => setValueField(e.target.value)}
               className="select select-bordered"
             >
-              {numberFields.map((f) => (
+              {numberFields.map(f => (
                 <option key={f}>{f}</option>
               ))}
             </select>
@@ -96,7 +94,7 @@ export const D3ChartSelector: React.FC<{
 
       {/* Chart */}
       <div className="w-full">
-        {chartType === "bar" ? (
+        {chartType === 'bar' ? (
           <BarChart data={aggregated} width={width} height={height} />
         ) : (
           <PieChart data={aggregated} width={width} height={height} />
@@ -123,7 +121,7 @@ const BarChart: React.FC<{
   useEffect(() => {
     if (!ref.current) return;
     const svg = d3.select(ref.current);
-    svg.selectAll("*").remove();
+    svg.selectAll('*').remove();
 
     /* Layout */
     const margin = { top: 20, right: 20, bottom: 40, left: 60 } as const;
@@ -132,39 +130,37 @@ const BarChart: React.FC<{
 
     const x = d3
       .scaleBand<string>()
-      .domain(data.map((d) => d.key))
+      .domain(data.map(d => d.key))
       .range([0, w])
       .padding(0.2);
 
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.value) || 1])
+      .domain([0, d3.max(data, d => d.value) || 1])
       .nice()
       .range([h, 0]);
 
-    const g = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    g.append("g")
-      .attr("transform", `translate(0,${h})`)
+    g.append('g')
+      .attr('transform', `translate(0,${h})`)
       .call(d3.axisBottom(x));
 
-    g.append("g").call(d3.axisLeft(y));
+    g.append('g').call(d3.axisLeft(y));
 
-    g.selectAll("rect")
+    g.selectAll('rect')
       .data(data)
       .enter()
-      .append("rect")
-      .attr("x", (d) => x(d.key)!)
-      .attr("y", h)
-      .attr("width", x.bandwidth())
-      .attr("height", 0)
-      .attr("fill", "#3182bd")
+      .append('rect')
+      .attr('x', d => x(d.key)!)
+      .attr('y', h)
+      .attr('width', x.bandwidth())
+      .attr('height', 0)
+      .attr('fill', '#3182bd')
       .transition()
       .duration(500)
-      .attr("y", (d) => y(d.value))
-      .attr("height", (d) => h - y(d.value));
+      .attr('y', d => y(d.value))
+      .attr('height', d => h - y(d.value));
   }, [data, width, height]);
 
   return <svg ref={ref} width={width} height={height} className="mx-auto" />;
@@ -181,13 +177,13 @@ const PieChart: React.FC<{
   useEffect(() => {
     if (!ref.current) return;
     const svg = d3.select(ref.current);
-    svg.selectAll("*").remove();
+    svg.selectAll('*').remove();
 
     const radius = Math.min(width, height) / 2;
 
     const color = d3
       .scaleOrdinal<string>()
-      .domain(data.map((d) => d.key))
+      .domain(data.map(d => d.key))
       .range(d3.schemeTableau10);
 
     const arc = d3
@@ -198,21 +194,19 @@ const PieChart: React.FC<{
     const pie = d3
       .pie<KV>()
       .sort(null)
-      .value((d) => d.value);
+      .value(d => d.value);
 
-    const g = svg
-      .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2})`);
+    const g = svg.append('g').attr('transform', `translate(${width / 2},${height / 2})`);
 
     // Slices
-    g.selectAll("path")
+    g.selectAll('path')
       .data(pie(data))
       .enter()
-      .append("path")
-      .attr("d", arc as any)
-      .attr("fill", (d) => color(d.data.key))
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1);
+      .append('path')
+      .attr('d', arc as any)
+      .attr('fill', d => color(d.data.key))
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 1);
 
     // Labels (simple centroids)
     const labelArc = d3
@@ -220,15 +214,15 @@ const PieChart: React.FC<{
       .innerRadius(radius * 0.6)
       .outerRadius(radius * 0.6);
 
-    g.selectAll("text")
+    g.selectAll('text')
       .data(pie(data))
       .enter()
-      .append("text")
-      .attr("transform", (d) => `translate(${labelArc.centroid(d)})`)
-      .attr("dy", "0.35em")
-      .attr("text-anchor", "middle")
-      .attr("class", "text-xs")
-      .text((d) => d.data.key);
+      .append('text')
+      .attr('transform', d => `translate(${labelArc.centroid(d)})`)
+      .attr('dy', '0.35em')
+      .attr('text-anchor', 'middle')
+      .attr('class', 'text-xs')
+      .text(d => d.data.key);
   }, [data, width, height]);
 
   return <svg ref={ref} width={width} height={height} className="mx-auto" />;
