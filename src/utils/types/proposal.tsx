@@ -55,7 +55,7 @@ export type Proposal = {
   cycle: string;
   proposalType: number;
   proposalSubType?: number[];
-  scienceCategory?: number;
+  scienceCategory: number | null;
   scienceSubCategory?: number[];
   team?: TeamMember[];
   abstract?: string;

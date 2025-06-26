@@ -807,6 +807,11 @@ export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Cosmic Magnetism', value: 'Cosmic Magnetism' },
   { label: 'HI Surveys', value: 'HI Surveys' }
 ];
+export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
+  { label: 'Principal Investigator (PI)', value: PROJECTS[0].mapping },
+  { label: 'Key Science Projects', value: PROJECTS[1].mapping },
+  { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
+];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;

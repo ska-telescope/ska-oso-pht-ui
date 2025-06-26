@@ -541,6 +541,7 @@
     "label": "Proposal Type",
     "plural": "Proposal Types",
     "short": "Type",
+    "all": "All proposal types",
     "title": {
       "1": "Principal Investigator (PI)",
       "2": "Key Science Projects",
@@ -635,7 +636,8 @@
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
     "notSpecified": "Not specified",
-    "error": "A value is required"
+    "error": "A value is required",
+    "all": "All science categories"
   },
   "scienceSubCategory": {
     "label": "Sub-category",
