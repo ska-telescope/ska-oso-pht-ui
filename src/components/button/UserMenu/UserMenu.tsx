@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { Divider, Menu, MenuItem } from '@mui/material';
+import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
 import {
@@ -37,7 +37,7 @@ export default function ButtonUserMenu({
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mockedLogin, setMockedLogin] = React.useState(false);
+  const [mockedLogin, setMockedLogin] = React.useState(true);
   const openMenu = Boolean(anchorEl);
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -62,38 +62,41 @@ export default function ButtonUserMenu({
   return (
     <>
       <TickBox
-        label="mock"
+        label="Mock login"
+        labelPosition="bottom"
         testId="linkedTickBox"
         checked={mockedLogin}
         onChange={() => setMockedLogin(!mockedLogin)}
       />
-      {!displayName && <ButtonLogin />}
-      {displayName && (
-        <Button
-          icon={
-            showPhoto && photo ? (
-              <img
-                src={photo}
-                alt="Profile"
-                style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }}
-              />
-            ) : (
-              <AccountCircleIcon />
-            )
-          }
-          aria-controls={openMenu ? 'user-menu' : undefined}
-          aria-description={ariaDescription}
-          aria-expanded={openMenu ? 'true' : undefined}
-          aria-haspopup="true"
-          aria-label={label}
-          color={color}
-          label={displayName}
-          onClick={handleMenuOpen}
-          testId="usernameMenu"
-          toolTip={toolTip}
-          variant={ButtonVariantTypes.Contained}
-        />
-      )}
+      <Box pt={2}>
+        {!displayName && <ButtonLogin />}
+        {displayName && (
+          <Button
+            icon={
+              showPhoto && photo ? (
+                <img
+                  src={photo}
+                  alt="Profile"
+                  style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }}
+                />
+              ) : (
+                <AccountCircleIcon />
+              )
+            }
+            aria-controls={openMenu ? 'user-menu' : undefined}
+            aria-description={ariaDescription}
+            aria-expanded={openMenu ? 'true' : undefined}
+            aria-haspopup="true"
+            aria-label={label}
+            color={color}
+            label={displayName}
+            onClick={handleMenuOpen}
+            testId="usernameMenu"
+            toolTip={toolTip}
+            variant={ButtonVariantTypes.Text}
+          />
+        )}
+      </Box>
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
         <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
           {t('menuOptions.overview')}
@@ -112,7 +115,7 @@ export default function ButtonUserMenu({
         </MenuItem>
         <Divider component="li" />
         <MenuItem data-testid="menuItemPanelLogout">
-          {mockedLogin ? 'Logout' : <ButtonLogout variant={ButtonVariantTypes.Outlined} />}
+          {mockedLogin ? 'Logout' : <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />}
         </MenuItem>
       </Menu>
     </>
