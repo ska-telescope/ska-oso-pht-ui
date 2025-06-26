@@ -84,9 +84,9 @@ install_dependencies:
     policy: push
 
 js-lint:
+js-lint:
   image: $NODE_IMAGE
   allow_failure: true
-  stage: lint
   tags:
     - ska-default
   cache:
@@ -98,6 +98,7 @@ js-lint:
   script:
     - yarn install --immutable
     - yarn code-analysis
+  after_script:
     - mv linting.xml build/reports/linting.xml
   artifacts:
     paths:
