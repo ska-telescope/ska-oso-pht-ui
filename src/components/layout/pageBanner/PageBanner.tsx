@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid2, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -45,11 +45,11 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
-  const [validationResults, setValidationResults] = React.useState(null);
+  const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
   const getProposal = () => application.content2 as Proposal;
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       message: t(str),
@@ -92,14 +92,16 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   };
 
   const prevPageNav = () => {
-    navigate(NAV[backPage]);
+    if (backPage) {
+      navigate(NAV[backPage]);
+    }
   };
 
   const updateProposalResponse = response => {
     if (response && !response.error) {
       NotifyOK('saveBtn.success');
     } else {
-      NotifyError(response.error);
+      NotifyError(response.error ?? 'An unknown error occurred');
     }
   };
 
@@ -119,14 +121,16 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       setOpenProposalDisplay(false);
       navigate(PATH[0]);
     } else {
-      NotifyError(response.error);
+      NotifyError(response.error ?? 'An unknown error occurred');
       setOpenProposalDisplay(false);
     }
   };
 
   const pageTitle = () => (
     <Typography id="pageTitle" variant="h6" m={2}>
-      {LG ? t(`page.${pageNo}.titleShort`).toUpperCase() : t(`page.${pageNo}.title`).toUpperCase()}
+      {LG
+        ? t(`page.${pageNo}.titleShort`)?.toUpperCase()
+        : t(`page.${pageNo}.title`)?.toUpperCase()}
     </Typography>
   );
 
@@ -137,7 +141,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
   );
 
   const buttonsLeft = () => (
-    <Grid
+    <Grid2
       container
       spacing={1}
       direction="row"
@@ -145,18 +149,18 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       justifyContent="flex-start"
       pl={2}
     >
-      <Grid item>
-        {backPage > 0 && <PreviousPageButton title="button.cancel" action={prevPageNav} />}
+      <Grid2>
+        {backPage && backPage > 0 && (
+          <PreviousPageButton title="cancelBtn.label" action={prevPageNav} />
+        )}
         {!backPage && <HomeButton />}
-      </Grid>
-      <Grid item>
-        {pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}
-      </Grid>
-    </Grid>
+      </Grid2>
+      <Grid2>{pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}</Grid2>
+    </Grid2>
   );
 
   const buttonsRight = () => (
-    <Grid
+    <Grid2
       container
       spacing={1}
       direction="row"
@@ -165,78 +169,66 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       wrap="nowrap"
       pr={2}
     >
-      <Grid item>
+      <Grid2>
         {pageNo < LAST_PAGE && (
           <ValidateButton action={validateClicked} toolTip={validateTooltip()} />
         )}
-      </Grid>
-      <Grid item>
+      </Grid2>
+      <Grid2>
         {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   const row1 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid item>{buttonsLeft()}</Grid>
+    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid2>{buttonsLeft()}</Grid2>
       {wrapStatusArray ? (
-        <Grid item xs={7} display={'none'}>
+        <Grid2 size={{ xs: 7 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid>
+        </Grid2>
       ) : (
-        <Grid item xs={7} display={'block'}>
+        <Grid2 size={{ xs: 7 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid>
+        </Grid2>
       )}
 
       {wrapStatusArray ? (
-        <Grid item display={'block'}>
-          {pageTitle()}
-        </Grid>
+        <Grid2 display={'block'}>{pageTitle()}</Grid2>
       ) : (
-        <Grid item display={'none'}>
-          {pageTitle()}
-        </Grid>
+        <Grid2 display={'none'}>{pageTitle()}</Grid2>
       )}
 
-      <Grid item>{buttonsRight()}</Grid>
-    </Grid>
+      <Grid2>{buttonsRight()}</Grid2>
+    </Grid2>
   );
 
   const row2 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
-        <Grid item xs={12} display={'block'}>
+        <Grid2 size={{ xs: 12 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid>
+        </Grid2>
       ) : (
-        <Grid item xs={12} display={'none'}>
+        <Grid2 size={{ xs: 12 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid>
+        </Grid2>
       )}
-    </Grid>
+    </Grid2>
   );
 
   const row3 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray && (
-        <Grid container justifyContent="center" lg={12}>
-          {pageDesc()}
-        </Grid>
+        <Grid2 container justifyContent="center">
+          <Grid2 size={{ lg: 12 }}>{pageDesc()}</Grid2>
+        </Grid2>
       )}
 
-      {!wrapStatusArray && (
-        <Grid item lg={4}>
-          {pageTitle()}
-        </Grid>
-      )}
+      {!wrapStatusArray && <Grid2 size={{ lg: 4 }}>{pageTitle()}</Grid2>}
 
-      {!wrapStatusArray && (
-        <Grid item lg={8}>
-          {pageDesc()}
-        </Grid>
-      )}
-    </Grid>
+      {!wrapStatusArray && <Grid2 size={{ lg: 8 }}>{pageDesc()}</Grid2>}
+    </Grid2>
   );
 
   return (
@@ -246,19 +238,19 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
       {row3()}
 
       {/* TODO: revisit to implement override breakpoint and use grid */}
-      {/* <Grid container spacing={1} alignItems="center">
-        <Grid item xs={6} md={6} lg={2}>
+      {/* <Grid2 container spacing={1} alignItems="center">
+        <Grid2 size={{ xs: 6, md: 6, lg: 2 }}>
           {buttonsLeft()}
-        </Grid>
-        <Grid item xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
-          <Grid item justifyContent="space-evenly">
+        </Grid2>
+        <Grid2 xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
+          <Grid2 justifyContent="space-evenly">
             {pageNo < LAST_PAGE && <StatusArray />}
-          </Grid>
-        </Grid>
-        <Grid item xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
+          </Grid2>
+        </Grid2>
+        <Grid2 xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
           {buttonsRight()}
-        </Grid>
-      </Grid> */}
+        </Grid2>
+      </Grid2> */}
 
       {openProposalDisplay && (
         <ProposalDisplay
@@ -266,7 +258,7 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
-          onConfirmLabel={t('button.confirmSubmit')}
+          onConfirmLabel={t('confirmSubmitBtn.label')}
         />
       )}
       {openValidationResults && (

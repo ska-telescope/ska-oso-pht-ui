@@ -24,7 +24,7 @@ import {
 } from '@/utils/constants';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import TeamMember from '@/utils/types/teamMember';
-import { presentLatex } from '@/utils/present';
+import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import PutProposal from '@/services/axios/putProposal/putProposal';
@@ -36,10 +36,17 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 
 interface GridProposalsProps {
   height?: string;
-  listOnly?: boolean;
+  forReview?: boolean;
+  showSearch?: boolean;
+  showTitle?: boolean;
 }
 
-export default function GridProposals({ height = '50vh', listOnly = false }: GridProposalsProps) {
+export default function GridProposals({
+  height = '50vh',
+  showSearch = false,
+  showTitle = false,
+  forReview = false
+}: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
   const navigate = useNavigate();
@@ -271,6 +278,7 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   const stdColumns = [
     ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
   ];
+  const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   function filterProposals() {
     const fields: (keyof Proposal)[] = ['title'];
@@ -311,13 +319,13 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
   );
 
   const getTheProposal = async (id: string) => {
-    helpComponent('');
+    helpComponent({});
     clearApp();
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
-      updateAppContent1(null);
-      updateAppContent2(null);
+      updateAppContent1({});
+      updateAppContent2({});
       storeProposalCopy(null);
       setAxiosViewError(response);
       return false;
@@ -388,13 +396,13 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
 
   return (
     <>
-      {!listOnly && (
+      {showTitle && (
         <Grid item p={2} lg={12}>
           {ProposalsSectionTitle()}
         </Grid>
       )}
 
-      {!listOnly && (
+      {showSearch && (
         <Grid
           item
           p={2}
@@ -428,10 +436,20 @@ export default function GridProposals({ height = '50vh', listOnly = false }: Gri
               maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
-              columns={stdColumns}
+              columns={forReview ? reviewColumns : stdColumns}
               height={DATA_GRID_HEIGHT}
             />
           </div>
+        )}
+        {axiosViewError && (
+          <Alert
+            color={AlertColorTypes.Error}
+            testId="axiosViewErrorTestId"
+            text={axiosViewError}
+          />
+        )}
+        {axiosError && (
+          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

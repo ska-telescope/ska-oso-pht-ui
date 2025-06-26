@@ -1,12 +1,11 @@
-import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid2, Typography } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
 import StatusIconDisplay from '../../../components/icon/status/statusIcon';
 
 interface StandardAlertProps {
-  color: AlertColorTypes;
+  color: typeof AlertColorTypes;
   testId: string;
   text: string;
   closeFunc?: Function;
@@ -16,7 +15,7 @@ const FONTSIZE = 25;
 
 export default function StandardAlert({ color, testId, text, closeFunc }: StandardAlertProps) {
   const { t } = useTranslation('pht');
-  function getLevel(color: AlertColorTypes): number {
+  function getLevel(color: typeof AlertColorTypes): number {
     switch (color) {
       case AlertColorTypes.Success:
         return 0;
@@ -32,14 +31,14 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
 
   return (
     <Alert color={color} testId={testId}>
-      <Grid
+      <Grid2
         container
         spacing={1}
         direction="row"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item>
+        <Grid2>
           <StatusIconDisplay
             ariaDescription=" "
             ariaTitle=" "
@@ -48,18 +47,18 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
             testId={testId + 'Icon'}
             toolTip=" "
           />
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           <Typography id="standardAlertId">{text}</Typography>
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           {closeFunc ? (
-            <CloseIcon onClick={() => closeFunc()} toolTip={t('button.close')} />
+            <CloseIcon onClick={() => closeFunc()} toolTip={t('btnClose.label')} />
           ) : (
             <></>
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Alert>
   );
 }

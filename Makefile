@@ -19,7 +19,7 @@ JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --report
 
 # Post hook for coverage reports
 js-post-e2e-test:
-	yarn test:coverage:report:ci
+	yarn test:unit:coverage
 	cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
 
 js-pre-e2e-test:

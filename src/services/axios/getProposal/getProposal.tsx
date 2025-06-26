@@ -33,21 +33,26 @@ import {
   BAND_1,
   FREQUENCY_UNITS,
   ROBUST,
-  OSO_SERVICES_PROPOSAL_PATH
+  OSO_SERVICES_PROPOSAL_PATH,
+  PDF_NAME_PREFIXES
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import MockProposalBackend from './mockProposalBackend';
+import { MockProposalBackend } from './mockProposalBackend';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@/utils/types/dataProduct.tsx';
+import TeamMember from '@/utils/types/teamMember';
 
-const getTeamMembers = (inValue: InvestigatorBackend[]) => {
-  let members = [];
+const getTeamMembers = (inValue: InvestigatorBackend[] | null) => {
+  let members = [] as TeamMember[];
+  if (!inValue || inValue.length === 0) {
+    return members;
+  }
   for (let i = 0; i < inValue?.length; i++) {
     members.push({
       id: inValue[i].investigator_id,
@@ -55,9 +60,9 @@ const getTeamMembers = (inValue: InvestigatorBackend[]) => {
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,
       email: inValue[i]?.email,
-      affiliation: inValue[i].organization,
-      phdThesis: inValue[i].for_phd,
-      pi: inValue[i].principal_investigator
+      affiliation: inValue[i].organization as string,
+      phdThesis: inValue[i].for_phd as boolean,
+      pi: inValue[i].principal_investigator as boolean
     });
   }
   return members;
@@ -83,7 +88,7 @@ const getScienceCategory = (scienceCat: string) => {
   return cat ? cat : null;
 };
 
-const getPDF = (documents: DocumentBackend[], documentId: string): DocumentPDF | null => {
+const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
   if (!documents) return null;
 
   const documentById = documents.find(document => document.document_id === documentId);
@@ -141,8 +146,11 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
   return results;
 };
 
-const getGroupObservations = (inValue: ObservationSetBackend[]) => {
-  let results = [];
+const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
+  const results: any = [];
+  if (!inValue || inValue.length === 0) {
+    return results;
+  }
   for (let i = 0; i < inValue?.length; i++) {
     if (inValue[i].group_id) {
       const observationSetId = inValue[i].observation_set_id;
@@ -157,13 +165,13 @@ const getGroupObservations = (inValue: ObservationSetBackend[]) => {
   return results;
 };
 
-const getDataProductSRC = (inValue: DataProductSRCNetBackend[]): DataProductSRC[] => {
-  return inValue?.map(dp => ({ id: dp?.data_products_src_id }));
+const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProductSRC[] => {
+  return inValue ? inValue.map(dp => ({ id: dp?.data_products_src_id })) : [];
 };
 
 const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
 
-const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] => {
+const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDP[] => {
   const getImageSizeUnits = (inValue: string) => {
     const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
     for (let i = 0; i < IMAGE_SIZE_UNITS.length; i++) {
@@ -174,7 +182,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     return 0;
   };
 
-  const getPixelSizeUnits = (inValue: string | undefined): any =>
+  const getPixelSizeUnits = (inValue: string | null): any =>
     inValue === 'arcsec' ? 'arcsecs' : inValue || '';
 
   return inValue?.map((dp, index) => ({
@@ -185,30 +193,27 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[]): DataProductSDP[] 
     imageSizeValue: dp.image_size.value,
     imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
     pixelSizeValue: dp.pixel_size?.value,
-    pixelSizeUnits: getPixelSizeUnits(dp?.pixel_size?.unit),
+    pixelSizeUnits: dp?.pixel_size?.unit ? getPixelSizeUnits(dp?.pixel_size?.unit) : null,
     weighting: Number(dp.weighting)
   })) as DataProductSDP[];
 };
 
 /*********************************************************** observation parameters mapping *********************************************************/
 
-const getWeighting = (inImageWeighting: string | undefined): number => {
+const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
     item => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
-const getObservingBand = (
-  inObsBand: string | undefined,
-  inObsArray: string | undefined
-): number => {
+const getObservingBand = (inObsBand: string | null, inObsArray: string | null): number => {
   const band = BANDWIDTH_TELESCOPE?.find(item => item.mapping === inObsBand)?.value;
   const fallback = inObsArray?.includes('low') ? BAND_LOW : BAND_1;
   return band ? band : fallback;
 };
 
-const getSupplied = (inSupplied: SuppliedBackend | undefined): Supplied => {
+const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const typeLabel =
     inSupplied?.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
   const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
@@ -223,7 +228,7 @@ const getSupplied = (inSupplied: SuppliedBackend | undefined): Supplied => {
 };
 
 const getFrequencyAndBandwidthUnits = (
-  inUnits: string | undefined,
+  inUnits: string | null,
   telescope: number,
   observingBand: number
 ): number => {
@@ -237,7 +242,7 @@ const getFrequencyAndBandwidthUnits = (
       )?.value as number);
 };
 
-const getBandwidth = (incBandwidth: number | undefined, telescope: number): number => {
+const getBandwidth = (incBandwidth: number, telescope: number): number => {
   const array = OBSERVATION.array?.find(item => item?.value === telescope);
   const bandwidth = array?.bandWidth?.find(bandwidth =>
     bandwidth?.label?.includes(String(incBandwidth?.toString()))
@@ -245,17 +250,23 @@ const getBandwidth = (incBandwidth: number | undefined, telescope: number): numb
   return bandwidth ? bandwidth : 1; // fallback
 };
 
-const getLinked = (inObservation: ObservationSetBackend, inResults: SensCalcResultsBackend[]) => {
+const getLinked = (
+  inObservation: ObservationSetBackend,
+  inResults: SensCalcResultsBackend[] | null
+) => {
   const obsRef = inObservation.observation_set_id;
   const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
 const getObservations = (
-  inValue: ObservationSetBackend[],
-  inResults: SensCalcResultsBackend[]
+  inValue: ObservationSetBackend[] | null,
+  inResults: SensCalcResultsBackend[] | null
 ): Observation[] => {
-  let results = [];
+  const results: Observation[] = [];
+  if (!inValue || inValue.length === 0) {
+    return results;
+  }
   for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     const sub = OBSERVATION.array[arr - 1].subarray?.find(
@@ -312,7 +323,7 @@ const getObservations = (
       bandwidth:
         type === TYPE_ZOOM
           ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value, arr)
-          : ((undefined as unknown) as number),
+          : null,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
       robust: (ROBUST.find(item => item.label === inValue[i].observation_type_details?.robust)
         ?.value as unknown) as number,
@@ -321,7 +332,7 @@ const getObservations = (
       spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
-        type === TYPE_CONTINUUM ? inValue[i].observation_type_details?.bandwidth?.value : undefined,
+        type === TYPE_CONTINUUM ? inValue[i].observation_type_details?.bandwidth?.value : null,
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
@@ -329,7 +340,7 @@ const getObservations = (
               arr,
               observingBand
             )
-          : undefined,
+          : null,
       numStations: numStations
     };
     results.push(obs);
@@ -344,7 +355,7 @@ const getResultsSection1 = (
   isContinuum: boolean,
   isSensitivity: boolean,
   inObservationSets: ObservationSetBackend[],
-  inResultObservationRef: string | undefined
+  inResultObservationRef: string | null
 ): SensCalcResults['section1'] => {
   let section1 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
@@ -410,7 +421,7 @@ const getResultsSection2 = (
   inResult: SensCalcResultsBackend,
   isSensitivity: Boolean,
   inObservationSets: ObservationSetBackend[],
-  inResultObservationRef: string | undefined
+  inResultObservationRef: string | null
 ): SensCalcResults['section2'] => {
   let section2 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
@@ -456,7 +467,7 @@ const getResultsSection2 = (
 };
 
 const getResultsSection3 = (
-  inResultObservationRef: string | undefined,
+  inResultObservationRef: string | null,
   inObservationSets: ObservationSetBackend[],
   inResult: SensCalcResultsBackend,
   isSensitivity: boolean
@@ -482,12 +493,20 @@ const getResultObsType = (
 };
 
 const getTargetObservation = (
-  inResults: SensCalcResultsBackend[],
-  inObservationSets: ObservationSetBackend[],
+  inResults: SensCalcResultsBackend[] | null,
+  inObservationSets: ObservationSetBackend[] | null,
   // inTargets: TargetBackend[],
   outTargets: Target[]
 ): TargetObservation[] => {
-  let targetObsArray = [];
+  const targetObsArray: TargetObservation[] = [];
+  if (
+    !inResults ||
+    inResults.length === 0 ||
+    !inObservationSets ||
+    inObservationSets.length === 0
+  ) {
+    return targetObsArray;
+  }
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
@@ -527,12 +546,18 @@ const getTargetObservation = (
 
 /*************************************************************************************************************************/
 
-function mapping(inRec: ProposalBackend): Proposal {
+export function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
-  sciencePDF = getPDF(inRec?.info?.documents, 'science-doc-' + inRec.prsl_id) as DocumentPDF;
-  technicalPDF = getPDF(inRec?.info?.documents, 'technical-doc-' + inRec.prsl_id) as DocumentPDF;
+  sciencePDF = (getPDF(
+    inRec?.info?.documents,
+    PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
+  ) as unknown) as DocumentPDF;
+  technicalPDF = (getPDF(
+    inRec?.info?.documents,
+    PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
+  ) as unknown) as DocumentPDF;
 
   const targets = getTargets(inRec.info.targets);
 
@@ -561,7 +586,7 @@ function mapping(inRec: ProposalBackend): Proposal {
     observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
     groupObservations: getGroupObservations(inRec.info.observation_sets),
     targetObservation:
-      inRec?.info?.result_details?.length > 0
+      inRec?.info?.result_details && inRec.info.result_details.length > 0
         ? getTargetObservation(
             inRec.info.result_details,
             inRec.info.observation_sets,
@@ -579,7 +604,7 @@ function mapping(inRec: ProposalBackend): Proposal {
   return convertedProposal as Proposal;
 }
 
-export async function GetMockProposal(): Promise<Proposal> {
+export function GetMockProposal(): Proposal {
   return mapping(MockProposalBackend);
 }
 
@@ -591,9 +616,15 @@ async function GetProposal(id: string): Promise<Proposal | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+    if (!result?.data) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+    return mapping(result.data);
   } catch (e) {
-    return e.message;
+    if (e instanceof Error) {
+      return e.message;
+    }
+    return 'error.API_UNKNOWN_ERROR';
   }
 }
 

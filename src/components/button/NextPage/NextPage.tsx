@@ -18,7 +18,7 @@ export default function NextPageButton({
   action,
   page = 0,
   primary = false,
-  title = 'button.add',
+  title = 'addBtn.label',
   testId = 'nextPageButtonTestId',
   toolTip
 }: NextPageButtonProps) {

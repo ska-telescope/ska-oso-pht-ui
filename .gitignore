@@ -10,6 +10,7 @@ charts/*/charts
 
 # testing
 /coverage
+/cypress/artefacts
 /cypress/screenshots
 /cypress/videos
 /cypress/downloads

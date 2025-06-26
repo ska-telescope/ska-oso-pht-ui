@@ -266,7 +266,7 @@ export type StandardData = {
   raEquatorial: ValueUnitPair;
   decEquatorial: ValueUnitPair;
   elevation: ValueUnitPair;
-  advancedData: AdvancedData;
+  advancedData: AdvancedData | null;
   modules: (ContinuumData | ZoomData | PSSData)[];
 };
 

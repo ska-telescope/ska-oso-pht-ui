@@ -61,10 +61,10 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
 
   const nextLabel = () => {
     if (usedPageNo === -2) {
-      return `button.add`;
+      return `addBtn.label`;
     }
     if (usedPageNo === -1) {
-      return `button.create`;
+      return `createBtn.label`;
     }
     return `page.${usedPageNo + 1}.title`;
   };

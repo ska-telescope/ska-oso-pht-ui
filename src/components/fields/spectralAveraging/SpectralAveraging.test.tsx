@@ -8,7 +8,14 @@ describe('<SpectralAveraging />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <SpectralAveraging widthLabel={0} value={0} />
+        <SpectralAveraging widthLabel={0} value={1} />
+      </StoreProvider>
+    );
+  });
+  test('renders correctly', () => {
+    render(
+      <StoreProvider>
+        <SpectralAveraging isLow widthLabel={0} value={1} />
       </StoreProvider>
     );
   });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid2, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -112,7 +112,7 @@ export default function ObservationPage() {
   };
 
   const addTargetObservationStorage = (rec: TargetObservation) => {
-    setTargetObservationStorage([...getProposal().targetObservation, rec]);
+    setTargetObservationStorage([...(getProposal().targetObservation ?? []), rec]);
   };
 
   const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
@@ -124,13 +124,13 @@ export default function ObservationPage() {
     const base = getProposal().targetObservation?.filter(
       e => !(e.targetId === target.id && e.observationId === observationId)
     );
-    base.push(temp);
+    base?.push(temp);
     setTargetObservationStorage(base);
   };
 
   const deleteObservationTarget = (row: any) => {
     function filterRecords(id: number) {
-      return getProposal().targetObservation.filter(
+      return getProposal().targetObservation?.filter(
         item => !(item.observationId === currObs.id && item.targetId === id)
       );
     }
@@ -278,7 +278,7 @@ export default function ObservationPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: number) =>
+  const getSensCalcForTargetGrid2 = (targetId: number) =>
     getProposal()?.targetObservation?.find(
       p => p.observationId === currObs?.id && p.targetId === targetId
     )?.sensCalc;
@@ -414,7 +414,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="icon"
               isCustom={isCustom()}
@@ -443,7 +443,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'IntegrationTime'}
               isCustom={isCustom()}
@@ -461,7 +461,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="SynthBeamSize"
               isCustom={isCustom()}
@@ -497,19 +497,19 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item md={11} lg={5}>
-          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-              <Grid item pb={1}>
+      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid2 md={11} lg={5}>
+          <Grid2 container direction="column" alignItems="flex-start" justifyContent="space-around">
+            <Grid2 container direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Grid2 pb={1}>
                 <AddButton
                   action={PATH[2]}
                   primary={!hasObservations()}
                   testId="addObservationButton"
                   title="addObservation.button"
                 />
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
             {hasObservations() && (
               <DataGrid
                 rows={elementsO}
@@ -530,41 +530,41 @@ export default function ObservationPage() {
                 testId="noObservationsNotification"
               />
             )}
-          </Grid>
-        </Grid>
-        <Grid item md={11} lg={6}>
+          </Grid2>
+        </Grid2>
+        <Grid2 md={11} lg={6}>
           <Card variant="outlined">
             <CardContent>
-              <Grid container alignItems="baseline" justifyContent="space-between">
-                <Grid item>
+              <Grid2 container alignItems="baseline" justifyContent="space-between">
+                <Grid2>
                   <Typography id="targetObservationLabel" pt={2} variant="h6">
                     {t('targetObservation.label')}
                   </Typography>
-                </Grid>
-                <Grid item lg={6}>
+                </Grid2>
+                <Grid2 size={{ lg: 6 }}>
                   <Card variant="outlined">
                     <CardContent>
-                      <Grid
+                      <Grid2
                         container
                         flexDirection={'row'}
                         flexWrap={'wrap'}
                         alignItems="space-evenly"
                         justifyContent="space-between"
                       >
-                        <Grid item>
+                        <Grid2>
                           <Typography id="targetObservationLabel" pt={1} variant="h6">
                             {t('targetObservation.filters')}
                           </Typography>
-                        </Grid>
+                        </Grid2>
 
-                        <Grid item>
-                          <Grid
+                        <Grid2>
+                          <Grid2
                             container
                             flexDirection={'row'}
                             flexWrap={'wrap'}
                             justifyContent={'flex-start'}
                           >
-                            <Grid item>
+                            <Grid2>
                               <TickBox
                                 disabled={!currObs}
                                 label={t('selected.label')}
@@ -573,8 +573,8 @@ export default function ObservationPage() {
                                 checked={selected}
                                 onChange={() => setSelected(!selected)}
                               />
-                            </Grid>
-                            <Grid item>
+                            </Grid2>
+                            <Grid2>
                               <TickBox
                                 disabled={!currObs}
                                 label={t('notSelected.label')}
@@ -583,14 +583,14 @@ export default function ObservationPage() {
                                 checked={notSelected}
                                 onChange={() => setNotSelected(!notSelected)}
                               />
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      </Grid>
+                            </Grid2>
+                          </Grid2>
+                        </Grid2>
+                      </Grid2>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Grid>
+                </Grid2>
+              </Grid2>
             </CardContent>
             <CardContent>
               {hasTargets() && (
@@ -610,8 +610,8 @@ export default function ObservationPage() {
               )}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
         <DeleteObservationConfirmation

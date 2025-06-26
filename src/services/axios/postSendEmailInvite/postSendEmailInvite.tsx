@@ -13,7 +13,10 @@ async function PostSendEmailInvite(email: EmailInviteBackend) {
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, email, AXIOS_CONFIG);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
-    return { error: e.message };
+    if (e instanceof Error) {
+      return { error: e.message };
+    }
+    return { error: 'error.API_UNKNOWN_ERROR' };
   }
 }
 

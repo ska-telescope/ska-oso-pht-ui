@@ -1,33 +1,44 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Card,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Tab,
-  Tabs,
-  Typography
-} from '@mui/material';
-import { PATH } from '../../utils/constants';
-import AddButton from '../../components/button/Add/Add';
-import OverviewButton from '@/components/button/Overview/Overview';
-import GetButton from '@/components/button/Get/Get';
-import AssignButton from '@/components/button/Assign/Assign';
+import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { PMT } from '../../utils/constants';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
+import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
+import { Panel } from '@/utils/types/panel';
+import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
+import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
+import PlusIcon from '@/components/icon/plusIcon/plusIcon';
+
+const REVIEWER_HEIGHT = '65vh';
+const TABS_HEIGHT = '72vh';
+const TABS_CONTENT_HEIGHT = '67vh';
+const TAB_GRID_HEIGHT = '51vh';
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
-
   const navigate = useNavigate();
-
   const [theValue, setTheValue] = React.useState(0);
+  const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
+
+  const handlePanelChange = (row: Panel) => {
+    setCurrentPanel(row);
+  };
+
+  const handleReviewersChange = (reviewersList: PanelReviewer[]) => {
+    // Update the current panel's reviewers with the new list
+    setCurrentPanel(prevPanel => {
+      if (!prevPanel) return prevPanel;
+      return {
+        ...prevPanel,
+        reviewers: reviewersList
+      };
+    });
+  };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
@@ -40,145 +51,74 @@ export default function PanelMaintenance() {
     };
   }
 
-  const clickFunction = () => {
-    navigate(PATH[1]);
-  };
-
-  const pageDescription = () => (
-    <Typography align="center" minHeight="5vh">
-      {t('page.15.desc')}
-    </Typography>
-  );
-
   const panelsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh">
       {t('panels.label')}
     </Typography>
   );
 
-  const overviewButton = () => (
-    <OverviewButton
-      action={clickFunction}
-      testId="overviewButton"
+  const backButton = () => (
+    <BackButton
+      action={() => navigate(PMT[2])}
+      testId="overviewButtonTestId"
       title={'overview.label'}
       toolTip="overview.toolTip"
     />
   );
 
-  const addPanelButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId="addPanelButton"
-      title={'addPanel.label'}
-      toolTip="addPanel.toolTip"
-    />
-  );
-
-  const getReviewersButton = () => (
-    <GetButton
-      action={clickFunction}
-      testId="getReviewersButton"
-      title={'getReviewers.label'}
-      toolTip="getReviewers.toolTip"
-    />
-  );
-
-  const assignProposalsButton = () => (
-    <AssignButton
-      action={clickFunction}
-      testId="assignProposalsButton"
-      title={'assignProposals.label'}
-      toolTip="assignProposals.toolTip"
-    />
-  );
-
-  const getPanels = () => {
-    return [
-      { id: 'P400', name: 'Stargazers' },
-      { id: 'P500', name: 'Buttons' },
-      { id: 'P600', name: 'Nashrakra' }
-    ];
-  };
-
-  const getpanelListItems = () => {
-    const panels = getPanels();
-    return panels.map(panel => (
-      <ListItem key={panel.id} sx={{ bgcolor: 'transparent' }}>
-        <ListItemButton>
-          <ListItemText primary={panel.name} secondary={panel.id} />
-        </ListItemButton>
-      </ListItem>
-    ));
-  };
+  const addPanelIcon = () => <PlusIcon onClick={() => navigate(PMT[3])} />;
 
   return (
     <>
-      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid item xs={12}>
-          {pageDescription()}
-        </Grid>
-        <Grid container p={5} lg={3} direction="row" justifyContent="flex-start">
-          <Grid mr={5} pt={1}>
-            {overviewButton()}
-          </Grid>
-        </Grid>
-        <Grid container p={5} lg={9} direction="row" justifyContent="flex-end">
-          <Grid mr={5} pt={1}>
-            {addPanelButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {getReviewersButton()}
-          </Grid>
-          <Grid mr={5} pt={1}>
-            {assignProposalsButton()}
-          </Grid>
-        </Grid>
-        <Grid container p={5} direction="row" justifyContent="space-around" alignItems="flex-start">
-          <Grid item p={2} sm={12} md={5} lg={3}>
-            <Box
-              sx={{
-                width: '100%',
-                border: '1px solid grey',
-                borderRadius: '16px',
-                borderTop: 'none'
-              }}
-              minHeight="50vh"
-            >
-              <Card
-                variant="outlined"
-                sx={{
-                  padding: '12px',
-                  border: '1px solid grey',
-                  width: '101%',
-                  marginLeft: '-2px'
-                }}
-              >
-                {panelsSectionTitle()}
-              </Card>
-              <List>
-                {getpanelListItems().length > 0 ? (
-                  getpanelListItems()
-                ) : (
-                  <ListItem>
-                    <ListItemText primary={t('panels.empty')} />
-                  </ListItem>
-                )}
-              </List>
-            </Box>
-          </Grid>
-
-          <Grid
-            item
-            p={2}
-            sm={12}
-            md={7}
-            lg={9}
-            container
-            direction="row"
-            justifyContent="space-around"
-            alignItems="flex-start"
+      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
+      <Grid2
+        container
+        pl={2}
+        pr={2}
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
+        <Grid2 p={2} size={{ sm: 12, md: 6, lg: 3 }}>
+          <Box
+            sx={{
+              width: '100%',
+              border: '1px solid lightGrey',
+              borderRadius: '16px'
+            }}
+            minHeight="50vh"
           >
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>
+            <Grid2
+              sx={{ borderBottom: '1px solid lightGrey' }}
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Grid2 mr={30} pt={2}>
+                {panelsSectionTitle()}
+              </Grid2>
+              <Grid2>{addPanelIcon()}</Grid2>
+            </Grid2>
+            <GridReviewPanels
+              height={REVIEWER_HEIGHT}
+              listOnly
+              onRowClick={row => handlePanelChange(row)}
+              updatedData={currentPanel}
+            />
+          </Box>
+        </Grid2>
+
+        <Grid2
+          p={2}
+          size={{ sm: 12, md: 6, lg: 9 }}
+          container
+          direction="row"
+          justifyContent="space-around"
+          alignItems="flex-start"
+        >
+          {currentPanel && (
+            <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '90%' }}>
               <Box>
                 <Tabs
                   variant="fullWidth"
@@ -188,30 +128,43 @@ export default function PanelMaintenance() {
                   onChange={handleChange}
                   aria-label="basic tabs example"
                 >
-                  <Tab
-                    label={t('reviewers.label')}
-                    {...a11yProps(0)}
-                    sx={{ border: '1px solid grey' }}
-                  />
-                  <Tab
-                    label={t('proposals.label')}
-                    {...a11yProps(1)}
-                    sx={{ border: '1px solid grey' }}
-                  />
+                  <Tab label={t('reviewers.label')} {...a11yProps(0)} />
+                  <Tab label={t('proposals.label')} {...a11yProps(1)} />
                 </Tabs>
               </Box>
-              {theValue === 0 && <GridReviewers />}
-              {theValue === 1 && <GridProposals />}
+              <Box
+                p={2}
+                sx={{
+                  width: '100%',
+                  height: TABS_CONTENT_HEIGHT,
+                  border: '1px solid lightgrey',
+                  borderBottomLeftRadius: '16px',
+                  borderBottomRightRadius: '16px'
+                }}
+              >
+                {theValue === 0 && (
+                  <GridReviewers
+                    currentPanel={currentPanel}
+                    height={TAB_GRID_HEIGHT}
+                    showSearch
+                    onChange={item => handleReviewersChange(item)}
+                  />
+                )}
+                {theValue === 1 && <GridProposals showSearch />}
+              </Box>
             </Box>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      >
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly"></Grid>
-      </Paper>
+          )}
+          {!currentPanel && (
+            <Box sx={{ width: '90%' }}>
+              <Alert
+                color={AlertColorTypes.Info}
+                text={t('panels.notSelected')}
+                testId="helpPanelId"
+              />
+            </Box>
+          )}
+        </Grid2>
+      </Grid2>
     </>
   );
 }

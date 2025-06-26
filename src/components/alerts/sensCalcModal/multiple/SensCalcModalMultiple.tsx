@@ -1,8 +1,8 @@
-import React from 'react';
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
+import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
 import {
@@ -10,7 +10,6 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   TYPE_CONTINUUM
 } from '../../../../utils/constants';
-import { presentSensCalcError, presentUnits, presentValue } from '../../../../utils/present';
 
 export type Rec = { field: string; value: string; units: string };
 interface SensCalcModalMultipleProps {
@@ -50,7 +49,7 @@ export default function SensCalcModalMultiple({
     if (!CUSTOM_VALID_FIELDS.includes(rec.field)) {
       return t('customArray.result');
     }
-    return `${presentValue(rec.value, rec.field)} ${presentUnits(rec.units)}`;
+    return `${presentValue(rec.value)} ${presentUnits(rec.units)}`;
   };
 
   let i = 0; // Just here so that the key warning is dealt with
@@ -76,7 +75,7 @@ export default function SensCalcModalMultiple({
     if (rec) {
       return isCustom
         ? PresentCustomResultValue(rec) + ' '
-        : presentValue(rec.value, rec.field) + ' ' + presentUnits(rec.units);
+        : presentValue(rec.value) + ' ' + presentUnits(rec.units);
     } else {
       return '';
     }

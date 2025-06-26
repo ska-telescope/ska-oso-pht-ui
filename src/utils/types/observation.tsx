@@ -13,10 +13,10 @@ type Observation = {
   elevation: number; // TODO should be only for Mid => what property for LOW?
   centralFrequency: number;
   centralFrequencyUnits: number;
-  bandwidth?: number; // only for zoom
+  bandwidth: number | null; // only for zoom
   // bandwidthUnits: number; // only for zoom
-  continuumBandwidth?: number; // only for continuum
-  continuumBandwidthUnits?: number; // only for continuum
+  continuumBandwidth: number | null; // only for continuum
+  continuumBandwidthUnits: number | null; // only for continuum
   spectralAveraging?: number; // only for LOW
   tapering?: number; // only for MID
   imageWeighting: number;
@@ -31,6 +31,8 @@ type Observation = {
   // TODO: get right ascension + declination from target => store in target and send it as pointing_centre: '00:00:00.0 00:00:00.0',
 };
 
+/*
+TODO : this is unused, can it be removed?
 export const NEW_OBSERVATION: Observation = {
   id: null,
   telescope: 0,
@@ -61,5 +63,6 @@ export const NEW_OBSERVATION: Observation = {
   num13mAntennas: 0,
   numStations: 0
 };
+*/
 
 export default Observation;

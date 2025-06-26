@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import {
   AlertColorTypes,
   AppWrapper,
@@ -6,7 +6,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { MenuItem, Divider, Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -28,8 +28,9 @@ import ReviewPage from '../ReviewPage/ReviewPage';
 import packageJson from '../../../package.json';
 import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
+import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import { ButtonUserMenu } from '@/components/button/UserMenu/UserMenu';
+import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
 // import getProposal from '@/services/axios/getProposal/getProposal';
 import Proposal from '@/utils/types/proposal';
@@ -51,23 +52,29 @@ const ROUTES = [
   { path: PATH[3], element: <AddDataProduct /> },
   { path: PMT[0], element: <PanelMaintenance /> },
   { path: PMT[1], element: <ReviewPage /> },
-  { path: PMT[2], element: <ReviewDashboard /> }
+  { path: PMT[2], element: <ReviewDashboard /> },
+  { path: PMT[3], element: <ReviewPanelEntry /> }
 ];
-
-// declare const window: any;
 
 export default function PHT() {
   const { t } = useTranslation('pht');
   const { application, help, helpToggle } = storageObject.useStore();
+  const theTheme = useTheme();
   const navigate = useNavigate();
   const [theMode, setTheMode] = React.useState(
     localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
   );
   const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
 
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
+  const LG = () => useMediaQuery(theTheme.breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  const location = useLocation();
+  React.useEffect(() => {
+    if (location.pathname !== '/') {
+      navigate(PATH[0]);
+    }
+  }, []);
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -87,22 +94,7 @@ export default function PHT() {
     setTheMode(newMode);
   };
 
-  const onMenuSelect = (thePath: string) => {
-    navigate(thePath);
-  };
-
-  const signIn = () => (
-    // TODO : This is totally mocked and will be replaced in time
-    <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'}>
-      <MenuItem onClick={() => onMenuSelect(PMT[2])}>{t('menuOptions.overview')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PATH[0])}>{t('menuOptions.proposals')}</MenuItem>
-      <MenuItem disabled>{t('menuOptions.scienceVerification')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PMT[0])}>{t('menuOptions.panelSummary')}</MenuItem>
-      <MenuItem onClick={() => onMenuSelect(PMT[1])}>{t('menuOptions.reviews')}</MenuItem>
-      <Divider component="li" />
-      <MenuItem disabled> Logout</MenuItem>
-    </ButtonUserMenu>
-  );
+  const signIn = () => <ButtonUserMenu />;
 
   return (
     <ThemeProvider theme={theme(theMode)}>

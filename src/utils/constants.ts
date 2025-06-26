@@ -217,7 +217,12 @@ export const PAGE_SRC_NET = 8;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
-export const PMT = ['/review/panel', '/review/dashboard', '/review/proposal'];
+export const PMT = [
+  '/review/panel',
+  '/review/dashboard',
+  '/review/proposal',
+  '/review/panel/entry'
+];
 
 export const PROJECTS = [
   {
@@ -285,6 +290,12 @@ export const PROPOSAL_STATUS = {
   ACCEPTED: 'accepted',
   WITHDRAWN: 'withdrawn',
   REJECTED: 'rejected'
+};
+
+export const REVIEWER_STATUS = {
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined'
 };
 
 export const TYPE_ZOOM = 0;
@@ -887,6 +898,11 @@ export const WRAPPER_HEIGHT = '75px';
 
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;
+
+export const PDF_NAME_PREFIXES = {
+  SCIENCE: 'science-doc-',
+  TECHNICAL: 'technical-doc-'
+};
 
 /***************************************************************/
 
