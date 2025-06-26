@@ -201,11 +201,35 @@ export default function GridProposals({
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
+  const getPIs = (arr: TeamMember[]) => {
+    if (!arr || arr.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    const results: string[] = [];
+    arr.forEach(e => {
+      if (e.pi) {
+        results.push(e.lastName + ', ' + e.firstName);
+      }
+    });
+    if (results.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
+  };
+
+  const colPI = {
+    field: 'pi',
+    headerName: t('pi.short'),
+    flex: 2,
+    renderCell: (e: any) => {
+      return getPIs(e.row.team);
+    }
+  };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    flex: 1,
-    width: 110,
+    flex: 2,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
@@ -239,13 +263,6 @@ export default function GridProposals({
     renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
   };
 
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
   const colActions = {
     field: 'actions',
     type: 'actions',
@@ -275,9 +292,7 @@ export default function GridProposals({
     )
   };
 
-  const stdColumns = [
-    ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
-  ];
+  const proposalColumns = [...[colTitle, colScienceCategory, colType, colPI, colActions]];
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   function filterProposals() {
@@ -436,7 +451,7 @@ export default function GridProposals({
               maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
-              columns={forReview ? reviewColumns : stdColumns}
+              columns={forReview ? reviewColumns : proposalColumns}
               height={DATA_GRID_HEIGHT}
             />
           </div>
