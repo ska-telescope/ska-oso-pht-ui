@@ -1,0 +1,75 @@
+{
+  "test_plans": [
+    {
+      "select_from_tag": {
+        "default": "XTP-59737"
+      }
+    }
+  ],
+  "name": {
+    "env": "CI_COMMIT_BRANCH",
+    "maps_to": {
+      "default": "branch execution",
+      "main": "main branch execution",
+      "master": "master branch execution"
+    }
+  },
+  "chart_info": {
+    "env": "DEPLOYMENT_CONFIGURATION",
+    "maps_to": {
+      "default": "charts/ska-oso-pht-ui/Chart.yaml"
+    }
+  },
+  "test_report": "build/reports/unit-tests.xml",
+  "jira_url": "https://jira.skatelescope.org",
+  "project": {
+    "id": "XTP",
+    "issuetype_id": 11602,
+    "customfield_mapping": {
+      "start_date": "customfield_11918",
+      "end_date": "customfield_11917",
+      "test_plans": "customfield_11927",
+      "test_environments": "customfield_11925"
+    }
+  },
+  "description": "Test execution results as generated from git@gitlab.com:ska-telescope/oso/ska-pht-ui\n",
+  "test_environments": [
+    {
+      "env": "TEST_ENV",
+      "maps_to": {
+        "default": "STFC-CI",
+        "dev": "dev-testing",
+        "PSI-LOW": "PSI-LOW",
+        "PSI-MID-MDA": "PSI-MID-MDA",
+        "PSI-LOW-TOPIC": "PSI-LOW-TOPIC",
+        "ITF-LOW": "ITF-LOW",
+        "ITF-MID": "ITF-MID"
+      }
+    }
+  ],
+  "labels": [
+    {
+      "env": "CI_COMMIT_BRANCH",
+      "maps_to": {
+        "default": "branch",
+        "main": "main",
+        "master": "master"
+      }
+    }
+  ],
+  "versions": [
+    {
+      "env": "CI_COMMIT_BRANCH",
+      "maps_to": {
+        "default": "",
+        "main": "PI27",
+        "master": "PI27"
+      }
+    }
+  ],
+  "environment_variables": [
+    "CI_JOB_URL",
+    "CI_COMMIT_TITLE",
+    "CI_JOB_STARTED_AT"
+  ]
+}
