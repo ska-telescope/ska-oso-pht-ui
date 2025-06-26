@@ -20,8 +20,10 @@ import {
   FOOTER_SPACER,
   NOT_SPECIFIED,
   PROPOSAL_STATUS,
-  SEARCH_TYPE_OPTIONS,
-  NAV
+  NAV,
+  GENERAL,
+  PROJECTS,
+  SEARCH_PROPOSAL_TYPE_OPTIONS
 } from '@/utils/constants';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import TeamMember from '@/utils/types/teamMember';
@@ -58,7 +60,8 @@ export default function GridProposals({
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [searchType, setSearchType] = React.useState('');
+  const [searchScienceCategory, setSearchScienceCategory] = React.useState<number | null>(null);
+  const [searchProposalType, setSearchProposalType] = React.useState('');
 
   const {
     application,
@@ -339,6 +342,11 @@ export default function GridProposals({
 
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
+  function getProposalType(value: number): string {
+    const type = PROJECTS.find(item => item.id === value)?.mapping;
+    return type ? type : '';
+  }
+
   function filterProposals() {
     const fields: (keyof Proposal)[] = ['title'];
     return proposals.filter(
@@ -346,7 +354,8 @@ export default function GridProposals({
         fields.some(field =>
           (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
+        (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
+        (searchProposalType === '' || getProposalType(item?.proposalType) === searchProposalType)
     );
   }
 
@@ -358,13 +367,23 @@ export default function GridProposals({
     </Typography>
   );
 
-  const searchDropdown = () => (
+  const scienceCategoryDropdown = () => (
     <DropDown
-      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+      options={[{ label: t('scienceCategory.all'), value: null }, ...GENERAL.ScienceCategory]}
+      testId="proposalScienceCategory"
+      value={searchScienceCategory}
+      setValue={setSearchScienceCategory}
+      label={t('scienceCategory.all')}
+    />
+  );
+
+  const proposalTypeDropdown = () => (
+    <DropDown
+      options={[{ label: t('proposalType.all'), value: '' }, ...SEARCH_PROPOSAL_TYPE_OPTIONS]}
       testId="proposalType"
-      value={searchType}
-      setValue={setSearchType}
-      label={t('status.0')}
+      value={searchProposalType}
+      setValue={setSearchProposalType}
+      label={t('proposalType.all')}
     />
   );
 
@@ -474,13 +493,13 @@ export default function GridProposals({
           alignItems="center"
         >
           <Grid item p={2} sm={12} md={6} lg={4}>
-            {searchDropdown()}
+            {proposalTypeDropdown()}
           </Grid>
           <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
             {searchEntryField('searchId')}
           </Grid>
           <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
+            {scienceCategoryDropdown()}
           </Grid>
         </Grid>
       )}
