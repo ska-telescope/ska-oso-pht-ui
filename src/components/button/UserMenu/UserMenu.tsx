@@ -113,6 +113,9 @@ export default function ButtonUserMenu({
         <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
           {t('menuOptions.reviews')}
         </MenuItem>
+        <MenuItem data-testid="menuItemReviewDecision" onClick={() => onMenuSelect(PMT[4])}>
+          {t('menuOptions.reviewDecision')}
+        </MenuItem>
         <Divider component="li" />
         <MenuItem data-testid="menuItemPanelLogout">
           {mockedLogin ? 'Logout' : <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />}
