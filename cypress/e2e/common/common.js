@@ -70,7 +70,6 @@ export const clickPanelButtonProposals = () => clickNav('panelBtn3', '');
 
 export const enterPanelName = () => entry('panelName', 'Panel Name');
 
-
 /*----------------------------------------------------------------------*/
 
 export const clickUserMenu = (testId, title) => {

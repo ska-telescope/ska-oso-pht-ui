@@ -899,6 +899,11 @@ export const WRAPPER_HEIGHT = '75px';
 export const LOW_BEAM_SIZE_PRECISION = 1;
 export const MID_BEAM_SIZE_PRECISION = 3;
 
+export const PDF_NAME_PREFIXES = {
+  SCIENCE: 'science-doc-',
+  TECHNICAL: 'technical-doc-'
+};
+
 /***************************************************************/
 
 export const DEFAULT_PI = {

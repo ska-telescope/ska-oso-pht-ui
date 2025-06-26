@@ -20,6 +20,7 @@ export type PointingPatternParamsBackend = {
 
 export type TargetBackend = {
   target_id: string;
+  name: string;
   pointing_pattern?: {
     active: string;
     parameters: PointingPatternParamsBackend[];
@@ -28,6 +29,7 @@ export type TargetBackend = {
     kind: string;
     ra: number | string;
     dec: number | string;
+    epoch?: number; // TODO check if this is a mandatory field
     unit: string[];
     reference_frame: string;
   };

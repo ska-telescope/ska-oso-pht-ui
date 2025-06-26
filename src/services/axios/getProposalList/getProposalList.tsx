@@ -70,18 +70,21 @@ const getSubType = (proposalType: {
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
-const getTeam = (investigators: InvestigatorBackend[]): TeamMember[] => {
-  const teamMembers = [];
+const getTeam = (investigators: InvestigatorBackend[] | undefined): TeamMember[] => {
+  const teamMembers: TeamMember[] = [];
+  if (!investigators) {
+    return teamMembers as TeamMember[];
+  }
   for (let investigator of investigators) {
     const teamMember = {
       id: investigator.investigator_id,
       firstName: investigator.given_name,
       lastName: investigator.family_name,
       email: investigator.email,
-      affiliation: investigator.organization,
-      phdThesis: investigator.for_phd,
+      affiliation: investigator.organization as string,
+      phdThesis: investigator.for_phd as boolean,
       status: 'unknown', // TODO check if we need to remove status for team member? not in backend anymore
-      pi: investigator.principal_investigator
+      pi: investigator.principal_investigator as boolean
     };
     teamMembers.push(teamMember);
   }
