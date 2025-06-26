@@ -30,7 +30,7 @@ export interface ButtonUserMenuProps {
 export default function ButtonUserMenu({
   ariaDescription = 'User Button',
   color = ButtonColorTypes.Inherit,
-  label = 'username',
+  label = 'Mocked',
   onClick,
   photo,
   showPhoto = false,
