@@ -138,7 +138,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '123',
                 email: 'alice.spears@example.com',
-                // country: 'United Kingdom', // TODO can country be removed?
                 affiliation: 'University of Cambridge',
                 status: 'accepted'
               },
@@ -149,7 +148,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '124',
                 email: 'joshua.smith@example.com',
-                // country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
                 status: 'accepted'
               },
@@ -160,7 +158,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '125',
                 email: 'sophie.dupont@example.com',
-                // country: 'France',
                 affiliation: 'University Paris Sorbonne',
                 status: 'accepted'
               }
