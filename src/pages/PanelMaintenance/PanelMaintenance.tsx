@@ -150,7 +150,7 @@ export default function PanelMaintenance() {
                     onChange={item => handleReviewersChange(item)}
                   />
                 )}
-                {theValue === 1 && <GridProposals showSearch />}
+                {theValue === 1 && <GridProposals showSearch showSelection />}
               </Box>
             </Box>
           )}
