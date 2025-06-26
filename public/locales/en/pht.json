@@ -121,6 +121,9 @@
   "closeBtn": {
     "label": "Close"
   },
+  "comments": {
+    "label": "Comments"
+  },
   "confirmBtn": {
     "label": "Confirm"
   },
@@ -144,6 +147,9 @@
   },
   "dataProduct": {
     "button": "Add Data Product"
+  },
+  "dateAssigned":{
+    "label": "Date Assigned"
   },
   "declination": {
     "label": "Declination"
@@ -555,6 +561,9 @@
     "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "recommendations": {
+    "label": "Recommendations"
+  },
   "referenceCoordinates": {
     "help": "Only Galactic and ICRS reference systems are available.",
     "label": "Reference System",
@@ -576,6 +585,10 @@
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name"
     }
+  },
+  "reviewProposal": {
+    "toolTip": "Review proposal",
+    "disabled": "This function is not available"
   },
   "reviewers": {
     "label": "Reviewers",
@@ -600,6 +613,11 @@
       "declined": "Declined",
       "inviteSent": "Invite sent"
     }
+  },
+  "reviewStatus": {
+    "to do": "To Do",
+    "in progress": "In Progress",
+    "finalized": "Finalized"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -1043,6 +1061,9 @@
     "button": {
       "telescopeToggle": "Telescope Toggle"
     }
+  },
+   "rank":{
+    "label": "Rank"
   },
   "toolTip": {
     "button": {
