@@ -59,7 +59,7 @@ describe('<GridProposals />', () => {
     });
     render(
       <StoreProvider>
-        <GridProposals forReview listOnly />
+        <GridProposals forReview />
       </StoreProvider>
     );
   });

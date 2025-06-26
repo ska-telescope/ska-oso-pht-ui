@@ -4,7 +4,8 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  AlertColorTypes,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Tooltip, Typography, Grid, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -39,13 +40,17 @@ interface GridProposalsProps {
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
+  showSelection?: boolean;
+  showActions?: boolean;
 }
 
 export default function GridProposals({
   height = '50vh',
   showSearch = false,
   showTitle = false,
-  forReview = false
+  forReview = false,
+  showSelection = false,
+  showActions = false
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -133,7 +138,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '123',
                 email: 'alice.spears@example.com',
-                country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
                 status: 'accepted'
               },
@@ -144,7 +148,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '124',
                 email: 'joshua.smith@example.com',
-                country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
                 status: 'accepted'
               },
@@ -155,7 +158,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '125',
                 email: 'sophie.dupont@example.com',
-                country: 'France',
                 affiliation: 'University Paris Sorbonne',
                 status: 'accepted'
               }
@@ -184,6 +186,23 @@ export default function GridProposals({
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
+  const isProposalSelected = (proposalId: string): boolean => {
+    // TODO: implment for proposal selection
+    // return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
+    return false;
+  };
+
+  const proposalSelectedToggle = (proposal: Proposal) => {
+    // TODO: implement proposal selection toggle
+    /*
+      if (isReviewerSelected(reviewer.id)) {
+        deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
+      } else {
+        addReviewerPanel(reviewer, localPanel, setReviewerPanels);
+      }
+        */
+  };
+
   const displayProposalType = (proposalType: any) => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
@@ -201,11 +220,35 @@ export default function GridProposals({
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
+  const getPIs = (arr: TeamMember[]) => {
+    if (!arr || arr.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    const results: string[] = [];
+    arr.forEach(e => {
+      if (e.pi) {
+        results.push(e.lastName + ', ' + e.firstName);
+      }
+    });
+    if (results.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
+  };
+
+  const colPI = {
+    field: 'pi',
+    headerName: t('pi.short'),
+    flex: 2,
+    renderCell: (e: any) => {
+      return getPIs(e.row.team);
+    }
+  };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    flex: 1,
-    width: 110,
+    flex: 2,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
@@ -239,11 +282,21 @@ export default function GridProposals({
     renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
   };
 
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+  const colSelect = {
+    field: 'select',
+    headerName: '',
+    flex: 0.6,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: any }) => (
+      <Box pr={1}>
+        <TickBox
+          label=""
+          testId="linkedTickBox"
+          checked={isProposalSelected(e.row.id)}
+          onChange={() => proposalSelectedToggle(e.row)}
+        />
+      </Box>
+    )
   };
 
   const colActions = {
@@ -275,9 +328,15 @@ export default function GridProposals({
     )
   };
 
-  const stdColumns = [
-    ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
+  const proposalColumns = [
+    ...(showSelection ? [colSelect] : []),
+    colTitle,
+    colScienceCategory,
+    colType,
+    colPI,
+    ...(showActions ? [colActions] : [])
   ];
+
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   function filterProposals() {
@@ -436,7 +495,7 @@ export default function GridProposals({
               maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
-              columns={forReview ? reviewColumns : stdColumns}
+              columns={forReview ? reviewColumns : proposalColumns}
               height={DATA_GRID_HEIGHT}
             />
           </div>
