@@ -38,6 +38,7 @@
 # misc
 .DS_Store
 .eslintcache
+.gitlab-ci.yml
 tsconfig.tsbuildinfo
 /.env.local
 /.env.development.local

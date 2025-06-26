@@ -577,6 +577,10 @@
     "0": "Heliocentric",
     "1": "Local Standard of Rest"
   },
+  "reset": {
+    "label": "Reset",
+    "toolTip": "Click to reset the search and filtering fields"
+  },
   "resolve": {
     "label": "Resolve",
     "toolTip": "Query SIMBAD and NED",
