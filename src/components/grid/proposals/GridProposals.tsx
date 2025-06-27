@@ -37,14 +37,14 @@ import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
-function getProposalType(value: number): string {
+export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
   return type ? type : '';
 }
 
 export function filterProposals(
-  proposals: Proposal[] = [],
-  searchTerm: string = '',
+  proposals: Proposal[],
+  searchTerm: string,
   searchScienceCategory: number | null,
   searchProposalType: string
 ): Proposal[] {

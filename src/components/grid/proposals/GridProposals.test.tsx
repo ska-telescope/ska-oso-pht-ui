@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
-import GridProposals, { filterProposals } from './GridProposals';
+import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import { PROPOSAL_STATUS } from '@/utils/constants';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 
@@ -64,6 +64,18 @@ test('renders correctly, forReview', () => {
       <GridProposals forReview />
     </StoreProvider>
   );
+});
+
+describe('Get proposal type', () => {
+  test('retrieves type correctly', () => {
+    const type = getProposalType(1);
+    expect(type).toBe('standard_proposal');
+  });
+
+  test('returns an empty string when no match', () => {
+    const type = getProposalType(999);
+    expect(type).toBe('');
+  });
 });
 
 describe('filterProposals', () => {
