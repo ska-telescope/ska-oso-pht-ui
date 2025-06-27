@@ -37,6 +37,28 @@ import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
+function getProposalType(value: number): string {
+  const type = PROJECTS.find(item => item.id === value)?.mapping;
+  return type ? type : '';
+}
+
+export function filterProposals(
+  proposals: Proposal[] = [],
+  searchTerm: string = '',
+  searchScienceCategory: number | null,
+  searchProposalType: string
+): Proposal[] {
+  const fields: (keyof Proposal)[] = ['title'];
+  return proposals.filter(
+    item =>
+      fields.some(field =>
+        (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
+      ) &&
+      (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
+      (searchProposalType === '' || getProposalType(item?.proposalType) === searchProposalType)
+  );
+}
+
 interface GridProposalsProps {
   height?: string;
   forReview?: boolean;
@@ -342,24 +364,9 @@ export default function GridProposals({
 
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
-  function getProposalType(value: number): string {
-    const type = PROJECTS.find(item => item.id === value)?.mapping;
-    return type ? type : '';
-  }
-
-  function filterProposals() {
-    const fields: (keyof Proposal)[] = ['title'];
-    return proposals.filter(
-      item =>
-        fields.some(field =>
-          (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
-        ) &&
-        (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
-        (searchProposalType === '' || getProposalType(item?.proposalType) === searchProposalType)
-    );
-  }
-
-  const filteredData = proposals ? filterProposals() : [];
+  const filteredData = proposals
+    ? filterProposals(proposals, searchTerm, searchScienceCategory, searchProposalType)
+    : [];
 
   const ProposalsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
