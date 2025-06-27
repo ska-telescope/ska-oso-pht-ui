@@ -119,7 +119,9 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
         : ((null as unknown) as number),
       title: inRec[i].info?.title,
       cycle: inRec[i]?.cycle,
-      team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : []
+      team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : [],
+      sciencePDF: null,
+      technicalPDF: null,
     };
     output.push(rec);
   }
