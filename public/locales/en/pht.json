@@ -633,7 +633,7 @@
   "reviewStatus": {
     "to do": "To Do",
     "in progress": "In Progress",
-    "finalized": "Finalized"
+    "finalised": "Finalised"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -839,7 +839,7 @@
     "20": "Custom"
   },
   "subjectExpertise": {
-    "0": "All expertise's",
+    "0": "All expertise",
     "label": "Expertise"
   },
   "submitAllBtn": {
