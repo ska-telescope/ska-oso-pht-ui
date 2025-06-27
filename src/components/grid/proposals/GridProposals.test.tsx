@@ -4,29 +4,9 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
-import { PROPOSAL_STATUS } from '@/utils/constants';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 
 describe('<GridProposals />', () => {
-  const proposalsMock = [
-    {
-      id: 1,
-      proposalType: 2,
-      title: 'Title',
-      team: [],
-      scienceCategory: 1,
-      status: PROPOSAL_STATUS.DRAFT
-    },
-    {
-      id: 2,
-      proposalType: 2,
-      title: 'Title',
-      team: ['authors'],
-      scienceCategory: 1,
-      status: PROPOSAL_STATUS.SUBMITTED
-    }
-  ];
-
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
