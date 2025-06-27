@@ -16,5 +16,5 @@ export default function PanelReviewDecision() {
     />
   );
 
-  return <PageBannerPMT title={t('menuOptions.reviewDecision')} backBtn={backButton()} />;
+  return <PageBannerPMT title={t('menuOptions.reviewDecisions')} backBtn={backButton()} />;
 }
