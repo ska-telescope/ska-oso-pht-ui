@@ -221,7 +221,8 @@ export const PMT = [
   '/review/panel',
   '/review/dashboard',
   '/review/proposal',
-  '/review/panel/entry'
+  '/review/panel/entry',
+  '/review/panel/decision'
 ];
 
 export const PROJECTS = [
