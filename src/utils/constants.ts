@@ -12,13 +12,6 @@ export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 
 /*****************************************/
 
-export const AXIOS_CONFIG = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-};
-
 export const BAND_LOW = 0;
 export const BAND_1 = 1;
 export const BAND_2 = 2;

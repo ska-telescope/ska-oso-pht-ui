@@ -121,7 +121,7 @@ export default function ReviewDashboard() {
       <PageBannerPMT hideOverviewButton title={t('menuOptions.overview')} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
         {panelButton('menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
-        {panelButton('menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}
+        {panelButton('reviewProposal.title', 'reviewers.overviewTooltip', PMT[1])}
         {panelButton('menuOptions.proposals', 'proposals.overviewTooltip', PATH[0])}
       </Grid2>
 

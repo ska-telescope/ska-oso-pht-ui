@@ -98,8 +98,6 @@ export default function PHT() {
     setTheMode(newMode);
   };
 
-  const signIn = () => <ButtonUserMenu />;
-
   return (
     <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
@@ -114,7 +112,7 @@ export default function PHT() {
         headerChildren={null}
         iconDocsToolTip={t('toolTip.button.docs')}
         iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
-        loginComponent={[signIn()]}
+        loginComponent={<ButtonUserMenu />}
         mainChildren={
           <>
             {REQUIRED_WIDTH && (

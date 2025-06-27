@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import CycleData from '../../../utils/types/cycleData';
 import MockCycleData from './mockCycleData';
 

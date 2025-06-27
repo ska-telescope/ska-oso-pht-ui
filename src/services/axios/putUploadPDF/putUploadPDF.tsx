@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosClient from '../axiosClient/axiosClient';
 import { USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
@@ -13,7 +13,7 @@ async function PutUploadPDF(signedUrl: string, selectedFile: any) {
   try {
     let formData = new FormData();
     formData.append('file', selectedFile);
-    const result = await axios.put(`${signedUrl}`, formData, {
+    const result = await axiosClient.put(`${signedUrl}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

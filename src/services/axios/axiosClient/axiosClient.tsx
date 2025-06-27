@@ -10,6 +10,7 @@ export enum LogLevel {
 
 const axiosClient = axios.create({
   headers: {
+    baseURL: 'axiosClient',
     Accept: 'application/json',
     'Content-Type': 'application/json'
   }

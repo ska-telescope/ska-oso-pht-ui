@@ -1,10 +1,9 @@
-import axios from 'axios';
 import {
-  AXIOS_CONFIG,
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
+import axiosClient from '../axiosClient/axiosClient';
 import MappingPutProposal from './putProposalMapping';
 import Proposal from '@/utils/types/proposal';
 
@@ -25,11 +24,7 @@ async function PutProposal(
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status as string);
-    const result = await axios.put(
-      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
-    );
+    const result = await axiosClient.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedProposal);
     return typeof result === 'undefined' ? { error: 'error.API_UNKNOWN_ERROR' } : { valid: result };
   } catch (e) {
     if (e instanceof Error) {
