@@ -13,6 +13,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import PlusIcon from '@/components/icon/plusIcon/plusIcon';
+import { PanelProposal } from '@/utils/types/panelProposal';
 
 const REVIEWER_HEIGHT = '65vh';
 const TABS_HEIGHT = '72vh';
@@ -36,6 +37,17 @@ export default function PanelMaintenance() {
       return {
         ...prevPanel,
         reviewers: reviewersList
+      };
+    });
+  };
+
+  const handleProposalsChange = (proposalsList: PanelProposal[]) => {
+    // Update the current panel's proposals with the new list
+    setCurrentPanel(prevPanel => {
+      if (!prevPanel) return prevPanel;
+      return {
+        ...prevPanel,
+        proposals: proposalsList
       };
     });
   };
@@ -150,7 +162,14 @@ export default function PanelMaintenance() {
                     onChange={item => handleReviewersChange(item)}
                   />
                 )}
-                {theValue === 1 && <GridProposals showSearch showSelection />}
+                {theValue === 1 && (
+                  <GridProposals
+                    currentPanel={currentPanel}
+                    onChange={item => handleProposalsChange(item)}
+                    showSearch
+                    showSelection
+                  />
+                )}
               </Box>
             </Box>
           )}

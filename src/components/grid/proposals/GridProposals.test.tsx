@@ -5,12 +5,40 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+import { Panel } from '@/utils/types/panel';
+
+const mockedPanels: Panel[] = [
+  {
+    id: 'P400',
+    name: 'Stargazers',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-09-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  },
+  {
+    id: 'P500',
+    name: 'Buttons',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-08-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  },
+  {
+    id: 'P600',
+    name: 'Nashrakra',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-09-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  }
+];
 
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
-        <GridProposals />
+        <GridProposals currentPanel={null} />
       </StoreProvider>
     );
   });
@@ -21,7 +49,7 @@ test('renders correctly', async () => {
   });
   render(
     <StoreProvider>
-      <GridProposals />
+      <GridProposals currentPanel={mockedPanels[0]} />
     </StoreProvider>
   );
 });
@@ -32,7 +60,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals />
+      <GridProposals currentPanel={null} />
     </StoreProvider>
   );
 
@@ -41,7 +69,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals forReview />
+      <GridProposals forReview currentPanel={mockedPanels[0]} />
     </StoreProvider>
   );
 });

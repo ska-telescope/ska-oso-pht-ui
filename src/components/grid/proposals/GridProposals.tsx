@@ -36,6 +36,34 @@ import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
+import { Panel } from '@/utils/types/panel';
+import { PanelProposal } from '@/utils/types/panelProposal';
+
+export const addProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: (proposals: PanelProposal[]) => void
+) => {
+  const rec: PanelProposal = {
+    proposalId: proposal.id,
+    panelId: localPanel?.id ?? '',
+    assignedOn: new Date().toISOString()
+  };
+  const updatedProposals = [...localPanel?.proposals, rec];
+  setProposalPanels(updatedProposals);
+};
+
+export const deleteProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.proposals?.filter(item => !(item.proposalId === id));
+  }
+  const filtered = filterRecords(proposal.id);
+  setProposalPanels(filtered);
+};
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -61,6 +89,8 @@ export function filterProposals(
 
 interface GridProposalsProps {
   height?: string;
+  currentPanel: Panel | null;
+  onChange: (proposalList: PanelProposal[]) => void;
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
@@ -70,6 +100,8 @@ interface GridProposalsProps {
 
 export default function GridProposals({
   height = '50vh',
+  currentPanel,
+  onChange,
   showSearch = false,
   showTitle = false,
   forReview = false,
@@ -98,9 +130,9 @@ export default function GridProposals({
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
+  const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -136,6 +168,11 @@ export default function GridProposals({
       onConfirmLabel=""
     />
   );
+
+  const setProposalPanels = (proposalPanels: PanelProposal[]) => {
+    // send updated proposal list to parent component
+    onChange(proposalPanels);
+  };
 
   React.useEffect(() => {
     updateAppContent2((null as unknown) as Proposal);
@@ -195,6 +232,12 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
+    if (currentPanel && currentPanel?.id) {
+      setLocalPanel(currentPanel);
+    }
+  }, [currentPanel]);
+
+  React.useEffect(() => {
     const cycleData = async () => {
       const response = await GetCycleData();
       if (typeof response === 'string') {
@@ -218,14 +261,11 @@ export default function GridProposals({
   };
 
   const proposalSelectedToggle = (proposal: Proposal) => {
-    // TODO: implement proposal selection toggle
-    /*
-      if (isReviewerSelected(reviewer.id)) {
-        deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
-      } else {
-        addReviewerPanel(reviewer, localPanel, setReviewerPanels);
-      }
-        */
+    if (isProposalSelected(proposal.id)) {
+      deleteProposalPanel(proposal, localPanel, setProposalPanels);
+    } else {
+      addProposalPanel(proposal, localPanel, setProposalPanels);
+    }
   };
 
   const displayProposalType = (proposalType: any) => {
