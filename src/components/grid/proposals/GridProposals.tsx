@@ -492,14 +492,16 @@ export default function GridProposals({
           justifyContent="space-around"
           alignItems="center"
         >
-          <Grid item p={2} sm={12} md={6} lg={4}>
-            {proposalTypeDropdown()}
-          </Grid>
-          <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
-            {searchEntryField('searchId')}
-          </Grid>
-          <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-            {scienceCategoryDropdown()}
+          <Grid container direction="row" spacing={2}>
+            <Grid item sm={12} md={6} lg={4}>
+              {proposalTypeDropdown()}
+            </Grid>
+            <Grid item sm={12} md={6} lg={4}>
+              {scienceCategoryDropdown()}
+            </Grid>
+            <Grid item sm={12} md={6} lg={4} mt={-2}>
+              {searchEntryField('searchId')}
+            </Grid>
           </Grid>
         </Grid>
       )}
