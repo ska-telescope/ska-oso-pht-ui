@@ -295,6 +295,7 @@
     "panelSummary": "Panels",
     "proposals": "Proposals",
     "reviews": "Reviews",
+    "reviewDecisions": "Review Decisions",
     "scienceVerification": "Science Verification"
   },
   "name": {
@@ -568,6 +569,10 @@
     "help": "The reference frame of the velocity entered. The default is Heliocentric.",
     "0": "Heliocentric",
     "1": "Local Standard of Rest"
+  },
+  "reset": {
+    "label": "Reset",
+    "toolTip": "Click to reset the search and filtering fields"
   },
   "resolve": {
     "label": "Resolve",

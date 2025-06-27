@@ -164,7 +164,7 @@ export default function GridProposals({
                 id: '123',
                 email: 'alice.spears@example.com',
                 affiliation: 'University of Cambridge',
-                status: 'accepted'
+                status: 'reviewed'
               },
               {
                 firstName: 'Joshua',
