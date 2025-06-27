@@ -1,4 +1,6 @@
-const MockProposalFrontendList = [
+import Proposal from '@/utils/types/proposal';
+
+const MockProposalFrontendList: Proposal[] = [
   {
     id: 'prp-ska01-202204-02',
     status: 'draft',
@@ -12,6 +14,8 @@ const MockProposalFrontendList = [
     scienceCategory: null,
     title: 'In a galaxy far, far away',
     cycle: 'SKA_5000_2023',
+    sciencePDF: null,
+    technicalPDF: null,
     team: [
       {
         id: 'prp-ska01-202204-01',
@@ -38,6 +42,8 @@ const MockProposalFrontendList = [
     scienceCategory: null,
     title: 'The Milky Way View',
     cycle: 'SKA_5000_2023',
+    sciencePDF: null,
+    technicalPDF: null,
     team: [
       {
         id: 'prp-ska01-202204-01',
@@ -64,6 +70,8 @@ const MockProposalFrontendList = [
     scienceCategory: 4,
     title: 'Incomplete Proposal',
     cycle: 'SKA_5000_2023',
+    sciencePDF: null,
+    technicalPDF: null,
     team: [
       {
         id: 'prp-ska01-202204-01',
