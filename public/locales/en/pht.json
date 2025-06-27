@@ -133,6 +133,9 @@
   "confirmSubmitBtn": {
     "label": "Confirm Proposal Submission"
   },
+  "conflict": {
+    "label": "Conflict"
+  },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
   },
@@ -148,7 +151,7 @@
   "dataProduct": {
     "button": "Add Data Product"
   },
-  "dateAssigned":{
+  "dateAssigned": {
     "label": "Date Assigned"
   },
   "declination": {
@@ -300,7 +303,6 @@
     "overview": "Overview",
     "panelSummary": "Panels",
     "proposals": "Proposals",
-    "reviews": "Reviews",
     "reviewDecisions": "Review Decisions",
     "scienceVerification": "Science Verification"
   },
@@ -562,6 +564,9 @@
     "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "rank": {
+    "label": "Rank"
+  },
   "recommendations": {
     "label": "Recommendations"
   },
@@ -592,7 +597,13 @@
     }
   },
   "reviewProposal": {
+    "title": "Review Proposal",
     "toolTip": "Review proposal",
+    "disabled": "This function is not available"
+  },
+  "reviewProposalList": {
+    "title": "Review Proposals",
+    "toolTip": "List of proposals for review",
     "disabled": "This function is not available"
   },
   "reviewers": {
@@ -828,8 +839,12 @@
     "20": "Custom"
   },
   "subjectExpertise": {
-    "0": "All Expertises",
+    "0": "All expertise's",
     "label": "Expertise"
+  },
+  "submitAllBtn": {
+    "label": "Submit All",
+    "tooltip": "Submit all reviewed proposals"
   },
   "submitBtn": {
     "label": "Submit",
@@ -1066,9 +1081,6 @@
     "button": {
       "telescopeToggle": "Telescope Toggle"
     }
-  },
-   "rank":{
-    "label": "Rank"
   },
   "toolTip": {
     "button": {

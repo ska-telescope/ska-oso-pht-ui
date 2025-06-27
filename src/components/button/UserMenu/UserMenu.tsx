@@ -111,10 +111,10 @@ export default function ButtonUserMenu({
           {t('menuOptions.panelSummary')}
         </MenuItem>
         <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
-          {t('menuOptions.reviews')}
+          {t('reviewProposalList.title')}
         </MenuItem>
-        <MenuItem data-testid="menuItemReviewDecision" onClick={() => onMenuSelect(PMT[4])}>
-          {t('menuOptions.reviewDecision')}
+        <MenuItem data-testid="menuItemReviewDecisions" onClick={() => onMenuSelect(PMT[4])}>
+          {t('menuOptions.reviewDecisions')}
         </MenuItem>
         <Divider component="li" />
         <MenuItem data-testid="menuItemPanelLogout">

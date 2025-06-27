@@ -219,10 +219,11 @@ export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', 
 
 export const PMT = [
   '/review/panel',
-  '/review/dashboard',
+  '/review/list',
   '/review/proposal',
   '/review/panel/entry',
-  '/review/panel/decision'
+  '/review/panel/decision',
+  '/review/review'
 ];
 
 export const PROJECTS = [
