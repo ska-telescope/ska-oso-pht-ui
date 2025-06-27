@@ -24,12 +24,13 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
-import ReviewPage from '../ReviewPage/ReviewPage';
+import ReviewListPage from '../ReviewListPage/ReviewListPage';
 import packageJson from '../../../package.json';
 import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import PanelReviewDecision from '../PanelReviewDecision/PanelReviewDecision';
+import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
@@ -52,10 +53,11 @@ const ROUTES = [
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },
   { path: PMT[0], element: <PanelMaintenance /> },
-  { path: PMT[1], element: <ReviewPage /> },
+  { path: PMT[1], element: <ReviewListPage /> },
   { path: PMT[2], element: <ReviewDashboard /> },
   { path: PMT[3], element: <ReviewPanelEntry /> },
-  { path: PMT[4], element: <PanelReviewDecision /> }
+  { path: PMT[4], element: <PanelReviewDecision /> },
+  { path: PMT[5], element: <ReviewEntry /> }
 ];
 
 export default function PHT() {

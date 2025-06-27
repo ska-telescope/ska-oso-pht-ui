@@ -121,6 +121,9 @@
   "closeBtn": {
     "label": "Close"
   },
+  "comments": {
+    "label": "Comments"
+  },
   "confirmBtn": {
     "label": "Confirm"
   },
@@ -129,6 +132,9 @@
   },
   "confirmSubmitBtn": {
     "label": "Confirm Proposal Submission"
+  },
+  "conflict": {
+    "label": "Conflict"
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
@@ -144,6 +150,9 @@
   },
   "dataProduct": {
     "button": "Add Data Product"
+  },
+  "dateAssigned": {
+    "label": "Date Assigned"
   },
   "declination": {
     "label": "Declination"
@@ -294,7 +303,6 @@
     "overview": "Overview",
     "panelSummary": "Panels",
     "proposals": "Proposals",
-    "reviews": "Reviews",
     "reviewDecisions": "Review Decisions",
     "scienceVerification": "Science Verification"
   },
@@ -557,6 +565,12 @@
     "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "rank": {
+    "label": "Rank"
+  },
+  "recommendations": {
+    "label": "Recommendations"
+  },
   "referenceCoordinates": {
     "help": "Only Galactic and ICRS reference systems are available.",
     "label": "Reference System",
@@ -583,6 +597,16 @@
       "Request failed with status code 500": "Unable to resolve provided name"
     }
   },
+  "reviewProposal": {
+    "title": "Review Proposal",
+    "toolTip": "Review proposal",
+    "disabled": "This function is not available"
+  },
+  "reviewProposalList": {
+    "title": "Review Proposals",
+    "toolTip": "List of proposals for review",
+    "disabled": "This function is not available"
+  },
   "reviewers": {
     "label": "Reviewers",
     "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED",
@@ -606,6 +630,11 @@
       "declined": "Declined",
       "inviteSent": "Invite sent"
     }
+  },
+  "reviewStatus": {
+    "to do": "To Do",
+    "in progress": "In Progress",
+    "finalised": "Finalised"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -812,8 +841,12 @@
     "20": "Custom"
   },
   "subjectExpertise": {
-    "0": "All Expertises",
+    "0": "All expertise",
     "label": "Expertise"
+  },
+  "submitAllBtn": {
+    "label": "Submit All",
+    "tooltip": "Submit all reviewed proposals"
   },
   "submitBtn": {
     "label": "Submit",

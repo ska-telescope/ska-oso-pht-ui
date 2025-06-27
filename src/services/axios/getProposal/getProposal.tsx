@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
@@ -39,6 +38,7 @@ import {
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
+import authAxiosClient from '../axiosAuthClient/axiosAuthClient';
 import { MockProposalBackend } from './mockProposalBackend';
 import {
   DataProductSDP,
@@ -615,7 +615,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
     if (!result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
