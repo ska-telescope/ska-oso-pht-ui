@@ -7,7 +7,7 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Tooltip, Typography, Grid, Box } from '@mui/material';
+import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
@@ -525,38 +525,28 @@ export default function GridProposals({
   return (
     <>
       {showTitle && (
-        <Grid item p={2} lg={12}>
+        <Grid2 p={2} size={{ lg: 12 }}>
           {ProposalsSectionTitle()}
-        </Grid>
+        </Grid2>
       )}
 
       {showSearch && (
-        <Grid
-          item
+        <Grid2
           p={2}
-          sm={12}
-          md={12}
-          lg={12}
-          container
+          size={{ sm: 12, md: 12, lg: 12 }}
           direction="row"
           justifyContent="space-around"
           alignItems="center"
         >
-          <Grid container direction="row" spacing={2}>
-            <Grid item sm={12} md={12} lg={4}>
-              {proposalTypeDropdown()}
-            </Grid>
-            <Grid item sm={12} md={12} lg={4}>
-              {scienceCategoryDropdown()}
-            </Grid>
-            <Grid item sm={0} md={0} lg={4} mt={-2}></Grid>
-          </Grid>
-          <Grid container direction="row" spacing={2}>
-            <Grid item sm={12} md={12} lg={4}>
-              {searchEntryField('searchId')}
-            </Grid>
-            <Grid item sm={12} md={12} lg={8}>
-              <Grid item sm={12} md={12} lg={4}>
+          <Grid2 container direction="row" spacing={2}>
+            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{proposalTypeDropdown()}</Grid2>
+            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{scienceCategoryDropdown()}</Grid2>
+            <Grid2 size={{ sm: 0, md: 0, lg: 4 }} mt={-2}></Grid2>
+          </Grid2>
+          <Grid2 container direction="row" spacing={2}>
+            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{searchEntryField('searchId')}</Grid2>
+            <Grid2 size={{ sm: 12, md: 12, lg: 8 }}>
+              <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>
                 <TickBox
                   disabled={!localPanel}
                   label={t('selected.label')}
@@ -565,8 +555,8 @@ export default function GridProposals({
                   checked={selected}
                   onChange={() => setSelected(!selected)}
                 />
-              </Grid>
-              <Grid item sm={12} md={12} lg={4} mt={-2}>
+              </Grid2>
+              <Grid2 size={{ sm: 12, md: 12, lg: 4 }} mt={-2}>
                 <TickBox
                   disabled={!localPanel}
                   label={t('notSelected.label')}
@@ -575,12 +565,12 @@ export default function GridProposals({
                   checked={notSelected}
                   onChange={() => setNotSelected(!notSelected)}
                 />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
+              </Grid2>
+            </Grid2>
+          </Grid2>
+        </Grid2>
       )}
-      <Grid item xs={12} pt={1}>
+      <Grid2 size={{ xs: 12 }} pt={1}>
         {!axiosViewError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
         )}
@@ -605,7 +595,7 @@ export default function GridProposals({
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
-      </Grid>
+      </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
