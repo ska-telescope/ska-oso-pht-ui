@@ -35,7 +35,7 @@ beforeEach(() => {
 });
 
 describe('Edit Proposal', () => {
-  it('Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it('XTP-71405: Edit a basic proposal', () => {
     //edit existing proposal
     clickHome();
     verifyOnLandingPage();

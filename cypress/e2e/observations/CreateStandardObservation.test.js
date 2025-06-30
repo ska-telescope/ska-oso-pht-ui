@@ -22,7 +22,7 @@ const verifyUnlinkedObservationInTable = () => {
 };
 
 describe('Creating Observation', () => {
-  it('Create a default observation', { jiraKey: 'XTP-71406' }, () => {
+  it('XTP-71406: Create a default observation', () => {
     //navigate to observation page
     clickToGeneralPage();
     clickToSciencePage();

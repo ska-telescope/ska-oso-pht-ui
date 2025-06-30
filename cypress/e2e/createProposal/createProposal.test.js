@@ -16,7 +16,7 @@ describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize();
   });
-  it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('XTP-59739: Create a basic proposal', () => {
     clickAddProposal();
     enterProposalTitle();
     clickProposalTypePrincipleInvestigator();

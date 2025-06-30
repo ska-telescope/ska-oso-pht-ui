@@ -16,7 +16,7 @@ import {
   verifyWarning
 } from '../common/common';
 
-describe('Review Panel', () => {
+describe('XTP-83987 Review Panel', () => {
   beforeEach(() => {
     initialize();
   });

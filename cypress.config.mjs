@@ -1,5 +1,7 @@
 import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
+import { configureXrayPlugin } from "cypress-xray-plugin";
+
 
 export default defineConfig({
   video: false,
@@ -22,7 +24,30 @@ export default defineConfig({
     experimentalMemoryManagement: true,
     supportFile: 'cypress/support/e2e.ts',
     specPattern: ['cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
-    setupNodeEvents(on) {
+
+    async setupNodeEvents(on, config) {
+      await configureXrayPlugin(
+        on,
+        config,
+        {
+          xray: {
+            serverUrl: "https://jira.skatelescope.org",
+            testPlan: "XTP-59737",
+            testExecution: "XTP-59739", // Optional, leave blank to create new execution
+            token: "cTxVgWTc72V2yKerMXQddlf4EuMI33VTdoTdfY",
+            uploadResults: true
+          },
+          jira: {
+            projectKey: "XTP",
+            url: "https://jira.skatelescope.org" // placeholder value
+          },
+          cucumber: {
+            prefixes: {
+              test: "TestName:"
+            }
+          },
+        }
+      );
       on('file:preprocessor', vitePreprocessor());
     }
   },

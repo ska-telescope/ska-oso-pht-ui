@@ -107,7 +107,7 @@ const verifySensitivityCalculatorResults = rec => {
 
 describe('Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    it('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
+    it('XTP-71885: Sensitivity calculator results : ' + rec.test, () => {
       //add observation
       clickObservationSetup();
       updateBand(rec);

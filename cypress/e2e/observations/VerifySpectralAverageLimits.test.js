@@ -28,7 +28,7 @@ beforeEach(() => {
 });
 
 describe('Creating Observations', () => {
-  it('Verify Spectral average limits', { jiraKey: 'XTP-71407' }, () => {
+  it('XTP-71407: Verify Spectral average limits', () => {
     //verify spectral average limits
     verifyContinuumSpectralAverageRangeAA4();
     verifyContinuumSpectralAverageRangeAA2();

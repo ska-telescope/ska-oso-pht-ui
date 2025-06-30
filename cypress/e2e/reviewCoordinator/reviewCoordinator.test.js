@@ -12,7 +12,7 @@ import {
   initialize
 } from '../common/common';
 
-describe('Review Coordinator', () => {
+describe('XTP-83988 Review Coordinator', () => {
   beforeEach(() => {
     initialize();
   });
