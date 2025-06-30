@@ -10,7 +10,7 @@ import {
 import { Tooltip, Typography, Grid, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -133,6 +133,8 @@ export default function GridProposals({
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
+  const [selected, setSelected] = React.useState(true);
+  const [notSelected, setNotSelected] = React.useState(true);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -402,8 +404,11 @@ export default function GridProposals({
 
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
-  const filteredData = proposals
-    ? filterProposals(proposals, searchTerm, searchScienceCategory, searchProposalType)
+  const selectedData = proposals
+    ? proposals.filter(e => (isProposalSelected(e.id) ? selected : notSelected))
+    : [];
+  const filteredData = selectedData
+    ? filterProposals(selectedData, searchTerm, searchScienceCategory, searchProposalType)
     : [];
 
   const ProposalsSectionTitle = () => (
@@ -530,7 +535,7 @@ export default function GridProposals({
           item
           p={2}
           sm={12}
-          md={8}
+          md={12}
           lg={12}
           container
           direction="row"
@@ -538,19 +543,43 @@ export default function GridProposals({
           alignItems="center"
         >
           <Grid container direction="row" spacing={2}>
-            <Grid item sm={12} md={6} lg={4}>
+            <Grid item sm={12} md={12} lg={4}>
               {proposalTypeDropdown()}
             </Grid>
-            <Grid item sm={12} md={6} lg={4}>
+            <Grid item sm={12} md={12} lg={4}>
               {scienceCategoryDropdown()}
             </Grid>
-            <Grid item sm={12} md={6} lg={4} mt={-2}>
+            <Grid item sm={0} md={0} lg={4} mt={-2}></Grid>
+          </Grid>
+          <Grid container direction="row" spacing={2}>
+            <Grid item sm={12} md={12} lg={4}>
               {searchEntryField('searchId')}
+            </Grid>
+            <Grid item sm={12} md={12} lg={8}>
+              <Grid item sm={12} md={12} lg={4}>
+                <TickBox
+                  disabled={!localPanel}
+                  label={t('selected.label')}
+                  labelPosition={LABEL_POSITION.END}
+                  testId="selectedTickBox"
+                  checked={selected}
+                  onChange={() => setSelected(!selected)}
+                />
+              </Grid>
+              <Grid item sm={12} md={12} lg={4} mt={-2}>
+                <TickBox
+                  disabled={!localPanel}
+                  label={t('notSelected.label')}
+                  labelPosition={LABEL_POSITION.END}
+                  testId="notSelectedTickBox"
+                  checked={notSelected}
+                  onChange={() => setNotSelected(!notSelected)}
+                />
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
       )}
-
       <Grid item xs={12} pt={1}>
         {!axiosViewError && (!filteredData || filteredData.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
