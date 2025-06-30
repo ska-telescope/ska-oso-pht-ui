@@ -105,6 +105,7 @@ export default function ReviewDashboard() {
         colorAvatarFG={theme.palette.primary.main}
         colorCardBG={theme.palette.primary.main}
         colorCardFG={theme.palette.primary.contrastText}
+        data-testid={title}
         id={title}
         onClick={() => onPanelClick(nav)}
         title={t(title)}
@@ -118,7 +119,7 @@ export default function ReviewDashboard() {
 
   return (
     <>
-      <PageBannerPMT hideOverviewButton title={t('menuOptions.overview')} />
+      <PageBannerPMT title={t('menuOptions.overview')} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
         {panelButton('menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
         {panelButton('menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}

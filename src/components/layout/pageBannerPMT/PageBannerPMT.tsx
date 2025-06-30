@@ -42,9 +42,17 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
   // TODO : Remove the pt=(3) once the mock login tick-box has been removed, as it is upsetting the layout.
   const row1 = () => (
     <Grid2 pt={3} container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid2 size={{ xs: 1 }}>{buttonsLeft()}</Grid2>
+      <Grid2 size={{ xs: 3 }}>
+        <Grid2 container direction="row" alignItems="center" justifyContent="flex-start">
+          <Grid2>{buttonsLeft()}</Grid2>
+        </Grid2>
+      </Grid2>
       <Grid2>{pageTitle()}</Grid2>
-      <Grid2 size={{ xs: 1 }}>{buttonsRight()}</Grid2>
+      <Grid2 size={{ xs: 3 }}>
+        <Grid2 container direction="row" alignItems="center" justifyContent="flex-end">
+          <Grid2>{buttonsRight()}</Grid2>
+        </Grid2>
+      </Grid2>
     </Grid2>
   );
 

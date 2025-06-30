@@ -99,7 +99,7 @@ export default function ValidationResults({
     <Grid item>
       <Grid container direction="row" justifyContent="right" alignItems="right">
         <Grid item pt={1}>
-          <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
+          <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
         </Grid>
       </Grid>
     </Grid>
