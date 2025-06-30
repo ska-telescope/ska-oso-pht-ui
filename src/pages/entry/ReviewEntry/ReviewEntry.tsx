@@ -1,37 +1,47 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid2, Paper } from '@mui/material';
-import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
-import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
-import moment from 'moment';
+import { Box, Grid2, Paper, Tab, Tabs } from '@mui/material';
+import {
+  NumberEntry2,
+  TextEntry,
+  Spacer,
+  SPACER_VERTICAL
+} from '@ska-telescope/ska-gui-components';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import useTheme from '@mui/material/styles/useTheme';
+import { FOOTER_SPACER, PMT, WRAPPER_HEIGHT } from '@utils/constants.ts';
+import Typography from '@mui/material/Typography';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
-import PanelNameField from '@/components/fields/panelName/panelName';
+import Proposal from '@/utils/types/proposal';
+import { presentLatex } from '@/utils/present/present';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
+  const theme = useTheme();
   const navigate = useNavigate();
   const locationProperties = useLocation();
 
+  const { application } = storageObject.useStore();
+
   const isEdit = () => locationProperties.state !== null;
 
-  const [panelName, setPanelName] = React.useState('');
+  const [tabValue, setTabValue] = React.useState(0);
+  const [rank, setRank] = React.useState(0);
+  const [generalComments, setGeneralComments] = React.useState('');
+  const [srcNetComments, setSrcNetComments] = React.useState('');
 
-  const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
-  const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
-
-  React.useEffect(() => {
-    panelNameEmpty();
-  }, [panelName]);
-
-  const panelNameEmpty = () => {
-    return panelName === '';
-  };
+  const getProposal = () => application.content2 as Proposal;
 
   const addButtonDisabled = () => {
-    return isEdit() ? false : panelNameEmpty();
+    return isEdit() ? false : false;
+  };
+
+  const saveButtonClicked = () => {
+    //create panel end point
+    navigate(PMT[0]);
   };
 
   const backButton = () => (
@@ -43,82 +53,166 @@ export default function ReviewEntry() {
     />
   );
 
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
-      {children}
-    </Box>
+  const saveButton = () => (
+    <AddButton
+      action={saveButtonClicked}
+      disabled={addButtonDisabled()}
+      primary
+      testId={isEdit() ? 'updatePanelButton' : 'addPanelButton'}
+      title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
+    />
   );
-  /******************************************************/
-
-  const panelNameField = () =>
-    fieldWrapper(
-      <PanelNameField
-        label={t('panelName.label')}
-        setValue={setPanelName}
-        value={panelName}
-        testId="panelName"
-      />
-    );
-
-  const panelDateCreatedField = () =>
-    fieldWrapper(
-      <DateEntry
-        label="Panel Date Created"
-        testId="panelDateCreatedTestId"
-        value={panelDateCreated}
-        setValue={setPanelDateCreated}
-      />
-    );
-
-  const panelDateExpiryField = () =>
-    fieldWrapper(
-      <DateEntry
-        label="Panel Date Expiry"
-        testId="panelDateExpiryTestId"
-        value={panelDateExpiry}
-        setValue={setPanelDateExpiry}
-      />
-    );
 
   /**************************************************************/
 
-  const pageFooter = () => {
-    const buttonClicked = () => {
-      //create panel end point
-      navigate(PMT[0]);
+  const titleField = () => (
+    <Typography id="title" variant={'h6'}>
+      {t('title.label')} {getProposal()?.title?.length ? presentLatex(getProposal().title) : ''}
+    </Typography>
+  );
+
+  const abstractField = () => (
+    <Typography id="title" variant={'h6'}>
+      {t('abstract.label')}{' '}
+      {getProposal().abstract?.length ? presentLatex(getProposal().abstract as string) : ''}
+    </Typography>
+  );
+
+  const rankField = () => {
+    return (
+      <Box p={2} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
+        <NumberEntry2
+          fieldHeight={WRAPPER_HEIGHT}
+          fieldName={'rank'}
+          iconSize="classic"
+          maxValue={9}
+          minValue={0}
+          setValue={setRank}
+          title={''}
+          testId={'rankId'}
+          value={rank}
+        />
+      </Box>
+    );
+  };
+
+  const generalCommentsField = () => (
+    <Box sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
+      <TextEntry
+        label={''}
+        testId="generalCommentsId"
+        rows={50}
+        required
+        setValue={setGeneralComments}
+        value={generalComments}
+      />
+    </Box>
+  );
+
+  const srcNetCommentsField = () => (
+    <Box sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
+      <TextEntry
+        label={''}
+        testId="srcNetCommentsId"
+        rows={50}
+        required
+        setValue={setSrcNetComments}
+        value={srcNetComments}
+      />
+    </Box>
+  );
+
+  /**************************************************************/
+
+  const reviewArea = () => {
+    function a11yProps(index: number) {
+      return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
+      };
+    }
+
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+      setTabValue(newValue);
     };
 
     return (
       <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        sx={{
+          bgcolor: `${theme.palette.primary.main}`,
+          position: 'fixed',
+          height: '75vh',
+          top: 170,
+          left: '75vw',
+          right: '10px',
+          border: `2px solid ${theme.palette.primary.contrastText}`,
+          borderTopLeftRadius: '16px',
+          borderBottomLeftRadius: '16px'
+        }}
         elevation={0}
       >
-        <Grid2
-          p={2}
-          container
-          direction="row"
-          alignItems="space-between"
-          justifyContent="space-between"
+        <Tabs
+          variant="fullWidth"
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="basic tabs example"
         >
-          <Grid2 />
-          <Grid2 />
-          <Grid2>
-            <AddButton
-              action={buttonClicked}
-              disabled={addButtonDisabled()}
-              primary
-              testId={isEdit() ? 'updatePanelButton' : 'addPanelButton'}
-              title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-            />
-          </Grid2>
-        </Grid2>
+          <Tab label={t('rank.label')} {...a11yProps(0)} />
+          <Tab label={t('generalComments.label')} {...a11yProps(1)} />
+          <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
+        </Tabs>
+        {tabValue === 0 && (
+          <Box
+            sx={{
+              maxHeight: `calc('75vh' - 100px)`,
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            {rankField()}
+          </Box>
+        )}
+        {tabValue === 1 && (
+          <Box
+            sx={{
+              maxHeight: `calc('75vh' - 100px)`,
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            {generalCommentsField()}
+          </Box>
+        )}
+        {tabValue === 2 && (
+          <Box
+            sx={{
+              maxHeight: `calc('75vh' - 100px)`,
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            {srcNetCommentsField()}
+          </Box>
+        )}
       </Paper>
     );
   };
 
   return (
     <>
-      <PageBannerPMT backBtn={backButton()} title={t('reviewProposal.title')} />
+      <PageBannerPMT
+        backBtn={backButton()}
+        fwdBtn={saveButton()}
+        title={t('reviewProposal.title')}
+      />
       <Grid2
         pl={4}
         pr={4}
@@ -128,32 +222,15 @@ export default function ReviewEntry() {
         justifyContent="space-between"
         spacing={1}
       >
-        <Grid2 size={{ md: 12, lg: 9 }}>
-          <Grid2
-            p={0}
-            pl={2}
-            container
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            justifyContent="space-around"
-          >
-            <Grid2 container alignItems="center" justifyContent="center" size={{ md: 12, lg: 10 }}>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
-                {panelNameField()}
-              </Grid2>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
-                {panelDateCreatedField()}
-              </Grid2>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
-                {panelDateExpiryField()}
-              </Grid2>
-            </Grid2>
-          </Grid2>
+        <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
+          {titleField()}
+        </Grid2>
+        <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
+          {abstractField()}
         </Grid2>
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
+      {reviewArea()}
     </>
   );
 }

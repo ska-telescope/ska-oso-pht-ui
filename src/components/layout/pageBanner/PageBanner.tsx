@@ -180,8 +180,9 @@ export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
     </Grid2>
   );
 
+  // TODO : Remove the pt=(3) once the mock login tick-box has been removed, as it is upsetting the layout.
   const row1 = () => (
-    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid2 pt={3} container direction="row" alignItems="center" justifyContent="space-between">
       <Grid2>{buttonsLeft()}</Grid2>
       {wrapStatusArray ? (
         <Grid2 size={{ xs: 7 }} display={'none'}>

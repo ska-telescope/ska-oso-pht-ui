@@ -241,6 +241,10 @@
   "frequencyUnits": {
     "help": "Select the appropriate unit."
   },
+  "generalComments": {
+    "label": "General Comments",
+    "tooltip": ""
+  },
   "getReviewers": {
     "short": "Get",
     "label": "Get Reviewers",
@@ -796,6 +800,10 @@
   },
   "srcNet": {
     "label": "SrcNet"
+  },
+  "srcNetComments": {
+    "label": "SrcNet Comments",
+    "tooltip": ""
   },
   "status": {
     "0": "All status types",

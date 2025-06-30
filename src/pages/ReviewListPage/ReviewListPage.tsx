@@ -256,8 +256,8 @@ export default function ReviewListPage() {
     <SubmitButton
       action={submitAllClicked}
       disabled
-      title={t('submitAllBtn.label')}
-      toolTip={t('submitAllBtn.tooltip')}
+      title={'submitAllBtn.label'}
+      toolTip={'submitAllBtn.tooltip'}
     />
   );
 

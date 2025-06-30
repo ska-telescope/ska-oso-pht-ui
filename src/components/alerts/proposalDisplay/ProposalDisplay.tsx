@@ -189,10 +189,10 @@ export default function ProposalDisplay({
 
   const pageFooter = () => (
     <Grid2 container direction="row" justifyContent="space-between" alignItems="center">
-      <Grid2>
-        <CancelButton action={handleCancel} title="button.close" testId="cancelButtonTestId" />
+      <Grid2 size={{ sm: 6 }}>
+        <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
       </Grid2>
-      <Grid2>
+      <Grid2 size={{ sm: 6 }}>
         <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid2>
       {onConfirmLabel?.length > 0 && (
