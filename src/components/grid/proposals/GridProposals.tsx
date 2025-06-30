@@ -39,6 +39,10 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import { Panel } from '@/utils/types/panel';
 import { PanelProposal } from '@/utils/types/panelProposal';
 
+export const isProposalSelected = (proposalId: string, localPanel: Panel): boolean => {
+  return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
+};
+
 export const addProposalPanel = (
   proposal: Proposal,
   localPanel: Panel,
@@ -256,12 +260,8 @@ export default function GridProposals({
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
-  const isProposalSelected = (proposalId: string): boolean => {
-    return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
-  };
-
   const proposalSelectedToggle = (proposal: Proposal) => {
-    if (isProposalSelected(proposal.id)) {
+    if (isProposalSelected(proposal.id, localPanel)) {
       deleteProposalPanel(proposal, localPanel, setProposalPanels);
     } else {
       addProposalPanel(proposal, localPanel, setProposalPanels);
@@ -357,7 +357,7 @@ export default function GridProposals({
         <TickBox
           label=""
           testId="linkedTickBox"
-          checked={isProposalSelected(e.row.id)}
+          checked={isProposalSelected(e.row.id, localPanel)}
           onChange={() => proposalSelectedToggle(e.row)}
         />
       </Box>
@@ -405,7 +405,7 @@ export default function GridProposals({
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   const selectedData = proposals
-    ? proposals.filter(e => (isProposalSelected(e.id) ? selected : notSelected))
+    ? proposals.filter(e => (isProposalSelected(e.id, localPanel) ? selected : notSelected))
     : [];
   const filteredData = selectedData
     ? filterProposals(selectedData, searchTerm, searchScienceCategory, searchProposalType)
