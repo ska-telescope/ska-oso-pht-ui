@@ -6,7 +6,7 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid2, Box, Card, CardContent } from '@mui/material';
+import { Typography, Grid2, Box } from '@mui/material';
 import React from 'react';
 import { LABEL_POSITION, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -283,58 +283,38 @@ export default function GridProposals({
               <Grid2 size={{ sm: 6 }}>{searchDropdownExpertise()}</Grid2>
               <Grid2 size={{ sm: 6 }}>{searchDropdownAffiliation()}</Grid2>
             </Grid2>
-            <Grid2 size={{ sm: 12 }} mt={-1}>
-              {searchEntryField('searchId')}
-            </Grid2>
-          </Grid2>
-          <Grid2 size={{ sm: 12, lg: 4 }}>
-            <Card variant="outlined">
-              <CardContent>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
+              <Grid2 size={{ sm: 6 }} mt={3}>
                 <Grid2
                   container
                   flexDirection={'row'}
                   flexWrap={'wrap'}
-                  alignItems="space-evenly"
-                  justifyContent="space-between"
+                  justifyContent={'space-evenly'}
                 >
                   <Grid2>
-                    <Typography id="targetObservationLabel" pt={1} variant="h6">
-                      {t('targetObservation.filters')}
-                    </Typography>
+                    <TickBox
+                      disabled={!localPanel}
+                      label={t('selected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="selectedTickBox"
+                      checked={selected}
+                      onChange={() => setSelected(!selected)}
+                    />
                   </Grid2>
-
                   <Grid2>
-                    <Grid2
-                      container
-                      flexDirection={'row'}
-                      flexWrap={'wrap'}
-                      justifyContent={'flex-start'}
-                    >
-                      <Grid2>
-                        <TickBox
-                          disabled={!localPanel}
-                          label={t('selected.label')}
-                          labelPosition={LABEL_POSITION.END}
-                          testId="selectedTickBox"
-                          checked={selected}
-                          onChange={() => setSelected(!selected)}
-                        />
-                      </Grid2>
-                      <Grid2>
-                        <TickBox
-                          disabled={!localPanel}
-                          label={t('notSelected.label')}
-                          labelPosition={LABEL_POSITION.END}
-                          testId="notSelectedTickBox"
-                          checked={notSelected}
-                          onChange={() => setNotSelected(!notSelected)}
-                        />
-                      </Grid2>
-                    </Grid2>
+                    <TickBox
+                      disabled={!localPanel}
+                      label={t('notSelected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="notSelectedTickBox"
+                      checked={notSelected}
+                      onChange={() => setNotSelected(!notSelected)}
+                    />
                   </Grid2>
                 </Grid2>
-              </CardContent>
-            </Card>
+              </Grid2>
+            </Grid2>
           </Grid2>
         </Grid2>
       )}

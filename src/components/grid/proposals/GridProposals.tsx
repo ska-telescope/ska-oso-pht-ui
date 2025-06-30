@@ -324,8 +324,8 @@ export default function GridProposals({
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 2,
-    minWidth: 250,
+    flex: 3,
+    minWidth: 300,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
 
@@ -533,38 +533,48 @@ export default function GridProposals({
       {showSearch && (
         <Grid2
           p={2}
-          size={{ sm: 12, md: 12, lg: 12 }}
+          size={{ sm: 12, md: 8, lg: 12 }}
+          container
           direction="row"
-          justifyContent="space-around"
+          spacing={2}
+          justifyContent="space-between"
           alignItems="center"
         >
-          <Grid2 container direction="row" spacing={2}>
-            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{proposalTypeDropdown()}</Grid2>
-            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{scienceCategoryDropdown()}</Grid2>
-            <Grid2 size={{ sm: 0, md: 0, lg: 4 }} mt={-2}></Grid2>
-          </Grid2>
-          <Grid2 container direction="row" spacing={2}>
-            <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>{searchEntryField('searchId')}</Grid2>
-            <Grid2 size={{ sm: 12, md: 12, lg: 8 }}>
-              <Grid2 size={{ sm: 12, md: 12, lg: 4 }}>
-                <TickBox
-                  disabled={!localPanel}
-                  label={t('selected.label')}
-                  labelPosition={LABEL_POSITION.END}
-                  testId="selectedTickBox"
-                  checked={selected}
-                  onChange={() => setSelected(!selected)}
-                />
-              </Grid2>
-              <Grid2 size={{ sm: 12, md: 12, lg: 4 }} mt={-2}>
-                <TickBox
-                  disabled={!localPanel}
-                  label={t('notSelected.label')}
-                  labelPosition={LABEL_POSITION.END}
-                  testId="notSelectedTickBox"
-                  checked={notSelected}
-                  onChange={() => setNotSelected(!notSelected)}
-                />
+          <Grid2 size={{ sm: 12, lg: 8 }}>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{proposalTypeDropdown()}</Grid2>
+              <Grid2 size={{ sm: 6 }}>{scienceCategoryDropdown()}</Grid2>
+            </Grid2>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
+              <Grid2 size={{ sm: 6 }} mt={3}>
+                <Grid2
+                  container
+                  flexDirection={'row'}
+                  flexWrap={'wrap'}
+                  justifyContent={'space-evenly'}
+                >
+                  <Grid2>
+                    <TickBox
+                      disabled={!localPanel}
+                      label={t('selected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="selectedTickBox"
+                      checked={selected}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </Grid2>
+                  <Grid2>
+                    <TickBox
+                      disabled={!localPanel}
+                      label={t('notSelected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="notSelectedTickBox"
+                      checked={notSelected}
+                      onChange={() => setNotSelected(!notSelected)}
+                    />
+                  </Grid2>
+                </Grid2>
               </Grid2>
             </Grid2>
           </Grid2>
