@@ -255,9 +255,7 @@ export default function GridProposals({
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    // TODO: implment for proposal selection
-    // return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
-    return false;
+    return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
   };
 
   const proposalSelectedToggle = (proposal: Proposal) => {
