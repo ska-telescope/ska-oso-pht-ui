@@ -186,7 +186,7 @@ export default function LandingPage() {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
-    const results = [];
+    const results: string[] = [];
     arr.forEach(e => {
       if (e.pi) {
         results.push(e.lastName + ', ' + e.firstName);

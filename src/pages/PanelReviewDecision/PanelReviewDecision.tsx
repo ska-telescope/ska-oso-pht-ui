@@ -4,7 +4,7 @@ import BackButton from '@/components/button/Back/Back';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 
-export default function ReviewPage() {
+export default function PanelReviewDecision() {
   const navigate = useNavigate();
 
   const backButton = () => (
@@ -16,5 +16,5 @@ export default function ReviewPage() {
     />
   );
 
-  return <PageBannerPMT title={t('menuOptions.reviews')} backBtn={backButton()} />;
+  return <PageBannerPMT title={t('menuOptions.reviewDecisions')} backBtn={backButton()} />;
 }

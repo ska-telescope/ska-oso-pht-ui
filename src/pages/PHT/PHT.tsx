@@ -24,11 +24,13 @@ import TeamPage from '../TeamPage/TeamPage';
 import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
-import ReviewPage from '../ReviewPage/ReviewPage';
+import ReviewListPage from '../ReviewListPage/ReviewListPage';
 import packageJson from '../../../package.json';
 import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
+import PanelReviewDecision from '../PanelReviewDecision/PanelReviewDecision';
+import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
@@ -51,23 +53,24 @@ const ROUTES = [
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },
   { path: PMT[0], element: <PanelMaintenance /> },
-  { path: PMT[1], element: <ReviewPage /> },
+  { path: PMT[1], element: <ReviewListPage /> },
   { path: PMT[2], element: <ReviewDashboard /> },
-  { path: PMT[3], element: <ReviewPanelEntry /> }
+  { path: PMT[3], element: <ReviewPanelEntry /> },
+  { path: PMT[4], element: <PanelReviewDecision /> },
+  { path: PMT[5], element: <ReviewEntry /> }
 ];
-
-// declare const window: any;
 
 export default function PHT() {
   const { t } = useTranslation('pht');
   const { application, help, helpToggle } = storageObject.useStore();
+  const theTheme = useTheme();
   const navigate = useNavigate();
   const [theMode, setTheMode] = React.useState(
     localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
   );
   const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
 
-  const LG = () => useMediaQuery(useTheme().breakpoints.down('lg')); // Allows us to code depending upon screen size
+  const LG = () => useMediaQuery(theTheme.breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const location = useLocation();
@@ -95,7 +98,7 @@ export default function PHT() {
     setTheMode(newMode);
   };
 
-  const signIn = () => <ButtonUserMenu label={'MOCKED'} toolTip={'MOCKED tooltip'} />;
+  const signIn = () => <ButtonUserMenu />;
 
   return (
     <ThemeProvider theme={theme(theMode)}>

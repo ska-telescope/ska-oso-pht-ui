@@ -10,7 +10,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 
-export default function ReviewPanelEntry() {
+export default function ReviewEntry() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const locationProperties = useLocation();
@@ -36,10 +36,10 @@ export default function ReviewPanelEntry() {
 
   const backButton = () => (
     <BackButton
-      action={() => navigate(PMT[0])}
+      action={() => navigate(PMT[1])}
       testId="pmtBackButton"
-      title={'page.15.desc'}
-      toolTip="page.15.toolTip"
+      title={'reviewProposalList.title'}
+      toolTip="reviewProposalList.toolTip"
     />
   );
 
@@ -118,7 +118,7 @@ export default function ReviewPanelEntry() {
 
   return (
     <>
-      <PageBannerPMT backBtn={backButton()} title={t('reviewPanelEntry.title')} />
+      <PageBannerPMT backBtn={backButton()} title={t('reviewProposal.title')} />
       <Grid2
         pl={4}
         pr={4}

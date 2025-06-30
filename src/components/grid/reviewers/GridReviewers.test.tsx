@@ -13,9 +13,30 @@ import { Panel } from '@/utils/types/panel';
 import Reviewer from '@/utils/types/reviewer';
 
 const mockedPanels: Panel[] = [
-  { id: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
-  { id: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
-  { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
+  {
+    id: 'P400',
+    name: 'Stargazers',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-09-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  },
+  {
+    id: 'P500',
+    name: 'Buttons',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-08-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  },
+  {
+    id: 'P600',
+    name: 'Nashrakra',
+    createdOn: '2022-09-23T15:43:53.971548Z',
+    expiresOn: '2028-09-23T15:43:53.971548Z',
+    proposals: [],
+    reviewers: []
+  }
 ];
 
 const handleChange = () => {

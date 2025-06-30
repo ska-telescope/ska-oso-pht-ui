@@ -4,7 +4,8 @@ import {
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  AlertColorTypes,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Tooltip, Typography, Grid, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -19,8 +20,10 @@ import {
   FOOTER_SPACER,
   NOT_SPECIFIED,
   PROPOSAL_STATUS,
-  SEARCH_TYPE_OPTIONS,
-  NAV
+  NAV,
+  GENERAL,
+  PROJECTS,
+  SEARCH_PROPOSAL_TYPE_OPTIONS
 } from '@/utils/constants';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import TeamMember from '@/utils/types/teamMember';
@@ -34,18 +37,44 @@ import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 
+export function getProposalType(value: number): string {
+  const type = PROJECTS.find(item => item.id === value)?.mapping;
+  return type ? type : '';
+}
+
+export function filterProposals(
+  proposals: Proposal[],
+  searchTerm: string,
+  searchScienceCategory: number | null,
+  searchProposalType: string
+): Proposal[] {
+  const fields: (keyof Proposal)[] = ['title'];
+  return proposals.filter(
+    item =>
+      fields.some(field =>
+        (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
+      ) &&
+      (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
+      (searchProposalType === '' || getProposalType(item?.proposalType) === searchProposalType)
+  );
+}
+
 interface GridProposalsProps {
   height?: string;
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
+  showSelection?: boolean;
+  showActions?: boolean;
 }
 
 export default function GridProposals({
   height = '50vh',
   showSearch = false,
   showTitle = false,
-  forReview = false
+  forReview = false,
+  showSelection = false,
+  showActions = false
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -53,7 +82,8 @@ export default function GridProposals({
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [searchType, setSearchType] = React.useState('');
+  const [searchScienceCategory, setSearchScienceCategory] = React.useState<number | null>(null);
+  const [searchProposalType, setSearchProposalType] = React.useState('');
 
   const {
     application,
@@ -133,9 +163,8 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '123',
                 email: 'alice.spears@example.com',
-                country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
-                status: 'accepted'
+                status: 'reviewed'
               },
               {
                 firstName: 'Joshua',
@@ -144,7 +173,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '124',
                 email: 'joshua.smith@example.com',
-                country: 'United Kingdom',
                 affiliation: 'University of Cambridge',
                 status: 'accepted'
               },
@@ -155,7 +183,6 @@ export default function GridProposals({
                 phdThesis: true,
                 id: '125',
                 email: 'sophie.dupont@example.com',
-                country: 'France',
                 affiliation: 'University Paris Sorbonne',
                 status: 'accepted'
               }
@@ -184,6 +211,23 @@ export default function GridProposals({
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
+  const isProposalSelected = (proposalId: string): boolean => {
+    // TODO: implment for proposal selection
+    // return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
+    return false;
+  };
+
+  const proposalSelectedToggle = (proposal: Proposal) => {
+    // TODO: implement proposal selection toggle
+    /*
+      if (isReviewerSelected(reviewer.id)) {
+        deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
+      } else {
+        addReviewerPanel(reviewer, localPanel, setReviewerPanels);
+      }
+        */
+  };
+
   const displayProposalType = (proposalType: any) => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
@@ -201,11 +245,35 @@ export default function GridProposals({
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
+  const getPIs = (arr: TeamMember[]) => {
+    if (!arr || arr.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    const results: string[] = [];
+    arr.forEach(e => {
+      if (e.pi) {
+        results.push(e.lastName + ', ' + e.firstName);
+      }
+    });
+    if (results.length === 0) {
+      return element(NOT_SPECIFIED);
+    }
+    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
+  };
+
+  const colPI = {
+    field: 'pi',
+    headerName: t('pi.short'),
+    flex: 2,
+    renderCell: (e: any) => {
+      return getPIs(e.row.team);
+    }
+  };
+
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    flex: 1,
-    width: 110,
+    flex: 2,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
@@ -239,11 +307,21 @@ export default function GridProposals({
     renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
   };
 
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+  const colSelect = {
+    field: 'select',
+    headerName: '',
+    flex: 0.6,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: any }) => (
+      <Box pr={1}>
+        <TickBox
+          label=""
+          testId="linkedTickBox"
+          checked={isProposalSelected(e.row.id)}
+          onChange={() => proposalSelectedToggle(e.row)}
+        />
+      </Box>
+    )
   };
 
   const colActions = {
@@ -275,23 +353,20 @@ export default function GridProposals({
     )
   };
 
-  const stdColumns = [
-    ...[colType, colTitle, colAuthors, colScienceCategory, colStatus, colActions]
+  const proposalColumns = [
+    ...(showSelection ? [colSelect] : []),
+    colTitle,
+    colScienceCategory,
+    colType,
+    colPI,
+    ...(showActions ? [colActions] : [])
   ];
+
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
-  function filterProposals() {
-    const fields: (keyof Proposal)[] = ['title'];
-    return proposals.filter(
-      item =>
-        fields.some(field =>
-          (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
-        ) &&
-        (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
-    );
-  }
-
-  const filteredData = proposals ? filterProposals() : [];
+  const filteredData = proposals
+    ? filterProposals(proposals, searchTerm, searchScienceCategory, searchProposalType)
+    : [];
 
   const ProposalsSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
@@ -299,13 +374,23 @@ export default function GridProposals({
     </Typography>
   );
 
-  const searchDropdown = () => (
+  const scienceCategoryDropdown = () => (
     <DropDown
-      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+      options={[{ label: t('scienceCategory.all'), value: null }, ...GENERAL.ScienceCategory]}
+      testId="proposalScienceCategory"
+      value={searchScienceCategory}
+      setValue={setSearchScienceCategory}
+      label={t('scienceCategory.all')}
+    />
+  );
+
+  const proposalTypeDropdown = () => (
+    <DropDown
+      options={[{ label: t('proposalType.all'), value: '' }, ...SEARCH_PROPOSAL_TYPE_OPTIONS]}
       testId="proposalType"
-      value={searchType}
-      setValue={setSearchType}
-      label={t('status.0')}
+      value={searchProposalType}
+      setValue={setSearchProposalType}
+      label={t('proposalType.all')}
     />
   );
 
@@ -414,14 +499,16 @@ export default function GridProposals({
           justifyContent="space-around"
           alignItems="center"
         >
-          <Grid item p={2} sm={12} md={6} lg={4}>
-            {searchDropdown()}
-          </Grid>
-          <Grid item p={2} sm={12} md={6} lg={4} mt={-1}>
-            {searchEntryField('searchId')}
-          </Grid>
-          <Grid item p={2} sm={12} md={12} lg={4} mt={-1}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>selection bar</Box>
+          <Grid container direction="row" spacing={2}>
+            <Grid item sm={12} md={6} lg={4}>
+              {proposalTypeDropdown()}
+            </Grid>
+            <Grid item sm={12} md={6} lg={4}>
+              {scienceCategoryDropdown()}
+            </Grid>
+            <Grid item sm={12} md={6} lg={4} mt={-2}>
+              {searchEntryField('searchId')}
+            </Grid>
           </Grid>
         </Grid>
       )}
@@ -436,7 +523,7 @@ export default function GridProposals({
               maxHeight={height}
               testId="dataGridId"
               rows={filteredData}
-              columns={forReview ? reviewColumns : stdColumns}
+              columns={forReview ? reviewColumns : proposalColumns}
               height={DATA_GRID_HEIGHT}
             />
           </div>
