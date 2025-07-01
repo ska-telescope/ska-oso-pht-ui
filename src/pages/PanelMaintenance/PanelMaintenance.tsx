@@ -14,11 +14,39 @@ import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import PlusIcon from '@/components/icon/plusIcon/plusIcon';
 import { PanelProposal } from '@/utils/types/panelProposal';
+import Proposal from '@/utils/types/proposal';
 
 const REVIEWER_HEIGHT = '65vh';
 const TABS_HEIGHT = '72vh';
 const TABS_CONTENT_HEIGHT = '67vh';
 const TAB_GRID_HEIGHT = '51vh';
+
+export const addProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: (proposals: PanelProposal[]) => void
+) => {
+  const rec: PanelProposal = {
+    proposalId: proposal.id,
+    panelId: localPanel?.id ?? ''
+    // TODO clarify if assignedOn should be set in the database
+    // assignedOn: new Date().toISOString()
+  };
+  const updatedProposals = [...localPanel?.proposals, rec];
+  setProposalPanels(updatedProposals);
+};
+
+export const deleteProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.proposals?.filter(item => !(item.proposalId === id));
+  }
+  const filtered = filterRecords(proposal.id);
+  setProposalPanels(filtered);
+};
 
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
@@ -50,6 +78,14 @@ export default function PanelMaintenance() {
         proposals: proposalsList
       };
     });
+  };
+
+  const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
+    if (isSelected) {
+      deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+    } else {
+      addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+    }
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -164,10 +200,11 @@ export default function PanelMaintenance() {
                 )}
                 {theValue === 1 && (
                   <GridProposals
-                    currentPanel={currentPanel}
-                    onChange={item => handleProposalsChange(item)}
                     showSearch
                     showSelection
+                    tickBoxClicked={(proposal, isProposalSelected) => {
+                      proposalSelectedToggle(proposal, isProposalSelected);
+                    }}
                   />
                 )}
               </Box>
