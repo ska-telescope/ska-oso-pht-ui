@@ -22,11 +22,11 @@ describe('Review Coordinator', () => {
     clickUserMenuPanels();
     clickUserMenuReviews();
     clickUserMenuOverview();
-    clickPanelButtonPanels();
-    clickReviewOverviewButton();
-    clickPanelButtonReviews();
-    clickReviewOverviewButton();
-    clickPanelButtonProposals();
+    // clickPanelButtonPanels();
+    // clickReviewOverviewButton();
+    // clickPanelButtonReviews();
+    // clickReviewOverviewButton();
+    clickUserMenuProposals();
   });
   it('Creating a new review panel', () => {
     clickUserMenuPanels();

@@ -2,7 +2,7 @@ import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-vi.mock('zustand');
+// vi.mock('zustand');
 
 vi.stubEnv('BASE_URL', '/');
 vi.stubEnv('BACKEND_URL', 'https://192.168.49.2/ska-oso-odt-ui/odt/api/v1/sbds');
@@ -46,6 +46,28 @@ vi.mock('react-i18next', () => ({
     init: () => {}
   }
 }));
+
+vi.mock('axios', () => {
+  return {
+    default: {
+      post: vi.fn(),
+      get: vi.fn(),
+      delete: vi.fn(),
+      put: vi.fn(),
+      create: vi.fn().mockReturnThis(),
+      interceptors: {
+        request: {
+          use: vi.fn(),
+          eject: vi.fn()
+        },
+        response: {
+          use: vi.fn(),
+          eject: vi.fn()
+        }
+      }
+    }
+  };
+});
 
 // Run cleanup after each test case (e.g., clearing jsdom)
 afterEach(() => {

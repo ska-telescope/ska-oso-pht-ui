@@ -22,6 +22,7 @@ const axiosAuthClient = axios.create({
   }
 });
 
+/*
 axiosAuthClient.interceptors.request.use(
   async request => {
     if (request?.baseURL?.includes('http://')) {
@@ -41,6 +42,6 @@ axiosAuthClient.interceptors.request.use(
   error => {
     return Promise.reject(error);
   }
-);
+); */
 
 export default axiosAuthClient;
