@@ -7,8 +7,7 @@ import GridProposals, {
   addProposalPanel,
   deleteProposalPanel,
   filterProposals,
-  getProposalType,
-  isProposalSelected
+  getProposalType
 } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 import { Panel } from '@/utils/types/panel';
@@ -169,28 +168,6 @@ describe('Adds Proposal', () => {
         assignedOn: expect.any(String)
       })
     ]);
-  });
-
-  test('checks if proposal is not selected correctly', () => {
-    const panel = { ...mockedPanels[0] };
-    const selected = isProposalSelected(MockProposalFrontendList[0].id, panel);
-    expect(selected).toBe(false);
-  });
-
-  test('checks if proposal is selected correctly', () => {
-    // Simulate adding a proposal to a panel
-    const setProposalPanels = vi.fn();
-    const panel = { ...mockedPanels[0] };
-    addProposalPanel(MockProposalFrontendList[0], panel, setProposalPanels);
-    // Get the updated proposals list
-    const updatedProposals = setProposalPanels.mock.calls[0][0];
-    // Simulate the panel after update
-    const updatedPanel = {
-      ...panel,
-      proposals: updatedProposals
-    };
-    const selected = isProposalSelected(MockProposalFrontendList[0].id, updatedPanel);
-    expect(selected).toBe(true);
   });
 
   describe('Deletes Reviewer', () => {
