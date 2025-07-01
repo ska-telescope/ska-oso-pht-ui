@@ -21,6 +21,14 @@ const TABS_HEIGHT = '72vh';
 const TABS_CONTENT_HEIGHT = '67vh';
 const TAB_GRID_HEIGHT = '51vh';
 
+export const convertPanelProposalToProposalIdList = (
+  panelProposals: PanelProposal[]
+): { id: string }[] => {
+  return panelProposals.map(panelProposal => ({
+    id: panelProposal.proposalId
+  }));
+};
+
 export const addProposalPanel = (
   proposal: Proposal,
   localPanel: Panel,
@@ -202,7 +210,8 @@ export default function PanelMaintenance() {
                   <GridProposals
                     showSearch
                     showSelection
-                    currentPanel={currentPanel}
+                    // currentPanel={currentPanel}
+                    selectedProposals={convertPanelProposalToProposalIdList(currentPanel.proposals)}
                     tickBoxClicked={(proposal, isProposalSelected) => {
                       proposalSelectedToggle(proposal, isProposalSelected);
                     }}

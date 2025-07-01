@@ -83,6 +83,7 @@ describe('Adds Proposal', () => {
       deleteProposalPanel(MockProposalFrontendList[0], myPanel, setProposalPanels);
       expect(setProposalPanels).toHaveBeenCalledWith([myPanel.proposals[1], myPanel.proposals[2]]);
     });
+
     test('should handle empty panel proposals list gracefully', () => {
       const setProposalPanels = vi.fn();
       const emptyPanel = mockedPanels[0];
