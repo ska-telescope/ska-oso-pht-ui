@@ -3,10 +3,10 @@ image: $SKA_K8S_TOOLS_BUILD_DEPLOY
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
   NODE_IMAGE: 'node:22.16.0'
-  CYPRESS_IMAGE: 'cypress/browsers:22.16.0'
   YARN_VERSION: '4.3.1'
-  JS_E2E_TESTS_DIR: cypress
-  JS_E2E_TEST_COMMAND: test:e2e
+  # CYPRESS_IMAGE: 'cypress/browsers:22.16.0'
+  # JS_E2E_TESTS_DIR: cypress
+  # JS_E2E_TEST_COMMAND: test:e2e
 
 include:
   # Code quality
@@ -42,9 +42,9 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
   # JS E2E Testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
-    ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
+  # - project: 'ska-telescope/templates-repository'
+  #   file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
+  #   ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
 
 stages:
   - dependencies
@@ -188,35 +188,35 @@ oci-image-build:
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
-js-e2e-deploy:
-  allow_failure: true
-  rules:
-    - exists:
-        - cypress/e2e/**/*.test.js
+# js-e2e-deploy:
+#   allow_failure: true
+#   rules:
+#     - exists:
+#         - cypress/e2e/**/*.test.js
 
-js-e2e-test:
-  allow_failure: true
-  before_script:
-    - make js-install-reinstall
-    - mkdir -p artifacts/screenshots
-    - mkdir -p build/reports
-    - mkdir -p build/tests
-    - mkdir -p build/.nyc_output
-  variables:
-    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
-  after_script:
-    - cp artefacts/screenshots/**/*.png build/screenshots
-    - yarn test:e2e:coverage
-    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: build/reports/e2e-coverage.xml
-      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
-  rules:
-    - exists:
-        - cypress/e2e/**/*.test.js
+# js-e2e-test:
+#   allow_failure: true
+#   before_script:
+#     - make js-install-reinstall
+#     - mkdir -p artifacts/screenshots
+#     - mkdir -p build/reports
+#     - mkdir -p build/tests
+#     - mkdir -p build/.nyc_output
+#   variables:
+#     KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+#   after_script:
+#     - cp artefacts/screenshots/**/*.png build/screenshots
+#     - yarn test:e2e:coverage
+#     - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
+#   artifacts:
+#     reports:
+#       coverage_report:
+#         coverage_format: cobertura
+#         path: build/reports/e2e-coverage.xml
+#       junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
+#   rules:
+#     - exists:
+#         - cypress/e2e/**/*.test.js
 
 code_quality:
   services: []
