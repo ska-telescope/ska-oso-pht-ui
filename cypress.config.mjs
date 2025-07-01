@@ -4,10 +4,10 @@ import vitePreprocessor from 'cypress-vite';
 export default defineConfig({
   video: false,
   projectId: 'ssiwb9', //projectId to enable cypress cloud
-  fixturesFolder: 'cypress/fixtures',
-  screenshotsFolder: 'cypress/artefacts/screenshots',
-  videosFolder: 'cypress/artefacts/videos',
-  downloadsFolder: 'cypress/artefacts/downloads',
+  fixturesFolder: 'tests/cypress/fixtures',
+  screenshotsFolder: 'tests/cypress/artefacts/screenshots',
+  videosFolder: 'tests/cypress/artefacts/videos',
+  downloadsFolder: 'tests/cypress/artefacts/downloads',
   e2e: {
     baseUrl: 'http://localhost:6101',
     //
@@ -20,8 +20,8 @@ export default defineConfig({
     //
     experimentalRunAllSpecs: true,
     experimentalMemoryManagement: true,
-    supportFile: 'cypress/support/e2e.ts',
-    specPattern: ['cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
+    supportFile: 'tests/cypress/support/e2e.ts',
+    specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
     setupNodeEvents(on) {
       on('file:preprocessor', vitePreprocessor());
     }
