@@ -8,9 +8,21 @@ import {
   createStandardProposal,
   initialize
 } from '../common/common';
+import {
+  verifyContinuumSpectralAverageRangeAA1,
+  verifyContinuumSpectralAverageRangeAA2,
+  verifyContinuumSpectralAverageRangeAA4, verifyZoomSpectralAverageRangeAA2Core, verifyZoomSpectralAverageRangeCustom
+} from './observations.js';
 beforeEach(() => {
   initialize();
   createStandardProposal();
+  //navigate to observation page
+  clickToGeneralPage();
+  clickToSciencePage();
+  clickToTargetPage();
+  clickToObservationPage();
+  //add default observation
+  clickObservationSetup();
 });
 
 const verifyUnlinkedObservationInTable = () => {
@@ -21,16 +33,18 @@ const verifyUnlinkedObservationInTable = () => {
     .should('have.length', 1);
 };
 
-describe('XTP-84025 Create Observation', () => {
+describe('XTP-71407 Create Observations', () => {
   it('Create a default observation', () => {
-    //navigate to observation page
-    clickToGeneralPage();
-    clickToSciencePage();
-    clickToTargetPage();
-    clickToObservationPage();
-    //add default observation
-    clickObservationSetup();
     clickAddObservation();
     verifyUnlinkedObservationInTable();
+  });
+
+  it('Verify Spectral average limits', () => {
+    //verify spectral average limits
+    verifyContinuumSpectralAverageRangeAA4();
+    verifyContinuumSpectralAverageRangeAA2();
+    verifyContinuumSpectralAverageRangeAA1();
+    verifyZoomSpectralAverageRangeAA2Core();
+    verifyZoomSpectralAverageRangeCustom();
   });
 });
