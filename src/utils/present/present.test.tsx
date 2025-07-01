@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
-import { presentLatex, presentUnits, presentValue } from './present';
+import { presentDate, presentLatex, presentUnits, presentValue } from './present';
+import { NOT_APPLICABLE } from '../constants';
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
@@ -26,7 +27,13 @@ describe('Present', () => {
   test('presentUnits : rad / m2', () => {
     expect(presentUnits('rad / m2')).toBe('rad/m\xb2');
   });
+  test('presentUnits : pc/cm3', () => {
+    expect(presentUnits('pc/cm3')).toBe('pc/cm\xb3');
+  });
 
+  test('presentValue : NOT_APPLICABLE', () => {
+    expect(presentValue(NOT_APPLICABLE)).toBe(NOT_APPLICABLE);
+  });
   test('presentValue : 12345', () => {
     expect(presentValue('12345', 2)).toBe('1.2e+4');
   });

@@ -64,8 +64,8 @@ export const clickNav = (testId, title) => {
     verifyContent('pageTitle', title);
   }
 };
-export const clickPanelButtonPanels = () => clickNav('panelBtn1', 'PANEL MAINTENANCE');
-export const clickPanelButtonReviews = () => clickNav('panelBtn2', 'REVIEWS');
+export const clickPanelButtonPanels = () => clickNav('PANEL MAINTENANCE', 'PANEL MAINTENANCE');
+export const clickPanelButtonReviews = () => clickNav('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
 export const clickPanelButtonProposals = () => clickNav('panelBtn3', '');
 
 export const enterPanelName = () => entry('panelName', 'Panel Name');
@@ -80,7 +80,7 @@ export const clickUserMenuOverview = () => clickUserMenu('menuItemOverview', 'OV
 export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '');
 export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
 export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
-export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEWS');
+export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEW PROPOSALS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
 
 /*----------------------------------------------------------------------*/

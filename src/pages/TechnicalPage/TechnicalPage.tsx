@@ -233,6 +233,7 @@ export default function TechnicalPage() {
         <Grid item xs={6}>
           <FileUpload
             chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+            clearLabel={t('clearBtn.label')}
             clearToolTip={t('pdfUpload.technical.tooltip.clear')}
             dropzone
             dropzoneAccepted={{

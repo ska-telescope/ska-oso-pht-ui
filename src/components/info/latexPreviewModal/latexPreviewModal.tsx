@@ -45,7 +45,7 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
               <Grid2 pt={1}>
                 <CancelButton
                   action={handleClose}
-                  title="button.close"
+                  title="closeBtn.label"
                   testId="cancelButtonTestId"
                 />
               </Grid2>

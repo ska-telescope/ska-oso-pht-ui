@@ -57,7 +57,10 @@ export default function SciencePage() {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
-      setProposal((({ sciencePDF, ...rest }) => rest)(getProposal()));
+      setProposal({
+        ...getProposal(),
+        sciencePDF: null
+      });
       setCurrentFile(null);
     }
   };
@@ -232,6 +235,7 @@ export default function SciencePage() {
         <Grid item xs={6}>
           <FileUpload
             chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+            clearLabel={t('clearBtn.label')}
             clearToolTip={t('pdfUpload.science.tooltip.clear')}
             dropzone
             dropzoneAccepted={{

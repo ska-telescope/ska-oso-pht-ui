@@ -1,4 +1,3 @@
-import React from 'react';
 import { IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
@@ -9,6 +8,7 @@ interface StatusIconDisplayProps {
   level: number;
   onClick?: Function;
   size?: number;
+  text?: string;
   testId: string;
   toolTip?: string;
 }
@@ -17,13 +17,14 @@ export default function StatusIconDisplay({
   ariaDescription,
   ariaTitle,
   level,
-  onClick = null,
+  onClick,
   size = 25,
+  text = '',
   testId,
   toolTip = ''
 }: StatusIconDisplayProps) {
   const action = () => {
-    if (onClick !== null) {
+    if (onClick !== undefined) {
       onClick();
     }
   };
@@ -35,8 +36,8 @@ export default function StatusIconDisplay({
         ariaTitle={ariaTitle}
         testId={testId}
         toolTip={toolTip}
-        text={level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
-        icon={level !== STATUS_ERROR}
+        text={text ? text : level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
+        icon={!text && level !== STATUS_ERROR}
         level={level}
         size={size}
       />
