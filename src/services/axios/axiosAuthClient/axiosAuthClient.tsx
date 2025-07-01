@@ -22,7 +22,7 @@ const axiosAuthClient = axios.create({
   }
 });
 
-/* axiosAuthClient.interceptors.request.use(
+axiosAuthClient.interceptors.request.use(
   async request => {
     if (request?.baseURL?.includes('http://')) {
       return Promise.reject('http was used, you must use https');
@@ -42,6 +42,5 @@ const axiosAuthClient = axios.create({
     return Promise.reject(error);
   }
 );
-*/
 
 export default axiosAuthClient;
