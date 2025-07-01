@@ -5,8 +5,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import GridReviewers, {
   addReviewerPanel,
   deleteReviewerPanel,
-  filterReviewers,
-  isReviewerSelected
+  filterReviewers
 } from './GridReviewers';
 import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
 import { REVIEWER_STATUS } from '@/utils/constants';
@@ -96,28 +95,6 @@ describe('Adds Reviewer', () => {
         status: REVIEWER_STATUS.PENDING
       })
     ]);
-  });
-
-  test('checks if reviewer is not selected correctly', () => {
-    const panel = { ...mockedPanels[0] };
-    const selected = isReviewerSelected(MockReviewersBackendList[0].id, panel);
-    expect(selected).toBe(false);
-  });
-
-  test('checks if reviewer is selected correctly', () => {
-    // Simulate adding a reviewer to a panel
-    const setReviewerPanels = vi.fn();
-    const panel = { ...mockedPanels[0] };
-    addReviewerPanel(MockReviewersBackendList[0], panel, setReviewerPanels);
-    // Get the updated reviewers list
-    const updatedReviewers = setReviewerPanels.mock.calls[0][0];
-    // Simulate the panel after update
-    const updatedPanel = {
-      ...panel,
-      reviewers: updatedReviewers
-    };
-    const selected = isReviewerSelected(MockReviewersBackendList[0].id, updatedPanel);
-    expect(selected).toBe(true);
   });
 });
 

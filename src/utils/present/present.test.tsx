@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
-import { presentDate, presentLatex, presentUnits, presentValue } from './present';
 import { NOT_APPLICABLE } from '../constants';
+import { presentLatex, presentUnits, presentValue } from './present';
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {

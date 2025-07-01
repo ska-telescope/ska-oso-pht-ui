@@ -21,10 +21,6 @@ import Reviewer from '@/utils/types/reviewer';
 import { Panel } from '@/utils/types/panel';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 
-export const isReviewerSelected = (reviewerId: string, localPanel: Panel): boolean => {
-  return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
-};
-
 export const addReviewerPanel = (
   reviewer: Reviewer,
   localPanel: Panel,
@@ -128,8 +124,12 @@ export default function GridProposals({
     onChange(reviewerPanels);
   };
 
+  const isReviewerSelected = (reviewerId: string): boolean => {
+    return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
+  };
+
   const reviewerSelectedToggle = (reviewer: Reviewer) => {
-    if (isReviewerSelected(reviewer.id, localPanel)) {
+    if (isReviewerSelected(reviewer.id)) {
       deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
     } else {
       addReviewerPanel(reviewer, localPanel, setReviewerPanels);
@@ -146,7 +146,7 @@ export default function GridProposals({
         <TickBox
           label=""
           testId="linkedTickBox"
-          checked={isReviewerSelected(e.row.id, localPanel)}
+          checked={isReviewerSelected(e.row.id)}
           onChange={() => reviewerSelectedToggle(e.row)}
         />
       </Box>
@@ -209,7 +209,7 @@ export default function GridProposals({
   ];
 
   const selectedData = reviewers
-    ? reviewers.filter(e => (isReviewerSelected(e.id, localPanel) ? selected : notSelected))
+    ? reviewers.filter(e => (isReviewerSelected(e.id) ? selected : notSelected))
     : [];
   const filteredData = selectedData
     ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
