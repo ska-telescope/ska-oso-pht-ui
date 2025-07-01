@@ -5,43 +5,24 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
-import Proposal from '@/utils/types/proposal';
-
-const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
-  // TODO should this function from PanelMaintenance component be mocked?
-  /*
-    if (isSelected) {
-      deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
-    } else {
-      addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
-    }
-      */
-};
 
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
-        <GridProposals
-          tickBoxClicked={(proposal, isProposalSelected) => {
-            proposalSelectedToggle(proposal, isProposalSelected);
-          }}
-        />
+        <GridProposals />
       </StoreProvider>
     );
   });
 });
+
 test('renders correctly', async () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: 'Error'
   });
   render(
     <StoreProvider>
-      <GridProposals
-        tickBoxClicked={(proposal, isProposalSelected) => {
-          proposalSelectedToggle(proposal, isProposalSelected);
-        }}
-      />
+      <GridProposals />
     </StoreProvider>
   );
 });
@@ -52,11 +33,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals
-        tickBoxClicked={(proposal, isProposalSelected) => {
-          proposalSelectedToggle(proposal, isProposalSelected);
-        }}
-      />
+      <GridProposals />
     </StoreProvider>
   );
 
@@ -65,12 +42,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals
-        forReview
-        tickBoxClicked={(proposal, isProposalSelected) => {
-          proposalSelectedToggle(proposal, isProposalSelected);
-        }}
-      />
+      <GridProposals forReview />
     </StoreProvider>
   );
 });

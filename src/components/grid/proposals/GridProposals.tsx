@@ -36,7 +36,10 @@ import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
-import { Panel } from '@/utils/types/panel';
+
+type ProposalId = {
+  id: string;
+};
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -62,6 +65,7 @@ export function filterProposals(
 
 interface GridProposalsProps {
   height?: string;
+  selectedProposals?: ProposalId[];
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
@@ -72,6 +76,7 @@ interface GridProposalsProps {
 
 export default function GridProposals({
   height = '50vh',
+  selectedProposals = [],
   showSearch = false,
   showTitle = false,
   forReview = false,
@@ -103,7 +108,8 @@ export default function GridProposals({
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
-  const [localPanel] = React.useState<Panel>({} as Panel);
+  // const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
+  const [proposalsCollection, setProposalsCollection] = React.useState<ProposalId[]>([]);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
 
@@ -200,6 +206,15 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
+    /*
+    if (currentPanel && currentPanel?.id) {
+      setLocalPanel(currentPanel);
+    }
+    */
+    setProposalsCollection(selectedProposals);
+  }, [selectedProposals]);
+
+  React.useEffect(() => {
     const cycleData = async () => {
       const response = await GetCycleData();
       if (typeof response === 'string') {
@@ -217,7 +232,8 @@ export default function GridProposals({
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
+    // return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
+    return proposalsCollection.filter(entry => entry.id === proposalId).length > 0;
   };
 
   const displayProposalType = (proposalType: any) => {
@@ -508,7 +524,7 @@ export default function GridProposals({
                 >
                   <Grid2>
                     <TickBox
-                      disabled={!localPanel}
+                      disabled={!proposalsCollection}
                       label={t('selected.label')}
                       labelPosition={LABEL_POSITION.END}
                       testId="selectedTickBox"
@@ -518,7 +534,7 @@ export default function GridProposals({
                   </Grid2>
                   <Grid2>
                     <TickBox
-                      disabled={!localPanel}
+                      disabled={!proposalsCollection}
                       label={t('notSelected.label')}
                       labelPosition={LABEL_POSITION.END}
                       testId="notSelectedTickBox"
