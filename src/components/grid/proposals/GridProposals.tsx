@@ -46,8 +46,9 @@ export const addProposalPanel = (
 ) => {
   const rec: PanelProposal = {
     proposalId: proposal.id,
-    panelId: localPanel?.id ?? '',
-    assignedOn: new Date().toISOString()
+    panelId: localPanel?.id ?? ''
+    // TODO clarify if assignedOn should be set in the database
+    // assignedOn: new Date().toISOString()
   };
   const updatedProposals = [...localPanel?.proposals, rec];
   setProposalPanels(updatedProposals);
