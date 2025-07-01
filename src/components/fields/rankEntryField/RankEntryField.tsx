@@ -94,7 +94,7 @@ export default function RankEntryField({
         </Box>
 
         {/* Keyboard instructions */}
-       {/*} <Typography variant="caption" color="text.secondary" textAlign="center" maxWidth="400px">
+        {/*} <Typography variant="caption" color="text.secondary" textAlign="center" maxWidth="400px">
           Use Tab to navigate between segments, then press Enter or Space to select
         </Typography> */}
 
