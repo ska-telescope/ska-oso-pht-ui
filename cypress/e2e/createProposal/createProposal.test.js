@@ -12,11 +12,11 @@ import {
   verifyProposalCreatedAlertFooter
 } from '../common/common';
 
-describe('Creating Proposal', () => {
+describe('XTP-59739 Create Proposal', () => {
   beforeEach(() => {
     initialize();
   });
-  it('XTP-59739: Create a basic proposal', () => {
+  it('Create a basic proposal', () => {
     clickAddProposal();
     enterProposalTitle();
     clickProposalTypePrincipleInvestigator();

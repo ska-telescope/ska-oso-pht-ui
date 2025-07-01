@@ -105,9 +105,9 @@ const verifySensitivityCalculatorResults = rec => {
   verifySpectralSurfaceBrightnessSensitivity(rec);
 };
 
-describe('Sensitivity Calculator', () => {
+describe('XTP-71885 Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    it('XTP-71885: Sensitivity calculator results : ' + rec.test, () => {
+    it('Sensitivity calculator results : ' + rec.test, () => {
       //add observation
       clickObservationSetup();
       updateBand(rec);

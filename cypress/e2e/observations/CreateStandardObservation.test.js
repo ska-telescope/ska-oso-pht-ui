@@ -21,8 +21,8 @@ const verifyUnlinkedObservationInTable = () => {
     .should('have.length', 1);
 };
 
-describe('Creating Observation', () => {
-  it('XTP-71406: Create a default observation', () => {
+describe('XTP-84025 Create Observation', () => {
+  it('Create a default observation', () => {
     //navigate to observation page
     clickToGeneralPage();
     clickToSciencePage();

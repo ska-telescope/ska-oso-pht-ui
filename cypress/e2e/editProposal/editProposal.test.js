@@ -34,8 +34,8 @@ beforeEach(() => {
   createStandardProposal();
 });
 
-describe('Edit Proposal', () => {
-  it('XTP-71405: Edit a basic proposal', () => {
+describe('XTP-71405 Edit Proposal', () => {
+  it('Edit a basic proposal', () => {
     //edit existing proposal
     clickHome();
     verifyOnLandingPage();

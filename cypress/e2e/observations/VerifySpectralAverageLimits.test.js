@@ -27,8 +27,8 @@ beforeEach(() => {
   clickObservationSetup();
 });
 
-describe('Creating Observations', () => {
-  it('XTP-71407: Verify Spectral average limits', () => {
+describe('XTP-71407 Creating Observations', () => {
+  it('Verify Spectral average limits', () => {
     //verify spectral average limits
     verifyContinuumSpectralAverageRangeAA4();
     verifyContinuumSpectralAverageRangeAA2();
