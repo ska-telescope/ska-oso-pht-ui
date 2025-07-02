@@ -1,16 +1,16 @@
-import { describe, test /*, expect, vi*/ } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import GridReviewers /*, {
+import GridReviewers, {
   addReviewerPanel,
   deleteReviewerPanel,
   filterReviewers
-} */ from './GridReviewers';
-// import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
-// import { REVIEWER_STATUS } from '@/utils/constants';
+} from './GridReviewers';
+import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
+import { REVIEWER_STATUS } from '@/utils/constants';
 import { Panel } from '@/utils/types/panel';
-// import Reviewer from '@/utils/types/reviewer';
+import Reviewer from '@/utils/types/reviewer';
 
 const mockedPanels: Panel[] = [
   {
@@ -39,21 +39,15 @@ const mockedPanels: Panel[] = [
   }
 ];
 
-const handleChange = () => {
-  // Mock function to handle row change
-};
-
 describe('<GridReviewers />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <GridReviewers currentPanel={mockedPanels[0]} onChange={handleChange} />
+        <GridReviewers currentPanel={mockedPanels[0]} onChange={() => {}} />
       </StoreProvider>
     );
   });
 });
-
-/*
 
 describe('filterReviewers', () => {
   test('filters by name', () => {
@@ -151,4 +145,3 @@ describe('Deletes Reviewer', () => {
     ]);
   });
 });
-*/

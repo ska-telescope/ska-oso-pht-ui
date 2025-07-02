@@ -1,13 +1,11 @@
-import { describe, test /*, expect*/ } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import PanelMaintenance /*, { addProposalPanel, deleteProposalPanel }*/ from './PanelMaintenance';
-// import { Panel } from '@/utils/types/panel';
-// import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
-// import Proposal from '@/utils/types/proposal';
-
-/*
+import PanelMaintenance, { addProposalPanel, deleteProposalPanel } from './PanelMaintenance';
+import { Panel } from '@/utils/types/panel';
+import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+import Proposal from '@/utils/types/proposal';
 
 const mockedPanels: Panel[] = [
   {
@@ -36,8 +34,6 @@ const mockedPanels: Panel[] = [
   }
 ];
 
-*/
-
 describe('<PanelMaintenance />', () => {
   test('renders correctly', () => {
     render(
@@ -48,7 +44,6 @@ describe('<PanelMaintenance />', () => {
   });
 });
 
-/*
 describe('Adds Proposal', () => {
   test('adds a proposal and calls setProposalPanels with updated list', () => {
     const setProposalPanels = vi.fn();
@@ -111,4 +106,3 @@ describe('Adds Proposal', () => {
     });
   });
 });
-*/

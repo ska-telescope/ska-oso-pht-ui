@@ -3,11 +3,13 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 // import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 // import axios from 'axios';
-import { /*GridProposals, */ /*filterProposals,*/ getProposalType } from './GridProposals';
-// import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+import { /*GridProposals }, */ filterProposals, getProposalType } from './GridProposals';
+import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 
+// TODO - investigate why the tests are timing out - STAR-1367
+
+/*
 describe('<GridProposals />', () => {
-  /*
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
@@ -49,19 +51,17 @@ test('renders correctly, forReview', () => {
 });
 */
 
-  describe('Get proposal type', () => {
-    test('retrieves type correctly', () => {
-      const type = getProposalType(1);
-      expect(type).toBe('standard_proposal');
-    });
-
-    test('returns an empty string when no match', () => {
-      const type = getProposalType(999);
-      expect(type).toBe('');
-    });
+describe('Get proposal type', () => {
+  test('retrieves type correctly', () => {
+    const type = getProposalType(1);
+    expect(type).toBe('standard_proposal');
   });
 
-  /*
+  test('returns an empty string when no match', () => {
+    const type = getProposalType(999);
+    expect(type).toBe('');
+  });
+});
 
 describe('filterProposals', () => {
   test('filters by title', () => {
@@ -109,5 +109,4 @@ describe('filterProposals', () => {
     expect(result[0].proposalType).toBe(1);
     expect(result[0].scienceCategory).toBe(4);
   });
-  */
 });
