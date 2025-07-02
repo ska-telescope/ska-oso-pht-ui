@@ -1,19 +1,16 @@
 import { describe, test, expect } from 'vitest';
-// import { render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-// import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-// import axios from 'axios';
-import { /*GridProposals }, */ filterProposals, getProposalType } from './GridProposals';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import axios from 'axios';
+import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 
-// TODO - investigate why the tests are timing out - STAR-1367
-
-/*
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
-        <GridProposals />
+        <GridProposals selectedProposals={[]} />
       </StoreProvider>
     );
   });
@@ -25,7 +22,7 @@ test('renders correctly', async () => {
   });
   render(
     <StoreProvider>
-      <GridProposals />
+      <GridProposals selectedProposals={[]} />
     </StoreProvider>
   );
 });
@@ -36,7 +33,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals />
+      <GridProposals selectedProposals={[]} />
     </StoreProvider>
   );
 
@@ -45,11 +42,10 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals forReview />
+      <GridProposals forReview selectedProposals={[]} />
     </StoreProvider>
   );
 });
-*/
 
 describe('Get proposal type', () => {
   test('retrieves type correctly', () => {

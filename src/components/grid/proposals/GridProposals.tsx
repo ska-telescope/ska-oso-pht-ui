@@ -205,7 +205,9 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    setProposalsCollection(selectedProposals);
+    if (selectedProposals) {
+      setProposalsCollection(selectedProposals);
+    }
   }, [selectedProposals]);
 
   React.useEffect(() => {
@@ -226,7 +228,7 @@ export default function GridProposals({
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    return proposalsCollection.filter(entry => entry.id === proposalId).length > 0;
+    return proposalsCollection?.filter(entry => entry.id === proposalId)?.length > 0;
   };
 
   const displayProposalType = (proposalType: any) => {
@@ -542,7 +544,7 @@ export default function GridProposals({
         </Grid2>
       )}
       <Grid2 size={{ xs: 12 }} pt={1}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+        {!axiosViewError && (!filteredData || filteredData?.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
         )}
         {!axiosViewError && filteredData.length > 0 && (
