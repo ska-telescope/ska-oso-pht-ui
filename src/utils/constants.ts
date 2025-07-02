@@ -9,6 +9,10 @@ export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_
 export const API_VERSION = '/senscalc/api/v11';
 export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
 export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
+//
+export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
+export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
+export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
 
 /*****************************************/
 

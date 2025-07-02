@@ -2,21 +2,17 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper, Tab, Tabs } from '@mui/material';
-import {
-  NumberEntry2,
-  TextEntry,
-  Spacer,
-  SPACER_VERTICAL
-} from '@ska-telescope/ska-gui-components';
+import { TextEntry, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { FOOTER_SPACER, PMT, WRAPPER_HEIGHT } from '@utils/constants.ts';
+import { FOOTER_SPACER, PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import Proposal from '@/utils/types/proposal';
 import { presentLatex } from '@/utils/present/present';
+import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
@@ -81,17 +77,7 @@ export default function ReviewEntry() {
   const rankField = () => {
     return (
       <Box p={2} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
-        <NumberEntry2
-          fieldHeight={WRAPPER_HEIGHT}
-          fieldName={'rank'}
-          iconSize="classic"
-          maxValue={9}
-          minValue={0}
-          setValue={setRank}
-          title={''}
-          testId={'rankId'}
-          value={rank}
-        />
+        <RankEntryField selectedRank={rank} setSelectedRank={setRank} />
       </Box>
     );
   };

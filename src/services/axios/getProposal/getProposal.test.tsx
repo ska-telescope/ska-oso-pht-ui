@@ -6,28 +6,6 @@ import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFr
 import * as CONSTANTS from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
-vi.mock('axios', () => {
-  return {
-    default: {
-      post: vi.fn(),
-      get: vi.fn(),
-      delete: vi.fn(),
-      put: vi.fn(),
-      create: vi.fn().mockReturnThis(),
-      interceptors: {
-        request: {
-          use: vi.fn(),
-          eject: vi.fn()
-        },
-        response: {
-          use: vi.fn(),
-          eject: vi.fn()
-        }
-      }
-    }
-  };
-});
-
 const mockedAxios = (axios as unknown) as {
   get: ReturnType<typeof vi.fn>;
   post: ReturnType<typeof vi.fn>;

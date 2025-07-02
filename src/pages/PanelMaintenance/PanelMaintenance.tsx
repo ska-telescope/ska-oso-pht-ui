@@ -117,7 +117,7 @@ export default function PanelMaintenance() {
     <BackButton
       action={() => navigate(PMT[2])}
       testId="overviewButtonTestId"
-      title={'overview.label'}
+      title={'overview.title'}
       toolTip="overview.toolTip"
     />
   );

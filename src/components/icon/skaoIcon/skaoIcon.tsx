@@ -1,4 +1,3 @@
-import React from 'react';
 import useTheme from '@mui/material/styles/useTheme';
 import { Logo, Symbol, THEME_DARK } from '@ska-telescope/ska-gui-components';
 interface SKAOIconProps {

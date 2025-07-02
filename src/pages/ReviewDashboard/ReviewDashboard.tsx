@@ -5,7 +5,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { DateEntry, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
-import { Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import { proposals } from './mocked';
 import { PATH, PMT } from '@/utils/constants';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -97,20 +97,21 @@ export default function ReviewDashboard() {
   };
 
   const panelButton = (title: string, toolTip: string, nav: string) => (
-    <Grid2 m={2} minWidth={MIN_CARD_WIDTH}>
-      <CardTitle
-        className={''}
-        code={t(title)[0].toUpperCase()}
-        colorAvatarBG={theme.palette.primary.contrastText}
-        colorAvatarFG={theme.palette.primary.main}
-        colorCardBG={theme.palette.primary.main}
-        colorCardFG={theme.palette.primary.contrastText}
-        data-testid={title}
-        id={title}
-        onClick={() => onPanelClick(nav)}
-        title={t(title)}
-        toolTip={t(toolTip)}
-      />
+    <Grid2 m={2} data-testid={title} minWidth={MIN_CARD_WIDTH}>
+      <Card data-testid={title}>
+        <CardTitle
+          className={''}
+          code={t(title)[0].toUpperCase()}
+          colorAvatarBG={theme.palette.primary.contrastText}
+          colorAvatarFG={theme.palette.primary.main}
+          colorCardBG={theme.palette.primary.main}
+          colorCardFG={theme.palette.primary.contrastText}
+          id={title}
+          onClick={() => onPanelClick(nav)}
+          title={t(title)}
+          toolTip={t(toolTip)}
+        />
+      </Card>
     </Grid2>
   );
 
@@ -119,11 +120,11 @@ export default function ReviewDashboard() {
 
   return (
     <>
-      <PageBannerPMT title={t('menuOptions.overview')} />
+      <PageBannerPMT title={t('overview.title')} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
-        {panelButton('menuOptions.panelSummary', 'panels.overviewTooltip', PMT[0])}
-        {panelButton('menuOptions.reviews', 'reviewers.overviewTooltip', PMT[1])}
-        {panelButton('menuOptions.proposals', 'proposals.overviewTooltip', PATH[0])}
+        {panelButton('page.15.title', 'page.15.tooltip', PMT[0])}
+        {panelButton('reviewProposalList.title', 'reviewProposalList.tooltip', PMT[1])}
+        {panelButton('homeBtn.title', 'homeBtn.tooltip', PATH[0])}
       </Grid2>
 
       {/* Filters */}
@@ -224,8 +225,8 @@ export default function ReviewDashboard() {
         </Grid2>
 
         <Grid2>
-          <ResizablePanel title={t('menuOptions.panelSummary')}>
-            <GridReviewPanels updatedData={null} height={CONTENT_HEIGHT} listOnly />
+          <ResizablePanel title={t('page.15.title')}>
+            <GridReviewPanels height={CONTENT_HEIGHT} updatedData={null} listOnly />
           </ResizablePanel>
         </Grid2>
         <Grid2>
@@ -234,7 +235,7 @@ export default function ReviewDashboard() {
           </ResizablePanel>
         </Grid2>
         <Grid2>
-          <ResizablePanel title={t('menuOptions.proposals')}>
+          <ResizablePanel title={t('homeBtn.title')}>
             <GridProposals height={CONTENT_HEIGHT} />
           </ResizablePanel>
         </Grid2>

@@ -98,26 +98,27 @@ export default function ButtonUserMenu({
         )}
       </Box>
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
-        <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
-          {t('menuOptions.overview')}
+        <MenuItem key={1} data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
+          {t('overview.title')}
         </MenuItem>
-        <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
-          {t('menuOptions.proposals')}
+        <MenuItem key={2} data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
+          {t('homeBtn.title')}
         </MenuItem>
-        <MenuItem data-testid="menuItemVerification" disabled>
-          {t('menuOptions.scienceVerification')}
+        <MenuItem key={3} data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
+          {t('page.15.title')}
         </MenuItem>
-        <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
-          {t('menuOptions.panelSummary')}
-        </MenuItem>
-        <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
+        <MenuItem key={4} data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
           {t('reviewProposalList.title')}
         </MenuItem>
-        <MenuItem data-testid="menuItemReviewDecisions" onClick={() => onMenuSelect(PMT[4])}>
-          {t('menuOptions.reviewDecisions')}
+        <MenuItem
+          key={5}
+          data-testid="menuItemReviewDecisions"
+          onClick={() => onMenuSelect(PMT[4])}
+        >
+          {t('reviewDecisionsList.title')}
         </MenuItem>
         <Divider component="li" />
-        <MenuItem data-testid="menuItemPanelLogout">
+        <MenuItem key={-1} data-testid="menuItemPanelLogout">
           {mockedLogin ? 'Logout' : <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />}
         </MenuItem>
       </Menu>
