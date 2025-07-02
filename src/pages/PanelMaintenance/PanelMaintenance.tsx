@@ -61,6 +61,14 @@ export default function PanelMaintenance() {
   const navigate = useNavigate();
   const [theValue, setTheValue] = React.useState(0);
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
+  const [panelProposals, setPanelProposals] = React.useState<{ id: string }[]>([]);
+
+  React.useEffect(() => {
+    const proposals = currentPanel?.proposals
+      ? convertPanelProposalToProposalIdList(currentPanel?.proposals)
+      : [];
+    setPanelProposals(proposals);
+  }, [currentPanel]);
 
   const handlePanelChange = (row: Panel) => {
     setCurrentPanel(row);
@@ -210,7 +218,7 @@ export default function PanelMaintenance() {
                   <GridProposals
                     showSearch
                     showSelection
-                    selectedProposals={convertPanelProposalToProposalIdList(currentPanel.proposals)}
+                    selectedProposals={panelProposals}
                     tickBoxClicked={(proposal, isProposalSelected) => {
                       proposalSelectedToggle(proposal, isProposalSelected);
                     }}
