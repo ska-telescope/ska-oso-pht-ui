@@ -210,7 +210,6 @@ export default function PanelMaintenance() {
                   <GridProposals
                     showSearch
                     showSelection
-                    // currentPanel={currentPanel}
                     selectedProposals={convertPanelProposalToProposalIdList(currentPanel.proposals)}
                     tickBoxClicked={(proposal, isProposalSelected) => {
                       proposalSelectedToggle(proposal, isProposalSelected);

@@ -52,7 +52,6 @@ describe('Adds Proposal', () => {
       expect.objectContaining({
         proposalId: MockProposalFrontendList[0].id,
         panelId: mockedPanels[0].id
-        // assignedOn: expect.any(String)
       })
     ]);
   });
@@ -63,17 +62,14 @@ describe('Adds Proposal', () => {
       {
         proposalId: MockProposalFrontendList[0].id,
         panelId: panel.id
-        // assignedOn: new Date().toISOString()
       },
       {
         proposalId: MockProposalFrontendList[1].id,
         panelId: panel.id
-        // assignedOn: new Date().toISOString()
       },
       {
         proposalId: MockProposalFrontendList[2].id,
         panelId: panel.id
-        // assignedOn: new Date().toISOString()
       }
     ];
     test('deletes a proposal and calls setProposalPanels with updated list', () => {

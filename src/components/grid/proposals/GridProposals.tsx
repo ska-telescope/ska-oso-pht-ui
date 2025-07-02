@@ -108,7 +108,6 @@ export default function GridProposals({
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
-  // const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
   const [proposalsCollection, setProposalsCollection] = React.useState<ProposalId[]>([]);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
@@ -206,11 +205,6 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    /*
-    if (currentPanel && currentPanel?.id) {
-      setLocalPanel(currentPanel);
-    }
-    */
     setProposalsCollection(selectedProposals);
   }, [selectedProposals]);
 
@@ -232,7 +226,6 @@ export default function GridProposals({
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    // return localPanel?.proposals?.filter(entry => entry.proposalId === proposalId).length > 0;
     return proposalsCollection.filter(entry => entry.id === proposalId).length > 0;
   };
 
