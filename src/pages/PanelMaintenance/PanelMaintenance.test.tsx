@@ -1,11 +1,11 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test /*, expect*/ } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import PanelMaintenance, { addProposalPanel, deleteProposalPanel } from './PanelMaintenance';
-import { Panel } from '@/utils/types/panel';
-import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
-import Proposal from '@/utils/types/proposal';
+import PanelMaintenance /*, { addProposalPanel, deleteProposalPanel }*/ from './PanelMaintenance';
+// import { Panel } from '@/utils/types/panel';
+// import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+// import Proposal from '@/utils/types/proposal';
 
 /*
 

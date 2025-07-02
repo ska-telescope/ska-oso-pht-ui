@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useMsal } from '@azure/msal-react';
+// import { useMsal } from '@azure/msal-react';
 import { SKA_OSO_SERVICES_URL } from '../../../utils/constants';
 
 export enum LogLevel {
