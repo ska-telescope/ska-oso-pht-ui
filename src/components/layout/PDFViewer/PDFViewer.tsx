@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, Grid, Typography } from '@mui/material';
+import { Grid2, Typography } from '@mui/material';
 import { Document, Page } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { pdfjs } from 'react-pdf';
 
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -14,12 +14,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 interface PDFViewerProps {
-  open?: boolean;
-  onClose: Function;
-  url: string;
+  url?: string;
 }
 
-export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps) {
+export default function PDFViewer({
+  url = '../../../../public/how-to-conduct-your-own-heuristic-evaluation.pdf'
+}: PDFViewerProps) {
   const { t } = useTranslation('pht');
   const [numPages, setNumPages] = React.useState<number>(0);
   const [pageNumber, setPageNumber] = React.useState(1);
@@ -40,20 +40,16 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
     );
   };
 
-  const handleClose = () => {
-    onClose();
-  };
-
   const displayNavigation = () => {
     return (
-      <Grid
+      <Grid2
         container
         direction="row"
         alignItems="center"
         justifyContent="space-between"
         spacing={1}
       >
-        <Grid item>
+        <Grid2>
           {numPages > 1 && (
             <PreviousPageButton
               disabled={pageNumber === 1}
@@ -61,8 +57,8 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
               action={goToPrevPage}
             />
           )}
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           {numPages > 1 && (
             <NextPageButton
               disabled={pageNumber === numPages}
@@ -70,22 +66,14 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
               action={goToNextPage}
             />
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   };
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="md"
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      id="alert-dialog-proposal-change"
-    >
-      <Grid
+    <>
+      <Grid2
         spacing={1}
         pl={1}
         pr={1}
@@ -94,19 +82,19 @@ export default function PDFViewer({ open = false, onClose, url }: PDFViewerProps
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item>{displayNavigation()}</Grid>
-        <Grid item>{displayPages()}</Grid>
-      </Grid>
+        <Grid2>{displayNavigation()}</Grid2>
+        <Grid2>{displayPages()}</Grid2>
+      </Grid2>
 
-      <Grid container direction="row" justifyContent="center" alignItems="center">
-        <Grid item>
+      <Grid2 container direction="row" justifyContent="center" alignItems="center">
+        <Grid2>
           {url?.length > 0 && (
             <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} />
             </Document>
           )}
-        </Grid>
-      </Grid>
-    </Dialog>
+        </Grid2>
+      </Grid2>
+    </>
   );
 }

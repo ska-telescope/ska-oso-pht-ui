@@ -11,91 +11,92 @@ export const COLOR_BLINDNESS_OPTIONS = [
 
 export const COLOR_PALETTES = [
   [
-    '#EF4444', // red-500
-    '#F97316', // orange-500
-    '#EAB308', // yellow-500
-    '#22C55E', // green-500
-    '#06B6D4', // cyan-500
-    '#3B82F6', // blue-500
-    '#8B5CF6', // violet-500
-    '#EC4899' // pink-500
+    '#D32F2F', // Red - High contrast red
+    '#F57C00', // Orange - High contrast orange
+    '#FBC02D', // Yellow - High contrast yellow
+    '#388E3C', // Green - High contrast green
+    '#0288D1', // Blue - High contrast blue
+    '#7B1FA2', // Purple - High contrast purple
+    '#C2185B', // Pink - High contrast pink
+    '#5D4037', // Brown - High contrast brown
+    '#455A64' // Blue Grey - High contrast blue grey
   ],
   [
-    // Red-blind friendly palette
-    '#1F2937', // dark gray instead of red
-    '#F59E0B', // amber
-    '#EAB308', // yellow
-    '#10B981', // emerald
-    '#06B6D4', // cyan
-    '#3B82F6', // blue
-    '#8B5CF6', // violet
-    '#EC4899' // pink
+    '#424242', // Dark grey (replaces red)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#388E3C', // Green (enhanced)
+    '#0288D1', // Blue (safe)
+    '#7B1FA2', // Purple (safe)
+    '#795548', // Brown (safe)
+    '#37474F', // Dark blue grey
+    '#263238' // Very dark blue grey
   ],
   [
-    // Green-blind friendly palette
-    '#EF4444', // red
-    '#F97316', // orange
-    '#EAB308', // yellow
-    '#1F2937', // dark gray instead of green
-    '#06B6D4', // cyan
-    '#3B82F6', // blue
-    '#8B5CF6', // violet
-    '#EC4899' // pink
+    '#D32F2F', // Red (safe)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#424242', // Dark grey (replaces green)
+    '#0288D1', // Blue (safe)
+    '#7B1FA2', // Purple (safe)
+    '#C2185B', // Pink (safe)
+    '#5D4037', // Brown (safe)
+    '#37474F' // Dark blue grey
   ],
   [
-    // Blue-blind friendly palette
-    '#EF4444', // red
-    '#F97316', // orange
-    '#EAB308', // yellow
-    '#22C55E', // green
-    '#1F2937', // dark gray instead of cyan
-    '#6B7280', // gray instead of blue
-    '#7C3AED', // purple
-    '#EC4899' // pink
+    '#D32F2F', // Red (safe)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#388E3C', // Green (safe)
+    '#424242', // Dark grey (replaces blue)
+    '#616161', // Medium grey
+    '#795548', // Brown (enhanced)
+    '#5D4037', // Dark brown
+    '#3E2723' // Very dark brown
   ],
   [
-    // Red-weak friendly palette (muted reds)
-    '#991B1B', // darker red
-    '#F97316', // orange
-    '#EAB308', // yellow
-    '#22C55E', // green
-    '#06B6D4', // cyan
-    '#3B82F6', // blue
-    '#8B5CF6', // violet
-    '#EC4899' // pink
+    '#B71C1C', // Dark red (enhanced)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#388E3C', // Green (safe)
+    '#0288D1', // Blue (safe)
+    '#7B1FA2', // Purple (safe)
+    '#C2185B', // Pink (safe)
+    '#5D4037', // Brown (safe)
+    '#37474F' // Dark blue grey
   ],
   [
-    // Green-weak friendly palette (muted greens)
-    '#EF4444', // red
-    '#F97316', // orange
-    '#EAB308', // yellow
-    '#166534', // darker green
-    '#06B6D4', // cyan
-    '#3B82F6', // blue
-    '#8B5CF6', // violet
-    '#EC4899' // pink
+    '#D32F2F', // Red (safe)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#2E7D32', // Dark green (enhanced)
+    '#0288D1', // Blue (safe)
+    '#7B1FA2', // Purple (safe)
+    '#C2185B', // Pink (safe)
+    '#5D4037', // Brown (safe)
+    '#37474F' // Dark blue grey
   ],
   [
-    // Blue-weak friendly palette (muted blues)
-    '#EF4444', // red
-    '#F97316', // orange
-    '#EAB308', // yellow
-    '#22C55E', // green
-    '#0891B2', // darker cyan
-    '#1D4ED8', // darker blue
-    '#7C3AED', // purple
-    '#EC4899' // pink
+    '#D32F2F', // Red (safe)
+    '#F57C00', // Orange (safe)
+    '#FBC02D', // Yellow (safe)
+    '#388E3C', // Green (safe)
+    '#1565C0', // Dark blue (enhanced)
+    '#4A148C', // Dark purple (enhanced)
+    '#880E4F', // Dark pink (enhanced)
+    '#3E2723', // Dark brown
+    '#263238' // Very dark blue grey
   ],
   [
-    // Grayscale palette for complete color blindness
-    '#1F2937', // very dark gray
-    '#374151', // dark gray
-    '#4B5563', // medium-dark gray
-    '#6B7280', // medium gray
-    '#9CA3AF', // light-medium gray
-    '#D1D5DB', // light gray
-    '#E5E7EB', // very light gray
-    '#F3F4F6' // almost white
+    '#212121', // Very dark grey
+    '#424242', // Dark grey
+    '#616161', // Medium dark grey
+    '#757575', // Medium grey
+    '#9E9E9E', // Light medium grey
+    '#BDBDBD', // Light grey
+    '#E0E0E0', // Very light grey
+    '#EEEEEE', // Almost white grey
+    '#F5F5F5' // Off white
   ]
 ];
 

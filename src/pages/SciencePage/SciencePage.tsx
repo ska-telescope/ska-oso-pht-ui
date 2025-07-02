@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -13,7 +13,7 @@ import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
 import DeleteButton from '../../components/button/Delete/Delete';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
-import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
@@ -194,12 +194,12 @@ export default function SciencePage() {
   }, [validateToggle]);
 
   const PDFView = () => (
-    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+    <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
   );
 
   const uploadSuffix = () => (
-    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
-      <Grid item>
+    <Grid2 pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid2>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.science.label.preview"
@@ -207,8 +207,8 @@ export default function SciencePage() {
             action={previewSignedUrl}
           />
         )}
-      </Grid>
-      <Grid item>
+      </Grid2>
+      <Grid2>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.science.label.download"
@@ -216,8 +216,8 @@ export default function SciencePage() {
             action={downloadPDFToSignedUrl}
           />
         )}
-      </Grid>
-      <Grid item>
+      </Grid2>
+      <Grid2>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.science.label.delete'}
@@ -225,14 +225,14 @@ export default function SciencePage() {
             action={deletePdfUsingSignedUrl}
           />
         )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
+      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid2 size={{ xs: 6 }}>
           <FileUpload
             chooseToolTip={t('pdfUpload.science.tooltip.choose')}
             clearLabel={t('clearBtn.label')}
@@ -255,11 +255,11 @@ export default function SciencePage() {
             status={getProposal().scienceLoadStatus}
             suffix={uploadSuffix()}
           />
-        </Grid>
-        <Grid item pt={4} xs={4}>
+        </Grid2>
+        <Grid2 pt={4} size={{ xs: 4 }}>
           <HelpPanel />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       {PDFView()}
     </Shell>
   );
