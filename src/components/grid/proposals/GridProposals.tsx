@@ -82,7 +82,7 @@ export default function GridProposals({
   forReview = false,
   showSelection = false,
   showActions = false,
-  tickBoxClicked
+  tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 

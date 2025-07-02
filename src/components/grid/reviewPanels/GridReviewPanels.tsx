@@ -24,9 +24,9 @@ export default function GridReviewPanels({
   const [fetchList, setFetchList] = React.useState(false);
 
   const GetReviewPanels = (): Panel[] => [
-    { id: 'P400', name: 'Stargazers', cycle: '2023-2024', proposals: [], reviewers: [] },
-    { id: 'P500', name: 'Buttons', cycle: '2023-2024', proposals: [], reviewers: [] },
-    { id: 'P600', name: 'Nashrakra', cycle: '2023-2024', proposals: [], reviewers: [] }
+    { id: 'P400', name: 'Stargazers', proposals: [], reviewers: [] },
+    { id: 'P500', name: 'Buttons', proposals: [], reviewers: [] },
+    { id: 'P600', name: 'Nashrakra', proposals: [], reviewers: [] }
   ];
 
   const updateReviewPanel = (updatedData: Panel) => {

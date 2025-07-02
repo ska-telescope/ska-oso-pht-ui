@@ -38,7 +38,6 @@ const mockedPanels: Panel[] = [
 
 */
 
-/*
 describe('<PanelMaintenance />', () => {
   test('renders correctly', () => {
     render(
@@ -49,6 +48,7 @@ describe('<PanelMaintenance />', () => {
   });
 });
 
+/*
 describe('Adds Proposal', () => {
   test('adds a proposal and calls setProposalPanels with updated list', () => {
     const setProposalPanels = vi.fn();
