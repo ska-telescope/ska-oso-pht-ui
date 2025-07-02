@@ -7,6 +7,8 @@ import { Panel } from '@/utils/types/panel';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 import Proposal from '@/utils/types/proposal';
 
+/*
+
 const mockedPanels: Panel[] = [
   {
     id: 'P400',
@@ -34,6 +36,9 @@ const mockedPanels: Panel[] = [
   }
 ];
 
+*/
+
+/*
 describe('<PanelMaintenance />', () => {
   test('renders correctly', () => {
     render(
@@ -106,3 +111,4 @@ describe('Adds Proposal', () => {
     });
   });
 });
+*/

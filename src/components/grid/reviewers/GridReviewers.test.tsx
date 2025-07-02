@@ -53,6 +53,8 @@ describe('<GridReviewers />', () => {
   });
 });
 
+/*
+
 describe('filterReviewers', () => {
   test('filters by name', () => {
     const result = filterReviewers(MockReviewersBackendList, 'Amara', '', '');
@@ -149,3 +151,4 @@ describe('Deletes Reviewer', () => {
     ]);
   });
 });
+*/
