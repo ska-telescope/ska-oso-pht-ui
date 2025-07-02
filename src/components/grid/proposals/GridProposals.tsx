@@ -205,8 +205,8 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-  setProposalsCollection(selectedProposals ?? []);
-}, [selectedProposals]);
+    setProposalsCollection(selectedProposals ?? []);
+  }, [selectedProposals]);
 
   React.useEffect(() => {
     const cycleData = async () => {
