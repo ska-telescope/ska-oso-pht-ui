@@ -1,28 +1,30 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper, Tab, Tabs } from '@mui/material';
 import { TextEntry, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
 import { FOOTER_SPACER, PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import AddButton from '../../../components/button/Add/Add';
+import SaveButton from '../../../components/button/Save/Save';
+import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import Proposal from '@/utils/types/proposal';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
+import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const navigate = useNavigate();
-  const locationProperties = useLocation();
+  // const locationProperties = useLocation();
 
   const { application } = storageObject.useStore();
 
-  const isEdit = () => locationProperties.state !== null;
+  // const isEdit = () => locationProperties.state !== null;
 
   const [tabValue, setTabValue] = React.useState(0);
   const [rank, setRank] = React.useState(0);
@@ -31,11 +33,16 @@ export default function ReviewEntry() {
 
   const getProposal = () => application.content2 as Proposal;
 
-  const addButtonDisabled = () => {
-    return isEdit() ? false : false;
+  const submitDisabled = () => {
+    return generalComments.length === 0 || srcNetComments.length === 0 || rank === 0;
   };
 
   const saveButtonClicked = () => {
+    //create panel end point
+    navigate(PMT[0]);
+  };
+
+  const submitButtonClicked = () => {
     //create panel end point
     navigate(PMT[0]);
   };
@@ -50,13 +57,10 @@ export default function ReviewEntry() {
   );
 
   const saveButton = () => (
-    <AddButton
-      action={saveButtonClicked}
-      disabled={addButtonDisabled()}
-      primary
-      testId={isEdit() ? 'updatePanelButton' : 'addPanelButton'}
-      title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-    />
+    <Grid2 spacing={1} container justifyContent="space-between" direction="row">
+      <SaveButton action={saveButtonClicked} primary toolTip={''} />
+      <SubmitButton action={submitButtonClicked} disabled={submitDisabled()} primary toolTip={''} />
+    </Grid2>
   );
 
   /**************************************************************/
@@ -76,7 +80,7 @@ export default function ReviewEntry() {
 
   const rankField = () => {
     return (
-      <Box p={2} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
+      <Box p={2} pl={4} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
         <RankEntryField selectedRank={rank} setSelectedRank={setRank} />
       </Box>
     );
@@ -128,8 +132,8 @@ export default function ReviewEntry() {
           bgcolor: `${theme.palette.primary.main}`,
           position: 'fixed',
           height: '75vh',
-          top: 170,
-          left: '75vw',
+          top: 180,
+          left: '76vw',
           right: '10px',
           border: `2px solid ${theme.palette.primary.contrastText}`,
           borderTopLeftRadius: '16px',
@@ -214,6 +218,9 @@ export default function ReviewEntry() {
         <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
           {abstractField()}
         </Grid2>
+      </Grid2>
+      <Grid2>
+        <PDFViewer />
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {reviewArea()}

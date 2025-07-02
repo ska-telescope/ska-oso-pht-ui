@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosClient from '../axiosClient/axiosClient';
 import { USE_LOCAL_DATA } from '@/utils/constants.ts';
 
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
@@ -11,13 +11,8 @@ async function PutUploadPDF(signedUrl: string, selectedFile: any) {
   }
 
   try {
-    let formData = new FormData();
-    formData.append('file', selectedFile);
-    const result = await axios.put(`${signedUrl}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    // For S3 signed URLs, upload the file directly and let the browser set the Content-Type
+    const result = await axiosClient.put(`${signedUrl}`, selectedFile);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
   } catch (e) {
     if (e instanceof Error) {

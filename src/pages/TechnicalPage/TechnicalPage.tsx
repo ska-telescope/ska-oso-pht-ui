@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -15,7 +15,7 @@ import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/ge
 
 import { validateTechnicalPage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
-import PDFViewer from '../../components/layout/PDFViewer/PDFViewer';
+import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
@@ -61,7 +61,10 @@ export default function TechnicalPage() {
     if (theFile) {
       setCurrentFile(theFile);
     } else {
-      setProposal((({ technicalPDF, ...rest }) => rest)(getProposal()));
+      setProposal({
+        ...getProposal(),
+        technicalPDF: null
+      });
       setCurrentFile(null);
     }
   };
@@ -192,12 +195,12 @@ export default function TechnicalPage() {
   }, [validateToggle]);
 
   const PDFView = () => (
-    <PDFViewer open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
+    <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
   );
 
   const uploadSuffix = () => (
-    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
-      <Grid item>
+    <Grid2 pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid2>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.technical.label.preview"
@@ -205,8 +208,8 @@ export default function TechnicalPage() {
             action={previewSignedUrl}
           />
         )}
-      </Grid>
-      <Grid item>
+      </Grid2>
+      <Grid2>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.technical.label.download"
@@ -214,8 +217,8 @@ export default function TechnicalPage() {
             action={downloadPDFToSignedUrl}
           />
         )}
-      </Grid>
-      <Grid item>
+      </Grid2>
+      <Grid2>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.technical.label.delete'}
@@ -223,14 +226,14 @@ export default function TechnicalPage() {
             action={deletePdfUsingSignedUrl}
           />
         )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid item xs={6}>
+      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid2 size={{ xs: 6 }}>
           <FileUpload
             chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
             clearLabel={t('clearBtn.label')}
@@ -253,11 +256,11 @@ export default function TechnicalPage() {
             status={getProposal().technicalLoadStatus}
             suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
           />
-        </Grid>
-        <Grid item pt={4} xs={4}>
+        </Grid2>
+        <Grid2 pt={4} size={{ xs: 4 }}>
           <HelpPanel />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       {PDFView()}
     </Shell>
   );
