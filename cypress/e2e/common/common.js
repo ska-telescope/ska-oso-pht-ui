@@ -64,9 +64,15 @@ export const clickNav = (testId, title) => {
     verifyContent('pageTitle', title);
   }
 };
-export const clickPanelButtonPanels = () => clickNav('PANEL MAINTENANCE', 'PANEL MAINTENANCE');
-export const clickPanelButtonReviews = () => clickNav('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
-export const clickPanelButtonProposals = () => clickNav('panelBtn3', '');
+export const clickNavId = (testId, title) => {
+  cy.get('#{' + testId + '} > .MuiButtonBase-root');
+  if (title.length) {
+    verifyContent('pageTitle', title);
+  }
+};
+export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Panel Maintenance');
+export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
+export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
 
 export const enterPanelName = () => entry('panelName', 'Panel Name');
 

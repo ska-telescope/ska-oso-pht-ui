@@ -5,14 +5,15 @@ import { AuthProvider } from '@ska-telescope/ska-login-page';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 
 import App from './App/App';
+import { MSENTRA_CLIENT_ID, MSENTRA_REDIRECT_URI, MSENTRA_TENANT_ID } from './utils/constants';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StoreProvider>
       <AuthProvider
-        MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af"
-        MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805"
-        MSENTRA_REDIRECT_URI="http://localhost:6101"
+        MSENTRA_CLIENT_ID={MSENTRA_CLIENT_ID}
+        MSENTRA_TENANT_ID={MSENTRA_TENANT_ID}
+        MSENTRA_REDIRECT_URI={MSENTRA_REDIRECT_URI}
       >
         <App />
       </AuthProvider>

@@ -11,10 +11,10 @@ export default function PanelReviewDecision() {
     <BackButton
       action={() => navigate(PMT[2])}
       testId="overviewButtonTestId"
-      title={'overview.label'}
+      title={'overview.title'}
       toolTip="overview.toolTip"
     />
   );
 
-  return <PageBannerPMT title={t('menuOptions.reviewDecisions')} backBtn={backButton()} />;
+  return <PageBannerPMT title={t('reviewDecisionsList.title')} backBtn={backButton()} />;
 }
