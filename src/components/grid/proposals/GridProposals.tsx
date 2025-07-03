@@ -36,10 +36,8 @@ import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
-
-type ProposalId = {
-  id: string;
-};
+import { IdObject } from '@/utils/types/idObject';
+import { arraysAreEqual } from '@/utils/helpers';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -65,7 +63,7 @@ export function filterProposals(
 
 interface GridProposalsProps {
   height?: string;
-  selectedProposals?: ProposalId[];
+  selectedProposals?: IdObject[];
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
@@ -108,7 +106,7 @@ export default function GridProposals({
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
-  const [proposalsCollection, setProposalsCollection] = React.useState<ProposalId[]>([]);
+  const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
 
@@ -205,7 +203,7 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    if (selectedProposals && selectedProposals.length > 0) {
+    if (selectedProposals && !arraysAreEqual(selectedProposals, proposalsCollection)) {
       setProposalsCollection(selectedProposals);
     }
   }, [selectedProposals]);
