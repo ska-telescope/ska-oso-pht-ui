@@ -545,7 +545,11 @@ export default function GridProposals({
       )}
       <Grid2 size={{ xs: 12 }} pt={1}>
         {!axiosViewError && (!filteredData || filteredData?.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpProposalsId" />
+          <Alert
+            color={AlertColorTypes.Info}
+            text={t('proposals.empty')}
+            testId="helpProposalsId"
+          />
         )}
         {!axiosViewError && filteredData.length > 0 && (
           <div>
