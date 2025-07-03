@@ -9,6 +9,13 @@ import {
 
 // TODO : Ensure that we remove all hard-coded values
 
+export const arraysAreEqual = (a: any[], b: any[]) => {
+  if (a === b) return true;
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  return a.every((val, index) => val === b[index]);
+};
+
 export const generateId = (prefix: string, length: number) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
