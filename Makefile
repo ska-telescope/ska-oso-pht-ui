@@ -9,7 +9,7 @@ RELEASE_NAME ?= test
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_COMMAND_ENABLED = false
 JS_ESLINT_CONFIG ?= .eslintrc
-JS_E2E_TESTS_DIR ?= cypress
+JS_E2E_TESTS_DIR ?= tests/cypress
 
 $(info $(JS_E2E_TEST_BASE_URL))
 
