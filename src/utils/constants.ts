@@ -16,13 +16,6 @@ export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
 
 /*****************************************/
 
-export const AXIOS_CONFIG = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-};
-
 export const BAND_LOW = 0;
 export const BAND_1 = 1;
 export const BAND_2 = 2;

@@ -11,7 +11,6 @@ import {
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import {
-  AXIOS_CONFIG,
   PROJECTS,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
@@ -615,7 +614,7 @@ async function GetProposal(id: string): Promise<Proposal | string> {
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     if (!result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
