@@ -9,6 +9,8 @@ import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
+import PostPanel from '@/services/axios/postPanel/postPanel';
+import { Panel } from '@/utils/types/panel';
 
 export default function ReviewPanelEntry() {
   const { t } = useTranslation('pht');
@@ -82,10 +84,33 @@ export default function ReviewPanelEntry() {
 
   /**************************************************************/
 
+  const getPanel = (): Panel => {
+    return {
+      id: isEdit() ? locationProperties.state.id : Math.floor(Math.random() * 1000000).toString(), // TODO: clarify if this can be generated in the backend
+      name: panelName,
+      createdOn: panelDateCreated,
+      expiresOn: panelDateExpiry,
+      proposals: [],
+      reviewers: []
+    };
+  };
+
+  const createPanel = async () => {
+    // NotifyWarning(t('addProposal.warning'));
+    const response = await PostPanel(getPanel());
+    if (response && !response.error) {
+      // NotifyOK(t('addProposal.success') + response);
+      // setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+      navigate(PMT[0]);
+      // } else {
+      // NotifyError(response.error);
+      // }
+    }
+  };
+
   const pageFooter = () => {
     const buttonClicked = () => {
-      //create panel end point
-      navigate(PMT[0]);
+      createPanel();
     };
 
     return (

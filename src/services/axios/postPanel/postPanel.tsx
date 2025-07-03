@@ -27,7 +27,7 @@ async function PostPanel(panel: Panel) {
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/create`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
     const convertedPanel = mappingPostPanel(panel);
 
     const result = await axios.post(
