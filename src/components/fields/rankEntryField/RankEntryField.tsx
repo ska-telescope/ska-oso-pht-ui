@@ -82,7 +82,7 @@ export default function RankEntryField({
       {/* Visual feedback */}
       <Box textAlign="center">
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Click on the center (0) or any segment (1-9) to set your ranking
+          {t('rank.helper')}
         </Typography>
       </Box>
 
@@ -96,7 +96,6 @@ export default function RankEntryField({
             role="img"
             aria-label={`Interactive ranking selector from 0 to ${validMaxRank}`}
           >
-            {/* Donut segments for ranks 1-maxRank */}
             {Array.from({ length: numSegments }, (_, index) => {
               const rank = index + 1;
               const isSelected = selectedRank === rank;
@@ -170,7 +169,6 @@ export default function RankEntryField({
               );
             })}
 
-            {/* Center circle for rank 0 */}
             <circle
               cx="120"
               cy="120"
@@ -215,7 +213,6 @@ export default function RankEntryField({
           </svg>
         </Box>
 
-        {/* Visual feedback */}
         <Box textAlign="center">
           <Typography variant="h6" component="p">
             Selected Rank:{' '}
@@ -225,7 +222,6 @@ export default function RankEntryField({
           </Typography>
         </Box>
 
-        {/* Informational text area */}
         <Paper
           variant="outlined"
           sx={{
@@ -238,7 +234,7 @@ export default function RankEntryField({
         >
           <Box textAlign="center">
             <Typography variant="h6" component="h3" gutterBottom>
-              Rank {hoveredRank !== null ? hoveredRank : selectedRank}:{' '}
+              {t('rank.label')} {hoveredRank !== null ? hoveredRank : selectedRank}:{' '}
               {t('rank.' + (hoveredRank !== null ? hoveredRank : selectedRank) + '.title')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
@@ -250,7 +246,7 @@ export default function RankEntryField({
                 color="info.main"
                 sx={{ mt: 1, fontStyle: 'italic', display: 'block' }}
               >
-                Hovering - Click to select this rank
+                {t('rank.hovering')}
               </Typography>
             )}
           </Box>
