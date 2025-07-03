@@ -236,7 +236,7 @@ export default function ReviewDashboard() {
         </Grid2>
         <Grid2>
           <ResizablePanel title={t('homeBtn.title')}>
-            <GridProposals height={CONTENT_HEIGHT} selectedProposals={[]} />
+            <GridProposals height={CONTENT_HEIGHT} />
           </ResizablePanel>
         </Grid2>
       </Grid2>

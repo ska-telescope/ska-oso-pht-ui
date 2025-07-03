@@ -205,7 +205,9 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    setProposalsCollection(selectedProposals ?? []);
+    if (selectedProposals && selectedProposals.length > 0) {
+      setProposalsCollection(selectedProposals);
+    }
   }, [selectedProposals]);
 
   React.useEffect(() => {

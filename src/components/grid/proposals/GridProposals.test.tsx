@@ -8,11 +8,11 @@ import MockProposalFrontendList from '@/services/axios/getProposalList/mockPropo
 
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
-    render(
+    render([
       <StoreProvider>
-        <GridProposals selectedProposals={[]} />
+        <GridProposals />
       </StoreProvider>
-    );
+    ]);
   });
 });
 
@@ -22,7 +22,7 @@ test('renders correctly', async () => {
   });
   render(
     <StoreProvider>
-      <GridProposals selectedProposals={[]} />
+      <GridProposals />
     </StoreProvider>
   );
 });
@@ -33,7 +33,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals selectedProposals={[]} />
+      <GridProposals />
     </StoreProvider>
   );
 
@@ -42,7 +42,7 @@ test('renders correctly, forReview', () => {
   });
   render(
     <StoreProvider>
-      <GridProposals forReview selectedProposals={[]} />
+      <GridProposals forReview />
     </StoreProvider>
   );
 });
