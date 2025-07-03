@@ -15,6 +15,7 @@ describe('<GridProposals />', () => {
     );
   });
 });
+
 test('renders correctly', async () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: 'Error'

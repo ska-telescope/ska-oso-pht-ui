@@ -39,15 +39,11 @@ const mockedPanels: Panel[] = [
   }
 ];
 
-const handleChange = () => {
-  // Mock function to handle row change
-};
-
 describe('<GridReviewers />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <GridReviewers currentPanel={mockedPanels[0]} onChange={handleChange} />
+        <GridReviewers currentPanel={mockedPanels[0]} onChange={() => {}} />
       </StoreProvider>
     );
   });
@@ -84,16 +80,18 @@ describe('filterReviewers', () => {
   });
 });
 
-test('adds a reviewer and calls setReviewerPanels with updated list', () => {
-  const setReviewerPanels = vi.fn();
-  addReviewerPanel(MockReviewersBackendList[0], mockedPanels[0], setReviewerPanels);
-  expect(setReviewerPanels).toHaveBeenCalledWith([
-    expect.objectContaining({
-      reviewerId: MockReviewersBackendList[0].id,
-      panelId: mockedPanels[0].id,
-      status: REVIEWER_STATUS.PENDING
-    })
-  ]);
+describe('Adds Reviewer', () => {
+  test('adds a reviewer and calls setReviewerPanels with updated list', () => {
+    const setReviewerPanels = vi.fn();
+    addReviewerPanel(MockReviewersBackendList[0], mockedPanels[0], setReviewerPanels);
+    expect(setReviewerPanels).toHaveBeenCalledWith([
+      expect.objectContaining({
+        reviewerId: MockReviewersBackendList[0].id,
+        panelId: mockedPanels[0].id,
+        status: REVIEWER_STATUS.PENDING
+      })
+    ]);
+  });
 });
 
 describe('Deletes Reviewer', () => {
