@@ -22,7 +22,6 @@ const axiosAuthClient = axios.create({
   }
 });
 
-// TODO - investigate why is this stops getProposal endpoint from working
 /*
 axiosAuthClient.interceptors.request.use(
   async request => {

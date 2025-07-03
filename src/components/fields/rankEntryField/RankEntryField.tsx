@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useTheme from '@mui/material/styles/useTheme';
-import { Typography, Box, Chip, Paper } from '@mui/material';
-import { COLOR_NAMES, COLOR_PALETTES } from '@/utils/accessibility/accessibility';
+import { Typography, Box, Paper } from '@mui/material';
+import { COLOR_PALETTES } from '@/utils/accessibility/accessibility';
 
 interface RankEntryFieldProps {
   setSelectedRank: Function;
@@ -17,25 +17,20 @@ export default function RankEntryField({
   selectedRank,
   colorBlindness = 0,
   colorIndex = 0,
-  isProgressive = false
+  isProgressive = true
 }: RankEntryFieldProps) {
   const { t } = useTranslation('pht');
-
   const theme = useTheme();
   const [hoveredRank, setHoveredRank] = React.useState<number | null>(null);
-
+  const validMaxRank = 9;
   const currentColors = COLOR_PALETTES[colorBlindness];
-  const currentColorNames = COLOR_NAMES[colorBlindness];
+
+  // Use dropdown value instead of prop
+  const numSegments = validMaxRank;
+  const segmentAngle = 360 / numSegments;
 
   const handleRankSelect = (rank: number) => {
     setSelectedRank(rank);
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent, rank: number) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleRankSelect(rank);
-    }
   };
 
   const handleMouseEnter = (rank: number) => {
@@ -52,8 +47,8 @@ export default function RankEntryField({
     const centerY = 120;
     const outerRadius = 100;
     const innerRadius = 60;
-    const startAngle = (index * 45 - 90) * (Math.PI / 180);
-    const endAngle = ((index + 1) * 45 - 90) * (Math.PI / 180);
+    const startAngle = (index * segmentAngle - 90) * (Math.PI / 180);
+    const endAngle = ((index + 1) * segmentAngle - 90) * (Math.PI / 180);
 
     const x1 = centerX + outerRadius * Math.cos(startAngle);
     const y1 = centerY + outerRadius * Math.sin(startAngle);
@@ -69,7 +64,6 @@ export default function RankEntryField({
 
   const getTextColor = (colorIndex: number) => {
     const color = currentColors[colorIndex];
-    // Simple contrast calculation - in real implementation, you'd use a proper contrast function
     return theme.palette.getContrastText(color);
   };
 
@@ -77,7 +71,7 @@ export default function RankEntryField({
     <Paper
       elevation={2}
       sx={{
-        p: theme.spacing(3),
+        p: theme.spacing(1),
         borderRadius: theme.spacing(2),
         backgroundColor: theme.palette.background.paper,
         transition: theme.transitions.create(['background-color'], {
@@ -85,40 +79,14 @@ export default function RankEntryField({
         })
       }}
     >
+      {/* Visual feedback */}
+      <Box textAlign="center">
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Click on the center (0) or any segment (1-9) to set your ranking
+        </Typography>
+      </Box>
+
       <Box display="flex" flexDirection="column" alignItems="center">
-        {/* Visual feedback */}
-        <Box textAlign="center">
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Click on the center (0) or any segment (1-8) to set your ranking
-          </Typography>
-        </Box>
-
-        {/* Keyboard instructions */}
-        {/*} <Typography variant="caption" color="text.secondary" textAlign="center" maxWidth="400px">
-          Use Tab to navigate between segments, then press Enter or Space to select
-        </Typography> */}
-
-        {colorIndex !== 0 && (
-          <Box display="flex" alignItems="center" gap={1}>
-            <Box
-              sx={{
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                backgroundColor: currentColors[colorIndex],
-                border: `2px solid ${theme.palette.background.paper}`,
-                boxShadow: theme.shadows[1]
-              }}
-            />
-            <Chip
-              label={`Single color mode: ${currentColorNames[colorIndex]}`}
-              color="secondary"
-              size="small"
-              variant="outlined"
-            />
-          </Box>
-        )}
-
         <Box position="relative">
           <svg
             width="240"
@@ -126,10 +94,10 @@ export default function RankEntryField({
             viewBox="0 0 240 240"
             style={{ filter: theme.shadows[3] }}
             role="img"
-            aria-label={`Interactive ranking selector with 9 levels from 0 to 8`}
+            aria-label={`Interactive ranking selector from 0 to ${validMaxRank}`}
           >
-            {/* Donut segments for ranks 1-8 */}
-            {Array.from({ length: 8 }, (_, index) => {
+            {/* Donut segments for ranks 1-maxRank */}
+            {Array.from({ length: numSegments }, (_, index) => {
               const rank = index + 1;
               const isSelected = selectedRank === rank;
               const isActive = !isProgressive || rank <= selectedRank;
@@ -162,7 +130,6 @@ export default function RankEntryField({
                       outline: 'none'
                     }}
                     onClick={() => handleRankSelect(rank)}
-                    onKeyDown={e => handleKeyDown(e, rank)}
                     tabIndex={0}
                     role="button"
                     aria-label={`Select rank ${rank}`}
@@ -171,8 +138,16 @@ export default function RankEntryField({
                     onMouseLeave={handleMouseLeave}
                   />
                   <text
-                    x={120 + 80 * Math.cos((index * 45 + 22.5 - 90) * (Math.PI / 180))}
-                    y={120 + 80 * Math.sin((index * 45 + 22.5 - 90) * (Math.PI / 180))}
+                    x={
+                      120 +
+                      80 *
+                        Math.cos((index * segmentAngle + segmentAngle / 2 - 90) * (Math.PI / 180))
+                    }
+                    y={
+                      120 +
+                      80 *
+                        Math.sin((index * segmentAngle + segmentAngle / 2 - 90) * (Math.PI / 180))
+                    }
                     textAnchor="middle"
                     dominantBaseline="central"
                     style={{
@@ -213,13 +188,13 @@ export default function RankEntryField({
                 outline: 'none'
               }}
               onClick={() => handleRankSelect(0)}
-              onKeyDown={e => handleKeyDown(e, 0)}
               tabIndex={0}
               role="button"
               aria-label="Select rank 0"
               aria-pressed={selectedRank === 0}
               onMouseEnter={() => handleMouseEnter(0)}
               onMouseLeave={handleMouseLeave}
+              data-testid="section0TestId"
             />
             <text
               x="120"

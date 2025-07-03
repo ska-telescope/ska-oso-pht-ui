@@ -600,6 +600,10 @@
     "8": {
       "title": "Strongly Like",
       "description": "Very positive feelings. This represents the highest level of preference with strong positive feelings."
+    },
+    "9": {
+      "title": "Perfect",
+      "description": "Absolute positive feelings. This represents the ultimate level of preference with perfect satisfaction."
     }
   },
   "recommendations": {
