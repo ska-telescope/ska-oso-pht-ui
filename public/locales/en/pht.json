@@ -637,6 +637,10 @@
       "Request failed with status code 500": "Unable to resolve provided name"
     }
   },
+  "reviewDecision": {
+    "title": "Review Decision",
+    "toolTip": "Review Decision"
+  },
   "reviewDecisionsList": {
     "title": "Review Decisions",
     "toolTip": "Review Decisions"

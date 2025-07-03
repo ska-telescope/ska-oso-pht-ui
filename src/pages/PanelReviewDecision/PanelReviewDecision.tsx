@@ -9,12 +9,12 @@ export default function PanelReviewDecision() {
 
   const backButton = () => (
     <BackButton
-      action={() => navigate(PMT[2])}
-      testId="overviewButtonTestId"
-      title={'overview.title'}
-      toolTip="overview.toolTip"
+      action={() => navigate(PMT[4])}
+      testId="reviewDecisionsListButtonTestId"
+      title={'reviewDecisionsList.title'}
+      toolTip="reviewDecisionsList.toolTip"
     />
   );
 
-  return <PageBannerPMT title={t('reviewDecisionsList.title')} backBtn={backButton()} />;
+  return <PageBannerPMT title={t('reviewDecision.title')} backBtn={backButton()} />;
 }

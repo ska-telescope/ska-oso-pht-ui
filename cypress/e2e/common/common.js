@@ -87,6 +87,8 @@ export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '
 export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
 export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
 export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuDecisions = () =>
+  clickUserMenu('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
 
 /*----------------------------------------------------------------------*/

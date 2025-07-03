@@ -2,15 +2,15 @@ import {
   clickAddPanel,
   clickUserMenuOverview,
   clickUserMenuPanels,
-  clickPanelButtonPanels,
-  clickPanelButtonProposals,
-  clickPanelButtonReviews,
+  // clickPanelButtonPanels,
+  // clickPanelButtonProposals,
+  // clickPanelButtonReviews,
   clickPanelMaintenanceButton,
-  clickReviewOverviewButton,
+  // clickReviewOverviewButton,
   clickUserMenuProposals,
   clickUserMenuReviews,
   initialize
-} from '../common/common';
+} from '../../common/common';
 
 describe('Review Coordinator', () => {
   beforeEach(() => {

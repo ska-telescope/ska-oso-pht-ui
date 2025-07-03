@@ -6,7 +6,6 @@ import MockReviewersBackendList from './mockReviewerList';
 import * as CONSTANTS from '@/utils/constants';
 import Reviewer from '@/utils/types/reviewer';
 
-vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
   get: ReturnType<typeof vi.fn>;
   post: ReturnType<typeof vi.fn>;
