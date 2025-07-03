@@ -8,11 +8,11 @@ import MockProposalFrontendList from '@/services/axios/getProposalList/mockPropo
 
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
-    render([
+    render(
       <StoreProvider>
         <GridProposals />
       </StoreProvider>
-    ]);
+    );
   });
 });
 
