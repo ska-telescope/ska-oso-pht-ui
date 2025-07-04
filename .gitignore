@@ -33,7 +33,10 @@ yarn-error.log*
 /.nyc_output/*
 
 public/env.js
-*.test.ts
+/tests/cypress/artefacts
+/tests/cypress/screenshots
+/tests/cypress/videos
+/tests/cypress/downloads
 
 # built docs
 /docs/build
