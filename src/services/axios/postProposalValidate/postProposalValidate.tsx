@@ -1,7 +1,6 @@
-import axios from 'axios';
 import MappingPutProposal from '../putProposal/putProposalMapping';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import {
-  AXIOS_CONFIG,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
@@ -27,10 +26,9 @@ async function PostProposalValidate(proposal: Proposal): Promise<ValidateService
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    const result = await axios.post(
+    const result = await axiosAuthClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
-      convertedProposal,
-      AXIOS_CONFIG
+      convertedProposal
     );
 
     const validateResponseData: ValidateResponseData = result.data;

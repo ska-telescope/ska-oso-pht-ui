@@ -1,16 +1,25 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, test, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import dummyFile from '../../../../public/how-to-conduct-your-own-heuristic-evaluation.pdf';
 import PDFWrapper from './PDFWrapper';
 
-describe('<PDFViewer />', () => {
-  test('renders correctly', () => {
+describe('<PDFWrapper />', () => {
+  test('renders correctly, closed', () => {
+    const mockActionClose = vi.fn();
     render(
       <StoreProvider>
-        <PDFWrapper onClose={vi.fn()} url={dummyFile} />
+        <PDFWrapper open={false} onClose={mockActionClose} url={'dummy file'} />
       </StoreProvider>
     );
+  });
+  test('renders correctly, open, calls onClose when dialog is closed', () => {
+    const mockActionClose = vi.fn();
+    render(
+      <StoreProvider>
+        <PDFWrapper open={true} onClose={mockActionClose} url={'dummy file'} />
+      </StoreProvider>
+    );
+    screen.queryByTestId('cancelButtonTestId')?.click();
   });
 });

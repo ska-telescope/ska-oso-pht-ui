@@ -564,7 +564,9 @@
     "toolTip": "Current functionality is not yet available"
   },
   "rank": {
+    "hovering": "Hovering - Click to select this rank",
     "label": "Rank",
+    "helper": "Click on the center (0) or any segment (1-9) to set your ranking",
     "0": {
       "title": "Neutral",
       "description": "No preference or opinion. This represents a completely neutral stance with no positive or negative feelings."
@@ -634,6 +636,10 @@
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name"
     }
+  },
+  "reviewDecision": {
+    "title": "Review Decision",
+    "toolTip": "Review Decision"
   },
   "reviewDecisionsList": {
     "title": "Review Decisions",

@@ -1,8 +1,6 @@
-import axios from 'axios';
 import TeamMember from '../../../utils/types/teamMember';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
-  AXIOS_CONFIG,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   PROJECTS,
@@ -10,6 +8,7 @@ import {
   OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 
 /*********************************************************** filter *********************************************************/
@@ -70,7 +69,7 @@ const getSubType = (proposalType: {
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
-const getTeam = (investigators: InvestigatorBackend[] | undefined): TeamMember[] => {
+const getTeam = (investigators: InvestigatorBackend[] | null): TeamMember[] => {
   const teamMembers: TeamMember[] = [];
   if (!investigators) {
     return teamMembers as TeamMember[];
@@ -141,7 +140,7 @@ async function GetProposalList(): Promise<Proposal[] | string> {
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/DefaultUser`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await axiosAuthClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
