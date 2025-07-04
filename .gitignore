@@ -10,9 +10,14 @@ charts/*/charts
 
 # testing
 /coverage
-/tests/*
+/tests/cypress/artefacts
+/tests/cypress/screenshots
+/tests/cypress/videos
+/tests/cypress/downloads
+/tests/cypress/screenshots/*
 ctrf/ctrf-report.json
 /report/*
+
 
 # production
 /build
