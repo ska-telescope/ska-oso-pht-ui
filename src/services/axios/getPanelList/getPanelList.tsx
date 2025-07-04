@@ -79,13 +79,10 @@ export function GetMockPanelList(): Panel[] {
     MockPanelBackendList.length > 1
       ? getUniqueMostRecentPanels(MockPanelBackendList)
       : MockPanelBackendList;
-  console.log('GetMockPanelList: uniqueResults', uniqueResults);
-  console.log('GetMockPanelList: unique mapped results', mappingList(uniqueResults));
   return mappingList(uniqueResults);
 }
 
 async function GetPanelList(): Promise<Panel[] | string> {
-  console.log('GetPanelList: USE_LOCAL_DATA', USE_LOCAL_DATA);
   if (USE_LOCAL_DATA) {
     return GetMockPanelList();
   }
