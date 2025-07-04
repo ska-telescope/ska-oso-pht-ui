@@ -35,7 +35,7 @@ export const MockPanelBackendList: PanelBackend[] = [
     metadata: {
       version: 1,
       created_by: 'user1',
-      created_on: '2025-07-0T16:20:37.088Z',
+      created_on: '2025-07-01T16:20:37.088Z',
       last_modified_by: 'user1',
       last_modified_on: '2025-07-01T16:20:37.088Z',
       pdm_version: '18.2.0'

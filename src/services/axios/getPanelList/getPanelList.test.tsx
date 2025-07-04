@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { GetMockPanelList, getUniqueMostRecentPanels } from './getPanelList';
+import { GetMockPanelList, getUniqueMostRecentPanels, mappingList } from './getPanelList';
 import { MockPanelBackendList } from './mockPanelBackendList';
 import * as CONSTANTS from '@/utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
@@ -28,12 +28,11 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal(MockPanelFrontendList);
   });
 
-  /*
   test('mappingList returns mapped proposal list from backend to frontend format', () => {
-    const proposalFrontEnd: Proposal[] = mappingList(MockProposalBackendList);
-    expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendList);
+    const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
+    // checking the second element to ignore duplicates as mapping alone will not remove it
+    expect(panelListFrontEnd[1]).to.deep.equal(MockPanelFrontendList[1]);
   });
-*/
 });
 
 /*
