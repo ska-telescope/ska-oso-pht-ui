@@ -2,7 +2,7 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
-KUBE_HOST ?= http://`minikube ip`
+# KUBE_HOST ?= http://`minikube ip`
 RELEASE_NAME ?= test
 
 # JS Template Variables
