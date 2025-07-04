@@ -6,47 +6,15 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid2, Box, Card, CardContent } from '@mui/material';
+import { Typography, Grid2, Box } from '@mui/material';
 import React from 'react';
 import { LABEL_POSITION, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import {
-  FOOTER_SPACER,
-  NOT_SPECIFIED,
-  REVIEWER_STATUS,
-  SEARCH_TYPE_OPTIONS_REVIEWERS
-} from '@/utils/constants';
+import { FOOTER_SPACER, NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
-import { Panel } from '@/utils/types/panel';
-import { PanelReviewer } from '@/utils/types/panelReviewer';
-
-export const addReviewerPanel = (
-  reviewer: Reviewer,
-  localPanel: Panel,
-  setReviewerPanels: (reviewers: PanelReviewer[]) => void
-) => {
-  const rec: PanelReviewer = {
-    reviewerId: reviewer.id,
-    panelId: localPanel?.id ?? '',
-    assignedOn: new Date().toISOString(),
-    status: REVIEWER_STATUS.PENDING
-  };
-  const updatedReviewers = [...localPanel?.reviewers, rec];
-  setReviewerPanels(updatedReviewers);
-};
-
-export const deleteReviewerPanel = (
-  reviewer: Reviewer,
-  localPanel: Panel,
-  setReviewerPanels: Function
-) => {
-  function filterRecords(id: string) {
-    return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
-  }
-  const filtered = filterRecords(reviewer.id);
-  setReviewerPanels(filtered);
-};
+import { IdObject } from '@/utils/types/idObject';
+import { arraysAreEqual } from '@/utils/helpers';
 
 export function filterReviewers(
   reviewers: Reviewer[],
@@ -69,18 +37,18 @@ export function filterReviewers(
 
 interface GridReviewersProps {
   height?: string;
-  currentPanel: Panel | null;
-  onChange: (reviewersList: PanelReviewer[]) => void;
+  selectedReviewers?: IdObject[];
   showTitle?: boolean;
   showSearch?: boolean;
+  tickBoxClicked?: (reviewer: Reviewer, isReviewerSelected: boolean) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
+  selectedReviewers = [],
   showTitle = false,
   showSearch = false,
-  currentPanel,
-  onChange
+  tickBoxClicked = () => {}
 }: GridReviewersProps) {
   const { t } = useTranslation('pht');
 
@@ -91,8 +59,8 @@ export default function GridProposals({
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
   const [axiosError, setAxiosError] = React.useState('');
-  const [localPanel, setLocalPanel] = React.useState<Panel>({} as Panel);
   const [fetchList] = React.useState(false);
+  const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -108,10 +76,10 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
-    if (currentPanel && currentPanel?.id) {
-      setLocalPanel(currentPanel);
+    if (selectedReviewers && !arraysAreEqual(selectedReviewers, reviewersCollection)) {
+      setReviewersCollection(selectedReviewers);
     }
-  }, [currentPanel]);
+  }, [selectedReviewers]);
 
   const displayStatus = (status: any) => {
     return status
@@ -119,21 +87,8 @@ export default function GridProposals({
       : t('reviewers.statusCategory.' + NOT_SPECIFIED);
   };
 
-  const setReviewerPanels = (reviewerPanels: PanelReviewer[]) => {
-    // send updated reviewer list to parent component
-    onChange(reviewerPanels);
-  };
-
   const isReviewerSelected = (reviewerId: string): boolean => {
-    return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
-  };
-
-  const reviewerSelectedToggle = (reviewer: Reviewer) => {
-    if (isReviewerSelected(reviewer.id)) {
-      deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
-    } else {
-      addReviewerPanel(reviewer, localPanel, setReviewerPanels);
-    }
+    return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
   };
 
   const colSelect = {
@@ -147,7 +102,7 @@ export default function GridProposals({
           label=""
           testId="linkedTickBox"
           checked={isReviewerSelected(e.row.id)}
-          onChange={() => reviewerSelectedToggle(e.row)}
+          onChange={() => tickBoxClicked?.(e.row, isReviewerSelected(e.row.id))}
         />
       </Box>
     )
@@ -283,58 +238,36 @@ export default function GridProposals({
               <Grid2 size={{ sm: 6 }}>{searchDropdownExpertise()}</Grid2>
               <Grid2 size={{ sm: 6 }}>{searchDropdownAffiliation()}</Grid2>
             </Grid2>
-            <Grid2 size={{ sm: 12 }} mt={-1}>
-              {searchEntryField('searchId')}
-            </Grid2>
-          </Grid2>
-          <Grid2 size={{ sm: 12, lg: 4 }}>
-            <Card variant="outlined">
-              <CardContent>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
+              <Grid2 size={{ sm: 6 }} mt={3}>
                 <Grid2
                   container
                   flexDirection={'row'}
                   flexWrap={'wrap'}
-                  alignItems="space-evenly"
-                  justifyContent="space-between"
+                  justifyContent={'space-evenly'}
                 >
                   <Grid2>
-                    <Typography id="targetObservationLabel" pt={1} variant="h6">
-                      {t('targetObservation.filters')}
-                    </Typography>
+                    <TickBox
+                      label={t('selected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="selectedTickBox"
+                      checked={selected}
+                      onChange={() => setSelected(!selected)}
+                    />
                   </Grid2>
-
                   <Grid2>
-                    <Grid2
-                      container
-                      flexDirection={'row'}
-                      flexWrap={'wrap'}
-                      justifyContent={'flex-start'}
-                    >
-                      <Grid2>
-                        <TickBox
-                          disabled={!localPanel}
-                          label={t('selected.label')}
-                          labelPosition={LABEL_POSITION.END}
-                          testId="selectedTickBox"
-                          checked={selected}
-                          onChange={() => setSelected(!selected)}
-                        />
-                      </Grid2>
-                      <Grid2>
-                        <TickBox
-                          disabled={!localPanel}
-                          label={t('notSelected.label')}
-                          labelPosition={LABEL_POSITION.END}
-                          testId="notSelectedTickBox"
-                          checked={notSelected}
-                          onChange={() => setNotSelected(!notSelected)}
-                        />
-                      </Grid2>
-                    </Grid2>
+                    <TickBox
+                      label={t('notSelected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="notSelectedTickBox"
+                      checked={notSelected}
+                      onChange={() => setNotSelected(!notSelected)}
+                    />
                   </Grid2>
                 </Grid2>
-              </CardContent>
-            </Card>
+              </Grid2>
+            </Grid2>
           </Grid2>
         </Grid2>
       )}

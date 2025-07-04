@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { PMT } from '../../utils/constants';
+import { PMT, REVIEWER_STATUS } from '../../utils/constants';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -13,17 +13,107 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import PlusIcon from '@/components/icon/plusIcon/plusIcon';
+import { PanelProposal } from '@/utils/types/panelProposal';
+import Proposal from '@/utils/types/proposal';
+import Reviewer from '@/utils/types/reviewer';
+import { IdObject } from '@/utils/types/idObject';
 
 const REVIEWER_HEIGHT = '65vh';
 const TABS_HEIGHT = '72vh';
 const TABS_CONTENT_HEIGHT = '67vh';
 const TAB_GRID_HEIGHT = '51vh';
 
+export const addReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: (reviewers: PanelReviewer[]) => void
+) => {
+  const rec: PanelReviewer = {
+    reviewerId: reviewer.id,
+    panelId: localPanel?.id ?? '',
+    // assignedOn: new Date().toISOString(), // TODO clarify if assignedOn should be set in the database
+    status: REVIEWER_STATUS.PENDING
+  };
+  const updatedReviewers = [...localPanel?.reviewers, rec];
+  setReviewerPanels(updatedReviewers);
+};
+
+export const deleteReviewerPanel = (
+  reviewer: Reviewer,
+  localPanel: Panel,
+  setReviewerPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
+  }
+  const filtered = filterRecords(reviewer.id);
+  setReviewerPanels(filtered);
+};
+
+export const convertPanelProposalToProposalIdList = (
+  panelProposals: PanelProposal[]
+): IdObject[] => {
+  return panelProposals.map(panelProposal => ({
+    id: panelProposal.proposalId
+  }));
+};
+
+export const convertPanelReviewerToReviewerIdList = (
+  panelReviewers: PanelReviewer[]
+): IdObject[] => {
+  return panelReviewers.map(panelReviewer => ({
+    id: panelReviewer.reviewerId
+  }));
+};
+
+export const addProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: (proposals: PanelProposal[]) => void
+) => {
+  const rec: PanelProposal = {
+    proposalId: proposal.id,
+    panelId: localPanel?.id ?? ''
+    // TODO clarify if assignedOn should be set in the database
+    // assignedOn: new Date().toISOString()
+  };
+  const updatedProposals = [...localPanel?.proposals, rec];
+  setProposalPanels(updatedProposals);
+};
+
+export const deleteProposalPanel = (
+  proposal: Proposal,
+  localPanel: Panel,
+  setProposalPanels: Function
+) => {
+  function filterRecords(id: string) {
+    return localPanel?.proposals?.filter(item => !(item.proposalId === id));
+  }
+  const filtered = filterRecords(proposal.id);
+  setProposalPanels(filtered);
+};
+
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const [theValue, setTheValue] = React.useState(0);
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
+  const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
+  const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
+
+  React.useEffect(() => {
+    const proposals = currentPanel?.proposals
+      ? convertPanelProposalToProposalIdList(currentPanel?.proposals)
+      : [];
+    setPanelProposals(proposals);
+  }, [currentPanel]);
+
+  React.useEffect(() => {
+    const reviewers = currentPanel?.reviewers
+      ? convertPanelReviewerToReviewerIdList(currentPanel?.reviewers)
+      : [];
+    setPanelReviewers(reviewers);
+  }, [currentPanel]);
 
   const handlePanelChange = (row: Panel) => {
     setCurrentPanel(row);
@@ -38,6 +128,33 @@ export default function PanelMaintenance() {
         reviewers: reviewersList
       };
     });
+  };
+
+  const handleProposalsChange = (proposalsList: PanelProposal[]) => {
+    // Update the current panel's proposals with the new list
+    setCurrentPanel(prevPanel => {
+      if (!prevPanel) return prevPanel;
+      return {
+        ...prevPanel,
+        proposals: proposalsList
+      };
+    });
+  };
+
+  const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
+    if (isSelected) {
+      deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+    } else {
+      addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+    }
+  };
+
+  const reviewerSelectedToggle = (reviewer: Reviewer, isSelected: boolean) => {
+    if (isSelected) {
+      deleteReviewerPanel(reviewer, currentPanel as Panel, handleReviewersChange);
+    } else {
+      addReviewerPanel(reviewer, currentPanel as Panel, handleReviewersChange);
+    }
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -144,13 +261,24 @@ export default function PanelMaintenance() {
               >
                 {theValue === 0 && (
                   <GridReviewers
-                    currentPanel={currentPanel}
                     height={TAB_GRID_HEIGHT}
                     showSearch
-                    onChange={item => handleReviewersChange(item)}
+                    selectedReviewers={panelReviewers}
+                    tickBoxClicked={(reviewer, isReviewerSelected) => {
+                      reviewerSelectedToggle(reviewer, isReviewerSelected);
+                    }}
                   />
                 )}
-                {theValue === 1 && <GridProposals showSearch showSelection />}
+                {theValue === 1 && (
+                  <GridProposals
+                    showSearch
+                    showSelection
+                    selectedProposals={panelProposals}
+                    tickBoxClicked={(proposal, isProposalSelected) => {
+                      proposalSelectedToggle(proposal, isProposalSelected);
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           )}

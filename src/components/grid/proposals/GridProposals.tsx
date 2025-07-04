@@ -7,10 +7,10 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Tooltip, Typography, Grid, Box } from '@mui/material';
+import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -36,6 +36,8 @@ import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
+import { IdObject } from '@/utils/types/idObject';
+import { arraysAreEqual } from '@/utils/helpers';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -61,20 +63,24 @@ export function filterProposals(
 
 interface GridProposalsProps {
   height?: string;
+  selectedProposals?: IdObject[];
   forReview?: boolean;
   showSearch?: boolean;
   showTitle?: boolean;
   showSelection?: boolean;
   showActions?: boolean;
+  tickBoxClicked?: (proposal: Proposal, isProposalSelected: boolean) => void;
 }
 
 export default function GridProposals({
   height = '50vh',
+  selectedProposals = [],
   showSearch = false,
   showTitle = false,
   forReview = false,
   showSelection = false,
-  showActions = false
+  showActions = false,
+  tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useTranslation('pht');
 
@@ -98,9 +104,11 @@ export default function GridProposals({
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
+  const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
+  const [selected, setSelected] = React.useState(true);
+  const [notSelected, setNotSelected] = React.useState(true);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -195,6 +203,12 @@ export default function GridProposals({
   }, [fetchList]);
 
   React.useEffect(() => {
+    if (selectedProposals && !arraysAreEqual(selectedProposals, proposalsCollection)) {
+      setProposalsCollection(selectedProposals);
+    }
+  }, [selectedProposals]);
+
+  React.useEffect(() => {
     const cycleData = async () => {
       const response = await GetCycleData();
       if (typeof response === 'string') {
@@ -212,20 +226,7 @@ export default function GridProposals({
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    // TODO: implment for proposal selection
-    // return localPanel?.reviewers?.filter(entry => entry.reviewerId === reviewerId).length > 0;
-    return false;
-  };
-
-  const proposalSelectedToggle = (proposal: Proposal) => {
-    // TODO: implement proposal selection toggle
-    /*
-      if (isReviewerSelected(reviewer.id)) {
-        deleteReviewerPanel(reviewer, localPanel, setReviewerPanels);
-      } else {
-        addReviewerPanel(reviewer, localPanel, setReviewerPanels);
-      }
-        */
+    return proposalsCollection?.filter(entry => entry.id === proposalId)?.length > 0;
   };
 
   const displayProposalType = (proposalType: any) => {
@@ -284,8 +285,8 @@ export default function GridProposals({
   const colTitle = {
     field: 'title',
     headerName: t('title.label'),
-    flex: 2,
-    minWidth: 250,
+    flex: 3,
+    minWidth: 300,
     renderCell: (e: any) => presentLatex(e.row.title)
   };
 
@@ -318,7 +319,7 @@ export default function GridProposals({
           label=""
           testId="linkedTickBox"
           checked={isProposalSelected(e.row.id)}
-          onChange={() => proposalSelectedToggle(e.row)}
+          onChange={() => tickBoxClicked?.(e.row, isProposalSelected(e.row.id))}
         />
       </Box>
     )
@@ -364,8 +365,11 @@ export default function GridProposals({
 
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
-  const filteredData = proposals
-    ? filterProposals(proposals, searchTerm, searchScienceCategory, searchProposalType)
+  const selectedData = proposals
+    ? proposals.filter(e => (isProposalSelected(e.id) ? selected : notSelected))
+    : [];
+  const filteredData = selectedData
+    ? filterProposals(selectedData, searchTerm, searchScienceCategory, searchProposalType)
     : [];
 
   const ProposalsSectionTitle = () => (
@@ -482,40 +486,68 @@ export default function GridProposals({
   return (
     <>
       {showTitle && (
-        <Grid item p={2} lg={12}>
+        <Grid2 p={2} size={{ lg: 12 }}>
           {ProposalsSectionTitle()}
-        </Grid>
+        </Grid2>
       )}
 
       {showSearch && (
-        <Grid
-          item
+        <Grid2
           p={2}
-          sm={12}
-          md={8}
-          lg={12}
+          size={{ sm: 12, md: 8, lg: 12 }}
           container
           direction="row"
-          justifyContent="space-around"
+          spacing={2}
+          justifyContent="space-between"
           alignItems="center"
         >
-          <Grid container direction="row" spacing={2}>
-            <Grid item sm={12} md={6} lg={4}>
-              {proposalTypeDropdown()}
-            </Grid>
-            <Grid item sm={12} md={6} lg={4}>
-              {scienceCategoryDropdown()}
-            </Grid>
-            <Grid item sm={12} md={6} lg={4} mt={-2}>
-              {searchEntryField('searchId')}
-            </Grid>
-          </Grid>
-        </Grid>
+          <Grid2 size={{ sm: 12, lg: 8 }}>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{proposalTypeDropdown()}</Grid2>
+              <Grid2 size={{ sm: 6 }}>{scienceCategoryDropdown()}</Grid2>
+            </Grid2>
+            <Grid2 container direction="row" spacing={2}>
+              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
+              <Grid2 size={{ sm: 6 }} mt={3}>
+                <Grid2
+                  container
+                  flexDirection={'row'}
+                  flexWrap={'wrap'}
+                  justifyContent={'space-evenly'}
+                >
+                  <Grid2>
+                    <TickBox
+                      disabled={!proposalsCollection}
+                      label={t('selected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="selectedTickBox"
+                      checked={selected}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </Grid2>
+                  <Grid2>
+                    <TickBox
+                      disabled={!proposalsCollection}
+                      label={t('notSelected.label')}
+                      labelPosition={LABEL_POSITION.END}
+                      testId="notSelectedTickBox"
+                      checked={notSelected}
+                      onChange={() => setNotSelected(!notSelected)}
+                    />
+                  </Grid2>
+                </Grid2>
+              </Grid2>
+            </Grid2>
+          </Grid2>
+        </Grid2>
       )}
-
-      <Grid item xs={12} pt={1}>
-        {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+      <Grid2 size={{ xs: 12 }} pt={1}>
+        {!axiosViewError && (!filteredData || filteredData?.length === 0) && (
+          <Alert
+            color={AlertColorTypes.Info}
+            text={t('proposals.empty')}
+            testId="helpProposalsId"
+          />
         )}
         {!axiosViewError && filteredData.length > 0 && (
           <div>
@@ -538,7 +570,7 @@ export default function GridProposals({
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
-      </Grid>
+      </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
