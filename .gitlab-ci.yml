@@ -183,10 +183,8 @@ stop-dev-environment:
 helm-chart-build:
   allow_failure: true
 
-oci-image-build:
-  tags:
-    - $SKA_DEFAULT_RUNNER
-  allow_failure: true
+# oci-image-build:
+#   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
