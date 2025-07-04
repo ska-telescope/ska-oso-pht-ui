@@ -5,7 +5,7 @@ import {
   USE_LOCAL_DATA,
   OSO_SERVICES_PANEL_PATH
 } from '../../../utils/constants';
-import { MockPanelBackendList } from './mockpanelBackendList';
+import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
 
@@ -22,7 +22,7 @@ const groupByPanelId = (data: PanelBackend[]) => {
   }, {} as { [key: string]: PanelBackend[] });
 };
 
-export const sortByLastUpdated = (array: PanelBackend[]): PanelBackend[] => {
+const sortByLastUpdated = (array: PanelBackend[]): PanelBackend[] => {
   array.sort(function(a, b) {
     return (
       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
@@ -32,7 +32,7 @@ export const sortByLastUpdated = (array: PanelBackend[]): PanelBackend[] => {
   return array;
 };
 
-const getMostRecentPanels = (data: PanelBackend[]) => {
+export const getUniqueMostRecentPanels = (data: PanelBackend[]) => {
   let grouped: { [key: string]: PanelBackend[] } = groupByPanelId(data);
   let sorted = (Object as any).values(grouped).map((arr: PanelBackend[]) => {
     sortByLastUpdated(arr);
@@ -75,10 +75,17 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 /*****************************************************************************************************************************/
 
 export function GetMockPanelList(): Panel[] {
-  return mappingList(MockPanelBackendList);
+  const uniqueResults =
+    MockPanelBackendList.length > 1
+      ? getUniqueMostRecentPanels(MockPanelBackendList)
+      : MockPanelBackendList;
+  console.log('GetMockPanelList: uniqueResults', uniqueResults);
+  console.log('GetMockPanelList: unique mapped results', mappingList(uniqueResults));
+  return mappingList(uniqueResults);
 }
 
 async function GetPanelList(): Promise<Panel[] | string> {
+  console.log('GetPanelList: USE_LOCAL_DATA', USE_LOCAL_DATA);
   if (USE_LOCAL_DATA) {
     return GetMockPanelList();
   }
@@ -91,7 +98,8 @@ async function GetPanelList(): Promise<Panel[] | string> {
       return 'error.API_UNKNOWN_ERROR';
     }
 
-    const uniqueResults = result.data.length > 1 ? getMostRecentPanels(result.data) : result.data;
+    const uniqueResults =
+      result.data.length > 1 ? getUniqueMostRecentPanels(result.data) : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
