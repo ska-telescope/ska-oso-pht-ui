@@ -2,8 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid2 } from '@mui/material';
+import { ConstructionOutlined } from '@mui/icons-material';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
+import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -22,15 +24,27 @@ export default function GridReviewPanels({
 
   const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
+  const [axiosError, setAxiosError] = React.useState('');
 
+  /*
   const GetReviewPanels = (): Panel[] => [
     { id: 'P400', name: 'Stargazers', proposals: [], reviewers: [] },
     { id: 'P500', name: 'Buttons', proposals: [], reviewers: [] },
     { id: 'P600', name: 'Nashrakra', proposals: [], reviewers: [] }
   ];
+  */
+
+  const GetReviewPanels = async () => {
+    // NotifyWarning(t('addProposal.warning'));
+    const response = await GetPanelList();
+    if (typeof response === 'string') {
+      setAxiosError(response);
+    } else {
+      return response;
+    }
+  };
 
   const updateReviewPanel = (updatedData: Panel) => {
-    // Update the data state with the updated data (updated list of reviewers) for curremt panel
     setData(prevData => prevData.map(item => (item?.id === updatedData?.id ? updatedData : item)));
   };
 
@@ -45,9 +59,11 @@ export default function GridReviewPanels({
   }, []);
 
   React.useEffect(() => {
-    const fetchData = () => {
-      const response = GetReviewPanels();
-      setData(response);
+    const fetchData = async () => {
+      const response = await GetReviewPanels();
+      if (response) {
+        setData((response as unknown) as Panel[]);
+      }
     };
     fetchData();
   }, [fetchList]);

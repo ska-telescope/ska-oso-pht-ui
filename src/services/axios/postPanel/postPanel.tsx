@@ -13,8 +13,11 @@ function mappingPostPanel(panel: Panel): PanelBackend {
     panel_id: panel.id,
     cycle: 'cycle-001', // hardcoded for now
     name: panel.name,
-    proposals: [],
-    reviewers: []
+    proposals: panel.proposals.map(proposal => ({
+      prsl_id: proposal.proposalId,
+      assigned_on: proposal.assignedOn
+    })),
+    reviewers: [] // TODO map reviewers
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedPanel);

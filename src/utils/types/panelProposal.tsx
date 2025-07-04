@@ -5,7 +5,6 @@ export type PanelProposal = {
 };
 
 export type PanelProposalBackend = {
-  proposal_id: string;
-  panel_id: string;
+  prsl_id: string;
   assigned_on?: string; // TODO clarify if assignedOn should be set in the database
 };

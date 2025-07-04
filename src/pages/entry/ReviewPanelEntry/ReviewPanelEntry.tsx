@@ -88,8 +88,8 @@ export default function ReviewPanelEntry() {
     return {
       id: isEdit() ? locationProperties.state.id : Math.floor(Math.random() * 1000000).toString(), // TODO: clarify if this can be generated in the backend
       name: panelName,
-      createdOn: panelDateCreated,
-      expiresOn: panelDateExpiry,
+      // createdOn: panelDateCreated, /// this is automatically generated in the backend
+      expiresOn: panelDateExpiry, // TODO add expiresOn to Panel type
       proposals: [],
       reviewers: []
     };
