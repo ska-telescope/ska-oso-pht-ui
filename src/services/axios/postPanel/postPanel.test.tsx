@@ -16,5 +16,5 @@ describe('Helper Functions', () => {
     expect(panelBackEnd).to.deep.equal(MockPanelBackend);
   });
 
-  // TODO: add more tests for postPanel service
+  // TODO: add more tests for rest of postPanel service
 });

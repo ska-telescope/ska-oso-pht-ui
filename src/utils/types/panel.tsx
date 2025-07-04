@@ -7,6 +7,7 @@ export type Panel = {
   id: string;
   name: string;
   expiresOn?: string;
+  cycle?: string;
   proposals: PanelProposal[];
   reviewers: PanelReviewer[];
 };
