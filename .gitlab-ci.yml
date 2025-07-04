@@ -65,7 +65,7 @@ install_dependencies:
   image: $NODE_IMAGE
   stage: dependencies
   tags:
-    - k8srunner
+    - $SKA_K8S_RUNNER
   before_script:
     - rm -rf node_modules
   script:
@@ -88,7 +88,7 @@ js-lint:
   image: $NODE_IMAGE
   allow_failure: true
   tags:
-    - ska-default
+    - $SKA_DEFAULT_RUNNER
   cache:
     paths:
       - node_modules/
@@ -221,7 +221,7 @@ js-e2e-test:
 code_quality:
   services: []
   tags:
-    - ska-default
+    - $SKA_DEFAULT_RUNNER
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
