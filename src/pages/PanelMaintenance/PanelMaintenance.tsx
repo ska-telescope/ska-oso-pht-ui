@@ -17,6 +17,7 @@ import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
 import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
+import PostPanel from '@/services/axios/postPanel/postPanel';
 
 const REVIEWER_HEIGHT = '65vh';
 const TABS_HEIGHT = '72vh';
@@ -79,6 +80,9 @@ export const addProposalPanel = (
   };
   const updatedProposals = [...localPanel?.proposals, rec];
   setProposalPanels(updatedProposals);
+
+  // save in backend
+  //const response = savePanel(localPanel);
 };
 
 export const deleteProposalPanel = (
@@ -100,6 +104,7 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
+  const [axiosError, setAxiosError] = React.useState('');
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
@@ -130,14 +135,33 @@ export default function PanelMaintenance() {
     });
   };
 
+  async function savePanel(panel: Panel): Promise<Panel> {
+    const response = await PostPanel(panel);
+    if (response && !response.error) {
+      // console.log('Panel saved successfully:', response);
+      // TODO notify user of success
+    } else {
+      // console.error('Error saving panel:', response.error);
+      setAxiosError(response);
+      // TODO notify user of error
+    }
+    return response;
+  }
+
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {
     // Update the current panel's proposals with the new list
     setCurrentPanel(prevPanel => {
-      if (!prevPanel) return prevPanel;
-      return {
+      if (!prevPanel) {
+        return prevPanel;
+      }
+      const updatedPanel = {
         ...prevPanel,
         proposals: proposalsList
       };
+      // Save the updated panel to the backend
+      savePanel(updatedPanel);
+      // Update the state with the new panel
+      return updatedPanel;
     });
   };
 

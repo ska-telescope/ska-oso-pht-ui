@@ -15,7 +15,7 @@ function mappingPostPanel(panel: Panel): PanelBackend {
     name: panel.name,
     proposals: panel.proposals.map(proposal => ({
       prsl_id: proposal.proposalId,
-      assigned_on: proposal.assignedOn
+      assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()
     })),
     reviewers: [] // TODO map reviewers
   };
