@@ -8,12 +8,13 @@ import {
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 
-function mappingPostPanel(panel: Panel): PanelBackend {
+export function mappingPostPanel(panel: Panel): PanelBackend {
   const transformedPanel: PanelBackend = {
     panel_id: panel.id,
-    cycle: 'cycle-001', // hardcoded for now
+    cycle: panel.cycle ? panel.cycle : 'cycle-001', // hardcoded for now
     name: panel.name,
     expires_on: panel.expiresOn,
+    metadata: panel.metadata,
     proposals: panel.proposals.map(proposal => ({
       prsl_id: proposal.proposalId,
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()
@@ -25,9 +26,13 @@ function mappingPostPanel(panel: Panel): PanelBackend {
   return transformedPanel;
 }
 
+export function postMockPanel(): string {
+  return 'PANEL-ID-001';
+}
+
 async function PostPanel(panel: Panel) {
   if (USE_LOCAL_DATA) {
-    return 'PANEL-ID-001';
+    return postMockPanel();
   }
 
   try {

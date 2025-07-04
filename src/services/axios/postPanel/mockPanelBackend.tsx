@@ -1,6 +1,6 @@
 import { PanelBackend } from '@/utils/types/panel';
 
-export const MockPanel: PanelBackend = {
+export const MockPanelBackend: PanelBackend = {
   metadata: {
     version: 1,
     created_by: 'string',

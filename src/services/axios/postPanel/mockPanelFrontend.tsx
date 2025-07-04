@@ -1,6 +1,6 @@
 import { Panel } from '@/utils/types/panel';
 
-export const MockPanel: Panel = {
+export const MockPanelFrontend: Panel = {
   metadata: {
     version: 1,
     created_by: 'string',
@@ -11,6 +11,7 @@ export const MockPanel: Panel = {
   },
   id: 'panel-12345',
   name: 'string',
+  cycle: 'string',
   proposals: [],
   reviewers: []
 };
