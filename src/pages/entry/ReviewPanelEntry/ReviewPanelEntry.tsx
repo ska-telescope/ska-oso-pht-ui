@@ -84,9 +84,20 @@ export default function ReviewPanelEntry() {
 
   /**************************************************************/
 
+  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+
+  const getPanelId = () => {
+    return isEdit()
+      ? locationProperties.state.id
+      : 'panel-t0001-' +
+          getDateFormatted() +
+          '-00001-' +
+          Math.floor(Math.random() * 10000).toString();
+  };
+
   const getPanel = (): Panel => {
     return {
-      id: isEdit() ? locationProperties.state.id : Math.floor(Math.random() * 1000000).toString(), // TODO: clarify if this can be generated in the backend
+      id: getPanelId(),
       name: panelName,
       // createdOn: panelDateCreated, /// this is automatically generated in the backend
       expiresOn: panelDateExpiry, // TODO add expiresOn to Panel type
