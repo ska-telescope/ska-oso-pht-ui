@@ -18,8 +18,8 @@ include:
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'
     ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
   # OCI - build - scan stages
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
+  # project: 'ska-telescope/templates-repository'
+  # file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
   # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
@@ -171,8 +171,8 @@ info-staging:
 
 deploy-dev-environment:
   <<: *dev_env
-  needs:
-    - oci-image-build
+  # needs:
+  #   - oci-image-build
 
 test-dev-environment:
   <<: *dev_env
@@ -183,8 +183,8 @@ stop-dev-environment:
 helm-chart-build:
   allow_failure: true
 
-oci-image-build:
-  allow_failure: true
+# oci-image-build:
+#   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
