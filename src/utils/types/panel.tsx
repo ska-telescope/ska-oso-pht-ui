@@ -6,8 +6,7 @@ export type Panel = {
   metadata?: Metadata;
   id: string;
   name: string;
-  // createdOn?: string;
-  // expiresOn?: string;
+  expiresOn?: string;
   proposals: PanelProposal[];
   reviewers: PanelReviewer[];
 };
@@ -17,8 +16,7 @@ export type PanelBackend = {
   panel_id: string;
   cycle: string;
   name: string;
-  // createdOn?: string;
-  // expiresOn?: string;
+  expires_on?: string;
   proposals: PanelProposalBackend[];
   reviewers: PanelReviewer[];
 };

@@ -13,6 +13,7 @@ function mappingPostPanel(panel: Panel): PanelBackend {
     panel_id: panel.id,
     cycle: 'cycle-001', // hardcoded for now
     name: panel.name,
+    expires_on: panel.expiresOn,
     proposals: panel.proposals.map(proposal => ({
       prsl_id: proposal.proposalId,
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()

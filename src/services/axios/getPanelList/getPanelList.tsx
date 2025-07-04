@@ -60,7 +60,7 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
       id: inRec[i].panel_id?.toString(),
       metadata: inRec[i].metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
       name: inRec[i].name,
-      // expiresOn: inRec[i].expiresOn,
+      expiresOn: inRec[i].expires_on, // TODO check why PDM doesn't have expiry date
       proposals:
         inRec[i].proposals?.length > 0
           ? inRec[i].proposals.map(proposal => getProposal(proposal, inRec[i].panel_id))

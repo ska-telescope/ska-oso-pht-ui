@@ -92,7 +92,7 @@ export default function ReviewPanelEntry() {
       : 'panel-t0001-' +
           getDateFormatted() +
           '-00001-' +
-          Math.floor(Math.random() * 10000).toString();
+          Math.floor(Math.random() * 10000000).toString();
   };
 
   const getPanel = (): Panel => {
@@ -100,7 +100,7 @@ export default function ReviewPanelEntry() {
       id: getPanelId(),
       name: panelName,
       // createdOn: panelDateCreated, /// this is automatically generated in the backend
-      expiresOn: panelDateExpiry, // TODO add expiresOn to Panel type
+      expiresOn: panelDateExpiry, // note: this doesn't exist in the backend atm
       proposals: [],
       reviewers: []
     };
