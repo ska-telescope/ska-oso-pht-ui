@@ -91,9 +91,7 @@ async function GetPanelList(): Promise<Panel[] | string> {
       return 'error.API_UNKNOWN_ERROR';
     }
 
-    // const uniqueResults =
-    // result.data.length > 1 ? getMostRecentPanels(result.data) : result.data;
-    const uniqueResults = result.data;
+    const uniqueResults = result.data.length > 1 ? getMostRecentPanels(result.data) : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
