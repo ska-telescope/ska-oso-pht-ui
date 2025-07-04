@@ -189,16 +189,12 @@ helm-chart-build:
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 js-e2e-deploy:
-  tags:
-    - $SKA_K8S_RUNNER
   allow_failure: true
   rules:
     - exists:
-        - cypress/e2e/**/*.test.js
+        - tests/cypress/e2e/**/*.test.js
 
 js-e2e-test:
-  tags:
-    - $SKA_K8S_RUNNER
   allow_failure: true
   before_script:
     - make js-install-reinstall

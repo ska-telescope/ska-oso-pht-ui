@@ -2,10 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
-import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import useTheme from '@mui/material/styles/useTheme';
-import { FOOTER_SPACER, PMT } from '@utils/constants.ts';
+import { PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -18,7 +17,6 @@ import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
-  const theme = useTheme();
   const navigate = useNavigate();
   // const locationProperties = useLocation();
 
@@ -33,7 +31,7 @@ export default function ReviewEntry() {
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
-  const PDF_HEIGHT_NUM = (AREA_HEIGHT_NUM * window.innerHeight) / 100 - 30;
+  const PDF_HEIGHT_NUM = (AREA_HEIGHT_NUM * window.innerHeight) / 100 - 50;
   const PDF_HEIGHT = PDF_HEIGHT_NUM + 'px';
 
   const getProposal = () => application.content2 as Proposal;
@@ -74,9 +72,9 @@ export default function ReviewEntry() {
     return (
       <Paper
         sx={{
-          bgcolor: `${theme.palette.primary.main}`,
+          /* bgcolor: `${theme.palette.primary.main}`,
           border: `2px solid ${theme.palette.primary.contrastText}`,
-          borderRadius: '16px',
+          borderRadius: '16px', */
           height: AREA_HEIGHT
         }}
         elevation={0}
@@ -114,28 +112,90 @@ export default function ReviewEntry() {
 
   /**************************************************************/
 
+  const sciencePDF = () => (
+    <Paper
+      sx={{
+        height: PDF_HEIGHT,
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
+  );
+
+  const technicalPDF = () => (
+    <Paper
+      sx={{
+        height: PDF_HEIGHT,
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
+  );
+
   const pdfArea = () => {
+    function a11yProps(index: number) {
+      return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
+      };
+    }
+
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+      setTabValue(newValue);
+    };
+
+    const maxHeight = () => `calc('75vh' - 250px)`;
+
     return (
       <Paper
         sx={{
-          bgcolor: `${theme.palette.primary.main}`,
-          border: `2px solid ${theme.palette.primary.contrastText}`,
-          borderRadius: '16px',
-          height: AREA_HEIGHT
+          height: PDF_HEIGHT
         }}
         elevation={0}
       >
-        <Paper
-          sx={{
-            margin: 1,
-            bgcolor: `${theme.palette.primary.main}`,
-            height: PDF_HEIGHT,
-            overflow: 'auto'
-          }}
-          elevation={0}
+        <Tabs
+          variant="fullWidth"
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="basic tabs example"
         >
-          <PDFViewer />
-        </Paper>
+          <Tab label={t('page.3.title')} {...a11yProps(0)} />
+          <Tab label={t('page.6.title')} {...a11yProps(1)} />
+        </Tabs>
+        {tabValue === 0 && (
+          <Box
+            sx={{
+              maxHeight: maxHeight(),
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'yellow'
+            }}
+          >
+            {sciencePDF()}
+          </Box>
+        )}
+        {tabValue === 1 && (
+          <Box
+            sx={{
+              maxHeight: maxHeight(),
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'yellow'
+            }}
+          >
+            {technicalPDF()}
+          </Box>
+        )}
       </Paper>
     );
   };
@@ -185,15 +245,13 @@ export default function ReviewEntry() {
     return (
       <Paper
         sx={{
-          border: `2px solid ${theme.palette.primary.contrastText}`,
-          borderRadius: '16px',
           height: AREA_HEIGHT
         }}
         elevation={0}
       >
+        {/*sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }} */}
         <Tabs
           variant="fullWidth"
-          sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }}
           textColor="secondary"
           indicatorColor="secondary"
           value={tabValue}
@@ -204,10 +262,10 @@ export default function ReviewEntry() {
           <Tab label={t('generalComments.label')} {...a11yProps(1)} />
           <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
+        {/*               bgcolor: `${theme.palette.primary.main}`,}   */}
         {tabValue === 0 && (
           <Box
             sx={{
-              bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
               width: '100%',
@@ -272,7 +330,6 @@ export default function ReviewEntry() {
         <Grid2 size={{ sm: 6 }}>{pdfArea()}</Grid2>
         <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </>
   );
 }
