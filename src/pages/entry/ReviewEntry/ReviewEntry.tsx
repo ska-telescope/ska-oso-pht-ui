@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import useTheme from '@mui/material/styles/useTheme';
 import { PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import SaveButton from '../../../components/button/Save/Save';
@@ -17,6 +18,7 @@ import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
+  const theme = useTheme();
   const navigate = useNavigate();
   // const locationProperties = useLocation();
 
@@ -24,14 +26,15 @@ export default function ReviewEntry() {
 
   // const isEdit = () => locationProperties.state !== null;
 
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValuePDF, setTabValuePDF] = React.useState(0);
+  const [tabValueReview, setTabValueReview] = React.useState(0);
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
-  const PDF_HEIGHT_NUM = (AREA_HEIGHT_NUM * window.innerHeight) / 100 - 50;
+  const PDF_HEIGHT_NUM = (AREA_HEIGHT_NUM * window.innerHeight) / 100 - 60;
   const PDF_HEIGHT = PDF_HEIGHT_NUM + 'px';
 
   const getProposal = () => application.content2 as Proposal;
@@ -72,9 +75,8 @@ export default function ReviewEntry() {
     return (
       <Paper
         sx={{
-          /* bgcolor: `${theme.palette.primary.main}`,
-          border: `2px solid ${theme.palette.primary.contrastText}`,
-          borderRadius: '16px', */
+          bgcolor: `${theme.palette.primary.main}`,
+          borderRadius: '16px',
           height: AREA_HEIGHT
         }}
         elevation={0}
@@ -115,6 +117,8 @@ export default function ReviewEntry() {
   const sciencePDF = () => (
     <Paper
       sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
         height: PDF_HEIGHT,
         overflow: 'auto'
       }}
@@ -127,6 +131,8 @@ export default function ReviewEntry() {
   const technicalPDF = () => (
     <Paper
       sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
         height: PDF_HEIGHT,
         overflow: 'auto'
       }}
@@ -145,15 +151,15 @@ export default function ReviewEntry() {
     }
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-      setTabValue(newValue);
+      setTabValuePDF(newValue);
     };
-
-    const maxHeight = () => `calc('75vh' - 250px)`;
 
     return (
       <Paper
         sx={{
-          height: PDF_HEIGHT
+          bgcolor: `${theme.palette.primary.main}`,
+          borderRadius: '16px',
+          height: AREA_HEIGHT
         }}
         elevation={0}
       >
@@ -161,41 +167,15 @@ export default function ReviewEntry() {
           variant="fullWidth"
           textColor="secondary"
           indicatorColor="secondary"
-          value={tabValue}
+          value={tabValuePDF}
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
           <Tab label={t('page.3.title')} {...a11yProps(0)} />
           <Tab label={t('page.6.title')} {...a11yProps(1)} />
         </Tabs>
-        {tabValue === 0 && (
-          <Box
-            sx={{
-              maxHeight: maxHeight(),
-              overflowY: 'auto',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: 'yellow'
-            }}
-          >
-            {sciencePDF()}
-          </Box>
-        )}
-        {tabValue === 1 && (
-          <Box
-            sx={{
-              maxHeight: maxHeight(),
-              overflowY: 'auto',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: 'yellow'
-            }}
-          >
-            {technicalPDF()}
-          </Box>
-        )}
+        {tabValuePDF === 0 && sciencePDF()}
+        {tabValuePDF === 1 && technicalPDF()}
       </Paper>
     );
   };
@@ -239,22 +219,24 @@ export default function ReviewEntry() {
     }
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-      setTabValue(newValue);
+      setTabValueReview(newValue);
     };
 
     return (
       <Paper
         sx={{
+          border: `2px solid ${theme.palette.primary.light}`,
+          borderRadius: '16px',
           height: AREA_HEIGHT
         }}
         elevation={0}
       >
-        {/*sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }} */}
         <Tabs
           variant="fullWidth"
+          sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }}
           textColor="secondary"
           indicatorColor="secondary"
-          value={tabValue}
+          value={tabValueReview}
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
@@ -262,10 +244,10 @@ export default function ReviewEntry() {
           <Tab label={t('generalComments.label')} {...a11yProps(1)} />
           <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
-        {/*               bgcolor: `${theme.palette.primary.main}`,}   */}
-        {tabValue === 0 && (
+        {tabValueReview === 0 && (
           <Box
             sx={{
+              bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
               width: '100%',
@@ -276,7 +258,7 @@ export default function ReviewEntry() {
             {rankField()}
           </Box>
         )}
-        {tabValue === 1 && (
+        {tabValueReview === 1 && (
           <Box
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
@@ -290,7 +272,7 @@ export default function ReviewEntry() {
             {generalCommentsField()}
           </Box>
         )}
-        {tabValue === 2 && (
+        {tabValueReview === 2 && (
           <Box
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
@@ -311,7 +293,12 @@ export default function ReviewEntry() {
   /**************************************************************/
 
   return (
-    <>
+    <Paper
+      sx={{
+        bgcolor: `${theme.palette.primary.main}`
+      }}
+      elevation={0}
+    >
       <PageBannerPMT
         backBtn={backButton()}
         fwdBtn={saveButton()}
@@ -330,6 +317,6 @@ export default function ReviewEntry() {
         <Grid2 size={{ sm: 6 }}>{pdfArea()}</Grid2>
         <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
       </Grid2>
-    </>
+    </Paper>
   );
 }

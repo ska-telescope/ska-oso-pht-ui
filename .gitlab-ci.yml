@@ -83,7 +83,6 @@ install_dependencies:
     policy: push
 
 js-lint:
-js-lint:
   image: $NODE_IMAGE
   allow_failure: true
   tags:
@@ -182,16 +181,12 @@ stop-dev-environment:
 helm-chart-build:
   allow_failure: true
 
-# oci-image-build:
-#   allow_failure: true
-
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 js-e2e-deploy:
   allow_failure: true
-  rules:
-    - exists:
-        - tests/cypress/e2e/**/*.test.js
+  tags:
+    - $SKA_K8S_RUNNER
 
 js-e2e-test:
   allow_failure: true
