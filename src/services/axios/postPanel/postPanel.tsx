@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  AXIOS_CONFIG,
   CYCLE,
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
@@ -40,11 +39,7 @@ async function PostPanel(panel: Panel): Promise<string | { error: string }> {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
     const convertedPanel = mappingPostPanel(panel);
 
-    const result = await axios.post(
-      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
-      convertedPanel,
-      AXIOS_CONFIG
-    );
+    const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanel);
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };

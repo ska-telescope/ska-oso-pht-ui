@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  AXIOS_CONFIG,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_PANEL_PATH
@@ -89,7 +88,7 @@ async function GetPanelList(): Promise<Panel[] | string> {
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}?user_id=DefaultUser`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
