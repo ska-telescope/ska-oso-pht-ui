@@ -5,8 +5,11 @@ import {
   enterPanelName,
   clickAddPanelEntry,
   verifyPanelCreatedAlertFooter,
-  verifyFirstPanelOnLandingPageIsVisible,
-  getPanelId,
+  verifyFirstPanelOnGridIsVisible,
+  clickFirstPanel,
+  verifyReviewerOnGridIsVisible,
+  clickPanelProposalsTab,
+  verifyProposalOnGridIsVisible,
   clickPanelButtonPanels,
   clickPanelButtonProposals,
   clickPanelButtonReviews,
@@ -51,32 +54,29 @@ describe('Review Coordinator', () => {
   });
   it('Display newly created panel', () => {
     clickUserMenuPanels();
-    verifyFirstPanelOnLandingPageIsVisible(panelName);
+    verifyFirstPanelOnGridIsVisible(panelName);
   });
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
-    // TODO : click on a panel
-    // TODO : click on the proposals tab
-    // TODO : check the proposals are displayed
+    clickFirstPanel();
+    // TODO : check the proposals are displayed (we need to add or mock proposals first)
   });
-  /*
   it('Display a list of reviewers', () => {
     clickUserMenuPanels();
-    // TODO : click on a panel
-    // TODO : click on the proposals tab
+    clickFirstPanel();
+    verifyReviewerOnGridIsVisible('Aisha');
     // TODO : check the reviewers are displayed
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
     // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, add a reviewer
+    // TODO : add a reviewer
   });
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
     // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, add a proposal
+    // TODO : add a proposal
   });
-  */
 });

@@ -73,14 +73,29 @@ export const clickNavId = (testId, title) => {
 export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Panel Maintenance');
 export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
 export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
+export const clickFirstPanel = () =>
+  cy
+    .get('[data-testid="dataGridId"]')
+    .find('.MuiDataGrid-row')
+    .first()
+    .click();
+
+export const clickPanelProposalsTab = () => cy.get('#simple-tab-1').click();
 
 export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Panel Name');
 
 export const verifyPanelCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Panel added with unique identifier');
 
-export const verifyFirstPanelOnLandingPageIsVisible = PanelName => {
+export const verifyFirstPanelOnGridIsVisible = PanelName => {
   cy.get('[data-testid="dataGridId"]').should('contain', PanelName);
+};
+
+export const verifyReviewerOnGridIsVisible = ReviewerName => {
+  cy.get('[data-testid="dataGridReviewers"]').should('contain', ReviewerName);
+};
+export const verifyProposalOnGridIsVisible = ProposalName => {
+  cy.get('[data-testid="dataGridProposals"]').should('contain', ProposalName);
 };
 
 /*----------------------------------------------------------------------*/
