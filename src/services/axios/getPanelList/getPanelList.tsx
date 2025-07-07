@@ -96,7 +96,7 @@ async function GetPanelList(): Promise<Panel[] | string> {
     }
 
     const uniqueResults =
-      result.data.length > 1 ? getUniqueMostRecentPanels(result.data) : result.data;
+      result.data?.length > 1 ? getUniqueMostRecentPanels(result.data) : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

@@ -916,6 +916,8 @@ export const PDF_NAME_PREFIXES = {
   TECHNICAL: 'technical-doc-'
 };
 
+export const CYCLE = 'cycle-001';
+
 /***************************************************************/
 
 export const DEFAULT_PI = {

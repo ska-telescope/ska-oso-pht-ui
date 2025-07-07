@@ -10,9 +10,7 @@ import { CYCLE } from '@/utils/constants';
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
   post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
 };
 
 describe('Helper Functions', () => {
