@@ -116,7 +116,7 @@ export default function PHT() {
         headerChildren={null}
         iconDocsToolTip={t('toolTip.button.docs')}
         iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
-        loginComponent={[signIn()]}
+        loginComponent={signIn()}
         mainChildren={
           <>
             {REQUIRED_WIDTH && (

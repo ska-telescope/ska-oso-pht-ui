@@ -14,7 +14,7 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS } from '../../utils/constants';
+import { SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS, BANNER_PMT_SPACER } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -264,6 +264,7 @@ export default function ReviewListPage() {
   return (
     <>
       <PageBannerPMT title={t('reviewProposalList.title')} fwdBtn={fwdButton()} />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
         <Grid2 size={{ sm: 4, md: 4, lg: 4 }}>{searchDropdown()}</Grid2>
         <Grid2 mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>

@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { PMT, REVIEWER_STATUS } from '../../utils/constants';
+import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -188,6 +188,7 @@ export default function PanelMaintenance() {
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         container
         pl={2}

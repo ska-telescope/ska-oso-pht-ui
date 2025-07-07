@@ -2,10 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { PMT } from '@utils/constants.ts';
+import { BANNER_PMT_SPACER, PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -34,8 +34,6 @@ export default function ReviewEntry() {
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
-  const PDF_HEIGHT_NUM = (AREA_HEIGHT_NUM * window.innerHeight) / 100 - 60;
-  const PDF_HEIGHT = PDF_HEIGHT_NUM + 'px';
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -71,17 +69,76 @@ export default function ReviewEntry() {
 
   /**************************************************************/
 
-  const proposalArea = () => {
+  const sciencePDF = () => (
+    <Paper
+      sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
+        width: '90%',
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
+  );
+
+  const technicalPDF = () => (
+    <Paper
+      sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
+        width: '90%',
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
+  );
+
+  const pdfArea = () => {
+    function a11yProps(index: number) {
+      return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
+      };
+    }
+
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+      setTabValuePDF(newValue);
+    };
+
     return (
       <Paper
         sx={{
-          bgcolor: `${theme.palette.primary.main}`,
-          borderRadius: '16px',
-          height: AREA_HEIGHT
+          borderRadius: '16px'
         }}
         elevation={0}
       >
-        <Stack p={2} spacing={1} sx={{ height: AREA_HEIGHT }}>
+        <Tabs
+          variant="fullWidth"
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={tabValuePDF}
+          onChange={handleTabChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label={t('page.3.title')} {...a11yProps(0)} />
+          <Tab label={t('page.6.title')} {...a11yProps(1)} />
+        </Tabs>
+        {tabValuePDF === 0 && sciencePDF()}
+        {tabValuePDF === 1 && technicalPDF()}
+      </Paper>
+    );
+  };
+
+  /**************************************************************/
+
+  const displayArea = () => {
+    return (
+      <>
+        <Stack p={1}>
           <Typography id="title-label" variant={'h6'}>
             {t('title.label')}
           </Typography>
@@ -107,76 +164,10 @@ export default function ReviewEntry() {
               {getProposal().abstract?.length ? presentLatex(getProposal().abstract as string) : ''}
             </Typography>
           </Box>
+          <Divider />
+          {pdfArea()}
         </Stack>
-      </Paper>
-    );
-  };
-
-  /**************************************************************/
-
-  const sciencePDF = () => (
-    <Paper
-      sx={{
-        margin: 1,
-        bgcolor: `${theme.palette.primary.main}`,
-        height: PDF_HEIGHT,
-        overflow: 'auto'
-      }}
-      elevation={0}
-    >
-      <PDFViewer />
-    </Paper>
-  );
-
-  const technicalPDF = () => (
-    <Paper
-      sx={{
-        margin: 1,
-        bgcolor: `${theme.palette.primary.main}`,
-        height: PDF_HEIGHT,
-        overflow: 'auto'
-      }}
-      elevation={0}
-    >
-      <PDFViewer />
-    </Paper>
-  );
-
-  const pdfArea = () => {
-    function a11yProps(index: number) {
-      return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`
-      };
-    }
-
-    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-      setTabValuePDF(newValue);
-    };
-
-    return (
-      <Paper
-        sx={{
-          bgcolor: `${theme.palette.primary.main}`,
-          borderRadius: '16px',
-          height: AREA_HEIGHT
-        }}
-        elevation={0}
-      >
-        <Tabs
-          variant="fullWidth"
-          textColor="secondary"
-          indicatorColor="secondary"
-          value={tabValuePDF}
-          onChange={handleTabChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label={t('page.3.title')} {...a11yProps(0)} />
-          <Tab label={t('page.6.title')} {...a11yProps(1)} />
-        </Tabs>
-        {tabValuePDF === 0 && sciencePDF()}
-        {tabValuePDF === 1 && technicalPDF()}
-      </Paper>
+      </>
     );
   };
 
@@ -225,9 +216,11 @@ export default function ReviewEntry() {
     return (
       <Paper
         sx={{
+          position: 'fixed',
           border: `2px solid ${theme.palette.primary.light}`,
           borderRadius: '16px',
-          height: AREA_HEIGHT
+          height: AREA_HEIGHT,
+          top: '150'
         }}
         elevation={0}
       >
@@ -293,17 +286,13 @@ export default function ReviewEntry() {
   /**************************************************************/
 
   return (
-    <Paper
-      sx={{
-        bgcolor: `${theme.palette.primary.main}`
-      }}
-      elevation={0}
-    >
+    <>
       <PageBannerPMT
         backBtn={backButton()}
         fwdBtn={saveButton()}
         title={t('reviewProposal.title')}
       />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         pl={2}
         pr={4}
@@ -313,10 +302,9 @@ export default function ReviewEntry() {
         justifyContent="space-around"
         sx={{ height: AREA_HEIGHT }}
       >
-        <Grid2 size={{ sm: 3 }}>{proposalArea()}</Grid2>
-        <Grid2 size={{ sm: 6 }}>{pdfArea()}</Grid2>
+        <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
         <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
       </Grid2>
-    </Paper>
+    </>
   );
 }
