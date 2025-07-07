@@ -80,17 +80,17 @@ export default function GridReviewPanels({
       {!listOnly && <Grid2>{ProposalsSectionTitle()}</Grid2>}
 
       <Grid2 pt={1}>
-        {false && (!data || data.length === 0) && (
+        {(!data || data.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
         )}
-        {true && data.length > 0 && (
+        {data.length > 0 && (
           <div>
             <DataGrid
-              maxHeight={height}
+              maxHeight={`calc(${height} - 50px)`}
               testId="dataGridId"
               rows={data}
               columns={stdColumns}
-              height={height}
+              height={`calc(${height} - 50px)`}
               onRowClick={(e: any) => {
                 onRowClick?.(e.row);
               }}

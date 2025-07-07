@@ -28,6 +28,8 @@ export default function ReviewPanelEntry() {
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
   const { updateAppContent5 } = storageObject.useStore();
 
+  // const setPanel = (panel: Panel) => updateAppContent2(panel);
+
   React.useEffect(() => {
     panelNameEmpty();
   }, [panelName]);
@@ -118,6 +120,7 @@ export default function ReviewPanelEntry() {
     };
     updateAppContent5(rec);
   }
+
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
   const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
@@ -131,10 +134,6 @@ export default function ReviewPanelEntry() {
       NotifyOK(t('addPanel.success') + response);
       navigate(PMT[0]);
     }
-  };
-
-  const pageFooterPMT = () => {
-    return <PageFooterPMT pageNo={1} />;
   };
 
   const addButton = () => {
@@ -208,7 +207,7 @@ export default function ReviewPanelEntry() {
         </Grid2>
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooterPMT()}
+      <PageFooterPMT />
     </>
   );
 }

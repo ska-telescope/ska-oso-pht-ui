@@ -225,7 +225,7 @@ export default function ReviewDashboard() {
         </Grid2>
 
         <Grid2>
-          <ResizablePanel title={t('page.15.title')}>
+          <ResizablePanel title={t('panels.label')}>
             <GridReviewPanels height={CONTENT_HEIGHT} updatedData={null} listOnly />
           </ResizablePanel>
         </Grid2>

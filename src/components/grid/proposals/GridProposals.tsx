@@ -113,8 +113,6 @@ export default function GridProposals({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const DATA_GRID_HEIGHT = '65vh';
-
   const deleteClicked = () => (
     <ProposalDisplay
       proposal={getProposal()}
@@ -556,7 +554,7 @@ export default function GridProposals({
               testId="dataGridId"
               rows={filteredData}
               columns={forReview ? reviewColumns : proposalColumns}
-              height={DATA_GRID_HEIGHT}
+              height={height}
             />
           </div>
         )}
