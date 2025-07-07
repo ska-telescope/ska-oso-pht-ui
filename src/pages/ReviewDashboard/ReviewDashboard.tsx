@@ -2,12 +2,18 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Grid2 from '@mui/material/Grid2';
 import useTheme from '@mui/material/styles/useTheme';
-import { DateEntry, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  DateEntry,
+  DropDown,
+  TextEntry,
+  SPACER_VERTICAL,
+  Spacer
+} from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { Card, Typography } from '@mui/material';
 import { proposals } from './mocked';
-import { PATH, PMT } from '@/utils/constants';
+import { BANNER_PMT_SPACER, PATH, PMT } from '@/utils/constants';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
@@ -121,6 +127,7 @@ export default function ReviewDashboard() {
   return (
     <>
       <PageBannerPMT title={t('overview.title')} />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
         {panelButton('page.15.title', 'page.15.tooltip', PMT[0])}
         {panelButton('reviewProposalList.title', 'reviewProposalList.tooltip', PMT[1])}

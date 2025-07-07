@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid2, Paper, Tab, Tabs } from '@mui/material';
-import { TextEntry, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
+import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { FOOTER_SPACER, PMT } from '@utils/constants.ts';
+import { BANNER_PMT_SPACER, PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -26,10 +26,14 @@ export default function ReviewEntry() {
 
   // const isEdit = () => locationProperties.state !== null;
 
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValuePDF, setTabValuePDF] = React.useState(0);
+  const [tabValueReview, setTabValueReview] = React.useState(0);
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
+
+  const AREA_HEIGHT_NUM = 74;
+  const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -65,18 +69,109 @@ export default function ReviewEntry() {
 
   /**************************************************************/
 
-  const titleField = () => (
-    <Typography id="title" variant={'h6'}>
-      {t('title.label')} {getProposal()?.title?.length ? presentLatex(getProposal().title) : ''}
-    </Typography>
+  const sciencePDF = () => (
+    <Paper
+      sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
+        width: '90%',
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
   );
 
-  const abstractField = () => (
-    <Typography id="title" variant={'h6'}>
-      {t('abstract.label')}{' '}
-      {getProposal().abstract?.length ? presentLatex(getProposal().abstract as string) : ''}
-    </Typography>
+  const technicalPDF = () => (
+    <Paper
+      sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
+        width: '90%',
+        overflow: 'auto'
+      }}
+      elevation={0}
+    >
+      <PDFViewer />
+    </Paper>
   );
+
+  const pdfArea = () => {
+    function a11yProps(index: number) {
+      return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
+      };
+    }
+
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+      setTabValuePDF(newValue);
+    };
+
+    return (
+      <Paper
+        sx={{
+          borderRadius: '16px'
+        }}
+        elevation={0}
+      >
+        <Tabs
+          variant="fullWidth"
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={tabValuePDF}
+          onChange={handleTabChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label={t('page.3.title')} {...a11yProps(0)} />
+          <Tab label={t('page.6.title')} {...a11yProps(1)} />
+        </Tabs>
+        {tabValuePDF === 0 && sciencePDF()}
+        {tabValuePDF === 1 && technicalPDF()}
+      </Paper>
+    );
+  };
+
+  /**************************************************************/
+
+  const displayArea = () => {
+    return (
+      <>
+        <Stack p={1}>
+          <Typography id="title-label" variant={'h6'}>
+            {t('title.label')}
+          </Typography>
+          <Typography pl={2} pr={2} id="title" variant={'h6'}>
+            {getProposal()?.title?.length ? presentLatex(getProposal().title) : ''}
+          </Typography>
+          <Divider />
+          <Typography id="abstract-label" variant={'h6'}>
+            {t('abstract.label')}
+          </Typography>
+          <Box
+            pl={2}
+            pr={2}
+            id="abstract"
+            sx={{
+              maxHeight: `calc(AREA_HEIGHT - 100px)`,
+              overflowY: 'auto',
+              borderRadius: 1,
+              p: 1
+            }}
+          >
+            <Typography variant="body1">
+              {getProposal().abstract?.length ? presentLatex(getProposal().abstract as string) : ''}
+            </Typography>
+          </Box>
+          <Divider />
+          {pdfArea()}
+        </Stack>
+      </>
+    );
+  };
+
+  /**************************************************************/
 
   const rankField = () => {
     return (
@@ -87,32 +182,24 @@ export default function ReviewEntry() {
   };
 
   const generalCommentsField = () => (
-    <Box sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
-      <TextEntry
-        label={''}
-        testId="generalCommentsId"
-        rows={50}
-        required
-        setValue={setGeneralComments}
-        value={generalComments}
-      />
-    </Box>
+    <TextEntry
+      label={''}
+      testId="generalCommentsId"
+      rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+      setValue={setGeneralComments}
+      value={generalComments}
+    />
   );
 
   const srcNetCommentsField = () => (
-    <Box sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
-      <TextEntry
-        label={''}
-        testId="srcNetCommentsId"
-        rows={50}
-        required
-        setValue={setSrcNetComments}
-        value={srcNetComments}
-      />
-    </Box>
+    <TextEntry
+      label={''}
+      testId="srcNetCommentsId"
+      rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+      setValue={setSrcNetComments}
+      value={srcNetComments}
+    />
   );
-
-  /**************************************************************/
 
   const reviewArea = () => {
     function a11yProps(index: number) {
@@ -123,29 +210,26 @@ export default function ReviewEntry() {
     }
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-      setTabValue(newValue);
+      setTabValueReview(newValue);
     };
 
     return (
       <Paper
         sx={{
-          bgcolor: `${theme.palette.primary.main}`,
           position: 'fixed',
-          height: '75vh',
-          top: 180,
-          left: '76vw',
-          right: '10px',
-          border: `2px solid ${theme.palette.primary.contrastText}`,
-          borderTopLeftRadius: '16px',
-          borderBottomLeftRadius: '16px'
+          border: `2px solid ${theme.palette.primary.light}`,
+          borderRadius: '16px',
+          height: AREA_HEIGHT,
+          top: '150'
         }}
         elevation={0}
       >
         <Tabs
           variant="fullWidth"
+          sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }}
           textColor="secondary"
           indicatorColor="secondary"
-          value={tabValue}
+          value={tabValueReview}
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
@@ -153,9 +237,10 @@ export default function ReviewEntry() {
           <Tab label={t('generalComments.label')} {...a11yProps(1)} />
           <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
-        {tabValue === 0 && (
+        {tabValueReview === 0 && (
           <Box
             sx={{
+              bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
               width: '100%',
@@ -166,27 +251,29 @@ export default function ReviewEntry() {
             {rankField()}
           </Box>
         )}
-        {tabValue === 1 && (
+        {tabValueReview === 1 && (
           <Box
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
               width: '100%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              backgroundColor: 'transparent'
             }}
           >
             {generalCommentsField()}
           </Box>
         )}
-        {tabValue === 2 && (
+        {tabValueReview === 2 && (
           <Box
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
               width: '100%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              backgroundColor: 'transparent'
             }}
           >
             {srcNetCommentsField()}
@@ -196,6 +283,8 @@ export default function ReviewEntry() {
     );
   };
 
+  /**************************************************************/
+
   return (
     <>
       <PageBannerPMT
@@ -203,27 +292,19 @@ export default function ReviewEntry() {
         fwdBtn={saveButton()}
         title={t('reviewProposal.title')}
       />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
-        pl={4}
+        pl={2}
         pr={4}
         container
+        spacing={2}
         direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-        spacing={1}
+        justifyContent="space-around"
+        sx={{ height: AREA_HEIGHT }}
       >
-        <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
-          {titleField()}
-        </Grid2>
-        <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
-          {abstractField()}
-        </Grid2>
+        <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
+        <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
       </Grid2>
-      <Grid2>
-        <PDFViewer />
-      </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {reviewArea()}
     </>
   );
 }

@@ -1,10 +1,9 @@
-import axios from 'axios';
 import {
-  AXIOS_CONFIG,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_REVIEWERS_PATH
 } from '../../../utils/constants';
+import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockReviewerList from './mockReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 
@@ -27,7 +26,7 @@ async function GetReviewerList(): Promise<Reviewer[] | string> {
 
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, AXIOS_CONFIG);
+    const result = await axiosAuthClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

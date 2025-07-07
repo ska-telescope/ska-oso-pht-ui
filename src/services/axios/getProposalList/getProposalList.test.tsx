@@ -11,7 +11,6 @@ import MockProposalFrontendList from './mockProposalFrontendList';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 
-vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
   get: ReturnType<typeof vi.fn>;
   post: ReturnType<typeof vi.fn>;

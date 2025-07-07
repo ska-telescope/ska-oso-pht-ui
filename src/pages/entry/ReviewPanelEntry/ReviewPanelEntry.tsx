@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
-import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
+import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT, BANNER_PMT_SPACER } from '@utils/constants.ts';
 import moment from 'moment';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -173,6 +173,7 @@ export default function ReviewPanelEntry() {
         fwdBtn={addButton()}
         title={t('reviewPanelEntry.title')}
       />
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         pl={4}
         pr={4}

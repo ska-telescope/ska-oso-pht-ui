@@ -172,10 +172,10 @@ export default function AddDataProduct() {
         alignItems="space-between"
         justifyContent="space-between"
       >
-        <Grid2 item xs={LABEL_WIDTH}>
+        <Grid2 size={{ xs: LABEL_WIDTH }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid2>
-        <Grid2 item xs={12 - LABEL_WIDTH}>
+        <Grid2 size={{ xs: 12 - LABEL_WIDTH }}>
           {tickElement(1, dp1, setDP1)}
           {tickElement(2, dp2, setDP2)}
           {tickElement(3, dp3, setDP3)}

@@ -2,14 +2,14 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
-KUBE_HOST ?= http://`minikube ip`
+# KUBE_HOST ?= http://`minikube ip`
 RELEASE_NAME ?= test
 
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_COMMAND_ENABLED = false
 JS_ESLINT_CONFIG ?= .eslintrc
-JS_E2E_TESTS_DIR ?= cypress
+JS_E2E_TESTS_DIR ?= tests/cypress
 
 $(info $(JS_E2E_TEST_BASE_URL))
 

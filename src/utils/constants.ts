@@ -17,13 +17,6 @@ export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
 
 /*****************************************/
 
-export const AXIOS_CONFIG = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-};
-
 export const BAND_LOW = 0;
 export const BAND_1 = 1;
 export const BAND_2 = 2;
@@ -96,6 +89,8 @@ export const BANDWIDTH_TELESCOPE = [
     }
   } // Band 5b
 ];
+
+export const BANNER_PMT_SPACER = 100;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
@@ -170,7 +165,7 @@ export const GENERAL = {
   ]
 };
 
-export const HEADER_HEIGHT = 70;
+export const HEADER_HEIGHT = 106;
 
 export const HELP_FONT = 16;
 export const HELP_VIEWPORT = '20vh';
@@ -227,8 +222,9 @@ export const PMT = [
   '/review/list',
   '/review/proposal',
   '/review/panel/entry',
-  '/review/panel/decision',
-  '/review/review'
+  '/review/panel/decisions',
+  '/review/review',
+  '/review/panel/decision'
 ];
 
 export const PROJECTS = [

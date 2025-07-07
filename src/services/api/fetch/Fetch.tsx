@@ -1,13 +1,9 @@
-import axios from 'axios';
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
-import {
-  AXIOS_CONFIG,
-  SKA_SENSITIVITY_CALCULATOR_API_URL,
-  STATUS_ERROR
-} from '../../../utils/constants';
+import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '../../../utils/constants';
 import { ContinuumData, PSSData, StandardData, ZoomData } from '../../../utils/types/typesSensCalc';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
+import axiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const Fetch = async (
   telescope: Telescope,
@@ -23,7 +19,7 @@ const Fetch = async (
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     finalURL += properties;
-    const result = await axios.get(finalURL, AXIOS_CONFIG);
+    const result = await axiosAuthClient.get(finalURL);
     return mapping(result.data, target, observation);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();

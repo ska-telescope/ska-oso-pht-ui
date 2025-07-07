@@ -187,23 +187,61 @@ export default function ProposalDisplay({
     </Grid2>
   );
 
-  const pageFooter = () => (
-    <Grid2 container direction="row" justifyContent="space-between" alignItems="center">
-      <Grid2 size={{ sm: 6 }}>
+  const buttonsLeft = () => (
+    <Grid2
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-end"
+      pr={2}
+    >
+      <Grid2>
         <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
       </Grid2>
-      <Grid2 size={{ sm: 6 }}>
+    </Grid2>
+  );
+
+  const buttonsRight = () => (
+    <Grid2
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-start"
+      pr={2}
+    >
+      <Grid2>
+        <ConfirmButton
+          action={handleConfirm}
+          testId="displayConfirmationButton"
+          title={onConfirmLabel}
+        />
+      </Grid2>
+    </Grid2>
+  );
+
+  const pageFooter = () => (
+    <Grid2
+      container
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{ width: '100%' }}
+    >
+      <Grid2 size={{ xs: 3 }}>
+        <Grid2 container direction="row" alignItems="center" justifyContent="flex-start">
+          <Grid2>{buttonsLeft()}</Grid2>
+        </Grid2>
+      </Grid2>
+      <Grid2>
         <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
       </Grid2>
-      {onConfirmLabel?.length > 0 && (
-        <Grid2>
-          <ConfirmButton
-            action={handleConfirm}
-            testId="displayConfirmationButton"
-            title={onConfirmLabel}
-          />
+      <Grid2 size={{ xs: 3 }}>
+        <Grid2 container direction="row" alignItems="center" justifyContent="flex-end">
+          <Grid2>{buttonsRight()}</Grid2>
         </Grid2>
-      )}
+      </Grid2>
     </Grid2>
   );
 

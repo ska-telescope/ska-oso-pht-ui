@@ -1,4 +1,5 @@
 import { Box, Grid2, Typography } from '@mui/material';
+import { HEADER_HEIGHT } from '@/utils/constants';
 
 interface PageBannerPMTProps {
   backBtn?: JSX.Element;
@@ -41,7 +42,7 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
 
   // TODO : Remove the pt=(3) once the mock login tick-box has been removed, as it is upsetting the layout.
   const row1 = () => (
-    <Grid2 pt={3} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
       <Grid2 size={{ xs: 3 }}>
         <Grid2 container direction="row" alignItems="center" justifyContent="flex-start">
           <Grid2>{buttonsLeft()}</Grid2>
@@ -56,5 +57,20 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
     </Grid2>
   );
 
-  return <Box p={2}>{row1()}</Box>;
+  return (
+    <Box
+      pl={2}
+      pr={2}
+      sx={{
+        backgroundColor: theme => theme.palette.background.paper,
+        zIndex: theme => theme.zIndex.appBar + 1,
+        position: 'fixed',
+        top: HEADER_HEIGHT,
+        left: 0,
+        width: '100%'
+      }}
+    >
+      {row1()}
+    </Box>
+  );
 }

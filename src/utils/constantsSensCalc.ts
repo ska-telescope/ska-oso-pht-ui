@@ -77,13 +77,6 @@ export const MOCKED_API_SA = false; // Set to false for live API calls
 
 export const STARGAZER = false; // Set to true to enable hidden fields
 
-export const AXIOS_CONFIG = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-};
-
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';

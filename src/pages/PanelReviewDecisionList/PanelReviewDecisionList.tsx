@@ -26,7 +26,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 
-export default function ReviewListPage() {
+export default function ReviewDecisionListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
@@ -89,13 +89,9 @@ export default function ReviewListPage() {
     }
   };
 
-  const goToReviewPage = () => {
-    navigate(PMT[5]);
-  };
-
   const editIconClicked = async (id: string) => {
     if (await getTheProposal(id)) {
-      goToReviewPage();
+      navigate(PMT[6]);
     } else {
       alert(t('error.iconClicked'));
     }
@@ -263,7 +259,7 @@ export default function ReviewListPage() {
 
   return (
     <>
-      <PageBannerPMT title={t('reviewProposalList.title')} fwdBtn={fwdButton()} />
+      <PageBannerPMT title={t('reviewDecisionsList.title')} fwdBtn={fwdButton()} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
         <Grid2 size={{ sm: 4, md: 4, lg: 4 }}>{searchDropdown()}</Grid2>

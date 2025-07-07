@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { USE_LOCAL_DATA } from '../../../utils/constants';
+import axiosClient from '../axiosClient/axiosClient';
 
 async function DeleteDeletePDF(signedUrl: string) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/delete';
@@ -9,7 +9,7 @@ async function DeleteDeletePDF(signedUrl: string) {
   }
 
   try {
-    const result = await axios.delete(`${signedUrl}`);
+    const result = await axiosClient.delete(`${signedUrl}`);
     return typeof result === 'undefined' || result?.status !== 204
       ? 'error.API_UNKNOWN_ERROR'
       : result.data;
