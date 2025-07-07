@@ -83,7 +83,6 @@ install_dependencies:
     policy: push
 
 js-lint:
-js-lint:
   image: $NODE_IMAGE
   allow_failure: true
   tags:
@@ -183,10 +182,14 @@ helm-chart-build:
   allow_failure: true
 
 integration_deploy:
+  before_script:
+    - mkdir -p artifacts/screenshots
   allow_failure: true
 
-# oci-image-build:
-#   allow_failure: true
+oci-image-build:
+  before_script:
+    - mkdir -p artifacts/screenshots
+  allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
