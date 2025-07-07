@@ -74,7 +74,14 @@ export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Pan
 export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
 export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
 
-export const enterPanelName = () => entry('panelName', 'Panel Name');
+export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Panel Name');
+
+export const verifyPanelCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Panel added with unique identifier');
+
+export const verifyFirstPanelOnLandingPageIsVisible = PanelName => {
+  cy.get('[data-testid="dataGridId"]').should('contain', PanelName);
+};
 
 /*----------------------------------------------------------------------*/
 

@@ -32,13 +32,20 @@ const sortByLastUpdated = (array: PanelBackend[]): PanelBackend[] => {
 };
 
 export const getUniqueMostRecentPanels = (data: PanelBackend[]) => {
-  let grouped: { [key: string]: PanelBackend[] } = groupByPanelId(data);
-  let sorted = (Object as any).values(grouped).map((arr: PanelBackend[]) => {
-    sortByLastUpdated(arr);
-    return arr;
+  const grouped = groupByPanelId(data);
+
+  const newestPerGroup = Object.values(grouped).map((arr: PanelBackend[]) => {
+    sortByLastUpdated(arr); // newest first
+    return arr[0]; // pick newest from group
   });
-  const result = sorted.map((arr: PanelBackend[]) => arr[0]);
-  return result;
+
+  newestPerGroup.sort(
+    (a, b) =>
+      new Date(b.metadata?.last_modified_on!).valueOf() -
+      new Date(a.metadata?.last_modified_on!).valueOf()
+  ); // TODO sort also by assigned_on
+
+  return newestPerGroup;
 };
 
 /*****************************************************************************************************************************/

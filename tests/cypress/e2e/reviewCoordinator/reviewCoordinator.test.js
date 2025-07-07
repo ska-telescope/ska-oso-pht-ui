@@ -2,6 +2,11 @@ import {
   clickAddPanel,
   clickUserMenuOverview,
   clickUserMenuPanels,
+  enterPanelName,
+  clickAddPanelEntry,
+  verifyPanelCreatedAlertFooter,
+  verifyFirstPanelOnLandingPageIsVisible,
+  getPanelId,
   clickPanelButtonPanels,
   clickPanelButtonProposals,
   clickPanelButtonReviews,
@@ -11,6 +16,8 @@ import {
   clickUserMenuReviews,
   initialize
 } from '../common/common';
+
+const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
 describe('Review Coordinator', () => {
   beforeEach(() => {
@@ -31,25 +38,33 @@ describe('Review Coordinator', () => {
   it('Creating a new review panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
+    enterPanelName(panelName);
+    clickAddPanelEntry();
+    verifyPanelCreatedAlertFooter();
   });
   it('Creating a new review panel, abandoned', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
     clickPanelMaintenanceButton();
+    clickAddPanel();
+    clickPanelMaintenanceButton();
+  });
+  it('Display newly created panel', () => {
+    clickUserMenuPanels();
+    verifyFirstPanelOnLandingPageIsVisible(panelName);
   });
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, check the proposals are displayed
+    // TODO : click on a panel
+    // TODO : click on the proposals tab
+    // TODO : check the proposals are displayed
   });
+  /*
   it('Display a list of reviewers', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, check the reviewers are displayed
+    // TODO : click on a panel
+    // TODO : click on the proposals tab
+    // TODO : check the reviewers are displayed
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
@@ -63,4 +78,5 @@ describe('Review Coordinator', () => {
     // TODO : Perhaps do some stuff in here ?
     // TODO : once panel is created, add a proposal
   });
+  */
 });
