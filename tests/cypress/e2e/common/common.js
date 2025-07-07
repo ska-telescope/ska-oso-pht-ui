@@ -27,6 +27,11 @@ export const clickAddObservation = () => clickButton('addObservationButton');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
+
+export const clickMockLoginCheckBox = () => clickButton('linkedTickBox');
+
+export const clickSignIn = () => clickButton('loginButton');
+
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickLoginUser = () => clickButton('usernameMenu');
