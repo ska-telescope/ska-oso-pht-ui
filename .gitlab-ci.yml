@@ -181,16 +181,6 @@ stop-dev-environment:
 helm-chart-build:
   allow_failure: true
 
-integration_deploy:
-  before_script:
-    - mkdir -p artifacts/screenshots
-  allow_failure: true
-
-oci-image-build:
-  before_script:
-    - mkdir -p artifacts/screenshots
-  allow_failure: true
-
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
 js-e2e-test:
