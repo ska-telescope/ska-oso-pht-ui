@@ -26,7 +26,6 @@ export default function GridReviewPanels({
   const [, setAxiosError] = React.useState('');
 
   const GetReviewPanels = async () => {
-    // NotifyWarning(t('addProposal.warning'));
     const response = await GetPanelList();
     if (typeof response === 'string') {
       setAxiosError(response);

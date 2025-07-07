@@ -81,9 +81,6 @@ export const addProposalPanel = (
   };
   const updatedProposals = [...localPanel?.proposals, rec];
   setProposalPanels(updatedProposals);
-
-  // save in backend
-  //const response = savePanel(localPanel);
 };
 
 export const deleteProposalPanel = (
