@@ -89,6 +89,8 @@ export const BANDWIDTH_TELESCOPE = [
   } // Band 5b
 ];
 
+export const BANNER_PMT_SPACER = 100;
+
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
@@ -162,7 +164,7 @@ export const GENERAL = {
   ]
 };
 
-export const HEADER_HEIGHT = 70;
+export const HEADER_HEIGHT = 106;
 
 export const HELP_FONT = 16;
 export const HELP_VIEWPORT = '20vh';
