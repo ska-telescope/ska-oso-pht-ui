@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   AXIOS_CONFIG,
+  CYCLE,
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
@@ -11,7 +12,7 @@ import { helpers } from '@/utils/helpers';
 export function mappingPostPanel(panel: Panel): PanelBackend {
   const transformedPanel: PanelBackend = {
     panel_id: panel.id,
-    cycle: panel.cycle ? panel.cycle : 'cycle-001', // hardcoded for now
+    cycle: panel.cycle ? panel.cycle : CYCLE, // hardcoded for now
     name: panel.name,
     expires_on: panel.expiresOn,
     metadata: panel.metadata,
@@ -44,7 +45,13 @@ async function PostPanel(panel: Panel) {
       convertedPanel,
       AXIOS_CONFIG
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+
+    // return result ? result.data : 'error.API_UNKNOWN_ERROR';
+
+    if (!result) {
+      return { error: 'error.API_UNKNOWN_ERROR' };
+    }
+    return result.data as string;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
