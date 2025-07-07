@@ -29,14 +29,14 @@ import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 
-interface PageBannerProps {
+interface PageBannerPPTProps {
   pageNo: number;
   backPage?: number;
 }
 
 const widthWrapStatusArray = '1500px';
 
-export default function PageBanner({ pageNo, backPage }: PageBannerProps) {
+export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const LG = useMediaQuery(useTheme().breakpoints.down('lg'));
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useTranslation('pht');

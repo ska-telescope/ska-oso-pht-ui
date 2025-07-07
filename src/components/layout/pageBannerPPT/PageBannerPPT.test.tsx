@@ -2,13 +2,13 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import PageFooter from './PageFooter';
+import PageBannerPPT from './PageBannerPPT';
 
-describe('<PageFooter />', () => {
+describe('<PageBannerPPT />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <PageFooter pageNo={1} />
+        <PageBannerPPT pageNo={1} />
       </StoreProvider>
     );
   });

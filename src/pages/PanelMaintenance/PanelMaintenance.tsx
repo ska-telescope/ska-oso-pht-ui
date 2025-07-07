@@ -135,14 +135,14 @@ export default function PanelMaintenance() {
     });
   };
 
-  async function savePanel(panel: Panel): Promise<Panel> {
+  async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PostPanel(panel);
-    if (response && !response.error) {
+    if (response && typeof response === 'object' && !('error' in response)) {
       // console.log('Panel saved successfully:', response);
       // TODO notify user of success
     } else {
-      // console.error('Error saving panel:', response.error);
-      setAxiosError(response);
+      // console.error('Error saving panel:', typeof response === 'object' && 'error' in response ? response.error : response);
+      setAxiosError(typeof response === 'object' && 'error' in response ? response.error : String(response));
       // TODO notify user of error
     }
     return response;

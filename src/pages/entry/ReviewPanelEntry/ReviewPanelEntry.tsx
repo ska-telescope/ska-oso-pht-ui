@@ -11,6 +11,10 @@ import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import { Panel } from '@/utils/types/panel';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import Notification from '../../../utils/types/notification';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 export default function ReviewPanelEntry() {
   const { t } = useTranslation('pht');
@@ -20,9 +24,9 @@ export default function ReviewPanelEntry() {
   const isEdit = () => locationProperties.state !== null;
 
   const [panelName, setPanelName] = React.useState('');
-
   const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
+  const { updateAppContent5 } = storageObject.useStore();
 
   React.useEffect(() => {
     panelNameEmpty();
@@ -106,17 +110,35 @@ export default function ReviewPanelEntry() {
     };
   };
 
+  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      message: str,
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+  const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
+
   const createPanel = async () => {
-    // NotifyWarning(t('addProposal.warning'));
+    NotifyWarning(t('addPanel.warning'));
     const response = await PostPanel(getPanel());
-    if (response && !response.error) {
-      // NotifyOK(t('addProposal.success') + response);
-      // setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+    if (response && typeof response === 'string' && !response.error) {
+      NotifyOK(t('addPanel.success') + response);
       navigate(PMT[0]);
-      // } else {
-      // NotifyError(response.error);
-      // }
+    } else {
+      NotifyError(response.error as unknown as any);
     }
+  };
+
+   const pageFooterPMT = () => {
+    return (
+      <PageFooterPMT
+        pageNo={1}
+      />
+    );
   };
 
   const pageFooter = () => {
@@ -190,6 +212,8 @@ export default function ReviewPanelEntry() {
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {pageFooter()}
+      {pageFooterPMT()}
+
     </>
   );
 }
