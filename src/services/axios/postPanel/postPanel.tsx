@@ -31,7 +31,7 @@ export function postMockPanel(): string {
   return 'PANEL-ID-001';
 }
 
-async function PostPanel(panel: Panel) {
+async function PostPanel(panel: Panel) : Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanel();
   }
@@ -45,8 +45,6 @@ async function PostPanel(panel: Panel) {
       convertedPanel,
       AXIOS_CONFIG
     );
-
-    // return result ? result.data : 'error.API_UNKNOWN_ERROR';
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
