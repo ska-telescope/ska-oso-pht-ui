@@ -124,12 +124,12 @@ export default function ReviewPanelEntry() {
 
   const createPanel = async () => {
     NotifyWarning(t('addPanel.warning'));
-    const response = await PostPanel(getPanel());
-    if (response && typeof response === 'string' && !response.error) {
+    const response: string | { error: string } = await PostPanel(getPanel());
+    if (typeof response === 'object' && response?.error) {
+      NotifyError(response?.error);
+    } else {
       NotifyOK(t('addPanel.success') + response);
       navigate(PMT[0]);
-    } else {
-      NotifyError((response.error as unknown) as any);
     }
   };
 
