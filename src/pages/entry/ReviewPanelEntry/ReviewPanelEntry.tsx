@@ -5,15 +5,15 @@ import { Box, Grid2, Paper } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT } from '@utils/constants.ts';
 import moment from 'moment';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
+import Notification from '../../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import { Panel } from '@/utils/types/panel';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import Notification from '../../../utils/types/notification';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 export default function ReviewPanelEntry() {
@@ -110,7 +110,7 @@ export default function ReviewPanelEntry() {
     };
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       message: str,
@@ -129,28 +129,21 @@ export default function ReviewPanelEntry() {
       NotifyOK(t('addPanel.success') + response);
       navigate(PMT[0]);
     } else {
-      NotifyError(response.error as unknown as any);
+      NotifyError((response.error as unknown) as any);
     }
   };
 
-   const pageFooterPMT = () => {
-    return (
-      <PageFooterPMT
-        pageNo={1}
-      />
-    );
+  const pageFooterPMT = () => {
+    return <PageFooterPMT pageNo={1} />;
   };
 
-  const pageFooter = () => {
+  const addButton = () => {
     const buttonClicked = () => {
       createPanel();
     };
 
     return (
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      >
+      <Paper sx={{ bgcolor: 'transparent' }} elevation={0}>
         <Grid2
           p={2}
           container
@@ -176,7 +169,11 @@ export default function ReviewPanelEntry() {
 
   return (
     <>
-      <PageBannerPMT backBtn={backButton()} title={t('reviewPanelEntry.title')} />
+      <PageBannerPMT
+        backBtn={backButton()}
+        fwdBtn={addButton()}
+        title={t('reviewPanelEntry.title')}
+      />
       <Grid2
         pl={4}
         pr={4}
@@ -211,9 +208,7 @@ export default function ReviewPanelEntry() {
         </Grid2>
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
       {pageFooterPMT()}
-
     </>
   );
 }

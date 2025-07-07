@@ -31,7 +31,7 @@ export function postMockPanel(): string {
   return 'PANEL-ID-001';
 }
 
-async function PostPanel(panel: Panel) : Promise<string | { error: string }> {
+async function PostPanel(panel: Panel): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanel();
   }

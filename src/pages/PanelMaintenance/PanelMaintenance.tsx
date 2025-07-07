@@ -142,7 +142,9 @@ export default function PanelMaintenance() {
       // TODO notify user of success
     } else {
       // console.error('Error saving panel:', typeof response === 'object' && 'error' in response ? response.error : response);
-      setAxiosError(typeof response === 'object' && 'error' in response ? response.error : String(response));
+      setAxiosError(
+        typeof response === 'object' && 'error' in response ? response.error : String(response)
+      );
       // TODO notify user of error
     }
     return response;

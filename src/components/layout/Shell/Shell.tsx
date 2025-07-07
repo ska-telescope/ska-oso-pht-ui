@@ -17,7 +17,7 @@ export default function Shell({
 }: ShellProps) {
   return (
     <>
-    <PageBannerPPT pageNo={page} />
+      <PageBannerPPT pageNo={page} />
       {children}
       <PageFooterPPT pageNo={footerPage} buttonDisabled={buttonDisabled} />
       <Link activeClass="active" to="scrollTarget" spy={true} smooth={true}></Link>
