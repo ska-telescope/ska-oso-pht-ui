@@ -183,6 +183,11 @@ helm-chart-build:
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
 
+js-e2e-deploy:
+  allow_failure: true
+  tags:
+    - $SKA_K8S_RUNNER
+
 js-e2e-test:
   allow_failure: true
   before_script:
