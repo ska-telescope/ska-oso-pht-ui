@@ -104,7 +104,7 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
-  const [axiosError, setAxiosError] = React.useState('');
+  const [, setAxiosError] = React.useState('');
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
@@ -137,15 +137,13 @@ export default function PanelMaintenance() {
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PostPanel(panel);
-    if (response && typeof response === 'object' && !('error' in response)) {
-      // console.log('Panel saved successfully:', response);
-      // TODO notify user of success
-    } else {
-      // console.error('Error saving panel:', typeof response === 'object' && 'error' in response ? response.error : response);
+    if (typeof response === 'object' && response?.error) {
+      // TODO notify user of error
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
-      // TODO notify user of error
+    } else {
+      // TODO notify user of success
     }
     return response;
   }

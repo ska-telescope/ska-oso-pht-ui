@@ -31,7 +31,6 @@ export default function PageFooterPMT({
     }
   }, []);
 
-  /*
   function Notify(str: string, lvl = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
@@ -40,13 +39,10 @@ export default function PageFooterPMT({
     };
     updateAppContent5(rec);
   }
-  */
 
-  /*
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
   const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
-  */
 
   const prevLabel = () => `page.${usedPageNo - 1}.title`;
 
