@@ -182,19 +182,13 @@ stop-dev-environment:
 helm-chart-build:
   allow_failure: true
 
- deploy-integration:
+integration_deploy:
   allow_failure: true
 
 # oci-image-build:
 #   allow_failure: true
 
 ########################## PHT SPECIFIC STUFF ABOVE HERE #################################
-
-# js-e2e-deploy:
-#   allow_failure: true
-#   rules:
-#     - exists:
-#         - tests/cypress/e2e/**/*.test.js
 
 js-e2e-test:
   allow_failure: true
