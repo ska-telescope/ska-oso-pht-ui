@@ -12,7 +12,7 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import PageBanner from '../../../components/layout/pageBanner/PageBanner';
+import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import { HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -330,7 +330,7 @@ export default function AddDataProduct() {
 
   return (
     <>
-      <PageBanner backPage={BACK_PAGE} pageNo={PAGE} />
+      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
 
       <Grid2
         p={2}

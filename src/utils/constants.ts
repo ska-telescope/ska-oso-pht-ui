@@ -9,6 +9,7 @@ export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_
 export const API_VERSION = '/senscalc/api/v11';
 export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
 export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
+export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -910,6 +911,8 @@ export const PDF_NAME_PREFIXES = {
   SCIENCE: 'science-doc-',
   TECHNICAL: 'technical-doc-'
 };
+
+export const CYCLE = 'cycle-001';
 
 /***************************************************************/
 

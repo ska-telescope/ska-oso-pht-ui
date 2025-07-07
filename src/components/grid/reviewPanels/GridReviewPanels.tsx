@@ -4,6 +4,7 @@ import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid2 } from '@mui/material';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
+import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -22,15 +23,18 @@ export default function GridReviewPanels({
 
   const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
+  const [, setAxiosError] = React.useState('');
 
-  const GetReviewPanels = (): Panel[] => [
-    { id: 'P400', name: 'Stargazers', proposals: [], reviewers: [] },
-    { id: 'P500', name: 'Buttons', proposals: [], reviewers: [] },
-    { id: 'P600', name: 'Nashrakra', proposals: [], reviewers: [] }
-  ];
+  const GetReviewPanels = async () => {
+    const response = await GetPanelList();
+    if (typeof response === 'string') {
+      setAxiosError(response);
+    } else {
+      return response;
+    }
+  };
 
   const updateReviewPanel = (updatedData: Panel) => {
-    // Update the data state with the updated data (updated list of reviewers) for curremt panel
     setData(prevData => prevData.map(item => (item?.id === updatedData?.id ? updatedData : item)));
   };
 
@@ -45,9 +49,11 @@ export default function GridReviewPanels({
   }, []);
 
   React.useEffect(() => {
-    const fetchData = () => {
-      const response = GetReviewPanels();
-      setData(response);
+    const fetchData = async () => {
+      const response = await GetReviewPanels();
+      if (response) {
+        setData((response as unknown) as Panel[]);
+      }
     };
     fetchData();
   }, [fetchList]);
@@ -73,17 +79,17 @@ export default function GridReviewPanels({
       {!listOnly && <Grid2>{ProposalsSectionTitle()}</Grid2>}
 
       <Grid2 pt={1}>
-        {false && (!data || data.length === 0) && (
+        {(!data || data.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
         )}
-        {true && data.length > 0 && (
+        {data.length > 0 && (
           <div>
             <DataGrid
-              maxHeight={height}
+              maxHeight={`calc(${height} - 50px)`}
               testId="dataGridId"
               rows={data}
               columns={stdColumns}
-              height={height}
+              height={`calc(${height} - 50px)`}
               onRowClick={(e: any) => {
                 onRowClick?.(e.row);
               }}

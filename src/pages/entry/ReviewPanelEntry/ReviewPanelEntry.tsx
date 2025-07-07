@@ -5,10 +5,16 @@ import { Box, Grid2, Paper } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT, BANNER_PMT_SPACER } from '@utils/constants.ts';
 import moment from 'moment';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
+import Notification from '../../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
+import PostPanel from '@/services/axios/postPanel/postPanel';
+import { Panel } from '@/utils/types/panel';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 export default function ReviewPanelEntry() {
   const { t } = useTranslation('pht');
@@ -18,9 +24,11 @@ export default function ReviewPanelEntry() {
   const isEdit = () => locationProperties.state !== null;
 
   const [panelName, setPanelName] = React.useState('');
-
   const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
+  const { updateAppContent5 } = storageObject.useStore();
+
+  // const setPanel = (panel: Panel) => updateAppContent2(panel);
 
   React.useEffect(() => {
     panelNameEmpty();
@@ -82,17 +90,59 @@ export default function ReviewPanelEntry() {
 
   /**************************************************************/
 
-  const pageFooter = () => {
-    const buttonClicked = () => {
-      //create panel end point
+  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+
+  const getPanelId = () => {
+    return isEdit()
+      ? locationProperties.state.id
+      : 'panel-t0001-' +
+          getDateFormatted() +
+          '-00001-' +
+          Math.floor(Math.random() * 10000000).toString();
+  };
+
+  const getPanel = (): Panel => {
+    return {
+      id: getPanelId(),
+      name: panelName,
+      // createdOn: panelDateCreated, /// this is automatically generated in the backend
+      expiresOn: panelDateExpiry, // note: this doesn't exist in the backend atm
+      proposals: [],
+      reviewers: []
+    };
+  };
+
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      message: str,
+      okRequired: false
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+  const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
+
+  const createPanel = async () => {
+    NotifyWarning(t('addPanel.warning'));
+    const response: string | { error: string } = await PostPanel(getPanel());
+    if (typeof response === 'object' && response?.error) {
+      NotifyError(response?.error);
+    } else {
+      NotifyOK(t('addPanel.success') + response);
       navigate(PMT[0]);
+    }
+  };
+
+  const addButton = () => {
+    const buttonClicked = () => {
+      createPanel();
     };
 
     return (
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      >
+      <Paper sx={{ bgcolor: 'transparent' }} elevation={0}>
         <Grid2
           p={2}
           container
@@ -118,7 +168,11 @@ export default function ReviewPanelEntry() {
 
   return (
     <>
-      <PageBannerPMT backBtn={backButton()} title={t('reviewPanelEntry.title')} />
+      <PageBannerPMT
+        backBtn={backButton()}
+        fwdBtn={addButton()}
+        title={t('reviewPanelEntry.title')}
+      />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         pl={4}
@@ -154,7 +208,7 @@ export default function ReviewPanelEntry() {
         </Grid2>
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
+      <PageFooterPMT />
     </>
   );
 }

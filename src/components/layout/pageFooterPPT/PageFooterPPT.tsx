@@ -10,16 +10,20 @@ import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
-import TimedAlert from '../../../components/alerts/timedAlert/TimedAlert';
+import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
 
-interface PageFooterProps {
+interface PageFooterPPTProps {
   pageNo: number;
   buttonDisabled?: boolean;
   children?: JSX.Element;
 }
 
-export default function PageFooter({ pageNo, buttonDisabled = false, children }: PageFooterProps) {
+export default function PageFooterPPT({
+  pageNo,
+  buttonDisabled = false,
+  children
+}: PageFooterPPTProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
@@ -32,7 +36,7 @@ export default function PageFooter({ pageNo, buttonDisabled = false, children }:
     }
   }, []);
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       message: str,

@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link } from 'react-scroll';
-import PageBanner from '../pageBanner/PageBanner';
-import PageFooter from '../pageFooter/PageFooter';
+import PageBannerPPT from '../pageBannerPPT/PageBannerPPT';
+import PageFooterPPT from '../pageFooterPPT/PageFooterPPT';
 
 interface ShellProps {
   page: number;
@@ -18,9 +17,9 @@ export default function Shell({
 }: ShellProps) {
   return (
     <>
-      <PageBanner pageNo={page} />
+      <PageBannerPPT pageNo={page} />
       {children}
-      <PageFooter pageNo={footerPage} buttonDisabled={buttonDisabled} />
+      <PageFooterPPT pageNo={footerPage} buttonDisabled={buttonDisabled} />
       <Link activeClass="active" to="scrollTarget" spy={true} smooth={true}></Link>
     </>
   );

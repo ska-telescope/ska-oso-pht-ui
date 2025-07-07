@@ -123,7 +123,7 @@ export default function ObservationEntry() {
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
-  const [ob, setOb] = React.useState<Observation | null>(null);
+  const [ob, setOb] = React.useState(null);
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
@@ -134,24 +134,24 @@ export default function ObservationEntry() {
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
     setObservingBand(ob?.observingBand);
-    setWeather(ob?.weather ?? Number(t('weather.default')));
+    setWeather(ob?.weather);
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
-    setBandwidth(ob?.bandwidth ?? 0);
-    setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
-    setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
+    setBandwidth(ob?.bandwidth);
+    setContinuumBandwidth(ob?.continuumBandwidth);
+    setContinuumBandwidthUnits(ob?.continuumBandwidthUnits);
     setRobust(ob?.robust);
-    setSpectralAveraging(ob?.spectralAveraging ?? 1);
-    setTapering(ob?.tapering ?? 0);
+    setSpectralAveraging(ob?.spectralAveraging);
+    setTapering(ob?.tapering);
     setImageWeighting(ob?.imageWeighting);
     setSuppliedType(ob?.supplied.type);
     setSuppliedValue(ob?.supplied.value);
     setSuppliedUnits(ob?.supplied.units);
-    setSubBands(ob?.numSubBands ?? 0);
-    setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
-    setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
-    setNumOfStations(ob?.numStations ?? 0);
+    setSubBands(ob?.numSubBands);
+    setNumOf15mAntennas(ob?.num15mAntennas);
+    setNumOf13mAntennas(ob?.num13mAntennas);
+    setNumOfStations(ob?.numStations);
   };
 
   const observationOut = () => {
@@ -949,7 +949,7 @@ export default function ObservationEntry() {
       const newObservation: Observation = observationOut();
       setProposal({
         ...getProposal(),
-        observations: [...(getProposal().observations ?? []), newObservation]
+        observations: [...getProposal().observations, newObservation]
       });
     };
 
@@ -967,7 +967,7 @@ export default function ObservationEntry() {
       }
 
       const updateSensCalcPartial = (ob: Observation) => {
-        const result = getProposal()?.targetObservation?.map(rec => {
+        const result = getProposal().targetObservation.map(rec => {
           if (rec.observationId === ob.id) {
             const to: TargetObservation = {
               observationId: rec.observationId,

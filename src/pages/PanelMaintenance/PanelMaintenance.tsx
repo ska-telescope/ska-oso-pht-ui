@@ -17,11 +17,13 @@ import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
 import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
+import PostPanel from '@/services/axios/postPanel/postPanel';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
-const REVIEWER_HEIGHT = '65vh';
+const PANELS_HEIGHT = '66vh';
 const TABS_HEIGHT = '72vh';
-const TABS_CONTENT_HEIGHT = '67vh';
-const TAB_GRID_HEIGHT = '51vh';
+const TABS_CONTAINER_HEIGHT = '62vh';
+const TAB_GRID_HEIGHT = '44vh';
 
 export const addReviewerPanel = (
   reviewer: Reviewer,
@@ -100,6 +102,7 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
+  const [, setAxiosError] = React.useState('');
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
@@ -130,14 +133,33 @@ export default function PanelMaintenance() {
     });
   };
 
+  async function savePanel(panel: Panel): Promise<string | { error: string }> {
+    const response = await PostPanel(panel);
+    if (typeof response === 'object' && response?.error) {
+      // TODO notify user of error
+      setAxiosError(
+        typeof response === 'object' && 'error' in response ? response.error : String(response)
+      );
+    } else {
+      // TODO notify user of success
+    }
+    return response;
+  }
+
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {
     // Update the current panel's proposals with the new list
     setCurrentPanel(prevPanel => {
-      if (!prevPanel) return prevPanel;
-      return {
+      if (!prevPanel) {
+        return prevPanel;
+      }
+      const updatedPanel = {
         ...prevPanel,
         proposals: proposalsList
       };
+      // Save the updated panel to the backend
+      savePanel(updatedPanel);
+      // Update the state with the new panel
+      return updatedPanel;
     });
   };
 
@@ -191,13 +213,13 @@ export default function PanelMaintenance() {
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         container
-        pl={2}
         pr={2}
+        spacing={3}
         direction="row"
         justifyContent="space-between"
         alignItems="flex-start"
       >
-        <Grid2 p={2} size={{ sm: 12, md: 6, lg: 3 }}>
+        <Grid2 p={2} size={{ sm: 12, md: 6, lg: 4 }}>
           <Box
             sx={{
               width: '100%',
@@ -208,18 +230,18 @@ export default function PanelMaintenance() {
           >
             <Grid2
               sx={{ borderBottom: '1px solid lightGrey' }}
+              pl={1}
+              pr={1}
               container
               direction="row"
-              justifyContent="space-around"
+              justifyContent="space-between"
               alignItems="center"
             >
-              <Grid2 mr={30} pt={2}>
-                {panelsSectionTitle()}
-              </Grid2>
+              <Grid2 pt={2}>{panelsSectionTitle()}</Grid2>
               <Grid2>{addPanelIcon()}</Grid2>
             </Grid2>
             <GridReviewPanels
-              height={REVIEWER_HEIGHT}
+              height={PANELS_HEIGHT}
               listOnly
               onRowClick={row => handlePanelChange(row)}
               updatedData={currentPanel}
@@ -228,15 +250,15 @@ export default function PanelMaintenance() {
         </Grid2>
 
         <Grid2
-          p={2}
-          size={{ sm: 12, md: 6, lg: 9 }}
+          size={{ sm: 12, md: 6, lg: 8 }}
+          pt={3}
           container
           direction="row"
           justifyContent="space-around"
           alignItems="flex-start"
         >
           {currentPanel && (
-            <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '90%' }}>
+            <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '100%' }}>
               <Box>
                 <Tabs
                   variant="fullWidth"
@@ -254,7 +276,7 @@ export default function PanelMaintenance() {
                 p={2}
                 sx={{
                   width: '100%',
-                  height: TABS_CONTENT_HEIGHT,
+                  height: TABS_CONTAINER_HEIGHT,
                   border: '1px solid lightgrey',
                   borderBottomLeftRadius: '16px',
                   borderBottomRightRadius: '16px'
@@ -272,6 +294,7 @@ export default function PanelMaintenance() {
                 )}
                 {theValue === 1 && (
                   <GridProposals
+                    height={TAB_GRID_HEIGHT}
                     showSearch
                     showSelection
                     selectedProposals={panelProposals}
@@ -294,6 +317,7 @@ export default function PanelMaintenance() {
           )}
         </Grid2>
       </Grid2>
+      <PageFooterPMT />
     </>
   );
 }
