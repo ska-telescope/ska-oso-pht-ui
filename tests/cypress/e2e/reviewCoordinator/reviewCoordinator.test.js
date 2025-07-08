@@ -65,7 +65,6 @@ describe('Review Coordinator', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
-    // TODO : check the reviewers are displayed
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
