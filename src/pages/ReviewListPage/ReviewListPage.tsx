@@ -13,6 +13,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
+import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS, BANNER_PMT_SPACER } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -25,6 +26,7 @@ import { FOOTER_SPACER } from '../../utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
+import ProposalReview from '@/utils/types/proposalReview';
 
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
@@ -35,6 +37,7 @@ export default function ReviewListPage() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
 
@@ -49,16 +52,24 @@ export default function ReviewListPage() {
   }, []);
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    const fetchProposalData = async () => {
       const response = await GetProposalList();
-      /* TODO: fetch also review data when endpoint is ready and merge into proposal data */
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
         setProposals(response);
       }
     };
-    fetchData();
+    const fetchProposalReviewData = async () => {
+      const response = await GetProposalReviewList();
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setProposalReviews(response);
+      }
+    };
+    fetchProposalData();
+    fetchProposalReviewData();
   }, [fetchList]);
 
   React.useEffect(() => {
@@ -121,28 +132,28 @@ export default function ReviewListPage() {
     field: 'status',
     headerName: t('status.label'),
     width: 120,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+    renderCell: (e: { row: any }) => t('reviewStatus.' + e.row.status)
   };
 
   const colRank = {
     field: 'rank',
     headerName: t('rank.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.rank ? e.row.rank : '')
+    renderCell: (e: { row: any }) => e.row.rank
   };
 
   const colConflict = {
     field: 'conflict',
     headerName: t('conflict.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.conflict ? e.row.conflict : '')
+    renderCell: (e: { row: any }) => (e.row.conflict?.has_conflict ? 'Yes' : 'No')
   };
 
   const colComments = {
     field: 'comments',
     headerName: t('comments.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.comments ? e.row.comments : '')
+    renderCell: (e: { row: any }) => e.row.comments
   };
 
   const colScienceCategory = {
@@ -157,7 +168,7 @@ export default function ReviewListPage() {
     field: 'srcNet',
     headerName: t('srcNet.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.srcNet ? e.row.srcNet : '')
+    renderCell: (e: { row: any }) => e.row.src_net
   };
 
   const colDateUpdated = {
@@ -215,7 +226,18 @@ export default function ReviewListPage() {
   ];
 
   function filterProposals() {
-    return proposals.filter(item => {
+    function unionProposalsAndReviews() {
+      // Merge proposals with their corresponding review (if any)
+      return proposals.map(proposal => {
+        const review = proposalReviews.find(r => r.prsl_id === proposal.id);
+        return {
+          ...proposal,
+          ...(review ? review : {})
+        };
+      });
+    }
+
+    return unionProposalsAndReviews().filter(item => {
       const fieldsToSearch = [item.id, item.title];
       return (
         fieldsToSearch.some(
@@ -228,6 +250,7 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
+  console.log('TREVOR', filteredData);
 
   const searchDropdown = () => (
     <DropDown
