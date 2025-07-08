@@ -126,10 +126,14 @@ export default function PanelMaintenance() {
     // Update the current panel's reviewers with the new list
     setCurrentPanel(prevPanel => {
       if (!prevPanel) return prevPanel;
-      return {
+      const updatedPanel = {
         ...prevPanel,
         reviewers: reviewersList
       };
+      // Save the updated panel to the backend
+      savePanel(updatedPanel);
+      // Update the state with the new panel
+      return updatedPanel;
     });
   };
 

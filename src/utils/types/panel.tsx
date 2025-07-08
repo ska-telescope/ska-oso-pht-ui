@@ -1,6 +1,6 @@
 import { Metadata } from './metadata';
 import { PanelProposal, PanelProposalBackend } from './panelProposal';
-import { PanelReviewer } from './panelReviewer';
+import { PanelReviewer, PanelReviewerBackend } from './panelReviewer';
 
 export type Panel = {
   metadata?: Metadata;
@@ -19,5 +19,5 @@ export type PanelBackend = {
   name: string;
   expires_on?: string;
   proposals: PanelProposalBackend[];
-  reviewers: PanelReviewer[];
+  reviewers: PanelReviewerBackend[];
 };
