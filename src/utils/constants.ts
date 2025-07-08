@@ -8,6 +8,7 @@ export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 export const API_VERSION = '/senscalc/api/v11';
 export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
+export const OSO_SERVICES_REVIEWS_PATH = '/pht/reviews';
 export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
 //
