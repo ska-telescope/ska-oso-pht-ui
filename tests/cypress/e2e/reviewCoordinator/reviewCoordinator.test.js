@@ -2,6 +2,14 @@ import {
   clickAddPanel,
   clickUserMenuOverview,
   clickUserMenuPanels,
+  enterPanelName,
+  clickAddPanelEntry,
+  verifyPanelCreatedAlertFooter,
+  verifyPanelOnGridIsVisible,
+  clickFirstPanel,
+  verifyReviewerOnGridIsVisible,
+  clickPanelProposalsTab,
+  verifyProposalOnGridIsVisible,
   clickPanelButtonPanels,
   clickPanelButtonProposals,
   clickPanelButtonReviews,
@@ -11,6 +19,8 @@ import {
   clickUserMenuReviews,
   initialize
 } from '../common/common';
+
+const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
 describe('Review Coordinator', () => {
   beforeEach(() => {
@@ -31,36 +41,38 @@ describe('Review Coordinator', () => {
   it('Creating a new review panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
+    enterPanelName(panelName);
+    clickAddPanelEntry();
+    verifyPanelCreatedAlertFooter();
   });
   it('Creating a new review panel, abandoned', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
     clickPanelMaintenanceButton();
+  });
+  it('Display newly created panel', () => {
+    clickUserMenuPanels();
+    verifyPanelOnGridIsVisible(panelName);
   });
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, check the proposals are displayed
+    clickFirstPanel();
+    clickPanelProposalsTab();
+    // TODO : check the proposals are displayed (we need to add or mock proposals first)
   });
   it('Display a list of reviewers', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, check the reviewers are displayed
+    clickFirstPanel();
+    verifyReviewerOnGridIsVisible('Aisha');
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, add a reviewer
+    // TODO : add a reviewer
   });
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
-    // TODO : once panel is created, add a proposal
+    // TODO : add a proposal
   });
 });

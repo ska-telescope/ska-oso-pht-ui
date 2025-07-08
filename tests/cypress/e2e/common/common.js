@@ -73,8 +73,29 @@ export const clickNavId = (testId, title) => {
 export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Panel Maintenance');
 export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
 export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
+export const clickFirstPanel = () =>
+    get("dataGridId")
+    .find('.MuiDataGrid-row')
+    .first()
+    .click();
 
-export const enterPanelName = () => entry('panelName', 'Panel Name');
+export const clickPanelProposalsTab = () => selectId('simple-tab-1');
+
+export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Panel Name');
+
+export const verifyPanelCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Panel added with unique identifier');
+
+export const verifyPanelOnGridIsVisible = PanelName => {
+  verifyContent("dataGridId", PanelName)
+};
+
+export const verifyReviewerOnGridIsVisible = ReviewerName => {
+  verifyContent("dataGridReviewers", ReviewerName);
+};
+export const verifyProposalOnGridIsVisible = ProposalName => {
+  verifyContent("dataGridProposals", ProposalName);
+};
 
 /*----------------------------------------------------------------------*/
 

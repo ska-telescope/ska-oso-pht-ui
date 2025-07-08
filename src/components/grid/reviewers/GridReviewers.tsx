@@ -279,7 +279,7 @@ export default function GridProposals({
           <div>
             <DataGrid
               maxHeight={height}
-              testId="dataGridId"
+              testId="dataGridReviewers"
               rows={filteredData}
               columns={stdColumns}
               height={height}
