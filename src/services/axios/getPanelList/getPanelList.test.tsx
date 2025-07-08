@@ -21,7 +21,7 @@ const mockedAxios = (axios as unknown) as {
 describe('Helper Functions', () => {
   test('sorts by latest updated and removes duplicates', () => {
     const result: PanelBackend[] = getUniqueMostRecentPanels(MockPanelBackendList);
-    expect(result).to.have.lengthOf(MockPanelBackendList.length - 1);
+    expect(result).to.have.lengthOf(MockPanelBackendList.length - 2);
     expect(result[0].metadata?.last_modified_on).to.equal('2025-07-04T16:20:37.088Z');
     expect(result[1].metadata?.last_modified_on).to.equal('2025-07-03T16:20:37.088Z');
   });
@@ -32,10 +32,24 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal(MockPanelFrontendList);
   });
 
+  test('GetMockPanelList with 1 panel returns mock panel list without sorting', () => {
+    const result = GetMockPanelList([MockPanelBackendList[2]]);
+    expect(result).to.have.lengthOf(1);
+    expect(result).to.deep.equal([MockPanelFrontendList[2]]);
+  });
+
   test('mappingList returns mapped proposal list from backend to frontend format', () => {
     const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
     // checking the second element to ignore duplicates as mapping alone will not remove it
     expect(panelListFrontEnd[1]).to.deep.equal(MockPanelFrontendList[1]);
+  });
+
+  test('mappingList returns mapped reviewer list from backend to frontend format', () => {
+    const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
+    // checking the second element to ignore duplicates as mapping alone will not remove it
+    expect(panelListFrontEnd[MockPanelBackendList.length - 1]).to.deep.equal(
+      MockPanelFrontendList[MockPanelFrontendList.length - 1]
+    );
   });
 });
 
