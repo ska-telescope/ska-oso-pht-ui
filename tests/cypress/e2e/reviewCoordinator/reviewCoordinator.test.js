@@ -49,8 +49,6 @@ describe('Review Coordinator', () => {
     clickUserMenuPanels();
     clickAddPanel();
     clickPanelMaintenanceButton();
-    clickAddPanel();
-    clickPanelMaintenanceButton();
   });
   it('Display newly created panel', () => {
     clickUserMenuPanels();
@@ -59,6 +57,7 @@ describe('Review Coordinator', () => {
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
+    clickPanelProposalsTab();
     // TODO : check the proposals are displayed (we need to add or mock proposals first)
   });
   it('Display a list of reviewers', () => {
