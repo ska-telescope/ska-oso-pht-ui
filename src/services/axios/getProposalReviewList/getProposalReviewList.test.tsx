@@ -18,7 +18,7 @@ describe('Helper Functions', () => {
         review_id: 'review_id',
         cycle: 'cycle',
         reviewer_id: 'reviewer_id',
-        prsl_id: 'prsl_id',
+        prsl_id: 'prsl-t0001-20250707-00002',
         rank: 0,
         conflict: {
           has_conflict: false,
@@ -28,7 +28,7 @@ describe('Helper Functions', () => {
         src_net: '',
         submitted_on: '',
         submitted_by: '',
-        status: ''
+        status: 'to do'
       }
     ]);
   });

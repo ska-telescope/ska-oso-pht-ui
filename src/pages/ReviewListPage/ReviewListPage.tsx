@@ -112,7 +112,7 @@ export default function ReviewListPage() {
     }
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
+  const canEdit = (e: { row: { status: string } }) => true; // TODO
 
   const colId = {
     field: 'id',
@@ -128,11 +128,12 @@ export default function ReviewListPage() {
     renderCell: (e: any) => presentLatex(e.row.title)
   };
 
-  const colStatus = {
+  const colReviewStatus = {
     field: 'status',
     headerName: t('status.label'),
     width: 120,
-    renderCell: (e: { row: any }) => t('reviewStatus.' + e.row.status)
+    renderCell: (e: { row: any }) =>
+      e.row.reviewId ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
   };
 
   const colRank = {
@@ -146,14 +147,14 @@ export default function ReviewListPage() {
     field: 'conflict',
     headerName: t('conflict.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.conflict?.has_conflict ? 'Yes' : 'No')
+    renderCell: (e: { row: any }) => (e.row.conflict?.has_conflict ? t('yes') : t('no'))
   };
 
   const colComments = {
     field: 'comments',
     headerName: t('comments.label'),
     width: 120,
-    renderCell: (e: { row: any }) => e.row.comments
+    renderCell: (e: { row: any }) => (e.row.comments ? t('yes') : t('no'))
   };
 
   const colScienceCategory = {
@@ -168,7 +169,7 @@ export default function ReviewListPage() {
     field: 'srcNet',
     headerName: t('srcNet.label'),
     width: 120,
-    renderCell: (e: { row: any }) => e.row.src_net
+    renderCell: (e: { row: any }) => (e.row.src_net ? t('yes') : t('no'))
   };
 
   const colDateUpdated = {
@@ -208,16 +209,15 @@ export default function ReviewListPage() {
     )
   };
 
-  /* TODO: add review related columns when endpoint is ready */
   const stdColumns = [
     ...[
       colId,
       colTitle,
-      colStatus,
+      colScienceCategory,
+      colReviewStatus,
+      colConflict,
       colRank,
       colComments,
-      colConflict,
-      colScienceCategory,
       colSrcNet,
       colDateUpdated,
       colDateAssigned,
@@ -250,6 +250,7 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
+  console.log('TREVOR filteredData', filteredData);
 
   const searchDropdown = () => (
     <DropDown
