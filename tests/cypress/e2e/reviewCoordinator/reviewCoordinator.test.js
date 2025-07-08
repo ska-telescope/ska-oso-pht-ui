@@ -5,7 +5,7 @@ import {
   enterPanelName,
   clickAddPanelEntry,
   verifyPanelCreatedAlertFooter,
-  verifyFirstPanelOnGridIsVisible,
+  verifyPanelOnGridIsVisible,
   clickFirstPanel,
   verifyReviewerOnGridIsVisible,
   clickPanelProposalsTab,
@@ -52,7 +52,7 @@ describe('Review Coordinator', () => {
   });
   it('Display newly created panel', () => {
     clickUserMenuPanels();
-    verifyFirstPanelOnGridIsVisible(panelName);
+    verifyPanelOnGridIsVisible(panelName);
   });
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
@@ -68,13 +68,11 @@ describe('Review Coordinator', () => {
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
     // TODO : add a reviewer
   });
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
-    // TODO : Perhaps do some stuff in here ?
     // TODO : add a proposal
   });
 });

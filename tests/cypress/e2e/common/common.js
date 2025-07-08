@@ -86,15 +86,15 @@ export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Pa
 export const verifyPanelCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Panel added with unique identifier');
 
-export const verifyFirstPanelOnGridIsVisible = PanelName => {
-  get("dataGridId").should('contain', PanelName);
+export const verifyPanelOnGridIsVisible = PanelName => {
+  verifyContent("dataGridId", PanelName)
 };
 
 export const verifyReviewerOnGridIsVisible = ReviewerName => {
-  get("dataGridReviewers").should('contain', ReviewerName);
+  verifyContent("dataGridReviewers", ReviewerName);
 };
 export const verifyProposalOnGridIsVisible = ProposalName => {
-  get("dataGridProposals").should('contain', ProposalName);
+  verifyContent("dataGridProposals", ProposalName);
 };
 
 /*----------------------------------------------------------------------*/
