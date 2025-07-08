@@ -83,15 +83,9 @@ export default function ReviewEntry() {
       const signedUrl = await GetPresignedDownloadUrl(selectedFile);
 
       if (
-        (tabValuePDF === 0 && signedUrl === t('pdfDownload.sampleData')) ||
+        signedUrl === t('pdfDownload.sampleData') ||
+        proposal.technicalPDF != null ||
         proposal.sciencePDF != null
-      ) {
-        setCurrentPDF(signedUrl);
-      }
-
-      if (
-        (tabValuePDF === 1 && signedUrl === t('pdfDownload.sampleData')) ||
-        proposal.technicalPDF != null
       ) {
         setCurrentPDF(signedUrl);
       }
@@ -110,7 +104,11 @@ export default function ReviewEntry() {
       }}
       elevation={0}
     >
-      <PDFViewer url={currentPDF ?? ''} />
+      {getProposal().sciencePDF !== null && currentPDF !== null ? (
+        <PDFViewer url={currentPDF ?? ''} />
+      ) : (
+        <> No Science PDF uploaded</>
+      )}
     </Paper>
   );
 
@@ -124,7 +122,11 @@ export default function ReviewEntry() {
       }}
       elevation={0}
     >
-      <PDFViewer url={currentPDF ?? ''} />
+      {getProposal().technicalPDF !== null && currentPDF !== null ? (
+        <PDFViewer url={currentPDF ?? ''} />
+      ) : (
+        <> No Technical PDF uploaded</>
+      )}
     </Paper>
   );
 
