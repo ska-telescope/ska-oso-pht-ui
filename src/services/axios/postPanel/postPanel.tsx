@@ -19,7 +19,11 @@ export function mappingPostPanel(panel: Panel): PanelBackend {
       prsl_id: proposal.proposalId,
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()
     })),
-    reviewers: [] // TODO map reviewers
+    reviewers: panel.reviewers.map(reviewer => ({
+      reviewer_id: reviewer.reviewerId,
+      assigned_on: reviewer.assignedOn ? reviewer.assignedOn : new Date().toISOString(),
+      status: reviewer.status
+    }))
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedPanel);

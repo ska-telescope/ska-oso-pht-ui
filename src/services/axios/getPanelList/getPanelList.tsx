@@ -7,6 +7,7 @@ import {
 import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
+import { PanelReviewer, PanelReviewerBackend } from '@/utils/types/panelReviewer';
 
 /*********************************************************** filter *********************************************************/
 
@@ -52,6 +53,15 @@ const getProposal = (proposal: PanelProposalBackend, panelId: string): PanelProp
   };
 };
 
+const getReviewer = (reviewer: PanelReviewerBackend, panelId: string): PanelReviewer => {
+  return {
+    panelId: panelId,
+    reviewerId: reviewer.reviewer_id,
+    assignedOn: reviewer.assigned_on as string,
+    status: reviewer.status
+  };
+};
+
 export function mappingList(inRec: PanelBackend[]): Panel[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
@@ -64,7 +74,10 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
         inRec[i].proposals?.length > 0
           ? inRec[i].proposals.map(proposal => getProposal(proposal, inRec[i].panel_id))
           : [],
-      reviewers: [] // TODO create reviewers backend type and mapping
+      reviewers:
+        inRec[i].reviewers?.length > 0
+          ? inRec[i].reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
+          : []
     };
     output.push(rec);
   }
