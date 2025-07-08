@@ -250,7 +250,6 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
-  console.log('TREVOR', filteredData);
 
   const searchDropdown = () => (
     <DropDown

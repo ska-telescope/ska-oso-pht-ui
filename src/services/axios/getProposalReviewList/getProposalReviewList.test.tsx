@@ -1,13 +1,5 @@
-import { describe, vi, beforeEach } from 'vitest';
-import axios from 'axios';
-import GetProposalReviewList, { GetMockReviewerList } from './getProposalReviewList';
-import * as CONSTANTS from '@/utils/constants';
-
-const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
-};
+import { describe } from 'vitest';
+import { GetMockReviewerList } from './getProposalReviewList';
 
 describe('Helper Functions', () => {
   test('GetMockReviewerList returns mock data', () => {
@@ -42,8 +34,10 @@ describe('Helper Functions', () => {
   });
 });
 
+/*
 describe('GetProposalReviewList Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 });
+*/
