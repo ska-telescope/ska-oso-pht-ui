@@ -107,7 +107,7 @@ export default function ReviewEntry() {
       {getProposal().sciencePDF !== null && currentPDF !== null ? (
         <PDFViewer url={currentPDF ?? ''} />
       ) : (
-        <> No Science PDF uploaded</>
+        <>{t('pdfPreview.science.notUploaded')}</>
       )}
     </Paper>
   );
@@ -125,7 +125,7 @@ export default function ReviewEntry() {
       {getProposal().technicalPDF !== null && currentPDF !== null ? (
         <PDFViewer url={currentPDF ?? ''} />
       ) : (
-        <> No Technical PDF uploaded</>
+        <> {t('pdfPreview.technical.notUploaded')}</>
       )}
     </Paper>
   );

@@ -430,6 +430,14 @@
     },
     "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
   },
+  "pdfPreview": {
+    "science": {
+      "notUploaded": "No Science Justification PDF uploaded"
+    },
+    "technical": {
+      "notUploaded": "No Technical Justification PDF uploaded"
+    }
+  },
   "pdfUpload": {
     "science": {
       "label": {
