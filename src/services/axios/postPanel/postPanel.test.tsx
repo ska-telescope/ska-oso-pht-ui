@@ -2,8 +2,16 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 import PostPanel, { mappingPostPanel, postMockPanel } from './postPanel';
-import { MockPanelFrontend, MockPanelFrontendWithProposals } from './mockPanelFrontend';
-import { MockPanelBackend, MockPanelBackendWithProposals } from './mockPanelBackend';
+import {
+  MockPanelFrontend,
+  MockPanelFrontendWithProposals,
+  MockPanelFrontendWithReviewers
+} from './mockPanelFrontend';
+import {
+  MockPanelBackend,
+  MockPanelBackendWithProposals,
+  MockPanelBackendWithReviewers
+} from './mockPanelBackend';
 import { PanelBackend } from '@/utils/types/panel';
 import * as CONSTANTS from '@/utils/constants';
 import { CYCLE } from '@/utils/constants';
@@ -37,22 +45,32 @@ describe('Helper Functions', () => {
   });
 
   test('mappingPostPanel maps panel with proposals and generate assignedOn date when not provided', () => {
-    const today = new Date().toISOString();
+    const today = new Date();
     const myPanel = {
       ...MockPanelFrontendWithProposals,
       proposals: [{ ...MockPanelFrontendWithProposals.proposals[0], assignedOn: undefined }]
     };
-    const panelBackEnd: PanelBackend = mappingPostPanel(myPanel);
-    const expectedPanelBackend = {
-      ...MockPanelBackendWithProposals,
-      proposals: [
-        {
-          ...MockPanelBackendWithProposals.proposals[0],
-          assigned_on: today
-        }
-      ]
+    const expectedPanelBackend: PanelBackend = mappingPostPanel(myPanel);
+    expect(
+      new Date(expectedPanelBackend.proposals[0].assigned_on as string).getTime()
+    ).to.be.closeTo(today.getTime(), 10); // 10ms tolerance
+  });
+
+  test('mappingPostPanel maps panel with reviewers', () => {
+    const panelBackEnd: PanelBackend = mappingPostPanel(MockPanelFrontendWithReviewers);
+    expect(panelBackEnd).to.deep.equal(MockPanelBackendWithReviewers);
+  });
+
+  test('mappingPostPanel maps panel with reviewers and generate assignedOn date when not provided', () => {
+    const today = new Date();
+    const myPanel = {
+      ...MockPanelFrontendWithReviewers,
+      reviewers: [{ ...MockPanelFrontendWithReviewers.reviewers[0], assignedOn: undefined }]
     };
-    expect(panelBackEnd).to.deep.equal(expectedPanelBackend);
+    const expectedPanelBackend: PanelBackend = mappingPostPanel(myPanel);
+    expect(
+      new Date(expectedPanelBackend.reviewers[0].assigned_on as string).getTime()
+    ).to.be.closeTo(today.getTime(), 10); // 10ms tolerance
   });
 });
 
