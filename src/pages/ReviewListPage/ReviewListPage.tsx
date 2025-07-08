@@ -15,7 +15,7 @@ import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { SEARCH_TYPE_OPTIONS, PROPOSAL_STATUS, BANNER_PMT_SPACER } from '../../utils/constants';
+import { SEARCH_TYPE_OPTIONS, BANNER_PMT_SPACER } from '../../utils/constants';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -250,7 +250,7 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
-  console.log('TREVOR filteredData', filteredData);
+  // TODO Remove once development conpleted console.log('TREVOR filteredData', filteredData);
 
   const searchDropdown = () => (
     <DropDown
