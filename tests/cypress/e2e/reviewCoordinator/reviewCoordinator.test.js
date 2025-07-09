@@ -17,7 +17,9 @@ import {
   clickReviewOverviewButton,
   clickUserMenuProposals,
   clickUserMenuReviews,
-  initialize
+  initialize,
+  getProposals,
+  verifyMockedAPICall
 } from '../common/common';
 
 const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
@@ -25,6 +27,7 @@ const panelName = Math.floor(Math.random() * 10000000).toString(); // name shoul
 describe('Review Coordinator', () => {
   beforeEach(() => {
     initialize();
+    getProposals(); // Load mocked proposals fixture
   });
   it('Navigate using the dropdown menu and then the overview panels', () => {
     clickUserMenuOverview();
@@ -58,21 +61,26 @@ describe('Review Coordinator', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab();
-    // TODO : check the proposals are displayed (we need to add or mock proposals first)
+    verifyProposalOnGridIsVisible('The Milky Way View');
+    verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
   it('Display a list of reviewers', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
+    // TODO mock reviewer list API call similar to proposals
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : add a reviewer
+    clickFirstPanel();
+    // TODO : select a reviewer
   });
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
-    clickAddPanel();
-    // TODO : add a proposal
+    clickFirstPanel();
+    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+    verifyMockedAPICall('@getProposals');
+    verifyProposalOnGridIsVisible('The Milky Way View');
+    // TODO: select a proposal
   });
 });

@@ -14,3 +14,4 @@ export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true })
 export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
 export const verifyContent = (testId, value) => get(testId).should('contain.text', value);
 export const verifyExists = testId => get(testId).should('exist');
+export const verifyVisible = testId => get(testId).should('be.visible'); // TODO add this to base function?

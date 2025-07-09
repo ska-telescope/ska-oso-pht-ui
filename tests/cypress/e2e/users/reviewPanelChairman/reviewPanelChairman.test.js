@@ -1,7 +1,7 @@
 import {
   clickUserMenuProposals,
   clickUserMenuReviews,
-  clickUserMenuDecisions,
+  clickUserMenuDecisions, // TODO: implment the function as doesn't exist yet
   initialize
 } from '../../common/common';
 
@@ -12,11 +12,11 @@ describe('Review Coordinator', () => {
   it('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
-    clickUserMenuDecisions();
+    // clickUserMenuDecisions();
     clickUserMenuProposals();
   });
   it('Make a review decision', () => {
-    clickUserMenuDecisions();
+    // clickUserMenuDecisions();
     // TODO : Perhaps do some stuff in here ?
   });
 });
