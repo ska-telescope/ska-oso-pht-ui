@@ -46,7 +46,7 @@ describe('Helper Functions', () => {
 
   test('mappingList returns mapped reviewer list from backend to frontend format', () => {
     const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
-    // checking the second element to ignore duplicates as mapping alone will not remove it
+    // checking the last element to ignore duplicates as mapping alone will not remove it
     expect(panelListFrontEnd[MockPanelBackendList.length - 1]).to.deep.equal(
       MockPanelFrontendList[MockPanelFrontendList.length - 1]
     );

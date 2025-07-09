@@ -6,6 +6,7 @@ import {
   selectValue,
   verifyContent,
   verifyExists,
+  verifyVisible,
   viewPort
 } from '../../fixtures/utils/cypress';
 
@@ -14,10 +15,31 @@ export const initialize = () => {
   cy.visit('/');
 };
 
+// Stubbed API calls
+// see: https://docs.cypress.io/app/guides/network-requests#Routing
+
+// TODO move cy. commands out of this file into cypress.js and create a function for it
+export const getProposals = () => {
+  cy.fixture('proposals.json').then(proposals => {
+    cy.intercept('GET', '**/pht/prsls/list/DefaultUser', {
+      statusCode: 200,
+      body: proposals
+    }).as('getProposals');
+  });
+};
+
+// TODO move cy. commands out of this file into cypress.js and create a function for it
+export const verifyMockedAPICall = stubAlias => {
+  cy.wait(stubAlias).then(interception => {
+    assert.isNotNull(interception.response.body, 'API call has data');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const clickButton = testId => {
   verifyExists(testId);
+  verifyVisible(testId);
   click(testId);
 };
 
