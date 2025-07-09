@@ -93,11 +93,8 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockPanelList(): Panel[] {
-  const uniqueResults =
-    MockPanelBackendList.length > 1
-      ? getUniqueMostRecentPanels(MockPanelBackendList)
-      : MockPanelBackendList;
+export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentPanels(mock) : mock;
   return mappingList(uniqueResults);
 }
 
