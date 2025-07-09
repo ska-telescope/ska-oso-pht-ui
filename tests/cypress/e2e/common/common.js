@@ -105,6 +105,9 @@ export const clickUserMenu = (testId, title) => {
 };
 export const clickUserMenuOverview = () => clickUserMenu('menuItemOverview', 'OVERVIEW');
 export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '');
+
+export const clickUserMenuDecisions = () => clickUserMenu('menuItemReviewDecisions', '');
+
 export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
 export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
 export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEW PROPOSALS');
