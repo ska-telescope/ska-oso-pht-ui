@@ -108,6 +108,8 @@ js-lint:
 
 js-test:
   allow_failure: true
+  tags:
+    - $SKA_DEFAULT_RUNNER
   before_script:
     - mkdir -p build/reports
   script:
