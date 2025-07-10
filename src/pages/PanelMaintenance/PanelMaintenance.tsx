@@ -298,7 +298,7 @@ export default function PanelMaintenance() {
                 <GridProposals
                   height={TAB_GRID_HEIGHT}
                   showSearch
-                  showSelection
+                  showSelection={!!currentPanel}
                   selectedProposals={panelProposals}
                   tickBoxClicked={(proposal, isProposalSelected) => {
                     proposalSelectedToggle(proposal, isProposalSelected);
