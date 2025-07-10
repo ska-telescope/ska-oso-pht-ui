@@ -203,7 +203,7 @@ deploy-integration:
 js-e2e-deploy:
   allow_failure: true
   variables:
-    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc'
   tags:
     - $SKA_K8S_RUNNER
 
@@ -216,7 +216,7 @@ js-e2e-test:
     - mkdir -p build/tests
     - mkdir -p build/.nyc_output
   variables:
-    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
+    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc'
   after_script:
     - cp artefacts/screenshots/**/*.png build/screenshots
     - yarn test:e2e:coverage
