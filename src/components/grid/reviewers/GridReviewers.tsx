@@ -241,31 +241,33 @@ export default function GridProposals({
             <Grid2 container direction="row" spacing={2}>
               <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
               <Grid2 size={{ sm: 6 }} mt={3}>
-                <Grid2
-                  container
-                  flexDirection={'row'}
-                  flexWrap={'wrap'}
-                  justifyContent={'space-evenly'}
-                >
-                  <Grid2>
-                    <TickBox
-                      label={t('selected.label')}
-                      labelPosition={LABEL_POSITION.END}
-                      testId="selectedTickBox"
-                      checked={selected}
-                      onChange={() => setSelected(!selected)}
-                    />
+                {showSelection && (
+                  <Grid2
+                    container
+                    flexDirection={'row'}
+                    flexWrap={'wrap'}
+                    justifyContent={'space-evenly'}
+                  >
+                    <Grid2>
+                      <TickBox
+                        label={t('selected.label')}
+                        labelPosition={LABEL_POSITION.END}
+                        testId="selectedTickBox"
+                        checked={selected}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </Grid2>
+                    <Grid2>
+                      <TickBox
+                        label={t('notSelected.label')}
+                        labelPosition={LABEL_POSITION.END}
+                        testId="notSelectedTickBox"
+                        checked={notSelected}
+                        onChange={() => setNotSelected(!notSelected)}
+                      />
+                    </Grid2>
                   </Grid2>
-                  <Grid2>
-                    <TickBox
-                      label={t('notSelected.label')}
-                      labelPosition={LABEL_POSITION.END}
-                      testId="notSelectedTickBox"
-                      checked={notSelected}
-                      onChange={() => setNotSelected(!notSelected)}
-                    />
-                  </Grid2>
-                </Grid2>
+                )}
               </Grid2>
             </Grid2>
           </Grid2>

@@ -722,6 +722,7 @@
     "12": "Solar, Heliospheric and Ionospheric Physics",
     "13": "Transients",
     "14": "VLBI",
+    "null": "Not specified",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
     "notSpecified": "Not specified",
