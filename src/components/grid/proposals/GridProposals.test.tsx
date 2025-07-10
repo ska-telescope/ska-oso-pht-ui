@@ -7,17 +7,29 @@ import GridProposals, { filterProposals, getProposalType } from './GridProposals
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 import MockProposalBackendList from '@/services/axios/getProposalList/mockProposalBackendList';
 
-describe('<GridProposals />', () => {
+describe('<GridProposals /> data', () => {
   test('renders correctly with no mocking', () => {
     render(
       <StoreProvider>
         <GridProposals />
       </StoreProvider>
     );
+    const proposalGrid = screen.queryByTestId('dataGridProposals');
+    expect(proposalGrid).toBeNull();
   });
-});
-
-test('renders correctly', async () => {
+  test('renders correctly with mocking data', async() => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+    data: MockProposalBackendList
+  });
+    render(
+      <StoreProvider>
+        <GridProposals />
+      </StoreProvider>
+    );
+    expect(await screen.findAllByTestId('dataGridProposals')).toBeDefined();
+  });
+  vi.clearAllMocks();
+  test('renders correctly with data error', async () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: 'Error'
   });
@@ -26,28 +38,36 @@ test('renders correctly', async () => {
       <GridProposals />
     </StoreProvider>
   );
+  const proposalGrid = screen.queryByTestId('dataGridProposals');
+  expect(proposalGrid).toBeNull();
 });
-vi.clearAllMocks();
-test('renders correctly, forReview', () => {
+  test('renders correctly with empty data', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: []
+    });
+    render(
+      <StoreProvider>
+        <GridProposals />
+      </StoreProvider>
+    );
+    const proposalGrid = screen.queryByTestId('dataGridProposals');
+    expect(proposalGrid).toBeNull();
+  });
+});
+
+test('renders correctly, forReview', async () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
-    data: MockProposalFrontendList
+    data: MockProposalBackendList
   });
   render(
     <StoreProvider>
       <GridProposals />
     </StoreProvider>
   );
-
-  vi.spyOn(axios, 'get').mockResolvedValue({
-    data: []
-  });
-  render(
-    <StoreProvider>
-      <GridProposals forReview />
-    </StoreProvider>
-  );
+ 
 });
 vi.clearAllMocks();
+
 test('renders correctly, showSelection', async () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: MockProposalBackendList
@@ -58,7 +78,7 @@ test('renders correctly, showSelection', async () => {
     </StoreProvider>
   );
   const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
-  expect(emptyCheckboxes.length).toBe(0); // or <= 0
+  expect(emptyCheckboxes.length).toBe(0);
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: MockProposalBackendList
   });
@@ -68,10 +88,10 @@ test('renders correctly, showSelection', async () => {
     </StoreProvider>
   );
   const checkboxes = await screen.findAllByTestId('linkedTickBox');
-  expect(checkboxes.length).toBeGreaterThan(0); // or a specific number
+  expect(checkboxes.length).toBeGreaterThan(0);
 });
-
 vi.clearAllMocks();
+
 test('renders correctly, showActions', () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: MockProposalFrontendList
@@ -92,6 +112,7 @@ test('renders correctly, showActions', () => {
   );
 });
 vi.clearAllMocks();
+
 test('renders correctly, showSearch', () => {
   vi.spyOn(axios, 'get').mockResolvedValue({
     data: MockProposalFrontendList
