@@ -153,20 +153,6 @@ export default function GridProposals({
     renderCell: (e: { row: any }) => displayStatus(e.row.status)
   };
 
-  /*
-    const stdColumns = [
-    ...[
-      colSelect,
-      colTitle,
-      colGivenName,
-      colSurname,
-      colOfficeLocation,
-      colSubExpertise,
-      colStatus
-    ]
-  ];
-  */
-
   const stdColumns = [
     ...(showSelection ? [colSelect] : []),
     colTitle,
@@ -176,18 +162,6 @@ export default function GridProposals({
     colSubExpertise,
     colStatus
   ];
-
-  /*
-  const stdColumns = [
-    ...(showSelection ? [colSelect] : []),
-    colTitle,
-    colGivenName,
-    colSurname,
-    colOfficeLocation,
-    colSubExpertise,
-    colStatus
-  ];
-  */
 
   const selectedData = reviewers
     ? reviewers.filter(e => (isReviewerSelected(e.id) ? selected : notSelected))
