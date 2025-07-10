@@ -297,9 +297,9 @@ export const PROPOSAL_STATUS = {
 };
 
 export const REVIEWER_STATUS = {
-  PENDING: 'pending',
-  ACCEPTED: 'accepted',
-  DECLINED: 'declined'
+  PENDING: 'Pending',
+  ACCEPTED: 'Accepted',
+  DECLINED: 'Declined'
 };
 
 export const TYPE_ZOOM = 0;

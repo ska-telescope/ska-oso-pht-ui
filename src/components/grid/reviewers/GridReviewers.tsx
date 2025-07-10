@@ -40,6 +40,7 @@ interface GridReviewersProps {
   selectedReviewers?: IdObject[];
   showTitle?: boolean;
   showSearch?: boolean;
+  showSelection?: boolean;
   tickBoxClicked?: (reviewer: Reviewer, isReviewerSelected: boolean) => void;
 }
 
@@ -48,6 +49,7 @@ export default function GridProposals({
   selectedReviewers = [],
   showTitle = false,
   showSearch = false,
+  showSelection = false,
   tickBoxClicked = () => {}
 }: GridReviewersProps) {
   const { t } = useTranslation('pht');
@@ -151,7 +153,8 @@ export default function GridProposals({
     renderCell: (e: { row: any }) => displayStatus(e.row.status)
   };
 
-  const stdColumns = [
+  /*
+    const stdColumns = [
     ...[
       colSelect,
       colTitle,
@@ -162,6 +165,29 @@ export default function GridProposals({
       colStatus
     ]
   ];
+  */
+
+  const stdColumns = [
+    ...(showSelection ? [colSelect] : []),
+    colTitle,
+    colGivenName,
+    colSurname,
+    colOfficeLocation,
+    colSubExpertise,
+    colStatus
+  ];
+
+  /*
+  const stdColumns = [
+    ...(showSelection ? [colSelect] : []),
+    colTitle,
+    colGivenName,
+    colSurname,
+    colOfficeLocation,
+    colSubExpertise,
+    colStatus
+  ];
+  */
 
   const selectedData = reviewers
     ? reviewers.filter(e => (isReviewerSelected(e.id) ? selected : notSelected))
