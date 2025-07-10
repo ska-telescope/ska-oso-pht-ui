@@ -34,3 +34,18 @@ Help.component => Populated with field-dependant help
 ## Project status
 
 In development.
+
+## Quick Start ( to run locally )
+
+clone the repository from git
+git submodule update --recursive --remote
+git submodule update --init --recursive
+yarn
+yarn local
+
+This should allow the GUI application to run in http://localhost:6101/
+
+## NOTES
+
+Please refer to oso-services documentation for implementation of the minimum backend required
+Please refer to ska-ost-senscalc documentation for implementation of the backend required for observation

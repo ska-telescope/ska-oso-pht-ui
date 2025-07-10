@@ -43,7 +43,7 @@ interface GridReviewersProps {
   tickBoxClicked?: (reviewer: Reviewer, isReviewerSelected: boolean) => void;
 }
 
-export default function GridProposals({
+export default function GridReviewers({
   height = '50vh',
   selectedReviewers = [],
   showTitle = false,

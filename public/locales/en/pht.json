@@ -154,6 +154,10 @@
   "dateAssigned": {
     "label": "Date Assigned"
   },
+  "decisionComments": {
+    "label": "Decision Comments",
+    "help": "Comments provided by the chairperson when making a decision on the proposal."
+  },
   "declination": {
     "label": "Declination"
   },
@@ -234,6 +238,7 @@
   "fileType": {
     "pdf": ".pdf"
   },
+
   "firstName": {
     "label": "First Name",
     "help": "First name of the principal investigator or co-investigator."
@@ -918,6 +923,14 @@
     "range": {
       "error": "Value is outside of allowed range"
     }
+  },
+  "tableReviewDecision": {
+    "actions": "Actions",
+    "expandDetails": "Expand Details",
+    "lastUpdated": "Last Updated",
+    "reviewStatus": "Review Status",
+    "rank": "Rank",
+    "title": "Title"
   },
   "tapering": {
     "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
