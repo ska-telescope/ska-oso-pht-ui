@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
@@ -62,22 +62,30 @@ describe('<GridProposals /> forReview', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
-    render(
+    const { container } = render(
       <StoreProvider>
         <GridProposals forReview />
       </StoreProvider>
     );
+    await waitFor(() => {
+      const authorsHeader = container.querySelector('[data-field="authors"]');
+      expect(authorsHeader).toBeInTheDocument();
+    });
   });
   vi.clearAllMocks();
   test('renders correctly, forReview false', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
-    render(
+    const { container } = render(
       <StoreProvider>
         <GridProposals />
       </StoreProvider>
     );
+    await waitFor(() => {
+      const authorsHeader = container.querySelector('[data-field="authors"]');
+      expect(authorsHeader).toBeNull();
+    });
   });
   vi.clearAllMocks();
 });
@@ -118,9 +126,10 @@ describe('<GridProposals /> showSelection', () => {
     });
     render(
       <StoreProvider>
-        <GridProposals showActions={true} />
+        <GridProposals showActions />
       </StoreProvider>
     );
+    // TODO check if actions are rendered
   });
   vi.clearAllMocks();
   test('renders correctly, showActions false', () => {
@@ -129,9 +138,10 @@ describe('<GridProposals /> showSelection', () => {
     });
     render(
       <StoreProvider>
-        <GridProposals showActions={false} />
+        <GridProposals />
       </StoreProvider>
     );
+    // TODO check if actions are not rendered
   });
 });
 
@@ -142,9 +152,10 @@ describe('<GridProposals /> showSelection', () => {
     });
     render(
       <StoreProvider>
-        <GridProposals showSearch={true} />
+        <GridProposals showSearch />
       </StoreProvider>
     );
+    // TODO check if search is rendered
   });
   test('renders correctly, showSearch false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
@@ -152,9 +163,10 @@ describe('<GridProposals /> showSelection', () => {
     });
     render(
       <StoreProvider>
-        <GridProposals showSearch={false} />
+        <GridProposals />
       </StoreProvider>
     );
+    // TODO check if search is not rendered
   });
 });
 
