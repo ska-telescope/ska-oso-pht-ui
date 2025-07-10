@@ -15,6 +15,7 @@ import Proposal from '@/utils/types/proposal';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
+import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 
 export default function ReviewEntry() {
   const { t } = useTranslation('pht');
@@ -31,6 +32,7 @@ export default function ReviewEntry() {
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
+  const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -69,6 +71,29 @@ export default function ReviewEntry() {
 
   /**************************************************************/
 
+  const previewSignedUrl = async (tabValuePDF: number) => {
+    const pdfLabel = tabValuePDF === 0 ? 'science' : 'technical';
+
+    try {
+      const proposal = getProposal();
+
+      const selectedFile =
+        `${proposal.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
+
+      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+
+      if (
+        signedUrl === t('pdfDownload.sampleData') ||
+        proposal.technicalPDF != null ||
+        proposal.sciencePDF != null
+      ) {
+        setCurrentPDF(signedUrl);
+      }
+    } catch (e) {
+      new Error(t('pdfDownload.error'));
+    }
+  };
+
   const sciencePDF = () => (
     <Paper
       sx={{
@@ -79,7 +104,11 @@ export default function ReviewEntry() {
       }}
       elevation={0}
     >
-      <PDFViewer />
+      {getProposal().sciencePDF !== null && currentPDF !== null ? (
+        <PDFViewer url={currentPDF ?? ''} />
+      ) : (
+        <>{t('pdfPreview.science.notUploaded')}</>
+      )}
     </Paper>
   );
 
@@ -93,7 +122,11 @@ export default function ReviewEntry() {
       }}
       elevation={0}
     >
-      <PDFViewer />
+      {getProposal().technicalPDF !== null && currentPDF !== null ? (
+        <PDFViewer url={currentPDF ?? ''} />
+      ) : (
+        <> {t('pdfPreview.technical.notUploaded')}</>
+      )}
     </Paper>
   );
 
@@ -282,6 +315,10 @@ export default function ReviewEntry() {
       </Paper>
     );
   };
+
+  React.useEffect(() => {
+    previewSignedUrl(tabValuePDF);
+  }, [tabValuePDF]);
 
   /**************************************************************/
 
