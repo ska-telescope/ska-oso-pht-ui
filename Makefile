@@ -6,7 +6,9 @@ K8S_CHART ?= ska-oso-pht-ui-umbrella
 RELEASE_NAME ?= test
 
 # JS Template Variables
-JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+# JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+
+JS_E2E_TEST_BASE_URL ?= $(K8S_INGRESS_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_COMMAND_ENABLED = false
 JS_ESLINT_CONFIG ?= .eslintrc
 JS_E2E_TESTS_DIR ?= tests/cypress
