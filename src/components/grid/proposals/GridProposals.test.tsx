@@ -1,10 +1,11 @@
 import { describe, test, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+import MockProposalBackendList from '@/services/axios/getProposalList/mockProposalBackendList';
 
 describe('<GridProposals />', () => {
   test('renders correctly with no mocking', () => {
@@ -43,6 +44,70 @@ test('renders correctly, forReview', () => {
   render(
     <StoreProvider>
       <GridProposals forReview />
+    </StoreProvider>
+  );
+});
+vi.clearAllMocks();
+test('renders correctly, showSelection', async () => {
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: MockProposalBackendList
+  });
+  render(
+    <StoreProvider>
+      <GridProposals />
+    </StoreProvider>
+  );
+  const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
+  expect(emptyCheckboxes.length).toBe(0); // or <= 0
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: MockProposalBackendList
+  });
+  render(
+    <StoreProvider>
+      <GridProposals showSelection />
+    </StoreProvider>
+  );
+  const checkboxes = await screen.findAllByTestId('linkedTickBox');
+  expect(checkboxes.length).toBeGreaterThan(0); // or a specific number
+});
+
+vi.clearAllMocks();
+test('renders correctly, showActions', () => {
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: MockProposalFrontendList
+  });
+  render(
+    <StoreProvider>
+      <GridProposals showActions={false} />
+    </StoreProvider>
+  );
+
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: []
+  });
+  render(
+    <StoreProvider>
+      <GridProposals showActions={true} />
+    </StoreProvider>
+  );
+});
+vi.clearAllMocks();
+test('renders correctly, showSearch', () => {
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: MockProposalFrontendList
+  });
+  render(
+    <StoreProvider>
+      <GridProposals showSearch={false} />
+    </StoreProvider>
+  );
+
+  vi.spyOn(axios, 'get').mockResolvedValue({
+    data: []
+  });
+  render(
+    <StoreProvider>
+      <GridProposals showSearch={true} />
     </StoreProvider>
   );
 });
