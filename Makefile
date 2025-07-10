@@ -8,6 +8,8 @@ RELEASE_NAME ?= test
 # JS Template Variables
 # JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
 
+K8S_INGRESS_HOST = ingress-nginx-controller-lb-default.ingress-nginx.svc.cluster.local
+
 JS_E2E_TEST_BASE_URL ?= $(K8S_INGRESS_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_COMMAND_ENABLED = false
 JS_ESLINT_CONFIG ?= .eslintrc
