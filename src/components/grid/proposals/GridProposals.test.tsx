@@ -123,28 +123,34 @@ describe('<GridProposals /> showSelection', () => {
 });
 
 describe('<GridProposals /> showActions', () => {
-  test('renders correctly, showActions true', () => {
+  test('renders correctly, showActions true', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
-    render(
+    const { container } = render(
       <StoreProvider>
         <GridProposals showActions />
       </StoreProvider>
     );
-    // TODO check if actions are rendered
+    await waitFor(() => {
+      const authorsHeader = container.querySelector('[data-field="actions"]');
+      expect(authorsHeader).toBeInTheDocument();
+    });
   });
   vi.clearAllMocks();
-  test('renders correctly, showActions false', () => {
+  test('renders correctly, showActions false', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
-    render(
+    const { container } = render(
       <StoreProvider>
         <GridProposals />
       </StoreProvider>
     );
-    // TODO check if actions are not rendered
+     await waitFor(() => {
+      const authorsHeader = container.querySelector('[data-field="actions"]');
+      expect(authorsHeader).toBeNull();
+    });
   });
 });
 
