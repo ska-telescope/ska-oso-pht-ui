@@ -113,6 +113,31 @@ describe('<GridReviewers /> showSearch', () => {
   });
 });
 
+describe('<GridReviewers /> showTitle', () => {
+  test('renders correctly, showTitle true', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers showTitle />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('pageTitle')).toBeDefined();
+  });
+  test('renders correctly, showTitle false', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('pageTitle')).toBeNull();
+  });
+});
+
 describe('filterReviewers', () => {
   test('filters by name', () => {
     const result = filterReviewers(MockReviewersBackendList, 'Amara', '', '');
