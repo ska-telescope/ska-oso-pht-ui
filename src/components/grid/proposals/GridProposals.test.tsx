@@ -173,6 +173,31 @@ describe('<GridProposals /> showSearch', () => {
   });
 });
 
+describe('<GridProposals /> showTitle', () => {
+  test('renders correctly, showTitle true', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockProposalBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridProposals showTitle />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('pageTitle')).toBeDefined();
+  });
+  test('renders correctly, showTitle false', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockProposalBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridProposals />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('pageTitle')).toBeNull();
+  });
+});
+
 describe('Get proposal type', () => {
   test('retrieves type correctly', () => {
     const type = getProposalType(1);
