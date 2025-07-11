@@ -104,7 +104,7 @@ async function GetPanelList(): Promise<Panel[] | string> {
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_PATH}?user_id=DefaultUser`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/list/DefaultUser`;
     const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {

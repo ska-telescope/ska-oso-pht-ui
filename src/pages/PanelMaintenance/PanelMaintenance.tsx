@@ -2,9 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
-import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
-import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
@@ -261,64 +260,54 @@ export default function PanelMaintenance() {
           justifyContent="space-around"
           alignItems="flex-start"
         >
-          {currentPanel && (
-            <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '100%' }}>
-              <Box>
-                <Tabs
-                  variant="fullWidth"
-                  textColor="secondary"
-                  indicatorColor="secondary"
-                  value={theValue}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
-                  <Tab label={t('reviewers.label')} {...a11yProps(0)} />
-                  <Tab label={t('proposals.label')} {...a11yProps(1)} />
-                </Tabs>
-              </Box>
-              <Box
-                p={2}
-                sx={{
-                  width: '100%',
-                  height: TABS_CONTAINER_HEIGHT,
-                  border: '1px solid lightgrey',
-                  borderBottomLeftRadius: '16px',
-                  borderBottomRightRadius: '16px'
-                }}
+          <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '100%' }}>
+            <Box>
+              <Tabs
+                variant="fullWidth"
+                textColor="secondary"
+                indicatorColor="secondary"
+                value={theValue}
+                onChange={handleChange}
+                aria-label="basic tabs example"
               >
-                {theValue === 0 && (
-                  <GridReviewers
-                    height={TAB_GRID_HEIGHT}
-                    showSearch
-                    selectedReviewers={panelReviewers}
-                    tickBoxClicked={(reviewer, isReviewerSelected) => {
-                      reviewerSelectedToggle(reviewer, isReviewerSelected);
-                    }}
-                  />
-                )}
-                {theValue === 1 && (
-                  <GridProposals
-                    height={TAB_GRID_HEIGHT}
-                    showSearch
-                    showSelection
-                    selectedProposals={panelProposals}
-                    tickBoxClicked={(proposal, isProposalSelected) => {
-                      proposalSelectedToggle(proposal, isProposalSelected);
-                    }}
-                  />
-                )}
-              </Box>
+                <Tab label={t('reviewers.label')} {...a11yProps(0)} />
+                <Tab label={t('proposals.label')} {...a11yProps(1)} />
+              </Tabs>
             </Box>
-          )}
-          {!currentPanel && (
-            <Box sx={{ width: '90%' }}>
-              <Alert
-                color={AlertColorTypes.Info}
-                text={t('panels.notSelected')}
-                testId="helpPanelId"
-              />
+            <Box
+              p={2}
+              sx={{
+                width: '100%',
+                height: TABS_CONTAINER_HEIGHT,
+                border: '1px solid lightgrey',
+                borderBottomLeftRadius: '16px',
+                borderBottomRightRadius: '16px'
+              }}
+            >
+              {theValue === 0 && (
+                <GridReviewers
+                  height={TAB_GRID_HEIGHT}
+                  showSearch
+                  showSelection={!!currentPanel}
+                  selectedReviewers={panelReviewers}
+                  tickBoxClicked={(reviewer, isReviewerSelected) => {
+                    reviewerSelectedToggle(reviewer, isReviewerSelected);
+                  }}
+                />
+              )}
+              {theValue === 1 && (
+                <GridProposals
+                  height={TAB_GRID_HEIGHT}
+                  showSearch
+                  showSelection={!!currentPanel}
+                  selectedProposals={panelProposals}
+                  tickBoxClicked={(proposal, isProposalSelected) => {
+                    proposalSelectedToggle(proposal, isProposalSelected);
+                  }}
+                />
+              )}
             </Box>
-          )}
+          </Box>
         </Grid2>
       </Grid2>
       <PageFooterPMT />
