@@ -59,6 +59,60 @@ describe('<GridReviewers /> data rendering', () => {
   vi.clearAllMocks();
 });
 
+describe('<GridReviewers /> showSelection', () => {
+  test('renders correctly, showSelection true', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers showSelection />
+      </StoreProvider>
+    );
+    const checkboxes = await screen.findAllByTestId('linkedTickBox');
+    expect(checkboxes.length).toBeGreaterThan(0);
+  });
+  vi.clearAllMocks();
+  test('renders correctly, showSelection false', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers />
+      </StoreProvider>
+    );
+    const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
+    expect(emptyCheckboxes.length).toBe(0);
+  });
+  vi.clearAllMocks();
+});
+
+describe('<GridReviewers /> showSearch', () => {
+  test('renders correctly, showSearch true', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers showSearch />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('searchId')).toBeDefined();
+  });
+  test('renders correctly, showSearch false', () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers />
+      </StoreProvider>
+    );
+    expect(screen.queryByTestId('searchId')).toBeNull();
+  });
+});
+
 describe('filterReviewers', () => {
   test('filters by name', () => {
     const result = filterReviewers(MockReviewersBackendList, 'Amara', '', '');
