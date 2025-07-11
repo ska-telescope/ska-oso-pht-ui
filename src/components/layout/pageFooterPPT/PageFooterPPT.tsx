@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMsal } from '@azure/msal-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
@@ -28,6 +29,8 @@ export default function PageFooterPPT({
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+  const { accounts } = useMsal();
+  const isLoggedIn = () => accounts.length > 0;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -52,14 +55,25 @@ export default function PageFooterPPT({
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+    console.log('createProposal getProposal', getProposal());
+
     NotifyWarning(t('addProposal.warning'));
-    const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
-    if (response && !response.error) {
-      NotifyOK(t('addProposal.success') + response);
-      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
-      navigate(NAV[1]);
+
+    if (isLoggedIn()) {
+      const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
+
+      if (response && !response.error) {
+        NotifyOK(t('addProposal.success') + response);
+        setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+        navigate(NAV[1]);
+      } else {
+        NotifyError(response.error);
+      }
     } else {
-      NotifyError(response.error);
+      const dummyId = 'dummy-proposal-id'; //TODO: move somewhere else
+      NotifyOK(t('addProposal.success') + dummyId);
+      setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData().id });
+      navigate(NAV[1]);
     }
   };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMsal } from '@azure/msal-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Typography } from '@mui/material';
@@ -46,6 +47,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
+
+  const { accounts } = useMsal();
+  const isLoggedIn = () => accounts.length > 0;
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -106,11 +110,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposal = async () => {
+    if (accounts.length === 0) return;
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
   const submitClicked = () => {
+    if (accounts.length === 0) return;
     setOpenProposalDisplay(true);
   };
 
@@ -155,7 +161,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
         {!backPage && <HomeButton />}
       </Grid2>
-      <Grid2>{pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}</Grid2>
+      <Grid2>
+        {pageNo < LAST_PAGE && (
+          <SaveButton disabled={!isLoggedIn()} action={() => updateProposal()} primary />
+        )}
+      </Grid2>
     </Grid2>
   );
 
@@ -171,7 +181,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     >
       <Grid2>
         {pageNo < LAST_PAGE && (
-          <ValidateButton action={validateClicked} toolTip={validateTooltip()} />
+          <ValidateButton
+            disabled={!isLoggedIn()}
+            action={validateClicked}
+            toolTip={validateTooltip()}
+          />
         )}
       </Grid2>
       <Grid2>
@@ -231,6 +245,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {!wrapStatusArray && <Grid2 size={{ lg: 8 }}>{pageDesc()}</Grid2>}
     </Grid2>
   );
+
+  React.useEffect(() => {
+    console.log('Page Banner accounts', accounts);
+  }, []);
 
   return (
     <Box p={2}>

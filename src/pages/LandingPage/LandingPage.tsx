@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMsal } from '@azure/msal-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
@@ -60,6 +61,9 @@ export default function LandingPage() {
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
+  const { accounts } = useMsal();
+  const isLoggedIn = () => accounts.length > 0;
+
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -73,6 +77,8 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      // if (!isLoggedIn()) return;
+
       const response = await GetProposalList();
       if (typeof response === 'string') {
         setAxiosError(response);
@@ -359,6 +365,10 @@ export default function LandingPage() {
       onConfirmLabel=""
     />
   );
+
+  React.useEffect(() => {
+    console.log('Landing Page accounts', accounts);
+  }, []);
 
   return (
     <>
