@@ -31,7 +31,10 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
+# BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
+
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 
 # K8S_CHART_PARAMS += \
