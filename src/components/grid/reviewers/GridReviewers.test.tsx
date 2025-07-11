@@ -5,6 +5,12 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridReviewers, { filterReviewers } from './GridReviewers';
 import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
+import { IdObject } from '@/utils/types/idObject';
+
+const mockedSelectedReviewers: IdObject[] = [
+  { id: MockReviewersBackendList[0].id },
+  { id: MockReviewersBackendList[1].id }
+];
 
 describe('<GridReviewers /> data rendering', () => {
   test('renders correctly with no mocking', () => {
@@ -84,6 +90,27 @@ describe('<GridReviewers /> showSelection', () => {
     );
     const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
     expect(emptyCheckboxes.length).toBe(0);
+  });
+  vi.clearAllMocks();
+});
+
+describe('<GridReviewers /> with selected reviewers', () => {
+  test('renders correctly and checks only selected reviewers', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockReviewersBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridReviewers showSelection selectedReviewers={mockedSelectedReviewers} />
+      </StoreProvider>
+    );
+    const checkboxes = await screen.findAllByRole('checkbox');
+    checkboxes.forEach(checkbox => {
+      const reviewerId = checkbox.getAttribute('data-id');
+      const isSelected = mockedSelectedReviewers.some(r => r.id === reviewerId);
+      const isChecked = checkbox.getAttribute('aria-checked') === 'true';
+      expect(isChecked).toBe(isSelected);
+    });
   });
   vi.clearAllMocks();
 });

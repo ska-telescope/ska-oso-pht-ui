@@ -6,6 +6,12 @@ import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
 import MockProposalBackendList from '@/services/axios/getProposalList/mockProposalBackendList';
+import { IdObject } from '@/utils/types/idObject';
+
+const mockedSelectedProposals: IdObject[] = [
+  { id: MockProposalBackendList[0].prsl_id },
+  { id: MockProposalBackendList[1].prsl_id }
+];
 
 describe('<GridProposals /> data rendering', () => {
   test('renders correctly with no mocking', () => {
@@ -122,6 +128,27 @@ describe('<GridProposals /> showSelection', () => {
   vi.clearAllMocks();
 });
 
+describe('<GridProposals /> with selected proposals', () => {
+  test('renders correctly and checks only selected proposals', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: MockProposalBackendList
+    });
+    render(
+      <StoreProvider>
+        <GridProposals showSelection selectedProposals={mockedSelectedProposals} />
+      </StoreProvider>
+    );
+    const checkboxes = await screen.findAllByRole('checkbox');
+    checkboxes.forEach(checkbox => {
+      const proposalId = checkbox.getAttribute('data-id');
+      const isSelected = mockedSelectedProposals.some(p => p.id === proposalId);
+      const isChecked = checkbox.getAttribute('aria-checked') === 'true';
+      expect(isChecked).toBe(isSelected);
+    });
+  });
+  vi.clearAllMocks();
+});
+
 describe('<GridProposals /> showActions', () => {
   test('renders correctly, showActions true', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
@@ -147,7 +174,7 @@ describe('<GridProposals /> showActions', () => {
         <GridProposals />
       </StoreProvider>
     );
-     await waitFor(() => {
+    await waitFor(() => {
       const authorsHeader = container.querySelector('[data-field="actions"]');
       expect(authorsHeader).toBeNull();
     });
