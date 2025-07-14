@@ -16,7 +16,7 @@ export type PanelDecision = {
 export type PanelDecisionBackend = {
   metaData?: Metadata;
   decision_id: string;
-  cycle: string;
+  cycle?: string;
   panel_id: string;
   prsl_id: string;
   rank: number;

@@ -8,6 +8,7 @@ import {
 import { helpers } from '@/utils/helpers';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
+// mapping frontend to backend format
 export function mappingPostPanelDecision(decision: PanelDecision): PanelDecisionBackend {
   const transformedPanel: PanelDecisionBackend = {
     decision_id: decision.id,
