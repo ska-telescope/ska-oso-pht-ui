@@ -4,20 +4,20 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
-import { PanelDecision } from '@/utils/types/panelDecision';
 import { mappingPostPanelDecision } from '../postPanelDecision/postPanelDecision';
+import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
+import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
-export function postMockPanelDecision(): PanelDecision {
-  return MockPanelDecisionFrontend;
+export function putMockPanelDecision(): PanelDecisionBackend {
+  return MockPanelDecisionBackend;
 }
 
 async function PutPanelDecision(
   id: string,
   PanelDecision: PanelDecision
-): Promise<PanelDecision | { error: string }> {
+): Promise<PanelDecisionBackend | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return postMockPanelDecision();
+    return putMockPanelDecision();
   }
 
   try {
@@ -29,7 +29,7 @@ async function PutPanelDecision(
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return (mappingPostPanelDecision(result.data) as unknown) as PanelDecision;
+    return result.data as PanelDecisionBackend; // TODO add backend->frontend mapping to return in front-end format
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
