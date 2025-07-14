@@ -303,6 +303,12 @@ export const REVIEWER_STATUS = {
   DECLINED: 'Declined'
 };
 
+export const PANEL_DECISION_STATUS = {
+  TO_DO: 'To Do',
+  IN_PROGRESS: 'In Progress',
+  DECIDED: 'Decided'
+};
+
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 
