@@ -1,12 +1,10 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import GetPanelList, {
-  GetMockPanel,
-  mapping
-} from './getPanel';
+import { GetMockPanel, mapping } from './getPanel';
 import { MockPanelBackend } from './mockPanelBackend';
 import { MockPanelFrontend } from './mockPanelFrontEnd';
+import GetPanel from './getPanel';
 import * as CONSTANTS from '@/utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 
@@ -18,20 +16,23 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
-
   test('GetMockPanel returns mock panel', () => {
     const result = GetMockPanel();
     expect(result).to.deep.equal(MockPanelFrontend);
   });
 
-  test('mapping returns mapped panel from backend to frontend format', () => {
+  test('mapping returns mapped panel from backend to frontend format with proposals and reviewers', () => {
     const panelListFrontEnd: Panel = mapping(MockPanelBackend);
     expect(panelListFrontEnd).to.deep.equal(MockPanelFrontend);
   });
 
+  test('mapping returns mapped panel from backend to frontend format with no proposals and reviewers', () => {
+    const backendPanel: PanelBackend = { ...MockPanelBackend, proposals: [], reviewers: [] };
+    const panelListFrontEnd: Panel = mapping(backendPanel);
+    expect(panelListFrontEnd).to.deep.equal({ ...MockPanelFrontend, proposals: [], reviewers: [] });
+  });
 });
 
-/*
 describe('GetProposalList Service', () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -39,43 +40,35 @@ describe('GetProposalList Service', () => {
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetPanelList();
-    expect(result).toEqual(MockPanelFrontendList);
+    const result = await GetPanel('dummy_id');
+    expect(result).toEqual(MockPanelFrontend);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: MockPanelBackendList });
-    const result = (await GetPanelList()) as Panel[];
-    expect(result).to.deep.equal(MockPanelFrontendList);
-  });
-
-  test('returns unsorted data when API returns only one panel', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: [MockPanelBackendList[1]] });
-    const result = await GetPanelList();
-    expect(result).toEqual([MockPanelFrontendList[1]]);
+    mockedAxios.get.mockResolvedValue({ data: MockPanelBackend });
+    const result = (await GetPanel('dummy_id')) as Panel;
+    expect(result).to.deep.equal(MockPanelFrontend);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetPanelList();
+    const result = await GetPanel('dummy_id');
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetPanelList();
+    const result = await GetPanel('dummy_id');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
-  test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
+  test('returns error.API_UNKNOWN_ERROR when API does not return data property', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await GetPanelList();
+    mockedAxios.get.mockResolvedValue({});
+    const result = await GetPanel('dummy_id');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
-*/
