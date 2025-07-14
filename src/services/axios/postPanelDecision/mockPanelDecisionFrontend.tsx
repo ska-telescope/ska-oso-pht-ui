@@ -1,6 +1,6 @@
 import { PanelDecision } from '@/utils/types/panelDecision';
 
-export const mockPanelDecisionFrontend: PanelDecision = {
+export const MockPanelDecisionFrontend: PanelDecision = {
   metaData: {
     version: 1,
     created_by: 'user1',
