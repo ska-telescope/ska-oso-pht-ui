@@ -1,6 +1,5 @@
 import { helpers } from '../../../utils/helpers';
 import {
-  GENERAL,
   OSO_SERVICES_PROPOSAL_PATH,
   PROJECTS,
   SKA_OSO_SERVICES_URL,
@@ -30,7 +29,7 @@ export function mappingPostProposal(
     status: status as string,
     submitted_by: '',
     investigator_refs: [],
-    cycle: proposal.cycle ? proposal.cycle : fetchCycleData().id,
+    cycle: fetchCycleData().id,
     info: {
       title: proposal.title,
       proposal_type: {
@@ -39,10 +38,8 @@ export function mappingPostProposal(
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
-      abstract: proposal.abstract ? proposal.abstract : '',
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label as string,
+      abstract: '',
+      science_category: '',
       targets: [],
       documents: [],
       investigators: [], // TODO: check if investigator_refs replaces investigators in PDM

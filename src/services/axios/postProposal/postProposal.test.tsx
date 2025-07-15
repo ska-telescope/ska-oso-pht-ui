@@ -6,7 +6,6 @@ import { MockProposalFrontend } from './mockProposalFrontend';
 import { MockProposalBackend } from './mockProposalBackend';
 import { ProposalBackend } from '@/utils/types/proposal';
 import { PROPOSAL_STATUS } from '@/utils/constants';
-import { fetchCycleData } from '@/utils/storage/cycleData';
 import * as CONSTANTS from '@/utils/constants';
 
 vi.mock('axiosAuthClient');
@@ -28,21 +27,16 @@ describe('Helper Functions', () => {
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
 
-  test('mappingPostProposal generates cycle when not provided', () => {
-    const myProposal = { ...MockProposalFrontend, cycle: null };
-    const proposalBackend: ProposalBackend = mappingPostProposal(myProposal, PROPOSAL_STATUS.DRAFT);
-    const expectedProposalBackend = { ...MockProposalBackend, cycle: fetchCycleData().id };
-    expect(proposalBackend).to.deep.equal(expectedProposalBackend);
-  });
-
-  test('mappingPostProposal set abstract to null when not provided', () => {
-    const myProposal = { ...MockProposalFrontend, abstract: null };
-    const proposalBackend: ProposalBackend = mappingPostProposal(myProposal, PROPOSAL_STATUS.DRAFT);
-    const expected: ProposalBackend = MockProposalBackend;
-    const info = expected.info;
-    delete info?.abstract;
-    // const expectedProposalBackend = { ...MockProposalBackend, info: { ...MockProposalBackend.info, abstract: null } };
-    expect(proposalBackend).to.deep.equal(expected);
+  test('mappingPostProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
+    const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
+    const proposalBackEnd: ProposalBackend = mappingPostProposal(proposal, PROPOSAL_STATUS.DRAFT);
+    expect(proposalBackEnd).to.deep.equal({
+      ...MockProposalBackend,
+      info: {
+        ...MockProposalBackend.info,
+        proposal_type: { ...MockProposalBackend.info.proposal_type, attributes: [] }
+      }
+    });
   });
 });
 

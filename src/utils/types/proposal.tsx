@@ -32,7 +32,7 @@ export type ProposalBackend = {
       attributes?: string[];
     };
     abstract: string | null;
-    science_category: string;
+    science_category?: string;
     targets: TargetBackend[];
     documents: DocumentBackend[] | null;
     investigators: InvestigatorBackend[] | null;

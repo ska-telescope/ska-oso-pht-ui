@@ -1,3 +1,4 @@
+import { fetchCycleData } from '@/utils/storage/cycleData';
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
@@ -11,10 +12,10 @@ export const MockProposalFrontend: Proposal = {
   createdOn: '2025-06-13T13:48:34.963103Z',
   createdBy: 'DefaultUser',
   version: 10,
-  cycle: 'SKA_1962_2024',
+  cycle: fetchCycleData().id,
   team: [],
-  abstract: 'My scienceTest abstract',
-  scienceCategory: 1,
+  abstract: '',
+  scienceCategory: null,
   scienceSubCategory: [1],
   sciencePDF: null,
   targets: [],
