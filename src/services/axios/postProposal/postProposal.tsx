@@ -17,9 +17,7 @@ export function mappingPostProposal(
     const project = PROJECTS.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
-      if (subtype) {
         subTypes.push(project?.subProjects?.find(item => item.id === subtype)?.mapping as any);
-      }
     }
     return subTypes;
   };
