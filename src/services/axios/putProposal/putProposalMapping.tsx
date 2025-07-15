@@ -445,10 +445,10 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
-      abstract: proposal.abstract,
+      abstract: proposal.abstract as string,
       science_category: GENERAL.ScienceCategory?.find(
         category => category.value === proposal?.scienceCategory
-      )?.label,
+      )?.label as string,
       targets: getTargets(proposal.targets),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       investigators: proposal.team.map(teamMember => {
