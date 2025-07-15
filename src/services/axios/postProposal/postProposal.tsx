@@ -39,7 +39,7 @@ export function mappingPostProposal(
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
-      abstract: proposal.abstract ? proposal.abstract : null,
+      abstract: proposal.abstract ? proposal.abstract : '',
       science_category: GENERAL.ScienceCategory?.find(
         category => category.value === proposal?.scienceCategory
       )?.label as string,
