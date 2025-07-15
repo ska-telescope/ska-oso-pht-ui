@@ -13,6 +13,7 @@ import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -29,8 +30,13 @@ export default function PageFooterPPT({
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+
   const { accounts } = useMsal();
   const isLoggedIn = () => accounts.length > 0;
+
+  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -55,11 +61,9 @@ export default function PageFooterPPT({
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    console.log('createProposal getProposal', getProposal());
-
     NotifyWarning(t('addProposal.warning'));
 
-    if (isLoggedIn()) {
+    if (!isDisableEndpoints()) {
       const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
 
       if (response && !response.error) {
@@ -70,7 +74,7 @@ export default function PageFooterPPT({
         NotifyError(response.error);
       }
     } else {
-      const dummyId = 'dummy-proposal-id'; //TODO: move somewhere else
+      const dummyId = 'dummy-proposal-id'; //TODO: move somewhere else for the dummy id
       NotifyOK(t('addProposal.success') + dummyId);
       setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData().id });
       navigate(NAV[1]);

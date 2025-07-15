@@ -11,6 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useMockedLogin } from '../../../contexts/MockedLoginContext';
 import { PMT, PATH } from '@/utils/constants';
 
 export type Children = JSX.Element | JSX.Element[] | null;
@@ -37,14 +38,16 @@ export default function ButtonUserMenu({
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mockedLogin, setMockedLogin] = React.useState(true);
   const openMenu = Boolean(anchorEl);
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
-  const displayName = mockedLogin ? 'Mocked' : username;
+
+  const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
+
+  const displayName = isMockedLoggedIn ? 'Mocked' : username;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -65,8 +68,8 @@ export default function ButtonUserMenu({
         label="Mock login"
         labelPosition="bottom"
         testId="linkedTickBox"
-        checked={mockedLogin}
-        onChange={() => setMockedLogin(!mockedLogin)}
+        checked={isMockedLoggedIn}
+        onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
       />
       <Box pt={2}>
         {!displayName && <ButtonLogin />}
@@ -119,7 +122,11 @@ export default function ButtonUserMenu({
         </MenuItem>
         <Divider component="li" />
         <MenuItem key={-1} data-testid="menuItemPanelLogout">
-          {mockedLogin ? 'Logout' : <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />}
+          {isMockedLoggedIn ? (
+            'Logout'
+          ) : (
+            <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />
+          )}
         </MenuItem>
       </Menu>
     </>

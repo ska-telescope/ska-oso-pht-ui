@@ -36,6 +36,7 @@ import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -61,8 +62,12 @@ export default function LandingPage() {
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
+  const { isMockedLoggedIn } = useMockedLogin();
+
   const { accounts } = useMsal();
   const isLoggedIn = () => accounts.length > 0;
+
+  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -77,7 +82,8 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      // if (!isLoggedIn()) return;
+      setProposals([]);
+      if (isDisableEndpoints()) return;
 
       const response = await GetProposalList();
       if (typeof response === 'string') {
@@ -87,7 +93,7 @@ export default function LandingPage() {
       }
     };
     fetchData();
-  }, [fetchList]);
+  }, [fetchList, isDisableEndpoints()]);
 
   React.useEffect(() => {
     const cycleData = async () => {
@@ -365,10 +371,6 @@ export default function LandingPage() {
       onConfirmLabel=""
     />
   );
-
-  React.useEffect(() => {
-    console.log('Landing Page accounts', accounts);
-  }, []);
 
   return (
     <>

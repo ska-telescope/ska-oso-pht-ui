@@ -29,6 +29,7 @@ import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -48,8 +49,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
+  const { isMockedLoggedIn } = useMockedLogin();
+
   const { accounts } = useMsal();
   const isLoggedIn = () => accounts.length > 0;
+
+  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -163,7 +168,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       </Grid2>
       <Grid2>
         {pageNo < LAST_PAGE && (
-          <SaveButton disabled={!isLoggedIn()} action={() => updateProposal()} primary />
+          <SaveButton disabled={isDisableEndpoints()} action={() => updateProposal()} primary />
         )}
       </Grid2>
     </Grid2>
@@ -182,7 +187,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid2>
         {pageNo < LAST_PAGE && (
           <ValidateButton
-            disabled={!isLoggedIn()}
+            disabled={isDisableEndpoints()}
             action={validateClicked}
             toolTip={validateTooltip()}
           />
@@ -245,10 +250,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {!wrapStatusArray && <Grid2 size={{ lg: 8 }}>{pageDesc()}</Grid2>}
     </Grid2>
   );
-
-  React.useEffect(() => {
-    console.log('Page Banner accounts', accounts);
-  }, []);
 
   return (
     <Box p={2}>
