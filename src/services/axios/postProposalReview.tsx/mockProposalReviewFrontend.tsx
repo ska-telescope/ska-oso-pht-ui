@@ -1,6 +1,6 @@
-import { ProposalReviewFrontend } from '@/utils/types/proposalReview';
+import { ProposalReview } from '@/utils/types/proposalReview';
 
-export const MockProposalReviewFrontend: ProposalReviewFrontend = {
+export const MockProposalReviewFrontend: ProposalReview = {
   metadata: {
     version: 1,
     created_by: 'user1',
@@ -10,7 +10,7 @@ export const MockProposalReviewFrontend: ProposalReviewFrontend = {
     pdm_version: '18.3.0'
   },
   panelId: 'panel-12345',
-  reviewId: 'review-12345',
+  id: 'review-12345',
   cycle: 'cycle1',
   reviewerId: 'reviewer-12345',
   prslId: 'prsl-t0001-20250716-00001',

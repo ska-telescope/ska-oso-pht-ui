@@ -4,13 +4,13 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '../../../utils/constants';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import ProposalReview from '@/utils/types/proposalReview';
+import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 /*****************************************************************************************************************************/
 
 // NOTE : Make sure that prsl_id is set to an active proposal
 
-export function GetMockReviewerList(): ProposalReview[] {
+export function GetMockReviewerList(): ProposalReviewBackend[] {
   return [
     {
       metadata: {

@@ -1,9 +1,9 @@
 import { Metadata } from './metadata';
 
-export type ProposalReviewFrontend = {
+export type ProposalReview = {
   metadata: Metadata;
   panelId: string;
-  reviewId: string;
+  id: string;
   cycle: string;
   reviewerId: string;
   prslId: string;
