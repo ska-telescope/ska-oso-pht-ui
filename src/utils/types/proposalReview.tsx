@@ -1,12 +1,26 @@
-type ProposalReview = {
-  metadata: {
-    version: number;
-    created_by: string;
-    created_on: string;
-    last_modified_by: string;
-    last_modified_on: string;
-    pdm_version: string;
+import { Metadata } from './metadata';
+
+export type ProposalReviewFrontend = {
+  metadata: Metadata;
+  panelId: string;
+  reviewId: string;
+  cycle: string;
+  reviewerId: string;
+  prslId: string;
+  rank: number;
+  conflict: {
+    hasConflict: boolean;
+    reason: string;
   };
+  comments: string;
+  srcNet: string;
+  submittedOn: string;
+  submittedBy: string;
+  status: string;
+};
+
+export type ProposalReviewBackend = {
+  metadata: Metadata;
   panel_id: string;
   review_id: string;
   cycle: string;
@@ -14,7 +28,7 @@ type ProposalReview = {
   prsl_id: string;
   rank: number;
   conflict: {
-    has_conflict: false;
+    has_conflict: boolean;
     reason: string;
   };
   comments: string;
@@ -23,5 +37,3 @@ type ProposalReview = {
   submitted_by: string;
   status: string;
 };
-
-export default ProposalReview;
