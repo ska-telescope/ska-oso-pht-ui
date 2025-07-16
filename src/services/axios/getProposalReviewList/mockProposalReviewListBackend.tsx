@@ -36,7 +36,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
       pdm_version: '18.3.0'
     },
     panel_id: 'panel-12345',
-    review_id: 'review-12345',
+    review_id: 'review-12346',
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
@@ -61,7 +61,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
       pdm_version: '18.3.0'
     },
     panel_id: 'panel-12345',
-    review_id: 'review-12346',
+    review_id: 'review-12347',
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',

@@ -15,7 +15,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     cycle: 'cycle1',
     reviewerId: 'reviewer-12347',
     prslId: 'prsl-t0001-20250716-00001',
-    rank: 9,
+    rank: 5,
     conflict: {
       hasConflict: false,
       reason: ''
@@ -36,7 +36,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
       pdm_version: '18.3.0'
     },
     panelId: 'panel-12345',
-    id: 'review-12345',
+    id: 'review-12346',
     cycle: 'cycle1',
     reviewerId: 'reviewer-12345',
     prslId: 'prsl-t0001-20250716-00001',
@@ -61,7 +61,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
       pdm_version: '18.3.0'
     },
     panelId: 'panel-12345',
-    id: 'review-12346',
+    id: 'review-12347',
     cycle: 'cycle1',
     reviewerId: 'reviewer-12345',
     prslId: 'prsl-t0001-20250716-00001',

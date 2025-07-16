@@ -54,7 +54,7 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
     const rec: ProposalReview = {
-      id: inRec[i].panel_id?.toString(),
+      id: inRec[i].review_id?.toString(),
       metadata: inRec[i].metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
       panelId: inRec[i].panel_id,
       cycle: inRec[i].cycle,
