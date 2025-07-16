@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { OSO_SERVICES_REVIEWS_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@utils/constants';
 import { mappingPostProposalReview } from '../postProposalReview.tsx/postProposalReview';
-import { MockProposalReviewFrontend } from '../postProposalReview.tsx/mockProposalReviewFrontend';
+import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
@@ -30,15 +30,15 @@ export function mappingPutProposalReview(review: ProposalReviewBackend): Proposa
   return transformedPanel;
 }
 
-export function putMockProposalReview(): ProposalReviewBackend {
-  return mappingPostProposalReview(MockProposalReviewFrontend);
+export function putMockProposalReview(): ProposalReview {
+  return mappingPutProposalReview(MockProposalReviewBackend);
 }
 
 async function PutProposalReview(
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return MockProposalReviewFrontend; // TODO add mapping from backend to frontend
+    return putMockProposalReview();
   }
 
   try {
@@ -50,7 +50,7 @@ async function PutProposalReview(
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return result.data as ProposalReview; // TODO add mapping from backend to frontend
+    return mappingPutProposalReview(result.data) as ProposalReview;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
