@@ -9,14 +9,15 @@ import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { fetchCycleData } from '@/utils/storage/cycleData.tsx';
 
-function mappingPostProposal(proposal: Proposal, status: string | undefined): ProposalBackend {
+export function mappingPostProposal(
+  proposal: Proposal,
+  status: string | undefined
+): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
     const project = PROJECTS.find(({ id }) => id === proposalType);
     const subTypes: string[] = [];
     for (let subtype of proposalSubType) {
-      if (subtype) {
-        subTypes.push(project?.subProjects?.find(item => item.id === subtype)?.mapping as any);
-      }
+      subTypes.push(project?.subProjects?.find(item => item.id === subtype)?.mapping as any);
     }
     return subTypes;
   };
@@ -39,7 +40,7 @@ function mappingPostProposal(proposal: Proposal, status: string | undefined): Pr
       science_category: '',
       targets: [],
       documents: [],
-      investigators: [],
+      investigators: [], // TODO: check if investigator_refs replaces investigators in PDM
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],
@@ -51,9 +52,13 @@ function mappingPostProposal(proposal: Proposal, status: string | undefined): Pr
   return transformedProposal;
 }
 
+export function mockPostProposal() {
+  return 'PROPOSAL-ID-001';
+}
+
 async function PostProposal(proposal: Proposal, status?: string) {
   if (USE_LOCAL_DATA) {
-    return 'PROPOSAL-ID-001';
+    return mockPostProposal();
   }
 
   try {
@@ -64,7 +69,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+    return !result || !result?.data ? { error: 'error.API_UNKNOWN_ERROR' } : result.data;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
