@@ -85,7 +85,8 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const cycleData = async () => {
-      const response = await GetCycleData();
+      const response = await GetCycleData(1);
+      console.log('response .. ', response);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
