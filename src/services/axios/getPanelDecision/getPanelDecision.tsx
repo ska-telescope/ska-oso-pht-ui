@@ -8,13 +8,13 @@ import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecision
 import { mappingPanelDecisionBackendtoFrontend } from '../putPanelDecision/putPanelDecision';
 import { PanelDecision } from '@/utils/types/panelDecision';
 
-export function putMockPanelDecision(): PanelDecision {
+export function getMockPanelDecision(): PanelDecision {
   return mappingPanelDecisionBackendtoFrontend(MockPanelDecisionBackend);
 }
 
 async function getPanelDecision(id: string): Promise<PanelDecision | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return putMockPanelDecision();
+    return getMockPanelDecision();
   }
 
   try {
