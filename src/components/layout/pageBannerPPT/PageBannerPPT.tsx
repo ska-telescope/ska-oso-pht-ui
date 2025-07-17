@@ -168,7 +168,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       </Grid2>
       <Grid2>
         {pageNo < LAST_PAGE && (
-          <SaveButton disabled={isDisableEndpoints()} action={() => updateProposal()} primary />
+          <SaveButton
+            primary
+            testId={'saveBtn'}
+            disabled={isDisableEndpoints()}
+            action={() => updateProposal()}
+          />
         )}
       </Grid2>
     </Grid2>
@@ -187,6 +192,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid2>
         {pageNo < LAST_PAGE && (
           <ValidateButton
+            testId={'validateBtn'}
             disabled={isDisableEndpoints()}
             action={validateClicked}
             toolTip={validateTooltip()}

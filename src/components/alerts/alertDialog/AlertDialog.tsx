@@ -61,10 +61,10 @@ export default function AlertDialog({
       <DialogActions sx={{ padding: 5 }}>
         <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <Grid>
-            <CancelButton action={handleCancel} />
+            <CancelButton testId="dialogCancelButton" action={handleCancel} />
           </Grid>
           <Grid>
-            <ConfirmButton action={handleContinue} />
+            <ConfirmButton testId="dialogConfirmationButton" action={handleContinue} />
           </Grid>
         </Grid>
       </DialogActions>

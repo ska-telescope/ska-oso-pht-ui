@@ -232,11 +232,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     };
 
     return (
-      <ResolveButton
-        action={() => getCoordinates()}
-        disabled={!name}
-        testId={'resolveButton'}
-      />
+      <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
     );
   };
 

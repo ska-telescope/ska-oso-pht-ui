@@ -21,7 +21,7 @@ export default function HomeButton({
   title = 'homeBtn.label',
   primary = false,
   testId = 'homeButtonTestId',
-  toolTip = 'homeBtn.tooltip',
+  toolTip = 'homeBtn.tooltip'
 }: HomeButtonProps) {
   const [openWarningDialog, setOpenWarningDialog] = React.useState(false);
   const navigate = useNavigate();
@@ -60,6 +60,7 @@ export default function HomeButton({
         toolTip={toolTip}
       />
       <AlertDialog
+        testId={'homeButtonWarningModal'}
         open={openWarningDialog}
         onClose={closeDialog}
         onDialogResponse={navigatetoLandingPage}
