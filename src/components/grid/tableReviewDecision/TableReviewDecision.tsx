@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Table,
@@ -16,7 +17,6 @@ import {
   Grid2
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
@@ -32,14 +32,13 @@ interface TableReviewDecisionProps {
 
 export default function TableReviewDecision({ data }: TableReviewDecisionProps) {
   const { t } = useTranslation('pht');
-
-  const [expandedRows, setExpandedRows] = React.useState<Set<number>>(new Set());
-  const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
   const theme = useTheme();
 
-  React.useEffect(() => {
-    console.log('TREVOR', data);
-  }, [data]);
+  const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
+
+  const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
+  const [finalRank, setFinalRank] = React.useState(0);
+  const [finalComments, setFinalComments] = React.useState('');
 
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -59,29 +58,6 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
       : `Expanded details for ${employee?.title}. ${employee?.details.length} additional details available.`;
 
     // Create a temporary live region for announcements
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
-  };
-
-  const updateComments = (_id: number, _comments: string) => {
-    // TODO
-  };
-
-  const updateRank = (id: number, rank: number) => {
-    // TODO
-
-    // Announce rank change to screen readers
-    const employee = data.find((item: { id: number }) => item.id === id);
-    const message = `Rank updated to ${rank} out of 9 for ${employee?.title}`;
-
     const announcement = document.createElement('div');
     announcement.setAttribute('aria-live', 'polite');
     announcement.setAttribute('aria-atomic', 'true');
@@ -176,7 +152,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
             {data.map(
               (
                 item: {
-                  id: React.Key | null | undefined;
+                  id: number;
                   scienceCategory: string;
                   title: string;
                   details: any[];
@@ -266,7 +242,8 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                           onClick={() => handleSubmitAction(item.id)}
                           aria-label={`Submit data for ${item.title}`}
                           data-testid={`submit-button-${item.id}`}
-                          toolTip="Submit employee data"
+                          disabled={finalRank === 0 || finalComments?.trim() === ''}
+                          toolTip=""
                         />
                       </Box>
                     </TableCell>
@@ -368,7 +345,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                   >
                                     <Grid2>
                                       <Typography variant="h6" fontWeight="bold">
-                                        General Comments
+                                        Decision Comments
                                       </Typography>
                                     </Grid2>
                                     <Grid2>
@@ -376,7 +353,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                         action={() => handleSubmitAction(item.id)}
                                         aria-label={`Submit employee data for ${item.title}`}
                                         data-testid={`submit-employee-button-${item.id}`}
-                                        disabled={item.rank === 0 || item.comments?.trim() === ''}
+                                        disabled={finalRank === 0 || finalComments?.trim() === ''}
                                       />
                                     </Grid2>
                                   </Grid2>
@@ -396,24 +373,13 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                     }}
                                   >
                                     <TextEntry
-                                      title={'decisionComments.label'}
-                                      toolTip={'decisionComments.help'}
-                                      testId={`comments-${item.id}`}
-                                      id={`comments-${item.id}`}
-                                      multiline
+                                      label={''}
+                                      testId="finalCommentsId"
                                       rows={
                                         ((FINAL_COMMENTS_HEIGHT / 100) * window.innerHeight) / 27
                                       }
-                                      value={item.comments}
-                                      onChange={(e: { target: { value: string } }) =>
-                                        updateComments(item.id, e.target.value)
-                                      }
-                                      fullWidth
-                                      aria-describedby={`comments-help-${item.id}`}
-                                      data-testid={`comments-field-${item.id}`}
-                                      inputProps={{
-                                        'aria-label': `Comments for ${item.title}`
-                                      }}
+                                      setValue={setFinalComments}
+                                      value={finalComments}
                                     />
                                   </Box>
                                 </Stack>
@@ -421,10 +387,8 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                               <Box>
                                 <RankEntryField
                                   suggestedRank={calculateSuggestedRank(item.details)}
-                                  selectedRank={item.rank}
-                                  setSelectedRank={(e: { target: { value: any } }) =>
-                                    updateRank(item.id, Number(e.target.value))
-                                  }
+                                  selectedRank={finalRank}
+                                  setSelectedRank={setFinalRank}
                                 />
                               </Box>
                             </Box>

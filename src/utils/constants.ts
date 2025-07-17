@@ -224,8 +224,9 @@ export const PMT = [
   '/review/proposal',
   '/review/panel/entry',
   '/review/panel/decisions',
-  '/review/review',
-  '/review/panel/decision'
+  '/review/science',
+  '/review/panel/decision',
+  '/review/technical'
 ];
 
 export const PROJECTS = [
