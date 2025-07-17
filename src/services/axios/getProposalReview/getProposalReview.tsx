@@ -8,35 +8,6 @@ import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposa
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
-/*****************************************************************************************************************************/
-/*********************************************************** mapping *********************************************************/
-
-/*
-export function mapping(inRec: ProposalReviewBackend): ProposalReview {
-    const rec: ProposalReview = {
-      id: inRec.review_id?.toString(),
-      metadata: inRec.metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
-      panelId: inRec.panel_id,
-      cycle: inRec.cycle,
-      reviewerId: inRec.reviewer_id,
-      prslId: inRec.prsl_id,
-      rank: inRec.rank,
-      conflict: {
-        hasConflict: inRec.conflict.has_conflict,
-        reason: inRec.conflict.reason
-      },
-      comments: inRec.comments,
-      srcNet: inRec.src_net,
-      submittedOn: inRec.submitted_on,
-      submittedBy: inRec.submitted_by,
-      status: inRec.status
-    };
-    return rec;
-}
-    */
-
-/*****************************************************************************************************************************/
-
 // NOTE : Make sure that prsl_id is set to an active proposal
 
 export function GetMockReview(
