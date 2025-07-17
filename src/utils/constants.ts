@@ -944,3 +944,5 @@ export const DEFAULT_TARGETS = {
   velType: 0,
   velUnit: 0
 };
+
+export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';

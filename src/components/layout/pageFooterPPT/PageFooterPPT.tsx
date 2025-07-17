@@ -7,7 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
+import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
@@ -74,7 +74,7 @@ export default function PageFooterPPT({
         NotifyError(response.error);
       }
     } else {
-      const dummyId = 'dummy-proposal-id'; //TODO: move somewhere else for the dummy id
+      const dummyId = DUMMY_PROPOSAL_ID;
       NotifyOK(t('addProposal.success') + dummyId);
       setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData().id });
       navigate(NAV[1]);
