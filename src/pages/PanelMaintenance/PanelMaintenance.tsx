@@ -144,7 +144,6 @@ export default function PanelMaintenance() {
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
     } else {
-      // TODO notify user of success
     }
     return response;
   }
