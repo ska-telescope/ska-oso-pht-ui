@@ -12,7 +12,7 @@ export function mappingPostProposalReview(review: ProposalReview): ProposalRevie
   const transformedPanel: ProposalReviewBackend = {
     review_id: review.id,
     panel_id: review.panelId,
-    cycle: fetchCycleData().id,
+    cycle: review.cycle ? review.cycle : fetchCycleData().id,
     submitted_on: review.submittedOn,
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
