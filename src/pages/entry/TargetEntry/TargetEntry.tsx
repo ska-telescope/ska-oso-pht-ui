@@ -1,5 +1,4 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -16,8 +15,6 @@ import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinate
 import Target from '../../../utils/types/target';
 import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
 import Notification from '../../../utils/types/notification';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
-
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -50,13 +47,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(0);
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
-
-  const { isMockedLoggedIn } = useMockedLogin();
-
-  const { accounts } = useMsal();
-  const isLoggedIn = () => accounts.length > 0;
-
-  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -244,7 +234,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     return (
       <ResolveButton
         action={() => getCoordinates()}
-        disabled={isDisableEndpoints() || !name}
+        disabled={!name}
         testId={'resolveButton'}
       />
     );
