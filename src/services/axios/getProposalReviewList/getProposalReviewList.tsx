@@ -78,8 +78,6 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 
 /*****************************************************************************************************************************/
 
-// NOTE : Make sure that prsl_id is set to an active proposal
-
 export function GetMockReviewerList(mock = MockProposalReviewListBackend): ProposalReview[] {
   const uniqueResults = mock.length > 1 ? getUniqueMostRecentReviews(mock) : mock;
   return mappingList(uniqueResults);

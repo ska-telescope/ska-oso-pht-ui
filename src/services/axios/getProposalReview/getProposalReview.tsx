@@ -8,8 +8,6 @@ import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposa
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
-// NOTE : Make sure that prsl_id is set to an active proposal
-
 export function GetMockReview(
   mock: ProposalReviewBackend = MockProposalReviewBackend
 ): ProposalReview {
