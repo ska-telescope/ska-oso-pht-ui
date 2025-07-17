@@ -2862,10 +2862,10 @@
     svgo "^3.2.0"
     vite "^6.1.0"
 
-"@ska-telescope/ska-login-page@^1.0.6":
-  version "1.0.6"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.6.tgz#05020d6eafadb867a7621bae0eb6969512bfd913"
-  integrity sha512-xgeNIcsS8PVHHyTRqC8/a7442e5m3dM97uaP2SVh9bZZd1s4ohM6braa/bJYBWaGLjVbDOpHXqV8ei9mdqT3sA==
+"@ska-telescope/ska-login-page@^1.0.8":
+  version "1.0.8"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.8.tgz#b6935639ecf7b0dc12010fc5a9723b7ed59502de"
+  integrity sha512-D3HY8ORtoFPBvyGMG1iBuNIBVMhSbTVvKUdwXsfAZz3/4g+BCXLlTR/9yaAnDanZub3bQsCkT7zKhLXDCRpnww==
   dependencies:
     "@azure/msal-browser" "^4.0.2"
     "@azure/msal-react" "^3.0.2"

@@ -11,22 +11,39 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetCycleData from '../../services/axios/getCycleData/getCycleData';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import { SEARCH_TYPE_OPTIONS, BANNER_PMT_SPACER } from '../../utils/constants';
-import EditIcon from '../../components/icon/editIcon/editIcon';
+import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
-import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
-import ProposalReview from '@/utils/types/proposalReview';
+import { ProposalReview } from '@/utils/types/proposalReview';
+import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
+import GetPanelList from '@/services/axios/getPanelList/getPanelList';
+import { Panel } from '@/utils/types/panel';
+import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
+
+/*
+ * Process for retrieving the data for the list
+ *
+ * 1. Fetch the list of proposals IDs that are in the panel that the user is in
+ * 2. For each proposal ID, fetch the details of the proposal
+ * 3. Fetch the details of the proposal's review decisions
+ * 4. Combine the data into a single array of objects
+ *
+ * NOTE
+ * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
+ *
+ * Step 2 is currently inefficient as the appropriate endpoint is not available
+ * In the meantime, the list of proposals is being retrieved and being filtered
+ */
 
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
@@ -36,32 +53,44 @@ export default function ReviewListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
+
+  const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
 
-  const [cycleData, setCycleData] = React.useState(false);
-  const [fetchList, setFetchList] = React.useState(false);
-
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
-    setFetchList(!fetchList);
-    setCycleData(!cycleData);
+    const GetReviewPanels = async () => {
+      const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setPanelData((response as unknown) as Panel[]);
+      }
+    };
+    GetReviewPanels();
   }, []);
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList();
+      const response = await GetProposalList(); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposals(response);
+        const panelProposalIds = panelData.flatMap(panel =>
+          Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
+        );
+        const filtered = response
+          ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
+          : [];
+        setProposals(filtered);
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList();
+      const response = await GetProposalReviewList(); // TODO : Get reviews for the user
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
@@ -70,19 +99,7 @@ export default function ReviewListPage() {
     };
     fetchProposalData();
     fetchProposalReviewData();
-  }, [fetchList]);
-
-  React.useEffect(() => {
-    const cycleData = async () => {
-      const response = await GetCycleData();
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        storeCycleData(response);
-      }
-    };
-    cycleData();
-  }, [cycleData]);
+  }, [panelData]);
 
   const getTheProposal = async (id: string) => {
     clearApp();
@@ -94,25 +111,37 @@ export default function ReviewListPage() {
     } else {
       updateAppContent1(validateProposal(response));
       updateAppContent2(response);
-      storeProposalCopy(response);
       validateProposal(response);
       return true;
     }
   };
 
-  const goToReviewPage = () => {
-    navigate(PMT[5]);
+  const scienceIconClicked = (row: any) => {
+    getTheProposal(row.id).then(success => {
+      if (success) {
+        navigate(PMT[5], { replace: true, state: row });
+      } else {
+        setAxiosViewError(t('proposal.error'));
+      }
+    });
   };
 
-  const editIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      goToReviewPage();
-    } else {
-      alert(t('error.iconClicked'));
-    }
+  const technicalIconClicked = (row: any) => {
+    getTheProposal(row.id).then(success => {
+      if (success) {
+        navigate(PMT[7], { replace: true, state: row });
+      } else {
+        setAxiosViewError(t('proposal.error'));
+      }
+    });
   };
 
-  const canEdit = (e: { row: { status: string } }) => true; // TODO
+  const submitIconClicked = (_row: any) => {
+    // TODO : Implement submit icon functionality
+  };
+
+  const canEditScience = (_e: { row: { status: string } }) => true; // TODO
+  const canEditTechnical = (_e: { row: { status: string } }) => true; // TODO
 
   const colId = {
     field: 'id',
@@ -143,6 +172,7 @@ export default function ReviewListPage() {
     renderCell: (e: { row: any }) => e.row.rank
   };
 
+  // TODO : Add the functionality so that clicking on this will show the conflict modal
   const colConflict = {
     field: 'conflict',
     headerName: t('conflict.label'),
@@ -199,12 +229,21 @@ export default function ReviewListPage() {
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
-        <EditIcon
-          onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'reviewProposal.toolTip' : 'reviewProposal.disabled')}
+        <ScienceIcon
+          onClick={() => scienceIconClicked(e.row)}
+          disabled={!canEditScience(e)}
+          toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
-        {/* TODO - Add a submit icon here */}
+        <TechnicalIcon
+          onClick={() => technicalIconClicked(e.row)}
+          disabled={!canEditTechnical(e)}
+          toolTip={t(canEditTechnical(e) ? 'reviewProposal.technical' : 'reviewProposal.disabled')}
+        />
+        <SubmitIcon
+          onClick={() => submitIconClicked(e.row.id)}
+          disabled
+          toolTip={t('submitBtn.tooltip')}
+        />
       </>
     )
   };
@@ -229,10 +268,10 @@ export default function ReviewListPage() {
     function unionProposalsAndReviews() {
       // Merge proposals with their corresponding review (if any)
       return proposals.map(proposal => {
-        const review = proposalReviews.find(r => r.prsl_id === proposal.id);
+        const review = proposalReviews.find(r => r.prslId === proposal.id);
         return {
           ...proposal,
-          ...(review ? review : {})
+          ...(review ? review : { rank: 0, comments: '', srcNetComments: '' })
         };
       });
     }
@@ -250,7 +289,6 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
-  // TODO Remove once development conpleted console.log('TREVOR filteredData', filteredData);
 
   const searchDropdown = () => (
     <DropDown
@@ -272,7 +310,7 @@ export default function ReviewListPage() {
   );
 
   const submitAllClicked = () => {
-    /* TODO */
+    // TODO : Add the functionality so that clicking on this will update all appropriate reviews to submitted
   };
 
   const fwdButton = () => (

@@ -6,6 +6,7 @@ import { COLOR_PALETTES } from '@/utils/accessibility/accessibility';
 
 interface RankEntryFieldProps {
   setSelectedRank: Function;
+  suggestedRank?: number;
   selectedRank: number;
   colorBlindness?: number;
   colorIndex?: number;
@@ -14,6 +15,7 @@ interface RankEntryFieldProps {
 
 export default function RankEntryField({
   setSelectedRank,
+  suggestedRank = 0,
   selectedRank,
   colorBlindness = 0,
   colorIndex = 0,
@@ -85,6 +87,17 @@ export default function RankEntryField({
           {t('rank.helper')}
         </Typography>
       </Box>
+
+      {suggestedRank > 0 && (
+        <Box pt={1} textAlign="center">
+          <Typography variant="body2" component="p">
+            Suggested Rank:{' '}
+            <Typography component="span" variant="body2" fontWeight="bold">
+              {suggestedRank}
+            </Typography>
+          </Typography>
+        </Box>
+      )}
 
       <Box display="flex" flexDirection="column" alignItems="center">
         <Box position="relative">

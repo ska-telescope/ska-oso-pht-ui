@@ -288,6 +288,7 @@ export default function PanelMaintenance() {
                 <GridReviewers
                   height={TAB_GRID_HEIGHT}
                   showSearch
+                  showTitle
                   showSelection={!!currentPanel}
                   selectedReviewers={panelReviewers}
                   tickBoxClicked={(reviewer, isReviewerSelected) => {

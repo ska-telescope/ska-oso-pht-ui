@@ -19,7 +19,10 @@ import {
   clickUserMenuReviews,
   initialize,
   getProposals,
-  verifyMockedAPICall
+  verifyMockedAPICall,
+  getReviewers,
+  clickLinkedTickdBox,
+  verifyTickBoxIsSelected
 } from '../common/common';
 
 const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
@@ -28,6 +31,7 @@ describe('Review Coordinator', () => {
   beforeEach(() => {
     initialize();
     getProposals(); // Load mocked proposals fixture
+    getReviewers(); // Load mocked reviewers fixture
   });
   it('Navigate using the dropdown menu and then the overview panels', () => {
     clickUserMenuOverview();
@@ -65,22 +69,24 @@ describe('Review Coordinator', () => {
     verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
   it('Display a list of reviewers', () => {
-    clickUserMenuPanels();
+    clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
+    verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
-    // TODO mock reviewer list API call similar to proposals
   });
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
+    verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
-    // TODO : select a reviewer
+    clickLinkedTickdBox(2);
+    verifyTickBoxIsSelected(2);
   });
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
     verifyMockedAPICall('@getProposals');
-    verifyProposalOnGridIsVisible('The Milky Way View');
-    // TODO: select a proposal
+    clickLinkedTickdBox(0);
+    verifyTickBoxIsSelected(0);
   });
 });

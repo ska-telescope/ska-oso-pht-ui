@@ -7,7 +7,11 @@ export const viewPort = (format = 'pc') => {
 
 /*----------------------------------------------------------------------*/
 
-export const click = testId => get(testId).click();
+export const click = testId =>
+  get(testId)
+    .should('exist')
+    .should('be.visible')
+    .click();
 export const entry = (testId, value) => get(testId).type(value);
 export const get = testId => cy.get('[data-testid="' + testId + '"]');
 export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
@@ -15,3 +19,6 @@ export const selectValue = value => cy.get('[data-value="' + value + '"]').click
 export const verifyContent = (testId, value) => get(testId).should('contain.text', value);
 export const verifyExists = testId => get(testId).should('exist');
 export const verifyVisible = testId => get(testId).should('be.visible'); // TODO add this to base function?
+export const getCheckboxInRow = index => {
+  return cy.get(`[data-rowindex="${index}"]`).find('input[type="checkbox"]');
+};

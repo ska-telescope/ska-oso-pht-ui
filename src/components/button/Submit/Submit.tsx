@@ -1,4 +1,3 @@
-import React from 'react';
 import PublishIcon from '@mui/icons-material/Publish';
 import BaseButton from '../Base/Button';
 
