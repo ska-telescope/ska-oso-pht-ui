@@ -4,50 +4,94 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '../../../utils/constants';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import ProposalReview from '@/utils/types/proposalReview';
+import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
+import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
+
+/*********************************************************** filter *********************************************************/
+
+const groupByReviewId = (data: ProposalReviewBackend[]) => {
+  return data.reduce((grouped: { [key: string]: ProposalReviewBackend[] }, obj) => {
+    if (!grouped[obj.review_id]) {
+      grouped[obj.review_id] = [obj];
+    } else {
+      grouped[obj.review_id].push(obj);
+    }
+    return grouped;
+  }, {} as { [key: string]: ProposalReviewBackend[] });
+};
+
+const sortByLastUpdated = (array: ProposalReviewBackend[]): ProposalReviewBackend[] => {
+  array.sort(function(a, b) {
+    return (
+      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
+      new Date(a.metadata?.last_modified_on as string)?.valueOf()
+    );
+  });
+  return array;
+};
+
+export const getUniqueMostRecentReviews = (data: ProposalReviewBackend[]) => {
+  const grouped = groupByReviewId(data);
+
+  const newestPerGroup = Object.values(grouped).map((arr: ProposalReviewBackend[]) => {
+    sortByLastUpdated(arr); // newest first
+    return arr[0]; // pick newest from group
+  });
+
+  newestPerGroup.sort(
+    (a, b) =>
+      new Date(b.metadata?.last_modified_on!).valueOf() -
+      new Date(a.metadata?.last_modified_on!).valueOf()
+  ); // TODO sort also by assigned_on
+
+  return newestPerGroup;
+};
+
+/*****************************************************************************************************************************/
+/*********************************************************** mapping *********************************************************/
+
+export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
+  const output = [];
+  for (let i = 0; i < inRec.length; i++) {
+    const rec: ProposalReview = {
+      id: inRec[i].review_id?.toString(),
+      metadata: inRec[i].metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
+      panelId: inRec[i].panel_id,
+      cycle: inRec[i].cycle,
+      reviewerId: inRec[i].reviewer_id,
+      prslId: inRec[i].prsl_id,
+      rank: inRec[i].rank,
+      conflict: {
+        hasConflict: inRec[i].conflict.has_conflict,
+        reason: inRec[i].conflict.reason
+      },
+      comments: inRec[i].comments,
+      srcNet: inRec[i].src_net,
+      submittedOn: inRec[i].submitted_on,
+      submittedBy: inRec[i].submitted_by,
+      status: inRec[i].status
+    };
+    output.push(rec);
+  }
+  return output;
+}
 
 /*****************************************************************************************************************************/
 
 // NOTE : Make sure that prsl_id is set to an active proposal
 
-export function GetMockReviewerList(): ProposalReview[] {
-  return [
-    {
-      metadata: {
-        version: 1,
-        created_by: 'created_by',
-        created_on: '2025-07-07T18:13:25.470Z',
-        last_modified_by: 'last_modified_by',
-        last_modified_on: '2025-07-07T18:13:25.470Z',
-        pdm_version: '18.3.0'
-      },
-      panel_id: 'panel_id',
-      review_id: 'review_id',
-      cycle: 'cycle',
-      reviewer_id: 'reviewer_id',
-      prsl_id: 'prsl-t0001-20250707-00002',
-      rank: 0,
-      conflict: {
-        has_conflict: false,
-        reason: ''
-      },
-      comments: '',
-      src_net: '',
-      submitted_on: '',
-      submitted_by: '',
-      status: 'to do'
-    }
-  ];
+export function GetMockReviewerList(mock = MockProposalReviewListBackend): ProposalReview[] {
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentReviews(mock) : mock;
+  return mappingList(uniqueResults);
 }
 
-// TODO : Remove the true
 async function GetProposalReviewList(): Promise<ProposalReview[] | string> {
-  if (true || USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA) {
     return GetMockReviewerList();
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list`;
+    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/DefaultUser`;
     const result = await axiosAuthClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {

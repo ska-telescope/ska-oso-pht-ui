@@ -11,6 +11,7 @@ export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
 export const OSO_SERVICES_REVIEWS_PATH = '/pht/reviews';
 export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
+export const OSO_SERVICES_PANEL_DECISIONS_PATH = '/pht/panel-decisions';
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -298,9 +299,15 @@ export const PROPOSAL_STATUS = {
 };
 
 export const REVIEWER_STATUS = {
-  PENDING: 'pending',
-  ACCEPTED: 'accepted',
-  DECLINED: 'declined'
+  PENDING: 'Pending',
+  ACCEPTED: 'Accepted',
+  DECLINED: 'Declined'
+};
+
+export const PANEL_DECISION_STATUS = {
+  TO_DO: 'To Do',
+  IN_PROGRESS: 'In Progress',
+  DECIDED: 'Decided'
 };
 
 export const TYPE_ZOOM = 0;

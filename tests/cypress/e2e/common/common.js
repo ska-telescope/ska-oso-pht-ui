@@ -7,6 +7,7 @@ import {
   verifyContent,
   verifyExists,
   verifyVisible,
+  getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
 
@@ -25,6 +26,16 @@ export const getProposals = () => {
       statusCode: 200,
       body: proposals
     }).as('getProposals');
+  });
+};
+
+// TODO move cy. commands out of this file into cypress.js and create a function for it
+export const getReviewers = () => {
+  cy.fixture('reviewers.json').then(reviewers => {
+    cy.intercept('GET', '**/pht/reviewers', {
+      statusCode: 200,
+      body: reviewers
+    }).as('getReviewers');
   });
 };
 
@@ -117,6 +128,14 @@ export const verifyReviewerOnGridIsVisible = ReviewerName => {
 };
 export const verifyProposalOnGridIsVisible = ProposalName => {
   verifyContent('dataGridProposals', ProposalName);
+};
+
+export const clickLinkedTickdBox = index => {
+  getCheckboxInRow(index).click({ force: true });
+};
+
+export const verifyTickBoxIsSelected = index => {
+  getCheckboxInRow(index).should('be.checked');
 };
 
 /*----------------------------------------------------------------------*/

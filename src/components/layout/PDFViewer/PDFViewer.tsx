@@ -87,7 +87,7 @@ export default function PDFViewer({
       </Grid2>
 
       <Grid2 container direction="row" justifyContent="center" alignItems="center">
-        <Grid2>
+        <Grid2 sx={{ width: '90%' }}>
           {url?.length > 0 && (
             <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} />

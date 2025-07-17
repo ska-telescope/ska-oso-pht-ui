@@ -38,13 +38,13 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal([MockPanelFrontendList[2]]);
   });
 
-  test('mappingList returns mapped proposal list from backend to frontend format', () => {
+  test('mappingList returns mapped proposal lis from panel from backend to frontend format', () => {
     const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
     // checking the second element to ignore duplicates as mapping alone will not remove it
     expect(panelListFrontEnd[1]).to.deep.equal(MockPanelFrontendList[1]);
   });
 
-  test('mappingList returns mapped reviewer list from backend to frontend format', () => {
+  test('mappingList returns mapped reviewer list from panel from backend to frontend format', () => {
     const panelListFrontEnd: Panel[] = mappingList(MockPanelBackendList);
     // checking the last element to ignore duplicates as mapping alone will not remove it
     expect(panelListFrontEnd[MockPanelBackendList.length - 1]).to.deep.equal(

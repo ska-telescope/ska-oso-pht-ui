@@ -31,8 +31,8 @@ export type ProposalBackend = {
       main_type: string;
       attributes?: string[];
     };
-    abstract: string;
-    science_category: string;
+    abstract: string | null;
+    science_category?: string;
     targets: TargetBackend[];
     documents: DocumentBackend[] | null;
     investigators: InvestigatorBackend[] | null;
@@ -52,7 +52,7 @@ export type Proposal = {
   createdOn: string;
   createdBy: string;
   version: number;
-  cycle: string;
+  cycle: string | null;
   proposalType: number;
   proposalSubType?: number[];
   scienceCategory: number | null;

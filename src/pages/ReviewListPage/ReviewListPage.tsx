@@ -24,7 +24,7 @@ import { FOOTER_SPACER } from '../../utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
-import ProposalReview from '@/utils/types/proposalReview';
+import { ProposalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import { Panel } from '@/utils/types/panel';
@@ -268,7 +268,7 @@ export default function ReviewListPage() {
     function unionProposalsAndReviews() {
       // Merge proposals with their corresponding review (if any)
       return proposals.map(proposal => {
-        const review = proposalReviews.find(r => r.prsl_id === proposal.id);
+        const review = proposalReviews.find(r => r.prslId === proposal.id);
         return {
           ...proposal,
           ...(review ? review : { rank: 0, comments: '', srcNetComments: '' })
