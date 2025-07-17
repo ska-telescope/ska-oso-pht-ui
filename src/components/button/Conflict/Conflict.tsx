@@ -1,7 +1,7 @@
-import PublishIcon from '@mui/icons-material/Publish';
+import BlockIcon from '@mui/icons-material/Block';
 import BaseButton from '../Base/Button';
 
-interface SubmitButtonProps {
+interface ConflictButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -10,19 +10,19 @@ interface SubmitButtonProps {
   toolTip?: string;
 }
 
-export default function SubmitButton({
+export default function ConflictButton({
   disabled = false,
   action,
-  title = 'submitBtn.label',
+  title = 'conflict.label',
   primary = true,
-  testId = 'submitBtnTestId',
-  toolTip = 'submitBtn.tooltip'
-}: SubmitButtonProps) {
+  testId = 'conflictBtnTestId',
+  toolTip = 'conflict.tooltip'
+}: ConflictButtonProps) {
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<PublishIcon />}
+      icon={<BlockIcon />}
       primary={primary}
       testId={testId}
       title={title}

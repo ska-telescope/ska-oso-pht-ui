@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -15,17 +15,26 @@ import Proposal from '@/utils/types/proposal';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
-import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import ConflictButton from '@/components/button/Conflict/Conflict';
 
-export default function ReviewEntry() {
+export const REVIEW_TYPE = {
+  SCIENCE: 'science',
+  TECHNICAL: 'technical'
+};
+
+interface ReviewEntryProps {
+  reviewType: string;
+}
+
+export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const navigate = useNavigate();
-  // const locationProperties = useLocation();
+  const locationProperties = useLocation();
 
   const { application } = storageObject.useStore();
 
-  // const isEdit = () => locationProperties.state !== null;
+  const isEdit = () => locationProperties.state !== null;
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
@@ -39,18 +48,34 @@ export default function ReviewEntry() {
 
   const getProposal = () => application.content2 as Proposal;
 
+  React.useEffect(() => {
+    if (isEdit()) {
+      setGeneralComments(locationProperties.state?.generalComments);
+      setSrcNetComments(locationProperties.state?.srcNetComments);
+      setRank(locationProperties.state?.rank);
+    } else {
+      setGeneralComments('');
+      setSrcNetComments('');
+      setRank(0);
+    }
+  }, []);
+
   const submitDisabled = () => {
-    return generalComments.length === 0 || srcNetComments.length === 0 || rank === 0;
+    return generalComments?.length === 0 || srcNetComments?.length === 0 || rank === 0;
+  };
+
+  const conflictButtonClicked = () => {
+    // TODO
   };
 
   const saveButtonClicked = () => {
+    // TODO
     //create panel end point
-    navigate(PMT[0]);
+    // navigate(PMT[0]);
   };
 
   const submitButtonClicked = () => {
-    //create panel end point
-    navigate(PMT[0]);
+    // navigate(PMT[0]);
   };
 
   const backButton = () => (
@@ -62,8 +87,9 @@ export default function ReviewEntry() {
     />
   );
 
-  const saveButton = () => (
+  const actionButtons = () => (
     <Grid2 spacing={1} container justifyContent="space-between" direction="row">
+      <ConflictButton action={conflictButtonClicked} disabled />
       <SaveButton action={saveButtonClicked} primary toolTip={''} />
       <SubmitButton action={submitButtonClicked} disabled={submitDisabled()} primary toolTip={''} />
     </Grid2>
@@ -173,7 +199,7 @@ export default function ReviewEntry() {
       <>
         <Stack p={1}>
           <Typography id="title-label" variant={'h6'}>
-            {t('title.label')}
+            {t('title.short')}
           </Typography>
           <Typography pl={2} pr={2} id="title" variant={'h6'}>
             {getProposal()?.title?.length ? presentLatex(getProposal().title) : ''}
@@ -194,7 +220,9 @@ export default function ReviewEntry() {
             }}
           >
             <Typography variant="body1">
-              {getProposal().abstract?.length ? presentLatex(getProposal().abstract as string) : ''}
+              {getProposal()?.abstract?.length
+                ? presentLatex(getProposal()?.abstract as string)
+                : ''}
             </Typography>
           </Box>
           <Divider />
@@ -326,7 +354,7 @@ export default function ReviewEntry() {
     <>
       <PageBannerPMT
         backBtn={backButton()}
-        fwdBtn={saveButton()}
+        fwdBtn={actionButtons()}
         title={t('reviewProposal.title')}
       />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />

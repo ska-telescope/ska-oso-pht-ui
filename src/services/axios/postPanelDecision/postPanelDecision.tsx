@@ -9,7 +9,9 @@ import { helpers } from '@/utils/helpers';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 // mapping frontend to backend format
-export function mappingPostPanelDecision(decision: PanelDecision): PanelDecisionBackend {
+export function mappingPanelDecisionFrontendToBackend(
+  decision: PanelDecision
+): PanelDecisionBackend {
   const transformedPanel: PanelDecisionBackend = {
     decision_id: decision.id,
     panel_id: decision.panelId,
@@ -40,7 +42,7 @@ async function PostPanelDecision(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/`;
-    const convertedPanelDecision = mappingPostPanelDecision(PanelDecision);
+    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision);
 
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanelDecision);
 

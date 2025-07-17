@@ -1,11 +1,11 @@
-import { describe, test, vi } from 'vitest';
+import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import StarIcon from './starIcon';
+import SubmitIcon from './submitIcon';
 
 describe('<StarIcon />', () => {
   const onClick = vi.fn();
   test('renders correctly', () => {
-    render(<StarIcon onClick={onClick} />);
+    render(<SubmitIcon onClick={onClick} />);
   });
 });
