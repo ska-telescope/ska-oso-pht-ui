@@ -1,5 +1,5 @@
 import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '../../../utils/constants';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import axiosClient from '../axiosClient/axiosClient';
 
 const MOCK_UNITS = ['equatorial', 'galactic'];
 const MOCK_RESULTS = [
@@ -70,8 +70,9 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
   }
 
   try {
-    const URL_PATH = `/coordinates/`; //TODO: currently this is a protected endpoint in oso-services 1.1.0 - will be resolved in future release
-    const result = await axiosAuthClient.get(
+    const URL_PATH = `/coordinates/`;
+    /* This is a rare case where the OSO-services endpoint is open to the public */
+    const result = await axiosClient.get(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${MOCK_UNITS[units]}`
     );
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);

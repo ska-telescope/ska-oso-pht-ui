@@ -31,7 +31,7 @@ import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import PanelReviewDecision from '../PanelReviewDecision/PanelReviewDecision';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
-import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
+import ReviewEntry, { REVIEW_TYPE } from '../entry/ReviewEntry/ReviewEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
@@ -58,8 +58,9 @@ const ROUTES = [
   { path: PMT[2], element: <ReviewDashboard /> },
   { path: PMT[3], element: <ReviewPanelEntry /> },
   { path: PMT[4], element: <PanelReviewDecisionList /> },
-  { path: PMT[5], element: <ReviewEntry /> },
-  { path: PMT[6], element: <PanelReviewDecision /> }
+  { path: PMT[5], element: <ReviewEntry reviewType={REVIEW_TYPE.SCIENCE} /> },
+  { path: PMT[6], element: <PanelReviewDecision /> },
+  { path: PMT[7], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> }
 ];
 
 export default function PHT() {

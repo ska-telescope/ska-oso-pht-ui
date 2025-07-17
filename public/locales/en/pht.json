@@ -134,7 +134,8 @@
     "label": "Confirm Proposal Submission"
   },
   "conflict": {
-    "label": "Conflict"
+    "label": "Conflict",
+    "tooltip": "Indicate that there is a conflict of interest with this proposal. This will prevent the user from reviewing this proposal."
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
@@ -153,6 +154,10 @@
   },
   "dateAssigned": {
     "label": "Date Assigned"
+  },
+  "decisionComments": {
+    "label": "Decision Comments",
+    "help": "Comments provided by the chairperson when making a decision on the proposal."
   },
   "declination": {
     "label": "Declination"
@@ -234,6 +239,7 @@
   "fileType": {
     "pdf": ".pdf"
   },
+
   "firstName": {
     "label": "First Name",
     "help": "First name of the principal investigator or co-investigator."
@@ -653,9 +659,12 @@
     "toolTip": "Review Decisions"
   },
   "reviewProposal": {
+    "disabled": "This function is not available",
+    "science": "Review proposal science",
+    "submit": "Submit the review of the proposal",
+    "technical": "Review proposal technical",
     "title": "Review Proposal",
-    "toolTip": "Review proposal",
-    "disabled": "This function is not available"
+    "toolTip": "Review proposal"
   },
   "reviewProposalList": {
     "title": "Review Proposals",
@@ -927,6 +936,14 @@
       "error": "Value is outside of allowed range"
     }
   },
+  "tableReviewDecision": {
+    "actions": "Actions",
+    "expandDetails": "Expand Details",
+    "lastUpdated": "Last Updated",
+    "reviewStatus": "Review Status",
+    "rank": "Rank",
+    "title": "Title"
+  },
   "tapering": {
     "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering",
@@ -952,6 +969,7 @@
   },
   "title": {
     "label": "Proposal Title",
+    "short": "Title",
     "empty": "A value is required",
     "maxChar": "939",
     "maxWord": "50",
