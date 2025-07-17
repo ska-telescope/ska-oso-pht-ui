@@ -5,13 +5,15 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import { mappingPostPanelDecision } from '../postPanelDecision/postPanelDecision';
+import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 import { helpers } from '@/utils/helpers';
 
 // mapping backend to frontend format
-export function mappingPutPanelDecision(decision: PanelDecisionBackend): PanelDecision {
+export function mappingPanelDecisionBackendtoFrontend(
+  decision: PanelDecisionBackend
+): PanelDecision {
   const transformedPanel: PanelDecision = {
     id: decision.decision_id,
     panelId: decision.panel_id,
@@ -30,7 +32,7 @@ export function mappingPutPanelDecision(decision: PanelDecisionBackend): PanelDe
 }
 
 export function putMockPanelDecision(): PanelDecision {
-  return mappingPutPanelDecision(MockPanelDecisionBackend);
+  return mappingPanelDecisionBackendtoFrontend(MockPanelDecisionBackend);
 }
 
 async function PutPanelDecision(
@@ -43,14 +45,14 @@ async function PutPanelDecision(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
-    const convertedPanelDecision = mappingPostPanelDecision(PanelDecision);
+    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision);
 
     const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanelDecision);
 
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPutPanelDecision(result.data) as PanelDecision;
+    return mappingPanelDecisionBackendtoFrontend(result.data) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

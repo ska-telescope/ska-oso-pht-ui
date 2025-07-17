@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 import PostPanelDecision, {
-  mappingPostPanelDecision,
+  mappingPanelDecisionFrontendToBackend,
   postMockPanelDecision
 } from './postPanelDecision';
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend';
@@ -22,16 +22,18 @@ describe('Helper Functions', () => {
     expect(result).to.equal('PANEL-DECISION-ID-001');
   });
 
-  test('mappingPostPanelDecision returns mapped panelDecision from frontend to backend format', () => {
-    const panelDecisionBackEnd: PanelDecisionBackend = mappingPostPanelDecision(
+  test('mappingPanelDecisionFrontendToBackend returns mapped panelDecision from frontend to backend format', () => {
+    const panelDecisionBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
       MockPanelDecisionFrontend
     );
     expect(panelDecisionBackEnd).to.deep.equal(MockPanelDecisionBackend);
   });
 
-  test('mappingPostPanelDecision generates cycle when not provided', () => {
+  test('mappingPanelDecisionFrontendToBackend generates cycle when not provided', () => {
     const myPanelDecision = { ...MockPanelDecisionFrontend, cycle: undefined };
-    const panelBackEnd: PanelDecisionBackend = mappingPostPanelDecision(myPanelDecision);
+    const panelBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
+      myPanelDecision
+    );
     const expectedPanelBackend = { ...MockPanelDecisionBackend, cycle: CYCLE };
     expect(panelBackEnd).to.deep.equal(expectedPanelBackend);
   });

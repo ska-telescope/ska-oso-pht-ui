@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { OSO_SERVICES_REVIEWS_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@utils/constants';
-import { mappingPostProposalReview } from '../postProposalReview.tsx/postProposalReview';
+import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
 import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 // mapping from backend to frontend for review returned in response
-export function mappingPutProposalReview(review: ProposalReviewBackend): ProposalReview {
+export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): ProposalReview {
   const transformedPanel: ProposalReview = {
     id: review.review_id,
     panelId: review.panel_id,
@@ -31,7 +31,7 @@ export function mappingPutProposalReview(review: ProposalReviewBackend): Proposa
 }
 
 export function putMockProposalReview(): ProposalReview {
-  return mappingPutProposalReview(MockProposalReviewBackend);
+  return mappingReviewBackendToFrontend(MockProposalReviewBackend);
 }
 
 async function PutProposalReview(
@@ -43,14 +43,14 @@ async function PutProposalReview(
 
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/${review.id}`;
-    const convertedReview = mappingPostProposalReview(review);
+    const convertedReview = mappingReviewFrontendToBackend(review);
 
     const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPutProposalReview(result.data) as ProposalReview;
+    return mappingReviewBackendToFrontend(result.data) as ProposalReview;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
