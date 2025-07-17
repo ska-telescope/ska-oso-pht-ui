@@ -146,7 +146,8 @@
     "result": "N/A (no beam information available)"
   },
   "cycle": {
-    "label": "Cycle"
+    "label": "Cycle",
+    "error": "Unable to retrieve Cycle data"
   },
   "dataProduct": {
     "button": "Add Data Product"

@@ -63,7 +63,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const cycleData = async () => {
-      const response = await GetCycleData();
+      const response = await GetCycleData(1);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
