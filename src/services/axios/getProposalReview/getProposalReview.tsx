@@ -26,7 +26,7 @@ async function GetProposalReview(id: string): Promise<ProposalReview | string> {
     if (!result || !result.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return result?.data;
+    return mappingReviewBackendToFrontend(result?.data);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
