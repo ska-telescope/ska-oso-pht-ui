@@ -12,7 +12,7 @@ export const MockProposalFrontend: Proposal = {
   createdOn: '2025-06-13T13:48:34.963103Z',
   createdBy: 'DefaultUser',
   version: 10,
-  cycle: fetchCycleData().id,
+  cycle: fetchCycleData(),
   team: [],
   abstract: '',
   scienceCategory: null,

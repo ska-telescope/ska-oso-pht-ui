@@ -16,7 +16,8 @@ export const storeCycleData = (response: CycleData[]) => {
 export const fetchCycleData = () => {
   const tmp = sessionStorage?.getItem('skao_cycle_data');
   const data = tmp ? JSON.parse(tmp) : [{ id: 'cycle-001', cycle: 'cycle-001' }];
-  return data[0];
+  const parts = data.split(' ');
+  return parts.includes('cycle_id') ? 'SKAO_2027_1' : null;
 };
 
 /*********************************************************************************/

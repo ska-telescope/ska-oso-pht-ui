@@ -436,7 +436,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
-    cycle: fetchCycleData().id,
+    cycle: fetchCycleData(),
     info: {
       title: proposal.title,
       proposal_type: {

@@ -29,7 +29,7 @@ export function mappingPostProposal(
     status: status as string,
     submitted_by: '',
     investigator_refs: [],
-    cycle: fetchCycleData().id,
+    cycle: fetchCycleData(),
     info: {
       title: proposal.title,
       proposal_type: {

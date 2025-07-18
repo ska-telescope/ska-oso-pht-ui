@@ -5,7 +5,7 @@ export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: 'draft',
   submitted_by: '',
-  cycle: fetchCycleData().id,
+  cycle: fetchCycleData(),
   investigator_refs: [],
   info: {
     title: 'New Proposal',

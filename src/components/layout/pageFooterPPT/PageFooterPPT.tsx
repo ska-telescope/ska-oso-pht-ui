@@ -56,7 +56,7 @@ export default function PageFooterPPT({
     const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     if (response && !response.error) {
       NotifyOK(t('addProposal.success') + response);
-      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData() });
       navigate(NAV[1]);
     } else {
       NotifyError(response.error);
