@@ -1,3 +1,4 @@
+import { PANEL_DECISION_STATUS } from '@/utils/constants';
 import { ProposalReview } from '@/utils/types/proposalReview';
 
 export const MockProposalReviewFrontend: ProposalReview = {
@@ -23,5 +24,5 @@ export const MockProposalReviewFrontend: ProposalReview = {
   srcNet: 'recommend as well',
   submittedOn: '2025-07-16T08:35:24.245Z',
   submittedBy: 'user1',
-  status: 'Decided'
+  status: PANEL_DECISION_STATUS.DECIDED
 };

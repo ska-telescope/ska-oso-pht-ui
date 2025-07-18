@@ -11,7 +11,7 @@ export default function EmptyCell() {
       ariaDescription={t('empty.cell')}
       ariaTitle={t('empty.cell')}
       level={STATUS_ERROR}
-      onClick={undefined}
+      onClick={() => {}}
       size={SIZE}
       testId="emptyCell"
       toolTip={t('empty.cell')}

@@ -2,10 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
-import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
+import {
+  AlertColorTypes,
+  Spacer,
+  SPACER_VERTICAL,
+  DateEntry
+} from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT, BANNER_PMT_SPACER } from '@utils/constants.ts';
 import moment from 'moment';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
 import Notification from '../../../utils/types/notification';

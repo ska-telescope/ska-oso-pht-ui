@@ -1,3 +1,4 @@
+import { PANEL_DECISION_STATUS } from '@/utils/constants';
 import { PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 export const MockPanelDecisionBackend: PanelDecisionBackend = {
@@ -17,5 +18,5 @@ export const MockPanelDecisionBackend: PanelDecisionBackend = {
   recommendation: 'This proposal is recommended for selection.',
   decided_by: 'user1',
   decided_on: '2023-01-02T00:00:00Z',
-  status: 'To Do'
+  status: PANEL_DECISION_STATUS.TO_DO
 };

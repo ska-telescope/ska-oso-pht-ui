@@ -1,3 +1,4 @@
+import { PANEL_DECISION_STATUS } from '@/utils/constants';
 import { PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
@@ -18,7 +19,7 @@ export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
     recommendation: 'Recommendation 1',
     decided_by: 'user1',
     decided_on: '2023-01-02T00:00:00Z',
-    status: 'To Do'
+    status: PANEL_DECISION_STATUS.TO_DO
   },
   {
     metaData: {
@@ -37,7 +38,7 @@ export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
     recommendation: 'Recommendation 2',
     decided_by: 'user1',
     decided_on: '2023-01-02T00:00:00Z',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   },
   {
     metaData: {
@@ -56,6 +57,6 @@ export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
     recommendation: 'Recommendation 3',
     decided_by: 'user1',
     decided_on: '2023-01-02T00:00:00Z',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   }
 ];

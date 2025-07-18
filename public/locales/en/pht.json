@@ -42,6 +42,10 @@
     "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal."
   },
+  "addReview": {
+    "success": "Review record has been updated",
+    "warning": "Please wait whilst the review is stored."
+  },
   "addTarget": {
     "label": "Add Target",
     "toolTip": "Will add the target to the list associated with this proposal.",
@@ -506,6 +510,9 @@
     "precision": 3,
     "unableToDetermine": "Unable to determine"
   },
+  "proposal": {
+    "error": "Unable to retrieve the proposal from the server"
+  },
   "proposalId": {
     "label": "Proposal ID"
   },
@@ -698,7 +705,10 @@
   "reviewStatus": {
     "to do": "To Do",
     "in progress": "In Progress",
-    "finalised": "Finalised"
+    "decided": "Decided",
+    "To Do": "To Do",
+    "In Progress": "In Progress",
+    "Decided": "Decided"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"

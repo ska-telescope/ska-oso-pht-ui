@@ -1,3 +1,4 @@
+import { PANEL_DECISION_STATUS } from '@/utils/constants';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
@@ -24,7 +25,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     src_net: '',
     submitted_on: '2025-07-16T08:35:24.245Z',
     submitted_by: 'user3',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   },
   {
     metadata: {
@@ -49,7 +50,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     src_net: 'recommend as well',
     submitted_on: '2025-07-16T08:35:24.245Z',
     submitted_by: 'user1',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   },
   {
     metadata: {
@@ -74,7 +75,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     src_net: 'great proposal',
     submitted_on: '2025-06-16T08:35:24.245Z',
     submitted_by: 'user1',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   },
   {
     metadata: {
@@ -99,6 +100,6 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     src_net: 'great proposal',
     submitted_on: '2025-06-16T08:35:24.245Z',
     submitted_by: 'user1',
-    status: 'Decided'
+    status: PANEL_DECISION_STATUS.DECIDED
   }
 ];
