@@ -11,11 +11,13 @@ UNRELEASED
 * PHT-Services changed to OSO-services
 * Added a mocked connected user
 * Added a navigation menu
-* Added an Overview page - in progress
-* Added a Panel Maintenance page - in progress
-* Added a Review page placeholder
+* Added an Overview page
+* Added a Panel Maintenance page
+* Added a Review page
 * Various improvements for to the CI/CD pipeline
 * Changed Sensitivity Calculator backend to V11.2.2
+* Changed Band 5a to pass mid_band_5a
+* Changed Band 5b to pass mid_band_5b
 
 2.0.0
 
