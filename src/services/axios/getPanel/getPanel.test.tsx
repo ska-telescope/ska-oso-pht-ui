@@ -22,14 +22,14 @@ describe('Helper Functions', () => {
   });
 
   test('mapping returns mapped panel from backend to frontend format with proposals and reviewers', () => {
-    const panelListFrontEnd: Panel = mapping(MockPanelBackend);
-    expect(panelListFrontEnd).to.deep.equal(MockPanelFrontend);
+    const panelFrontEnd: Panel = mapping(MockPanelBackend);
+    expect(panelFrontEnd).to.deep.equal(MockPanelFrontend);
   });
 
   test('mapping returns mapped panel from backend to frontend format with no proposals and reviewers', () => {
     const backendPanel: PanelBackend = { ...MockPanelBackend, proposals: [], reviewers: [] };
-    const panelListFrontEnd: Panel = mapping(backendPanel);
-    expect(panelListFrontEnd).to.deep.equal({ ...MockPanelFrontend, proposals: [], reviewers: [] });
+    const panelFrontEnd: Panel = mapping(backendPanel);
+    expect(panelFrontEnd).to.deep.equal({ ...MockPanelFrontend, proposals: [], reviewers: [] });
   });
 });
 
