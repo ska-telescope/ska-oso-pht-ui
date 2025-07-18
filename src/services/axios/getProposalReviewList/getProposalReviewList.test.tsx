@@ -21,6 +21,11 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal(MockProposalReviewListFrontend);
   });
 
+  test('GetMockProposalReviewList returns mock data correctly with 1 mock item', () => {
+    const result = GetMockProposalReviewList([MockProposalReviewListBackend[0]]);
+    expect(result).to.deep.equal([MockProposalReviewListFrontend[1]]);
+  });
+
   test('sorts by latest updated and removes duplicates', () => {
     const result: ProposalReviewBackend[] = getUniqueMostRecentReviews(
       MockProposalReviewListBackend
