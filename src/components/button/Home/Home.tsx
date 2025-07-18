@@ -2,12 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import BaseButton from '../Base/Button';
 import { PATH } from '../../../utils/constants';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
-
 
 interface HomeButtonProps {
   title?: string;
@@ -27,19 +26,20 @@ export default function HomeButton({
   const [openWarningDialog, setOpenWarningDialog] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation('pht');
+  const loggedIn = isLoggedIn();
 
   const { isMockedLoggedIn } = useMockedLogin();
 
-  const isShowWarningWhenClicked = () => !isLoggedIn() && !isMockedLoggedIn;
+  const isShowWarningWhenClicked = () => !loggedIn && !isMockedLoggedIn;
 
   const ClickFunction = () => {
     // if (isShowWarningWhenClicked()) {
-    if (!isLoggedIn()){ 
+    if (!loggedIn) {
       setOpenWarningDialog(true);
-    } else navigatetoLandingPage();
+    } else navigateToLandingPage();
   };
 
-  const navigatetoLandingPage = () => {
+  const navigateToLandingPage = () => {
     navigate(PATH[0]);
   };
 
@@ -59,10 +59,10 @@ export default function HomeButton({
         toolTip={toolTip}
       />
       <AlertDialog
-        testId={'homeButtonWarningModal'}
         open={openWarningDialog}
         onClose={closeDialog}
-        onDialogResponse={navigatetoLandingPage}
+        onDialogResponse={navigateToLandingPage}
+        title="I NEED A TITLE"
       >
         {t('homeBtn.warningNotLoggedIn')}
       </AlertDialog>
