@@ -23,17 +23,6 @@ export const sortByLastUpdated = (array: ProposalBackend[]): ProposalBackend[] =
   return array;
 };
 
-// const groupByProposalId = (data: ProposalBackend[]) => {
-//   return data.reduce((grouped, obj) => {
-//     if (!grouped[obj.prsl_id]) {
-//       grouped[obj.prsl_id] = [obj];
-//     } else {
-//       grouped[obj.prsl_id].push(obj);
-//     }
-//     return grouped;
-//   }, {});
-// };
-
 const groupByProposalId = (data: ProposalBackend[]) => {
   return data.reduce((grouped: { [key: string]: ProposalBackend[] }, obj) => {
     if (!grouped[obj.prsl_id]) {

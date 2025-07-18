@@ -78,14 +78,14 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockReviewerList(mock = MockProposalReviewListBackend): ProposalReview[] {
+export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
   const uniqueResults = mock.length > 1 ? getUniqueMostRecentReviews(mock) : mock;
   return mappingList(uniqueResults);
 }
 
 async function GetProposalReviewList(): Promise<ProposalReview[] | string> {
   if (USE_LOCAL_DATA) {
-    return GetMockReviewerList();
+    return GetMockProposalReviewList();
   }
 
   try {
@@ -95,7 +95,9 @@ async function GetProposalReviewList(): Promise<ProposalReview[] | string> {
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return result?.data;
+    const uniqueResults =
+      result.data?.length > 1 ? getUniqueMostRecentReviews(result.data) : result.data;
+    return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
