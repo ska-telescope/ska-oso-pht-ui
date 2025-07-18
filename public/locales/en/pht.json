@@ -270,7 +270,10 @@
     "label": "Home",
     "title": "Proposals",
     "tooltip": "Returns to the list of proposals",
-    "warningNotLoggedIn": "You are not logged in. The save function is currently disabled, and any unsaved progress will be lost if you return to the landing page. Are you sure you want to continue?"
+    "warningNotLoggedIn": {
+      "title": "Warning",
+      "message": "You are not logged in. The save function is currently disabled, and any unsaved progress will be lost if you return to the landing page. Are you sure you want to continue?"
+    }
   },
   "id": {
     "label": "Id"

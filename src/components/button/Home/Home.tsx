@@ -33,8 +33,7 @@ export default function HomeButton({
   const isShowWarningWhenClicked = () => !loggedIn && !isMockedLoggedIn;
 
   const ClickFunction = () => {
-    // if (isShowWarningWhenClicked()) {
-    if (!loggedIn) {
+    if (isShowWarningWhenClicked()) {
       setOpenWarningDialog(true);
     } else navigateToLandingPage();
   };
@@ -62,9 +61,9 @@ export default function HomeButton({
         open={openWarningDialog}
         onClose={closeDialog}
         onDialogResponse={navigateToLandingPage}
-        title="I NEED A TITLE"
+        title={t('homeBtn.warningNotLoggedIn.title')}
       >
-        {t('homeBtn.warningNotLoggedIn')}
+        {t('homeBtn.warningNotLoggedIn.message')}
       </AlertDialog>
     </>
   );

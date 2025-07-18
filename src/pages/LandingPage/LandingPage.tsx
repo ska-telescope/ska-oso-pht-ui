@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
@@ -63,11 +63,9 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
 
   const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
 
-  const { accounts } = useMsal();
-  const isLoggedIn = () => accounts.length > 0;
-
-  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

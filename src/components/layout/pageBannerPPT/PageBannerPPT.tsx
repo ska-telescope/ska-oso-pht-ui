@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Typography } from '@mui/material';
@@ -50,11 +50,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
   const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
 
-  const { accounts } = useMsal();
-  const isLoggedIn = () => accounts.length > 0;
-
-  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
@@ -32,11 +32,9 @@ export default function PageFooterPPT({
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
 
   const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
 
-  const { accounts } = useMsal();
-  const isLoggedIn = () => accounts.length > 0;
-
-  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;

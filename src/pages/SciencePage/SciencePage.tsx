@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
 import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -43,11 +43,9 @@ export default function SciencePage() {
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
 
   const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
 
-  const { accounts } = useMsal();
-  const isLoggedIn = () => accounts.length > 0;
-
-  const isDisableEndpoints = () => !isLoggedIn() && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
