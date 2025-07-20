@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
@@ -6,12 +7,13 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
+import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import { fetchCycleData } from '../../../utils/storage/cycleData';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -28,6 +30,11 @@ export default function PageFooterPPT({
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -53,13 +60,22 @@ export default function PageFooterPPT({
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
     NotifyWarning(t('addProposal.warning'));
-    const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
-    if (response && !response.error) {
-      NotifyOK(t('addProposal.success') + response);
-      setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
-      navigate(NAV[1]);
+
+    if (!isDisableEndpoints()) {
+      const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
+
+      if (response && !response.error) {
+        NotifyOK(t('addProposal.success') + response);
+        setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+        navigate(NAV[1]);
+      } else {
+        NotifyError(response.error);
+      }
     } else {
-      NotifyError(response.error);
+      const dummyId = DUMMY_PROPOSAL_ID;
+      NotifyOK(t('addProposal.success') + dummyId);
+      setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData().id });
+      navigate(NAV[1]);
     }
   };
 

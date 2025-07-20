@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './services/i18n/i18n';
 import { AuthProvider } from '@ska-telescope/ska-login-page';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { MockedLoginProvider } from './contexts/MockedLoginContext';
 
 import App from './App/App';
 import { MSENTRA_CLIENT_ID, MSENTRA_REDIRECT_URI, MSENTRA_TENANT_ID } from './utils/constants';
@@ -10,13 +11,15 @@ import { MSENTRA_CLIENT_ID, MSENTRA_REDIRECT_URI, MSENTRA_TENANT_ID } from './ut
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StoreProvider>
-      <AuthProvider
-        MSENTRA_CLIENT_ID={MSENTRA_CLIENT_ID}
-        MSENTRA_TENANT_ID={MSENTRA_TENANT_ID}
-        MSENTRA_REDIRECT_URI={MSENTRA_REDIRECT_URI}
-      >
-        <App />
-      </AuthProvider>
+      <MockedLoginProvider>
+        <AuthProvider
+          MSENTRA_CLIENT_ID={MSENTRA_CLIENT_ID}
+          MSENTRA_TENANT_ID={MSENTRA_TENANT_ID}
+          MSENTRA_REDIRECT_URI={MSENTRA_REDIRECT_URI}
+        >
+          <App />
+        </AuthProvider>
+      </MockedLoginProvider>
     </StoreProvider>
   </StrictMode>
 );

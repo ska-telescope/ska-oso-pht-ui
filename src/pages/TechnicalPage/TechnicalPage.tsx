@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
 import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -21,6 +22,7 @@ import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -39,6 +41,12 @@ export default function TechnicalPage() {
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -234,28 +242,32 @@ export default function TechnicalPage() {
     <Shell page={PAGE}>
       <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid2 size={{ xs: 6 }}>
-          <FileUpload
-            chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
-            clearLabel={t('clearBtn.label')}
-            clearToolTip={t('pdfUpload.technical.tooltip.clear')}
-            dropzone
-            dropzoneAccepted={{
-              'application/pdf': ['.pdf']
-            }}
-            dropzoneIcons={false}
-            dropzonePrompt={t('dropzone.prompt')}
-            dropzonePreview={false}
-            direction="row"
-            file={originalFile}
-            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-            setFile={setFile}
-            setStatus={setUploadStatus}
-            testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
-            uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-            status={getProposal().technicalLoadStatus}
-            suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
-          />
+          {isDisableEndpoints() ? (
+            <>{t('pdfUpload.disabled')}</>
+          ) : (
+            <FileUpload
+              chooseToolTip={t('pdfUpload.technical.tooltip.choose')}
+              clearLabel={t('clearBtn.label')}
+              clearToolTip={t('pdfUpload.technical.tooltip.clear')}
+              dropzone
+              dropzoneAccepted={{
+                'application/pdf': ['.pdf']
+              }}
+              dropzoneIcons={false}
+              dropzonePrompt={t('dropzone.prompt')}
+              dropzonePreview={false}
+              direction="row"
+              file={originalFile}
+              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+              setFile={setFile}
+              setStatus={setUploadStatus}
+              testId="fileUpload"
+              uploadFunction={uploadPdftoSignedUrl}
+              uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
+              status={getProposal().technicalLoadStatus}
+              suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
+            />
+          )}
         </Grid2>
         <Grid2 pt={4} size={{ xs: 4 }}>
           <HelpPanel />

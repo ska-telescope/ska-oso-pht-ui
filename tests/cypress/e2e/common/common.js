@@ -60,8 +60,10 @@ export const clickAddObservation = () => clickButton('addObservationButton');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
+export const clickMockLoginButton = () => clickButton('linkedTickBox');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
+export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
@@ -275,6 +277,10 @@ export const verifyFirstProposalOnLandingPageIsVisible = () => {
     .should('contain', 'Proposal Title');
 };
 
+export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
+  cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
+};
+
 export const verifyObservationInTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
@@ -311,4 +317,31 @@ export const verifyFirstProposalOnLandingPageHasSubmittedStatus = () => {
     .should('contain', 'prsl-t0001-')
     .should('contain', 'Proposal Title')
     .should('contain', 'Submitted');
+};
+
+export const verifyHomeButtonWarningModal = () => {
+  cy.get('#alert-dialog-proposal-change .MuiDialogContent-root').should(
+    'contain',
+    'You are not logged in'
+  );
+};
+
+export const verifyUnlinkedObservationInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('contain', 'obs-')
+    .should('contain', 'AA4')
+    .should('have.length', 1);
+};
+
+export const createObservation = () => {
+  //navigate to observation page
+  clickToGeneralPage();
+  clickToSciencePage();
+  clickToTargetPage();
+  clickToObservationPage();
+  //add default observation
+  clickObservationSetup();
+  clickAddObservation();
+  verifyUnlinkedObservationInTable();
 };

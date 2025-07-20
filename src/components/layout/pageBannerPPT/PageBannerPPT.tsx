@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Typography } from '@mui/material';
@@ -28,6 +29,7 @@ import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -46,6 +48,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -106,11 +113,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposal = async () => {
+    if (isDisableEndpoints()) return;
     const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
   const submitClicked = () => {
+    if (accounts.length === 0) return;
     setOpenProposalDisplay(true);
   };
 
@@ -155,7 +164,16 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
         {!backPage && <HomeButton />}
       </Grid2>
-      <Grid2>{pageNo < LAST_PAGE && <SaveButton action={() => updateProposal()} primary />}</Grid2>
+      <Grid2>
+        {pageNo < LAST_PAGE && (
+          <SaveButton
+            primary
+            testId={'saveBtn'}
+            disabled={isDisableEndpoints()}
+            action={() => updateProposal()}
+          />
+        )}
+      </Grid2>
     </Grid2>
   );
 
@@ -171,7 +189,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     >
       <Grid2>
         {pageNo < LAST_PAGE && (
-          <ValidateButton action={validateClicked} toolTip={validateTooltip()} />
+          <ValidateButton
+            testId={'validateBtn'}
+            disabled={isDisableEndpoints()}
+            action={validateClicked}
+            toolTip={validateTooltip()}
+          />
         )}
       </Grid2>
       <Grid2>

@@ -5,7 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid2 as Grid,
+  Grid2,
   Typography
 } from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
@@ -39,11 +39,11 @@ export default function AlertDialog({
   };
 
   const alertTitle = () => (
-    <Grid container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid>
+    <Grid2 container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid2>
         <Typography variant="h5">{t(title)}</Typography>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   return (
@@ -59,14 +59,20 @@ export default function AlertDialog({
       <DialogTitle>{alertTitle()}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions sx={{ padding: 5 }}>
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <Grid>
-            <CancelButton action={handleCancel} />
-          </Grid>
-          <Grid>
-            <ConfirmButton action={handleContinue} />
-          </Grid>
-        </Grid>
+        <Grid2
+          spacing={1}
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Grid2>
+            <CancelButton testId="dialogCancelButton" action={handleCancel} />
+          </Grid2>
+          <Grid2>
+            <ConfirmButton testId="dialogConfirmationButton" action={handleContinue} />
+          </Grid2>
+        </Grid2>
       </DialogActions>
     </Dialog>
   );

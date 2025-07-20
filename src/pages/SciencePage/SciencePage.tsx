@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
 import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -21,6 +22,7 @@ import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
 import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -39,6 +41,12 @@ export default function SciencePage() {
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
@@ -233,28 +241,32 @@ export default function SciencePage() {
     <Shell page={PAGE}>
       <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid2 size={{ xs: 6 }}>
-          <FileUpload
-            chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-            clearLabel={t('clearBtn.label')}
-            clearToolTip={t('pdfUpload.science.tooltip.clear')}
-            dropzone
-            dropzoneAccepted={{
-              'application/pdf': ['.pdf']
-            }}
-            dropzoneIcons={false}
-            dropzonePrompt={t('dropzone.prompt')}
-            dropzonePreview={false}
-            direction="row"
-            file={originalFile}
-            maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-            setFile={setFile}
-            setStatus={setUploadStatus}
-            testId="fileUpload"
-            uploadFunction={uploadPdftoSignedUrl}
-            uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-            status={getProposal().scienceLoadStatus}
-            suffix={uploadSuffix()}
-          />
+          {isDisableEndpoints() ? (
+            <>{t('pdfUpload.disabled')}</>
+          ) : (
+            <FileUpload
+              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+              clearLabel={t('clearBtn.label')}
+              clearToolTip={t('pdfUpload.science.tooltip.clear')}
+              dropzone
+              dropzoneAccepted={{
+                'application/pdf': ['.pdf']
+              }}
+              dropzoneIcons={false}
+              dropzonePrompt={t('dropzone.prompt')}
+              dropzonePreview={false}
+              direction="row"
+              file={originalFile}
+              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+              setFile={setFile}
+              setStatus={setUploadStatus}
+              testId="fileUpload"
+              uploadFunction={uploadPdftoSignedUrl}
+              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+              status={getProposal().scienceLoadStatus}
+              suffix={uploadSuffix()}
+            />
+          )}
         </Grid2>
         <Grid2 pt={4} size={{ xs: 4 }}>
           <HelpPanel />
