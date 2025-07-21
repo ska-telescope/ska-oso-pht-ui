@@ -21,7 +21,6 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
-import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
@@ -37,7 +36,6 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
 
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
-  const [finalRank, setFinalRank] = React.useState(0);
   const [finalComments, setFinalComments] = React.useState('');
 
   const toggleRow = (id: number) => {
@@ -55,7 +53,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
     const employee = data.find((item: { id: number }) => item.id === id);
     const message = wasExpanded
       ? `Collapsed details for ${employee?.title}`
-      : `Expanded details for ${employee?.title}. ${employee?.details.length} additional details available.`;
+      : `Expanded details for ${employee?.title}. ${employee?.reviews?.length} additional details available.`;
 
     // Create a temporary live region for announcements
     const announcement = document.createElement('div');
@@ -93,7 +91,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
     }, 1000);
   };
 
-  const calculateSuggestedRank = (details: Array<{ rank: number }>) => {
+  const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
     const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
     return Math.round(average);
@@ -168,6 +166,8 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                   lastUpdated: string;
                   rank: number;
                   comments: string;
+                  reviews: any[];
+                  [key: string]: any;
                 },
                 index: number
               ) => (
@@ -189,7 +189,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                           aria-label={`${
                             expandedRows.has(item.id) ? 'Collapse' : 'Expand'
                           } details for ${item.title}. ${
-                            item.details?.length
+                            item.reviews?.length
                           } additional details available.`}
                           aria-expanded={expandedRows.has(item.id)}
                           aria-controls={`employee-details-${item.id}`}
@@ -206,9 +206,9 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          aria-label={`${item.details?.length} additional details`}
+                          aria-label={`${item.reviews?.length} additional details`}
                         >
-                          {item.details?.length}
+                          {item.reviews?.length}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -242,7 +242,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                           onClick={() => handleSubmitAction(item.id)}
                           aria-label={`Submit data for ${item.title}`}
                           data-testid={`submit-button-${item.id}`}
-                          disabled={finalRank === 0 || finalComments?.trim() === ''}
+                          disabled={finalComments?.trim() === ''}
                           toolTip=""
                         />
                       </Box>
@@ -286,7 +286,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {item.details?.map((detail, detailIndex) => (
+                              {item.reviews?.map((detail, detailIndex) => (
                                 <TableRow key={detailIndex}>
                                   <TableCell
                                     sx={{
@@ -322,6 +322,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                       aria-label={`View detail ${detailIndex + 1} for ${
                                         item.title
                                       }`}
+                                      disabled
                                       data-testid={`view-detail-button-${item.id}-${detailIndex}`}
                                       toolTip="View detail"
                                     />
@@ -349,11 +350,16 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                       </Typography>
                                     </Grid2>
                                     <Grid2>
+                                      <Typography variant="h6">
+                                        {`Decision Rank ${calculateRank(item.reviews)}`}
+                                      </Typography>
+                                    </Grid2>
+                                    <Grid2>
                                       <SubmitButton
                                         action={() => handleSubmitAction(item.id)}
                                         aria-label={`Submit employee data for ${item.title}`}
                                         data-testid={`submit-employee-button-${item.id}`}
-                                        disabled={finalRank === 0 || finalComments?.trim() === ''}
+                                        disabled={finalComments?.trim() === ''}
                                       />
                                     </Grid2>
                                   </Grid2>
@@ -362,7 +368,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                     sx={{
                                       maxHeight: `calc('75vh' - 100px)`,
                                       overflowY: 'auto',
-                                      width: '100%',
+                                      width: '99%',
                                       display: 'flex',
                                       flexDirection: 'column',
                                       backgroundColor: 'white',
@@ -383,13 +389,6 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                     />
                                   </Box>
                                 </Stack>
-                              </Box>
-                              <Box>
-                                <RankEntryField
-                                  suggestedRank={calculateSuggestedRank(item.details)}
-                                  selectedRank={finalRank}
-                                  setSelectedRank={setFinalRank}
-                                />
                               </Box>
                             </Box>
                           </Box>

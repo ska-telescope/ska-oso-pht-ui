@@ -108,7 +108,17 @@ export default function ReviewDecisionListPage() {
   /*--------------------------------------------------------------------------*/
 
   function filterProposals() {
-    return proposals.filter(item => {
+    function unionProposalsAndReviews() {
+      return proposals.map(proposal => {
+        const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
+        return {
+          ...proposal,
+          reviews: reviews
+        };
+      });
+    }
+
+    return unionProposalsAndReviews().filter(item => {
       const fieldsToSearch = [item.id, item.title];
       return (
         fieldsToSearch.some(
@@ -121,7 +131,6 @@ export default function ReviewDecisionListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
-  // console.log('Filtered Data:', filteredData);
 
   const searchDropdown = () => (
     <DropDown

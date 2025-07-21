@@ -99,7 +99,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       reviewerId: getUser(),
       submittedOn: '',
       submittedBy: '',
-      status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.TO_DO
+      status: submitted
+        ? PANEL_DECISION_STATUS.DECIDED
+        : !rank && !generalComments && !srcNetComments
+        ? PANEL_DECISION_STATUS.TO_DO
+        : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
 
