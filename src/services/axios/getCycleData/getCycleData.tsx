@@ -5,167 +5,12 @@ import { ObservatoryDataBackend, ObservatoryDataFrontend } from '@/utils/types/c
 
 /*****************************************************************************************************************************/
 
-// const mapping = (response: {
-//   observatory_policy: {
-//     cycle_policies: { normal_max_hours: number };
-//     cycle_information: { proposal_close: string; cycle_id: string; proposal_open: string };
-//     cycle_description: string;
-//     telescope_capabilities: { Low: string; Mid: string };
-//     cycle_number: number;
-//   };
-//   capabilities: {
-//     low: {
-//       AA2: {
-//         available_bandwidth_hz: number;
-//         cbf_modes: [string];
-//         channel_width_hz: number;
-//         max_baseline_km: number;
-//         number_beams: number;
-//         number_fsps: number;
-//         number_pss_beams: number;
-//         number_pst_beams: number;
-//         number_stations: number;
-//         number_substations: number;
-//         number_vlbi_beams: number;
-//         number_zoom_channels: number;
-//         number_zoom_windows: number;
-//         ps_beam_bandwidth_hz: number;
-//       };
-//       basic_capabilities: { max_frequency_hz: number; min_frequency_hz: number };
-//     };
-//     mid: {
-//       AA2: {
-//         available_bandwidth_hz: number;
-//         available_receivers: [string];
-//         cbf_modes: [string];
-//         max_baseline_km: number;
-//         number_channels: number;
-//         number_fsps: number;
-//         number_meerkat_dishes: number;
-//         number_meerkatplus_dishes: number;
-//         number_pss_beams: number;
-//         number_pst_beams: number;
-//         number_ska_dishes: number;
-//         number_zoom_channels: number;
-//         number_zoom_windows: number;
-//         ps_beam_bandwidth_hz: number;
-//       };
-//       basic_capabilities: {
-//         dish_elevation_limit_deg: number;
-//         receiver_information: [
-//           { rx_id: string; min_frequency_hz: number; max_frequency_hz: number }
-//         ];
-//       };
-//     };
-//   };
-// }) => {
-//   console.log('check response ', response);
-//   if (response.observatory_policy) {
-//     console.log('observatory policy to be mapped ', response);
-//     console.log(response.capabilities.mid.basic_capabilities.receiver_information[1].rx_id);
-//     return (
-//       'cycle_number ' +
-//       response.observatory_policy.cycle_number +
-//       ' cycle_description ' +
-//       response.observatory_policy.cycle_description +
-//       ' cycle_id ' +
-//       response.observatory_policy.cycle_information.cycle_id +
-//       ' proposal_open ' +
-//       response.observatory_policy.cycle_information.proposal_open +
-//       ' proposal_close ' +
-//       response.observatory_policy.cycle_information.proposal_close +
-//       ' normal_max_hours ' +
-//       response.observatory_policy.cycle_policies.normal_max_hours +
-//       //Low telescope capabilities
-//       ' telescope_capabilities_low ' +
-//       response.observatory_policy.telescope_capabilities.Low +
-//       ' available_bandwidth_hz ' +
-//       response.capabilities.low.AA2.available_bandwidth_hz +
-//       ' cbf_modes ' +
-//       response.capabilities.low.AA2.cbf_modes +
-//       ' channel_width_hz ' +
-//       response.capabilities.low.AA2.channel_width_hz +
-//       ' max_baseline_km ' +
-//       response.capabilities.low.AA2.max_baseline_km +
-//       ' number_beams ' +
-//       response.capabilities.low.AA2.number_beams +
-//       ' number_fsps ' +
-//       response.capabilities.low.AA2.number_fsps +
-//       ' number_pss_beams ' +
-//       response.capabilities.low.AA2.number_pss_beams +
-//       ' number_pst_beams ' +
-//       response.capabilities.low.AA2.number_pst_beams +
-//       ' number_stations ' +
-//       response.capabilities.low.AA2.number_stations +
-//       ' number_substations ' +
-//       response.capabilities.low.AA2.number_substations +
-//       ' number_vlbi_beams ' +
-//       response.capabilities.low.AA2.number_vlbi_beams +
-//       ' number_zoom_channels ' +
-//       response.capabilities.low.AA2.number_zoom_channels +
-//       ' number_zoom_windows ' +
-//       response.capabilities.low.AA2.number_zoom_windows +
-//       ' ps_beam_bandwidth_hz ' +
-//       response.capabilities.low.AA2.ps_beam_bandwidth_hz +
-//       ' basic_capabilities max_frequency_hz ' +
-//       response.capabilities.low.basic_capabilities.max_frequency_hz +
-//       ' basic_capabilities min_frequency_hz ' +
-//       response.capabilities.low.basic_capabilities.min_frequency_hz +
-//       //Mid telescope capabilities
-//       ' telescope_capabilities_mid ' +
-//       response.observatory_policy.telescope_capabilities.Mid +
-//       ' available_bandwidth_hz ' +
-//       response.capabilities.mid.AA2.available_bandwidth_hz +
-//       ' available_receivers ' +
-//       response.capabilities.mid.AA2.available_receivers +
-//       ' cbf_modes ' +
-//       response.capabilities.mid.AA2.cbf_modes +
-//       ' max_baseline_km ' +
-//       response.capabilities.mid.AA2.max_baseline_km +
-//       ' number_channels ' +
-//       response.capabilities.mid.AA2.number_channels +
-//       ' number_fsps ' +
-//       response.capabilities.mid.AA2.number_fsps +
-//       ' number_meerkat_dishes ' +
-//       response.capabilities.mid.AA2.number_meerkat_dishes +
-//       ' number_meerkatplus_dishes ' +
-//       response.capabilities.mid.AA2.number_meerkatplus_dishes +
-//       ' number_pss_beams ' +
-//       response.capabilities.mid.AA2.number_pss_beams +
-//       ' number_pst_beams ' +
-//       response.capabilities.mid.AA2.number_pst_beams +
-//       ' number_ska_dishes ' +
-//       response.capabilities.mid.AA2.number_ska_dishes +
-//       ' number_zoom_channels ' +
-//       response.capabilities.mid.AA2.number_zoom_channels +
-//       ' number_zoom_windows ' +
-//       response.capabilities.mid.AA2.number_zoom_windows +
-//       ' ps_beam_bandwidth_hz ' +
-//       response.capabilities.mid.AA2.ps_beam_bandwidth_hz +
-//       ' dish_elevation_limit_deg ' +
-//       response.capabilities.mid.basic_capabilities.dish_elevation_limit_deg +
-//       //TODO: Receiver information
-//       ' receiver_information 1 rx_id ' +
-//       response.capabilities.mid.basic_capabilities.receiver_information[0].rx_id +
-//       ' receiver_information 1 min_frequency_hz ' +
-//       response.capabilities.mid.basic_capabilities.receiver_information[0].min_frequency_hz +
-//       ' receiver_information 1 max_frequency_hz ' +
-//       response.capabilities.mid.basic_capabilities.receiver_information[0].max_frequency_hz
-//     );
-//   } else {
-//     return { error: 'cycle.error' };
-//   }
-// };
-
 const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => {
   console.log('in mappingNew backend data', inData);
   console.log(
     'in mappingNew rx_id info',
     inData.capabilities.mid.basic_capabilities.receiver_information[1].rx_id
   );
-  // return inData; // return the data as is for now, until we implement the mapping
-
-  // TODO: implment mapping from backend to frontend format
 
   return {
     observatoryPolicy: {
@@ -202,7 +47,7 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
           numberMeerkatPlusDishes: inData.capabilities.mid.AA2.number_meerkatplus_dishes,
           numberChannels: inData.capabilities.mid.AA2.number_channels,
           numberStations: null,
-          numberSubstations: inData.capabilities.mid.AA2.number_substations,
+          numberSubstations: null,
           maxBaselineKm: inData.capabilities.mid.AA2.max_baseline_km,
           availableBandwidthHz: inData.capabilities.mid.AA2.available_bandwidth_hz,
           cbfModes: inData.capabilities.mid.AA2.cbf_modes,
@@ -211,11 +56,49 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
           numberPssBeams: inData.capabilities.mid.AA2.number_pss_beams,
           numberPstBeams: inData.capabilities.mid.AA2.number_pst_beams,
           psBeamBandwidthHz: inData.capabilities.mid.AA2.ps_beam_bandwidth_hz,
-          numberFsps: inData.capabilities.mid.AA2.number_fsps
+          numberFsps: inData.capabilities.mid.AA2.number_fsps,
+          channelWidthHz: null,
+          numberBeams: null,
+          numberVlbiBeams:null
+        }
+      },
+      low: {
+        basicCapabilities: {
+          dishElevationLimitDeg:
+            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
+          receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
+            rx => ({
+              rxId: rx.rx_id,
+              minFrequencyHz: rx.min_frequency_hz,
+              maxFrequencyHz: rx.max_frequency_hz
+            })
+          )
+        },
+        AA2: {
+          availableReceivers: null,
+          numberSkaDishes: null,
+          numberMeerkatDishes: null,
+          numberMeerkatPlusDishes: null,
+          numberChannels: null,
+          numberStations: null,
+          numberSubstations: null,
+          maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
+          availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
+          cbfModes: inData.capabilities.low.AA2.cbf_modes,
+          numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
+          numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
+          numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
+          numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
+          psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
+          numberFsps: inData.capabilities.low.AA2.number_fsps,
+          channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
+          numberBeams: inData.capabilities.low.AA2.number_beams,
+          numberVlbiBeams:inData.capabilities.low.AA2.number_vlbi_beams
         }
       }
     }
   };
+};
 
   async function GetCycleData(cycleNumber: number): Promise<string | ObservatoryDataFrontend> {
     try {
@@ -230,7 +113,6 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
       }
       return 'error.API_UNKNOWN_ERROR';
     }
-  }
-};
+  };
 
 export default GetCycleData;
