@@ -292,7 +292,9 @@ export default function ReviewListPage() {
       // if (panel && panel.reviewers && panel.reviewers.length > 0) {
       //   const reviewer = panel.reviewers.find(r => r.userId === getUser());
       // }
-      return proposal && proposal.assignedOn ? presentDate(proposal.assignedOn) : '';
+      return proposal && proposal.assignedOn
+        ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
+        : '';
     }
   };
 
