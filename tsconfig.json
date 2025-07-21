@@ -42,6 +42,6 @@
     "allowSyntheticDefaultImports": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["src", "./setupTests.ts"],
+  "include": ["src", "./setupTests.ts", "main.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

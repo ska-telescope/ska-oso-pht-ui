@@ -61,10 +61,10 @@ export default function ReviewListPage() {
     updateAppContent5
   } = storageObject.useStore();
 
-  const [reset, setReset] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
+  const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
@@ -208,7 +208,7 @@ export default function ReviewListPage() {
     row?.srcNet?.length;
 
   const colId = {
-    field: 'prslId',
+    field: 'id',
     headerName: t('proposalId.label'),
     width: 200
   };
@@ -280,7 +280,20 @@ export default function ReviewListPage() {
     headerName: t('dateAssigned.label'),
     width: 180,
     renderCell: (e: { row: any }) => {
-      return e.row.dateAssigned ? presentDate(e.row.dateAssigned) : '';
+      const panel = panelData.find(
+        panel =>
+          Array.isArray(panel.proposals) && panel.proposals.some(p => p.proposalId === e.row.id)
+      );
+      let proposal = null;
+      if (panel && panel.proposals && panel.proposals.length > 0) {
+        proposal = panel.proposals.find(p => p.proposalId === e.row.id);
+      }
+      // TODO : Add the functionality to get the reviewer from the panel
+      // if (panel && panel.reviewers && panel.reviewers.length > 0) {
+      //   const reviewer = panel.reviewers.find(r => r.userId === getUser());
+      //   console.log('Panel Reviewers:', reviewer);
+      // }
+      return proposal && proposal.assignedOn ? presentDate(proposal.assignedOn) : '';
     }
   };
 
@@ -295,7 +308,7 @@ export default function ReviewListPage() {
       <>
         <ScienceIcon
           onClick={() => scienceIconClicked(e.row)}
-          // TODO disabled={!canEditScience(e)}
+          disabled={!canEditScience(e)}
           toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
         <TechnicalIcon
