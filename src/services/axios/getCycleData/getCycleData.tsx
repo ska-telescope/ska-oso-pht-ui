@@ -6,21 +6,15 @@ import { ObservatoryDataBackend, ObservatoryDataFrontend } from '@/utils/types/c
 /*****************************************************************************************************************************/
 
 const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => {
-  console.log('in mappingNew backend data', inData);
-  console.log(
-    'in mappingNew rx_id info',
-    inData.capabilities.mid.basic_capabilities.receiver_information[1].rx_id
-  );
-
   return {
     observatoryPolicy: {
       cycleDescription: inData.observatory_policy.cycle_description,
       cycleNumber: inData.observatory_policy.cycle_number,
-      cycleInformation: inData.observatory_policy.cycle_information.map(cycle => ({
-        cycleId: cycle.cycle_id,
-        proposalOpen: cycle.proposal_open,
-        proposalClose: cycle.proposal_close
-      })),
+      cycleInformation: {
+        cycleId: inData.observatory_policy.cycle_information.cycle_id,
+        proposalOpen: inData.observatory_policy.cycle_information.proposal_open,
+        proposalClose: inData.observatory_policy.cycle_information.proposal_close
+      },
       cyclePolicies: { normalMaxHours: inData.observatory_policy.cycle_policies.normal_max_hours },
       telescopeCapabilities: {
         low: inData.observatory_policy.telescope_capabilities.Low,
@@ -106,7 +100,8 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
       const result = await axiosAuthClient.get(
         `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
       );
-      return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingNew(result.data); // mapping(result.data);
+      console.log('returned from mapping ',  mappingNew(result.data))
+      return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingNew(result.data);
     } catch (e) {
       if (e instanceof Error) {
         return e.message;
