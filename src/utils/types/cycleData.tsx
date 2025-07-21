@@ -17,17 +17,17 @@ export type ObservatoryPolicyBackend = {
   cycle_policies: {
     normal_max_hours: number;
   };
-  telescope_capabilities: TelescopeInformationBackend[];
+  telescope_capabilities: TelescopeInformationBackend;
 };
 
 export type ObservatoryPolicyFrontend = {
   cycleNumber: number;
   cycleDescription: string;
-  cycleInformation: CycleInformationFrontend;
+  cycleInformation: CycleInformationFrontend[];
   cyclePolicies: {
     normalMaxHours: number;
   };
-  telescopeCapabilities: TelescopeInformationFrontend[]
+  telescopeCapabilities: TelescopeInformationFrontend;
 };
 
 export type ReceiverInformationBackend = {
