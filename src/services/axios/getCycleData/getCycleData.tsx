@@ -108,7 +108,7 @@ const mapping = (response: {
       ' receiver_information 1 min_frequency_hz ' +
       response.capabilities.mid.basic_capabilities.receiver_information[0].min_frequency_hz +
       ' receiver_information 1 max_frequency_hz ' +
-      response.capabilities.mid.basic_capabilities.receiver_information[0].max_frequency_hz +
+      response.capabilities.mid.basic_capabilities.receiver_information[0].max_frequency_hz
     );
   }
 else {
