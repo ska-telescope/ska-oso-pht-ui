@@ -5,11 +5,11 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
-import { mappingPanelDecisionBackendtoFrontend } from '../putPanelDecision/putPanelDecision';
+import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { PanelDecision } from '@/utils/types/panelDecision';
 
 export function getMockPanelDecision(): PanelDecision {
-  return mappingPanelDecisionBackendtoFrontend(MockPanelDecisionBackend);
+  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend);
 }
 
 async function getPanelDecision(id: string): Promise<PanelDecision | { error: string }> {
@@ -25,7 +25,7 @@ async function getPanelDecision(id: string): Promise<PanelDecision | { error: st
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPanelDecisionBackendtoFrontend(result.data) as PanelDecision;
+    return mappingPanelDecisionBackendToFrontend(result.data) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

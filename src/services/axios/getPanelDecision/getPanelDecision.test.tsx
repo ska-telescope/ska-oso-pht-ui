@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
-import { mappingPanelDecisionBackendtoFrontend } from '../putPanelDecision/putPanelDecision';
+import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import getPanelDecision, { getMockPanelDecision } from './getPanelDecision';
 import { PanelDecision } from '@/utils/types/panelDecision';
@@ -22,7 +22,7 @@ describe('Helper Functions', () => {
   });
 
   test('mapping returns mapped decision from backend to frontend format', () => {
-    const panelDecisionFrontEnd: PanelDecision = mappingPanelDecisionBackendtoFrontend(
+    const panelDecisionFrontEnd: PanelDecision = mappingPanelDecisionBackendToFrontend(
       MockPanelDecisionBackend
     );
     expect(panelDecisionFrontEnd).to.deep.equal(MockPanelDecisionFrontend);

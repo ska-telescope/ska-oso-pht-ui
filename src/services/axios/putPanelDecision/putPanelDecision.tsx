@@ -11,7 +11,7 @@ import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision
 import { helpers } from '@/utils/helpers';
 
 // mapping backend to frontend format
-export function mappingPanelDecisionBackendtoFrontend(
+export function mappingPanelDecisionBackendToFrontend(
   decision: PanelDecisionBackend
 ): PanelDecision {
   const transformedPanel: PanelDecision = {
@@ -32,7 +32,7 @@ export function mappingPanelDecisionBackendtoFrontend(
 }
 
 export function putMockPanelDecision(): PanelDecision {
-  return mappingPanelDecisionBackendtoFrontend(MockPanelDecisionBackend);
+  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend);
 }
 
 async function PutPanelDecision(
@@ -52,7 +52,7 @@ async function PutPanelDecision(
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPanelDecisionBackendtoFrontend(result.data) as PanelDecision;
+    return mappingPanelDecisionBackendToFrontend(result.data) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

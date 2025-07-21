@@ -4,12 +4,12 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import { mappingPanelDecisionBackendtoFrontend } from '../putPanelDecision/putPanelDecision';
+import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 export function mappingList(panelDecisionList: PanelDecisionBackend[]): PanelDecision[] {
-  return panelDecisionList.map(mappingPanelDecisionBackendtoFrontend);
+  return panelDecisionList.map(mappingPanelDecisionBackendToFrontend);
 }
 
 export function getMockPanelDecision(): PanelDecision[] {

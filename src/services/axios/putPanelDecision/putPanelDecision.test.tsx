@@ -5,7 +5,7 @@ import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/post
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import PutPanelDecision, {
-  mappingPanelDecisionBackendtoFrontend,
+  mappingPanelDecisionBackendToFrontend,
   putMockPanelDecision
 } from './putPanelDecision';
 import * as CONSTANTS from '@/utils/constants';
@@ -33,7 +33,7 @@ describe('Helper Functions', () => {
 
   // this checks the putPanelDecision mapping to receive response from the api
   test('mappingPanelDecisionBackendtoFrontend returns mapped panelDecision from backend to frontend format', () => {
-    const panelDecision: PanelDecision = mappingPanelDecisionBackendtoFrontend(
+    const panelDecision: PanelDecision = mappingPanelDecisionBackendToFrontend(
       MockPanelDecisionBackend
     );
     expect(panelDecision).to.deep.equal(MockPanelDecisionFrontend);
@@ -44,7 +44,7 @@ describe('Helper Functions', () => {
       ...MockPanelDecisionBackend,
       cycle: undefined
     };
-    const panelFrontEnd: PanelDecision = mappingPanelDecisionBackendtoFrontend(
+    const panelFrontEnd: PanelDecision = mappingPanelDecisionBackendToFrontend(
       receivedPanelDecision
     );
     const expectedPanelFrontend = { ...MockPanelDecisionFrontend, cycle: CYCLE };
