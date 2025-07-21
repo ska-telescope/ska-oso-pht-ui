@@ -6,7 +6,7 @@ interface StatusIconDisplayProps {
   ariaDescription: string;
   ariaTitle: string;
   level: number;
-  onClick?: Function;
+  onClick: Function;
   size?: number;
   text?: string;
   testId: string;
@@ -23,14 +23,8 @@ export default function StatusIconDisplay({
   testId,
   toolTip = ''
 }: StatusIconDisplayProps) {
-  const action = () => {
-    if (onClick !== undefined) {
-      onClick();
-    }
-  };
-
   return (
-    <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={() => action()}>
+    <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={onClick()}>
       <StatusIcon
         ariaDescription={ariaDescription}
         ariaTitle={ariaTitle}

@@ -49,14 +49,25 @@ export default function SensCalcDisplaySingle({
 
   return (
     <>
-      {show && field === 'icon' && (
-        <IconButton
-          style={{ cursor: 'hand' }}
-          onClick={sensCalc?.statusGUI === STATUS_OK ? IconClicked : null}
-        >
+      {show && field === 'icon' && sensCalc?.statusGUI === STATUS_OK && (
+        <IconButton style={{ cursor: 'pointer' }} onClick={IconClicked}>
           <StatusIconDisplay
             ariaDescription={ariaStatusMessage(sensCalc)}
             ariaTitle={ariaStatusMessage(sensCalc)}
+            onClick={() => {}}
+            testId="statusId"
+            toolTip={ariaStatusMessage(sensCalc)}
+            level={sensCalc?.statusGUI}
+            size={SIZE}
+          />
+        </IconButton>
+      )}
+      {show && field === 'icon' && sensCalc?.statusGUI !== STATUS_OK && (
+        <IconButton style={{ cursor: 'not-allowed' }} disabled>
+          <StatusIconDisplay
+            ariaDescription={ariaStatusMessage(sensCalc)}
+            ariaTitle={ariaStatusMessage(sensCalc)}
+            onClick={() => {}}
             testId="statusId"
             toolTip={ariaStatusMessage(sensCalc)}
             level={sensCalc?.statusGUI}

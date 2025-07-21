@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid2, Paper } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -14,13 +14,16 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
-import { SEARCH_TYPE_OPTIONS, BANNER_PMT_SPACER } from '../../utils/constants';
+import {
+  SEARCH_TYPE_OPTIONS,
+  BANNER_PMT_SPACER,
+  PANEL_DECISION_STATUS
+} from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
+import Notification from '../../utils/types/notification';
 import { validateProposal } from '../../utils/proposalValidation';
-import { FOOTER_SPACER } from '../../utils/constants';
-
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -29,6 +32,8 @@ import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
+import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 
 /*
  * Process for retrieving the data for the list
@@ -49,36 +54,44 @@ export default function ReviewListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
-  const { clearApp, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const {
+    clearApp,
+    updateAppContent1,
+    updateAppContent2,
+    updateAppContent5
+  } = storageObject.useStore();
 
+  const [reset, setReset] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
 
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
-  const [axiosError, setAxiosError] = React.useState('');
-  const [axiosViewError, setAxiosViewError] = React.useState('');
 
   const DATA_GRID_HEIGHT = '60vh';
+
+  React.useEffect(() => {
+    setReset(!reset);
+  }, []);
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
       const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
       if (typeof response === 'string') {
-        setAxiosError(response);
+        NotifyError(response);
       } else {
         setPanelData((response as unknown) as Panel[]);
       }
     };
     GetReviewPanels();
-  }, []);
+  }, [reset]);
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
       const response = await GetProposalList(); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
-        setAxiosError(response);
+        NotifyError(response);
       } else {
         const panelProposalIds = panelData.flatMap(panel =>
           Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
@@ -90,9 +103,9 @@ export default function ReviewListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(); // TODO : Get reviews for the user
+      const response = await GetProposalReviewList(); // TODO : add id of the logged in user
       if (typeof response === 'string') {
-        setAxiosError(response);
+        NotifyError(response);
       } else {
         setProposalReviews(response);
       }
@@ -101,12 +114,66 @@ export default function ReviewListPage() {
     fetchProposalReviewData();
   }, [panelData]);
 
+  const getUser = () => 'DefaultUser'; // TODO
+
+  const getReview = (row: any): ProposalReview => {
+    return {
+      id: row.review_id,
+      prslId: row.id,
+      rank: row.rank,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      comments: row.comments,
+      srcNet: row.srcNet,
+      metadata: {
+        version: 0,
+        created_by: '',
+        created_on: '',
+        pdm_version: '',
+        last_modified_by: '',
+        last_modified_on: ''
+      },
+      panelId: 'ERROR',
+      cycle: '',
+      reviewerId: getUser(),
+      submittedOn: '',
+      submittedBy: '',
+      status: PANEL_DECISION_STATUS.DECIDED
+    };
+  };
+
+  /*---------------------------------------------------------------------------*/
+
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      message: str
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+
+  const updateReview = async (row: any) => {
+    const response: string | { error: string } = await PostProposalReview(getReview(row));
+    if (typeof response === 'object' && response?.error) {
+      NotifyError(response?.error);
+    } else {
+      NotifyOK(t('addReview.success'));
+    }
+  };
+
+  /*---------------------------------------------------------------------------*/
+
   const getTheProposal = async (id: string) => {
     clearApp();
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
-      setAxiosViewError(response);
+      NotifyError(t('proposal.error'));
       return false;
     } else {
       updateAppContent1(validateProposal(response));
@@ -116,35 +183,32 @@ export default function ReviewListPage() {
     }
   };
 
-  const scienceIconClicked = (row: any) => {
+  const theIconClicked = (row: any, route: string) => {
     getTheProposal(row.id).then(success => {
-      if (success) {
-        navigate(PMT[5], { replace: true, state: row });
-      } else {
-        setAxiosViewError(t('proposal.error'));
+      if (success === true) {
+        navigate(route, { replace: true, state: row });
       }
     });
   };
+  const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
+  const technicalIconClicked = (row: any) => theIconClicked(row, PMT[7]);
 
-  const technicalIconClicked = (row: any) => {
-    getTheProposal(row.id).then(success => {
-      if (success) {
-        navigate(PMT[7], { replace: true, state: row });
-      } else {
-        setAxiosViewError(t('proposal.error'));
-      }
-    });
+  const submitIconClicked = (row: any) => {
+    updateReview(row);
   };
 
-  const submitIconClicked = (_row: any) => {
-    // TODO : Implement submit icon functionality
-  };
-
-  const canEditScience = (_e: { row: { status: string } }) => true; // TODO
-  const canEditTechnical = (_e: { row: { status: string } }) => true; // TODO
+  const canEditScience = (e: { row: { status: string } }) =>
+    e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  const canEditTechnical = (e: { row: { status: string } }) =>
+    e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
+    row.status !== PANEL_DECISION_STATUS.DECIDED &&
+    row?.rank > 0 &&
+    row?.comments?.length &&
+    row?.srcNet?.length;
 
   const colId = {
-    field: 'id',
+    field: 'prslId',
     headerName: t('proposalId.label'),
     width: 200
   };
@@ -162,7 +226,7 @@ export default function ReviewListPage() {
     headerName: t('status.label'),
     width: 120,
     renderCell: (e: { row: any }) =>
-      e.row.reviewId ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
+      e.row.review_id ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
   };
 
   const colRank = {
@@ -199,7 +263,7 @@ export default function ReviewListPage() {
     field: 'srcNet',
     headerName: t('srcNet.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.src_net ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => (e.row.srcNet ? t('yes') : t('no'))
   };
 
   const colDateUpdated = {
@@ -231,7 +295,7 @@ export default function ReviewListPage() {
       <>
         <ScienceIcon
           onClick={() => scienceIconClicked(e.row)}
-          disabled={!canEditScience(e)}
+          // TODO disabled={!canEditScience(e)}
           toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
         <TechnicalIcon
@@ -240,8 +304,8 @@ export default function ReviewListPage() {
           toolTip={t(canEditTechnical(e) ? 'reviewProposal.technical' : 'reviewProposal.disabled')}
         />
         <SubmitIcon
-          onClick={() => submitIconClicked(e.row.id)}
-          disabled
+          onClick={() => submitIconClicked(e.row)}
+          disabled={!canSubmit(e.row)}
           toolTip={t('submitBtn.tooltip')}
         />
       </>
@@ -266,12 +330,20 @@ export default function ReviewListPage() {
 
   function filterProposals() {
     function unionProposalsAndReviews() {
-      // Merge proposals with their corresponding review (if any)
       return proposals.map(proposal => {
-        const review = proposalReviews.find(r => r.prslId === proposal.id);
+        const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
+        const review = reviews.length > 0 ? reviews[reviews.length - 1] : undefined;
         return {
           ...proposal,
-          ...(review ? review : { rank: 0, comments: '', srcNetComments: '' })
+          ...(review
+            ? {
+                review_id: review.id,
+                rank: review.rank,
+                comments: review.comments,
+                srcNet: review.srcNet,
+                status: review.status
+              }
+            : { rank: 0, comments: '', srcNet: '', status: proposal.status })
         };
       });
     }
@@ -309,14 +381,29 @@ export default function ReviewListPage() {
     />
   );
 
-  const submitAllClicked = () => {
-    // TODO : Add the functionality so that clicking on this will update all appropriate reviews to submitted
+  const submitAllDisabled = () => {
+    let disabled = true;
+    filteredData.forEach(row => {
+      if (canSubmit(row)) {
+        disabled = false;
+      }
+    });
+    return disabled;
+  };
+
+  const submitAllClicked = async () => {
+    for (const row of filteredData) {
+      if (canSubmit(row)) {
+        await updateReview(row);
+      }
+    }
+    setReset(!reset); // Reset the state to refresh the data
   };
 
   const fwdButton = () => (
     <SubmitButton
       action={submitAllClicked}
-      disabled
+      disabled={submitAllDisabled()}
       title={'submitAllBtn.label'}
       toolTip={'submitAllBtn.tooltip'}
     />
@@ -334,10 +421,10 @@ export default function ReviewListPage() {
       </Grid2>
       <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-between">
         <Grid2 size={{ sm: 12 }}>
-          {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+          {(!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
-          {!axiosViewError && filteredData.length > 0 && (
+          {filteredData.length > 0 && (
             <div>
               <DataGrid
                 testId="dataGrid2Id"
@@ -349,26 +436,7 @@ export default function ReviewListPage() {
           )}
         </Grid2>
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      >
-        <Grid2 container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid2>
-            {axiosViewError && (
-              <Alert
-                color={AlertColorTypes.Error}
-                testId="axiosViewErrorTestId"
-                text={axiosViewError}
-              />
-            )}
-            {axiosError && (
-              <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
-            )}
-          </Grid2>
-        </Grid2>
-      </Paper>
+      <PageFooterPMT />
     </>
   );
 }

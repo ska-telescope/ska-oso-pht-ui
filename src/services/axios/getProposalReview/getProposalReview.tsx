@@ -8,8 +8,6 @@ import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposa
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
-// NOTE : Make sure that prsl_id is set to an active proposal
-
 export function GetMockReview(
   mock: ProposalReviewBackend = MockProposalReviewBackend
 ): ProposalReview {
@@ -28,7 +26,7 @@ async function GetProposalReview(id: string): Promise<ProposalReview | string> {
     if (!result || !result.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return result?.data;
+    return mappingReviewBackendToFrontend(result?.data);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

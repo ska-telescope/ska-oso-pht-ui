@@ -8,12 +8,15 @@ import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 import { fetchCycleData } from '@/utils/storage/cycleData';
 
-export function mappingReviewFrontendToBackend(review: ProposalReview): ProposalReviewBackend {
+export function mappingReviewFrontendToBackend(
+  review: ProposalReview,
+  mocked = false
+): ProposalReviewBackend {
   const transformedPanel: ProposalReviewBackend = {
     review_id: review.id,
     panel_id: review.panelId,
     cycle: review.cycle ? review.cycle : fetchCycleData().id,
-    submitted_on: review.submittedOn,
+    submitted_on: mocked ? review.submittedOn : new Date().toISOString(),
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,

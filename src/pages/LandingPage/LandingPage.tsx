@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
@@ -35,6 +36,7 @@ import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -60,6 +62,11 @@ export default function LandingPage() {
   const [cycleData, setCycleData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -73,6 +80,9 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setProposals([]);
+      if (isDisableEndpoints()) return;
+
       const response = await GetProposalList();
       if (typeof response === 'string') {
         setAxiosError(response);
@@ -81,7 +91,7 @@ export default function LandingPage() {
       }
     };
     fetchData();
-  }, [fetchList]);
+  }, [fetchList, isDisableEndpoints()]);
 
   React.useEffect(() => {
     const cycleData = async () => {

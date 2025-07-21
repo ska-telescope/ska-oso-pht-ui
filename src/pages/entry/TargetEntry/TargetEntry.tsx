@@ -15,7 +15,6 @@ import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinate
 import Target from '../../../utils/types/target';
 import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
 import Notification from '../../../utils/types/notification';
-
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
@@ -6,12 +7,13 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
+import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
-import { fetchCycleData } from '../../../utils/storage/cycleData';
+import { fetchCycleData } from '@utils/storage/cycleData.tsx';
+import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -28,6 +30,11 @@ export default function PageFooterPPT({
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
+
+  const { isMockedLoggedIn } = useMockedLogin();
+  const loggedIn = isLoggedIn();
+
+  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -58,70 +65,86 @@ export default function PageFooterPPT({
       NotifyOK(t('addProposal.success') + response);
       setProposal({ ...getProposal(), id: response, cycle: fetchCycleData() });
       navigate(NAV[1]);
-    } else {
-      NotifyError(response.error);
+
+      if (!isDisableEndpoints()) {
+        const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
+
+        if (response && !response.error) {
+          NotifyOK(t('addProposal.success') + response);
+          setProposal({ ...getProposal(), id: response, cycle: fetchCycleData() });
+          navigate(NAV[1]);
+        } else {
+          NotifyError(response.error);
+        }
+      } else {
+        const dummyId = DUMMY_PROPOSAL_ID;
+        NotifyOK(t('addProposal.success') + dummyId);
+        setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData() });
+        navigate(NAV[1]);
+      }
     }
-  };
+    ;
 
-  const nextLabel = () => {
-    if (usedPageNo === -2) {
-      return `addBtn.label`;
-    }
-    if (usedPageNo === -1) {
-      return `createBtn.label`;
-    }
-    return `page.${usedPageNo + 1}.title`;
-  };
+    const nextLabel = () => {
+      if (usedPageNo === -2) {
+        return `addBtn.label`;
+      }
+      if (usedPageNo === -1) {
+        return `createBtn.label`;
+      }
+      return `page.${usedPageNo + 1}.title`;
+    };
 
-  const prevLabel = () => `page.${usedPageNo - 1}.title`;
+    const prevLabel = () => `page.${usedPageNo - 1}.title`;
 
-  const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
+    const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
 
-  const nextPageNav = () => (usedPageNo < NAV.length ? navigate(NAV[usedPageNo + 1]) : '');
+    const nextPageNav = () => (usedPageNo < NAV.length ? navigate(NAV[usedPageNo + 1]) : '');
 
-  const nextPageClicked = () => {
-    if (usedPageNo === -1) {
-      createProposal();
-    } else {
-      nextPageNav();
-    }
-  };
+    const nextPageClicked = () => {
+      if (usedPageNo === -1) {
+        createProposal();
+      } else {
+        nextPageNav();
+      }
+    };
 
-  return (
-    <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
-      <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
-        <Grid item>
-          {usedPageNo > 0 && (
-            <PreviousPageButton
-              action={prevPageNav}
-              testId="prevButtonTestId"
-              title={prevLabel()}
-            />
-          )}
+    return (
+      <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
+        <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
+          <Grid item>
+            {usedPageNo > 0 && (
+              <PreviousPageButton
+                action={prevPageNav}
+                testId="prevButtonTestId"
+                title={prevLabel()}
+              />
+            )}
+          </Grid>
+          <Grid item>
+            {(application.content5 as Notification)?.message?.length > 0 && (
+              <TimedAlert
+                color={(application.content5 as Notification)?.level}
+                delay={(application.content5 as Notification)?.delay}
+                testId="timeAlertFooter"
+                text={(application.content5 as Notification)?.message}
+              />
+            )}
+          </Grid>
+          <Grid item>
+            {usedPageNo < LAST_PAGE - 1 && (
+              <NextPageButton
+                disabled={buttonDisabled}
+                testId="nextButtonTestId"
+                title={nextLabel()}
+                page={usedPageNo}
+                primary
+                action={nextPageClicked}
+              />
+            )}
+          </Grid>
         </Grid>
-        <Grid item>
-          {(application.content5 as Notification)?.message?.length > 0 && (
-            <TimedAlert
-              color={(application.content5 as Notification)?.level}
-              delay={(application.content5 as Notification)?.delay}
-              testId="timeAlertFooter"
-              text={(application.content5 as Notification)?.message}
-            />
-          )}
-        </Grid>
-        <Grid item>
-          {usedPageNo < LAST_PAGE - 1 && (
-            <NextPageButton
-              disabled={buttonDisabled}
-              testId="nextButtonTestId"
-              title={nextLabel()}
-              page={usedPageNo}
-              primary
-              action={nextPageClicked}
-            />
-          )}
-        </Grid>
-      </Grid>
-    </Paper>
-  );
+      </Paper>
+    );
+  }
 }

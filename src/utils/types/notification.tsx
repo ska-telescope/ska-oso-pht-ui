@@ -1,9 +1,9 @@
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 
 type Notification = {
-  level: AlertColorTypes;
+  level: typeof AlertColorTypes;
   message: string;
-  okRequired: boolean;
+  okRequired?: boolean;
   delay?: number;
 };
 

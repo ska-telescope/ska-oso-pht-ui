@@ -2,12 +2,19 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
-import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  AlertColorTypes,
+  Spacer,
+  SPACER_VERTICAL,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { BANNER_PMT_SPACER, PMT } from '@utils/constants.ts';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
+import moment from 'moment';
 import SaveButton from '../../../components/button/Save/Save';
+import Notification from '../../../utils/types/notification';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
@@ -16,6 +23,10 @@ import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import ConflictButton from '@/components/button/Conflict/Conflict';
+import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
+import { ProposalReview } from '@/utils/types/proposalReview';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 export const REVIEW_TYPE = {
   SCIENCE: 'science',
@@ -32,12 +43,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const navigate = useNavigate();
   const locationProperties = useLocation();
 
-  const { application } = storageObject.useStore();
+  const { application, updateAppContent5 } = storageObject.useStore();
 
-  const isEdit = () => locationProperties.state !== null;
+  const isEdit = () => (locationProperties.state?.id ? true : false);
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
+  const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
@@ -48,10 +60,87 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getProposal = () => application.content2 as Proposal;
 
+  const getUser = () => 'DefaultUser'; // TODO
+
+  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+
+  const getReviewId = () => {
+    return isEdit()
+      ? locationProperties.state.id
+      : 'review-' +
+          getUser() +
+          '-' +
+          getDateFormatted() +
+          '-00001-' +
+          Math.floor(Math.random() * 10000000).toString();
+  };
+
+  const getReview = (submitted = false): ProposalReview => {
+    return {
+      id: reviewId,
+      prslId: getProposal().id,
+      rank: rank,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      comments: generalComments,
+      srcNet: srcNetComments,
+      metadata: {
+        version: 0,
+        created_by: '',
+        created_on: '',
+        pdm_version: '',
+        last_modified_by: '',
+        last_modified_on: ''
+      },
+      panelId: 'ERROR',
+      cycle: '',
+      reviewerId: getUser(),
+      submittedOn: '',
+      submittedBy: '',
+      status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.TO_DO
+    };
+  };
+
+  /*---------------------------------------------------------------------------*/
+
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      message: str
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
+
+  const createReview = async (submitted = false) => {
+    const response: string | { error: string } = await PostProposalReview(getReview(submitted));
+    if (typeof response === 'object' && response?.error) {
+      NotifyError(response?.error);
+    } else {
+      NotifyOK(t('addReview.success'));
+    }
+  };
+
+  const updateReview = async (submitted = false) => {
+    const response: string | { error: string } = await PostProposalReview(getReview(submitted));
+    if (typeof response === 'object' && response?.error) {
+      NotifyError(response?.error);
+    } else {
+      NotifyOK(t('addReview.success'));
+    }
+  };
+
+  /*---------------------------------------------------------------------------*/
+
   React.useEffect(() => {
+    setReviewId(getReviewId());
     if (isEdit()) {
-      setGeneralComments(locationProperties.state?.generalComments);
-      setSrcNetComments(locationProperties.state?.srcNetComments);
+      setGeneralComments(locationProperties.state?.comments);
+      setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
     } else {
       setGeneralComments('');
@@ -68,15 +157,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     // TODO
   };
 
-  const saveButtonClicked = () => {
-    // TODO
-    //create panel end point
-    // navigate(PMT[0]);
+  const saveButtonAction = (submit: boolean) => {
+    isEdit() ? updateReview(submit) : createReview(submit);
   };
-
-  const submitButtonClicked = () => {
-    // navigate(PMT[0]);
-  };
+  const saveButtonClicked = () => saveButtonAction(false);
+  const submitButtonClicked = () => saveButtonAction(true);
 
   const backButton = () => (
     <BackButton
@@ -370,6 +455,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
         <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
       </Grid2>
+      <PageFooterPMT />
     </>
   );
 }

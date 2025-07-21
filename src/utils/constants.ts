@@ -74,22 +74,22 @@ export const BANDWIDTH_TELESCOPE = [
     value: BAND_5A,
     isBand5: true,
     units: 'GHz',
-    mapping: 'mid_band_3',
+    mapping: 'mid_band_5a',
     bandLimits: {
       [ANTENNA_15M]: [4.6e9, 8.5e9]
     }
-  }, // Band 5a
+  },
   {
     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
     telescope: 1,
     value: BAND_5B,
     isBand5: true,
     units: 'GHz',
-    mapping: 'mid_band_4',
+    mapping: 'mid_band_5b',
     bandLimits: {
       [ANTENNA_15M]: [8.3e9, 15.4e9]
     }
-  } // Band 5b
+  }
 ];
 
 export const BANNER_PMT_SPACER = 100;
@@ -952,3 +952,5 @@ export const DEFAULT_TARGETS = {
   velType: 0,
   velUnit: 0
 };
+
+export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
