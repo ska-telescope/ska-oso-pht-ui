@@ -43,7 +43,6 @@ async function GetCycleData(cycleNumber: number): Promise<string | { error: stri
     const result = await axiosAuthClient.get(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
     );
-    console.log('check result ', result);
     return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
