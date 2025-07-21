@@ -1,6 +1,7 @@
 // import axios from 'axios';
 import axiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
+import { ObservatoryDataBackend } from '@/utils/types/cycleData';
 
 /*****************************************************************************************************************************/
 
@@ -11,16 +12,57 @@ const mapping = (response: {
     cycle_description: string;
     telescope_capabilities: { Low: string; Mid: string };
     cycle_number: number;
-  }
+  };
   capabilities: {
-    low: { AA2: { available_bandwidth_hz: number; cbf_modes: [string]; channel_width_hz: number; max_baseline_km: number; number_beams:number; number_fsps: number; number_pss_beams: number; number_pst_beams: number; number_stations: number; number_substations: number; number_vlbi_beams: number; number_zoom_channels: number; number_zoom_windows: number; ps_beam_bandwidth_hz: number;}; basic_capabilities: { max_frequency_hz: number; min_frequency_hz: number; } };
-    mid: { AA2: { available_bandwidth_hz: number; available_receivers: [string]; cbf_modes: [string]; max_baseline_km: number; number_channels: number; number_fsps: number; number_meerkat_dishes: number; number_meerkatplus_dishes: number; number_pss_beams: number; number_pst_beams: number; number_ska_dishes: number; number_zoom_channels: number;  number_zoom_windows: number; ps_beam_bandwidth_hz: number;}; basic_capabilities: { dish_elevation_limit_deg: number; receiver_information: [{rx_id: string, min_frequency_hz: number, max_frequency_hz: number}]}};
-  }
+    low: {
+      AA2: {
+        available_bandwidth_hz: number;
+        cbf_modes: [string];
+        channel_width_hz: number;
+        max_baseline_km: number;
+        number_beams: number;
+        number_fsps: number;
+        number_pss_beams: number;
+        number_pst_beams: number;
+        number_stations: number;
+        number_substations: number;
+        number_vlbi_beams: number;
+        number_zoom_channels: number;
+        number_zoom_windows: number;
+        ps_beam_bandwidth_hz: number;
+      };
+      basic_capabilities: { max_frequency_hz: number; min_frequency_hz: number };
+    };
+    mid: {
+      AA2: {
+        available_bandwidth_hz: number;
+        available_receivers: [string];
+        cbf_modes: [string];
+        max_baseline_km: number;
+        number_channels: number;
+        number_fsps: number;
+        number_meerkat_dishes: number;
+        number_meerkatplus_dishes: number;
+        number_pss_beams: number;
+        number_pst_beams: number;
+        number_ska_dishes: number;
+        number_zoom_channels: number;
+        number_zoom_windows: number;
+        ps_beam_bandwidth_hz: number;
+      };
+      basic_capabilities: {
+        dish_elevation_limit_deg: number;
+        receiver_information: [
+          { rx_id: string; min_frequency_hz: number; max_frequency_hz: number }
+        ];
+      };
+    };
+  };
 }) => {
   console.log('check response ', response);
   if (response.observatory_policy) {
     console.log('observatory policy to be mapped ', response);
-    console.log(response.capabilities.mid.basic_capabilities.receiver_information[1].rx_id)
+    console.log(response.capabilities.mid.basic_capabilities.receiver_information[1].rx_id);
     return (
       'cycle_number ' +
       response.observatory_policy.cycle_number +
@@ -108,26 +150,54 @@ const mapping = (response: {
       ' receiver_information 1 min_frequency_hz ' +
       response.capabilities.mid.basic_capabilities.receiver_information[0].min_frequency_hz +
       ' receiver_information 1 max_frequency_hz ' +
-      response.capabilities.mid.basic_capabilities.receiver_information[0].max_frequency_hz +
+      response.capabilities.mid.basic_capabilities.receiver_information[0].max_frequency_hz
     );
-  }
-else {
+  } else {
     return { error: 'cycle.error' };
   }
 };
 
-async function GetCycleData(cycleNumber: number): Promise<string | { error: string }> {
+const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataBackend => {
+  // TODO: create a ObservatoryData type for the frontend (camelCase instead of sneak_case)
+  console.log('in mappingNew backend data', inData);
+  console.log(
+    'in mappingNew rx_id info',
+    inData.capabilities.mid.basic_capabilities.receiver_information[1].rx_id
+  );
+  return inData; // return the data as is for now, until we implement the mapping
+
+  // TODO: implment mapping from backend to frontend format
+  /*
+  return {
+    capabilities: {
+      mid: {
+        basicCapabilities: {
+          dishElevationLimitDeg: inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
+          receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(rx => ({
+            rxId: rx.rx_id,
+            minFrequencyHz: rx.min_frequency_hz,
+            maxFrequencyHz: rx.max_frequency_hz
+          }))
+        },
+        // TODO: rest of mapping - AA2 etc.
+      }
+    }
+  };
+  */
+};
+
+async function GetCycleData(cycleNumber: number): Promise<ObservatoryDataBackend | string> {
   try {
     const URL_PATH = `/osd/`;
     const result = await axiosAuthClient.get(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingNew(result.data); // mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
-      return { error: e.message };
+      return e.message;
     }
-    return { error: 'error.API_UNKNOWN_ERROR' };
+    return 'error.API_UNKNOWN_ERROR';
   }
 }
 
