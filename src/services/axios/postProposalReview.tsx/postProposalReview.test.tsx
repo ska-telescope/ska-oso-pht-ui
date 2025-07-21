@@ -24,16 +24,20 @@ describe('Helper Functions', () => {
 
   test('mappingReviewFrontendToBackend returns mapped review from frontend to backend format', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
-      MockProposalReviewFrontend
+      MockProposalReviewFrontend,
+      true
     );
     expect(reviewBackEnd).to.deep.equal(MockProposalReviewBackend);
   });
 
   test('mappingReviewFrontendToBackend generates cycle id when not provided', () => {
-    const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend({
-      ...MockProposalReviewFrontend,
-      cycle: ''
-    });
+    const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
+      {
+        ...MockProposalReviewFrontend,
+        cycle: ''
+      },
+      true
+    );
     expect(reviewBackEnd).to.deep.equal({
       ...MockProposalReviewBackend,
       cycle: fetchCycleData().id

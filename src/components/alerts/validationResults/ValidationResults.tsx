@@ -75,6 +75,7 @@ export default function ValidationResults({
                 ariaDescription=""
                 ariaTitle=""
                 level={1}
+                onClick={() => {}}
                 size={SIZE}
                 testId="statusId"
                 toolTip=""
