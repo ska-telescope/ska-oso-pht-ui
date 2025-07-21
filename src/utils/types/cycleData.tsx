@@ -1,19 +1,7 @@
-/*
-export type CycleDataBackend = {
-  cycle_description: string;
-  cycle_information: { cycle_id: string; proposal_close: string; proposal_open: string };
-  cycle_number: number;
-  cycle_policies: { normal_max_hours: number };
-  telescope_capabilities: { Low: string; Mid: string };
-};
-
-export default CycleDataBackend;
-*/
-
 export type ObservatoryPolicyBackend = {
   cycle_number: number;
   cycle_description: string;
-  cycle_information: CycleInformationBackend[];
+  cycle_information: CycleInformationBackend;
   cycle_policies: {
     normal_max_hours: number;
   };
@@ -23,7 +11,7 @@ export type ObservatoryPolicyBackend = {
 export type ObservatoryPolicyFrontend = {
   cycleNumber: number;
   cycleDescription: string;
-  cycleInformation: CycleInformationFrontend[];
+  cycleInformation: CycleInformationFrontend
   cyclePolicies: {
     normalMaxHours: number;
   };
@@ -189,3 +177,5 @@ export type ObservatoryDataFrontend = {
     };
   };
 };
+
+export default ObservatoryDataFrontend;

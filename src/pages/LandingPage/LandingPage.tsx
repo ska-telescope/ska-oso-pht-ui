@@ -34,7 +34,7 @@ import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
-import { storeCycleData, storeProposalCopy } from '../../utils/storage/cycleData';
+import { storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
@@ -99,7 +99,7 @@ export default function LandingPage() {
       if (response.error) {
         setAxiosError(response.toString);
       } else {
-        storeCycleData(response);
+        //TODO: Set cycle data
       }
     };
     cycleData();

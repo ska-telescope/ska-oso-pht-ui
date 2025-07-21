@@ -34,7 +34,7 @@ import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
-import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
+import { storeProposalCopy } from '@/utils/storage/cycleData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
@@ -212,7 +212,7 @@ export default function GridProposals({
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        storeCycleData(response);
+        //TODO: Set cycle
       }
     };
     cycleData();

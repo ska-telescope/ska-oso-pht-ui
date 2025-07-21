@@ -9,11 +9,6 @@ import Proposal from 'utils/types/proposal';
  *
  ************************************************************************************/
 
-export const storeCycleData = (response: CycleData[]) => {
-  console.log('data stored ', response);
-  sessionStorage.setItem('skao_cycle_data', JSON.stringify(response));
-};
-
 export const fetchCycleData = () => {
   const tmp = sessionStorage?.getItem('skao_cycle_data');
   const data = tmp ? JSON.parse(tmp) : [{ id: 'cycle-001', cycle: 'cycle-001' }];
