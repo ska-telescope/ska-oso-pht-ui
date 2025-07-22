@@ -58,15 +58,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
       },
       low: {
         basicCapabilities: {
-          dishElevationLimitDeg:
-            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
-          receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
-            rx => ({
-              rxId: rx.rx_id,
-              minFrequencyHz: rx.min_frequency_hz,
-              maxFrequencyHz: rx.max_frequency_hz
-            })
-          )
+          minFrequencyHz: inData.capabilities.low.basic_capabilities.min_frequency_hz,
+          maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz
         },
         AA2: {
           availableReceivers: null,
