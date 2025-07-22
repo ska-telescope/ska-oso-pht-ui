@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  CYCLE,
   OSO_SERVICES_PANEL_DECISIONS_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
@@ -9,6 +8,10 @@ import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/post
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 import { helpers } from '@/utils/helpers';
+import ObservatoryData from '@/utils/types/observatoryData';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+const { application } = storageObject.useStore();
+const getCycleData = () => application.content3 as ObservatoryData;
 
 // mapping backend to frontend format
 export function mappingPanelDecisionBackendToFrontend(
@@ -17,7 +20,7 @@ export function mappingPanelDecisionBackendToFrontend(
   const transformedPanel: PanelDecision = {
     id: decision.decision_id,
     panelId: decision.panel_id,
-    cycle: decision.cycle ? decision.cycle : CYCLE, // hardcoded for now
+    cycle: decision.cycle ? decision.cycle : getCycleData().observatoryPolicy.cycleInformation.cycleId,
     proposalId: decision.prsl_id,
     decidedOn: decision.decided_on,
     decidedBy: decision.decided_by,
