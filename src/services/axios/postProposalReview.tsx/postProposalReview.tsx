@@ -7,6 +7,10 @@ import {
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 import { fetchCycleData } from '@/utils/storage/cycleData';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import ObservatoryData from '@/utils/types/observatoryData';
+const { application } = storageObject.useStore();
+const getCycleData = () => application.content3 as ObservatoryData;
 
 export function mappingReviewFrontendToBackend(
   review: ProposalReview,
@@ -15,7 +19,7 @@ export function mappingReviewFrontendToBackend(
   const transformedPanel: ProposalReviewBackend = {
     review_id: review.id,
     panel_id: review.panelId,
-    cycle: review.cycle ? review.cycle : fetchCycleData().id,
+    cycle: review.cycle ? review.cycle : getCycleData().observatoryPolicy.cycleInformation.cycleId,
     submitted_on: mocked ? review.submittedOn : new Date().toISOString(),
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
