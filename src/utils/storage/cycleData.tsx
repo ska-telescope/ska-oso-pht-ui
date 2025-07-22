@@ -8,13 +8,6 @@ import Proposal from 'utils/types/proposal';
  *
  ************************************************************************************/
 
-export const fetchCycleData = () => {
-  const tmp = sessionStorage?.getItem('skao_cycle_data');
-  const data = tmp ? JSON.parse(tmp) : [{ id: 'cycle-001', cycle: 'cycle-001' }];
-  const parts = data.split(' ');
-  return parts.includes('cycle_id') ? 'SKAO_2027_1' : null;
-};
-
 /*********************************************************************************/
 
 export const storeProposalCopy = (response: Proposal) => {
