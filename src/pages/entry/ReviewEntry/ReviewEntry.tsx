@@ -46,6 +46,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const { application, updateAppContent5 } = storageObject.useStore();
 
   const isEdit = () => (locationProperties.state?.id ? true : false);
+  const isView = () => (locationProperties.state?.reviews ? true : false);
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
@@ -99,7 +100,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       reviewerId: getUser(),
       submittedOn: '',
       submittedBy: '',
-      status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.TO_DO
+      status: submitted
+        ? PANEL_DECISION_STATUS.DECIDED
+        : // : !rank && !generalComments && !srcNetComments
+          PANEL_DECISION_STATUS.TO_DO
+      // : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
 
@@ -165,10 +170,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const backButton = () => (
     <BackButton
-      action={() => navigate(PMT[1])}
+      action={() => (isView() ? navigate(PMT[4]) : navigate(PMT[1]))}
       testId="pmtBackButton"
-      title={'reviewProposalList.title'}
-      toolTip="reviewProposalList.toolTip"
+      title={isView() ? 'reviewDecisionsList.title' : 'reviewProposalList.title'}
+      toolTip={isView() ? 'reviewDecisionsList.toolTip' : 'reviewProposalList.toolTip'}
     />
   );
 
@@ -322,29 +327,72 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const rankField = () => {
     return (
       <Box p={2} pl={4} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
-        <RankEntryField selectedRank={rank} setSelectedRank={setRank} />
+        {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
+        {isView() && (
+          <Typography id="title-label" variant={'h6'}>
+            {locationProperties.state.reviews[0].rank}
+          </Typography>
+        )}
       </Box>
     );
   };
 
   const generalCommentsField = () => (
-    <TextEntry
-      label={''}
-      testId="generalCommentsId"
-      rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
-      setValue={setGeneralComments}
-      value={generalComments}
-    />
+    <>
+      {!isView() && (
+        <TextEntry
+          label={''}
+          testId="generalCommentsId"
+          rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+          setValue={setGeneralComments}
+          value={generalComments}
+        />
+      )}
+      {isView() && (
+        <Box
+          p={2}
+          sx={{
+            width: '100%',
+            height: '65vh',
+            overflow: 'auto',
+            backgroundColor: theme.palette.primary.main
+          }}
+        >
+          <Typography id="title-label" variant={'h6'}>
+            {locationProperties.state.reviews[0].comments}
+          </Typography>
+        </Box>
+      )}
+    </>
   );
 
   const srcNetCommentsField = () => (
-    <TextEntry
-      label={''}
-      testId="srcNetCommentsId"
-      rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
-      setValue={setSrcNetComments}
-      value={srcNetComments}
-    />
+    <>
+      {!isView() && (
+        <TextEntry
+          label={''}
+          testId="srcNetCommentsId"
+          rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+          setValue={setSrcNetComments}
+          value={srcNetComments}
+        />
+      )}
+      {isView() && (
+        <Box
+          p={2}
+          sx={{
+            width: '100%',
+            height: '65vh',
+            overflow: 'auto',
+            backgroundColor: theme.palette.primary.main
+          }}
+        >
+          <Typography id="title-label" variant={'h6'}>
+            {locationProperties.state.reviews[0].srcNet}
+          </Typography>
+        </Box>
+      )}
+    </>
   );
 
   const reviewArea = () => {
@@ -439,7 +487,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     <>
       <PageBannerPMT
         backBtn={backButton()}
-        fwdBtn={actionButtons()}
+        fwdBtn={isView() ? <></> : actionButtons()}
         title={t('reviewProposal.title')}
       />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
