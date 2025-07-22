@@ -28,8 +28,7 @@ export function mappingPostProposal(
     status: status as string,
     submitted_by: '',
     investigator_refs: [],
-    //TODO: Retrieve cycle id from osd data
-    cycle: '1234',
+    cycle: proposal.cycle,
     info: {
       title: proposal.title,
       proposal_type: {

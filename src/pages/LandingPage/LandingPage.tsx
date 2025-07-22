@@ -37,6 +37,7 @@ import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeProposalCopy } from '../../utils/storage/cycleData';
 import { FOOTER_SPACER } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -47,7 +48,8 @@ export default function LandingPage() {
     clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
+    updateAppContent2,
+    updateAppContent3
   } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -94,16 +96,18 @@ export default function LandingPage() {
   }, [fetchList, isDisableEndpoints()]);
 
   React.useEffect(() => {
-    const cycleData = async () => {
+    const fetchCycleData = async () => {
       const response = await GetCycleData(1);
       if (response.error) {
-        setAxiosError(response.toString);
+        setAxiosError(response.toString());
       } else {
-        //TODO: Set cycle data
+        // store osd data into storage 3
+        updateAppContent3(response as ObservatoryData);
       }
     };
-    cycleData();
-  }, [cycleData]);
+
+    fetchCycleData();
+  }, []);
 
   const getTheProposal = async (id: string) => {
     helpComponent('');

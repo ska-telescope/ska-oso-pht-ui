@@ -1,4 +1,4 @@
-import { CycleData } from '../../../utils/types/cycleData';
+import { CycleData } from '../../../utils/types/observatoryData';
 
 // TODO : PLACEHOLDER FOR GET-CYCLE-DATA ENDPOINT
 

@@ -1,11 +1,11 @@
 // import axios from 'axios';
 import axiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
-import { ObservatoryDataBackend, ObservatoryDataFrontend } from '@/utils/types/cycleData';
+import { ObservatoryDataBackend, ObservatoryData } from '@/utils/types/observatoryData';
 
 /*****************************************************************************************************************************/
 
-const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => {
+const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   return {
     observatoryPolicy: {
       cycleDescription: inData.observatory_policy.cycle_description,
@@ -53,7 +53,7 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
           numberFsps: inData.capabilities.mid.AA2.number_fsps,
           channelWidthHz: null,
           numberBeams: null,
-          numberVlbiBeams:null
+          numberVlbiBeams: null
         }
       },
       low: {
@@ -87,27 +87,26 @@ const mappingNew = (inData: ObservatoryDataBackend): ObservatoryDataFrontend => 
           numberFsps: inData.capabilities.low.AA2.number_fsps,
           channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
           numberBeams: inData.capabilities.low.AA2.number_beams,
-          numberVlbiBeams:inData.capabilities.low.AA2.number_vlbi_beams
+          numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
         }
       }
     }
   };
 };
 
-  async function GetCycleData(cycleNumber: number): Promise<string | ObservatoryDataFrontend> {
-    try {
-      const URL_PATH = `/osd/`;
-      const result = await axiosAuthClient.get(
-        `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
-      );
-      console.log('returned from mapping ',  mappingNew(result.data))
-      return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mappingNew(result.data);
-    } catch (e) {
-      if (e instanceof Error) {
-        return e.message;
-      }
-      return 'error.API_UNKNOWN_ERROR';
+async function GetCycleData(cycleNumber: number): Promise<string | ObservatoryData> {
+  try {
+    const URL_PATH = `/osd/`;
+    const result = await axiosAuthClient.get(
+      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
+    );
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+  } catch (e) {
+    if (e instanceof Error) {
+      return e.message;
     }
-  };
+    return 'error.API_UNKNOWN_ERROR';
+  }
+}
 
 export default GetCycleData;

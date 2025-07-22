@@ -8,10 +8,10 @@ export type ObservatoryPolicyBackend = {
   telescope_capabilities: TelescopeInformationBackend;
 };
 
-export type ObservatoryPolicyFrontend = {
+export type ObservatoryPolicy = {
   cycleNumber: number;
   cycleDescription: string;
-  cycleInformation: CycleInformationFrontend
+  cycleInformation: CycleInformationFrontend;
   cyclePolicies: {
     normalMaxHours: number;
   };
@@ -57,7 +57,7 @@ export type BasicCapabilitiesBackend = {
   receiver_information: ReceiverInformationBackend[];
 };
 
-export type BasicCapabilitiesFrontend = {
+export type BasicCapabilities = {
   dishElevationLimitDeg: number;
   receiverInformation: ReceiverInformationFrontend[];
 };
@@ -84,7 +84,7 @@ export type subarrayConfigurationMidBackend = {
   number_vlbi_beams: number | null; // only for Low
 };
 
-export type subarrayConfigurationMidFrontend = {
+export type subarrayConfigurationMid = {
   availableReceivers: string[]; // only for Mid
   numberSkaDishes: number | null; // only for Mid
   numberMeerkatDishes: number | null; // only for Mid
@@ -128,7 +128,7 @@ export type subarrayConfigurationLowBackend = {
   number_vlbi_beams: number | null; // only for Low
 };
 
-export type subarrayConfigurationLowFrontend = {
+export type subarrayConfigurationLow = {
   availableReceivers: string[] | null; // only for Mid
   numberSkaDishes: number | null; // only for Mid
   numberMeerkatDishes: number | null; // only for Mid
@@ -164,18 +164,18 @@ export type ObservatoryDataBackend = {
   };
 };
 
-export type ObservatoryDataFrontend = {
-  observatoryPolicy: ObservatoryPolicyFrontend;
+export type ObservatoryData = {
+  observatoryPolicy: ObservatoryPolicy;
   capabilities: {
     mid: {
-      basicCapabilities: BasicCapabilitiesFrontend;
-      AA2: subarrayConfigurationMidFrontend;
+      basicCapabilities: BasicCapabilities;
+      AA2: subarrayConfigurationMid;
     };
     low: {
-      basicCapabilities: BasicCapabilitiesFrontend;
-      AA2: subarrayConfigurationLowFrontend;
+      basicCapabilities: BasicCapabilities;
+      AA2: subarrayConfigurationLow;
     };
   };
 };
 
-export default ObservatoryDataFrontend;
+export default ObservatoryData;
