@@ -1,6 +1,9 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { MockStore, StoreType } from '../MockStore';
+import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
 import PostPanelDecision, {
   mappingPanelDecisionFrontendToBackend,
   postMockPanelDecision
@@ -8,7 +11,6 @@ import PostPanelDecision, {
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from './mockPanelDecisionBackend';
 import * as CONSTANTS from '@/utils/constants';
-import { CYCLE } from '@/utils/constants';
 import { PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 vi.mock('axios');
@@ -17,6 +19,10 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('postMockPanelDecision returns mock id', () => {
     const result = postMockPanelDecision();
     expect(result).to.equal('PANEL-DECISION-ID-001');
@@ -34,14 +40,18 @@ describe('Helper Functions', () => {
     const panelBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
       myPanelDecision
     );
-    const expectedPanelBackend = { ...MockPanelDecisionBackend, cycle: CYCLE };
+    const expectedPanelBackend = {
+      ...MockPanelDecisionBackend,
+      cycle: mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId
+    };
     expect(panelBackEnd).to.deep.equal(expectedPanelBackend);
   });
 });
 
 describe('PostPanelDecision Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data id when USE_LOCAL_DATA is true', async () => {

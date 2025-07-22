@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { MockProposalReviewFrontend } from '../postProposalReview.tsx/mockProposalReviewFrontend';
 import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockStore, StoreType } from '../MockStore';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -9,6 +11,10 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('putMockProposalReview returns mock review', () => {
     const result = putMockProposalReview();
     expect(result).to.deep.equal(MockProposalReviewFrontend);
@@ -17,7 +23,8 @@ describe('Helper Functions', () => {
 
 describe('PutProposalReview Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {

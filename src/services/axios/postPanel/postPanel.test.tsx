@@ -24,15 +24,16 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
-  vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('postMockPanel returns mock id', () => {
     const result = postMockPanel();
     expect(result).to.equal('PANEL-ID-001');
   });
 
   test('mappingPostPanel returns mapped panel from frontend to backend format', () => {
-    // TODO mock cycle data
-    // vi.spyOn(getCycleData(), 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const panelBackEnd: PanelBackend = mappingPostPanel(MockPanelFrontend);
     expect(panelBackEnd).to.deep.equal(MockPanelBackend);
   });
@@ -84,7 +85,6 @@ describe('Helper Functions', () => {
 
 describe('PostPanel Service', () => {
   beforeEach(() => {
-    // vi.resetAllMocks();
     vi.clearAllMocks();
     vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
@@ -97,7 +97,6 @@ describe('PostPanel Service', () => {
 
   test('returns data id from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
     mockedAxios.post.mockResolvedValue({ data: MockPanelFrontend.id });
     const result = (await PostPanel(MockPanelFrontend)) as string;
     expect(result).to.deep.equal(MockPanelBackend.panel_id);
@@ -105,7 +104,6 @@ describe('PostPanel Service', () => {
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
     mockedAxios.post.mockRejectedValue(new Error('Network Error'));
     const result = await PostPanel(MockPanelFrontend);
     expect(result).toStrictEqual({ error: 'Network Error' });
@@ -113,7 +111,6 @@ describe('PostPanel Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
     mockedAxios.post.mockRejectedValue({ unexpected: 'object' });
     const result = await PostPanel(MockPanelFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -121,7 +118,6 @@ describe('PostPanel Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
     mockedAxios.post.mockResolvedValue(undefined);
     const result = await PostPanel(MockPanelFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -129,7 +125,6 @@ describe('PostPanel Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
     mockedAxios.post.mockResolvedValue(null);
     const result = await PostPanel(MockPanelFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

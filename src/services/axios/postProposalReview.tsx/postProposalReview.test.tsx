@@ -1,6 +1,8 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { MockStore, StoreType } from '../MockStore';
 import PostProposalReview, {
   mappingReviewFrontendToBackend,
   postMockProposalReview
@@ -16,6 +18,10 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('postMockProposalReview returns mock id', () => {
     const result = postMockProposalReview();
     expect(result).to.equal('PROPOSAL-REVIEW-ID-001');
@@ -46,7 +52,8 @@ describe('Helper Functions', () => {
 
 describe('PostProposalReview Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data id when USE_LOCAL_DATA is true', async () => {

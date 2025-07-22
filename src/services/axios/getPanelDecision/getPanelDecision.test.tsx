@@ -1,9 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
+import { MockStore, StoreType } from '../MockStore';
 import getPanelDecision, { getMockPanelDecision } from './getPanelDecision';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import * as CONSTANTS from '@/utils/constants';
@@ -16,6 +18,10 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('getMockPanelDecision returns mock panel', () => {
     const result = getMockPanelDecision();
     expect(result).to.deep.equal(MockPanelDecisionFrontend);
@@ -31,7 +37,8 @@ describe('Helper Functions', () => {
 
 describe('GetPanelDecision Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
