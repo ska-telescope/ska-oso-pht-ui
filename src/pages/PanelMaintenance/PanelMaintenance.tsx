@@ -20,7 +20,7 @@ import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 const PANELS_HEIGHT = '66vh';
-const TABS_HEIGHT = '72vh';
+const TABS_HEIGHT = '68vh';
 const TABS_CONTAINER_HEIGHT = '62vh';
 const TAB_GRID_HEIGHT = '44vh';
 
@@ -254,14 +254,19 @@ export default function PanelMaintenance() {
 
         <Grid2
           size={{ sm: 12, md: 6, lg: 8 }}
-          pt={3}
+          pt={2}
           container
           direction="row"
           justifyContent="space-around"
           alignItems="flex-start"
         >
-          <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '100%' }}>
-            <Box>
+          <Box
+            sx={{
+              height: TABS_HEIGHT,
+              width: '100%'
+            }}
+          >
+            <Box pt={2}>
               <Tabs
                 variant="fullWidth"
                 textColor="secondary"
@@ -278,17 +283,13 @@ export default function PanelMaintenance() {
               p={2}
               sx={{
                 width: '100%',
-                height: TABS_CONTAINER_HEIGHT,
-                border: '1px solid lightgrey',
-                borderBottomLeftRadius: '16px',
-                borderBottomRightRadius: '16px'
+                height: TABS_CONTAINER_HEIGHT
               }}
             >
               {theValue === 0 && (
                 <GridReviewers
                   height={TAB_GRID_HEIGHT}
                   showSearch
-                  showTitle
                   showSelection={!!currentPanel}
                   selectedReviewers={panelReviewers}
                   tickBoxClicked={(reviewer, isReviewerSelected) => {

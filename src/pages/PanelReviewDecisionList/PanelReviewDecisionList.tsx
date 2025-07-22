@@ -4,6 +4,7 @@ import { Grid2, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import moment from 'moment';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
@@ -59,17 +60,25 @@ export default function ReviewDecisionListPage() {
 
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
-  const getUser = () => 'DefaultUser'; // TODO
-
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
     const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
     return Math.round(average);
   };
 
+  const getUser = () => 'DefaultUser'; // TODO
+
+  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+
   const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
     return {
-      id: item.id,
+      id:
+        'pnld-' +
+        getUser() +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString(),
       panelId: '1',
       cycle: 'ERROR',
       proposalId: item.id,
@@ -170,8 +179,6 @@ export default function ReviewDecisionListPage() {
     fetchProposalReviewData();
     fetchReviewDecisionData();
   }, [panelData]);
-
-  // const getUser = () => 'DefaultUser'; // TODO
 
   /*--------------------------------------------------------------------------*/
 

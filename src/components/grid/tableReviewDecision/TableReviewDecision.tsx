@@ -252,7 +252,9 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
-                        {item.decisions[item.decisions.length - 1].status}
+                        {item.decisions.length
+                          ? item.decisions[item.decisions.length - 1]?.status
+                          : 'To Do'}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
@@ -328,7 +330,7 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
                                     }}
                                   >
                                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.status}
+                                      {detail?.status}
                                     </Typography>
                                   </TableCell>
                                   <TableCell
@@ -420,7 +422,7 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
                                     </Grid2>
                                     <Grid2>
                                       <Typography variant="h6">
-                                        {`${t('tableReviewDecision.decisionRank')} ${calculateRank(
+                                        {`${t('tableReviewDecision.decisionScore')} ${calculateRank(
                                           item.reviews
                                         )}`}
                                       </Typography>
