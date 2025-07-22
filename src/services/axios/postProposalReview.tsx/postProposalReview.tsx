@@ -6,7 +6,6 @@ import {
 } from '../../../utils/constants';
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
-import { fetchCycleData } from '@/utils/storage/cycleData';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import ObservatoryData from '@/utils/types/observatoryData';
 const { application } = storageObject.useStore();

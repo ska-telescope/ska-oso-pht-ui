@@ -9,7 +9,6 @@ import { MockProposalReviewFrontend } from './mockProposalReviewFrontend';
 import { MockProposalReviewBackend } from './mockProposalReviewBackend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
-import { fetchCycleData } from '@/utils/storage/cycleData';
 
 vi.mock('axiosAuthClient');
 const mockedAxios = (axios as unknown) as {
@@ -40,7 +39,7 @@ describe('Helper Functions', () => {
     );
     expect(reviewBackEnd).to.deep.equal({
       ...MockProposalReviewBackend,
-      cycle: fetchCycleData().id
+      cycle: 'SKAO_2027_1'
     });
   });
 });
