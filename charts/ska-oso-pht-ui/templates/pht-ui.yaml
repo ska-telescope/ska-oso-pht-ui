@@ -38,22 +38,12 @@ spec:
               value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
             - name: REACT_APP_USE_LOCAL_DATA
               value: {{ .Values.runtimeEnv.useLocalData | quote }}
+            - name: REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC
+              value: {{ .Values.runtimeEnv.useLocalDataSensitivityCalc | quote }}
             - name: REACT_APP_DOMAIN
               value: {{ .Values.runtimeEnv.domain | quote }}
             - name: REACT_APP_SKA_LOGIN_APP_URL
               value: {{ include "ska-oso-pht-ui.urls-skaLoginAppUrl" . | quote }}
-            - name: MSENTRA_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: ska-oso-pht-ui-allsecrets-{{ $.Release.Name }}
-                  key: MSENTRA_CLIENT_ID
-            - name: MSENTRA_TENANT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: ska-oso-pht-ui-allsecrets-{{ $.Release.Name }}
-                  key: MSENTRA_TENANT_ID
-            - name: MSENTRA_REDIRECT_URI
-              value: {{ include "ska-oso-pht-ui.urls-msentraRedirectUri" . | quote }}
           livenessProbe:
             httpGet:
               path: /

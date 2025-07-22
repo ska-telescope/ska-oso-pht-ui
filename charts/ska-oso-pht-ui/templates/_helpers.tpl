@@ -1,6 +1,6 @@
 {{- define "ska-oso-pht-ui.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{ .Chart.Name }}-{{ .Release.Name }}-ui
+{{- end }}
 
 {{- define "ska-oso-pht-ui.labels" -}}
 app.kubernetes.io/name: {{ $.Chart.Name }}
@@ -53,14 +53,5 @@ Create chart name and version as used by the chart label.
 {{ .Values.runtimeEnv.skaLoginAppUrl }}
 {{- else -}}
 /{{ .Release.Namespace }}/login/
-{{- end }}
-{{- end }}
-
-
-{{- define "ska-oso-pht-ui.urls-msentraRedirectUri" -}}
-{{- if .Values.runtimeEnv.msentraRedirectUri -}}
-{{ .Values.runtimeEnv.msentraRedirectUri }}
-{{- else -}}
-/{{ .Release.Namespace }}/pht/
 {{- end }}
 {{- end }}
