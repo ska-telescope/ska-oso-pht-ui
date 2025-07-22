@@ -291,9 +291,10 @@ export default function ReviewListPage() {
       // TODO : Add the functionality to get the reviewer from the panel
       // if (panel && panel.reviewers && panel.reviewers.length > 0) {
       //   const reviewer = panel.reviewers.find(r => r.userId === getUser());
-      //   console.log('Panel Reviewers:', reviewer);
       // }
-      return proposal && proposal.assignedOn ? presentDate(proposal.assignedOn) : '';
+      return proposal && proposal.assignedOn
+        ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
+        : '';
     }
   };
 
