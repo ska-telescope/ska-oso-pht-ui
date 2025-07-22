@@ -17,28 +17,41 @@ import {
   Grid2
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, TextEntry } from '@ska-telescope/ska-gui-components';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { useNavigate } from 'react-router-dom';
+import Notification from '@/utils/types/notification';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
-import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
+import TickIcon from '@/components/icon/tickIcon/tickIcon';
+import GetProposal from '@/services/axios/getProposal/getProposal';
+import { validateProposal } from '@/utils/proposalValidation';
+import { PMT } from '@/utils/constants';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
 
 interface TableReviewDecisionProps {
   data: any;
+  submitFunction: (item: any) => void;
 }
 
-export default function TableReviewDecision({ data }: TableReviewDecisionProps) {
+export default function TableReviewDecision({ data, submitFunction }: TableReviewDecisionProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const {
+    clearApp,
+    updateAppContent1,
+    updateAppContent2,
+    updateAppContent5
+  } = storageObject.useStore();
 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
 
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
-  const [finalRank, setFinalRank] = React.useState(0);
-  const [finalComments, setFinalComments] = React.useState('');
 
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -55,7 +68,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
     const employee = data.find((item: { id: number }) => item.id === id);
     const message = wasExpanded
       ? `Collapsed details for ${employee?.title}`
-      : `Expanded details for ${employee?.title}. ${employee?.details.length} additional details available.`;
+      : `Expanded details for ${employee?.title}. ${employee?.reviews?.length} additional details available.`;
 
     // Create a temporary live region for announcements
     const announcement = document.createElement('div');
@@ -70,30 +83,42 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
     }, 1000);
   };
 
-  const handleViewAction = async (_item: any) => {
-    // TODO
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
+    const rec: Notification = {
+      level: lvl,
+      message: str
+    };
+    updateAppContent5(rec);
+  }
+
+  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+
+  const getTheProposal = async (id: string) => {
+    clearApp();
+
+    const response = await GetProposal(id);
+    if (typeof response === 'string') {
+      NotifyError(t('proposal.error'));
+      return false;
+    } else {
+      updateAppContent1(validateProposal(response));
+      updateAppContent2(response);
+      validateProposal(response);
+      return true;
+    }
   };
 
-  const handleSubmitAction = (id: number) => {
-    const employee = data.find((item: { id: number }) => item.id === id);
-
-    // TODO
-
-    // Announce to screen readers
-    const message = `Employee data submitted for ${employee?.title}`;
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
+  const handleViewAction = async (item: any, detail: any) => {
+    const output = item;
+    output.reviews = [detail];
+    getTheProposal(item.id).then(success => {
+      if (success === true) {
+        navigate(PMT[5], { replace: true, state: output });
+      }
+    });
   };
 
-  const calculateSuggestedRank = (details: Array<{ rank: number }>) => {
+  const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
     const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
     return Math.round(average);
@@ -111,6 +136,11 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
         <Table sx={{ minWidth: 650 }} aria-label="Employee information table">
           <TableHead>
             <TableRow>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {t('tableReviewDecision.reviews')}
+                </Typography>
+              </TableCell>
               <TableCell sx={{ width: 50 }}>
                 <Typography variant="subtitle2" fontWeight="bold" className="sr-only">
                   {t('scienceCategory.label')}
@@ -123,12 +153,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle2" fontWeight="bold">
-                  {t('tableReviewDecision.title')}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="subtitle2" fontWeight="bold">
-                  {t('tableReviewDecision.reviewStatus')}
+                  {t('tableReviewDecision.decisionStatus')}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -168,6 +193,9 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                   lastUpdated: string;
                   rank: number;
                   comments: string;
+                  reviews: any[];
+                  recommendation: any;
+                  [key: string]: any;
                 },
                 index: number
               ) => (
@@ -189,7 +217,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                           aria-label={`${
                             expandedRows.has(item.id) ? 'Collapse' : 'Expand'
                           } details for ${item.title}. ${
-                            item.details?.length
+                            item.reviews?.length
                           } additional details available.`}
                           aria-expanded={expandedRows.has(item.id)}
                           aria-controls={`employee-details-${item.id}`}
@@ -206,16 +234,15 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          aria-label={`${item.details?.length} additional details`}
+                          aria-label={`${item.reviews?.length} additional details`}
                         >
-                          {item.details?.length}
+                          {item.reviews?.length}
                         </Typography>
                       </Box>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
-                        {t('scienceCategory.' + item.scienceCategory)}{' '}
-                        {/*// TODO + item.reviewStatus)}  */}
+                        {t('scienceCategory.' + item.scienceCategory)}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
@@ -225,7 +252,9 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
-                        {t('reviewStatus.to do')} {/*// TODO + item.reviewStatus)}  */}
+                        {item.decisions.length
+                          ? item.decisions[item.decisions.length - 1]?.status
+                          : 'To Do'}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
@@ -234,16 +263,15 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
-                      <Typography variant="body2">{item.rank}</Typography>
+                      <Typography variant="body2">{calculateRank(item.decisions)}</Typography>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
                         <SubmitIcon
-                          onClick={() => handleSubmitAction(item.id)}
+                          onClick={() => submitFunction(item)}
                           aria-label={`Submit data for ${item.title}`}
                           data-testid={`submit-button-${item.id}`}
-                          disabled={finalRank === 0 || finalComments?.trim() === ''}
-                          toolTip=""
+                          toolTip={t('decisionSubmit.help')}
                         />
                       </Box>
                     </TableCell>
@@ -274,20 +302,37 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                           <Table aria-label={`Review comments and ranks for ${item.title}`}>
                             <TableHead>
                               <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
+                                  {t('status.label')}
+                                </TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>
                                   {t('generalComments.label')}
                                 </TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>
+                                  {t('srcNetComments.label')}
+                                </TableCell>
                                 <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>
-                                  Rank
+                                  {t('rank.label')}
                                 </TableCell>
                                 <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                                  Action
+                                  {t('tableReviewDecision.actions')}
                                 </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {item.details?.map((detail, detailIndex) => (
+                              {item.reviews?.map((detail, detailIndex) => (
                                 <TableRow key={detailIndex}>
+                                  <TableCell
+                                    sx={{
+                                      borderBottom: `1px solid ${theme.palette.divider}`,
+                                      py: 1.5,
+                                      px: 2
+                                    }}
+                                  >
+                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                                      {detail?.status}
+                                    </Typography>
+                                  </TableCell>
                                   <TableCell
                                     sx={{
                                       borderBottom: `1px solid ${theme.palette.divider}`,
@@ -307,7 +352,7 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                     }}
                                   >
                                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.rank}
+                                      {detail.srcNet}
                                     </Typography>
                                   </TableCell>
                                   <TableCell
@@ -317,14 +362,41 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                       px: 2
                                     }}
                                   >
-                                    <ViewIcon
-                                      onClick={() => handleViewAction(item)}
-                                      aria-label={`View detail ${detailIndex + 1} for ${
-                                        item.title
-                                      }`}
-                                      data-testid={`view-detail-button-${item.id}-${detailIndex}`}
-                                      toolTip="View detail"
-                                    />
+                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                                      {detail.rank}
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      py: 1.5,
+                                      px: 2
+                                    }}
+                                  >
+                                    <Grid2
+                                      container
+                                      direction="row"
+                                      alignItems="center"
+                                      gap={1}
+                                      wrap="nowrap"
+                                    >
+                                      <Grid2>
+                                        <TickIcon
+                                          onClick={() => {}}
+                                          data-testid={`includeIcon-${item.id}-${detailIndex}`}
+                                          disabled
+                                        />
+                                      </Grid2>
+                                      <Grid2>
+                                        <ViewIcon
+                                          onClick={() => handleViewAction(item, detail)}
+                                          aria-label={`View detail ${detailIndex + 1} for ${
+                                            item.title
+                                          }`}
+                                          data-testid={`view-detail-button-${item.id}-${detailIndex}`}
+                                          toolTip="View detail"
+                                        />
+                                      </Grid2>
+                                    </Grid2>
                                   </TableCell>
                                 </TableRow>
                               ))}
@@ -345,24 +417,31 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                   >
                                     <Grid2>
                                       <Typography variant="h6" fontWeight="bold">
-                                        Decision Comments
+                                        {t('tableReviewDecision.decisionComments')}
+                                      </Typography>
+                                    </Grid2>
+                                    <Grid2>
+                                      <Typography variant="h6">
+                                        {`${t('tableReviewDecision.decisionScore')} ${calculateRank(
+                                          item.reviews
+                                        )}`}
                                       </Typography>
                                     </Grid2>
                                     <Grid2>
                                       <SubmitButton
-                                        action={() => handleSubmitAction(item.id)}
+                                        action={() => submitFunction(item)}
                                         aria-label={`Submit employee data for ${item.title}`}
                                         data-testid={`submit-employee-button-${item.id}`}
-                                        disabled={finalRank === 0 || finalComments?.trim() === ''}
+                                        toolTip="decisionSubmit.help"
                                       />
                                     </Grid2>
                                   </Grid2>
                                   <Box
                                     m={1}
                                     sx={{
-                                      maxHeight: `calc('75vh' - 100px)`,
+                                      maxHeight: `calc(75vh - 100px)`,
                                       overflowY: 'auto',
-                                      width: '100%',
+                                      width: '99%',
                                       display: 'flex',
                                       flexDirection: 'column',
                                       backgroundColor: 'white',
@@ -378,18 +457,13 @@ export default function TableReviewDecision({ data }: TableReviewDecisionProps) 
                                       rows={
                                         ((FINAL_COMMENTS_HEIGHT / 100) * window.innerHeight) / 27
                                       }
-                                      setValue={setFinalComments}
-                                      value={finalComments}
+                                      setValue={(val: string) => {
+                                        item.recommendation = val;
+                                      }}
+                                      value={item.recommendation}
                                     />
                                   </Box>
                                 </Stack>
-                              </Box>
-                              <Box>
-                                <RankEntryField
-                                  suggestedRank={calculateSuggestedRank(item.details)}
-                                  selectedRank={finalRank}
-                                  setSelectedRank={setFinalRank}
-                                />
                               </Box>
                             </Box>
                           </Box>

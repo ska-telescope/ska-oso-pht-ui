@@ -11,14 +11,14 @@ describe('<AlertDialog />', () => {
     render(
       <AlertDialog open={true} onClose={mockActionClose} onDialogResponse={mockActionCancel} />
     );
-    const btn = screen.getAllByTestId('cancelButtonTestId');
+    const btn = screen.getAllByTestId('dialogCancelButton');
     btn[0].click();
   });
   test('renders correctly, click confirm', () => {
     render(
       <AlertDialog open={true} onClose={mockActionClose} onDialogResponse={mockActionCancel} />
     );
-    const btn = screen.getAllByTestId('confirmButtonTestId');
+    const btn = screen.getAllByTestId('dialogConfirmationButton');
     btn[0].click();
   });
 });

@@ -3,12 +3,15 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SciencePage from './SciencePage';
+import { MockedLoginProvider } from '@/contexts/MockedLoginContext';
 
 describe('<SciencePage />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <SciencePage />
+        <MockedLoginProvider>
+          <SciencePage />
+        </MockedLoginProvider>
       </StoreProvider>
     );
   });
