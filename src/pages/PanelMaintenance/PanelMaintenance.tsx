@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
+import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
@@ -97,6 +98,8 @@ export const deleteProposalPanel = (
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const theme = useTheme();
+
   const [theValue, setTheValue] = React.useState(0);
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
@@ -274,6 +277,10 @@ export default function PanelMaintenance() {
                 value={theValue}
                 onChange={handleChange}
                 aria-label="basic tabs example"
+                sx={{
+                  '& button': { backgroundColor: theme.palette.primary.main },
+                  '& button.Mui-selected': { backgroundColor: 'transparent' }
+                }}
               >
                 <Tab label={t('reviewers.label')} {...a11yProps(0)} />
                 <Tab label={t('proposals.label')} {...a11yProps(1)} />
