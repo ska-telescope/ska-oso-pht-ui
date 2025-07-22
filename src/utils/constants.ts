@@ -385,7 +385,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false,
+          disableForBand5: false
           //TODO: TO BE REMOVED
           // maxContBandwidthHz: 800e6
         },
@@ -488,7 +488,7 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 64,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812,
+          continuumSpectralAveragingMax: 13812
           //TODO: TO BE REMOVED
           // maxContBandwidthHz: 150e6
         },

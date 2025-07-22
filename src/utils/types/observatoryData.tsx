@@ -52,14 +52,24 @@ export type CycleInformationFrontend = {
   proposalClose: string;
 };
 
-export type BasicCapabilitiesBackend = {
+export type BasicCapabilitiesMidBackend = {
   dish_elevation_limit_deg: number;
   receiver_information: ReceiverInformationBackend[];
 };
 
-export type BasicCapabilities = {
+export type BasicCapabilitiesMid = {
   dishElevationLimitDeg: number;
   receiverInformation: ReceiverInformationFrontend[];
+};
+
+export type BasicCapabilitiesLowBackend = {
+  min_frequency_hz: number;
+  max_frequency_hz: number;
+};
+
+export type BasicCapabilitiesLow = {
+  minFrequencyHz: number;
+  maxFrequencyHz: number;
 };
 
 export type subarrayConfigurationMidBackend = {
@@ -154,11 +164,11 @@ export type ObservatoryDataBackend = {
   observatory_policy: ObservatoryPolicyBackend;
   capabilities: {
     mid: {
-      basic_capabilities: BasicCapabilitiesBackend;
+      basic_capabilities: BasicCapabilitiesMidBackend;
       AA2: subarrayConfigurationMidBackend;
     };
     low: {
-      basic_capabilities: BasicCapabilitiesBackend;
+      basic_capabilities: BasicCapabilitiesLowBackend;
       AA2: subarrayConfigurationLowBackend;
     };
   };
@@ -168,11 +178,11 @@ export type ObservatoryData = {
   observatoryPolicy: ObservatoryPolicy;
   capabilities: {
     mid: {
-      basicCapabilities: BasicCapabilities;
+      basicCapabilities: BasicCapabilitiesMid;
       AA2: subarrayConfigurationMid;
     };
     low: {
-      basicCapabilities: BasicCapabilities;
+      basicCapabilities: BasicCapabilitiesLow;
       AA2: subarrayConfigurationLow;
     };
   };

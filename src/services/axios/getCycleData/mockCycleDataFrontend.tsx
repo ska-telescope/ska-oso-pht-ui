@@ -68,7 +68,12 @@ export const mockCycleDataFrontend: ObservatoryData = {
         numberPssBeams: 384,
         numberPstBeams: 6,
         psBeamBandwidthHz: 800000000.0,
-        numberFsps: 4
+        numberFsps: 4,
+        numberStations: null,
+        numberSubstations: null,
+        channelWidthHz: null,
+        numberBeams: null,
+        numberVlbiBeams: null
       }
     },
     low: {
@@ -90,7 +95,12 @@ export const mockCycleDataFrontend: ObservatoryData = {
         numberPstBeams: 4,
         numberVlbiBeams: 0,
         psBeamBandwidthHz: 118000000.0,
-        numberFsps: 10
+        numberFsps: 10,
+        availableReceivers: null,
+        numberSkaDishes: null,
+        numberMeerkatDishes: null,
+        numberMeerkatPlusDishes: null,
+        numberChannels: null
       }
     }
   }
