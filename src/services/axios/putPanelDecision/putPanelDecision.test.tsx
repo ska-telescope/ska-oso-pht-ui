@@ -1,16 +1,18 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
+import { MockStore, StoreType } from '../MockStore';
+import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
 import PutPanelDecision, {
   mappingPanelDecisionBackendToFrontend,
   putMockPanelDecision
 } from './putPanelDecision';
 import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
-import { CYCLE } from '@/utils/constants';
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
@@ -18,6 +20,10 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
+  });
   test('putMockPanelDecision returns MockPanelDecision', () => {
     const result = putMockPanelDecision();
     expect(result).to.deep.equal(MockPanelDecisionFrontend);
@@ -47,14 +53,18 @@ describe('Helper Functions', () => {
     const panelFrontEnd: PanelDecision = mappingPanelDecisionBackendToFrontend(
       receivedPanelDecision
     );
-    const expectedPanelFrontend = { ...MockPanelDecisionFrontend, cycle: CYCLE };
+    const expectedPanelFrontend = {
+      ...MockPanelDecisionFrontend,
+      cycle: mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId
+    };
     expect(panelFrontEnd).to.deep.equal(expectedPanelFrontend);
   });
 });
 
 describe('PostPanelDecision Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
