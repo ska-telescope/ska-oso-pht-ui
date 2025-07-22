@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   OSO_SERVICES_PANEL_DECISIONS_PATH,
   SKA_OSO_SERVICES_URL,
@@ -9,21 +8,16 @@ import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/post
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 import { helpers } from '@/utils/helpers';
-import ObservatoryData from '@/utils/types/observatoryData';
 
 // mapping backend to frontend format
 export function mappingPanelDecisionBackendToFrontend(
-  decision: PanelDecisionBackend
+  decision: PanelDecisionBackend,
+  cycleId: string
 ): PanelDecision {
-  const { application } = storageObject.useStore();
-  const getCycleData = () => application.content3 as ObservatoryData;
-
   const transformedPanel: PanelDecision = {
     id: decision.decision_id,
     panelId: decision.panel_id,
-    cycle: decision.cycle
-      ? decision.cycle
-      : getCycleData().observatoryPolicy.cycleInformation.cycleId,
+    cycle: decision.cycle ? decision.cycle : cycleId, // use cycleId if not provided
     proposalId: decision.prsl_id,
     decidedOn: decision.decided_on,
     decidedBy: decision.decided_by,
@@ -37,28 +31,29 @@ export function mappingPanelDecisionBackendToFrontend(
   return transformedPanel;
 }
 
-export function putMockPanelDecision(): PanelDecision {
-  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend);
+export function putMockPanelDecision(cycleId: string): PanelDecision {
+  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend, cycleId);
 }
 
 async function PutPanelDecision(
   id: string,
-  PanelDecision: PanelDecision
+  PanelDecision: PanelDecision,
+  cycleId: string
 ): Promise<PanelDecision | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return putMockPanelDecision();
+    return putMockPanelDecision(cycleId);
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
-    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision);
+    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
 
     const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanelDecision);
 
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPanelDecisionBackendToFrontend(result.data) as PanelDecision;
+    return mappingPanelDecisionBackendToFrontend(result.data, cycleId) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

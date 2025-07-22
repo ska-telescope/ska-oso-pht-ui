@@ -8,13 +8,16 @@ import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecision
 import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { PanelDecision } from '@/utils/types/panelDecision';
 
-export function getMockPanelDecision(): PanelDecision {
-  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend);
+export function getMockPanelDecision(cycleId: string): PanelDecision {
+  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend, cycleId);
 }
 
-async function getPanelDecision(id: string): Promise<PanelDecision | { error: string }> {
+async function getPanelDecision(
+  id: string,
+  cycleId: string
+): Promise<PanelDecision | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return getMockPanelDecision();
+    return getMockPanelDecision(cycleId);
   }
 
   try {
@@ -25,7 +28,7 @@ async function getPanelDecision(id: string): Promise<PanelDecision | { error: st
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPanelDecisionBackendToFrontend(result.data) as PanelDecision;
+    return mappingPanelDecisionBackendToFrontend(result.data, cycleId) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

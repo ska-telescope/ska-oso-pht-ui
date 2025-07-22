@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   OSO_SERVICES_PANEL_DECISIONS_PATH,
   SKA_OSO_SERVICES_URL,
@@ -7,20 +6,16 @@ import {
 } from '../../../utils/constants';
 import { helpers } from '@/utils/helpers';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
-import ObservatoryData from '@/utils/types/observatoryData';
 
 // mapping frontend to backend format
 export function mappingPanelDecisionFrontendToBackend(
-  decision: PanelDecision
+  decision: PanelDecision,
+  cycleId: string
 ): PanelDecisionBackend {
-  const { application } = storageObject.useStore();
-  const getCycleData = () => application.content3 as ObservatoryData;
   const transformedPanel: PanelDecisionBackend = {
     decision_id: decision.id,
     panel_id: decision.panelId,
-    cycle: decision.cycle
-      ? decision.cycle
-      : getCycleData().observatoryPolicy.cycleInformation.cycleId,
+    cycle: decision.cycle ? decision.cycle : cycleId,
     prsl_id: decision.proposalId,
     decided_on: decision.decidedOn,
     decided_by: decision.decidedBy,
@@ -39,7 +34,8 @@ export function postMockPanelDecision(): string {
 }
 
 async function PostPanelDecision(
-  PanelDecision: PanelDecision
+  PanelDecision: PanelDecision,
+  cycleId: string
 ): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanelDecision();
@@ -47,7 +43,7 @@ async function PostPanelDecision(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/`;
-    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision);
+    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
 
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanelDecision);
 

@@ -1,8 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { MockStore, StoreType } from '../MockStore';
+import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
 import PostProposalReview, {
   mappingReviewFrontendToBackend,
   postMockProposalReview
@@ -12,6 +11,8 @@ import { MockProposalReviewBackend } from './mockProposalReviewBackend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
+const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+
 vi.mock('axiosAuthClient');
 const mockedAxios = (axios as unknown) as {
   post: ReturnType<typeof vi.fn>;
@@ -20,7 +21,6 @@ const mockedAxios = (axios as unknown) as {
 describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
   test('postMockProposalReview returns mock id', () => {
     const result = postMockProposalReview();
@@ -30,6 +30,7 @@ describe('Helper Functions', () => {
   test('mappingReviewFrontendToBackend returns mapped review from frontend to backend format', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
       MockProposalReviewFrontend,
+      cycleId,
       true
     );
     expect(reviewBackEnd).to.deep.equal(MockProposalReviewBackend);
@@ -41,6 +42,7 @@ describe('Helper Functions', () => {
         ...MockProposalReviewFrontend,
         cycle: ''
       },
+      cycleId,
       true
     );
     expect(reviewBackEnd).to.deep.equal({
@@ -53,47 +55,46 @@ describe('Helper Functions', () => {
 describe('PostProposalReview Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data id when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PostProposalReview(MockProposalReviewFrontend);
+    const result = await PostProposalReview(MockProposalReviewFrontend, cycleId);
     expect(result).toEqual('PROPOSAL-REVIEW-ID-001');
   });
 
   test('returns data id from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.post.mockResolvedValue({ data: MockProposalReviewBackend.review_id });
-    const result = (await PostProposalReview(MockProposalReviewFrontend)) as string;
+    const result = (await PostProposalReview(MockProposalReviewFrontend, cycleId)) as string;
     expect(result).to.deep.equal(MockProposalReviewBackend.review_id);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.post.mockRejectedValue(new Error('Network Error'));
-    const result = await PostProposalReview(MockProposalReviewFrontend);
+    const result = await PostProposalReview(MockProposalReviewFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.post.mockRejectedValue({ unexpected: 'object' });
-    const result = await PostProposalReview(MockProposalReviewFrontend);
+    const result = await PostProposalReview(MockProposalReviewFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.post.mockResolvedValue(undefined);
-    const result = await PostProposalReview(MockProposalReviewFrontend);
+    const result = await PostProposalReview(MockProposalReviewFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.post.mockResolvedValue(null);
-    const result = await PostProposalReview(MockProposalReviewFrontend);
+    const result = await PostProposalReview(MockProposalReviewFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

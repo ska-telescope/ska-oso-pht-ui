@@ -1,11 +1,9 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
-import { MockStore, StoreType } from '../MockStore';
 import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
 import PutPanelDecision, {
   mappingPanelDecisionBackendToFrontend,
@@ -13,6 +11,8 @@ import PutPanelDecision, {
 } from './putPanelDecision';
 import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
+
+const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
@@ -22,17 +22,17 @@ const mockedAxios = (axios as unknown) as {
 describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
   test('putMockPanelDecision returns MockPanelDecision', () => {
-    const result = putMockPanelDecision();
+    const result = putMockPanelDecision(cycleId);
     expect(result).to.deep.equal(MockPanelDecisionFrontend);
   });
 
   // this checks the postPanelDecision mapping used to send data to the api
   test('mappingPanelDecisionFrontendToBackend returns mapped panelDecision from frontend to backend format', () => {
     const panelDecisionBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
-      MockPanelDecisionFrontend
+      MockPanelDecisionFrontend,
+      cycleId
     );
     expect(panelDecisionBackEnd).to.deep.equal(MockPanelDecisionBackend);
   });
@@ -40,7 +40,8 @@ describe('Helper Functions', () => {
   // this checks the putPanelDecision mapping to receive response from the api
   test('mappingPanelDecisionBackendtoFrontend returns mapped panelDecision from backend to frontend format', () => {
     const panelDecision: PanelDecision = mappingPanelDecisionBackendToFrontend(
-      MockPanelDecisionBackend
+      MockPanelDecisionBackend,
+      cycleId
     );
     expect(panelDecision).to.deep.equal(MockPanelDecisionFrontend);
   });
@@ -51,7 +52,8 @@ describe('Helper Functions', () => {
       cycle: undefined
     };
     const panelFrontEnd: PanelDecision = mappingPanelDecisionBackendToFrontend(
-      receivedPanelDecision
+      receivedPanelDecision,
+      cycleId
     );
     const expectedPanelFrontend = {
       ...MockPanelDecisionFrontend,
@@ -64,12 +66,15 @@ describe('Helper Functions', () => {
 describe('PostPanelDecision Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(MockStore as StoreType);
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutPanelDecision(MockPanelDecisionFrontend.id, MockPanelDecisionFrontend);
+    const result = await PutPanelDecision(
+      MockPanelDecisionFrontend.id,
+      MockPanelDecisionFrontend,
+      cycleId
+    );
     expect(result).toEqual(MockPanelDecisionFrontend);
   });
 
@@ -78,7 +83,8 @@ describe('PostPanelDecision Service', () => {
     mockedAxios.put.mockResolvedValue({ data: MockPanelDecisionBackend });
     const result = (await PutPanelDecision(
       MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend
+      MockPanelDecisionFrontend,
+      cycleId
     )) as PanelDecision;
     expect(result).to.deep.equal(MockPanelDecisionFrontend);
   });
@@ -86,28 +92,44 @@ describe('PostPanelDecision Service', () => {
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.put.mockRejectedValue(new Error('Network Error'));
-    const result = await PutPanelDecision(MockPanelDecisionFrontend.id, MockPanelDecisionFrontend);
+    const result = await PutPanelDecision(
+      MockPanelDecisionFrontend.id,
+      MockPanelDecisionFrontend,
+      cycleId
+    );
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.put.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutPanelDecision(MockPanelDecisionFrontend.id, MockPanelDecisionFrontend);
+    const result = await PutPanelDecision(
+      MockPanelDecisionFrontend.id,
+      MockPanelDecisionFrontend,
+      cycleId
+    );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.put.mockResolvedValue(undefined);
-    const result = await PutPanelDecision(MockPanelDecisionFrontend.id, MockPanelDecisionFrontend);
+    const result = await PutPanelDecision(
+      MockPanelDecisionFrontend.id,
+      MockPanelDecisionFrontend,
+      cycleId
+    );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAxios.put.mockResolvedValue(null);
-    const result = await PutPanelDecision(MockPanelDecisionFrontend.id, MockPanelDecisionFrontend);
+    const result = await PutPanelDecision(
+      MockPanelDecisionFrontend.id,
+      MockPanelDecisionFrontend,
+      cycleId
+    );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

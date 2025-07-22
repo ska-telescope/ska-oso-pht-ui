@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
@@ -7,15 +6,11 @@ import {
 } from '../../../utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
-import ObservatoryData from '@/utils/types/observatoryData';
 
-export function mappingPostPanel(panel: Panel): PanelBackend {
-  const { application } = storageObject.useStore();
-  const getCycleData = () => application.content3 as ObservatoryData;
-
+export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {
     panel_id: panel.id,
-    cycle: panel.cycle ? panel.cycle : getCycleData().observatoryPolicy.cycleInformation.cycleId,
+    cycle: panel.cycle ? panel.cycle : cycleId,
     name: panel.name,
     expires_on: panel.expiresOn,
     metadata: panel.metadata,
@@ -38,14 +33,14 @@ export function postMockPanel(): string {
   return 'PANEL-ID-001';
 }
 
-async function PostPanel(panel: Panel): Promise<string | { error: string }> {
+async function PostPanel(panel: Panel, cycleId: string): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanel();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
-    const convertedPanel = mappingPostPanel(panel);
+    const convertedPanel = mappingPostPanel(panel, cycleId);
 
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanel);
 
