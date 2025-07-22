@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
@@ -6,12 +7,12 @@ import {
 } from '../../../utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import ObservatoryData from '@/utils/types/observatoryData';
-const { application } = storageObject.useStore();
-const getCycleData = () => application.content3 as ObservatoryData;
 
 export function mappingPostPanel(panel: Panel): PanelBackend {
+  const { application } = storageObject.useStore();
+  const getCycleData = () => application.content3 as ObservatoryData;
+
   const transformedPanel: PanelBackend = {
     panel_id: panel.id,
     cycle: panel.cycle ? panel.cycle : getCycleData().observatoryPolicy.cycleInformation.cycleId,

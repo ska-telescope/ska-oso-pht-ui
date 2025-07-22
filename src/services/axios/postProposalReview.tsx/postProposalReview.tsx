@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   OSO_SERVICES_REVIEWS_PATH,
   SKA_OSO_SERVICES_URL,
@@ -6,15 +7,14 @@ import {
 } from '../../../utils/constants';
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export function mappingReviewFrontendToBackend(
   review: ProposalReview,
   mocked = false
 ): ProposalReviewBackend {
-const { application } = storageObject.useStore();
-const getCycleData = () => application.content3 as ObservatoryData;
+  const { application } = storageObject.useStore();
+  const getCycleData = () => application.content3 as ObservatoryData;
 
   const transformedPanel: ProposalReviewBackend = {
     review_id: review.id,

@@ -27,7 +27,7 @@ export const checkMinimumChannelWidth = (
 //   return 99999;
 //   }
 //   else{
-//     return 
+//     return
 //       OBSERVATION.array
 //     .find(item => item.value === telescope)
 //     ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;

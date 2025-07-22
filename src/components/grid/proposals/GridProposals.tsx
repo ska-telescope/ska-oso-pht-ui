@@ -212,7 +212,7 @@ export default function GridProposals({
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposals(response)
+        setProposals(response);
       }
     };
     cycleData();
