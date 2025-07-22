@@ -10,8 +10,9 @@ runtimeEnv:
   skaOsoServicesUrl: ""
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
-  domain: ""
+  domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
+  msentraRedirectUri: ""
 
 component: pht-ui
 function: ui

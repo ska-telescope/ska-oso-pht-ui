@@ -53,7 +53,8 @@ ifeq ($(CI_ENVIRONMENT_SLUG),)
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-db-oda-umbrella.vault.enabled=false \
-  --set ska-oso-services.vault.enabled=false
+  --set ska-oso-services.vault.enabled=false \
+  --set ska-oso-pht-ui.vault.enabled=false
 endif
 
 

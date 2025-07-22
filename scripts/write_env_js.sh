@@ -8,11 +8,23 @@
 OUTPUT_FILE="${ENVJS_FILE:-/usr/share/nginx/html/env.js}"
 rm -f $OUTPUT_FILE
 
+ENV_VAR_NAMES=(
+  "SKIP_PREFLIGHT_CHECK"
+  "REACT_APP_SKA_PHT_BASE_URL"
+  "REACT_APP_SKA_OSO_SERVICES_URL"
+  "REACT_APP_SKA_SENSITIVITY_CALC_URL"
+  "REACT_APP_USE_LOCAL_DATA"
+  "REACT_APP_DOMAIN"
+  "REACT_APP_SKA_LOGIN_APP_URL"
+  "MSENTRA_CLIENT_ID"
+  "MSENTRA_TENANT_ID"
+  "MSENTRA_REDIRECT_URI"
+)
+
 # Add assignment
 ENV_STRING="window.env = {"
 
-# TODO update with entra const
-for varname in "BACKEND_URL" "BASE_URL"; do
+for varname in "${ENV_VAR_NAMES[@]}"; do
   # Read value of current variable if exists as Environment variable
   value=$(printf '%s\n' "${!varname}")
   # Exit with error if environment variable not defined
