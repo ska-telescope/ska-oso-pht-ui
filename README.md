@@ -38,10 +38,35 @@ In development.
 ## Quick Start ( to run locally )
 
 clone the repository from git
+```
 git submodule update --recursive --remote
 git submodule update --init --recursive
+```
+
+Install Dependencies
+```
 yarn
-yarn local
+```
+
+Setup .env (insert values)
+```
+SKIP_PREFLIGHT_CHECK=
+REACT_APP_SKA_PHT_BASE_URL=
+REACT_APP_SKA_OSO_SERVICES_URL=
+REACT_APP_SKA_SENSITIVITY_CALC_URL=
+REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC=
+REACT_APP_USE_LOCAL_DATA=
+REACT_APP_DOMAIN=
+REACT_APP_SKA_LOGIN_APP_URL=
+MSENTRA_CLIENT_ID=
+MSENTRA_TENANT_ID=
+MSENTRA_REDIRECT_URI=
+```
+
+Generate env.js from .env and start application
+```
+yarn dev
+```
 
 This should allow the GUI application to run in http://localhost:6101/
 
