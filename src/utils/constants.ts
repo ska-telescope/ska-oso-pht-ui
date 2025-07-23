@@ -385,9 +385,9 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false
-          //TODO: TO BE REMOVED
-          // maxContBandwidthHz: 800e6
+          disableForBand5: false,
+          //TODO: Replace usage with OSD Data
+          maxContBandwidthHz: 800e6
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -488,9 +488,9 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 64,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
-          //TODO: TO BE REMOVED
-          // maxContBandwidthHz: 150e6
+          continuumSpectralAveragingMax: 13812,
+          //TODO: Replace usage with OSD Data
+          maxContBandwidthHz: 150e6
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
