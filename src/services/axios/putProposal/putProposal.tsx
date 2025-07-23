@@ -12,12 +12,16 @@ interface PutProposalServiceResponse {
   valid?: any;
 }
 
+export function mockPutProposal() {
+  return { valid: 'success' };
+}
+
 async function PutProposal(
   proposal: Proposal,
   status?: string
 ): Promise<PutProposalServiceResponse> {
   if (USE_LOCAL_DATA) {
-    return { valid: 'success' };
+    mockPutProposal();
   }
 
   try {

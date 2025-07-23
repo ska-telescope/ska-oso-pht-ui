@@ -70,6 +70,7 @@ export type PointingPatternParams = {
 };
 
 type Target = {
+  epoch?: number;
   dec: string;
   decUnit: string;
   id: number;

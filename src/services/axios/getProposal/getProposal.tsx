@@ -112,6 +112,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
+      epoch: e.reference_coordinate.epoch,
       dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
       decUnit: e.reference_coordinate?.unit[1],
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
@@ -561,6 +562,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
   const targets = getTargets(inRec.info.targets);
 
   const convertedProposal = {
+    metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
     id: inRec.prsl_id,
     title: inRec.info.title,
     proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,

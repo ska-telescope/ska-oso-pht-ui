@@ -1,6 +1,14 @@
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
+  metadata: {
+    version: 10,
+    created_by: 'DefaultUser',
+    created_on: '2025-06-13T13:48:34.963103Z',
+    last_modified_by: 'DefaultUser',
+    last_modified_on: '2025-06-24T16:48:47.127032Z',
+    pdm_version: '18.1.0'
+  },
   id: 'prsl-t0001-20250613-00002',
   title: 'New Proposal test2',
   proposalType: 1,
@@ -21,6 +29,7 @@ export const MockProposalFrontend: Proposal = {
   targetOption: 1,
   targets: [
     {
+      epoch: 2000,
       dec: '00:00:00.0',
       decUnit: 'deg',
       id: 1,
@@ -49,6 +58,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
+      epoch: 2000,
       dec: '+22:00:53.000',
       decUnit: 'deg',
       id: 2,
@@ -77,6 +87,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
+      epoch: 2000,
       dec: '-00:49:23.700',
       decUnit: 'deg',
       id: 3,
@@ -231,6 +242,14 @@ export const MockProposalFrontend: Proposal = {
 };
 
 export const MockProposalFrontendZoom: Proposal = {
+  metadata: {
+    version: 5,
+    created_by: 'DefaultUser',
+    created_on: '2025-06-24T22:33:30.487950Z',
+    last_modified_by: 'DefaultUser',
+    last_modified_on: '2025-06-24T22:35:19.489320Z',
+    pdm_version: '18.1.0'
+  },
   id: 'prsl-t0001-20250624-00049',
   title: 'Proposal Zoom',
   proposalType: 2,
@@ -252,6 +271,7 @@ export const MockProposalFrontendZoom: Proposal = {
   targetOption: 1,
   targets: [
     {
+      epoch: 2000,
       dec: '-00:49:23.700',
       decUnit: 'deg',
       id: 1,

@@ -6,6 +6,7 @@ import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arra
 import { ValueUnitPair } from 'utils/types/valueUnitPair';
 import TargetObservation from 'utils/types/targetObservation';
 import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import { name } from 'happy-dom/lib/PropertySymbol.js';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
@@ -55,9 +56,11 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   for (let i = 0; i < targets.length; i++) {
     const tar = targets[i];
     const outTarget: TargetBackend = {
+      name: tar.name,
       target_id: tar.name,
       reference_coordinate: {
         kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+        epoch: tar.epoch,
         ra: tar.ra,
         dec: tar.dec,
         unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
@@ -83,6 +86,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         parameters: [
           {
             kind: 'SinglePointParameters',
+            epoch: tar.epoch,
             offsetXArcsec: 0.5,
             offsetYArcsec: 0.5
           }
@@ -428,9 +432,10 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const transformedProposal: ProposalBackend = {
+    metadata: proposal.metadata,
     prsl_id: proposal?.id,
     status: status,
-    submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : null, // note: null since oso-services 1.1.0  does not support ''
+    submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : '', // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `LOGGED IN USER` : '', // TODO : Need to replaced with the logged in user.
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();

@@ -44,6 +44,7 @@ export type ProposalBackend = {
 };
 
 export type Proposal = {
+  metadata?: Metadata;
   id: string;
   title: string;
   status: string;

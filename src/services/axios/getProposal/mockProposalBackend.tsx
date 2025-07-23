@@ -4,6 +4,7 @@ export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: 'draft',
   submitted_by: '',
+  submitted_on: '',
   metadata: {
     version: 10,
     created_by: 'DefaultUser',
@@ -12,6 +13,7 @@ export const MockProposalBackend: ProposalBackend = {
     last_modified_on: '2025-06-24T16:48:47.127032Z',
     pdm_version: '18.1.0'
   },
+  investigator_refs: [],
   cycle: 'SKA_1962_2024',
   info: {
     title: 'New Proposal test2',
@@ -24,7 +26,7 @@ export const MockProposalBackend: ProposalBackend = {
     targets: [
       {
         target_id: 'target',
-        name: '',
+        name: 'target',
         pointing_pattern: {
           active: 'SinglePointParameters',
           parameters: [
@@ -46,7 +48,7 @@ export const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -55,7 +57,7 @@ export const MockProposalBackend: ProposalBackend = {
       },
       {
         target_id: 'target2',
-        name: '',
+        name: 'target2',
         pointing_pattern: {
           active: 'SinglePointParameters',
           parameters: [
@@ -77,7 +79,7 @@ export const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -86,7 +88,7 @@ export const MockProposalBackend: ProposalBackend = {
       },
       {
         target_id: 'M2',
-        name: '',
+        name: 'M2',
         pointing_pattern: {
           active: 'SinglePointParameters',
           parameters: [
@@ -108,7 +110,7 @@ export const MockProposalBackend: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -116,6 +118,9 @@ export const MockProposalBackend: ProposalBackend = {
         }
       }
     ],
+    data_product_src_nets: [],
+    documents: [],
+    investigators: [],
     observation_sets: [
       {
         observation_set_id: 'obs-obR1Ej',
@@ -175,19 +180,19 @@ export const MockProposalBackend: ProposalBackend = {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
             value: 107.53904853211655,
-            unit: 'uJy / beam'
+            unit: 'uJy/beam'
           },
           weighted_spectral_sensitivity: {
             value: 18.72201668513227,
-            unit: 'mJy / beam'
+            unit: 'mJy/beam'
           },
           total_continuum_sensitivity: {
             value: 107.54387002826836,
-            unit: 'uJy / beam'
+            unit: 'uJy/beam'
           },
           total_spectral_sensitivity: {
             value: 18.72201701713336,
-            unit: 'mJy / beam'
+            unit: 'mJy/beam'
           },
           surface_brightness_sensitivity: {
             continuum: 282.72036408677496,
@@ -197,7 +202,7 @@ export const MockProposalBackend: ProposalBackend = {
         },
         continuum_confusion_noise: {
           value: 1.0183425082744668,
-          unit: 'uJy / beam'
+          unit: 'uJy/beam'
         },
         synthesized_beam_size: {
           continuum: '3.85 x 3.02',
@@ -206,7 +211,7 @@ export const MockProposalBackend: ProposalBackend = {
         },
         spectral_confusion_noise: {
           value: 3.52582756374021,
-          unit: 'uJy / beam'
+          unit: 'uJy/beam'
         }
       }
     ]
@@ -217,6 +222,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250624-00049',
   status: 'draft',
   submitted_by: '',
+  submitted_on: '',
   metadata: {
     version: 5,
     created_by: 'DefaultUser',
@@ -225,6 +231,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
+  investigator_refs: [],
   cycle: 'SKA_1962_2024',
   info: {
     title: 'Proposal Zoom',
@@ -236,7 +243,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     targets: [
       {
         target_id: 'm2',
-        name: '',
+        name: 'target',
         pointing_pattern: {
           active: 'SinglePointParameters',
           parameters: [
@@ -258,7 +265,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         radial_velocity: {
           quantity: {
             value: -3.6,
-            unit: 'km / s'
+            unit: 'km/s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -329,7 +336,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           weighted_spectral_sensitivity: {
             value: 29.69626339640881,
-            unit: 'mJy / beam'
+            unit: 'mJy/beam'
           },
           total_continuum_sensitivity: {
             value: 0
@@ -337,7 +344,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           total_spectral_sensitivity: {
             value: 29.696271681672012,
-            unit: 'mJy / beam'
+            unit: 'mJy/beam'
           },
           surface_brightness_sensitivity: {
             continuum: 0,
@@ -356,7 +363,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         },
         spectral_confusion_noise: {
           value: 22.18293905542935,
-          unit: 'uJy / beam'
+          unit: 'uJy/beam'
         }
       }
     ]
