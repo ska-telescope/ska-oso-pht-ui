@@ -15,9 +15,9 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
-  test('mockPutProposal returns mock id', () => {
+  test('mockPutProposal returns mock proposal', () => {
     const result = mockPutProposal();
-    expect(result).to.deep.equal({ valid: 'success' });
+    expect(result).to.deep.equal(MockProposalBackend);
   });
 
   test('mappingPutProposal returns mapped proposal from frontend to backend format', () => {
@@ -46,17 +46,17 @@ describe('PutProposal Service', () => {
     vi.resetAllMocks();
   });
 
-  test('returns mock data id when USE_LOCAL_DATA is true', async () => {
+  test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-    expect(result).to.deep.equal(MockProposalFrontend);
+    expect(result).to.deep.equal(MockProposalBackend);
   });
 
-  test('returns data id from API when USE_LOCAL_DATA is false', async () => {
+  test('returns data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockResolvedValue({ data: MockProposalBackend.prsl_id });
+    mockedAxios.put.mockResolvedValue({ data: MockProposalBackend });
     const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-    expect(result).to.deep.equal(MockProposalBackend.prsl_id);
+    expect(result).to.deep.equal(MockProposalBackend);
   });
 
   test('returns error message on API failure', async () => {

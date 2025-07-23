@@ -1,12 +1,11 @@
-import Target, { TargetBackend } from 'utils/types/target';
-import Observation from 'utils/types/observation';
-import { ObservationSetBackend } from 'utils/types/observationSet';
-import GroupObservation from 'utils/types/groupObservation';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
-import { ValueUnitPair } from 'utils/types/valueUnitPair';
-import TargetObservation from 'utils/types/targetObservation';
-import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
-import { name } from 'happy-dom/lib/PropertySymbol.js';
+import Target, { TargetBackend } from '@utils/types/target';
+import Observation from '@utils/types/observation';
+import { ObservationSetBackend } from '@utils/types/observationSet';
+import GroupObservation from '@utils/types/groupObservation';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails';
+import { ValueUnitPair } from '@utils/types/valueUnitPair';
+import TargetObservation from '@utils/types/targetObservation';
+import { SensCalcResultsBackend } from '@utils/types/sensCalcResults';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
@@ -44,7 +43,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
-    if (subtype) {
+    if (subtype && project) {
       subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
     }
   }
@@ -435,7 +434,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     metadata: proposal.metadata,
     prsl_id: proposal?.id,
     status: status,
-    submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : '', // note: null since oso-services 1.1.0  does not support ''
+    submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : null, // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `LOGGED IN USER` : '', // TODO : Need to replaced with the logged in user.
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
