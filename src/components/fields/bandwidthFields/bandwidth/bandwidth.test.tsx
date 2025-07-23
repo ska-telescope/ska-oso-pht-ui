@@ -27,6 +27,7 @@ describe('<Bandwidth />', () => {
     render(
       <StoreProvider>
         <Bandwidth
+          observingBand={0}
           telescope={2}
           testId="bandwidth"
           value={value}
