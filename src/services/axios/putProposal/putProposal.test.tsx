@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { MockProposalFrontend } from '../getProposal/mockProposalFrontend';
-import { MockProposalBackend } from '../getProposal/mockProposalBackend';
+import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend';
+import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend';
 import PutProposal, { mockPutProposal } from './putProposal';
 import MappingPutProposal from './putProposalMapping';
 import { ProposalBackend } from '@/utils/types/proposal';
@@ -27,6 +27,17 @@ describe('Helper Functions', () => {
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
+
+  // TODO
+  /*
+  test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
+    const proposalBackEnd: ProposalBackend = MappingPutProposal(
+      MockProposalFrontendZoom,
+      PROPOSAL_STATUS.DRAFT
+    );
+    expect(proposalBackEnd).to.deep.equal(MockProposalBackendZoom);
+  });
+  */
 
   test('mappingPutProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
     const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
