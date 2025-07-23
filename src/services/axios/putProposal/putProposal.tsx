@@ -4,22 +4,18 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { MockProposalFrontend } from '../getProposal/mockProposalFrontend';
 import MappingPutProposal from './putProposalMapping';
 import Proposal from '@/utils/types/proposal';
 
-interface PutProposalServiceResponse {
-  error?: string;
-  valid?: any;
-}
-
 export function mockPutProposal() {
-  return { valid: 'success' };
+  return MockProposalFrontend; // TODO check if this is the correct mock return value
 }
 
 async function PutProposal(
   proposal: Proposal,
   status?: string
-): Promise<PutProposalServiceResponse> {
+): Promise<Proposal | { error: string }> {
   if (USE_LOCAL_DATA) {
     mockPutProposal();
   }
@@ -32,7 +28,7 @@ async function PutProposal(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
-    return typeof result === 'undefined' ? { error: 'error.API_UNKNOWN_ERROR' } : { valid: result };
+    return !result ? { error: 'error.API_UNKNOWN_ERROR' } : result.data; // TODO: put back !result || !result?.data condition
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
