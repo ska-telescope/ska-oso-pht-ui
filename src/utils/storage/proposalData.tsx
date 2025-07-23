@@ -10,6 +10,7 @@ import Proposal from 'utils/types/proposal';
 
 /*********************************************************************************/
 
+//TODO: Check if still required
 export const storeProposalCopy = (response: Proposal) => {
   sessionStorage.setItem('skao_proposal_copy', JSON.stringify(response));
 };

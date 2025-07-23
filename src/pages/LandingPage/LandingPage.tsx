@@ -34,7 +34,7 @@ import Proposal from '../../utils/types/proposal';
 import { validateProposal } from '../../utils/proposalValidation';
 import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
-import { storeProposalCopy } from '../../utils/storage/cycleData';
+import { storeProposalCopy } from '../../utils/storage/proposalData';
 import { FOOTER_SPACER } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import ObservatoryData from '@/utils/types/observatoryData';

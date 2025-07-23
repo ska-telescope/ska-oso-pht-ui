@@ -33,7 +33,7 @@ import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
-import { storeProposalCopy } from '@/utils/storage/cycleData';
+import { storeProposalCopy } from '@/utils/storage/proposalData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';

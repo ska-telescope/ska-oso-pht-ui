@@ -21,19 +21,6 @@ export const checkMinimumChannelWidth = (
   scaledBandwidth: number
 ): boolean => (scaledBandwidth < minimumChannelWidthHz ? false : true);
 
-// export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any =>{
-//   if(subarrayConfig === 0){
-//   console.log('inside here')
-//   return 99999;
-//   }
-//   else{
-//     return
-//       OBSERVATION.array
-//     .find(item => item.value === telescope)
-//     ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
-//   }
-// }
-
 // get maximum bandwidth bandwidth defined for the subarray
 export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any =>
   OBSERVATION.array
