@@ -92,10 +92,10 @@ export default function GridProposals({
 
   const {
     application,
-    clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
+    updateAppContent2,
+    updateAppContent5
   } = storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
@@ -406,7 +406,7 @@ export default function GridProposals({
 
   const getTheProposal = async (id: string) => {
     helpComponent({});
-    clearApp();
+    updateAppContent5({});
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {

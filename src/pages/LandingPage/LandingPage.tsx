@@ -45,11 +45,11 @@ export default function LandingPage() {
 
   const {
     application,
-    clearApp,
     helpComponent,
     updateAppContent1,
     updateAppContent2,
-    updateAppContent3
+    updateAppContent3,
+    updateAppContent5
   } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -98,7 +98,6 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchCycleData = async () => {
       const response = await GetCycleData(1);
-      console.log('GetCycleData response ', response)
       if (response.error) {
         setAxiosError(response.toString());
       } else {
@@ -112,12 +111,12 @@ export default function LandingPage() {
 
   const getTheProposal = async (id: string) => {
     helpComponent('');
-    clearApp();
+    updateAppContent5({});
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
-      updateAppContent1(null);
-      updateAppContent2(null);
+      updateAppContent1({});
+      updateAppContent2({});
       storeProposalCopy(null);
       setAxiosViewError(response);
       return false;
