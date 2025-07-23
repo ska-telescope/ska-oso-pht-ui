@@ -47,11 +47,22 @@ K8S_CHART_PARAMS += \
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 
+# CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
+# Set cluster_domain to minikube default (cluster.local) in local development
+ifeq ($(CI_ENVIRONMENT_SLUG),)
+K8S_CHART_PARAMS += \
+  --set global.cluster_domain="cluster.local" \
+  --set ska-db-oda-umbrella.vault.enabled=false \
+  --set ska-oso-services.vault.enabled=false \
+  --set ska-oso-pht-ui.vault.enabled=false
+endif
+
+
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
-	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
+	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
 endif
 
 set-dev-env-vars:
