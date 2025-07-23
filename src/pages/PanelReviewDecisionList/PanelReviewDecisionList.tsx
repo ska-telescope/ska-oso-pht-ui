@@ -61,13 +61,8 @@ export default function ReviewDecisionListPage() {
 
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
-<<<<<<< HEAD
-  const getUser = () => 'DefaultUser'; // TODO
-
   const getCycleData = () => application.content3 as ObservatoryData;
 
-=======
->>>>>>> ecf0423e88664ecb57ec412ddbf11b5143d7c136
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
     const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
