@@ -9,6 +9,9 @@ const mockedAxios = (axios as unknown) as {
 };
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   test('putMockProposalReview returns mock review', () => {
     const result = putMockProposalReview();
     expect(result).to.deep.equal(MockProposalReviewFrontend);
@@ -17,7 +20,7 @@ describe('Helper Functions', () => {
 
 describe('PutProposalReview Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {

@@ -34,7 +34,6 @@ import {
   ROBUST,
   IW_BRIGGS
 } from '../../../utils/constants';
-import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -436,7 +435,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
-    cycle: fetchCycleData().id,
+    cycle: proposal.cycle,
     info: {
       title: proposal.title,
       proposal_type: {

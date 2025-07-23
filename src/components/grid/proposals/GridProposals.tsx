@@ -33,7 +33,7 @@ import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
-import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
+import { storeProposalCopy } from '@/utils/storage/proposalData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
@@ -92,10 +92,10 @@ export default function GridProposals({
 
   const {
     application,
-    clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
+    updateAppContent2,
+    updateAppContent5
   } = storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
@@ -207,11 +207,11 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const cycleData = async () => {
-      const response = await GetCycleData();
+      const response = await GetCycleData(1);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        storeCycleData(response);
+        setCycleData(response);
       }
     };
     cycleData();
@@ -406,7 +406,7 @@ export default function GridProposals({
 
   const getTheProposal = async (id: string) => {
     helpComponent({});
-    clearApp();
+    updateAppContent5({});
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {

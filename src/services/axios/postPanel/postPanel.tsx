@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {
-  CYCLE,
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
@@ -8,10 +7,10 @@ import {
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 
-export function mappingPostPanel(panel: Panel): PanelBackend {
+export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {
     panel_id: panel.id,
-    cycle: panel.cycle ? panel.cycle : CYCLE, // hardcoded for now
+    cycle: panel.cycle ? panel.cycle : cycleId,
     name: panel.name,
     expires_on: panel.expiresOn,
     metadata: panel.metadata,
@@ -34,14 +33,14 @@ export function postMockPanel(): string {
   return 'PANEL-ID-001';
 }
 
-async function PostPanel(panel: Panel): Promise<string | { error: string }> {
+async function PostPanel(panel: Panel, cycleId: string): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanel();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
-    const convertedPanel = mappingPostPanel(panel);
+    const convertedPanel = mappingPostPanel(panel, cycleId);
 
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanel);
 

@@ -7,7 +7,6 @@ import {
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { fetchCycleData } from '@/utils/storage/cycleData.tsx';
 
 export function mappingPostProposal(
   proposal: Proposal,
@@ -29,7 +28,7 @@ export function mappingPostProposal(
     status: status as string,
     submitted_by: '',
     investigator_refs: [],
-    cycle: fetchCycleData().id,
+    cycle: proposal.cycle,
     info: {
       title: proposal.title,
       proposal_type: {

@@ -34,6 +34,7 @@ import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 /*
  * Process for retrieving the data for the list
@@ -55,6 +56,7 @@ export default function ReviewListPage() {
   const navigate = useNavigate();
 
   const {
+    application,
     clearApp,
     updateAppContent1,
     updateAppContent2,
@@ -116,6 +118,8 @@ export default function ReviewListPage() {
 
   const getUser = () => 'DefaultUser'; // TODO
 
+  const getCycleData = () => application.content3 as ObservatoryData;
+
   const getReview = (row: any): ProposalReview => {
     return {
       id: row.review_id,
@@ -158,7 +162,10 @@ export default function ReviewListPage() {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const updateReview = async (row: any) => {
-    const response: string | { error: string } = await PostProposalReview(getReview(row));
+    const response: string | { error: string } = await PostProposalReview(
+      getReview(row),
+      getCycleData().observatoryPolicy.cycleInformation.cycleId
+    );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
     } else {

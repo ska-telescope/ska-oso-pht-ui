@@ -27,6 +27,7 @@ import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/ge
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 export const REVIEW_TYPE = {
   SCIENCE: 'science',
@@ -62,6 +63,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getProposal = () => application.content2 as Proposal;
 
   const getUser = () => 'DefaultUser'; // TODO
+
+  const getCycleData = () => application.content3 as ObservatoryData;
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
@@ -122,7 +125,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const createReview = async (submitted = false) => {
-    const response: string | { error: string } = await PostProposalReview(getReview(submitted));
+    const response: string | { error: string } = await PostProposalReview(
+      getReview(submitted),
+      getCycleData().observatoryPolicy.cycleInformation.cycleId
+    );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
     } else {
@@ -131,7 +137,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
-    const response: string | { error: string } = await PostProposalReview(getReview(submitted));
+    const response: string | { error: string } = await PostProposalReview(
+      getReview(submitted),
+      getCycleData().observatoryPolicy.cycleInformation.cycleId
+    );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
     } else {

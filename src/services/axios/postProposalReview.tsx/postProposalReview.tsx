@@ -6,16 +6,16 @@ import {
 } from '../../../utils/constants';
 import { helpers } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
-import { fetchCycleData } from '@/utils/storage/cycleData';
 
 export function mappingReviewFrontendToBackend(
   review: ProposalReview,
+  cycleId: string,
   mocked = false
 ): ProposalReviewBackend {
   const transformedPanel: ProposalReviewBackend = {
     review_id: review.id,
     panel_id: review.panelId,
-    cycle: review.cycle ? review.cycle : fetchCycleData().id,
+    cycle: review.cycle ? review.cycle : cycleId,
     submitted_on: mocked ? review.submittedOn : new Date().toISOString(),
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
@@ -39,14 +39,17 @@ export function postMockProposalReview(): string {
   return 'PROPOSAL-REVIEW-ID-001';
 }
 
-async function PostProposalReview(review: ProposalReview): Promise<string | { error: string }> {
+async function PostProposalReview(
+  review: ProposalReview,
+  cycleId: string
+): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockProposalReview();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/`;
-    const convertedReview = mappingReviewFrontendToBackend(review);
+    const convertedReview = mappingReviewFrontendToBackend(review, cycleId);
 
     const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
 

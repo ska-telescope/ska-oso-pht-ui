@@ -385,8 +385,7 @@ export const OBSERVATION = {
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: false,
-          maxContBandwidthHz: 800e6
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_AA_STAR,
@@ -487,8 +486,7 @@ export const OBSERVATION = {
           numOf13mAntennas: 0,
           numOfStations: 64,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 13812,
-          maxContBandwidthHz: 150e6
+          continuumSpectralAveragingMax: 13812
         },
         {
           value: OB_SUBARRAY_AA2_CORE,
@@ -920,8 +918,6 @@ export const PDF_NAME_PREFIXES = {
   SCIENCE: 'science-doc-',
   TECHNICAL: 'technical-doc-'
 };
-
-export const CYCLE = 'cycle-001';
 
 /***************************************************************/
 

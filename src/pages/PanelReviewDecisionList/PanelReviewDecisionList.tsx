@@ -20,6 +20,7 @@ import { Panel } from '@/utils/types/panel';
 import PostPanelDecision from '@/services/axios/postPanelDecision/postPanelDecision';
 import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanelDecisionList';
 import { PanelDecision } from '@/utils/types/panelDecision';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 /*
  * Process for retrieving the data for the list
@@ -38,7 +39,7 @@ import { PanelDecision } from '@/utils/types/panelDecision';
 
 export default function ReviewDecisionListPage() {
   const { t } = useTranslation('pht');
-  const { updateAppContent5 } = storageObject.useStore();
+  const { application, updateAppContent5 } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
 
@@ -59,6 +60,8 @@ export default function ReviewDecisionListPage() {
   }
 
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
+
+  const getCycleData = () => application.content3 as ObservatoryData;
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
@@ -117,7 +120,10 @@ export default function ReviewDecisionListPage() {
     reviews: any[];
     recommendation: any;
   }) => {
-    const response: string | { error: string } = await PostPanelDecision(getReviewDecision(item));
+    const response: string | { error: string } = await PostPanelDecision(
+      getReviewDecision(item),
+      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+    );
     if (typeof response === 'object' && response?.error) {
       Notify(response?.error, AlertColorTypes.Error);
     } else {
@@ -168,7 +174,9 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchReviewDecisionData = async () => {
-      const response = await getPanelDecisionList(); // TODO : add id of the logged in user
+      const response = await getPanelDecisionList(
+        getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+      ); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
       } else {

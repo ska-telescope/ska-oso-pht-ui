@@ -1,4 +1,3 @@
-import CycleData from 'utils/types/cycleData';
 import Proposal from 'utils/types/proposal';
 
 /*************************************************************************************
@@ -9,18 +8,9 @@ import Proposal from 'utils/types/proposal';
  *
  ************************************************************************************/
 
-export const storeCycleData = (response: CycleData[]) => {
-  sessionStorage.setItem('skao_cycle_data', JSON.stringify(response));
-};
-
-export const fetchCycleData = () => {
-  const tmp = sessionStorage?.getItem('skao_cycle_data');
-  const data = tmp ? JSON.parse(tmp) : [{ id: 'cycle-001', cycle: 'cycle-001' }];
-  return data[0];
-};
-
 /*********************************************************************************/
 
+//TODO: Check if still required
 export const storeProposalCopy = (response: Proposal) => {
   sessionStorage.setItem('skao_proposal_copy', JSON.stringify(response));
 };
