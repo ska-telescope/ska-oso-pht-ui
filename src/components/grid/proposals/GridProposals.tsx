@@ -10,14 +10,13 @@ import {
 import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
 import {
-  FOOTER_SPACER,
   NOT_SPECIFIED,
   PROPOSAL_STATUS,
   NAV,
@@ -571,7 +570,6 @@ export default function GridProposals({
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

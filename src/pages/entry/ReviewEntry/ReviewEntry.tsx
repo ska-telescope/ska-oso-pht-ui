@@ -71,7 +71,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getReviewId = () => {
     return isEdit()
       ? locationProperties.state.id
-      : 'review-' +
+      : 'rvw-' +
           getUser() +
           '-' +
           getDateFormatted() +

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
+import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
@@ -20,7 +21,7 @@ import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 
 const PANELS_HEIGHT = '66vh';
-const TABS_HEIGHT = '72vh';
+const TABS_HEIGHT = '68vh';
 const TABS_CONTAINER_HEIGHT = '62vh';
 const TAB_GRID_HEIGHT = '44vh';
 
@@ -97,6 +98,8 @@ export const deleteProposalPanel = (
 export default function PanelMaintenance() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const theme = useTheme();
+
   const [theValue, setTheValue] = React.useState(0);
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
@@ -254,14 +257,19 @@ export default function PanelMaintenance() {
 
         <Grid2
           size={{ sm: 12, md: 6, lg: 8 }}
-          pt={3}
+          pt={2}
           container
           direction="row"
           justifyContent="space-around"
           alignItems="flex-start"
         >
-          <Box sx={{ border: 'none', height: TABS_HEIGHT, width: '100%' }}>
-            <Box>
+          <Box
+            sx={{
+              height: TABS_HEIGHT,
+              width: '100%'
+            }}
+          >
+            <Box pt={2}>
               <Tabs
                 variant="fullWidth"
                 textColor="secondary"
@@ -269,6 +277,10 @@ export default function PanelMaintenance() {
                 value={theValue}
                 onChange={handleChange}
                 aria-label="basic tabs example"
+                sx={{
+                  '& button': { backgroundColor: theme.palette.primary.main },
+                  '& button.Mui-selected': { backgroundColor: 'transparent' }
+                }}
               >
                 <Tab label={t('reviewers.label')} {...a11yProps(0)} />
                 <Tab label={t('proposals.label')} {...a11yProps(1)} />
@@ -278,17 +290,13 @@ export default function PanelMaintenance() {
               p={2}
               sx={{
                 width: '100%',
-                height: TABS_CONTAINER_HEIGHT,
-                border: '1px solid lightgrey',
-                borderBottomLeftRadius: '16px',
-                borderBottomRightRadius: '16px'
+                height: TABS_CONTAINER_HEIGHT
               }}
             >
               {theValue === 0 && (
                 <GridReviewers
                   height={TAB_GRID_HEIGHT}
                   showSearch
-                  showTitle
                   showSelection={!!currentPanel}
                   selectedReviewers={panelReviewers}
                   tickBoxClicked={(reviewer, isReviewerSelected) => {

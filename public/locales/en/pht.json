@@ -960,7 +960,7 @@
     "expandDetails": "Expand Details",
     "lastUpdated": "Last Updated",
     "decisionComments": "Decision Comments",
-    "decisionRank": "Decision Rank",
+    "decisionScore": "Decision Score",
     "decisionStatus": "Decision Status",
     "rank": "Rank",
     "reviews": "Reviews",
