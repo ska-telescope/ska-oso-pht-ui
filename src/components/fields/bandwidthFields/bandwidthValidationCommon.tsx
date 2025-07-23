@@ -3,6 +3,8 @@ import {
   ANTENNA_13M,
   ANTENNA_15M,
   ANTENNA_MIXED,
+  BAND_5A_STRING,
+  BAND_5B_STRING,
   BANDWIDTH_TELESCOPE,
   OBSERVATION,
   TELESCOPE_LOW_NUM
@@ -98,6 +100,23 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
       data.capabilities?.low?.basicCapabilities?.minFrequencyHz,
       data.capabilities?.low?.basicCapabilities?.maxFrequencyHz
     ];
+  }
+
+  function getFrequencyLimitsBand5(observingBand: string) {
+    const band = data.capabilities.mid.basicCapabilities.receiverInformation.find(
+      item => item.rxId === observingBand
+    );
+    const minFrequencyHz = band.minFrequencyHz;
+    const maxFrequencyHz = band.maxFrequencyHz;
+    return [minFrequencyHz, maxFrequencyHz];
+  }
+
+  if (!isLow(telescope)) {
+    if (observingBand === 3) {
+      return getFrequencyLimitsBand5(BAND_5A_STRING);
+    } else if (observingBand === 4) {
+      return getFrequencyLimitsBand5(BAND_5B_STRING);
+    }
   }
 
   const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(telescope, subarrayConfig);
