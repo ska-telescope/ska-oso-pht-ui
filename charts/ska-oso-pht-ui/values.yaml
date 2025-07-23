@@ -10,8 +10,9 @@ runtimeEnv:
   skaOsoServicesUrl: ""
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
-  domain: ""
+  domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
+  msentraRedirectUri: ""
 
 component: pht-ui
 function: ui
@@ -22,3 +23,11 @@ image:
   image: ska-oso-pht-ui
   tag: ~
   pullPolicy: IfNotPresent
+
+vault:
+  enabled: true
+  mount: dev
+  secretPath: "stargazers/ska-oso-pht-ui"
+  secretKeys:
+  - "MSENTRA_CLIENT_ID"
+  - "MSENTRA_TENANT_ID"
