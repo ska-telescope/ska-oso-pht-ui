@@ -15,10 +15,14 @@ export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): P
     submittedBy: review.submitted_by,
     reviewerId: review.reviewer_id,
     prslId: review.prsl_id,
-    rank: review.rank,
-    conflict: {
-      hasConflict: review.conflict.has_conflict,
-      reason: review.conflict.reason
+    reviewType: {
+      kind: review.review_type.kind,
+      rank: review.review_type.rank,
+      conflict: {
+        hasConflict: review.review_type.conflict.has_conflict,
+        reason: review.review_type.conflict.reason
+      },
+      excludedFromDecision: review.review_type.excluded_from_decision
     },
     comments: review.comments,
     srcNet: review.src_net,
