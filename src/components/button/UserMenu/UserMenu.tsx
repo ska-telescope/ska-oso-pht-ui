@@ -47,7 +47,7 @@ export default function ButtonUserMenu({
 
   const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
 
-  const displayName = isMockedLoggedIn && !isLoggedIn ? 'Mocked' : username;
+  const displayName = isMockedLoggedIn ? 'Mocked' : username;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -64,15 +64,13 @@ export default function ButtonUserMenu({
 
   return (
     <>
-      {!isLoggedIn && (
-        <TickBox
-          label="Mock login"
-          labelPosition="bottom"
-          testId="linkedTickBox"
-          checked={isMockedLoggedIn}
-          onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
-        />
-      )}
+      <TickBox
+        label="Mock login"
+        labelPosition="bottom"
+        testId="linkedTickBox"
+        checked={isMockedLoggedIn}
+        onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
+      />
       <Box pt={2}>
         {!displayName && <ButtonLogin />}
         {displayName && (

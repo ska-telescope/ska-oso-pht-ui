@@ -21,7 +21,7 @@ export type ProposalBackend = {
   prsl_id: string;
   status: string;
   submitted_by?: string;
-  submitted_on?: string | null;
+  submitted_on: string | null | null; // note: null since oso-services 1.1.0 does not support ''
   investigator_refs?: string[];
   metadata?: Metadata;
   cycle: string | null;
@@ -44,6 +44,7 @@ export type ProposalBackend = {
 };
 
 export type Proposal = {
+  metadata?: Metadata;
   id: string;
   title: string;
   status: string;

@@ -35,13 +35,39 @@ Help.component => Populated with field-dependant help
 
 In development.
 
-## Quick Start ( to run locally )
+## Quick Start ( to run ui locally with env. example of deployed minikube ska-oso-services & ska-ost-senscalc)
 
 clone the repository from git
+
+```
 git submodule update --recursive --remote
 git submodule update --init --recursive
+```
+
+Install Dependencies
+
+```
 yarn
-yarn local
+```
+
+Example .env file
+
+```
+SKIP_PREFLIGHT_CHECK=true
+REACT_APP_SKA_PHT_BASE_URL=''
+REACT_APP_SKA_OSO_SERVICES_URL='http://192.168.49.2/ska-oso-services/oso/api/v1'
+REACT_APP_SKA_SENSITIVITY_CALC_URL='http://192.168.49.2/ska-ost-senscalc/api/v11/'
+REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC=false
+REACT_APP_USE_LOCAL_DATA=false
+REACT_APP_DOMAIN='https://sdhp.stfc.skao.int'
+REACT_APP_SKA_LOGIN_APP_URL='http://localhost:4201'
+```
+
+Generate env.js from .env and start application
+
+```
+yarn dev
+```
 
 This should allow the GUI application to run in http://localhost:6101/
 
@@ -49,3 +75,4 @@ This should allow the GUI application to run in http://localhost:6101/
 
 Please refer to oso-services documentation for implementation of the minimum backend required
 Please refer to ska-ost-senscalc documentation for implementation of the backend required for observation
+Please reach out to maintainers of the application for MS Entra .env variables

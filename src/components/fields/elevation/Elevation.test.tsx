@@ -1,16 +1,29 @@
 import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { render } from '@testing-library/react';
 import Elevation from './Elevation';
 
 describe('<Elevation />', () => {
   test('renders correctly', () => {
-    render(<Elevation testId={''} value={20} />);
+    render(
+      <StoreProvider>
+        <Elevation testId={''} value={20} />
+      </StoreProvider>
+    );
   });
   test('renders correctly, isLow', () => {
-    render(<Elevation isLow testId={''} value={0} />);
+    render(
+      <StoreProvider>
+        <Elevation isLow testId={''} value={0} />
+      </StoreProvider>
+    );
   });
   test('renders correctly, value > max', () => {
-    render(<Elevation isLow testId={''} value={100} />);
+    render(
+      <StoreProvider>
+        <Elevation isLow testId={''} value={100} />
+      </StoreProvider>
+    );
   });
 });
