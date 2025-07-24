@@ -52,12 +52,12 @@ export default function ContinuumBandwidthField({
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
 
-  const getBandwidtOrFrequencyhUnitsLabel = (incValue: number): string => {
+  const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
     return FREQUENCY_UNITS.find(item => item.value === incValue)?.label;
   };
 
-  const getScaledBandwidthorFrequency = (incValue: number, inUnits: number) => {
-    const unitsLabel = getBandwidtOrFrequencyhUnitsLabel(inUnits);
+  const getScaledBandwidthOrFrequency = (incValue: number, inUnits: number) => {
+    const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits);
     return scaleBandwidthOrFrequency(incValue, unitsLabel);
   };
 
@@ -78,9 +78,9 @@ export default function ContinuumBandwidthField({
   };
 
   const errorMessage = () => {
-    const scaledBandwidth = getScaledBandwidthorFrequency(value, continuumBandwidthUnits);
+    const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits);
     setScaledBandwidth(scaledBandwidth);
-    const scaledFrequency = getScaledBandwidthorFrequency(centralFrequency, centralFrequencyUnits);
+    const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
