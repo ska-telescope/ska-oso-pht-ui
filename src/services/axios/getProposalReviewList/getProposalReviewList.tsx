@@ -4,6 +4,7 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '../../../utils/constants';
 import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
@@ -51,28 +52,7 @@ export const getUniqueMostRecentReviews = (data: ProposalReviewBackend[]) => {
 /*********************************************************** mapping *********************************************************/
 
 export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
-  const output = [];
-  for (let i = 0; i < inRec.length; i++) {
-    const rec: ProposalReview = {
-      id: inRec[i].review_id?.toString(),
-      metadata: inRec[i].metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
-      panelId: inRec[i].panel_id,
-      cycle: inRec[i].cycle,
-      reviewerId: inRec[i].reviewer_id,
-      prslId: inRec[i].prsl_id,
-      rank: inRec[i].rank,
-      conflict: {
-        hasConflict: inRec[i].conflict.has_conflict,
-        reason: inRec[i].conflict.reason
-      },
-      comments: inRec[i].comments,
-      srcNet: inRec[i].src_net,
-      submittedOn: inRec[i].submitted_on,
-      submittedBy: inRec[i].submitted_by,
-      status: inRec[i].status
-    };
-    output.push(rec);
-  }
+  const output = inRec.map(item => mappingReviewBackendToFrontend(item));
   return output;
 }
 
