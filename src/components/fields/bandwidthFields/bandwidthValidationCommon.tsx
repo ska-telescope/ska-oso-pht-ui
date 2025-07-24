@@ -3,8 +3,8 @@ import {
   ANTENNA_13M,
   ANTENNA_15M,
   ANTENNA_MIXED,
-  BAND_5A_STRING,
-  BAND_5B_STRING,
+  BAND_5A_STR,
+  BAND_5B_STR,
   BANDWIDTH_TELESCOPE,
   OBSERVATION,
   TELESCOPE_LOW_NUM
@@ -113,9 +113,9 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
 
   if (!isLow(telescope)) {
     if (observingBand === 3) {
-      return getFrequencyLimitsBand5(BAND_5A_STRING);
+      return getFrequencyLimitsBand5(BAND_5A_STR);
     } else if (observingBand === 4) {
-      return getFrequencyLimitsBand5(BAND_5B_STRING);
+      return getFrequencyLimitsBand5(BAND_5B_STR);
     }
   }
 

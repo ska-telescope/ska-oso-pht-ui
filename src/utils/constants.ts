@@ -26,8 +26,8 @@ export const BAND_5A = 3;
 export const BAND_5B = 4;
 
 //TODO: Improve naming
-export const BAND_5A_STRING = 'Band_5a';
-export const BAND_5B_STRING = 'Band_5b';
+export const BAND_5A_STR = 'Band_5a';
+export const BAND_5B_STR = 'Band_5b';
 
 export const ANTENNA_LOW = 'low'; // TODO can we find a better name for the Low Antenna?
 export const ANTENNA_13M = '13m';
