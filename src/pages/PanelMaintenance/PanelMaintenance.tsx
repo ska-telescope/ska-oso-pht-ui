@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -19,6 +20,7 @@ import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 const PANELS_HEIGHT = '66vh';
 const TABS_HEIGHT = '68vh';
@@ -105,6 +107,10 @@ export default function PanelMaintenance() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [, setAxiosError] = React.useState('');
+  const { application } = storageObject.useStore();
+
+  const getCycleData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getCycleData().observatoryPolicy.cycleInformation.cycleId;
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
@@ -140,7 +146,7 @@ export default function PanelMaintenance() {
   };
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
-    const response = await PostPanel(panel);
+    const response = await PostPanel(panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
       // TODO notify user of error
       setAxiosError(
