@@ -25,7 +25,6 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
-//TODO: Improve naming
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 
@@ -352,8 +351,6 @@ export const SECONDS_UNITS = [
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
 export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
-export const OBSERVATION_TYPE_SENSCALC = ['line', 'continuum'];
-
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const OBSERVATION = {
@@ -872,7 +869,7 @@ export const TELESCOPES = [
 // This is the fundamental limits of the bandwidth provided by SKA LOW and MID
 export const BANDWIDTH_MIN_CHANNEL_WIDTH_HZ = {
   [TELESCOPE_MID_NUM]: 13.44e3,
-  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456 // TODO find meaning of numbers for clarity
+  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456
 };
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
