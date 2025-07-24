@@ -15,14 +15,18 @@ export const MockProposalReviewFrontend: ProposalReview = {
   cycle: 'cycle1',
   reviewerId: 'reviewer-12345',
   prslId: 'prsl-t0001-20250716-00001',
-  rank: 9,
-  conflict: {
-    hasConflict: true,
-    reason: 'bias in proposal'
-  },
   comments: 'recommend for approval',
   srcNet: 'recommend as well',
   submittedOn: '2025-07-16T08:35:24.245Z',
   submittedBy: 'user1',
-  status: PANEL_DECISION_STATUS.DECIDED
+  status: PANEL_DECISION_STATUS.DECIDED,
+  reviewType: {
+    kind: 'Science Review',
+    rank: 9,
+    conflict: {
+      hasConflict: false,
+      reason: 'string'
+    },
+    excludedFromDecision: false
+  }
 };

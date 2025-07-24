@@ -1,5 +1,15 @@
 import { Metadata } from './metadata';
 
+export type ReviewType = {
+  kind: string;
+  rank: number;
+  conflict: {
+    hasConflict: boolean;
+    reason: string;
+  };
+  excludedFromDecision: boolean;
+};
+
 export type ProposalReview = {
   metadata: Metadata;
   panelId: string;
@@ -7,16 +17,22 @@ export type ProposalReview = {
   cycle: string;
   reviewerId: string;
   prslId: string;
-  rank: number;
-  conflict: {
-    hasConflict: boolean;
-    reason: string;
-  };
+  reviewType: ReviewType;
   comments: string;
   srcNet: string;
   submittedOn: string;
   submittedBy: string;
   status: string;
+};
+
+export type ReviewTypeBackend = {
+  kind: string;
+  rank: number;
+  conflict: {
+    has_conflict: boolean;
+    reason: string;
+  };
+  excluded_from_decision: boolean;
 };
 
 export type ProposalReviewBackend = {
@@ -26,11 +42,7 @@ export type ProposalReviewBackend = {
   cycle: string;
   reviewer_id: string;
   prsl_id: string;
-  rank: number;
-  conflict: {
-    has_conflict: boolean;
-    reason: string;
-  };
+  review_type: ReviewTypeBackend;
   comments: string;
   src_net: string;
   submitted_on: string;
