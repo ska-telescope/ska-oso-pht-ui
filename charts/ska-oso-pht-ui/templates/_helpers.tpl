@@ -61,6 +61,6 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.msentraRedirectUri -}}
 {{ .Values.runtimeEnv.msentraRedirectUri }}
 {{- else -}}
-/{{ .Release.Namespace }}/pht/
+{{ .Values.global.ingress.host }}/{{ .Release.Namespace }}/pht/
 {{- end }}
 {{- end }}
