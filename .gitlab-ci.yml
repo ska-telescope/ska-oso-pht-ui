@@ -149,7 +149,7 @@ js-test:
 
 .dev_env: &dev_env
   variables:
-    KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
+    KUBE_NAMESPACE: 'dev-$CI_PROJECT_NAME-aaa'
 
   environment:
     name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
