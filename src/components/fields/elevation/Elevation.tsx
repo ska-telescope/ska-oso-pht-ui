@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 
 interface ElevationFieldProps {
@@ -19,8 +21,8 @@ interface ElevationFieldProps {
 }
 
 export const ELEVATION_DEFAULT = [45, 20];
-export const ELEVATION_MIN = [15, 15];
-export const ELEVATION_MAX = [59.2, 59.2];
+export const ELEVATION_MIN_LOW = 15;
+export const ELEVATION_MAX = 59.2;
 export const ELEVATION_UNITS = 'deg';
 
 export default function ElevationField({
@@ -37,11 +39,15 @@ export default function ElevationField({
   const { t } = useTranslation('pht');
 
   const errorMessage = () => {
-    const occ = isLow ? 0 : 1;
-    return value < ELEVATION_MIN[occ] || value > ELEVATION_MAX[occ]
+    const { application } = storageObject.useStore();
+    const data: ObservatoryData = application.content3 as ObservatoryData;
+    const minElevation = isLow
+      ? ELEVATION_MIN_LOW
+      : data.capabilities?.mid?.basicCapabilities?.dishElevationLimitDeg;
+    return value < minElevation || value > ELEVATION_MAX
       ? t('elevation.range.error', {
-          min: ELEVATION_MIN[occ],
-          max: ELEVATION_MAX[occ]
+          min: minElevation,
+          max: ELEVATION_MAX
         })
       : '';
   };

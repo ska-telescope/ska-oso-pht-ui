@@ -10,14 +10,13 @@ import {
 import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL, LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
 import {
-  FOOTER_SPACER,
   NOT_SPECIFIED,
   PROPOSAL_STATUS,
   NAV,
@@ -34,7 +33,7 @@ import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
-import { storeCycleData, storeProposalCopy } from '@/utils/storage/cycleData';
+import { storeProposalCopy } from '@/utils/storage/proposalData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
@@ -93,10 +92,10 @@ export default function GridProposals({
 
   const {
     application,
-    clearApp,
     helpComponent,
     updateAppContent1,
-    updateAppContent2
+    updateAppContent2,
+    updateAppContent5
   } = storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
@@ -208,11 +207,11 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const cycleData = async () => {
-      const response = await GetCycleData();
+      const response = await GetCycleData(1);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        storeCycleData(response);
+        setCycleData(response);
       }
     };
     cycleData();
@@ -407,7 +406,7 @@ export default function GridProposals({
 
   const getTheProposal = async (id: string) => {
     helpComponent({});
-    clearApp();
+    updateAppContent5({});
 
     const response = await GetProposal(id);
     if (typeof response === 'string') {
@@ -571,7 +570,6 @@ export default function GridProposals({
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid2>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

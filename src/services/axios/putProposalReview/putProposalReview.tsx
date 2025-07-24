@@ -43,7 +43,7 @@ async function PutProposalReview(
 
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/${review.id}`;
-    const convertedReview = mappingReviewFrontendToBackend(review);
+    const convertedReview = mappingReviewFrontendToBackend(review, review.cycle, true);
 
     const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
 

@@ -83,7 +83,7 @@
             "unit": "",
             "quantity": {
               "value": -12.345,
-              "unit": "m / s"
+              "unit": "m/s"
             }
           },
           "spectral_resolution": "DUMMY",

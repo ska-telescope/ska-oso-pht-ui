@@ -1,15 +1,17 @@
-// import axios from 'axios';
+import axios from 'axios';
 import { MockProposalReviewFrontend } from '../postProposalReview.tsx/mockProposalReviewFrontend';
 import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
-vi.mock('axios');
-// const mockedAxios = (axios as unknown) as {
-//   post: ReturnType<typeof vi.fn>;
-// };
+const mockedAxios = (axios as unknown) as {
+  put: ReturnType<typeof vi.fn>;
+};
 
 describe('Helper Functions', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   test('putMockProposalReview returns mock review', () => {
     const result = putMockProposalReview();
     expect(result).to.deep.equal(MockProposalReviewFrontend);
@@ -18,7 +20,7 @@ describe('Helper Functions', () => {
 
 describe('PutProposalReview Service', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {

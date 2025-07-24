@@ -5,15 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
-import { fetchCycleData } from '../../../utils/storage/cycleData';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -35,6 +35,8 @@ export default function PageFooterPPT({
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+
+  const getCycleData = () => application.content3 as ObservatoryData;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -59,14 +61,20 @@ export default function PageFooterPPT({
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-    NotifyWarning(t('addProposal.warning'));
-
     if (!isDisableEndpoints()) {
-      const response = await PostProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
+      NotifyWarning(t('addProposal.warning'));
+      const response = await PostProposal(
+        { ...getProposal(), cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId },
+        PROPOSAL_STATUS.DRAFT
+      );
 
       if (response && !response.error) {
         NotifyOK(t('addProposal.success') + response);
-        setProposal({ ...getProposal(), id: response, cycle: fetchCycleData().id });
+        setProposal({
+          ...getProposal(),
+          id: response,
+          cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+        });
         navigate(NAV[1]);
       } else {
         NotifyError(response.error);
@@ -74,7 +82,11 @@ export default function PageFooterPPT({
     } else {
       const dummyId = DUMMY_PROPOSAL_ID;
       NotifyOK(t('addProposal.success') + dummyId);
-      setProposal({ ...getProposal(), id: dummyId, cycle: fetchCycleData().id });
+      setProposal({
+        ...getProposal(),
+        id: dummyId,
+        cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+      });
       navigate(NAV[1]);
     }
   };

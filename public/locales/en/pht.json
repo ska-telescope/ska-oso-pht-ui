@@ -151,7 +151,8 @@
     "result": "N/A (no beam information available)"
   },
   "cycle": {
-    "label": "Cycle"
+    "label": "Cycle",
+    "error": "Unable to retrieve Cycle data"
   },
   "dataProduct": {
     "button": "Add Data Product"
@@ -162,6 +163,9 @@
   "decisionComments": {
     "label": "Decision Comments",
     "help": "Comments provided by the chairperson when making a decision on the proposal."
+  },
+  "decisionSubmit": {
+    "help": "Submit the review decision"
   },
   "declination": {
     "label": "Declination"
@@ -955,8 +959,11 @@
     "actions": "Actions",
     "expandDetails": "Expand Details",
     "lastUpdated": "Last Updated",
-    "reviewStatus": "Review Status",
+    "decisionComments": "Decision Comments",
+    "decisionScore": "Decision Score",
+    "decisionStatus": "Decision Status",
     "rank": "Rank",
+    "reviews": "Reviews",
     "title": "Title"
   },
   "tapering": {
