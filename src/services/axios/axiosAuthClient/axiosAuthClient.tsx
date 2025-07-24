@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import { useMsal } from '@azure/msal-react';
+import { useMsal } from '@azure/msal-react';
 import { SKA_OSO_SERVICES_URL } from '../../../utils/constants';
 
 export enum LogLevel {
@@ -22,7 +22,6 @@ const axiosAuthClient = axios.create({
   }
 });
 
-/*
 axiosAuthClient.interceptors.request.use(
   async request => {
     if (request?.baseURL?.includes('http://')) {
@@ -43,6 +42,5 @@ axiosAuthClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-*/
 
 export default axiosAuthClient;
