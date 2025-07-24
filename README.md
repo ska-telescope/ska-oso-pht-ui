@@ -38,17 +38,20 @@ In development.
 ## Quick Start ( to run ui locally with env. example of deployed minikube ska-oso-services & ska-ost-senscalc)
 
 clone the repository from git
+
 ```
 git submodule update --recursive --remote
 git submodule update --init --recursive
 ```
 
 Install Dependencies
+
 ```
 yarn
 ```
 
-Example .env file 
+Example .env file
+
 ```
 SKIP_PREFLIGHT_CHECK=true
 REACT_APP_SKA_PHT_BASE_URL=''
@@ -61,6 +64,7 @@ REACT_APP_SKA_LOGIN_APP_URL='http://localhost:4201'
 ```
 
 Generate env.js from .env and start application
+
 ```
 yarn dev
 ```
