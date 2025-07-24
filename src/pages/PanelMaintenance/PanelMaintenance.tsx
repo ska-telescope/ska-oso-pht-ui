@@ -21,6 +21,10 @@ import { IdObject } from '@/utils/types/idObject';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
+import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
+import { MockProposalReviewFrontend } from '@/services/axios/postProposalReview.tsx/mockProposalReviewFrontend';
+import { MockPanelDecisionFrontend } from '@/services/axios/postPanelDecision/mockPanelDecisionFrontend';
+import PostPanelDecision from '@/services/axios/postPanelDecision/postPanelDecision';
 
 const PANELS_HEIGHT = '66vh';
 const TABS_HEIGHT = '68vh';
@@ -141,6 +145,15 @@ export default function PanelMaintenance() {
       // Save the updated panel to the backend
       savePanel(updatedPanel);
       // Update the state with the new panel
+
+      // --------------------------------------------------------------
+      // TODO remove this 2 calls once worked on the ticket done
+      // failing: TODO: fix this with updates to the type and mapping
+      PostProposalReview(MockProposalReviewFrontend, getCycleId());
+      // not failing but changes that can be added to the type and mapping
+      PostPanelDecision(MockPanelDecisionFrontend, getCycleId());
+      // --------------------------------------------------------------
+
       return updatedPanel;
     });
   };
