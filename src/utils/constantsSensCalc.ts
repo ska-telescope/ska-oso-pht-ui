@@ -145,8 +145,8 @@ export const SENSITIVITY_K = 5;
 // For a 1 arc-second beam at a frequency of 100 GHz, 1 K of brightness temperature corresponds to roughly 1 mJy/beam.
 export const SENSITIVITY_UNITS = [
   { id: 1, value: 'Jy/beam', mapping: 'Jy / beam', toBase: 1 },
-  { id: 2, value: 'mJy/beam', mapping: 'mJy / beam', toBase: 1000 },
-  { id: 3, value: 'uJy/beam', mapping: 'uJy / beam', toBase: 1000000 },
+  { id: 2, value: 'mJy/beam', mapping: 'mJy/beam', toBase: 1000 },
+  { id: 3, value: 'uJy/beam', mapping: 'uJy/beam', toBase: 1000000 },
   { id: 4, value: 'nJy/beam', mapping: 'nJy / beam', toBase: 1000000000 },
   { id: SENSITIVITY_K, value: 'K', mapping: 'K', toBase: 1000 },
   { id: 6, value: 'mK', mapping: 'mK', toBase: 1000000 },

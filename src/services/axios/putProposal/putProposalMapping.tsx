@@ -1,11 +1,11 @@
-import Target, { TargetBackend } from 'utils/types/target';
-import Observation from 'utils/types/observation';
-import { ObservationSetBackend } from 'utils/types/observationSet';
-import GroupObservation from 'utils/types/groupObservation';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from 'utils/types/arrayDetails';
-import { ValueUnitPair } from 'utils/types/valueUnitPair';
-import TargetObservation from 'utils/types/targetObservation';
-import { SensCalcResultsBackend } from 'utils/types/sensCalcResults';
+import Target, { TargetBackend } from '@utils/types/target';
+import Observation from '@utils/types/observation';
+import { ObservationSetBackend } from '@utils/types/observationSet';
+import GroupObservation from '@utils/types/groupObservation';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails';
+import { ValueUnitPair } from '@utils/types/valueUnitPair';
+import TargetObservation from '@utils/types/targetObservation';
+import { SensCalcResultsBackend } from '@utils/types/sensCalcResults';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
@@ -43,7 +43,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
-    if (subtype) {
+    if (subtype && project) {
       subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
     }
   }
@@ -55,9 +55,11 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   for (let i = 0; i < targets.length; i++) {
     const tar = targets[i];
     const outTarget: TargetBackend = {
+      name: tar.name,
       target_id: tar.name,
       reference_coordinate: {
         kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+        epoch: tar.epoch,
         ra: tar.ra,
         dec: tar.dec,
         unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
@@ -83,6 +85,7 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         parameters: [
           {
             kind: 'SinglePointParameters',
+            epoch: tar.epoch,
             offsetXArcsec: 0.5,
             offsetYArcsec: 0.5
           }
@@ -428,6 +431,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const transformedProposal: ProposalBackend = {
+    metadata: proposal.metadata,
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toDateString() : null, // note: null since oso-services 1.1.0  does not support ''
