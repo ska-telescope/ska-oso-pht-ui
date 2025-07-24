@@ -38,6 +38,7 @@ import {
 import Target, { PointingPatternParams } from '../../../utils/types/target';
 import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -330,8 +331,9 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   return properties;
 };
 
-function getContinuumData(telescope: Telescope, observation: Observation, target: Target) {
+function GetContinuumData(telescope: Telescope, observation: Observation, target: Target) {
   const URL_PATH = `/continuum/calculate`;
+  const authClient = useAxiosAuthClient();
 
   const continuumData: ContinuumData = {
     dataType: observation.type,
@@ -384,6 +386,7 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
   const response = Fetch(
+    authClient,
     telescope,
     URL_PATH,
     properties,
@@ -395,4 +398,4 @@ function getContinuumData(telescope: Telescope, observation: Observation, target
   );
   return response;
 }
-export default getContinuumData;
+export default GetContinuumData;

@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 
 export function mappingPostProposal(
   proposal: Proposal,
@@ -57,7 +57,11 @@ export function mockPostProposal() {
   return 'PROPOSAL-ID-001';
 }
 
-async function PostProposal(proposal: Proposal, status?: string) {
+async function PostProposal(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  proposal: Proposal,
+  status?: string
+) {
   if (USE_LOCAL_DATA) {
     return mockPostProposal();
   }
@@ -66,7 +70,7 @@ async function PostProposal(proposal: Proposal, status?: string) {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
     const convertedProposal = mappingPostProposal(proposal, status);
 
-    const result = await axiosAuthClient.post(
+    const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );

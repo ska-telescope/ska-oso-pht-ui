@@ -38,6 +38,7 @@ import { storeProposalCopy } from '../../utils/storage/proposalData';
 import { FOOTER_SPACER } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -71,11 +72,12 @@ export default function LandingPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const authClient = useAxiosAuthClient();
 
   const DATA_GRID_HEIGHT = '65vh';
 
   React.useEffect(() => {
-    updateAppContent2(null);
+    updateAppContent2({});
     setFetchList(!fetchList);
     setCycleData(!cycleData);
   }, []);
@@ -85,7 +87,7 @@ export default function LandingPage() {
       setProposals([]);
       if (isDisableEndpoints()) return;
 
-      const response = await GetProposalList();
+      const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
@@ -113,7 +115,7 @@ export default function LandingPage() {
     helpComponent('');
     updateAppContent5({});
 
-    const response = await GetProposal(id);
+    const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
@@ -176,7 +178,7 @@ export default function LandingPage() {
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !response.error) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

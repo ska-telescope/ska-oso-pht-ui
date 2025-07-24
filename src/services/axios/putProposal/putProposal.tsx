@@ -3,7 +3,7 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MappingPutProposal from './putProposalMapping';
 import Proposal from '@/utils/types/proposal';
 
@@ -13,6 +13,7 @@ interface PutProposalServiceResponse {
 }
 
 async function PutProposal(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   proposal: Proposal,
   status?: string
 ): Promise<PutProposalServiceResponse> {
@@ -24,7 +25,7 @@ async function PutProposal(
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     // TODO: add testing for proposal conversion format
     const convertedProposal = MappingPutProposal(proposal, status as string);
-    const result = await axiosAuthClient.put(
+    const result = await authAxiosClient.put(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );

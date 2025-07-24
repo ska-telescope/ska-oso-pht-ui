@@ -12,6 +12,7 @@ import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import TeamMember from '../../../utils/types/teamMember';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import Notification from '../../../utils/types/notification';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 export default function MemberEntry() {
   const { t } = useTranslation('pht');
@@ -25,6 +26,7 @@ export default function MemberEntry() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const authClient = useAxiosAuthClient();
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -148,16 +150,19 @@ export default function MemberEntry() {
 
   function AddTeamMember() {
     const currentTeam = getProposal().team;
-    const highestId = currentTeam.reduce(
+    let highestId = currentTeam?.reduce(
       (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
       0
     );
+    if (highestId === undefined) {
+      highestId = 0;
+    }
     const newTeamMember: TeamMember = {
       id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
-      country: '',
+      // country: '',
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
@@ -166,7 +171,7 @@ export default function MemberEntry() {
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -181,12 +186,12 @@ export default function MemberEntry() {
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
     const emailInvite = { email, prsl_id };
-    const response = await PostSendEmailInvite(emailInvite);
+    const response = await PostSendEmailInvite(authClient, emailInvite);
     if (response && !response.error) {
-      NotifyOK(t('email.success'));
+      NotifyOK('email.success');
       return true;
     } else {
-      NotifyError(t('email.error'));
+      NotifyError('email.error');
       return false;
     }
   }

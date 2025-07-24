@@ -2,7 +2,7 @@ import React from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
+import { ButtonLogin, ButtonLogout, isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
   Button,
   ButtonColorTypes,
@@ -47,7 +47,7 @@ export default function ButtonUserMenu({
 
   const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
 
-  const displayName = isMockedLoggedIn ? 'Mocked' : username;
+  const displayName = isMockedLoggedIn && !isLoggedIn ? 'Mocked' : username;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -64,13 +64,15 @@ export default function ButtonUserMenu({
 
   return (
     <>
-      <TickBox
-        label="Mock login"
-        labelPosition="bottom"
-        testId="linkedTickBox"
-        checked={isMockedLoggedIn}
-        onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
-      />
+      {!isLoggedIn && (
+        <TickBox
+          label="Mock login"
+          labelPosition="bottom"
+          testId="linkedTickBox"
+          checked={isMockedLoggedIn}
+          onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
+        />
+      )}
       <Box pt={2}>
         {!displayName && <ButtonLogin />}
         {displayName && (

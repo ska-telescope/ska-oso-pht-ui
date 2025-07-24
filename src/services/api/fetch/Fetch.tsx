@@ -3,9 +3,10 @@ import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '../../../utils
 import { ContinuumData, PSSData, StandardData, ZoomData } from '../../../utils/types/typesSensCalc';
 import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
-import axiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const Fetch = async (
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   telescope: Telescope,
   baseUrl: string,
   properties: string,
@@ -19,7 +20,7 @@ const Fetch = async (
     const baseURL = SKA_SENSITIVITY_CALCULATOR_API_URL;
     let finalURL = `${baseURL}${telescope.code}${baseUrl}`;
     finalURL += properties;
-    const result = await axiosAuthClient.get(finalURL);
+    const result = await authAxiosClient.get(finalURL);
     return mapping(result.data, target, observation);
   } catch (e) {
     const errMsg = e?.response?.data ? e.response.data : e.toString();

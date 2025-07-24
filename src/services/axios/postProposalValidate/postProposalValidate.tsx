@@ -1,5 +1,5 @@
 import MappingPutProposal from '../putProposal/putProposalMapping';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
@@ -18,7 +18,10 @@ interface ValidateServiceResponse {
   valid?: string;
 }
 
-async function PostProposalValidate(proposal: Proposal): Promise<ValidateServiceResponse> {
+async function PostProposalValidate(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  proposal: Proposal
+): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {
     return { valid: 'success' };
   }
@@ -26,7 +29,7 @@ async function PostProposalValidate(proposal: Proposal): Promise<ValidateService
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    const result = await axiosAuthClient.post(
+    const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
