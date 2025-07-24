@@ -20,10 +20,14 @@ export function mappingReviewFrontendToBackend(
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,
-    rank: review.rank,
-    conflict: {
-      has_conflict: review.conflict.hasConflict,
-      reason: review.conflict.reason
+    review_type: {
+      kind: review.reviewType.kind,
+      excluded_from_decision: review.reviewType.excludedFromDecision,
+      rank: review.reviewType.rank,
+      conflict: {
+        has_conflict: review.reviewType.conflict.hasConflict,
+        reason: review.reviewType.conflict.reason
+      }
     },
     comments: review.comments,
     src_net: review.srcNet,
