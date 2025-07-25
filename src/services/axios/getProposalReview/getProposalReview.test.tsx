@@ -1,7 +1,13 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockProposalReviewFrontend } from '../postProposalReview.tsx/mockProposalReviewFrontend';
-import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import {
+  MockProposalReviewFrontend,
+  MockProposalTechnicalReviewFrontend
+} from '../postProposalReview.tsx/mockProposalReviewFrontend';
+import {
+  MockProposalReviewBackend,
+  MockProposalTechnicalReviewBackend
+} from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import GetProposalReview, { GetMockReview } from './getProposalReview';
 import { ProposalReview } from '@/utils/types/proposalReview';
@@ -18,6 +24,13 @@ describe('Helper Functions', () => {
       MockProposalReviewBackend
     );
     expect(proposalReviewFrontEnd).to.deep.equal(MockProposalReviewFrontend);
+  });
+
+  test('mapping returns mapped technical review from backend to frontend format', () => {
+    const technicalProposalReviewFrontEnd: ProposalReview = mappingReviewBackendToFrontend(
+      MockProposalTechnicalReviewBackend
+    );
+    expect(technicalProposalReviewFrontEnd).to.deep.equal(MockProposalTechnicalReviewFrontend);
   });
 });
 

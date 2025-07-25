@@ -313,6 +313,17 @@ export const PANEL_DECISION_STATUS = {
   DECIDED: 'Decided'
 };
 
+export const REVIEW_TYPE = {
+  SCIENCE: 'Science Review',
+  TECHNICAL: 'Technical Review'
+};
+
+export const TECHNICAL_FEASIBILITY = {
+  YES: 'Yes',
+  NO: 'No',
+  MAYBE: 'Maybe'
+};
+
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 

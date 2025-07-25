@@ -1,11 +1,41 @@
 import axios from 'axios';
 import {
   OSO_SERVICES_REVIEWS_PATH,
+  REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import { helpers } from '@/utils/helpers';
-import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
+import {
+  ProposalReview,
+  ProposalReviewBackend,
+  ScienceReview,
+  ScienceReviewBackend,
+  TechnicalReview,
+  TechnicalReviewBackend
+} from '@/utils/types/proposalReview';
+
+function getTechnicalReviewType(technicalReview: TechnicalReview): TechnicalReviewBackend {
+  return {
+    kind: technicalReview.kind,
+    feasibility: {
+      is_feasible: technicalReview.feasibility.isFeasible,
+      comments: technicalReview.feasibility.comments
+    }
+  };
+}
+
+function getScienceReviewType(scienceReview: ScienceReview): ScienceReviewBackend {
+  return {
+    kind: scienceReview.kind,
+    excluded_from_decision: scienceReview.excludedFromDecision,
+    rank: scienceReview.rank,
+    conflict: {
+      has_conflict: scienceReview.conflict.hasConflict,
+      reason: scienceReview.conflict.reason
+    }
+  };
+}
 
 export function mappingReviewFrontendToBackend(
   review: ProposalReview,
@@ -20,11 +50,10 @@ export function mappingReviewFrontendToBackend(
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,
-    rank: review.rank,
-    conflict: {
-      has_conflict: review.conflict.hasConflict,
-      reason: review.conflict.reason
-    },
+    review_type:
+      review.reviewType.kind === REVIEW_TYPE.SCIENCE
+        ? getScienceReviewType(review.reviewType as ScienceReview)
+        : getTechnicalReviewType(review.reviewType as TechnicalReview),
     comments: review.comments,
     src_net: review.srcNet,
     status: review.status,
