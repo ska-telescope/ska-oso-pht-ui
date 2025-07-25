@@ -55,22 +55,21 @@ export const checkMaxContBandwidthHz = (
   scaledBandwidth: number
 ): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
 
-const getSubArrayAntennasCounts = (observatoryData: ObservatoryData, telescope: number, subarrayConfig: number) => {
-  console.log('data ', observatoryData);
+const getSubArrayAntennasCounts = (
+  observatoryData: ObservatoryData,
+  telescope: number,
+  subarrayConfig: number
+) => {
   const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
-    console.log('number of antennas', 900);
     return {
-      n15mAntennas: 900 || 0,
+      n15mAntennas: observatoryData?.capabilities?.mid?.AA2?.numberSkaDishes || 0,
       n13mAntennas: subArray?.numOf13mAntennas || 0
     };
-  }
-  else {
-    console.log('number of antennas', subArray?.numOf15mAntennas);
+  } else {
     return {
-      // n15mAntennas: num15mAntennas || 0,
       n15mAntennas: subArray?.numOf15mAntennas || 0,
       n13mAntennas: subArray?.numOf13mAntennas || 0
     };
@@ -132,7 +131,11 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
     }
   }
 
-  const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(observatoryData, telescope, subarrayConfig);
+  const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(
+    observatoryData,
+    telescope,
+    subarrayConfig
+  );
   const limits = getBandLimitsForAntennaCounts(bandLimits, n15mAntennas, n13mAntennas);
   return limits || [];
 };
