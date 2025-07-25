@@ -3,7 +3,7 @@ import {
   USE_LOCAL_DATA,
   OSO_SERVICES_REVIEWS_PATH
 } from '../../../utils/constants';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
@@ -83,14 +83,16 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
   return mappingList(uniqueResults);
 }
 
-async function GetProposalReviewList(): Promise<ProposalReview[] | string> {
+async function GetProposalReviewList(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+): Promise<ProposalReview[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalReviewList();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/DefaultUser`;
-    const result = await axiosAuthClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

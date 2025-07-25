@@ -15,6 +15,7 @@ import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 export function filterReviewers(
   reviewers: Reviewer[],
@@ -63,10 +64,11 @@ export default function GridReviewers({
   const [axiosError, setAxiosError] = React.useState('');
   const [fetchList] = React.useState(false);
   const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
+  const authClient = useAxiosAuthClient();
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const response = await GetReviewerList();
+      const response = await GetReviewerList(authClient);
 
       if (typeof response === 'string') {
         setAxiosError(response);

@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import GetProposalList, {
   GetMockProposalList,
   sortByLastUpdated,
@@ -10,12 +9,6 @@ import MockProposalBackendList from './mockProposalBackendList';
 import MockProposalFrontendList from './mockProposalFrontendList';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
-
-const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
-};
 
 describe('Helper Functions', () => {
   test('sortByLastUpdated returns proposals sorted by last updated date', () => {
@@ -38,48 +31,59 @@ describe('Helper Functions', () => {
 });
 
 describe('GetProposalList Service', () => {
+  let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetProposalList();
+    const result = await GetProposalList(mockedAuthClient);
     expect(result).toEqual(MockProposalFrontendList);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: MockProposalBackendList });
-    const result = (await GetProposalList()) as Proposal[];
+    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackendList });
+    const result = (await GetProposalList(mockedAuthClient)) as Proposal[];
     expect(result).to.deep.equal(MockProposalFrontendList);
   });
 
   test('returns unsorted data when API returns only one proposal', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: [MockProposalBackendList[0]] });
-    const result = await GetProposalList();
+    mockedAuthClient.get.mockResolvedValue({ data: [MockProposalBackendList[0]] });
+    const result = await GetProposalList(mockedAuthClient);
     expect(result).toEqual([MockProposalFrontendList[0]]);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetProposalList();
+    mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
+    const result = await GetProposalList(mockedAuthClient);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetProposalList();
+    mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
+    const result = await GetProposalList(mockedAuthClient);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await GetProposalList();
+    mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
+    const result = await GetProposalList(mockedAuthClient);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });

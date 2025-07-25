@@ -29,6 +29,7 @@ import TickIcon from '@/components/icon/tickIcon/tickIcon';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { validateProposal } from '@/utils/proposalValidation';
 import { PMT } from '@/utils/constants';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
 
@@ -52,6 +53,8 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
 
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
+
+  const authClient = useAxiosAuthClient();
 
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -96,7 +99,7 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
   const getTheProposal = async (id: string) => {
     clearApp();
 
-    const response = await GetProposal(id);
+    const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
       NotifyError(t('proposal.error'));
       return false;
